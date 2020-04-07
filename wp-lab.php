@@ -72,8 +72,6 @@ add_action( 'wp_ajax_test', 'lab_admin_test');
  */
 function wp_lab_menu() {
   add_menu_page( 'Options', 'LAB', 'manage_options', 'wp-lab.php', 'wp_lab_option' , '', 21);
-
-    //add_action( 'admin_init', 'register_settings' );
 }
 
 /***********************************************************************************************
@@ -86,19 +84,13 @@ function wp_lab_menu() {
 function lab_admin_save_event_actegory() {
   $postId  = $_POST["postId"];
   $categories  = $_POST["categoryId"];
-  //var_dump($_POST);
-  //echo "[lab_admin_save_event_actegory]".$categories;
-  
-  //$sql = "INSERT INTO `wp_term_relationships` (`object_id`, `term_taxonomy_id`, `term_order`) VALUES ('".$postId."', '".$categoryId."', '0');";
   global $wpdb;
   foreach($categories as $id => $categoryId) {
-    //echo "[lab_admin_save_event_actegory] category :".$categoryId;
     $table = $wpdb->prefix.'term_relationships';
     $data = array('object_id' => $postId, 'term_taxonomy_id' => $categoryId);
     $format = array('%d','%d');
     $wpdb->insert($table,$data,$format);
   }
-  //return $my_id;
   wp_send_json_success(1);
 }
 
@@ -304,6 +296,7 @@ function wp_lab_option() {
       <a id="lab_default_tab_pointer" style="position: relative" class="nav-tab <?php echo $active_tab == 'default' ? 'nav-tab-active' : ''; ?>" href="<?php echo add_query_arg( array('tab' => 'default'), $_SERVER['REQUEST_URI'] ); ?>">Séminaires</a>
       <a id="laib_users_settings_tab_pointer" style="position: relative" class="nav-tab <?php echo $active_tab == 'user_settings' ? 'nav-tab-active' : ''; ?>" href="<?php echo add_query_arg( array('tab' => 'user_settings'), $_SERVER['REQUEST_URI'] ); ?>">Users Settings</a>
       <a id="laib_users_settings_tab_pointer" style="position: relative" class="nav-tab <?php echo $active_tab == 'user_genetal_settings' ? 'nav-tab-active' : ''; ?>" href="<?php echo add_query_arg( array('tab' => 'user_general_settings'), $_SERVER['REQUEST_URI'] ); ?>">Users General Settings</a>
+      <a id="laib_users_settings_tab_pointer" style="position: relative" class="nav-tab <?php echo $active_tab == 'groups' ? 'nav-tab-active' : ''; ?>" href="<?php echo add_query_arg( array('tab' => 'groups'), $_SERVER['REQUEST_URI'] ); ?>">Groups</a>
     </h2>
     <table style="width:100%;">
       <tr>
@@ -314,6 +307,9 @@ function wp_lab_option() {
               }
               else if($active_tab == 'user_general_settings'){
                   lab_admin_tab_general_user();
+              }
+              else if($active_tab == 'groups'){
+                  lab_admin_tab_groups();
               }
               else {
                 lab_admin_tab_seminaire();
@@ -386,6 +382,13 @@ function lab_admin_tab_user() {
   <a href="#" class="page-title-action" id="lab_user_button_save_left">Modifier le statut de l'utilisateur</a>
 
 <?php
+}
+
+/**
+ * Function for the groups management
+ */
+function lab_admin_tab_groups() {
+
 }
 
 function lab_admin_tab_seminaire() {
