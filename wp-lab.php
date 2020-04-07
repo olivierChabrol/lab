@@ -14,6 +14,7 @@ __("Crée une page qui remonte les publications d'un auteur ou d'une structure e
 //Récupère les constantes
 require_once("constantes.php");
 require_once("lab-shortcode.php");
+require_once("lab-admin-ajax.php");
 ///locatrequire_once("link-template.php");
 //Admin Files
 if( is_admin() ){
@@ -65,6 +66,7 @@ add_action( 'wp_ajax_update_user_metadata', 'lab_admin_update_user_metadata' );
 add_action( 'wp_ajax_update_user_metadata_db', 'lab_admin_update_user_metadata_db' );
 add_action( 'wp_ajax_search_event_category', 'lab_admin_get_event_category' );
 add_action( 'wp_ajax_save_event_category', 'lab_admin_save_event_actegory');
+add_action( 'wp_ajax_search_group', 'lab_admin_group_search');
 add_action( 'wp_ajax_test', 'lab_admin_test');
 
 /**
@@ -238,27 +240,6 @@ function lab_usermeta_lab_left_key_exist($userId) {
 }
 
 /**
- * Fonction qui répond à la requete ajax de recherche d'evenement
- **/
-function lab_admin_search_event() {
-  $search = $_POST['search'];
-  $title  = $search["term"];
-  //var_dump($_POST);
-  //$sql = 'SELECT post_id, `event_name`,`event_start_date` FROM `wp_em_events` WHERE `event_name` LIKE \'%'.$title.'%\' LIMIT 30';
-  $sql = 'SELECT post_id, `event_name`,`event_start_date` FROM `wp_em_events` AS ee LEFT JOIN `wp_term_relationships` AS tr ON tr.`object_id`=ee.post_id WHERE tr.`object_id` IS NULL AND `event_name` LIKE \'%'.$title.'%\' LIMIT 30';
-  global $wpdb;
-  $results = $wpdb->get_results($sql);
-  $nbResult = $wpdb->num_rows;
-  $items = array();
-
-  $url = esc_url(home_url('/'));
-  foreach ( $results as $r )
-  {
-    $items[] = array(label=>$r->event_name." ".date("d/m/Y", strtotime($r->event_start_date)),value=>$r->post_id);
-  }
-  wp_send_json_success( $items );
-}
-/**
  * Fonction qui permet de charger ce que l'on veut comme JS ou CSS dans l'administration
  **/
 function admin_enqueue () {
@@ -388,7 +369,14 @@ function lab_admin_tab_user() {
  * Function for the groups management
  */
 function lab_admin_tab_groups() {
+  ?>
+  <label for="wp_lab_group_name">Nom du groupe</label>
+  <input type="text" name="wp_lab_group_name" id="wp_lab_group_name" value="" size="80"/><br>
+  <input type="hidden" id="lab_searched_event_id" name="lab_searched_event_id" value=""/>
 
+
+
+<?php
 }
 
 function lab_admin_tab_seminaire() {

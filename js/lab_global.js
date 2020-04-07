@@ -11,11 +11,26 @@ jQuery(function($){
     }
   });
   $( "#lab_user_left_date" ).datepicker();
+  $("#wp_lab_group_name").autocomplete({
+    minChars: 2,
+    source: function(term, suggest){
+      try { searchRequest.abort(); } catch(e){}
+      searchRequest = $.post("/wp-admin/admin-ajax.php", { action: 'search_group',search: term, }, function(res) {
+        suggest(res.data);
+      });
+      },
+      select: function( event, ui ) {
+        //alert(ui.item.option);
+        var label = ui.item.label;
+        var value = ui.item.value;
+      }
+
+  });
   $('#wp_lab_event_title').autocomplete({
     minChars: 2,
     source: function(term, suggest){
       try { searchRequest.abort(); } catch(e){}
-      searchRequest = $.post("https://test.i2m.univ-amu.fr/wp-admin/admin-ajax.php", { action: 'search_event',search: term, }, function(res) {
+      searchRequest = $.post("/wp-admin/admin-ajax.php", { action: 'search_event',search: term, }, function(res) {
         suggest(res.data);
       });
       },
@@ -42,7 +57,7 @@ jQuery(function($){
     minChars: 3,
     source: function(term, suggest){
       try { searchRequest.abort(); } catch(e){}
-      searchRequest = $.post("https://test.i2m.univ-amu.fr/wp-admin/admin-ajax.php", { action: 'search_user_email',search: term, }, function(res) {
+      searchRequest = $.post("/wp-admin/admin-ajax.php", { action: 'search_user_email',search: term, }, function(res) {
         suggest(res.data);
       });
       },
