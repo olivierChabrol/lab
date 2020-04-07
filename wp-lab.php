@@ -309,16 +309,16 @@ function wp_lab_option() {
       <tr>
         <td style="width:65%;vertical-align:top;" id="configurationForm">
           <?php
-                            if($active_tab == 'user_settings'){
-                                lab_admin_tab_user();
-                            }
-                            else if($active_tab == 'user_general_settings'){
-                                lab_admin_tab_general_user();
-                            }
-                            else {
-                              lab_admin_tab_seminaire();
-                            }
-                                        ?>
+              if($active_tab == 'user_settings'){
+                  lab_admin_tab_user();
+              }
+              else if($active_tab == 'user_general_settings'){
+                  lab_admin_tab_general_user();
+              }
+              else {
+                lab_admin_tab_seminaire();
+              }
+            ?>
           </td>
         </tr>
       </table>
@@ -400,61 +400,6 @@ function lab_admin_tab_seminaire() {
 <?php
 }
 
-/*
-function lab_incoming_event($param) {
-  extract(shortcode_atts(array(
-        'event' => get_option('option_event')
-    ),
-        $param
-  ));
-  $eventCaterory = get_option('option_event');
-  #$sql = "SELECT p.* FROM `wp_terms` AS t JOIN `wp_term_relationships` AS tr ON tr.`term_taxonomy_id`=t.`term_id` JOIN `wp_em_events` as p ON p.`post_id`=tr.`object_id` WHERE t.slug='".$event."' AND `p`.`event_end_date` >= NOW() ORDER BY `p`.`event_start_date` ASC ";
-  #$sql = "SELECT p.* FROM `wp_terms` AS t JOIN `wp_term_relationships` AS tr ON tr.`term_taxonomy_id`=t.`term_id` JOIN `wp_em_events` as p ON p.`post_id`=tr.`object_id` WHERE t.slug='".$event."'";
-  $sql = "SELECT * FROM `wp_terms` AS `t` JOIN `wp_term_relationships` AS `tr`.`term_taxonomy_id`=`t`.`term_id` JOIN `wp_em_events` as `p` ON `p`.`post_id`=`tr`.`object_id` WHERE `t`.`slug`='".$event."'";
-  global $wpdb;
-  $results = $wpdb->get_results($sql);
-  $nbResult = $wpdb->num_rows;
-  $listEventStr = "#".$nbResult."<br>#".$sql."#<br><table>";
-  $url = esc_url(home_url('/'));
-  foreach ( $results as $r )
-  {
-    $listEventStr .= "<tr>";
-    $listEventStr .= "<td>".esc_html($r->event_start_date)."</td><td><a href=\"".$url."event/".$r->event_slug."\">".$r->event_name."</a></td>";
-    $listEventStr .= "</tr>";
-  }
-  $listEventStr .= "</table>".$sql;
-  //return "category de l'evenement : ".$event."<br>".$sql."<br>".$listEventStr;
-  return $listEventStr;
-}
-//*/
-/***********************************************************************************************************************
- * PLUGIN SHORTCODE lab_old-event
- **********************************************************************************************************************/
-/*
-function lab_old_event($param)
-{
-  extract(shortcode_atts(array(
-        'event' => get_option('option_event')
-    ),
-        $param
-  ));
-  $eventCaterory = get_option('option_event');
-  $sql = "SELECT p.* FROM `wp_terms` AS t JOIN `wp_term_relationships` AS tr ON tr.`term_taxonomy_id`=t.`term_id` JOIN `wp_em_events` as p ON p.`post_id`=tr.`object_id` WHERE t.slug='".$event."' AND `p`.`event_end_date` < NOW() ORDER BY `p`.`event_end_date` DESC ";
-  global $wpdb;
-  $results = $wpdb->get_results($sql);
-  $listEventStr = "<table>";
-  $url = esc_url(home_url('/'));
-  foreach ( $results as $r )
-  {
-    $listEventStr .= "<tr>";
-    $listEventStr .= "<td>".esc_html($r->event_start_date)."</td><td><a href=\"".$url."event/".$r->event_slug."\">".$r->event_name."</a></td>";
-    $listEventStr .= "</tr>";
-  }
-  $listEventStr .= "</table>";
-  //return "category de l'evenement : ".$event."<br>".$sql."<br>".$listEventStr;
-  return $listEventStr;
-}
-//*/
 
 function old_event1($param)
 {
@@ -482,29 +427,6 @@ function old_event1($param)
   return $listEventStr;
 }
 
-/***********************************************************************************************************************
- * PLUGIN SHORTCODE lab_event_of_the_week
- **********************************************************************************************************************/
-
-function lab_event_of_the_week($param) {
-      $day = date('w');
-      $week_start = date('Y-m-d', strtotime('-'.($day-1).' days'));
-      $week_end = date('Y-m-d', strtotime('+'.(7-$day).' days'));
-
-      //$sql = "SELECT * FROM `wp_em_events` WHERE `event_start_date` >= '".$week_start."' AND `event_end_date` <= '".$week_end."'";
-      $sql = "SELECT t.name, p.* FROM `wp_terms` AS t JOIN `wp_term_relationships` AS tr ON tr.`term_taxonomy_id`=t.`term_id` JOIN `wp_em_events` as p ON p.`post_id`=tr.`object_id` WHERE p.`event_start_date` >= '".$week_start."' AND p.`event_end_date` <= '".$week_end."' ORDER BY `p`.`event_start_date` ASC";
-      global $wpdb;
-      $results = $wpdb->get_results($sql);
-      
-      $content ="<h4><a class=\"spip_in\" href=\"/events/\">La semaine de l’I2M</a></h4>";
-      foreach ( $results as $r )
-      {
-        $content .= "<p><span style=\"color: #ff6600;\">".date_i18n("l j F Y", strtotime($r->event_start_date))."</span> ";
-        $content .= "<span style=\"color: #000000;\"><strong>".$r->name."</strong></span><br>";
-        $content .= date("H:i", strtotime($r->event_start_time))." - ".date("H:i", strtotime($r->event_end_time))." <a class=\"spip_out\" href=\"".$r->event_slug."\">".$r->event_name."</a></p>";
-      }
-      return $content;
-}
 
 /***********************************************************************************************************************
  * PLUGIN WIDGET
