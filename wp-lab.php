@@ -465,10 +465,13 @@ function lab_admin_tab_params() {
  */
 function lab_admin_tab_groups() {
   ?>
-  <label for="wp_lab_group_name">Nom du groupe</label>
-  <input type="text" name="wp_lab_group_name" id="wp_lab_group_name" value="" size="80"/><br>
-  <input type="hidden" id="lab_searched_event_id" name="lab_searched_event_id" value=""/>
-  <button id="delete_button">Supprimer le groupe</button><br>
+  <div>
+    <label for="wp_lab_group_name">Nom du groupe</label>
+    <input type="text" name="wp_lab_group_name" id="wp_lab_group_name" value="" size="80"/>
+    <button class="page-title-action" id="delete_button">Supprimer le groupe</button><br>
+    <input type="hidden" id="lab_searched_event_id" name="lab_searched_event_id" value=""/>
+    
+  </div>
   <div id="suppr_result"></div>
 <hr>
   <!-- passage en HTML pour donner les champs utiles à la bd -->
