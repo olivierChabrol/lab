@@ -103,6 +103,24 @@ jQuery(function($){
       return false;
     }
   });
+  $("#wp_lab_group_chief_edit").autocomplete({
+    minChars: 3,
+    source: function(term, suggest){
+      try { searchRequest.abort(); } catch(e){}
+      searchRequest = $.post(ajaxurl, { action: 'search_user_email',search: term, }, function(res) {
+        suggest(res.data);
+      });
+      },
+    select: function( event, ui ) {
+      var value = ui.item.value;
+      var label = ui.item.label;
+      $("#lab_createGroup_chiefID").val(value);
+      $("#wp_lab_group_chief_edit").val(label);
+      return false;
+    }
+  });
+
+  
   $('#lab_createGroup_createRoot').click(function(){
     var data = {
       'action' : 'group_root',
