@@ -410,10 +410,8 @@ function lab_admin_tab_groups() {
   <input type="text" name="wp_lab_group_name" id="wp_lab_group_name" value="" size="80"/><br>
   <input type="hidden" id="lab_searched_event_id" name="lab_searched_event_id" value=""/>
 
+  <hr>
 
-
-<?php
-?>
   <button id="lab_createGroup_createTable">Créer la table</button>
   <button id="lab_createGroup_createRoot">Créer groupe root</button>
   <hr/>

@@ -30,11 +30,7 @@ jQuery(function($){
     minChars: 2,
     source: function(term, suggest){
       try { searchRequest.abort(); } catch(e){}
-<<<<<<<
       searchRequest = $.post("/wp-admin/admin-ajax.php", { action: 'search_event',search: term, }, function(res) {
-=======
-      searchRequest = $.post(ajaxurl, { action: 'search_event',search: term, }, function(res) {
->>>>>>>
         suggest(res.data);
       });
       },
@@ -61,11 +57,7 @@ jQuery(function($){
     minChars: 3,
     source: function(term, suggest){
       try { searchRequest.abort(); } catch(e){}
-<<<<<<<
       searchRequest = $.post("/wp-admin/admin-ajax.php", { action: 'search_user_email',search: term, }, function(res) {
-=======
-      searchRequest = $.post(ajaxurl, { action: 'search_user_email',search: term, }, function(res) {
->>>>>>>
         suggest(res.data);
       });
       },
