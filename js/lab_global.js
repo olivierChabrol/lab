@@ -74,14 +74,20 @@ jQuery(function($){
   });
 
   $("#lab_editGroup").click(function() {
-    editGroup(
-      $("#wp_lab_group_to_edit option:selected").val(), // id
+    $groupId = jQuery("#wp_lab_group_to_edit").val();
+    $acronym = jQuery("#wp_lab_group_acronym_edit").val();
+    $name    = jQuery("#wp_lab_group_name_edit").val();
+    $chief   = jQuery("#wp_lab_group_chief_edit").val();
+    $parent  = jQuery("#wp_lab_group_parent_edit").val();
+    $type    = jQuery("#wp_lab_group_type_edit").val();
+    editGroup($groupId, $acronym, $name, $chief, $parent, $type);
+      /*$("#wp_lab_group_to_edit option:selected").val(), // id
       $("#wp_lab_group_acronym_edit").val(), // acronym
       $("#wp_lab_group_name_edit").val(), // new name
       $("#wp_lab_group_chief_edit").val(), // chief
       $("#wp_lab_group_parent_edit").val(), // parent
       $("#wp_lab_group_type_edit").val() // type
-    );
+    );*/
   })
 });
 
@@ -188,8 +194,8 @@ function loadEventCategory(postId) {
 }
 
 function editGroup(groupId, acronym, groupName, chiefId, parent, type) {
-  /*alert("groupId : " + groupId + " chef " + chiefId + " groupName: " + groupName +
-        " acronym : " + acronym + "parent : " + parent + "type : :" + type);*/
+  alert("groupId : " + groupId + " chefId : " + chiefId + " groupName : " + groupName +
+        " acronym : " + acronym + "parent : " + parent + "type :" + type);
   var data = {
                'action' : 'edit_group',
                'id' : groupId,
