@@ -48,10 +48,32 @@ function lab_admin_group_delete(){
     wp_send_json_success();
 }
 
+
+
+
+/********************************************************************************************
+ * USER
+ ********************************************************************************************/
+function lab_admin_search_user_metadata()
+{
+  $userId = $_POST["userId"];
+  //wp_send_json_success(lab_usermeta_lab_check_and_create($userId));
+  lab_usermeta_lab_check_and_create($userId);
+  //  var_dump($_POST);
+  $sql    = "SELECT * FROM wp_usermeta WHERE user_id=".$userId;
+  global $wpdb;
+  $results = $wpdb->get_results($sql);
+  $items = array();
+
+  foreach ($results as $r) {
+    $items[$r->meta_key] = array(id => $r->umeta_id, key => $r->meta_key, value => $r->meta_value);
+  }
+  wp_send_json_success($items);
+}
+
 /********************************************************************************************
  * PARAMS
  ********************************************************************************************/
-
 function lab_admin_param_create_table() {
   $sql = "CREATE TABLE `wp_lab_params`(
     `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -72,12 +94,11 @@ function lab_admin_param_save() {
   if ($type == -1) {
     $type = 0;
   }
-
   $sql = "INSERT INTO `wp_lab_params` (`id`, `type_param`, `value`) VALUES (NULL, '".$type."', '".$value."');";
   $results = $wpdb->get_results($sql);
   wp_send_json_success();
-
 }
+
 function lab_admin_param_load_param_type() {
   global $wpdb;
   $sql = "SELECT id, value FROM `wp_lab_params` WHERE type_param = 1";
@@ -107,12 +128,11 @@ function lab_admin_param_search_value() {
     $items = array();
   
     foreach ($results as $r) {
-      $items[] = array(label => $r->value, value => $r->id);
+      $items[] = array(label => $r->value, value => $r->id, type=>$r->type_param);
     }
     wp_send_json_success($items);
   }
   else {
     wp_send_json_error("No param send");
   }
-
 }
