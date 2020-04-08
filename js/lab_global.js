@@ -74,6 +74,7 @@ jQuery(function($){
   });
 
   $("#lab_editGroup").click(function() {
+    //console.log(jQuery("#wp_lab_group_chief_edit option:selected").val()); // /!\ sans option:selected, n'apparaît pas...
     $groupId = jQuery("#wp_lab_group_to_edit").val();
     $acronym = jQuery("#wp_lab_group_acronym_edit").val();
     $name    = jQuery("#wp_lab_group_name_edit").val();
@@ -81,13 +82,6 @@ jQuery(function($){
     $parent  = jQuery("#wp_lab_group_parent_edit").val();
     $type    = jQuery("#wp_lab_group_type_edit").val();
     editGroup($groupId, $acronym, $name, $chief, $parent, $type);
-      /*$("#wp_lab_group_to_edit option:selected").val(), // id
-      $("#wp_lab_group_acronym_edit").val(), // acronym
-      $("#wp_lab_group_name_edit").val(), // new name
-      $("#wp_lab_group_chief_edit").val(), // chief
-      $("#wp_lab_group_parent_edit").val(), // parent
-      $("#wp_lab_group_type_edit").val() // type
-    );*/
   })
 });
 
@@ -193,19 +187,18 @@ function loadEventCategory(postId) {
   });
 }
 
-function editGroup(groupId, acronym, groupName, chiefId, parent, type) {
-  alert("groupId : " + groupId + " chefId : " + chiefId + " groupName : " + groupName +
-        " acronym : " + acronym + "parent : " + parent + "type :" + type);
+function editGroup(groupId, acronym, groupName, chiefId, parent, group_type) {
   var data = {
                'action' : 'edit_group',
-               'id' : groupId,
+               'groupId' : groupId,
                'acronym' : acronym,
-               'group_name' : groupName,
-               'chief_id' : chiefId,
-               'parent_groupe_id' : parent,
-               'groupe_type' : type
+               'groupName' : groupName,
+               'chiefId' : chiefId,
+               'parent' : parent,
+               'group_type' : group_type
   };
   jQuery.post(ajaxurl, data, function(response) {
     console.log(response);
   });
+  //TODO: IHM pour que que l'utilisateur sache que ce qu'il a fait a modifié quelque chose
 }

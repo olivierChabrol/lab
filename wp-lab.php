@@ -428,7 +428,7 @@ function lab_admin_tab_groups() {
       global $wpdb;
       $results = $wpdb->get_results($sql);
       foreach ( $results as $r ) {
-        echo("<option value=\"" . $r->id . "\">" . $r->display_name . "</option>");
+        echo("<option value=\"" . $r->ID . "\">" . $r->display_name . "</option>");
       }
     ?>
     </select><br /><br />
@@ -459,30 +459,20 @@ function lab_admin_tab_groups() {
 }
 
 function lab_group_editGroup() {
-  $groupid = $_POST['id'];
-
-  $name = $_POST['name'];
+  $id = $_POST['groupId'];
   $acronym = $_POST['acronym'];
-  $chief_id = $_POST['chief_id'];
+  $groupName = $_POST['groupName'];
+  $chiefId = $_POST['chiefId'];
   $parent = $_POST['parent'];
-  $type = $_POST['type'];
+  $type = $_POST['group_type'];
 
-  $sql = "UPDATE `wp_lab_groups` SET `group_name` = '$name', `acronym` = '$acronym',
-   `chief_id` = '$chief_id', `groupe_type` = '$type', `parent_group_id` = '$parent'
-    WHERE id= '$groupid';";
+  $sql = "UPDATE `wp_lab_groups` SET `group_name` = '$groupName', `acronym` = '$acronym',
+   `chief_id` = '$chiefId', `groupe_type` = '$type', `parent_group_id` = '$parent'
+    WHERE id= '$id';";
   global $wpdb;
   echo $sql;
   $results = $wpdb->get_results($sql);
 }
-/*
-function edit_group($chiefName) {
-  // on cherche à récupérer l'id du chef de groupe
-
-  // update to edit
-  $sql = "UPDATE * FROM `wp_lab_groups` WHERE `chief_id` IS $chiefId";
-  global $wpdb;
-  $results = $wpdb->get_results($sql);
-}*/
 
 function lab_admin_tab_seminaire()
 {
