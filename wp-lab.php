@@ -3,7 +3,7 @@
 Plugin Name: LAB
 Plugin URI: https://www.i2m.univ-amu.fr
 Description: Pluggin de l'I2M de gestion du labo
-Author: Olivier CHABROL
+Authors: Olivier CHABROL, Astrid BEYER
 Version: 1.0
 Author URI: http://www.i2m.univ-amu.fr
 */
@@ -402,7 +402,7 @@ function lab_admin_tab_groups() {
 ?>
   <!-- passage en HTML pour donner les champs utiles à la bd -->
   <h1>Modifier un groupe</h1>
-  <label for="">Je souhaite modifier le groupe </label>
+  <label for="wp_lab_group_to_edit">Je souhaite modifier le groupe :</label>
   <select name="wp_lab_group" id ="wp_lab_group_to_edit">
   <?php
     // les options de la balise select viennent de la base de donnée
@@ -413,13 +413,14 @@ function lab_admin_tab_groups() {
       echo("<option value=\"" . $r->id . "\">" . $r->group_name . "</option>");
     }
   ?>
-  </select><br/><br/>
-  <label for="wp_lab_group_name_edit">Nouveau nom du groupe</label>
+  </select>
+  <label for="wp_lab_group_acronym_edit">Modifier l'acronyme :</label>
+  <input type="text" name="wp_lab_acronym" id="wp_lab_group_acronym_edit" value="" size=10 /><br/><br/>
+  <label for="wp_lab_group_name_edit">Nouveau nom du groupe :</label>
   <input type="text" name="wp_lab_group_name" id="wp_lab_group_name_edit" value="" size=70 /><br /><br />
-  <label for="wp_lab_group_chief_edit">Définir un autre chef de groupe</label>
+  <label for="wp_lab_group_chief_edit">Définir un autre chef de groupe :</label>
   <input type="text" name="wp_lab_chief" id="wp_lab_group_chief_edit" value="" size=50 /><br /><br />
-  <label for="wp_lab_group_acronym_edit">Modifier l'acronyme</label>
-  <input type="text" name="wp_lab_acronym" id="wp_lab_group_acronym_edit" value="" size=10 /><br /><br />
+
 
   <br><a href="#" class="page-title-action" id="lab-button-edit-group">Modifier le groupe</a>
 <?php
