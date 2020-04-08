@@ -30,7 +30,11 @@ jQuery(function($){
     minChars: 2,
     source: function(term, suggest){
       try { searchRequest.abort(); } catch(e){}
+<<<<<<<
       searchRequest = $.post("/wp-admin/admin-ajax.php", { action: 'search_event',search: term, }, function(res) {
+=======
+      searchRequest = $.post(ajaxurl, { action: 'search_event',search: term, }, function(res) {
+>>>>>>>
         suggest(res.data);
       });
       },
@@ -57,7 +61,11 @@ jQuery(function($){
     minChars: 3,
     source: function(term, suggest){
       try { searchRequest.abort(); } catch(e){}
+<<<<<<<
       searchRequest = $.post("/wp-admin/admin-ajax.php", { action: 'search_user_email',search: term, }, function(res) {
+=======
+      searchRequest = $.post(ajaxurl, { action: 'search_user_email',search: term, }, function(res) {
+>>>>>>>
         suggest(res.data);
       });
       },
@@ -87,7 +95,62 @@ jQuery(function($){
   $("#lab_user_button_save_left").click(function() {
     saveUserLeft($("#lab_searched_user_id").val(), $("#lab_user_left_date").val(), $("#lab_user_left").is(":checked"));
   });
+  $("#lab_createGroup_chief").autocomplete({
+    minChars: 3,
+    source: function(term, suggest){
+      try { searchRequest.abort(); } catch(e){}
+      searchRequest = $.post(ajaxurl, { action: 'search_user_email',search: term, }, function(res) {
+        suggest(res.data);
+      });
+      },
+    select: function( event, ui ) {
+      var value = ui.item.value;
+      var label = ui.item.label;
+      $("#lab_createGroup_chiefID").val(value);
+      $("#lab_createGroup_chief").val(label);
+      return false;
+    }
+  });
+  $('#lab_createGroup_createRoot').click(function(){
+    var data = {
+      'action' : 'group_root',
+    };
+    jQuery.post(ajaxurl, data, function(response) {
+      console.log(response);
+    });
+  });
+  $('#lab_createGroup_createTable').click(function(){
+    var data = {
+      'action' : 'group_table',
+    };
+    jQuery.post(ajaxurl, data, function(response) {
+      console.log(response);
+    });
+  })
+  $("#lab_createGroup_create").click(function() {
+    createGroup(
+      $("#lab_createGroup_name").val(),
+      $("#lab_createGroup_acronym").val(),
+      $("#lab_createGroup_type").val(),
+      $("#lab_createGroup_chiefID").val(),
+      $("#lab_createGroup_parent").val()
+    );
+  })
 });
+
+function createGroup($name,$acronym,$type,$chief_id,$parent) {
+  var data = {
+    'action' : 'group_create',
+    'name' : $name,
+    'acronym' : $acronym,
+    'type' : $type,
+    'chief_id' : $chief_id,
+    'parent' : $parent
+  };
+  jQuery.post(ajaxurl, data, function(response) {
+    console.log(response);
+  });
+}
 
 function test() {
   var data = {

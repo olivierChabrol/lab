@@ -4,6 +4,7 @@ Plugin Name: LAB
 Plugin URI: https://www.i2m.univ-amu.fr
 Description: Pluggin de l'I2M de gestion du labo
 Author: Olivier CHABROL
+Author: Ivan IVANOV
 Version: 1.0
 Author URI: http://www.i2m.univ-amu.fr
 */
@@ -68,7 +69,9 @@ add_action( 'wp_ajax_search_event_category', 'lab_admin_get_event_category' );
 add_action( 'wp_ajax_save_event_category', 'lab_admin_save_event_actegory');
 add_action( 'wp_ajax_search_group', 'lab_admin_group_search');
 add_action( 'wp_ajax_test', 'lab_admin_test');
-
+add_action( 'wp_ajax_group_create', 'lab_group_createGroup' );
+add_action( 'wp_ajax_group_table', 'lab_createGroupTable' );
+add_action( 'wp_ajax_group_root', 'lab_group_createRoot');
 /**
  * Fonction de création du menu
  */
@@ -119,7 +122,7 @@ function lab_admin_search_user_metadata() {
   $userId = $_POST["userId"];
   //wp_send_json_success(lab_usermeta_lab_check_and_create($userId));
   lab_usermeta_lab_check_and_create($userId);
-//  var_dump($_POST);
+  //  var_dump($_POST);
   $sql    = "SELECT * FROM wp_usermeta WHERE user_id=".$userId;
   global $wpdb;
   $results = $wpdb->get_results($sql);
@@ -238,7 +241,40 @@ function lab_usermeta_lab_left_key_exist($userId) {
   //return $nbResult;
   return $nbResult == 1;
 }
-
+function lab_createGroupTable() {
+  $sql = "CREATE TABLE `wp_lab_groups`(
+    `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `acronym` varchar(20),
+    `group_name` varchar(255) NOT NULL,
+    `chief_id` BIGINT UNSIGNED NOT NULL,
+    `group_type` TINYINT NOT NULL,
+    `parent_group_id` BIGINT UNSIGNED,
+    PRIMARY KEY(`id`),
+    FOREIGN KEY(`chief_id`) REFERENCES `wp_users`(`ID`),
+    FOREIGN KEY(`parent_group_id`) REFERENCES `wp_lab_groups`(`id`)) ENGINE = INNODB;";
+    echo $sql;
+    global $wpdb;
+    $results = $wpdb->get_results($sql);
+    var_dump($results);
+}
+function lab_group_createRoot() {
+  $sql = "INSERT INTO `wp_lab_groups` (`id`, `acronym`, `group_name`, `chief_id`, `group_type`, `parent_group_id`) VALUES (NULL, 'root', 'root', '1', '0', NULL);";
+  echo $sql;
+  global $wpdb;
+  $results = $wpdb->get_results($sql);
+  var_dump($results);
+}
+function lab_group_createGroup() {
+  $name = $_POST['name'];
+  $acronym = $_POST['acronym'];
+  $chief_id = $_POST['chief_id'];
+  $parent = $_POST['parent'];
+  $type = $_POST['type'];
+  $sql = "INSERT INTO `wp_lab_groups` (`id`, `acronym`, `group_name`, `chief_id`, `group_type`, `parent_group_id`) VALUES (NULL, '".$acronym."', '".$name."', '".$chief_id."', '".$type."', '".$parent."');";
+  global $wpdb;
+  echo $sql;
+  $results = $wpdb->get_results($sql);
+}
 /**
  * Fonction qui permet de charger ce que l'on veut comme JS ou CSS dans l'administration
  **/
@@ -376,6 +412,49 @@ function lab_admin_tab_groups() {
 
 
 
+<?php
+?>
+  <button id="lab_createGroup_createTable">Créer la table</button>
+  <button id="lab_createGroup_createRoot">Créer groupe root</button>
+  <hr/>
+  <div id="lab_createGroup_form">
+    <h3>Créer un groupe :</h3>
+    <div class="lab_createGroup_formLine">
+      <label for="lab_createGroup_name">Nom du groupe :</label>
+      <input type="text" id="lab_createGroup_name" name="lab_createGroup_name" placeholder="Analyse Appliquée"/>
+      <label for="lab_createGroup_acronym">Acronyme :</label>
+      <input type="text" id="lab_createGroup_acronym" name="lab_createGroup_acronym" placeholder="AA"/>
+    </div>
+    <div class="lab_createGroup_formLine">
+      <label for="lab_createGroup_parentGroup">Groupe parent :</label>
+      <select id="lab_createGroup_parent" name="lab_createGroup_parent">
+        <option value="None">None</option>
+        <?php
+          $sql = "SELECT id,acronym FROM `wp_lab_groups`";
+          global $wpdb;
+          $results = $wpdb->get_results($sql);
+          $output="";
+          var_dump($results);
+          foreach ( $results as $r )
+          {
+            $output .= "<option value =".$r->id.">".$r->acronym."</option>";
+          }
+          echo $output;
+        ?>
+      </select>
+      <label for="lab_createGroup_type">Type :</label>
+      <select id="lab_createGroup_type" name="lab_createGroup_Type">
+        <option value="1">Groupe</option>
+        <option value="2">Équipe</option>
+      </select>
+    </div>
+    <label for="lab_createGroup_chief">Chef du groupe :</label>
+    <input id="lab_createGroup_chief" type="text" name="lab_createGroup_chief" placeholder="Pascal HUBERT"/>
+    <input id="lab_createGroup_chiefID" type="text" disabled width="1em"/>
+    <br/>
+    <input type="submit" id="lab_createGroup_create" value="Créer"/>
+  </div>
+  <hr/>
 <?php
 }
 
