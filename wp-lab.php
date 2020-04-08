@@ -68,6 +68,7 @@ add_action( 'wp_ajax_search_event_category', 'lab_admin_get_event_category' );
 add_action( 'wp_ajax_save_event_category', 'lab_admin_save_event_actegory');
 add_action( 'wp_ajax_search_group', 'lab_admin_group_search');
 add_action( 'wp_ajax_test', 'lab_admin_test');
+add_action( 'wp_ajax_delete_group', 'lab_admin_group_delete');
 
 /**
  * Fonction de création du menu
@@ -372,7 +373,9 @@ function lab_admin_tab_groups() {
   ?>
   <label for="wp_lab_group_name">Nom du groupe</label>
   <input type="text" name="wp_lab_group_name" id="wp_lab_group_name" value="" size="80"/><br>
-  <input type="hidden" id="lab_searched_event_id" name="lab_searched_event_id" value=""/>
+  <input type="hidden" id="lab_searched_event_id" name="lab_searched_event_id" value=""/><br>
+  <button id="delete_button">Supprimer le groupe</button><br>
+  <div id="suppr_result"></div>
 
 
 
