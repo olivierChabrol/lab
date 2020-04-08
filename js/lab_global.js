@@ -12,6 +12,7 @@ jQuery(function($){
     }
   });
   $( "#lab_user_left_date" ).datepicker();
+
   $("#wp_lab_group_name").autocomplete({
     minChars: 2,
     source: function(term, suggest){
@@ -21,13 +22,19 @@ jQuery(function($){
       });
       },
       select: function( event, ui ) {
-        //event.preventDefault();
-        //alert(ui.item.option);
         var label = ui.item.label;
         var value = ui.item.value;
-        label_selected = label;
+        event.preventDefault();
+        $("#wp_lab_group_name").val(label);
+
+        $("#lab_searched_event_id").val(value);
       }
   });
+
+  $("#lab_tab_param_save").click(function(){
+    saveParam();
+  });
+
   $("#delete_button").click(function(){
       $.get("/wp-admin/admin-ajax.php",
           {
@@ -44,7 +51,8 @@ jQuery(function($){
             }
           }
       )
-  })
+  });
+  
   $('#wp_lab_event_title').autocomplete({
     minChars: 2,
     source: function(term, suggest){
@@ -54,20 +62,18 @@ jQuery(function($){
       });
       },
     select: function( event, ui ) {
-      //alert(ui.item.option);
       var label = ui.item.label;
       var value = ui.item.value;
-      //alert(value);
-      //$("#lab_searched_event_id").val("toto");
-      //alert($("#lab_searched_event_id").val());
+      event.preventDefault();
+      $("#wp_lab_event_title").val(ui.item.label);
+      
       $("#lab_user_left_date").val("");
       $("#lab_user_left_date").prop("disabled", true);
       $("#lab_user_left").prop("checked", false);
-      $("#wp_lab_event_title").val(ui.item.label);
       $("#lab_searched_event_id").val(value);
       $("#lab_event_id").html(value);
       $("#wp_lab_event_label").text(label);
-      //alert(label);
+      
       loadEventCategory(value);
       return false;
     }
@@ -81,10 +87,11 @@ jQuery(function($){
       });
       },
     select: function( event, ui ) {
-      //alert(ui.item.option);
       var label = ui.item.label;
       var value = ui.item.value;
-      //$('#lab_user_email"').val(label);
+      event.preventDefault();
+      $("#lab_user_email").val(label);
+
       $("#lab_searched_user_id").val(value);
       loadUserMetadata(value);
       return false;
@@ -117,8 +124,10 @@ jQuery(function($){
     select: function( event, ui ) {
       var value = ui.item.value;
       var label = ui.item.label;
-      $("#lab_createGroup_chiefID").val(value);
+      event.preventDefault();
       $("#lab_createGroup_chief").val(label);
+
+      $("#lab_createGroup_chiefID").val(value);
       return false;
     }
   });
@@ -133,13 +142,47 @@ jQuery(function($){
     select: function( event, ui ) {
       var value = ui.item.value;
       var label = ui.item.label;
+      event.preventDefault();
+      $("#lab_createGroup_chief").val(label);
+
       $("#lab_createGroup_chiefID").val(value);
-      $("#wp_lab_group_chief_edit").val(label);
       return false;
     }
   });
 
-  
+
+  $("#wp_lab_param_value_search").autocomplete({
+    minChars: 3,
+    source: function(term, suggest){
+      try { searchRequest.abort(); } catch(e){}
+      searchRequest = $.post(ajaxurl, { action: 'param_search_value',search: term, }, function(res) {
+        suggest(res.data);
+      });
+      },
+    select: function( event, ui ) {
+      var value = ui.item.value;
+      var label = ui.item.label;
+      event.preventDefault();
+      $("#wp_lab_param_id").val(label);
+
+      $("#wp_lab_param_value_search").val(value);
+      return false;
+    }
+  });
+
+  $('#lab_tab_param_create_table').click(function(){
+    var data = {
+      'action' : 'param_create_table',
+    };
+    jQuery.post(ajaxurl, data, function(response) {
+      console.log(response);
+    });
+  });
+
+  $('#lab_tab_param_delete').click(function(){
+    paramDelete($("#wp_lab_param_type").val());
+  });
+
   $('#lab_createGroup_createRoot').click(function(){
     var data = {
       'action' : 'group_root',
@@ -155,7 +198,7 @@ jQuery(function($){
     jQuery.post(ajaxurl, data, function(response) {
       console.log(response);
     });
-  })
+  });
   $("#lab_createGroup_create").click(function() {
     createGroup(
       $("#lab_createGroup_name").val(),
@@ -178,6 +221,53 @@ function createGroup($name,$acronym,$type,$chief_id,$parent) {
   };
   jQuery.post(ajaxurl, data, function(response) {
     console.log(response);
+  });
+}
+
+function saveParam() {
+  var data = {
+               'action' : 'save_param',
+               'type' : jQuery("#wp_lab_param_type").val(),
+               'value' : jQuery("#wp_lab_param_value").val(),
+  };
+  jQuery.post(ajaxurl, data, function(response) {
+    if(response.success) {
+      jQuery("#wp_lab_param_value").val("");
+      load_params_type();
+    }
+  });
+}
+
+function paramDelete(paramId) {
+  var data = {
+    'action' : 'param_delete',
+    'id' : paramId,
+  };
+  jQuery.post(ajaxurl, data, function(response) {
+    if(response.success) {
+      load_params_type();
+    }
+  });
+}
+
+function load_params_type() {
+  var data = {
+    'action' : 'load_param_type',
+  };
+  jQuery.post(ajaxurl, data, function(response) {
+    if(response.success) {
+      //alert("Sauver");
+      jQuery("#wp_lab_param_type option").each(function() {
+        jQuery(this).remove();
+      });
+
+      jQuery.each(response.data, function (index, value){
+        jQuery('#wp_lab_param_type').append(jQuery('<option/>', { 
+          value: value['id'],
+          text : value['value'] 
+      }));
+      });
+    }
   });
 }
 
@@ -205,7 +295,7 @@ function updateUserMetaDb() {
 function saveUserLeft(userId, date, isChecked) {
   var c = isChecked?date:null;
   var umd = jQuery("#lab_usermeta_id").val();
-  alert("userId : " + userId + " date " + date + " is checked : " + isChecked + " c : " + c );
+  //alert("userId : " + userId + " date " + date + " is checked : " + isChecked + " c : " + c );
   var data = {
                'action' : 'update_user_metadata',
                'userMetaId' : umd,

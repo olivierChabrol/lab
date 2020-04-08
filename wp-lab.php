@@ -15,6 +15,7 @@ __("Crée une page qui remonte les publications d'un auteur ou d'une structure e
 require_once("constantes.php");
 require_once("lab-shortcode.php");
 require_once("lab-admin-ajax.php");
+require_once("lab-admin-core.php");
 ///locatrequire_once("link-template.php");
 //Admin Files
 if (is_admin()) {
@@ -72,6 +73,11 @@ add_action( 'wp_ajax_group_create', 'lab_group_createGroup' );
 add_action( 'wp_ajax_group_table', 'lab_createGroupTable' );
 add_action( 'wp_ajax_group_root', 'lab_group_createRoot');
 add_action( 'wp_ajax_delete_group', 'lab_admin_group_delete');
+add_action( 'wp_ajax_param_create_table', 'lab_admin_param_create_table');
+add_action( 'wp_ajax_save_param', 'lab_admin_param_save');
+add_action( 'wp_ajax_load_param_type', 'lab_admin_param_load_type');
+add_action( 'wp_ajax_param_delete', 'lab_admin_param_delete');
+add_action( 'wp_ajax_param_search_value', 'lab_admin_param_search_value');
 
 /**
  * Fonction de création du menu
@@ -84,6 +90,7 @@ function wp_lab_menu()
 /***********************************************************************************************
  * ADMINISTRATION
  **********************************************************************************************/
+
 
 /**
  *
@@ -103,9 +110,13 @@ function lab_admin_save_event_actegory()
 }
 
 function lab_admin_test()
-{
-  $user = 1;
-  wp_send_json_success("UM()->options()->get( 'author_redirect' ) : " . UM()->options()->get('author_redirect') . " /  um_fetch_user($user) : " . um_fetch_user(1));
+{ 
+  $group_id = 1;
+
+  global $wpdb;
+  $wpdb->delete('wp_lab_groups', array('id' => $group_id));
+  //$user = 1;
+  //wp_send_json_success("UM()->options()->get( 'author_redirect' ) : " . UM()->options()->get('author_redirect') . " /  um_fetch_user($user) : " . um_fetch_user(1));
 }
 
 /**
@@ -327,6 +338,7 @@ function wp_lab_option()
       <a id="laib_users_settings_tab_pointer" style="position: relative" class="nav-tab <?php echo $active_tab == 'user_settings' ? 'nav-tab-active' : ''; ?>" href="<?php echo add_query_arg(array('tab' => 'user_settings'), $_SERVER['REQUEST_URI']); ?>">Users Settings</a>
       <a id="laib_users_settings_tab_pointer" style="position: relative" class="nav-tab <?php echo $active_tab == 'user_genetal_settings' ? 'nav-tab-active' : ''; ?>" href="<?php echo add_query_arg(array('tab' => 'user_general_settings'), $_SERVER['REQUEST_URI']); ?>">Users General Settings</a>
       <a id="laib_users_settings_tab_pointer" style="position: relative" class="nav-tab <?php echo $active_tab == 'groups' ? 'nav-tab-active' : ''; ?>" href="<?php echo add_query_arg(array('tab' => 'groups'), $_SERVER['REQUEST_URI']); ?>">Groups</a>
+      <a id="laib_users_settings_tab_pointer" style="position: relative" class="nav-tab <?php echo $active_tab == 'params' ? 'nav-tab-active' : ''; ?>" href="<?php echo add_query_arg(array('tab' => 'params'), $_SERVER['REQUEST_URI']); ?>">Parameters</a>
     </h2>
     <table style="width:100%;">
       <tr>
@@ -338,6 +350,8 @@ function wp_lab_option()
             lab_admin_tab_general_user();
           } else if ($active_tab == 'groups') {
             lab_admin_tab_groups();
+          } else if ($active_tab == 'params') {
+            lab_admin_tab_params();
           } else {
             lab_admin_tab_seminaire();
           }
@@ -345,14 +359,6 @@ function wp_lab_option()
         </td>
       </tr>
     </table>
-
-    <?php
-    /*
-    <label for="wp_lab_debbug">Debug : </label>
-    <input type="text" name="lab_debbug" id="wp_lab_debbug" value="<?php echo dirname(plugin_basename(__FILE__))."/js/lab_global.js"; ?>"><br>
-    <input type="text" name="lab_debbug" id="wp_lab_debbug" value="<?php echo admin_url( 'admin-ajax.php' ); ?>"><br>
-   //*/
-    ?>
   </div>
   <script>
   </script>
@@ -410,6 +416,47 @@ function lab_admin_tab_user()
   </table>
   <a href="#" class="page-title-action" id="lab_user_button_save_left">Modifier le statut de l'utilisateur</a>
 
+<?php
+}
+
+/**
+ * Function for the parameter lab management
+ */
+function lab_admin_tab_params() {
+  global $wpdb;
+?>
+  <div id="lab_createGroup_form">
+    <h3>Manage Parameters :</h3>
+    <table>
+      <tr>
+        <td>
+    <h4>New Parameters</h4>
+    <label for="wp_lab_param_type">Type param</label>
+    <select id="wp_lab_param_type">
+<?php
+  $results = lab_admin_param_load_param_type();
+  foreach ( $results as $r ) {
+    echo("<option value=\"" . $r->id . "\">" . $r->value . "</option>");
+  }
+?>
+    </select><a href="#" class="page-title-action" id="lab_tab_param_delete">delete</a>
+    <br>
+    <label for="wp_lab_param_value">Param value</label>
+    <input type="text" id="wp_lab_param_value">
+    <a href="#" class="page-title-action" id="lab_tab_param_save">Save param</a>
+        </td>
+        <td>
+          <h4>Existing Parameters</h4>
+          <label for="wp_lab_param_param_title">Param title</label>
+          <input type="text" id="wp_lab_param_value_search">
+          <input type="hidden" id="wp_lab_param_id">
+        </td>
+      </tr>
+    </table>
+    <hr>
+    <h4>Create Table :</h4>
+    <a href="#" class="page-title-action" id="lab_tab_param_create_table">Create table</a>
+  </div>
 <?php
 }
 
