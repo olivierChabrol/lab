@@ -42,17 +42,8 @@ function lab_admin_group_search() {
 }
 
 function lab_admin_group_delete(){
-    $group_name = $_GET['label'];
-
-    $sql = "DELETE FROM `wp_lab_groups` WHERE `group_name` LIKE '%".$group_name."%' ";
+    $group_id = $_POST['id'];
     global $wpdb;
-    $results = $wpdb->get_results($sql);
-    if($results->affected_rows == 1)
-    {
-        echo "Success";
-    }
-    else
-    {
-        echo "Fail";
-    }
+    $wpdb->delete('wp_lab_groups', array('id' => $group_id));
+    wp_send_json_success();
 }

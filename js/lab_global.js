@@ -1,7 +1,6 @@
 /* globals global 25 03 2020 */
 jQuery(function($){
   var searchRequest;
-  var label_selected;
   if(!$("#lab_user_left").is(':checked')) {
     $("#lab_user_left_date").prop("disabled", true);
   }
@@ -21,27 +20,24 @@ jQuery(function($){
       });
       },
       select: function( event, ui ) {
-        //event.preventDefault();
         //alert(ui.item.option);
         var label = ui.item.label;
         var value = ui.item.value;
-        label_selected = label;
+        event.preventDefault();
+        $("#wp_lab_group_name").val(label);
+
+        $("#lab_searched_event_id").val(value);
       }
   });
   $("#delete_button").click(function(){
-      $.get("/wp-admin/admin-ajax.php",
+      $.post("/wp-admin/admin-ajax.php",
           {
-            label : label_selected,
-            action : 'delete_group'
+            action : 'delete_group',
+            id : jQuery("#lab_searched_event_id").val()
           },
 
           function(data){
-            if(data == 'Success'){
-              $("#suppr_result").html("Le groupe a bien été supprimé.");
-            }
-            else{
-              $("#suppr_result").html("Erreur lors de la suppression du groupe.")
-            }
+            $("#suppr_result").html("Le groupe a bien été supprimé.");
           }
       )
   })
