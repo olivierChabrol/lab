@@ -103,6 +103,26 @@ jQuery(function($){
   $("#lab_user_button_save_left").click(function() {
     saveUserLeft($("#lab_searched_user_id").val(), $("#lab_user_left_date").val(), $("#lab_user_left").is(":checked"));
   });
+  $("#lab_createGroup_acronym").change(function() {
+    var data = {
+      'action' : 'group_search_ac',
+      'ac' : $("#lab_createGroup_acronym").val()
+    };
+    jQuery.post(ajaxurl, data, function(response) {
+      if (!response.success) {
+        $("#lab_createGroup_acronym").css('border-color','red');
+        $("#lab_createGroupe_acronym_hint").css("color","red");
+        $("#lab_createGroupe_acronym_hint")[0].innerHTML="❌ Acronyme déjà utilisé par le groupe '"+response.data[0]+"'.";
+        $("#lab_createGroup_create").attr('disabled',true);
+      }
+      else {
+        $("#lab_createGroup_acronym").css('border-color','green');
+        $("#lab_createGroupe_acronym_hint").css("color","green");
+        $("#lab_createGroupe_acronym_hint")[0].innerHTML="✓ Acronyme disponible";
+        $("#lab_createGroup_create").attr('disabled',false);
+      }
+    });
+  })
   $("#lab_createGroup_chief").autocomplete({
     minChars: 3,
     source: function(term, suggest){
@@ -192,7 +212,7 @@ jQuery(function($){
       'action' : 'group_root',
     };
     jQuery.post(ajaxurl, data, function(response) {
-      console.log(response);
+      (response == 0 ? toast_success("Group successfully created") : toast_error("Error Creating Group : "+response));
     });
   });
   $('#lab_createGroup_createTable').click(function(){
@@ -200,31 +220,97 @@ jQuery(function($){
       'action' : 'group_table',
     };
     jQuery.post(ajaxurl, data, function(response) {
-      console.log(response);
+      if (response) {
+        toast_success("Table successfully created");
+        $("#lab_group_noTableWarning").css("display","none");
+        return;
+      }
+      toast_error("Error Creating table : "+response);
     });
   });
   $("#lab_createGroup_create").click(function() {
-    createGroup(
-      $("#lab_createGroup_name").val(),
-      $("#lab_createGroup_acronym").val(),
-      $("#lab_createGroup_type").val(),
-      $("#lab_createGroup_chiefID").val(),
-      $("#lab_createGroup_parent").val()
-    );
+    let params = [$("#lab_createGroup_name"),$("#lab_createGroup_acronym"),$("#lab_createGroup_type"),$("#lab_createGroup_chiefID"),$("#lab_createGroup_parent"),$("#lab_createGroup_chief")];
+    let values = Array();
+    params.forEach(element => {
+      if (element.val().length==0) {
+        element.css('border-color','red');
+      }
+      else {
+        element.css('border-color','');
+        values.push(element.val());
+      }
+    });
+    values.pop();
+    if (values.length == 5) {
+      createGroup(values);
+      $("#lab_createGroup_name").val("");
+      $("#lab_createGroup_acronym").val("");
+    }
+    else {
+      toast_error("Group couldn't be created :<br> The form isn't filled properly");
+    }
   })
 });
-
-function createGroup($name,$acronym,$type,$chief_id,$parent) {
+// Notifications "toast" affichant une erreur ou un succès lors de la requête de création de groupe.
+function toast_error(message) {
+  jQuery(function($){
+    $.toast({
+      text: message,
+      heading: 'Error',
+      icon: 'error',
+      showHideTransition: 'slide', 
+      hideAfter: 7000, 
+      position: 'bottom-center', // bottom-left or bottom-right or bottom-center or top-left or top-right or top-center or mid-center or an object representing the left, right, top, bottom values
+    });
+  });
+}
+function toast_success(message) {
+  jQuery(function($){
+    $.toast({
+      text: message, // Text that is to be shown in the toast
+      heading: 'Success', // Optional heading to be shown on the toast
+      icon: 'success', // Type of toast icon
+      showHideTransition: 'slide', // fade, slide or plain
+      hideAfter: 3000, // false to make it sticky or number representing the miliseconds as time after which toast needs to be hidden
+      position: 'bottom-center', // bottom-left or bottom-right or bottom-center or top-left or top-right or top-center or mid-center or an object representing the left, right, top, bottom values
+      loaderBg: '#9EC600',  // Background color of the toast loader
+    });
+  });
+}
+function toast_warn(message) {
+  jQuery(function($){
+    $.toast({
+      text: message, // Text that is to be shown in the toast
+      heading: 'Warning', // Optional heading to be shown on the toast
+      icon: 'warning', // Type of toast icon
+      showHideTransition: 'slide', // fade, slide or plain
+      hideAfter: 5000, // false to make it sticky or number representing the miliseconds as time after which toast needs to be hidden
+      position: 'bottom-center', // bottom-left or bottom-right or bottom-center or top-left or top-right or top-center or mid-center or an object representing the left, right, top, bottom values
+      loaderBg: '#D1A600',  // Background color of the toast loader
+    });
+  });
+}
+function createGroup(params) {
   var data = {
-    'action' : 'group_create',
-    'name' : $name,
-    'acronym' : $acronym,
-    'type' : $type,
-    'chief_id' : $chief_id,
-    'parent' : $parent
+    'action' : 'group_search_ac',
+    'ac' : params[1]
   };
   jQuery.post(ajaxurl, data, function(response) {
-    console.log(response);
+    if (!response.success) {
+      toast_error("Group couldn't be created : the acronym is already in use");
+      return false;
+    }
+    var data = {
+      'action' : 'group_create',
+      'name' : params[0],
+      'acronym' : params[1],
+      'type' : params[2],
+      'chief_id' : params[3],
+      'parent' : params[4]
+    };
+    jQuery.post(ajaxurl, data, function(response) {
+      (response == 0 ? toast_success("Group successfully created") : toast_error("Error Creating Group : "+response));
+    });
   });
 }
 

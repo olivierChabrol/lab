@@ -69,6 +69,7 @@ add_action( 'wp_ajax_search_event_category', 'lab_admin_get_event_category' );
 add_action( 'wp_ajax_save_event_category', 'lab_admin_save_event_actegory');
 add_action( 'wp_ajax_search_group', 'lab_admin_group_search');
 add_action( 'wp_ajax_test', 'lab_admin_test');
+add_action( 'wp_ajax_group_search_ac', 'lab_admin_search_group_acronym' );
 add_action( 'wp_ajax_group_create', 'lab_group_createGroup' );
 add_action( 'wp_ajax_group_table', 'lab_createGroupTable' );
 add_action( 'wp_ajax_group_root', 'lab_group_createRoot');
@@ -246,10 +247,36 @@ function lab_usermeta_lab_left_key_exist($userId)
   //return $nbResult;
   return $nbResult == 1;
 }
+function lab_admin_search_group_acronym() {
+  $ac = $_POST['ac'];
+  $sql = "SELECT group_name FROM `wp_lab_groups` WHERE acronym = '".$ac."';";
+  global $wpdb;
+  $results = $wpdb->get_results($sql);
+  $items = array();
+  foreach ( $results as $r )
+  {
+    array_push($items,$r->group_name);
+  }
+  if (count($items)) {
+    wp_send_json_error( $items );
+  }
+  else {
+    wp_send_json_success();
+  }
+}
+function lab_admin_checkTable($tableName) {
+  $sql = "SHOW TABLES LIKE '".$tableName."';";
+    global $wpdb;
+    $results = $wpdb->get_results($sql);
+    if (count($results)) {
+      return true;
+    }
+    return false;
+}
 function lab_createGroupTable() {
   $sql = "CREATE TABLE `wp_lab_groups`(
     `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-    `acronym` varchar(20),
+    `acronym` varchar(20) UNIQUE,
     `group_name` varchar(255) NOT NULL,
     `chief_id` BIGINT UNSIGNED NOT NULL,
     `group_type` TINYINT NOT NULL,
@@ -257,17 +284,15 @@ function lab_createGroupTable() {
     PRIMARY KEY(`id`),
     FOREIGN KEY(`chief_id`) REFERENCES `wp_users`(`ID`),
     FOREIGN KEY(`parent_group_id`) REFERENCES `wp_lab_groups`(`id`)) ENGINE = INNODB;";
-    echo $sql;
-    global $wpdb;
-    $results = $wpdb->get_results($sql);
-    var_dump($results);
+    //echo $sql;
+  global $wpdb;
+  $wpdb->get_results($sql);
 }
 function lab_group_createRoot() {
   $sql = "INSERT INTO `wp_lab_groups` (`id`, `acronym`, `group_name`, `chief_id`, `group_type`, `parent_group_id`) VALUES (NULL, 'root', 'root', '1', '0', NULL);";
-  echo $sql;
+  //echo $sql;
   global $wpdb;
   $results = $wpdb->get_results($sql);
-  var_dump($results);
 }
 function lab_group_createGroup() {
   $name = $_POST['name'];
@@ -275,10 +300,9 @@ function lab_group_createGroup() {
   $chief_id = $_POST['chief_id'];
   $parent = $_POST['parent'];
   $type = $_POST['type'];
-  $sql = "INSERT INTO `wp_lab_groups` (`id`, `acronym`, `group_name`, `chief_id`, `group_type`, `parent_group_id`) VALUES (NULL, '".$acronym."', '".$name."', '".$chief_id."', '".$type."', '".$parent."');";
+  $sql = "INSERT INTO `wp_lab_groups` (`id`, `acronym`, `group_name`, `chief_id`, `group_type`, `parent_group_id`) VALUES (NULL, '".$acronym."', '".$name."', '".$chief_id."', '".$type."', ".($parent == 0 ? "NULL" : "'".$parent."'").");";
   global $wpdb;
-  echo $sql;
-  $results = $wpdb->get_results($sql);
+  $wpdb->get_results($sql);
 }
 /**
  * Fonction qui permet de charger ce que l'on veut comme JS ou CSS dans l'administration
@@ -286,7 +310,9 @@ function lab_group_createGroup() {
 function admin_enqueue()
 {
   //wp_enqueue_script('lab', plugins_url('js/lab_global.js',__FILE__), array('jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog'), filemtime(dirname(plugin_basename("__FILE__"))."/js/lab_global.js"), false);
-  wp_enqueue_script('lab', plugins_url('js/lab_global.js', __FILE__), array('jquery', 'jquery-ui-core', 'jquery-ui-widget', 'jquery-ui-position', 'jquery-ui-sortable', 'jquery-ui-datepicker', 'jquery-ui-autocomplete', 'jquery-ui-dialog'), "1.3", false);
+  wp_enqueue_script('lab', plugins_url('js/lab_global.js',__FILE__), array('jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog'), "1.3", false);
+  wp_enqueue_style('jqueryToastCSS',plugins_url('css/jquery.toast.css',__FILE__));
+  wp_enqueue_script('jqueryToastJS',plugins_url('js/jquery.toast.js',__FILE__),array('jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog'),"1.3.2",false);
 }
 function wp_lab_global_enqueues()
 {
@@ -488,48 +514,67 @@ function lab_admin_tab_groups() {
   <br><a href="#" class="page-title-action" id="lab-button-edit-group">Modifier le groupe</a>
 
   <hr>
-
-  <button id="lab_createGroup_createTable">Créer la table</button>
-  <button id="lab_createGroup_createRoot">Créer groupe root</button>
+  <?php
+    if (!lab_admin_checkTable("wp_lab_groups")) {
+      echo "<p id='lab_group_noTableWarning'>La table <em>wp_lab_groups</em> n'a pas été trouvée dans la base, vous devez d'abord la créer ici : </p>";
+    }
+  ?>
+  <button class="page-title-action" id="lab_createGroup_createTable">Créer la table Groups</button>
+  <button class="page-title-action" id="lab_createGroup_createRoot">Créer groupe root</button>
   <hr/>
-  <div id="lab_createGroup_form">
-    <h3>Créer un groupe :</h3>
-    <div class="lab_createGroup_formLine">
-      <label for="lab_createGroup_name">Nom du groupe :</label>
-      <input type="text" id="lab_createGroup_name" name="lab_createGroup_name" placeholder="Analyse Appliquée"/>
-      <label for="lab_createGroup_acronym">Acronyme :</label>
-      <input type="text" id="lab_createGroup_acronym" name="lab_createGroup_acronym" placeholder="AA"/>
-    </div>
-    <div class="lab_createGroup_formLine">
-      <label for="lab_createGroup_parentGroup">Groupe parent :</label>
-      <select id="lab_createGroup_parent" name="lab_createGroup_parent">
-        <option value="None">None</option>
-        <?php
-          $sql = "SELECT id,acronym FROM `wp_lab_groups`";
-          global $wpdb;
-          $results = $wpdb->get_results($sql);
-          $output="";
-          var_dump($results);
-          foreach ( $results as $r )
-          {
-            $output .= "<option value =".$r->id.">".$r->acronym."</option>";
-          }
-          echo $output;
-        ?>
-      </select>
-      <label for="lab_createGroup_type">Type :</label>
-      <select id="lab_createGroup_type" name="lab_createGroup_Type">
+  <table class="form-table" role="presentation">
+  <h3>Créer un groupe : </h3>
+  <form action="javascript:void(0);">
+	<tbody>
+    <tr class="form-field form-required">
+      <th scope="row"><label for="lab_createGroup_name">Nom du groupe* : </label></th>
+      <td><input type="text" id="lab_createGroup_name" name="lab_createGroup_name" placeholder="Analyse Appliquée"/></td>
+    </tr class="form-field form-required">
+      <th scope="row"><label for="lab_createGroup_acronym">Acronyme* <span class="description">(unique)</span> : </label></th>
+      <td>
+        <input type="text" id="lab_createGroup_acronym" name="lab_createGroup_acronym" placeholder="AA"/>
+        <label style="padding-left:2em;" id="lab_createGroupe_acronym_hint"></span>
+      </td>
+    </tr>
+    <tr class="form-field">
+      <th scope="row"><label for="lab_createGroup_parentGroup">Groupe parent :</label></th>
+      <td>
+        <select id="lab_createGroup_parent" name="lab_createGroup_parent">
+          <option value="0">None</option>
+          <?php //Récupère la liste des groupes en affichant leur acronymes dans la liste déroulante.
+            $sql = "SELECT id,acronym FROM `wp_lab_groups`";
+            global $wpdb;
+            $results = $wpdb->get_results($sql);
+            $output="";
+            foreach ( $results as $r )
+            {
+              $output .= "<option value =".$r->id.">".$r->acronym."</option>";
+            }
+            echo $output;
+          ?>
+        </select>
+      </td>
+    </tr>
+    <tr class="form-field">
+      <th scope="row"><label for="lab_createGroup_type">Type :</label></th>
+      <td><select id="lab_createGroup_type" name="lab_createGroup_Type">
         <option value="1">Groupe</option>
         <option value="2">Équipe</option>
-      </select>
-    </div>
-    <label for="lab_createGroup_chief">Chef du groupe :</label>
-    <input id="lab_createGroup_chief" type="text" name="lab_createGroup_chief" placeholder="Pascal HUBERT"/>
-    <input id="lab_createGroup_chiefID" type="text" disabled width="1em"/>
-    <br/>
-    <input type="submit" id="lab_createGroup_create" value="Créer"/>
-  </div>
-  <hr/>
+      </select></td>
+    </tr>
+    <tr class="form-field">
+      <th scope="row"><label for="lab_createGroup_chief">Chef du groupe :</label></th>
+      <td>
+        <input id="lab_createGroup_chief" required type="text" name="lab_createGroup_chief" placeholder="Pascal HUBERT"/>
+        <input type="text" hidden disabled id="lab_createGroup_chiefID"></span>
+      </td>
+    </tr>
+    <tr class="form-field">
+      <td><input class="page-title-action" type="submit" id="lab_createGroup_create" value="Créer le groupe"/></td>
+    </tr>
+	</tbody></form></table>
+  <br />
+  <hr />
 <?php
 }
 
