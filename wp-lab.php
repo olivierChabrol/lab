@@ -486,7 +486,7 @@ function lab_admin_tab_groups() {
     <label for="wp_lab_group_name">Nom du groupe</label>
     <input type="text" name="wp_lab_group_name" id="wp_lab_group_name" value="" size="80"/>
     <button class="page-title-action" id="delete_button">Supprimer le groupe</button><br>
-    <input type="hidden" id="lab_searched_event_id" name="lab_searched_event_id" value=""/>
+    <input type="hidden" id="lab_searched_group_id" name="lab_searched_group_id" value=""/>
     
   </div>
   <div id="suppr_result"></div>

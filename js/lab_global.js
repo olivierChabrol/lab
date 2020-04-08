@@ -34,11 +34,14 @@ jQuery(function($){
       $.post("/wp-admin/admin-ajax.php",
           {
             action : 'delete_group',
-            id : jQuery("#lab_searched_event_id").val()
+            id : jQuery("#lab_searched_group_id").val()
           },
 
           function(data){
-            $("#suppr_result").html("Le groupe a bien été supprimé.");
+            if (data.success) {
+              toast_success("Le groupe a bien été supprimé.");
+              jQuery("#wp_lab_group_name").val("");
+            }
           }
       )
   });
