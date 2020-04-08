@@ -38,5 +38,21 @@ function lab_admin_group_search() {
     {
       $items[] = array(label=>$r->group_name, value=>$r->id);
     }
-    wp_send_json_success( $items );
+    wp_send_json_success( $items ); 
+}
+
+function lab_admin_group_delete(){
+    $group_name = $_GET['label'];
+
+    $sql = "DELETE FROM `wp_lab_groups` WHERE `group_name` LIKE '%".$group_name."%' ";
+    global $wpdb;
+    $results = $wpdb->get_results($sql);
+    if($results->affected_rows == 1)
+    {
+        echo "Success";
+    }
+    else
+    {
+        echo "Fail";
+    }
 }

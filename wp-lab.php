@@ -3,7 +3,7 @@
 Plugin Name: LAB
 Plugin URI: https://www.i2m.univ-amu.fr
 Description: Pluggin de l'I2M de gestion du labo
-Authors: Olivier CHABROL, Astrid BEYER
+Authors: Astrid BEYER, Ivan Ivanov, Lucas Argenti, Olivier CHABROL
 Version: 1.0
 Author URI: http://www.i2m.univ-amu.fr
 */
@@ -71,6 +71,8 @@ add_action( 'wp_ajax_test', 'lab_admin_test');
 add_action( 'wp_ajax_group_create', 'lab_group_createGroup' );
 add_action( 'wp_ajax_group_table', 'lab_createGroupTable' );
 add_action( 'wp_ajax_group_root', 'lab_group_createRoot');
+add_action( 'wp_ajax_delete_group', 'lab_admin_group_delete');
+
 /**
  * Fonction de création du menu
  */
@@ -419,6 +421,8 @@ function lab_admin_tab_groups() {
   <label for="wp_lab_group_name">Nom du groupe</label>
   <input type="text" name="wp_lab_group_name" id="wp_lab_group_name" value="" size="80"/><br>
   <input type="hidden" id="lab_searched_event_id" name="lab_searched_event_id" value=""/>
+  <button id="delete_button">Supprimer le groupe</button><br>
+  <div id="suppr_result"></div>
 <hr>
   <!-- passage en HTML pour donner les champs utiles à la bd -->
   <h1>Modifier un groupe</h1>
