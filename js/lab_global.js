@@ -72,6 +72,17 @@ jQuery(function($){
   $("#lab_user_button_save_left").click(function() {
     saveUserLeft($("#lab_searched_user_id").val(), $("#lab_user_left_date").val(), $("#lab_user_left").is(":checked"));
   });
+
+  $("#lab_editGroup").click(function() {
+    editGroup(
+      $("#wp_lab_group_to_edit option:selected").val(), // id
+      $("#wp_lab_group_acronym_edit").val(), // acronym
+      $("#wp_lab_group_name_edit").val(), // new name
+      $("#wp_lab_group_chief_edit").val(), // chief
+      $("#wp_lab_group_parent_edit").val(), // parent
+      $("#wp_lab_group_type_edit").val() // type
+    );
+  })
 });
 
 function test() {
@@ -173,5 +184,22 @@ function loadEventCategory(postId) {
     {
       jQuery("#wp_lab_event_label").html("<b>Pas de categorie</b>");
     }
+  });
+}
+
+function editGroup(groupId, acronym, groupName, chiefId, parent, type) {
+  /*alert("groupId : " + groupId + " chef " + chiefId + " groupName: " + groupName +
+        " acronym : " + acronym + "parent : " + parent + "type : :" + type);*/
+  var data = {
+               'action' : 'edit_group',
+               'id' : groupId,
+               'acronym' : acronym,
+               'group_name' : groupName,
+               'chief_id' : chiefId,
+               'parent_groupe_id' : parent,
+               'groupe_type' : type
+  };
+  jQuery.post(ajaxurl, data, function(response) {
+    console.log(response);
   });
 }
