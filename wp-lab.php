@@ -80,6 +80,8 @@ add_action( 'wp_ajax_load_param_type', 'lab_admin_param_load_type');
 add_action( 'wp_ajax_param_delete', 'lab_admin_param_delete');
 add_action( 'wp_ajax_param_search_value', 'lab_admin_param_search_value');
 
+add_action('wp_ajax_edit_group', 'lab_group_editGroup');
+
 /**
  * Fonction de création du menu
  */
@@ -512,6 +514,25 @@ function lab_admin_tab_groups() {
   <label for="wp_lab_group_chief_edit">Définir un autre chef de groupe :</label>
   <input type="text" name="wp_lab_chief" id="wp_lab_group_chief_edit" value="" size=50 /><br /><br />
   <br><a href="#" class="page-title-action" id="lab-button-edit-group">Modifier le groupe</a>
+?> <!-- Modifier un groupe -->
+  <div class="wp_lab_editGroup_form">
+    <h3>Modifier un groupe</h3>
+    <label for="wp_lab_group_to_edit">Je souhaite modifier le groupe :</label>
+    <select name="wp_lab_group" id ="wp_lab_group_to_edit">
+    <?php
+      // les options de la balise select viennent de la base de donnée
+      $sql = "SELECT id, group_name FROM `wp_lab_groups`";
+      global $wpdb;
+      $results = $wpdb->get_results($sql);
+      foreach ( $results as $r ) {
+        echo("<option value=\"" . $r->id . "\">" . $r->group_name . "</option>");
+      }
+    ?>
+    </select>
+    <label for="wp_lab_group_acronym_edit">Modifier l'acronyme :</label>
+    <input type="text" name="wp_lab_acronym" id="wp_lab_group_acronym_edit" value="" size=10 placeholder="AA"/><br/><br/>
+    <label for="wp_lab_group_name_edit">Nouveau nom du groupe :</label>
+    <input type="text" name="wp_lab_group_name" id="wp_lab_group_name_edit" value="" size=50 placeholder="Nouveau nom"/>
 
   <hr>
   <?php
@@ -575,29 +596,57 @@ function lab_admin_tab_groups() {
 	</tbody></form></table>
   <br />
   <hr />
+    <label for="wp_lab_group_chief_edit">Définir un autre chef de groupe :</label>
+    <select name="wp_lab_group_chief" id="wp_lab_group_chief_edit">
+    <?php
+      $sql ="SELECT ID, display_name FROM `wp_users`";
+      global $wpdb;
+      $results = $wpdb->get_results($sql);
+      foreach ( $results as $r ) {
+        echo("<option value=\"" . $r->ID . "\">" . $r->display_name . "</option>");
+      }
+    ?>
+    </select><br /><br />
+    <label for="wp_lab_group_parent_edit">Modifier le groupe parent :</label>
+    <select name="wp_lab_group_parent" id="wp_lab_group_parent_edit">
+      <option value="0">Aucun</option>
+    <?php
+      $sql = "SELECT id, group_name FROM `wp_lab_groups`";
+      global $wpdb;
+      $results = $wpdb->get_results($sql);
+      foreach ( $results as $r ) {
+        echo("<option value=\"" . $r->id . "\">" . $r->group_name . "</option>");
+      }
+    ?>
+    </select>
+    <label for="wp_lab_group_type_edit">Modifier le type :</label>
+    <select name="wp_lab_group_type" id="wp_lab_group_type_edit">
+      <option value="1">Groupe</option>
+      <option value="2">Equipe</option>
+    </select>
+    <input type="hidden" id="lab_searched_chief_id" name="lab_searched_chief_id" value="" />
+    <br /><br />
+    
+    <br /><a href="#" class="page-title-action" id="lab_editGroup">Modifier le groupe</a>
+  </div>
+
 <?php
 }
 
-function edit_group($param) {
-  // on cherche à récupérer les paramètres de groupe
-  extract(shortcode_atts(
-    array(
-      'group' => get_option('option_group')
-    ),
-    $param
-  ));
-  $groupName = get_option('option_group');
-  $sql = "SELECT * FROM `wp_lab_groups`";
+function lab_group_editGroup() {
+  $id = $_POST['groupId'];
+  $acronym = $_POST['acronym'];
+  $groupName = $_POST['groupName'];
+  $chiefId = $_POST['chiefId'];
+  $parent = $_POST['parent'];
+  $type = $_POST['group_type'];
+
+  $sql = "UPDATE `wp_lab_groups` SET `group_name` = '$groupName', `acronym` = '$acronym',
+   `chief_id` = '$chiefId', `groupe_type` = '$type', `parent_group_id` = '$parent'
+    WHERE id= '$id';";
   global $wpdb;
+  echo $sql;
   $results = $wpdb->get_results($sql);
-  $listName = "<table>";
-  $url = esc_url(home_url('/'));
-  foreach ($results as $r) {
-    $listName .= "<tr>";
-    $listName .= "</tr>";
-  }
-  $listName .= "</table>";
-  return $listName;
 }
 
 function lab_admin_tab_seminaire()
