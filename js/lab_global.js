@@ -324,7 +324,35 @@ jQuery(function($){
     $parent  = jQuery("#wp_lab_group_parent_edit").val();
     $type    = jQuery("#wp_lab_group_type_edit").val();
     editGroup($groupId, $acronym, $name, $chief, $parent, $type);
-  })  
+  });
+
+  ////////////////////// Onglet KeyRing //////////////////////
+  $("#lab_keyring_create_table_keys").click(function () {
+    var data = {
+      'action' : 'keyring_table_keys',
+    };
+    jQuery.post(ajaxurl, data, function(response) {
+      if (response==0) {
+        toast_success("Table successfully created");
+        $("#lab_keyring_noKeysTableWarning").css("display","none");
+        return;
+      }
+      toast_error("Error Creating table : "+response);
+    });
+  });
+  $("#lab_keyring_create_table_loans").click(function () {
+    var data = {
+      'action' : 'keyring_table_loans',
+    };
+    jQuery.post(ajaxurl, data, function(response) {
+      if (response==0) {
+        toast_success("Table successfully created");
+        $("#lab_keyring_noLoansTableWarning").css("display","none");
+        return;
+      }
+      toast_error("Error Creating table : "+response);
+    });
+  });
 });
 // Notifications "toast" affichant une erreur ou un succès lors de la requête de création de groupe.
 function toast_error(message) {

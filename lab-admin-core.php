@@ -117,3 +117,39 @@ function lab_admin_group_subs_add($id,$list) {
     }
     return;
 }
+
+
+/********************************************************************************************
+ * KeyRing
+ ********************************************************************************************/
+function lab_keyring_createTable_keys() {
+    $sql = "CREATE TABLE `wp_lab_keys` (
+        `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+        `number` varchar(10) NOT NULL,
+        `office` varchar(20),
+        `type` INT NOT NULL,
+        `brand` varchar(20),
+        `site` text,
+        `commentary` text,
+        `available` boolean NOT NULL DEFAULT TRUE,
+        PRIMARY KEY(`id`)
+        ) ENGINE=INNODB;";
+    global $wpdb;
+    $wpdb->get_results($sql);
+}
+function lab_keyring_createTable_loans() {
+    $sql = "CREATE TABLE `wp_lab_key_loans` (
+        `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
+        `key_id` bigint UNSIGNED NOT NULL,
+        `user_id` bigint UNSIGNED NOT NULL,
+        `referent_id` bigint UNSIGNED NOT NULL,
+        `start_date` date DEFAULT NULL,
+        `end_date` date DEFAULT NULL,
+        `commentary` text,
+        PRIMARY KEY(`id`),
+        FOREIGN KEY (`user_id`) REFERENCES `wp_users` (`ID`),
+        FOREIGN KEY (`referent_id`) REFERENCES `wp_users` (`ID`)
+      ) ENGINE=InnoDB;";
+    global $wpdb;
+    $wpdb->get_results($sql);
+}

@@ -17,6 +17,7 @@ require_once("lab-shortcode.php");
 require_once("lab-admin-ajax.php");
 require_once("lab-admin-core.php");
 require_once("lab-admin-params.php");
+require_once("lab-admin-keyring.php");
 ///locatrequire_once("link-template.php");
 //Admin Files
 if (is_admin()) {
@@ -84,6 +85,9 @@ add_action( 'wp_ajax_save_param', 'lab_admin_param_save');
 add_action( 'wp_ajax_load_param_type', 'lab_admin_param_load_type');
 add_action( 'wp_ajax_param_delete', 'lab_admin_param_delete');
 add_action( 'wp_ajax_param_search_value', 'lab_admin_param_search_value');
+//Actions pour la gestion des clés - KeyRing
+add_action( 'wp_ajax_keyring_table_keys', 'lab_keyring_createTable_keys' );
+add_action( 'wp_ajax_keyring_table_loans', 'lab_keyring_createTable_loans' );
 
 add_action('wp_ajax_edit_group', 'lab_group_editGroup');
 
@@ -300,6 +304,7 @@ function wp_lab_option()
       <a id="laib_users_settings_tab_pointer" style="position: relative" class="nav-tab <?php echo $active_tab == 'user_genetal_settings' ? 'nav-tab-active' : ''; ?>" href="<?php echo add_query_arg(array('tab' => 'user_general_settings'), $_SERVER['REQUEST_URI']); ?>">Users General Settings</a>
       <a id="laib_users_settings_tab_pointer" style="position: relative" class="nav-tab <?php echo $active_tab == 'groups' ? 'nav-tab-active' : ''; ?>" href="<?php echo add_query_arg(array('tab' => 'groups'), $_SERVER['REQUEST_URI']); ?>">Groups</a>
       <a id="laib_users_settings_tab_pointer" style="position: relative" class="nav-tab <?php echo $active_tab == 'params' ? 'nav-tab-active' : ''; ?>" href="<?php echo add_query_arg(array('tab' => 'params'), $_SERVER['REQUEST_URI']); ?>">Parameters</a>
+      <a id="laib_users_settings_tab_pointer" style="position: relative" class="nav-tab <?php echo $active_tab == 'keyring' ? 'nav-tab-active' : ''; ?>" href="<?php echo add_query_arg(array('tab' => 'keyring'), $_SERVER['REQUEST_URI']); ?>">KeyRing</a>
     </h2>
     <table style="width:100%;">
       <tr>
@@ -313,6 +318,8 @@ function wp_lab_option()
             lab_admin_tab_groups();
           } else if ($active_tab == 'params') {
             lab_admin_tab_params();
+          } else if ($active_tab == 'keyring') {
+            lab_admin_tab_keyring();
           } else {
             lab_admin_tab_seminaire();
           }
