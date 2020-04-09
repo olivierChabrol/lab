@@ -16,6 +16,7 @@ require_once("constantes.php");
 require_once("lab-shortcode.php");
 require_once("lab-admin-ajax.php");
 require_once("lab-admin-core.php");
+require_once("lab-admin-params.php");
 ///locatrequire_once("link-template.php");
 //Admin Files
 if (is_admin()) {
@@ -69,11 +70,15 @@ add_action( 'wp_ajax_search_event_category', 'lab_admin_get_event_category' );
 add_action( 'wp_ajax_save_event_category', 'lab_admin_save_event_actegory');
 add_action( 'wp_ajax_search_group', 'lab_admin_group_search');
 add_action( 'wp_ajax_test', 'lab_admin_test');
-add_action( 'wp_ajax_group_search_ac', 'lab_admin_search_group_acronym' );
-add_action( 'wp_ajax_group_create', 'lab_group_createGroup' );
-add_action( 'wp_ajax_group_table', 'lab_createGroupTable' );
-add_action( 'wp_ajax_group_root', 'lab_group_createRoot');
+//Actions pour la gestion des groupes
+add_action( 'wp_ajax_group_search_ac', 'lab_admin_group_availableAc' );
+add_action( 'wp_ajax_group_create', 'lab_admin_group_createReq' );
+add_action( 'wp_ajax_group_table', 'lab_admin_createGroupTable' );
+add_action( 'wp_ajax_group_sub_table', 'lab_admin_createSubTable' );
+add_action( 'wp_ajax_group_root', 'lab_admin_group_createRoot');
 add_action( 'wp_ajax_delete_group', 'lab_admin_group_delete');
+add_action( 'wp_ajax_group_subs_add', 'lab_admin_group_subs_addReq');
+//Actions pour la gestion des params
 add_action( 'wp_ajax_param_create_table', 'lab_admin_param_create_table');
 add_action( 'wp_ajax_save_param', 'lab_admin_param_save');
 add_action( 'wp_ajax_load_param_type', 'lab_admin_param_load_type');
@@ -249,63 +254,7 @@ function lab_usermeta_lab_left_key_exist($userId)
   //return $nbResult;
   return $nbResult == 1;
 }
-function lab_admin_search_group_acronym() {
-  $ac = $_POST['ac'];
-  $sql = "SELECT group_name FROM `wp_lab_groups` WHERE acronym = '".$ac."';";
-  global $wpdb;
-  $results = $wpdb->get_results($sql);
-  $items = array();
-  foreach ( $results as $r )
-  {
-    array_push($items,$r->group_name);
-  }
-  if (count($items)) {
-    wp_send_json_error( $items );
-  }
-  else {
-    wp_send_json_success();
-  }
-}
-function lab_admin_checkTable($tableName) {
-  $sql = "SHOW TABLES LIKE '".$tableName."';";
-    global $wpdb;
-    $results = $wpdb->get_results($sql);
-    if (count($results)) {
-      return true;
-    }
-    return false;
-}
-function lab_createGroupTable() {
-  $sql = "CREATE TABLE `wp_lab_groups`(
-    `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-    `acronym` varchar(20) UNIQUE,
-    `group_name` varchar(255) NOT NULL,
-    `chief_id` BIGINT UNSIGNED NOT NULL,
-    `group_type` TINYINT NOT NULL,
-    `parent_group_id` BIGINT UNSIGNED,
-    PRIMARY KEY(`id`),
-    FOREIGN KEY(`chief_id`) REFERENCES `wp_users`(`ID`),
-    FOREIGN KEY(`parent_group_id`) REFERENCES `wp_lab_groups`(`id`)) ENGINE = INNODB;";
-    //echo $sql;
-  global $wpdb;
-  $wpdb->get_results($sql);
-}
-function lab_group_createRoot() {
-  $sql = "INSERT INTO `wp_lab_groups` (`id`, `acronym`, `group_name`, `chief_id`, `group_type`, `parent_group_id`) VALUES (NULL, 'root', 'root', '1', '0', NULL);";
-  //echo $sql;
-  global $wpdb;
-  $results = $wpdb->get_results($sql);
-}
-function lab_group_createGroup() {
-  $name = $_POST['name'];
-  $acronym = $_POST['acronym'];
-  $chief_id = $_POST['chief_id'];
-  $parent = $_POST['parent'];
-  $type = $_POST['type'];
-  $sql = "INSERT INTO `wp_lab_groups` (`id`, `acronym`, `group_name`, `chief_id`, `group_type`, `parent_group_id`) VALUES (NULL, '".$acronym."', '".$name."', '".$chief_id."', '".$type."', ".($parent == 0 ? "NULL" : "'".$parent."'").");";
-  global $wpdb;
-  $wpdb->get_results($sql);
-}
+
 /**
  * Fonction qui permet de charger ce que l'on veut comme JS ou CSS dans l'administration
  **/
@@ -544,14 +493,19 @@ function lab_admin_tab_groups() {
     <br /><br />
     
     <br /><a href="#" class="page-title-action" id="lab_editGroup">Modifier le groupe</a>
-
+  </div>
   <hr>
+  <!-- Gestion des tables -->
   <?php
     if (!lab_admin_checkTable("wp_lab_groups")) {
       echo "<p id='lab_group_noTableWarning'>La table <em>wp_lab_groups</em> n'a pas été trouvée dans la base, vous devez d'abord la créer ici : </p>";
     }
+    if (!lab_admin_checkTable("wp_lab_group_substitutes")) {
+      echo "<p id='lab_group_noSubTableWarning'>La table <em>wp_lab_group_substitutes</em> n'a pas été trouvée dans la base, vous devez d'abord la créer ici : </p>";
+    }
   ?>
   <button class="page-title-action" id="lab_createGroup_createTable">Créer la table Groups</button>
+  <button class="page-title-action" id="lab_createGroup_createTable_Sub">Créer la table Substitutes</button>
   <button class="page-title-action" id="lab_createGroup_createRoot">Créer groupe root</button>
   <hr/>
   <table class="form-table" role="presentation">
@@ -590,16 +544,34 @@ function lab_admin_tab_groups() {
     <tr class="form-field">
       <th scope="row"><label for="lab_createGroup_type">Type :</label></th>
       <td><select id="lab_createGroup_type" name="lab_createGroup_Type">
-        <option value="1">Groupe</option>
-        <option value="2">Équipe</option>
+        <?php //Récupère la liste des types de groupe existants
+          $output ="";
+          foreach ( lab_admin_get_params_groupTypes() as $r ) {
+            $output .= "<option value =".$r->id.">".$r->value."</option>";
+          }
+          echo $output;
+        ?>
       </select></td>
     </tr>
     <tr class="form-field">
       <th scope="row"><label for="lab_createGroup_chief">Chef du groupe :</label></th>
       <td>
-        <input id="lab_createGroup_chief" required type="text" name="lab_createGroup_chief" placeholder="Pascal HUBERT"/>
-        <input type="text" hidden disabled id="lab_createGroup_chiefID"></span>
+        <input id="lab_createGroup_chief" type="text" name="lab_createGroup_chief" placeholder="Pascal HUBERT"/>
+        <input type="text" hidden disabled id="lab_createGroup_chiefID"/>
       </td>
+    </tr>
+    <tr class="form-field">
+      <th scope="row"><label for="lab_createGroup_subInput">Suppléants <span class="description">(facultatif) </span>:</label></th>
+      <td colspan="2">
+        <p id="lab_createGroup_subsList"></p><span style="display:none; cursor:pointer;" id="lab_createGroup_subsDelete">❌ Vider la liste</span><span style="display: none;" id="lab_createGroup_subsIDList"></span>
+      </td>
+    </tr>
+    <tr class="form-field">
+      <td colspan="2" >
+        <input id="lab_createGroup_subInput" type="text" name="lab_createGroup_subInput" placeholder="N'oubliez pas d'appuyer sur ajouter"/>
+        <input type="text" hidden disabled id="lab_createGroup_subID"/> 
+      </td>
+      <td><input type="button" id="lab_createGroup_addSub" class="page-title-action" value="+ Ajouter un suppléant"/></td>
     </tr>
     <tr class="form-field">
       <td><input class="page-title-action" type="submit" id="lab_createGroup_create" value="Créer le groupe"/></td>
@@ -607,7 +579,6 @@ function lab_admin_tab_groups() {
 	</tbody></form></table>
   <br />
   <hr />
-  </div>
 
 <?php
 }
