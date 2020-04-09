@@ -3,7 +3,7 @@
 Plugin Name: LAB
 Plugin URI: https://www.i2m.univ-amu.fr
 Description: Pluggin de l'I2M de gestion du labo
-Authors: Olivier CHABROL, Astrid BEYER
+Authors: Astrid BEYER, Ivan Ivanov, Lucas Argenti, Olivier CHABROL
 Version: 1.0
 Author URI: http://www.i2m.univ-amu.fr
 */
@@ -14,6 +14,8 @@ __("Crée une page qui remonte les publications d'un auteur ou d'une structure e
 //Récupère les constantes
 require_once("constantes.php");
 require_once("lab-shortcode.php");
+require_once("lab-admin-ajax.php");
+require_once("lab-admin-core.php");
 ///locatrequire_once("link-template.php");
 //Admin Files
 if (is_admin()) {
@@ -55,17 +57,28 @@ function wplab_init()
 /**
  * Ajoute le menu à l'initialisation du menu admin
  */
-add_action('admin_menu', 'wp_lab_menu');
-add_action('wp_enqueue_scripts', 'wp_lab_global_enqueues');
-add_action('wp_ajax_search_event', 'lab_admin_search_event');
-add_action('wp_ajax_search_user', 'lab_admin_search_user');
-add_action('wp_ajax_search_user_email', 'lab_admin_search_user_email');
-add_action('wp_ajax_search_user_metadata', 'lab_admin_search_user_metadata');
-add_action('wp_ajax_update_user_metadata', 'lab_admin_update_user_metadata');
-add_action('wp_ajax_update_user_metadata_db', 'lab_admin_update_user_metadata_db');
-add_action('wp_ajax_search_event_category', 'lab_admin_get_event_category');
-add_action('wp_ajax_save_event_category', 'lab_admin_save_event_actegory');
-add_action('wp_ajax_test', 'lab_admin_test');
+add_action( 'admin_menu'          , 'wp_lab_menu' );
+add_action( 'wp_enqueue_scripts'  , 'wp_lab_global_enqueues' );
+add_action( 'wp_ajax_search_event', 'lab_admin_search_event' );
+add_action( 'wp_ajax_search_user'      , 'lab_admin_search_user' );
+add_action( 'wp_ajax_search_user_email', 'lab_admin_search_user_email' );
+add_action( 'wp_ajax_search_user_metadata', 'lab_admin_search_user_metadata' );
+add_action( 'wp_ajax_update_user_metadata', 'lab_admin_update_user_metadata' );
+add_action( 'wp_ajax_update_user_metadata_db', 'lab_admin_update_user_metadata_db' );
+add_action( 'wp_ajax_search_event_category', 'lab_admin_get_event_category' );
+add_action( 'wp_ajax_save_event_category', 'lab_admin_save_event_actegory');
+add_action( 'wp_ajax_search_group', 'lab_admin_group_search');
+add_action( 'wp_ajax_test', 'lab_admin_test');
+add_action( 'wp_ajax_group_search_ac', 'lab_admin_search_group_acronym' );
+add_action( 'wp_ajax_group_create', 'lab_group_createGroup' );
+add_action( 'wp_ajax_group_table', 'lab_createGroupTable' );
+add_action( 'wp_ajax_group_root', 'lab_group_createRoot');
+add_action( 'wp_ajax_delete_group', 'lab_admin_group_delete');
+add_action( 'wp_ajax_param_create_table', 'lab_admin_param_create_table');
+add_action( 'wp_ajax_save_param', 'lab_admin_param_save');
+add_action( 'wp_ajax_load_param_type', 'lab_admin_param_load_type');
+add_action( 'wp_ajax_param_delete', 'lab_admin_param_delete');
+add_action( 'wp_ajax_param_search_value', 'lab_admin_param_search_value');
 
 add_action('wp_ajax_edit_group', 'lab_group_editGroup');
 
@@ -80,6 +93,7 @@ function wp_lab_menu()
 /***********************************************************************************************
  * ADMINISTRATION
  **********************************************************************************************/
+
 
 /**
  *
@@ -99,9 +113,13 @@ function lab_admin_save_event_actegory()
 }
 
 function lab_admin_test()
-{
-  $user = 1;
-  wp_send_json_success("UM()->options()->get( 'author_redirect' ) : " . UM()->options()->get('author_redirect') . " /  um_fetch_user($user) : " . um_fetch_user(1));
+{ 
+  $group_id = 1;
+
+  global $wpdb;
+  $wpdb->delete('wp_lab_groups', array('id' => $group_id));
+  //$user = 1;
+  //wp_send_json_success("UM()->options()->get( 'author_redirect' ) : " . UM()->options()->get('author_redirect') . " /  um_fetch_user($user) : " . um_fetch_user(1));
 }
 
 /**
@@ -119,22 +137,6 @@ function lab_admin_get_event_category()
   //wp_send_json_success( $sql );
 }
 
-function lab_admin_search_user_metadata()
-{
-  $userId = $_POST["userId"];
-  //wp_send_json_success(lab_usermeta_lab_check_and_create($userId));
-  lab_usermeta_lab_check_and_create($userId);
-  //  var_dump($_POST);
-  $sql    = "SELECT * FROM wp_usermeta WHERE user_id=" . $userId;
-  global $wpdb;
-  $results = $wpdb->get_results($sql);
-  $items = array();
-
-  foreach ($results as $r) {
-    $items[$r->meta_key] = array(id => $r->umeta_id, key => $r->meta_key, value => $r->meta_value);
-  }
-  wp_send_json_success($items);
-}
 
 function lab_admin_search_user_email()
 {
@@ -247,27 +249,62 @@ function lab_usermeta_lab_left_key_exist($userId)
   //return $nbResult;
   return $nbResult == 1;
 }
-
-/**
- * Fonction qui répond à la requete ajax de recherche d'evenement
- **/
-function lab_admin_search_event()
-{
-  $search = $_POST['search'];
-  $title  = $search["term"];
-  //var_dump($_POST);
-  //$sql = 'SELECT post_id, `event_name`,`event_start_date` FROM `wp_em_events` WHERE `event_name` LIKE \'%'.$title.'%\' LIMIT 30';
-  $sql = 'SELECT post_id, `event_name`,`event_start_date` FROM `wp_em_events` AS ee LEFT JOIN `wp_term_relationships` AS tr ON tr.`object_id`=ee.post_id WHERE tr.`object_id` IS NULL AND `event_name` LIKE \'%' . $title . '%\' LIMIT 30';
+function lab_admin_search_group_acronym() {
+  $ac = $_POST['ac'];
+  $sql = "SELECT group_name FROM `wp_lab_groups` WHERE acronym = '".$ac."';";
   global $wpdb;
   $results = $wpdb->get_results($sql);
-  $nbResult = $wpdb->num_rows;
   $items = array();
-
-  $url = esc_url(home_url('/'));
-  foreach ($results as $r) {
-    $items[] = array(label => $r->event_name . " " . date("d/m/Y", strtotime($r->event_start_date)), value => $r->post_id);
+  foreach ( $results as $r )
+  {
+    array_push($items,$r->group_name);
   }
-  wp_send_json_success($items);
+  if (count($items)) {
+    wp_send_json_error( $items );
+  }
+  else {
+    wp_send_json_success();
+  }
+}
+function lab_admin_checkTable($tableName) {
+  $sql = "SHOW TABLES LIKE '".$tableName."';";
+    global $wpdb;
+    $results = $wpdb->get_results($sql);
+    if (count($results)) {
+      return true;
+    }
+    return false;
+}
+function lab_createGroupTable() {
+  $sql = "CREATE TABLE `wp_lab_groups`(
+    `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `acronym` varchar(20) UNIQUE,
+    `group_name` varchar(255) NOT NULL,
+    `chief_id` BIGINT UNSIGNED NOT NULL,
+    `group_type` TINYINT NOT NULL,
+    `parent_group_id` BIGINT UNSIGNED,
+    PRIMARY KEY(`id`),
+    FOREIGN KEY(`chief_id`) REFERENCES `wp_users`(`ID`),
+    FOREIGN KEY(`parent_group_id`) REFERENCES `wp_lab_groups`(`id`)) ENGINE = INNODB;";
+    //echo $sql;
+  global $wpdb;
+  $wpdb->get_results($sql);
+}
+function lab_group_createRoot() {
+  $sql = "INSERT INTO `wp_lab_groups` (`id`, `acronym`, `group_name`, `chief_id`, `group_type`, `parent_group_id`) VALUES (NULL, 'root', 'root', '1', '0', NULL);";
+  //echo $sql;
+  global $wpdb;
+  $results = $wpdb->get_results($sql);
+}
+function lab_group_createGroup() {
+  $name = $_POST['name'];
+  $acronym = $_POST['acronym'];
+  $chief_id = $_POST['chief_id'];
+  $parent = $_POST['parent'];
+  $type = $_POST['type'];
+  $sql = "INSERT INTO `wp_lab_groups` (`id`, `acronym`, `group_name`, `chief_id`, `group_type`, `parent_group_id`) VALUES (NULL, '".$acronym."', '".$name."', '".$chief_id."', '".$type."', ".($parent == 0 ? "NULL" : "'".$parent."'").");";
+  global $wpdb;
+  $wpdb->get_results($sql);
 }
 /**
  * Fonction qui permet de charger ce que l'on veut comme JS ou CSS dans l'administration
@@ -275,7 +312,9 @@ function lab_admin_search_event()
 function admin_enqueue()
 {
   //wp_enqueue_script('lab', plugins_url('js/lab_global.js',__FILE__), array('jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog'), filemtime(dirname(plugin_basename("__FILE__"))."/js/lab_global.js"), false);
-  wp_enqueue_script('lab', plugins_url('js/lab_global.js', __FILE__), array('jquery', 'jquery-ui-core', 'jquery-ui-widget', 'jquery-ui-position', 'jquery-ui-sortable', 'jquery-ui-datepicker', 'jquery-ui-autocomplete', 'jquery-ui-dialog'), "1.3", false);
+  wp_enqueue_script('lab', plugins_url('js/lab_global.js',__FILE__), array('jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog'), "1.3", false);
+  wp_enqueue_style('jqueryToastCSS',plugins_url('css/jquery.toast.css',__FILE__));
+  wp_enqueue_script('jqueryToastJS',plugins_url('js/jquery.toast.js',__FILE__),array('jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog'),"1.3.2",false);
 }
 function wp_lab_global_enqueues()
 {
@@ -311,6 +350,7 @@ function wp_lab_option()
       <a id="laib_users_settings_tab_pointer" style="position: relative" class="nav-tab <?php echo $active_tab == 'user_settings' ? 'nav-tab-active' : ''; ?>" href="<?php echo add_query_arg(array('tab' => 'user_settings'), $_SERVER['REQUEST_URI']); ?>">Users Settings</a>
       <a id="laib_users_settings_tab_pointer" style="position: relative" class="nav-tab <?php echo $active_tab == 'user_genetal_settings' ? 'nav-tab-active' : ''; ?>" href="<?php echo add_query_arg(array('tab' => 'user_general_settings'), $_SERVER['REQUEST_URI']); ?>">Users General Settings</a>
       <a id="laib_users_settings_tab_pointer" style="position: relative" class="nav-tab <?php echo $active_tab == 'groups' ? 'nav-tab-active' : ''; ?>" href="<?php echo add_query_arg(array('tab' => 'groups'), $_SERVER['REQUEST_URI']); ?>">Groups</a>
+      <a id="laib_users_settings_tab_pointer" style="position: relative" class="nav-tab <?php echo $active_tab == 'params' ? 'nav-tab-active' : ''; ?>" href="<?php echo add_query_arg(array('tab' => 'params'), $_SERVER['REQUEST_URI']); ?>">Parameters</a>
     </h2>
     <table style="width:100%;">
       <tr>
@@ -322,6 +362,8 @@ function wp_lab_option()
             lab_admin_tab_general_user();
           } else if ($active_tab == 'groups') {
             lab_admin_tab_groups();
+          } else if ($active_tab == 'params') {
+            lab_admin_tab_params();
           } else {
             lab_admin_tab_seminaire();
           }
@@ -329,14 +371,6 @@ function wp_lab_option()
         </td>
       </tr>
     </table>
-
-    <?php
-    /*
-    <label for="wp_lab_debbug">Debug : </label>
-    <input type="text" name="lab_debbug" id="wp_lab_debbug" value="<?php echo dirname(plugin_basename(__FILE__))."/js/lab_global.js"; ?>"><br>
-    <input type="text" name="lab_debbug" id="wp_lab_debbug" value="<?php echo admin_url( 'admin-ajax.php' ); ?>"><br>
-   //*/
-    ?>
   </div>
   <script>
   </script>
@@ -398,10 +432,68 @@ function lab_admin_tab_user()
 }
 
 /**
+ * Function for the parameter lab management
+ */
+function lab_admin_tab_params() {
+  global $wpdb;
+?>
+  <div id="lab_createGroup_form">
+    <h3>Manage Parameters :</h3>
+    <table>
+      <tr>
+        <!-- NEW PARAM -->
+        <td>
+    <h4>New Parameters</h4>
+    <label for="wp_lab_param_type">Type param</label>
+    <select id="wp_lab_param_type">
+<?php
+  $results = lab_admin_param_load_param_type();
+  foreach ( $results as $r ) {
+    echo("<option value=\"" . $r->id . "\">" . $r->value . "</option>");
+  }
+?>
+    </select><a href="#" class="page-title-action" id="lab_tab_param_delete">delete</a>
+    <br>
+    <label for="wp_lab_param_value">Param value</label>
+    <input type="text" id="wp_lab_param_value">
+    <a href="#" class="page-title-action" id="lab_tab_param_save">Save param</a>
+        </td>
+        <!-- EDIT PARAM -->
+        <td>
+          <h4>Edit parameters</h4>
+          <label for="lab_param_param_title">Param title</label>
+          <input type="text" id="lab_param_value_search" placeholder="type param first letter">
+          <input type="hidden" id="wp_lab_param_id">
+          <label for="wp_lab_param_type_edit">Param type</label>
+          <select id="wp_lab_param_type_edit"></select>
+          <a href="#" class="page-title-action" id="lab_tab_param_save_edit">Save param</a>
+          <a href="#" class="page-title-action" id="lab_tab_param_delete_edit">Delete param</a>
+
+        </td>
+      </tr>
+    </table>
+    <hr>
+    <h4>Create Table :</h4>
+    <a href="#" class="page-title-action" id="lab_tab_param_create_table">Create table</a>
+  </div>
+<?php
+}
+
+/**
  * Function for the groups management
  */
 function lab_admin_tab_groups() {
-?> <!-- Modifier un groupe -->
+  ?>
+  <div>
+    <label for="wp_lab_group_name">Nom du groupe</label>
+    <input type="text" name="wp_lab_group_name" id="wp_lab_group_name" value="" size="80"/>
+    <button class="page-title-action" id="delete_button">Supprimer le groupe</button><br>
+    <input type="hidden" id="lab_searched_group_id" name="lab_searched_group_id" value=""/>
+    
+  </div>
+  <div id="suppr_result"></div>
+<hr>
+ <!-- Modifier un groupe -->
   <div class="wp_lab_editGroup_form">
     <h3>Modifier un groupe</h3>
     <label for="wp_lab_group_to_edit">Je souhaite modifier le groupe :</label>
@@ -420,7 +512,6 @@ function lab_admin_tab_groups() {
     <input type="text" name="wp_lab_acronym" id="wp_lab_group_acronym_edit" value="" size=10 placeholder="AA"/><br/><br/>
     <label for="wp_lab_group_name_edit">Nouveau nom du groupe :</label>
     <input type="text" name="wp_lab_group_name" id="wp_lab_group_name_edit" value="" size=50 placeholder="Nouveau nom"/>
-
     <label for="wp_lab_group_chief_edit">Définir un autre chef de groupe :</label>
     <select name="wp_lab_group_chief" id="wp_lab_group_chief_edit">
     <?php
@@ -453,6 +544,69 @@ function lab_admin_tab_groups() {
     <br /><br />
     
     <br /><a href="#" class="page-title-action" id="lab_editGroup">Modifier le groupe</a>
+
+  <hr>
+  <?php
+    if (!lab_admin_checkTable("wp_lab_groups")) {
+      echo "<p id='lab_group_noTableWarning'>La table <em>wp_lab_groups</em> n'a pas été trouvée dans la base, vous devez d'abord la créer ici : </p>";
+    }
+  ?>
+  <button class="page-title-action" id="lab_createGroup_createTable">Créer la table Groups</button>
+  <button class="page-title-action" id="lab_createGroup_createRoot">Créer groupe root</button>
+  <hr/>
+  <table class="form-table" role="presentation">
+  <h3>Créer un groupe : </h3>
+  <form action="javascript:void(0);">
+	<tbody>
+    <tr class="form-field form-required">
+      <th scope="row"><label for="lab_createGroup_name">Nom du groupe* : </label></th>
+      <td><input type="text" id="lab_createGroup_name" name="lab_createGroup_name" placeholder="Analyse Appliquée"/></td>
+    </tr class="form-field form-required">
+      <th scope="row"><label for="lab_createGroup_acronym">Acronyme* <span class="description">(unique)</span> : </label></th>
+      <td>
+        <input type="text" id="lab_createGroup_acronym" name="lab_createGroup_acronym" placeholder="AA"/>
+        <label style="padding-left:2em;" id="lab_createGroupe_acronym_hint"></span>
+      </td>
+    </tr>
+    <tr class="form-field">
+      <th scope="row"><label for="lab_createGroup_parentGroup">Groupe parent :</label></th>
+      <td>
+        <select id="lab_createGroup_parent" name="lab_createGroup_parent">
+          <option value="0">None</option>
+          <?php //Récupère la liste des groupes en affichant leur acronymes dans la liste déroulante.
+            $sql = "SELECT id,acronym FROM `wp_lab_groups`";
+            global $wpdb;
+            $results = $wpdb->get_results($sql);
+            $output="";
+            foreach ( $results as $r )
+            {
+              $output .= "<option value =".$r->id.">".$r->acronym."</option>";
+            }
+            echo $output;
+          ?>
+        </select>
+      </td>
+    </tr>
+    <tr class="form-field">
+      <th scope="row"><label for="lab_createGroup_type">Type :</label></th>
+      <td><select id="lab_createGroup_type" name="lab_createGroup_Type">
+        <option value="1">Groupe</option>
+        <option value="2">Équipe</option>
+      </select></td>
+    </tr>
+    <tr class="form-field">
+      <th scope="row"><label for="lab_createGroup_chief">Chef du groupe :</label></th>
+      <td>
+        <input id="lab_createGroup_chief" required type="text" name="lab_createGroup_chief" placeholder="Pascal HUBERT"/>
+        <input type="text" hidden disabled id="lab_createGroup_chiefID"></span>
+      </td>
+    </tr>
+    <tr class="form-field">
+      <td><input class="page-title-action" type="submit" id="lab_createGroup_create" value="Créer le groupe"/></td>
+    </tr>
+	</tbody></form></table>
+  <br />
+  <hr />
   </div>
 
 <?php
