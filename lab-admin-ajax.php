@@ -45,15 +45,6 @@ function lab_admin_search_group_acronym() {
     wp_send_json_success();
   }
 }
-function lab_admin_checkTable($tableName) {
-  $sql = "SHOW TABLES LIKE '".$tableName."';";
-    global $wpdb;
-    $results = $wpdb->get_results($sql);
-    if (count($results)) {
-      return true;
-    }
-    return false;
-}
 function lab_createGroupTable() {
   $sql = "CREATE TABLE `wp_lab_groups`(
     `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -92,14 +83,14 @@ function lab_admin_group_search() {
     $search = $_POST['search'];
     $groupName  = $search["term"];
 
-    $sql = "SELECT id, group_name FROM `wp_lab_groups` WHERE `group_name` LIKE '%".$groupName."%' ";
+    $sql = "SELECT * FROM `wp_lab_groups` WHERE `group_name` LIKE '%".$groupName."%' ";
     global $wpdb;
     $results = $wpdb->get_results($sql);
     $items = array();
     $url = esc_url(home_url('/'));
     foreach ( $results as $r )
     {
-      $items[] = array(label=>$r->group_name, value=>$r->id);
+      $items[] = array(label=>$r->group_name, value=>$r->id, id=>$r->id, group_name=>$r->group_name, group_type=>$r->group_type, acronym=>$r->acronym, chief_id=>$r->chief_id, parent_group_id=>$r->parent_group_id);
     }
     wp_send_json_success( $items ); 
 }
@@ -109,6 +100,22 @@ function lab_admin_group_delete(){
     global $wpdb;
     $wpdb->delete('wp_lab_groups', array('id' => $group_id));
     wp_send_json_success();
+}
+
+function lab_group_editGroup() {
+  $id = $_POST['groupId'];
+  $acronym = $_POST['acronym'];
+  $groupName = $_POST['groupName'];
+  $chiefId = $_POST['chiefId'];
+  $parent = $_POST['parent'];
+  $type = $_POST['group_type'];
+
+  $sql = "UPDATE `wp_lab_groups` SET `group_name` = '$groupName', `acronym` = '$acronym',
+   `chief_id` = '$chiefId', `group_type` = '$type', `parent_group_id` = '$parent'
+    WHERE id= '$id';";
+  global $wpdb;
+  
+  wp_send_json_success($wpdb->get_results($sql));
 }
 
 
@@ -188,6 +195,13 @@ function lab_admin_search_username()
   wp_send_json_success(lab_admin_firstname_lastname($search, $name));
 }
 
+function lab_admin_usermeta_names()
+{
+  $search = $_POST['search'];
+  $userId  = $search["term"];
+  //wp_send_json_success($userId);
+  wp_send_json_success(lab_admin_username_get($userId));
+}
 /********************************************************************************************
  * EVENT
  ********************************************************************************************/

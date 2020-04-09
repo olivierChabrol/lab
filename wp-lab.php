@@ -85,6 +85,7 @@ add_action( 'wp_ajax_group_sub_table', 'lab_admin_createSubTable' );
 add_action( 'wp_ajax_group_root', 'lab_admin_group_createRoot');
 add_action( 'wp_ajax_delete_group', 'lab_admin_group_delete');
 add_action( 'wp_ajax_group_subs_add', 'lab_admin_group_subs_addReq');
+add_action( 'wp_ajax_usermeta_names', 'lab_admin_usermeta_names');
 //Actions pour la gestion des params
 add_action( 'wp_ajax_param_create_table', 'lab_admin_param_create_table');
 add_action( 'wp_ajax_save_param', 'lab_admin_param_save');
@@ -255,7 +256,8 @@ function lab_admin_tab_groups() {
     <label for="wp_lab_group_name_edit">Nouveau nom du groupe :</label>
     <input type="text" name="wp_lab_group_name" id="wp_lab_group_name_edit" value="" size=50 placeholder="Nouveau nom"/><br /><br />
     <label for="wp_lab_group_chief_edit">Définir un autre chef du groupe :</label>
-    <input required type="text" name="wp_lab_group_chief" id="wp_lab_group_chief_edit" placeholder="Olivier CHABROL"/><br /><br />
+    <input required type="text" name="wp_lab_group_chief" id="wp_lab_group_chief_edit" placeholder="Group leader"/><br /><br />
+    <input type="hidden" id="lab_searched_chief_id" name="lab_searched_chief_id" />
     <label for="wp_lab_group_parent_edit">Modifier le groupe parent :</label>
     <select name="wp_lab_group_parent" id="wp_lab_group_parent_edit">
       <option value="0">Aucun</option>
@@ -273,10 +275,9 @@ function lab_admin_tab_groups() {
       <option value="1">Groupe</option>
       <option value="2">Équipe</option>
     </select>
-    <input type="hidden" id="lab_searched_chief_id" name="lab_searched_chief_id" />
     <br /><br />
     
-    <br /><a href="#" class="page-title-action" id="lab_editGroup">Modifier le groupe</a>
+    <br /><a href="#" class="page-title-action" id="lab_admin_group_edit_button">Save</a>
   </div>
   <hr>
   <!-- Gestion des tables -->
@@ -298,7 +299,7 @@ function lab_admin_tab_groups() {
 	<tbody>
     <tr class="form-field form-required">
       <th scope="row"><label for="lab_createGroup_name">Nom du groupe* : </label></th>
-      <td><input type="text" id="lab_createGroup_name" name="lab_createGroup_name" placeholder="Analyse Appliquée"/></td>
+      <td><input type="text" id="lab_createGroup_name" name="lab_createGroup_name" placeholder="ex: Analyse Appliquée"/></td>
     </tr class="form-field form-required">
       <th scope="row"><label for="lab_createGroup_acronym">Acronyme* <span class="description">(unique)</span> : </label></th>
       <td>
@@ -338,10 +339,10 @@ function lab_admin_tab_groups() {
       </select></td>
     </tr>
     <tr class="form-field">
-      <th scope="row"><label for="lab_createGroup_chief">Chef du groupe :</label></th>
+      <th scope="row"><label for="lab_createGroup_chief">Responsable du groupe :</label></th>
       <td>
         <input id="lab_createGroup_chief" type="text" name="lab_createGroup_chief" placeholder="Pascal HUBERT"/>
-        <input type="text" hidden disabled id="lab_createGroup_chiefID"/>
+        <input type="hidden" id="lab_createGroup_chiefID"/>
       </td>
     </tr>
     <tr class="form-field">
@@ -353,7 +354,7 @@ function lab_admin_tab_groups() {
     <tr class="form-field">
       <td colspan="2" >
         <input id="lab_createGroup_subInput" type="text" name="lab_createGroup_subInput" placeholder="N'oubliez pas d'appuyer sur ajouter"/>
-        <input type="text" hidden disabled id="lab_createGroup_subID"/> 
+        <input type="hidden" id="lab_createGroup_subID"/> 
       </td>
       <td><input type="button" id="lab_createGroup_addSub" class="page-title-action" value="+ Ajouter un suppléant"/></td>
     </tr>
@@ -365,22 +366,6 @@ function lab_admin_tab_groups() {
   <hr />
 
 <?php
-}
-
-function lab_group_editGroup() {
-  $id = $_POST['groupId'];
-  $acronym = $_POST['acronym'];
-  $groupName = $_POST['groupName'];
-  $chiefId = $_POST['chiefId'];
-  $parent = $_POST['parent'];
-  $type = $_POST['group_type'];
-
-  $sql = "UPDATE `wp_lab_groups` SET `group_name` = '$groupName', `acronym` = '$acronym',
-   `chief_id` = '$chiefId', `groupe_type` = '$type', `parent_group_id` = '$parent'
-    WHERE id= '$id';";
-  global $wpdb;
-  echo $sql;
-  $results = $wpdb->get_results($sql);
 }
 
 function lab_admin_tab_seminaire()

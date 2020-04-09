@@ -26,7 +26,7 @@ jQuery(function($){
         event.preventDefault();
         $("#wp_lab_group_name").val(label);
 
-        $("#lab_searched_event_id").val(value);
+        $("#lab_searched_group_id").val(value);
         setinfoToGroupEditionFields(ui.item.id, ui.item.acronym, ui.item.label, ui.item.chief_id,
           ui.item.parent_group_id, ui.item.group_type);
       }
@@ -145,7 +145,6 @@ jQuery(function($){
       $("#lab_createGroup_chief").val(label);
 
       $("#lab_createGroup_chiefID").val(value);
-      return false;
     }
   });
   $("#wp_lab_group_chief_edit").autocomplete({
@@ -160,10 +159,9 @@ jQuery(function($){
       var value = ui.item.value;
       var label = ui.item.label;
       event.preventDefault();
-      $("#lab_createGroup_chief").val(label);
+      $("#wp_lab_group_chief_edit").val(label);
 
-      $("#lab_createGroup_chiefID").val(value);
-      return false;
+      $("#lab_searched_chief_id").val(value);
     }
   });
 
@@ -254,12 +252,14 @@ jQuery(function($){
     subs.pop();
     console.log(subs);
     params.forEach(element => {
-      if (element.val().length==0) {
-        element.css('border-color','red');
-      }
-      else {
-        element.css('border-color','');
-        values.push(element.val());
+      if (element.attr("id") != 'lab_createGroup_chiefID' && element.attr("id") != 'lab_createGroup_subID') {
+        if (element.val().length==0) {
+          element.css('border-color','red');
+        }
+        else {
+          element.css('border-color','');
+          values.push(element.val());
+        }
       }
     });
     values.pop();
@@ -317,12 +317,13 @@ jQuery(function($){
     //Se cache soi-même
     $("#lab_createGroup_subsDelete").hide();
    });
-  $("#lab_editGroup").click(function() {
+  $("#lab_admin_group_edit_button").click(function() {
+    alert("LA");
     //console.log(jQuery("#wp_lab_group_chief_edit option:selected").val()); // /!\ sans option:selected, n'apparaît pas...
-    $groupId = jQuery("#wp_lab_group_to_edit").val();
+    $groupId = jQuery("#lab_searched_group_id").val();
     $acronym = jQuery("#wp_lab_group_acronym_edit").val();
     $name    = jQuery("#wp_lab_group_name_edit").val();
-    $chief   = jQuery("#wp_lab_group_chief_edit").val();
+    $chief   = jQuery("#lab_searched_chief_id").val();
     $parent  = jQuery("#wp_lab_group_parent_edit").val();
     $type    = jQuery("#wp_lab_group_type_edit").val();
     editGroup($groupId, $acronym, $name, $chief, $parent, $type);
@@ -361,6 +362,7 @@ function setinfoToGroupEditionFields(groupId, acronym, groupName, chiefId, paren
   jQuery('#wp_lab_group_to_edit').val(groupId);
   jQuery('#wp_lab_group_acronym_edit').val(acronym);
   jQuery('#wp_lab_group_name_edit').val(groupName);
+  jQuery('#lab_searched_chief_id').val(chiefId);
   jQuery('#wp_lab_group_chief_edit').val(callbUser(chiefId, loadUserName));
   jQuery('#wp_lab_group_parent_edit').val(parent_group_id);
   jQuery('#wp_lab_group_type_edit').val(group_type);
@@ -559,8 +561,8 @@ function saveUserLeft(userId, date, isChecked) {
 
 function callbUser(userId, callback) { // function with callback to operate with userId
   var data = {
-               'action' : 'search_user_metadata',
-               'userId' : userId
+               'action' : 'usermeta_names',
+               'search[term]' : userId
   };
   jQuery.post(ajaxurl, data, function(response) {
     callback(response);
@@ -569,8 +571,7 @@ function callbUser(userId, callback) { // function with callback to operate with
 
 function loadUserName(response) {
   if(response.data) {
-    jQuery("#wp_lab_group_chief_edit").val(response.data["first_name"]["value"] + 
-      " " + response.data["last_name"]["value"]);
+    jQuery("#wp_lab_group_chief_edit").val(response.data["first_name"] + " " + response.data["last_name"]);
   }
   else
   {
@@ -681,7 +682,24 @@ function editGroup(groupId, acronym, groupName, chiefId, parent, group_type) {
                'group_type' : group_type
   };
   jQuery.post(ajaxurl, data, function(response) {
-    console.log(response);
+    if (response.success) {
+      toast_success("Group saved");
+      resetGroupEdit();
+    }
+    else {
+      toast_error("Failed to save group");
+    }
   });
   //TODO: IHM pour que que l'utilisateur sache que ce qu'il a fait a modifié quelque chose
+}
+
+function resetGroupEdit()
+{
+  jQuery("#lab_searched_group_id").val("");
+  jQuery("#wp_lab_group_acronym_edit").val("");
+  jQuery("#wp_lab_group_name_edit").val("");
+  jQuery("#lab_searched_chief_id").val("");
+  jQuery("#wp_lab_group_chief_edit").val("");
+  jQuery("#wp_lab_group_parent_edit").val("");
+  jQuery("#wp_lab_group_type_edit").val("0");
 }
