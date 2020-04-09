@@ -61,7 +61,7 @@ add_action( 'admin_menu'          , 'wp_lab_menu' );
 add_action( 'wp_enqueue_scripts'  , 'wp_lab_global_enqueues' );
 add_action( 'wp_ajax_search_event', 'lab_admin_search_event' );
 add_action( 'wp_ajax_search_user'      , 'lab_admin_search_user' );
-add_action( 'wp_ajax_search_user_email', 'lab_admin_search_user_email' );
+add_action( 'wp_ajax_search_username', 'lab_admin_search_username' );
 add_action( 'wp_ajax_search_user_metadata', 'lab_admin_search_user_metadata' );
 add_action( 'wp_ajax_update_user_metadata', 'lab_admin_update_user_metadata' );
 add_action( 'wp_ajax_update_user_metadata_db', 'lab_admin_update_user_metadata_db' );
@@ -135,24 +135,6 @@ function lab_admin_get_event_category()
 
   wp_send_json_success($results);
   //wp_send_json_success( $sql );
-}
-
-
-function lab_admin_search_user_email()
-{
-  $search = $_POST['search'];
-  $email  = $search["term"];
-  $sql = "SELECT ID, user_email FROM `wp_users`  WHERE user_email LIKE '%" . $email . "%'";
-  global $wpdb;
-  $results = $wpdb->get_results($sql);
-  $nbResult = $wpdb->num_rows;
-  $items = array();
-
-  $url = esc_url(home_url('/'));
-  foreach ($results as $r) {
-    $items[] = array(label => $r->user_email, value => $r->ID);
-  }
-  wp_send_json_success($items);
 }
 
 function lab_admin_search_user()
