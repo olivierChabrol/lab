@@ -27,7 +27,8 @@ jQuery(function($){
         $("#wp_lab_group_name").val(label);
 
         $("#lab_searched_event_id").val(value);
-        setinfoToGroupEditionFields();
+        setinfoToGroupEditionFields(ui.item.id, ui.item.acronym, ui.item.label, ui.item.chief_id,
+          ui.item.parent_group_id, ui.item.group_type);
       }
   });
 
@@ -267,8 +268,13 @@ jQuery(function($){
   })
 });
 
-function setinfoToGroupEditionFields(groupId) {
-
+function setinfoToGroupEditionFields(groupId, acronym, groupName, chiefId, parent_group_id, group_type) {
+  jQuery('#wp_lab_group_to_edit').val(groupId);
+  jQuery('#wp_lab_group_acronym_edit').val(acronym);
+  jQuery('#wp_lab_group_name_edit').val(groupName);
+  jQuery('#wp_lab_group_chief_edit').val(chiefId);
+  jQuery('#wp_lab_group_parent_edit').val(parent_group_id);
+  jQuery('#wp_lab_group_type_edit').val(group_type);
 }
 
 // Notifications "toast" affichant une erreur ou un succès lors de la requête de création de groupe.
