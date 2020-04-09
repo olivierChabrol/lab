@@ -108,7 +108,6 @@ jQuery(function($){
   $("#lab_user_button_save_left").click(function() {
     saveUserLeft($("#lab_searched_user_id").val(), $("#lab_user_left_date").val(), $("#lab_user_left").is(":checked"));
   });
-<<<<<<<
   $("#lab_createGroup_acronym").change(function() {
     var data = {
       'action' : 'group_search_ac',
@@ -142,41 +141,6 @@ jQuery(function($){
       var label = ui.item.label;
       event.preventDefault();
       $("#lab_createGroup_chief").val(label);
-=======
-  $("#lab_createGroup_acronym").change(function() {
-    var data = {
-      'action' : 'group_search_ac',
-      'ac' : $("#lab_createGroup_acronym").val()
-    };
-    jQuery.post(ajaxurl, data, function(response) {
-      if (!response.success) {
-        $("#lab_createGroup_acronym").css('border-color','red');
-        $("#lab_createGroupe_acronym_hint").css("color","red");
-        $("#lab_createGroupe_acronym_hint")[0].innerHTML="❌ Acronyme déjà utilisé par le groupe '"+response.data[0]+"'.";
-        $("#lab_createGroup_create").attr('disabled',true);
-      }
-      else {
-        $("#lab_createGroup_acronym").css('border-color','green');
-        $("#lab_createGroupe_acronym_hint").css("color","green");
-        $("#lab_createGroupe_acronym_hint")[0].innerHTML="✓ Acronyme disponible";
-        $("#lab_createGroup_create").attr('disabled',false);
-      }
-    });
-  })
-  $("#lab_createGroup_chief").autocomplete({
-    minChars: 3,
-    source: function(term, suggest){
-      try { searchRequest.abort(); } catch(e){}
-      searchRequest = $.post(ajaxurl, { action: 'search_user_email',search: term, }, function(res) {
-        suggest(res.data);
-      });
-      },
-    select: function( event, ui ) {
-      var value = ui.item.value;
-      var label = ui.item.label;
-      event.preventDefault();
-      $("#lab_createGroup_chief").val(label);
->>>>>>>
 
       $("#lab_createGroup_chiefID").val(value);
       return false;
