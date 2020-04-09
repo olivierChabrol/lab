@@ -11,6 +11,7 @@ jQuery(function($){
     }
   });
   $( "#lab_user_left_date" ).datepicker();
+
   $("#wp_lab_group_name").autocomplete({
     minChars: 2,
     source: function(term, suggest){
@@ -20,12 +21,31 @@ jQuery(function($){
       });
       },
       select: function( event, ui ) {
-        //alert(ui.item.option);
         var label = ui.item.label;
         var value = ui.item.value;
-      }
+        event.preventDefault();
+        $("#wp_lab_group_name").val(label);
 
+        $("#lab_searched_event_id").val(value);
+      }
   });
+
+  $("#delete_button").click(function(){
+      $.post("/wp-admin/admin-ajax.php",
+          {
+            action : 'delete_group',
+            id : jQuery("#lab_searched_group_id").val()
+          },
+
+          function(data){
+            if (data.success) {
+              toast_success("Le groupe a bien été supprimé.");
+              jQuery("#wp_lab_group_name").val("");
+            }
+          }
+      )
+  });
+  
   $('#wp_lab_event_title').autocomplete({
     minChars: 2,
     source: function(term, suggest){
@@ -35,20 +55,18 @@ jQuery(function($){
       });
       },
     select: function( event, ui ) {
-      //alert(ui.item.option);
       var label = ui.item.label;
       var value = ui.item.value;
-      //alert(value);
-      //$("#lab_searched_event_id").val("toto");
-      //alert($("#lab_searched_event_id").val());
+      event.preventDefault();
+      $("#wp_lab_event_title").val(ui.item.label);
+      
       $("#lab_user_left_date").val("");
       $("#lab_user_left_date").prop("disabled", true);
       $("#lab_user_left").prop("checked", false);
-      $("#wp_lab_event_title").val(ui.item.label);
       $("#lab_searched_event_id").val(value);
       $("#lab_event_id").html(value);
       $("#wp_lab_event_label").text(label);
-      //alert(label);
+      
       loadEventCategory(value);
       return false;
     }
@@ -62,10 +80,11 @@ jQuery(function($){
       });
       },
     select: function( event, ui ) {
-      //alert(ui.item.option);
       var label = ui.item.label;
       var value = ui.item.value;
-      //$('#lab_user_email"').val(label);
+      event.preventDefault();
+      $("#lab_user_email").val(label);
+
       $("#lab_searched_user_id").val(value);
       loadUserMetadata(value);
       return false;
@@ -118,11 +137,79 @@ jQuery(function($){
     select: function( event, ui ) {
       var value = ui.item.value;
       var label = ui.item.label;
-      $("#lab_createGroup_chiefID").val(value);
+      event.preventDefault();
       $("#lab_createGroup_chief").val(label);
+
+      $("#lab_createGroup_chiefID").val(value);
       return false;
     }
   });
+  $("#wp_lab_group_chief_edit").autocomplete({
+    minChars: 3,
+    source: function(term, suggest){
+      try { searchRequest.abort(); } catch(e){}
+      searchRequest = $.post(ajaxurl, { action: 'search_user_email',search: term, }, function(res) {
+        suggest(res.data);
+      });
+      },
+    select: function( event, ui ) {
+      var value = ui.item.value;
+      var label = ui.item.label;
+      event.preventDefault();
+      $("#lab_createGroup_chief").val(label);
+
+      $("#lab_createGroup_chiefID").val(value);
+      return false;
+    }
+  });
+
+
+  $("#lab_param_value_search").autocomplete({
+    minChars: 3,
+    source: function(term, suggest){
+      try { searchRequest.abort(); } catch(e){}
+      searchRequest = $.post(ajaxurl, { action: 'param_search_value',search: term, }, function(res) {
+        suggest(res.data);
+      });
+      },
+    select: function( event, ui ) {
+      var value = ui.item.value;
+      var label = ui.item.label;
+      event.preventDefault();
+      $("#wp_lab_param_id").val(value);
+
+      $("#lab_param_value_search").val(label);
+      loadEditParam(value, ui.item.type, value)
+      return false;
+    }
+  });
+
+  $('#lab_tab_param_create_table').click(function(){
+    var data = {
+      'action' : 'param_create_table',
+    };
+    jQuery.post(ajaxurl, data, function(response) {
+      console.log(response);
+    });
+  });
+
+  $('#lab_tab_param_delete').click(function(){
+    paramDelete($("#wp_lab_param_type").val());
+  });
+
+  $("#lab_tab_param_save").click(function(){
+    saveParam(null, jQuery("#wp_lab_param_type").val(), jQuery("#wp_lab_param_value").val(), load_params_type_after_new_param);
+  });
+
+  $("#lab_tab_param_save_edit").click(function(){
+    saveParam(jQuery("#wp_lab_param_id").val(), jQuery("#wp_lab_param_type_edit").val(), jQuery("#lab_param_value_search").val(), resetParamEditFields);
+  });
+
+  $("#lab_tab_param_delete_edit").click(function(){
+    paramDelete($("#wp_lab_param_id").val());
+    resetParamEditFields();
+  });
+
   $('#lab_createGroup_createRoot').click(function(){
     var data = {
       'action' : 'group_root',
@@ -143,7 +230,7 @@ jQuery(function($){
       }
       toast_error("Error Creating table : "+response);
     });
-  })
+  });
   $("#lab_createGroup_create").click(function() {
     let params = [$("#lab_createGroup_name"),$("#lab_createGroup_acronym"),$("#lab_createGroup_type"),$("#lab_createGroup_chiefID"),$("#lab_createGroup_parent"),$("#lab_createGroup_chief")];
     let values = Array();
@@ -165,6 +252,17 @@ jQuery(function($){
     else {
       toast_error("Group couldn't be created :<br> The form isn't filled properly");
     }
+  })
+
+  $("#lab_editGroup").click(function() {
+    //console.log(jQuery("#wp_lab_group_chief_edit option:selected").val()); // /!\ sans option:selected, n'apparaît pas...
+    $groupId = jQuery("#wp_lab_group_to_edit").val();
+    $acronym = jQuery("#wp_lab_group_acronym_edit").val();
+    $name    = jQuery("#wp_lab_group_name_edit").val();
+    $chief   = jQuery("#wp_lab_group_chief_edit").val();
+    $parent  = jQuery("#wp_lab_group_parent_edit").val();
+    $type    = jQuery("#wp_lab_group_type_edit").val();
+    editGroup($groupId, $acronym, $name, $chief, $parent, $type);
   })
 });
 // Notifications "toast" affichant une erreur ou un succès lors de la requête de création de groupe.
@@ -230,6 +328,78 @@ function createGroup(params) {
   });
 }
 
+function load_params_type_after_new_param() {
+  jQuery("#wp_lab_param_value").val("");
+  load_params_type('#wp_lab_param_type');
+}
+
+function saveParam(paramId, paramType, paramValue, callAfterComplete) {
+  var data = {
+    'action' : 'save_param',
+    'type' : paramType,
+    'value' : paramValue,
+  };
+  if (paramId != null) {
+    data = {
+      'action' : 'save_param',
+      'id' : paramId,
+      'type' : paramType,
+      'value' : paramValue,
+    };
+  }
+  jQuery.post(ajaxurl, data, function(response) {
+    if(response.success) {
+      callAfterComplete();
+    }
+  });
+}
+
+function loadEditParam(paramId, paramType, paramValue) {
+  load_params_type('#wp_lab_param_type_edit', paramType);
+}
+
+function paramDelete(paramId) {
+  var data = {
+    'action' : 'param_delete',
+    'id' : paramId,
+  };
+  jQuery.post(ajaxurl, data, function(response) {
+    if(response.success) {
+      load_params_type('#wp_lab_param_type', null);
+    }
+  });
+}
+
+function resetParamEditFields() {
+  jQuery("#lab_param_value_search").val("");
+  jQuery("#wp_lab_param_id").val("");
+  jQuery("#lab_param_value_search").val("");
+  jQuery("#lab_param_value_search").val("");
+}
+
+function load_params_type(select, selectedId = null) {
+  var data = {
+    'action' : 'load_param_type',
+  };
+  jQuery.post(ajaxurl, data, function(response) {
+    if(response.success) {
+      //alert("Sauver");
+      jQuery(select+" option").each(function() {
+        jQuery(this).remove();
+      });
+
+      jQuery.each(response.data, function (index, value){
+
+        jQuery(select).append(jQuery('<option/>', { 
+          value: value['id'],
+          text : value['value'],
+          selected : value['id']==selectedId 
+      }));
+      });
+    }
+  });
+}
+
 function test() {
   var data = {
                'action' : 'test',
@@ -254,7 +424,7 @@ function updateUserMetaDb() {
 function saveUserLeft(userId, date, isChecked) {
   var c = isChecked?date:null;
   var umd = jQuery("#lab_usermeta_id").val();
-  alert("userId : " + userId + " date " + date + " is checked : " + isChecked + " c : " + c );
+  //alert("userId : " + userId + " date " + date + " is checked : " + isChecked + " c : " + c );
   var data = {
                'action' : 'update_user_metadata',
                'userMetaId' : umd,
@@ -330,4 +500,20 @@ function loadEventCategory(postId) {
       jQuery("#wp_lab_event_label").html("<b>Pas de categorie</b>");
     }
   });
+}
+
+function editGroup(groupId, acronym, groupName, chiefId, parent, group_type) {
+  var data = {
+               'action' : 'edit_group',
+               'groupId' : groupId,
+               'acronym' : acronym,
+               'groupName' : groupName,
+               'chiefId' : chiefId,
+               'parent' : parent,
+               'group_type' : group_type
+  };
+  jQuery.post(ajaxurl, data, function(response) {
+    console.log(response);
+  });
+  //TODO: IHM pour que que l'utilisateur sache que ce qu'il a fait a modifié quelque chose
 }
