@@ -268,11 +268,27 @@ jQuery(function($){
   })
 });
 
+function loadUserName(userId) {
+  var data = {
+               'action' : 'search_user_metadata',
+               'userId' : userId
+  };
+  jQuery.post(ajaxurl, data, function(response) {
+    if(response.data) {
+      jQuery("#wp_lab_group_chief_edit").val(response.data["first_name"]["value"] + " " +response.data["last_name"]["value"]);
+    }
+    else
+    {
+
+    }
+  });
+}
+
 function setinfoToGroupEditionFields(groupId, acronym, groupName, chiefId, parent_group_id, group_type) {
   jQuery('#wp_lab_group_to_edit').val(groupId);
   jQuery('#wp_lab_group_acronym_edit').val(acronym);
   jQuery('#wp_lab_group_name_edit').val(groupName);
-  jQuery('#wp_lab_group_chief_edit').val(chiefId);
+  jQuery('#wp_lab_group_chief_edit').val(loadUserName(chiefId));
   jQuery('#wp_lab_group_parent_edit').val(parent_group_id);
   jQuery('#wp_lab_group_type_edit').val(group_type);
 }
