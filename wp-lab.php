@@ -493,28 +493,7 @@ function lab_admin_tab_groups() {
   </div>
   <div id="suppr_result"></div>
 <hr>
-  <!-- passage en HTML pour donner les champs utiles à la bd -->
-  <h1>Modifier un groupe</h1>
-  <label for="wp_lab_group_to_edit">Je souhaite modifier le groupe :</label>
-  <select name="wp_lab_group" id ="wp_lab_group_to_edit">
-  <?php
-    // les options de la balise select viennent de la base de donnée
-    $sql = "SELECT group_name FROM `wp_lab_groups`";
-    global $wpdb;
-    $results = $wpdb->get_results($sql);
-    foreach ( $results as $r ) {
-      echo("<option value=\"" . $r->id . "\">" . $r->group_name . "</option>");
-    }
-  ?>
-  </select>
-  <label for="wp_lab_group_acronym_edit">Modifier l'acronyme :</label>
-  <input type="text" name="wp_lab_acronym" id="wp_lab_group_acronym_edit" value="" size=10 /><br/><br/>
-  <label for="wp_lab_group_name_edit">Nouveau nom du groupe :</label>
-  <input type="text" name="wp_lab_group_name" id="wp_lab_group_name_edit" value="" size=70 /><br /><br />
-  <label for="wp_lab_group_chief_edit">Définir un autre chef de groupe :</label>
-  <input type="text" name="wp_lab_chief" id="wp_lab_group_chief_edit" value="" size=50 /><br /><br />
-  <br><a href="#" class="page-title-action" id="lab-button-edit-group">Modifier le groupe</a>
-?> <!-- Modifier un groupe -->
+ <!-- Modifier un groupe -->
   <div class="wp_lab_editGroup_form">
     <h3>Modifier un groupe</h3>
     <label for="wp_lab_group_to_edit">Je souhaite modifier le groupe :</label>
@@ -533,6 +512,38 @@ function lab_admin_tab_groups() {
     <input type="text" name="wp_lab_acronym" id="wp_lab_group_acronym_edit" value="" size=10 placeholder="AA"/><br/><br/>
     <label for="wp_lab_group_name_edit">Nouveau nom du groupe :</label>
     <input type="text" name="wp_lab_group_name" id="wp_lab_group_name_edit" value="" size=50 placeholder="Nouveau nom"/>
+    <label for="wp_lab_group_chief_edit">Définir un autre chef de groupe :</label>
+    <select name="wp_lab_group_chief" id="wp_lab_group_chief_edit">
+    <?php
+      $sql ="SELECT ID, display_name FROM `wp_users`";
+      global $wpdb;
+      $results = $wpdb->get_results($sql);
+      foreach ( $results as $r ) {
+        echo("<option value=\"" . $r->ID . "\">" . $r->display_name . "</option>");
+      }
+    ?>
+    </select><br /><br />
+    <label for="wp_lab_group_parent_edit">Modifier le groupe parent :</label>
+    <select name="wp_lab_group_parent" id="wp_lab_group_parent_edit">
+      <option value="0">Aucun</option>
+    <?php
+      $sql = "SELECT id, group_name FROM `wp_lab_groups`";
+      global $wpdb;
+      $results = $wpdb->get_results($sql);
+      foreach ( $results as $r ) {
+        echo("<option value=\"" . $r->id . "\">" . $r->group_name . "</option>");
+      }
+    ?>
+    </select>
+    <label for="wp_lab_group_type_edit">Modifier le type :</label>
+    <select name="wp_lab_group_type" id="wp_lab_group_type_edit">
+      <option value="1">Groupe</option>
+      <option value="2">Equipe</option>
+    </select>
+    <input type="hidden" id="lab_searched_chief_id" name="lab_searched_chief_id" value="" />
+    <br /><br />
+    
+    <br /><a href="#" class="page-title-action" id="lab_editGroup">Modifier le groupe</a>
 
   <hr>
   <?php
@@ -596,38 +607,6 @@ function lab_admin_tab_groups() {
 	</tbody></form></table>
   <br />
   <hr />
-    <label for="wp_lab_group_chief_edit">Définir un autre chef de groupe :</label>
-    <select name="wp_lab_group_chief" id="wp_lab_group_chief_edit">
-    <?php
-      $sql ="SELECT ID, display_name FROM `wp_users`";
-      global $wpdb;
-      $results = $wpdb->get_results($sql);
-      foreach ( $results as $r ) {
-        echo("<option value=\"" . $r->ID . "\">" . $r->display_name . "</option>");
-      }
-    ?>
-    </select><br /><br />
-    <label for="wp_lab_group_parent_edit">Modifier le groupe parent :</label>
-    <select name="wp_lab_group_parent" id="wp_lab_group_parent_edit">
-      <option value="0">Aucun</option>
-    <?php
-      $sql = "SELECT id, group_name FROM `wp_lab_groups`";
-      global $wpdb;
-      $results = $wpdb->get_results($sql);
-      foreach ( $results as $r ) {
-        echo("<option value=\"" . $r->id . "\">" . $r->group_name . "</option>");
-      }
-    ?>
-    </select>
-    <label for="wp_lab_group_type_edit">Modifier le type :</label>
-    <select name="wp_lab_group_type" id="wp_lab_group_type_edit">
-      <option value="1">Groupe</option>
-      <option value="2">Equipe</option>
-    </select>
-    <input type="hidden" id="lab_searched_chief_id" name="lab_searched_chief_id" value="" />
-    <br /><br />
-    
-    <br /><a href="#" class="page-title-action" id="lab_editGroup">Modifier le groupe</a>
   </div>
 
 <?php
