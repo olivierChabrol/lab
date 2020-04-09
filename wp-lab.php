@@ -11,11 +11,15 @@ Author URI: http://www.i2m.univ-amu.fr
 // Traduction de la description
 __("Crée une page qui remonte les publications d'un auteur ou d'une structure en relation avec HAL et un widget des dernières publications d'un auteur ou d'une structure.", "wp-hal");
 
+define('LAB_DIR_PATH', plugin_dir_path(__FILE__));
+
 //Récupère les constantes
 require_once("constantes.php");
 require_once("lab-shortcode.php");
 require_once("lab-admin-ajax.php");
 require_once("lab-admin-core.php");
+require_once(LAB_DIR_PATH."admin/view/lab-admin-tabs.php");
+//require_once(LAB_DIR_PATH."admin/view/lab-admin-tabs.php");
 ///locatrequire_once("link-template.php");
 //Admin Files
 if (is_admin()) {
@@ -95,199 +99,9 @@ function wp_lab_menu()
  **********************************************************************************************/
 
 
-/**
- *
- **/
-function lab_admin_save_event_actegory()
-{
-  $postId  = $_POST["postId"];
-  $categories  = $_POST["categoryId"];
-  global $wpdb;
-  foreach ($categories as $id => $categoryId) {
-    $table = $wpdb->prefix . 'term_relationships';
-    $data = array('object_id' => $postId, 'term_taxonomy_id' => $categoryId);
-    $format = array('%d', '%d');
-    $wpdb->insert($table, $data, $format);
-  }
-  wp_send_json_success(1);
-}
-
-function lab_admin_test()
-{ 
-  $group_id = 1;
-
-  global $wpdb;
-  $wpdb->delete('wp_lab_groups', array('id' => $group_id));
-  //$user = 1;
-  //wp_send_json_success("UM()->options()->get( 'author_redirect' ) : " . UM()->options()->get('author_redirect') . " /  um_fetch_user($user) : " . um_fetch_user(1));
-}
-
-/**
- *
- **/
-function lab_admin_get_event_category()
-{
-  $postId  = $_POST["postId"];
-  $sql = 'SELECT p.ID, p.`post_title`, p.`post_date`, t.term_id, t.name, t.slug FROM `wp_posts` AS p JOIN `wp_term_relationships` AS tr ON tr.`object_id`=p.ID JOIN `wp_term_taxonomy` AS tt ON tt.`term_taxonomy_id`=tr.`term_taxonomy_id` JOIN `wp_terms` AS t ON t.term_id=tt.term_id WHERE p.ID=' . $postId;
-  global $wpdb;
-
-  $results = $wpdb->get_row($wpdb->prepare($sql));
-
-  wp_send_json_success($results);
-  //wp_send_json_success( $sql );
-}
-
-function lab_admin_search_user()
-{
-  $search = $_POST['search'];
-  $email  = $search["term"];
 
 
-  $sql = "SELECT um.* FROM `wp_users` AS u JOIN `wp_usermeta` AS um ON u.`ID`=um.user_id WHERE u.user_email='" . $email . "'";
-  global $wpdb;
-  $results = $wpdb->get_results($sql);
-  $nbResult = $wpdb->num_rows;
-  $items = array();
 
-  $item["user_id"] = $result[0]->user_id;
-  foreach ($results as $r) {
-    $items[$r->meta_key] = $r->meta;
-  }
-  wp_send_json_success($items);
-}
-
-function lab_admin_update_user_metadata_db()
-{
-  $sql = "SELECT DISTINCT user_id FROM `wp_usermeta` AS m WHERE user_id NOT IN ( SELECT 1 FROM wp_usermeta AS e WHERE e.user_id = m.user_id AND meta_key = 'lab_user_left' )";
-  global $wpdb;
-  $results = $wpdb->get_results($sql);
-  $nbResult = $wpdb->num_rows;
-  $items = array();
-  foreach ($results as $r) {
-    $user_id = $r->user_id;
-    $items[] =  $user_id;
-    $wpdb->insert('wp_usermeta', array(
-      'umeta_id' => NULL,
-      'user_id' => $user_id,
-      'meta_key' => 'lab_user_left',
-      'meta_value' => NULL,
-    ));
-  }
-  wp_send_json_success($items);
-}
-
-function lab_admin_update_user_metadata()
-{
-  $userMetaDataId =  $_POST["userMetaId"];
-  $dateLeft       = $_POST["dateLeft"];
-  lab_usermeta_update_lab_left_key($userMetaDataId, $dateLeft);
-  wp_send_json_success("");
-}
-
-function lab_usermeta_update_lab_left_key($usermetaId, $left)
-{
-  global $wpdb;
-  $sql = "";
-  if ($left != null || !empty($left)) {
-    $sql = "UPDATE `wp_usermeta` SET `meta_value` = '" . $left . "' WHERE `wp_usermeta`.`umeta_id` = " . $usermetaId;
-  } else {
-    $sql = "UPDATE `wp_usermeta` SET `meta_value` = NULL WHERE `wp_usermeta`.`umeta_id` = " . $usermetaId;
-  }
-  $sql = $wpdb->prepare($sql);
-  $wpdb->query($sql);
-}
-
-function lab_usermeta_lab_check_and_create($userId)
-{
-  // si la clef n'existe pas on la cree
-  if (!lab_usermeta_lab_left_key_exist($userId)) {
-    return lab_usermeta_create_left_key($userId);
-  }
-  return -1;
-}
-
-function lab_usermeta_create_left_key($userId)
-{
-  global $wpdb;
-  $sql = "INSERT INTO `wp_usermeta` (`umeta_id`, `user_id`, `meta_key`, `meta_value`) VALUES (NULL, '" . $userId . "', 'lab_user_left', NULL)";
-  $wpdb->insert('wp_usermeta', array(
-    'umeta_id' => NULL,
-    'user_id' => $userId,
-    'meta_key' => 'lab_user_left',
-    'meta_value' => NULL,
-  ));
-  return $wpdb->insert_id;
-}
-
-function lab_usermeta_lab_left_key_exist($userId)
-{
-  if (!isset($userId) || $userId == NULL) {
-    return false;
-  }
-  $sql = "SELECT * FROM `wp_usermeta` WHERE `user_id` = " . $userId . " AND `meta_key` = 'lab_user_left'";
-  global $wpdb;
-  $results = $wpdb->get_results($sql);
-  $nbResult = $wpdb->num_rows;
-  //return $nbResult;
-  return $nbResult == 1;
-}
-function lab_admin_search_group_acronym() {
-  $ac = $_POST['ac'];
-  $sql = "SELECT group_name FROM `wp_lab_groups` WHERE acronym = '".$ac."';";
-  global $wpdb;
-  $results = $wpdb->get_results($sql);
-  $items = array();
-  foreach ( $results as $r )
-  {
-    array_push($items,$r->group_name);
-  }
-  if (count($items)) {
-    wp_send_json_error( $items );
-  }
-  else {
-    wp_send_json_success();
-  }
-}
-function lab_admin_checkTable($tableName) {
-  $sql = "SHOW TABLES LIKE '".$tableName."';";
-    global $wpdb;
-    $results = $wpdb->get_results($sql);
-    if (count($results)) {
-      return true;
-    }
-    return false;
-}
-function lab_createGroupTable() {
-  $sql = "CREATE TABLE `wp_lab_groups`(
-    `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-    `acronym` varchar(20) UNIQUE,
-    `group_name` varchar(255) NOT NULL,
-    `chief_id` BIGINT UNSIGNED NOT NULL,
-    `group_type` TINYINT NOT NULL,
-    `parent_group_id` BIGINT UNSIGNED,
-    PRIMARY KEY(`id`),
-    FOREIGN KEY(`chief_id`) REFERENCES `wp_users`(`ID`),
-    FOREIGN KEY(`parent_group_id`) REFERENCES `wp_lab_groups`(`id`)) ENGINE = INNODB;";
-    //echo $sql;
-  global $wpdb;
-  $wpdb->get_results($sql);
-}
-function lab_group_createRoot() {
-  $sql = "INSERT INTO `wp_lab_groups` (`id`, `acronym`, `group_name`, `chief_id`, `group_type`, `parent_group_id`) VALUES (NULL, 'root', 'root', '1', '0', NULL);";
-  //echo $sql;
-  global $wpdb;
-  $results = $wpdb->get_results($sql);
-}
-function lab_group_createGroup() {
-  $name = $_POST['name'];
-  $acronym = $_POST['acronym'];
-  $chief_id = $_POST['chief_id'];
-  $parent = $_POST['parent'];
-  $type = $_POST['type'];
-  $sql = "INSERT INTO `wp_lab_groups` (`id`, `acronym`, `group_name`, `chief_id`, `group_type`, `parent_group_id`) VALUES (NULL, '".$acronym."', '".$name."', '".$chief_id."', '".$type."', ".($parent == 0 ? "NULL" : "'".$parent."'").");";
-  global $wpdb;
-  $wpdb->get_results($sql);
-}
 /**
  * Fonction qui permet de charger ce que l'on veut comme JS ou CSS dans l'administration
  **/
@@ -309,55 +123,7 @@ function wp_lab_global_enqueues()
   );
   wp_localize_script('ajax-script', 'ajax_object', array('ajax_url' => admin_url('admin-ajax.php'), 'we_value' => 1234));
 }
-/**
- * Crée le menu d'option du plugin
- */
-function wp_lab_option()
-{
-  global $EM_Event;
-  $active_tab = 'default';
-  if (isset($_GET['tab'])) {
-    $active_tab = $_GET['tab'];
-  }
-  if (!is_object($EM_Event)) {
-    $EM_Event = new EM_Event();
-  }
-?>
-  <div class="wrap">
-    <h1 class="wp-heading-inline">Lab <?php echo (dirname(plugin_basename("__FILE__" . "js/lab_global.js"))); ?></h1>
-    <!--    <a href="https://www.i2m.univ-amu.fr/wp-admin/post-new.php?post_type=event" class="page-title-action">Ajouter un évènement</a> -->
-    <hr class="wp-header-end">
-    <h2 class="nav-tab-wrapper">
-      <a id="lab_default_tab_pointer" style="position: relative" class="nav-tab <?php echo $active_tab == 'default' ? 'nav-tab-active' : ''; ?>" href="<?php echo add_query_arg(array('tab' => 'default'), $_SERVER['REQUEST_URI']); ?>">Séminaires</a>
-      <a id="laib_users_settings_tab_pointer" style="position: relative" class="nav-tab <?php echo $active_tab == 'user_settings' ? 'nav-tab-active' : ''; ?>" href="<?php echo add_query_arg(array('tab' => 'user_settings'), $_SERVER['REQUEST_URI']); ?>">Users Settings</a>
-      <a id="laib_users_settings_tab_pointer" style="position: relative" class="nav-tab <?php echo $active_tab == 'user_genetal_settings' ? 'nav-tab-active' : ''; ?>" href="<?php echo add_query_arg(array('tab' => 'user_general_settings'), $_SERVER['REQUEST_URI']); ?>">Users General Settings</a>
-      <a id="laib_users_settings_tab_pointer" style="position: relative" class="nav-tab <?php echo $active_tab == 'groups' ? 'nav-tab-active' : ''; ?>" href="<?php echo add_query_arg(array('tab' => 'groups'), $_SERVER['REQUEST_URI']); ?>">Groups</a>
-      <a id="laib_users_settings_tab_pointer" style="position: relative" class="nav-tab <?php echo $active_tab == 'params' ? 'nav-tab-active' : ''; ?>" href="<?php echo add_query_arg(array('tab' => 'params'), $_SERVER['REQUEST_URI']); ?>">Parameters</a>
-    </h2>
-    <table style="width:100%;">
-      <tr>
-        <td style="width:65%;vertical-align:top;" id="configurationForm">
-          <?php
-          if ($active_tab == 'user_settings') {
-            lab_admin_tab_user();
-          } else if ($active_tab == 'user_general_settings') {
-            lab_admin_tab_general_user();
-          } else if ($active_tab == 'groups') {
-            lab_admin_tab_groups();
-          } else if ($active_tab == 'params') {
-            lab_admin_tab_params();
-          } else {
-            lab_admin_tab_seminaire();
-          }
-          ?>
-        </td>
-      </tr>
-    </table>
-  </div>
-  <script>
-  </script>
-<?php
-}
+
 
 function lab_admin_tab_general_user()
 {

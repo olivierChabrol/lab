@@ -445,8 +445,8 @@ function saveUserLeft(userId, date, isChecked) {
 
 function loadUserMetadata(userId) {
   var data = {
-               'action' : 'search_user_metadata',
-               'userId' : userId
+    'action' : 'search_user_metadata',
+    'userId' : userId
   };
   jQuery.post(ajaxurl, data, function(response) {
     if(response.data) {
@@ -455,15 +455,15 @@ function loadUserMetadata(userId) {
       jQuery("#lab_user_lastname").val(response.data["last_name"]["value"]);
       jQuery("#lab_usermeta_id").val(response.data["lab_user_left"]["id"]);
       if (response.data["lab_user_left"]["value"] != null) {
-         jQuery("#lab_user_left").prop("checked", true);
-         jQuery("#lab_user_left_date").prop("disabled", false);
-         jQuery("#lab_user_left_date").val(response.data["lab_user_left"]["value"]);
+        jQuery("#lab_user_left").prop("checked", true);
+        jQuery("#lab_user_left_date").prop("disabled", false);
+        jQuery("#lab_user_left_date").val(response.data["lab_user_left"]["value"]);
       }
       else
       {
-	 jQuery("#lab_user_left").prop("checked", false);
-         jQuery("#lab_user_left_date").prop("disabled", true);
-         jQuery("#lab_user_left_date").val("");
+	      jQuery("#lab_user_left").prop("checked", false);
+        jQuery("#lab_user_left_date").prop("disabled", true);
+        jQuery("#lab_user_left_date").val("");
       }
     }
     else
@@ -472,6 +472,9 @@ function loadUserMetadata(userId) {
     }
   });
 }
+
+
+
 
 function saveEventCaterory(postId,categoryId) {
   var data = {
