@@ -88,7 +88,7 @@ jQuery(function($){
       $("#lab_user_email").val(label);
 
       $("#lab_searched_user_id").val(value);
-      loadUserMetadata(value);
+      callbUser(value, loadUserMetaData);
       return false;
     }
   });
@@ -268,27 +268,11 @@ jQuery(function($){
   })
 });
 
-function loadUserName(userId) {
-  var data = {
-               'action' : 'search_user_metadata',
-               'userId' : userId
-  };
-  jQuery.post(ajaxurl, data, function(response) {
-    if(response.data) {
-      jQuery("#wp_lab_group_chief_edit").val(response.data["first_name"]["value"] + " " +response.data["last_name"]["value"]);
-    }
-    else
-    {
-
-    }
-  });
-}
-
 function setinfoToGroupEditionFields(groupId, acronym, groupName, chiefId, parent_group_id, group_type) {
   jQuery('#wp_lab_group_to_edit').val(groupId);
   jQuery('#wp_lab_group_acronym_edit').val(acronym);
   jQuery('#wp_lab_group_name_edit').val(groupName);
-  jQuery('#wp_lab_group_chief_edit').val(loadUserName(chiefId));
+  jQuery('#wp_lab_group_chief_edit').val(callbUser(chiefId, loadUserName));
   jQuery('#wp_lab_group_parent_edit').val(parent_group_id);
   jQuery('#wp_lab_group_type_edit').val(group_type);
 }
@@ -465,6 +449,51 @@ function saveUserLeft(userId, date, isChecked) {
   });
 }
 
+function callbUser(userId, callback) { // function with callback to operate with userId
+  var data = {
+               'action' : 'search_user_metadata',
+               'userId' : userId
+  };
+  jQuery.post(ajaxurl, data, function(response) {
+    callback(response);
+  });
+}
+
+function loadUserName(response) {
+  if(response.data) {
+    jQuery("#wp_lab_group_chief_edit").val(response.data["first_name"]["value"] + 
+      " " + response.data["last_name"]["value"]);
+  }
+  else
+  {
+
+  }
+}
+
+function loadUserMetaData(response) {
+  if(response.data) {
+    //alert(response.data["first_name"]["value"]);
+    jQuery("#lab_user_firstname").val(response.data["first_name"]["value"]);
+    jQuery("#lab_user_lastname").val(response.data["last_name"]["value"]);
+    jQuery("#lab_usermeta_id").val(response.data["lab_user_left"]["id"]);
+    if (response.data["lab_user_left"]["value"] != null) {
+      jQuery("#lab_user_left").prop("checked", true);
+      jQuery("#lab_user_left_date").prop("disabled", false);
+      jQuery("#lab_user_left_date").val(response.data["lab_user_left"]["value"]);
+    } else {
+	    jQuery("#lab_user_left").prop("checked", false);
+      jQuery("#lab_user_left_date").prop("disabled", true);
+      jQuery("#lab_user_left_date").val("");
+    }
+  }
+  else
+  {
+
+  }
+}
+
+/**** LOADUSERMETADATA DE BASE CI DESSOUS****/ 
+/*
 function loadUserMetadata(userId) {
   var data = {
                'action' : 'search_user_metadata',
@@ -493,7 +522,7 @@ function loadUserMetadata(userId) {
 
     }
   });
-}
+}*/
 
 function saveEventCaterory(postId,categoryId) {
   var data = {
