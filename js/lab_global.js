@@ -27,6 +27,7 @@ jQuery(function($){
         $("#wp_lab_group_name").val(label);
 
         $("#lab_searched_event_id").val(value);
+        setinfoToGroupEditionFields();
       }
   });
 
@@ -265,6 +266,11 @@ jQuery(function($){
     editGroup($groupId, $acronym, $name, $chief, $parent, $type);
   })
 });
+
+function setinfoToGroupEditionFields(groupId) {
+
+}
+
 // Notifications "toast" affichant une erreur ou un succès lors de la requête de création de groupe.
 function toast_error(message) {
   jQuery(function($){
