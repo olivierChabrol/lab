@@ -369,3 +369,44 @@ function lab_admin_test()
   //$user = 1;
   //wp_send_json_success("UM()->options()->get( 'author_redirect' ) : " . UM()->options()->get('author_redirect') . " /  um_fetch_user($user) : " . um_fetch_user(1));
 }
+
+
+/********************************************************************************************
+ * GROUPS
+ ********************************************************************************************/
+function lab_admin_group_availableAc() {
+  //Vérifie la disponibilité de l'acronyme
+  $res = lab_admin_search_group_by_acronym($_POST['ac']);
+  if (count($res)) {
+    wp_send_json_error($res);
+    return;
+  }
+  wp_send_json_success();
+}
+function lab_admin_group_createReq() {
+  $res = lab_admin_group_create($_POST['name'],$_POST['acronym'],$_POST['chief_id'],$_POST['parent'],$_POST['type']);
+  if (strlen($res)==0) {
+    wp_send_json_success(lab_admin_search_group_by_acronym($_POST['acronym']));
+    return;
+  }
+  wp_send_json_error($res);
+}
+function lab_admin_group_createRoot() {
+  $res = lab_admin_group_create('root', 'root', '1', '0', '0');
+  if (strlen($res)==0) {
+    wp_send_json_success();
+    return;
+  }
+  wp_send_json_error($res);
+}
+function lab_admin_group_subs_addReq() {
+  $res = lab_admin_group_subs_add($_POST['id'],$_POST['subList']);
+  if (strlen($res)==0) {
+    wp_send_json_success();
+    return;
+  }
+  wp_send_json_error($res);
+}
+/********************************************************************************************
+ * KeyRing
+ ********************************************************************************************/
