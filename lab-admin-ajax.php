@@ -424,3 +424,11 @@ function lab_admin_group_subs_addReq() {
 /********************************************************************************************
  * KeyRing
  ********************************************************************************************/
+function lab_keyring_create_keyReq() {
+  $res = lab_keyring_create_key($_POST['number'],$_POST['office'],$_POST['type'],$_POST['brand'],$_POST['site'],$_POST['commentary']); 
+  if (strlen($res)==0) {
+    wp_send_json_success();
+    return;
+  }
+  wp_send_json_error($res);
+}

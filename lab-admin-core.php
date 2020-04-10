@@ -162,13 +162,53 @@ function lab_keyring_createTable_loans() {
         `key_id` bigint UNSIGNED NOT NULL,
         `user_id` bigint UNSIGNED NOT NULL,
         `referent_id` bigint UNSIGNED NOT NULL,
-        `start_date` date DEFAULT NULL,
+        `start_date` date NOT NULL,
         `end_date` date DEFAULT NULL,
+        `ended` boolean NOT NULL DEFAULT FALSE,
         `commentary` text,
         PRIMARY KEY(`id`),
+        FOREIGN KEY (`key_id`) REFERENCES `wp_lab_keys` (`id`),
         FOREIGN KEY (`user_id`) REFERENCES `wp_users` (`ID`),
         FOREIGN KEY (`referent_id`) REFERENCES `wp_users` (`ID`)
       ) ENGINE=InnoDB;";
     global $wpdb;
     $wpdb->get_results($sql);
+}
+function lab_keyring_create_key($number,$office,$type,$brand,$site,$commentary) {
+    global $wpdb;
+    $wpdb->hide_errors();
+    if ( $wpdb->insert(
+        'wp_lab_keys',
+        array(
+            'number' => $number,
+            'office' => $office,
+            'type' => $type,
+            'brand' => $brand,
+            'site' => $site,
+            'commentary' => $commentary
+        )
+    ) ) {
+        return;
+    } else {
+        return $wpdb -> last_error;
+    }
+}
+function lab_keyring_create_loan($key_id,$user_id,$referent_id,$start_date,$end_date,$commentary) {
+    global $wpdb;
+    $wpdb->hide_errors();
+    if ( $wpdb->insert(
+        'wp_lab_keys',
+        array(
+            'key_id' => $key_id,
+            'user_id' => $user_id,
+            'referent_id' => $referent_id,
+            'start_date' => $start_date,
+            'end_date' => $end_date==0 ? NULL : $end_date,
+            'commentary' => $commentary
+        )
+    ) ) {
+        return;
+    } else {
+        return $wpdb -> last_error;
+    }
 }

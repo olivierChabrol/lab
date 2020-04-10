@@ -331,7 +331,8 @@ function lab_admin_tab_groups() {
       <td><select id="lab_createGroup_type" name="lab_createGroup_Type">
         <?php //Récupère la liste des types de groupe existants
           $output ="";
-          foreach ( lab_admin_get_params_groupTypes() as $r ) {
+          $params = new AdminParams;
+          foreach ( $params->get_params_fromId($params::PARAMS_GROUPTYPE_ID) as $r ) {
             $output .= "<option value =".$r->id.">".$r->value."</option>";
           }
           echo $output;
