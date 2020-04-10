@@ -19,9 +19,11 @@ require_once("lab-shortcode.php");
 require_once("lab-shortcode-directory.php");
 require_once("lab-admin-ajax.php");
 require_once("lab-admin-core.php");
+require_once("lab-admin-groups.php");
 require_once("lab-admin-params.php");
 require_once("lab-admin-keyring.php");
 require_once(LAB_DIR_PATH."admin/view/lab-admin-tabs.php");
+require_once("lab-html-helper.php");
 //require_once(LAB_DIR_PATH."admin/view/lab-admin-tabs.php");
 ///locatrequire_once("link-template.php");
 //Admin Files
@@ -259,22 +261,9 @@ function lab_admin_tab_groups() {
     <input required type="text" name="wp_lab_group_chief" id="wp_lab_group_chief_edit" placeholder="Group leader"/><br /><br />
     <input type="hidden" id="lab_searched_chief_id" name="lab_searched_chief_id" />
     <label for="wp_lab_group_parent_edit">Modifier le groupe parent :</label>
-    <select name="wp_lab_group_parent" id="wp_lab_group_parent_edit">
-      <option value="0">Aucun</option>
-    <?php
-      $sql = "SELECT id, group_name FROM `wp_lab_groups`";
-      global $wpdb;
-      $results = $wpdb->get_results($sql);
-      foreach ( $results as $r ) {
-        echo("<option value=\"" . $r->id . "\">" . $r->group_name . "</option>");
-      }
-    ?>
-    </select>
+    <?php lab_html_select("wp_lab_group_parent_edit", "wp_lab_group_parent", "", lab_admin_group_select_group, "group_name", array("value"=>0,"label"=>"None")); ?>
     <label for="wp_lab_group_type_edit">Modifier le type :</label>
-    <select name="wp_lab_group_type" id="wp_lab_group_type_edit">
-      <option value="1">Groupe</option>
-      <option value="2">Équipe</option>
-    </select>
+    <?php lab_html_select("wp_lab_group_type_edit", "wp_lab_group_type", "", lab_admin_get_params_groupTypes); ?>
     <br /><br />
     
     <br /><a href="#" class="page-title-action" id="lab_admin_group_edit_button">Save</a>
@@ -294,7 +283,7 @@ function lab_admin_tab_groups() {
   <button class="page-title-action" id="lab_createGroup_createRoot">Créer groupe root</button>
   <hr/>
   <table class="form-table" role="presentation">
-  <h3>Créer un groupe : </h3>
+  <h3>Create group : </h3>
   <form action="javascript:void(0);">
 	<tbody>
     <tr class="form-field form-required">
@@ -310,33 +299,14 @@ function lab_admin_tab_groups() {
     <tr class="form-field">
       <th scope="row"><label for="lab_createGroup_parentGroup">Groupe parent :</label></th>
       <td>
-        <select id="lab_createGroup_parent" name="lab_createGroup_parent">
-          <option value="0">None</option>
-          <?php //Récupère la liste des groupes en affichant leur acronymes dans la liste déroulante.
-            $sql = "SELECT id,acronym FROM `wp_lab_groups`";
-            global $wpdb;
-            $results = $wpdb->get_results($sql);
-            $output="";
-            foreach ( $results as $r )
-            {
-              $output .= "<option value =".$r->id.">".$r->acronym."</option>";
-            }
-            echo $output;
-          ?>
-        </select>
+        <?php lab_html_select("lab_createGroup_type", "lab_createGroup_Type", "", lab_admin_group_select_group, "acronym", array("value"=>0,"label"=>"None")); ?>
       </td>
     </tr>
     <tr class="form-field">
       <th scope="row"><label for="lab_createGroup_type">Type :</label></th>
-      <td><select id="lab_createGroup_type" name="lab_createGroup_Type">
-        <?php //Récupère la liste des types de groupe existants
-          $output ="";
-          foreach ( lab_admin_get_params_groupTypes() as $r ) {
-            $output .= "<option value =".$r->id.">".$r->value."</option>";
-          }
-          echo $output;
-        ?>
-      </select></td>
+      <td>
+      <?php lab_html_select("lab_createGroup_type", "lab_createGroup_Type", "", lab_admin_get_params_groupTypes); ?>
+      </td>
     </tr>
     <tr class="form-field">
       <th scope="row"><label for="lab_createGroup_chief">Responsable du groupe :</label></th>

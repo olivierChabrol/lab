@@ -11,6 +11,8 @@ function lab_admin_tab_keyring() {
     <p></p>
     <button class="lab_keyring_create_table_keys" id="lab_keyring_create_table_keys">Créer la table Keys</button>
     <button class="lab_keyring_create_table_loans" id="lab_keyring_create_table_loans">Créer la table Loans</button>
+    <hr/>
+    <h2>Liste des clés</h2>
     <?php
 }
 ?>
