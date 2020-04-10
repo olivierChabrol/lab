@@ -86,6 +86,7 @@ add_action( 'wp_ajax_group_root', 'lab_admin_group_createRoot');
 add_action( 'wp_ajax_delete_group', 'lab_admin_group_delete');
 add_action( 'wp_ajax_group_subs_add', 'lab_admin_group_subs_addReq');
 add_action( 'wp_ajax_usermeta_names', 'lab_admin_usermeta_names');
+add_action('wp_ajax_edit_group', 'lab_group_editGroup');
 //Actions pour la gestion des params
 add_action( 'wp_ajax_param_create_table', 'lab_admin_param_create_table');
 add_action( 'wp_ajax_save_param', 'lab_admin_param_save');
@@ -95,8 +96,7 @@ add_action( 'wp_ajax_param_search_value', 'lab_admin_param_search_value');
 //Actions pour la gestion des clés - KeyRing
 add_action( 'wp_ajax_keyring_table_keys', 'lab_keyring_createTable_keys' );
 add_action( 'wp_ajax_keyring_table_loans', 'lab_keyring_createTable_loans' );
-
-add_action('wp_ajax_edit_group', 'lab_group_editGroup');
+add_action( 'wp_ajax_keyring_create_key', 'lab_keyring_create_keyReq' );
 
 /**
  * Fonction de création du menu
@@ -119,6 +119,7 @@ function admin_enqueue()
   wp_enqueue_script('lab', plugins_url('js/lab_global.js',__FILE__), array('jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog'), "1.3", false);
   wp_enqueue_style('jqueryToastCSS',plugins_url('css/jquery.toast.css',__FILE__));
   wp_enqueue_script('jqueryToastJS',plugins_url('js/jquery.toast.js',__FILE__),array('jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog'),"1.3.2",false);
+  wp_enqueue_style('KeyRingTableCSS',plugins_url('css/keyring.css',__FILE__));
 }
 function wp_lab_global_enqueues()
 {

@@ -1,0 +1,27 @@
+#lab_keyring_table td,#lab_keyring_table th {
+    text-align: left;
+}
+#lab_keyring_table  tbody tr:nth-child(odd) {
+   background-color: #DDD;
+}
+#lab_keyring_table tfoot td {
+    padding: 0;
+    height: 3em;
+    line-height: 3em;
+    text-align: center;
+}
+#lab_keyring_table tfoot td input, #lab_keyring_table tfoot td select {
+    display: inline-block;
+    vertical-align: middle;
+    text-align: left;
+    width: 90%;
+    height: 1.6em;
+    border: none;
+    border-radius: 0;
+    border-bottom: 1px solid #0071a1;
+}
+#lab_keyring_table .lab_keyring_icon {
+    color: green;
+    font-size: 1.2em;
+    text-align: justify;
+}

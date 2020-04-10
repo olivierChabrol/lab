@@ -398,7 +398,7 @@ function lab_admin_group_availableAc() {
   wp_send_json_success();
 }
 function lab_admin_group_createReq() {
-  $res = lab_admin_group_create($_POST['name'],$_POST['acronym'],$_POST['chief_id'],$_POST['parent'],$_POST['type']);
+  $res = lab_admin_group_create($_POST['name'],$_POST['acronym'],$_POST['chiefID'],$_POST['parent'],$_POST['type']);
   if (strlen($res)==0) {
     wp_send_json_success(lab_admin_search_group_by_acronym($_POST['acronym']));
     return;

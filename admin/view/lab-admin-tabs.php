@@ -25,7 +25,7 @@ function wp_lab_option()
       <a id="laib_users_settings_tab_pointer" style="position: relative" class="nav-tab <?php echo $active_tab == 'user_genetal_settings' ? 'nav-tab-active' : ''; ?>" href="<?php echo add_query_arg(array('tab' => 'user_general_settings'), $_SERVER['REQUEST_URI']); ?>">Users General Settings</a>
       <a id="laib_users_settings_tab_pointer" style="position: relative" class="nav-tab <?php echo $active_tab == 'groups' ? 'nav-tab-active' : ''; ?>" href="<?php echo add_query_arg(array('tab' => 'groups'), $_SERVER['REQUEST_URI']); ?>">Groups</a>
       <a id="laib_users_settings_tab_pointer" style="position: relative" class="nav-tab <?php echo $active_tab == 'params' ? 'nav-tab-active' : ''; ?>" href="<?php echo add_query_arg(array('tab' => 'params'), $_SERVER['REQUEST_URI']); ?>">Parameters</a>
-      <a id="laib_users_settings_tab_pointer" style="position: relative" class="nav-tab <?php echo $active_tab == 'params' ? 'nav-tab-active' : ''; ?>" href="<?php echo add_query_arg(array('tab' => 'keyring'), $_SERVER['REQUEST_URI']); ?>">KeyRing</a>
+      <a id="laib_users_settings_tab_pointer" style="position: relative" class="nav-tab <?php echo $active_tab == 'keyring' ? 'nav-tab-active' : ''; ?>" href="<?php echo add_query_arg(array('tab' => 'keyring'), $_SERVER['REQUEST_URI']); ?>">KeyRing</a>
     </h2>
     <table style="width:100%;">
       <tr>

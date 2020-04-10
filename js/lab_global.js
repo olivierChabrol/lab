@@ -246,45 +246,31 @@ jQuery(function($){
     });
   });
   $("#lab_createGroup_create").click(function() {
-    let params = [$("#lab_createGroup_name"),$("#lab_createGroup_acronym"),$("#lab_createGroup_type"),$("#lab_createGroup_chiefID"),$("#lab_createGroup_parent"),$("#lab_createGroup_chief")];
-    let values = Array();
-    let subs = $("#lab_createGroup_subsIDList")[0].innerHTML.split(",");
-    subs.pop();
-    console.log(subs);
-    params.forEach(element => {
-      if (element.attr("id") != 'lab_createGroup_chiefID' && element.attr("id") != 'lab_createGroup_subID') {
-        if (element.val().length==0) {
-          element.css('border-color','red');
-        }
-        else {
-          element.css('border-color','');
-          values.push(element.val());
-        }
+    valeurs = new Object();
+    for (i of ['name', 'acronym', 'type', 'chiefID','parent']) {
+      if ($("#lab_createGroup_"+i).val()=="") {
+        $("#lab_createGroup_"+i).css("border-color","#F00");
+        toast_error("Group couldn't be created :<br> The form isn't filled properly");
+        return;
       }
-    });
-    values.pop();
-    console.log(values.push(subs));
-    if (values.length == 6) {
-      createGroup(values);
-      //On réinitialise tous les champs du formulaire
-      $("#lab_createGroup_name").val("");
-      $("#lab_createGroup_acronym").val("");
-      $("#lab_createGroup_chiefID").val("");
-      $("#lab_createGroup_chief").val("");
-      $("#lab_createGroup_subInput").val("");
-      $("#lab_createGroup_subID").val("");
-      $("#lab_createGroup_subsList")[0].innerHTML="";
-      $("#lab_createGroup_subsIDList")[0].innerHTML="";
+      $("#lab_createGroup_"+i).css("border-color","");
+      valeurs[i] = $("#lab_createGroup_"+i).val();
     }
-    else {
-      toast_error("Group couldn't be created :<br> The form isn't filled properly");
-    }
+    subs = $("#lab_createGroup_subsIDList")[0].innerHTML.split(",");
+    subs.pop(); //Supprime le dernier élément (vide)
+    valeurs['subsList'] = subs;
+    console.log(valeurs);
+    createGroup(valeurs);
+    //On réinitialise tous les champs du formulaire
+    clearFields('lab_createGroup_',['name', 'acronym', 'type', 'chiefID','chief','subInput','parent']);
+    $("#lab_createGroup_subsList")[0].innerHTML="";
+    $("#lab_createGroup_subsIDList")[0].innerHTML="";
   })
   $("#lab_createGroup_subInput").autocomplete({
     minChars: 3,
     source: function(term, suggest){
       try { searchRequest.abort(); } catch(e){}
-      searchRequest = $.post(ajaxurl, { action: 'search_user_email',search: term, }, function(res) {
+      searchRequest = $.post(ajaxurl, { action: 'search_username',search: term, }, function(res) {
         suggest(res.data);
       });
       },
@@ -293,9 +279,7 @@ jQuery(function($){
       var label = ui.item.label;
       event.preventDefault();
       $("#lab_createGroup_subInput").val(label);
-
       $("#lab_createGroup_subID").val(value);
-      return false;
     }
   });
   $("#lab_createGroup_addSub").click(function(){
@@ -356,9 +340,24 @@ jQuery(function($){
       toast_error("Error Creating table : "+response);
     });
   });
+  $("#lab_keyring_newKey_create").click(function () {
+    let params=Object();
+    for (i of ['type','number','office','brand','site']) {
+      if ($("#lab_keyring_newKey_"+i).val() == "") {
+        $("#lab_keyring_newKey_"+i).css("border-color","#F00");
+        toast_error("Error creating key :<br/>All the required fields must be filled.");
+        return;
+      }
+      $("#lab_keyring_newKey_"+i).css("border-color","#0071a1");
+      params[i] = $("#lab_keyring_newKey_"+i).val();
+    }
+    params["commentary"] = $("#lab_keyring_newKey_commentary").val();
+    createKey(params);
+    clearFields("lab_keyring_newKey_",['type','number','office','brand','site','commentary'])
+  })
 });
-
-function setinfoToGroupEditionFields(groupId, acronym, groupName, chiefId, parent_group_id, group_type) {
+  
+  function setinfoToGroupEditionFields(groupId, acronym, groupName, chiefId, parent_group_id, group_type) {
   jQuery('#wp_lab_group_to_edit').val(groupId);
   jQuery('#wp_lab_group_acronym_edit').val(acronym);
   jQuery('#wp_lab_group_name_edit').val(groupName);
@@ -411,23 +410,17 @@ function createGroup(params) {
   //On vérifie d'abord que l'acronyme est bien unique
   var data = {
     'action' : 'group_search_ac',
-    'ac' : params[1]
+    'ac' : params['acronym']
   };
+  console.log(data);
   jQuery.post(ajaxurl, data, function(response) {
     if (!response.success) {
       toast_error("Group couldn't be created : the acronym is already in use");
       return false;
     }
     //On essaie ensuite de rajouter l'entrée dans la table groups 
-    var data2 = {
-      'action' : 'group_create',
-      'name' : params[0],
-      'acronym' : params[1],
-      'type' : params[2],
-      'chief_id' : params[3],
-      'parent' : params[4],
-    };
-    jQuery.post(ajaxurl, data2, function(response) {
+    params['action']='group_create';
+    jQuery.post(ajaxurl, params, function(response) {
       if (response.success) {
         //Enfin, on ajoute les entrées dans la table suppléants
         var data3 = {
@@ -702,4 +695,20 @@ function resetGroupEdit()
   jQuery("#wp_lab_group_chief_edit").val("");
   jQuery("#wp_lab_group_parent_edit").val("");
   jQuery("#wp_lab_group_type_edit").val("0");
+}
+function clearFields(prefix,list) {
+  for (i of list) {
+    jQuery('#'+prefix+i).val('');
+  }
+}
+function createKey(params) {
+  params['action'] = 'keyring_create_key';
+  console.log(params);
+  jQuery.post(ajaxurl, params, function(response) {
+    if (response.success) {
+      toast_success("Clé créée avec succès !");
+      return;
+    }
+    toast_error("Erreur de création de clé");
+  });
 }
