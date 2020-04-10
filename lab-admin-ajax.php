@@ -28,6 +28,37 @@ function lab_admin_search_event() {
 /********************************************************************************************
  * GROUP
  ********************************************************************************************/
+
+function group_delete_substitutes() 
+{
+  $id = $_POST['id'];
+  global $wpdb;
+  wp_send_json_success($wpdb->delete('wp_lab_group_substitutes', array('id' => $id)));
+}
+
+function group_add_substitutes()
+{
+  $userId = $_POST['userId'];
+  $groupId = $_POST['groupId'];
+  global $wpdb;
+  wp_send_json_success($wpdb->insert('wp_lab_group_substitutes', array('group_id'=>$groupId,'substitute_id'=>$userId)));
+
+}
+
+function group_load_substitutes()
+{
+  $id = $_POST['id'];
+  $sql = "SELECT lgs.id AS id, um1.meta_value AS last_name, um2.meta_value AS first_name FROM `wp_lab_group_substitutes` AS lgs JOIN wp_usermeta AS um1 ON um1.user_id=lgs.substitute_id JOIN wp_usermeta AS um2 ON um2.user_id=lgs.substitute_id WHERE lgs.`group_id`=33 AND um1.meta_key='last_name' AND um2.meta_key='first_name'";
+  global $wpdb;
+  $results = $wpdb->get_results($sql);
+  $items = array();
+  foreach ( $results as $r )
+  {
+    $items[] = array(id=>$r->id, first_name=>$r->first_name, last_name=>$r->last_name, );
+  }
+  wp_send_json_success( $items );
+}
+
 function lab_admin_search_group_acronym() {
   $ac = $_POST['ac'];
   $sql = "SELECT group_name FROM `wp_lab_groups` WHERE acronym = '".$ac."';";
@@ -98,6 +129,7 @@ function lab_admin_group_search() {
 function lab_admin_group_delete(){
     $group_id = $_POST['id'];
     global $wpdb;
+    $wpdb->delete('wp_lab_group_substitutes', array('group_id' => $group_id));
     $wpdb->delete('wp_lab_groups', array('id' => $group_id));
     wp_send_json_success();
 }
