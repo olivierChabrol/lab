@@ -73,7 +73,7 @@ jQuery(function($){
       return false;
     }
   });
-  $('#lab_user_email').autocomplete({
+  $('#lab_user_search').autocomplete({
     minChars: 3,
     source: function(term, suggest){
       try { searchRequest.abort(); } catch(e){}
@@ -85,9 +85,9 @@ jQuery(function($){
       var label = ui.item.label;
       var value = ui.item.value;
       event.preventDefault();
-      $("#lab_user_email").val(label);
+      $("#lab_user_search").val(label);
 
-      $("#lab_searched_user_id").val(value);
+      $("#lab_user_search_id").val(value);
       callbUser(value, loadUserMetaData);
       return false;
     }
@@ -104,7 +104,7 @@ jQuery(function($){
     saveEventCaterory(postId, categoryId);
   });
   $("#lab_user_button_save_left").click(function() {
-    saveUserLeft($("#lab_searched_user_id").val(), $("#lab_user_left_date").val(), $("#lab_user_left").is(":checked"));
+    saveUserLeft($("#lab_user_search_id").val(), $("#lab_user_left_date").val(), $("#lab_user_left").is(":checked"));
   });
   $("#lab_createGroup_acronym").change(function() {
     var data = {
@@ -632,7 +632,7 @@ function saveUserLeft(userId, date, isChecked) {
   };
   jQuery.post(ajaxurl, data, function(response) {
     if(response.data) {
-      alert("Sauver");
+      toast_success("User saved");
     }
   });
 }

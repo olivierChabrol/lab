@@ -25,6 +25,7 @@ require_once("lab-admin-keyring.php");
 require_once(LAB_DIR_PATH."admin/view/lab-admin-tabs.php");
 require_once(LAB_DIR_PATH."admin/view/lab-admin-tab-groups.php");
 require_once(LAB_DIR_PATH."admin/view/lab-admin-tab-params.php");
+require_once(LAB_DIR_PATH."admin/view/lab-admin-tab-users.php");
 require_once("lab-html-helper.php");
 
 //Admin Files
@@ -146,50 +147,6 @@ function lab_admin_tab_general_user()
   <a href="#" class="page-title-action" id="lab_user_button_update_db">ajouter lab_left_user à tous les utilisateurs</a>
   <br>
   <a href="#" class="page-title-action" id="lab_user_button_test">test</a>
-<?php
-}
-
-function lab_admin_tab_user()
-{
-?>
-  <table class="form-table" role="presentation">
-    <tr class="user-rich-editing-wrap">
-      <th scope="row">
-        <label for="lab_user_name">Nom de l'utilisateur</label>
-      </th>
-      <td>
-        <input type="text" name="lab_user_email" id="lab_user_email" value="" size="80" /><span id="lab_user_id"></span><br>
-        <input type="hidden" id="lab_searched_user_id" name="lab_searched_user_id" value="" /><br>
-      </td>
-    </tr>
-    <tr class="user-rich-editing-wrap">
-      <th>
-        <label for="lab_user_firstname">Prenom</label>
-      </th>
-      <td>
-        <input type="text" disabled="disabled" id="lab_user_firstname">
-      </td>
-    </tr>
-    <tr class="user-rich-editing-wrap">
-      <th>
-        <label for="lab_user_lastname">Nom</label>
-      </th>
-      <td>
-        <input type="text" disabled="disabled" id="lab_user_lastname">
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <label for="lab_user_left">Parti</label>
-      </td>
-      <td>
-        <input type="checkbox" id="lab_user_left"> <label for="lab_user_left_date">Date de départ</label><input type="text" id="lab_user_left_date">
-        <input type="hidden" id="lab_usermeta_id">
-      </td>
-    </tr>
-  </table>
-  <a href="#" class="page-title-action" id="lab_user_button_save_left">Modifier le statut de l'utilisateur</a>
-
 <?php
 }
 
