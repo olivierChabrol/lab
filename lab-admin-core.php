@@ -212,3 +212,17 @@ function lab_keyring_create_loan($key_id,$user_id,$referent_id,$start_date,$end_
         return $wpdb -> last_error;
     }
 }
+function lab_keyring_search_byWord($word) {
+    $sql = "SELECT * from `wp_lab_keys`
+            WHERE Concat_ws(`wp_lab_keys`.`number`,`wp_lab_keys`.`office`,`wp_lab_keys`.`site`,`wp_lab_keys`.`brand`,`wp_lab_keys`.`commentary`)
+            LIKE '%".$word."%'
+            ORDER BY ABS(`wp_lab_keys`.`number`);";
+    global $wpdb;
+    $results = $wpdb->get_results($sql);
+    $items = array();
+    foreach ( $results as $r )
+    {
+      array_push($items,$r);
+    }
+    return $items;
+}

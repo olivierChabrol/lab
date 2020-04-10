@@ -1,5 +1,5 @@
 <?php
-function lab_admin_tab_keyring() {
+  function lab_admin_tab_keyring() {
     echo "<h1>Gestion des clés</h1>";
     if (!lab_admin_checkTable("wp_lab_keys")) {
       echo "<p id='lab_keyring_noKeysTableWarning'>La table <em>wp_lab_keys</em> n'a pas été trouvée dans la base, vous devez d'abord la créer ici : </p>";
@@ -7,7 +7,7 @@ function lab_admin_tab_keyring() {
     if (!lab_admin_checkTable("wp_lab_key_loans")) {
       echo "<p id='lab_keyring_noLoansTableWarning'>La table <em>wp_lab_key_loans</em> n'a pas été trouvée dans la base, vous devez d'abord la créer ici : </p>";
     }
-  ?>
+    ?>
     <p></p>
     <button class="lab_keyring_create_table_keys" id="lab_keyring_create_table_keys">Créer la table Keys</button>
     <button class="lab_keyring_create_table_loans" id="lab_keyring_create_table_loans">Créer la table Loans</button>
@@ -18,32 +18,19 @@ function lab_admin_tab_keyring() {
     <table class="widefat fixed" id="lab_keyring_table">
       <thead>
         <tr>
-          <th scope="col" style="width:5em">ID</th>
+          <th scope="col" style="width:4em">ID</th>
           <th scope="col" style="width:6em">Type</th>
           <th scope="col" style="width:6em">Numéro</th>
           <th scope="col" style="width:6em">Bureau</th>
           <th scope="col" style="width:8em">Marque</th>
           <th scope="col" style="width:9em">Site</th>
           <th scope="col" style="width:15em">Commentaire</th>
-          <th scope="col" style="width:3em">Dispo</th>
-          <th scope="col" style="width:12em">Actions</th>
+          <th scope="col" style="width:9em">Dispo</th>
+          <th scope="col" style="width:12em; text-align: center;">Actions</th>
         </tr>
       </thead>
       <tbody id="wp_lab_keyring_keysList">
-        <tr>
-          <td scope="col">0</td>
-          <td scope="col">Clé</td>
-          <td scope="col">123</td>
-          <td scope="col">106A</td>
-          <td scope="col">Master</td>
-          <td scope="col">Luminy</td>
-          <td scope="col">porte-clé rouge</td>
-          <td scope="col" class="lab_keyring_icon">✅</td>
-          <td scope="col" class="lab_keyring_icon">
-            <button class="page-title-action" id="lab_keyring_key_edit" >🖊Modifier</button>
-            <button class="page-title-action" id="lab_keyring_key_delete">❌</button>
-          </td>
-        </tr>
+      </tbody>
       <tfoot>
         <tr>
           <td scope="col">Nouvelle :</td>
@@ -83,10 +70,36 @@ function lab_admin_tab_keyring() {
           <td scope="col">
           <input type="text" id="lab_keyring_newKey_commentary" placeholder="Commentaire (facultatif)"/>
           </td>
-          <td scope="col" colspan="2"><button class="page-title-action" id="lab_keyring_newKey_create">Créer</button></td>
+          <td></td>
+          <td scope="col"><button class="page-title-action" id="lab_keyring_newKey_create">Créer</button></td>
         </tr>
       </tfoot>
     </table>
     <?php
-}
+  }
+  function wp_lab_keyring_tableFromKeysList($list) {
+    $output='';
+    $adminParams = new AdminParams;
+    foreach ($list as $element) {
+      $output .= '<tr>';
+      foreach (['id','type','number', 'office','brand','site','commentary'] as $field) {
+        if ($field == "site") {  
+          $output .= '<td scope="col">'.$adminParams->get_param($element->site).'</td>';
+        } elseif ( $field =='type' ) {
+          $output .= '<td scope="col">'.$adminParams->get_param($element->type).'</td>';
+        } else {
+          $output.='<td scope="col">'.$element->$field.'</td>';
+        }
+      }
+      $element->available == 1 ?
+                  $output .= '<td scope="col" class="lab_keyring_icon">✅<button class="page-title-action lab_keyring_key_lend">Prêter</button></td>'
+                : $output.='<td scope="col" class="lab_keyring_icon">❌<button class="page-title-action lab_keyring_key_lend">Voir prêt</button></td>';
+      $output .= '<td scope="col" class="lab_keyring_icon">
+                    <button class="page-title-action lab_keyring_key_edit" >🖊Modifier</button>
+                    <button class="page-title-action lab_keyring_key_delete">❌</button>
+                  </td>
+                </tr>';
+    }
+    return $output;
+  }
 ?>

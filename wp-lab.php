@@ -97,6 +97,7 @@ add_action( 'wp_ajax_param_search_value', 'lab_admin_param_search_value');
 add_action( 'wp_ajax_keyring_table_keys', 'lab_keyring_createTable_keys' );
 add_action( 'wp_ajax_keyring_table_loans', 'lab_keyring_createTable_loans' );
 add_action( 'wp_ajax_keyring_create_key', 'lab_keyring_create_keyReq' );
+add_action( 'wp_ajax_keyring_search_word', 'lab_keyring_search_byWordReq' );
 
 /**
  * Fonction de création du menu
@@ -350,13 +351,13 @@ function lab_admin_tab_groups() {
     <tr class="form-field">
       <th scope="row"><label for="lab_createGroup_subInput">Suppléants <span class="description">(facultatif) </span>:</label></th>
       <td colspan="2">
-        <p id="lab_createGroup_subsList"></p><span style="display:none; cursor:pointer;" id="lab_createGroup_subsDelete">❌ Vider la liste</span><span style="display: none;" id="lab_createGroup_subsIDList"></span>
+        <p id="lab_createGroup_subsList"></p><span style="display:none; cursor:pointer;" id="lab_createGroup_subsDelete">❌ Vider la liste</span>
       </td>
     </tr>
     <tr class="form-field">
       <td colspan="2" >
         <input id="lab_createGroup_subInput" type="text" name="lab_createGroup_subInput" placeholder="N'oubliez pas d'appuyer sur ajouter"/>
-        <input type="hidden" id="lab_createGroup_subID"/> 
+        <input type="hidden" id="lab_createGroup_subID" list=""/> 
       </td>
       <td><input type="button" id="lab_createGroup_addSub" class="page-title-action" value="+ Ajouter un suppléant"/></td>
     </tr>

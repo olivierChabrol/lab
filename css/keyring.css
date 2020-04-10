@@ -10,7 +10,7 @@
     line-height: 3em;
     text-align: center;
 }
-#lab_keyring_table tfoot td input, #lab_keyring_table tfoot td select {
+#lab_keyring_table tfoot td input, #lab_keyring_table tfoot td select,#lab_keyring_table tfoot td input::placeholder {
     display: inline-block;
     vertical-align: middle;
     text-align: left;
@@ -23,5 +23,9 @@
 #lab_keyring_table .lab_keyring_icon {
     color: green;
     font-size: 1.2em;
-    text-align: justify;
+    text-align: center;
+}
+#lab_keyring_table .lab_keyring_key_lend, #lab_keyring_newKey_create {
+    width: 7em;
+    margin-left: 1em;
 }

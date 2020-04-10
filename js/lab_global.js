@@ -256,15 +256,16 @@ jQuery(function($){
       $("#lab_createGroup_"+i).css("border-color","");
       valeurs[i] = $("#lab_createGroup_"+i).val();
     }
-    subs = $("#lab_createGroup_subsIDList")[0].innerHTML.split(",");
-    subs.pop(); //Supprime le dernier élément (vide)
+    subs = $("#lab_createGroup_subID").attr('list').split(",");
+    console.log(subs);
+    subs.shift(); //Supprime le dernier élément (vide)
     valeurs['subsList'] = subs;
-    console.log(valeurs);
     createGroup(valeurs);
     //On réinitialise tous les champs du formulaire
     clearFields('lab_createGroup_',['name', 'acronym', 'type', 'chiefID','chief','subInput','parent']);
     $("#lab_createGroup_subsList")[0].innerHTML="";
-    $("#lab_createGroup_subsIDList")[0].innerHTML="";
+    $("#lab_createGroup_subID").attr('list','');
+    $("#lab_createGroup_subsDelete").hide();
   })
   $("#lab_createGroup_subInput").autocomplete({
     minChars: 3,
@@ -283,21 +284,21 @@ jQuery(function($){
     }
   });
   $("#lab_createGroup_addSub").click(function(){
-    $("#lab_createGroup_subsDelete").show();
-    if ($("#lab_createGroup_subsIDList")[0].innerHTML.split(",").includes($("#lab_createGroup_subID").val())) {
+    $("#lab_createGroup_subsDelete").show(); //Affiche la 'croix' qui permet de vider la liste des suppléants
+    if ($("#lab_createGroup_subID").attr('list').split(",").includes($("#lab_createGroup_subID").val())) {
       console.log("Déjà présent");
       toast_error("Cette personne est déjà suppléant de ce groupe");
       return;
     }
     $("#lab_createGroup_subsList").append($("#lab_createGroup_subInput").val()+", ");
-    $("#lab_createGroup_subsIDList").append($("#lab_createGroup_subID").val()+",");
+    $("#lab_createGroup_subID").attr("list",function() { return $(this).attr('list')+","+$(this).val()});
     $("#lab_createGroup_subInput").val("");
     $("#lab_createGroup_subID").val("");
   });
   $("#lab_createGroup_subsDelete").click(function () { 
     //Efface la liste des suppléants
     $("#lab_createGroup_subsList")[0].innerHTML="";
-    $("#lab_createGroup_subsIDList")[0].innerHTML="";
+    $("#lab_createGroup_subID").attr('list','');
     //Se cache soi-même
     $("#lab_createGroup_subsDelete").hide();
    });
@@ -353,8 +354,26 @@ jQuery(function($){
     }
     params["commentary"] = $("#lab_keyring_newKey_commentary").val();
     createKey(params);
-    clearFields("lab_keyring_newKey_",['type','number','office','brand','site','commentary'])
-  })
+    clearFields("lab_keyring_newKey_",['type','number','office','brand','site','commentary']);
+    $("#wp_lab_keyring_keySearch").keyup();
+  });
+  $("#wp_lab_keyring_keySearch").keyup(function() {
+    data = {
+      'action' : 'keyring_search_word',
+      'search' : $(this).val()
+    }
+    jQuery.post(ajaxurl, data, function(response) {
+      if (response.success) {
+        $("#wp_lab_keyring_keysList")[0].innerHTML=response.data;
+        return;
+      }
+      else {
+        $("#wp_lab_keyring_keysList")[0].innerHTML="<tr><td colspan='9'>Aucune clé trouvée. Vous pouvez en créer une ci-dessous :</td></tr>";
+        $("#lab_keyring_newKey_number").val($("#wp_lab_keyring_keySearch").val());
+      }
+    });
+  });
+  $("#wp_lab_keyring_keySearch").keyup();
 });
   
   function setinfoToGroupEditionFields(groupId, acronym, groupName, chiefId, parent_group_id, group_type) {
@@ -426,7 +445,7 @@ function createGroup(params) {
         var data3 = {
           'action' : 'group_subs_add',
           'id' : response.data[0].id,
-          'subList' : params[5]
+          'subList' : params['subsList']
         };
         jQuery.post(ajaxurl, data3, function(resp) {
           if (!resp.success) {
@@ -707,6 +726,7 @@ function createKey(params) {
   jQuery.post(ajaxurl, params, function(response) {
     if (response.success) {
       toast_success("Clé créée avec succès !");
+      jQuery("#wp_lab_keyring_keySearch").keyup();
       return;
     }
     toast_error("Erreur de création de clé");
