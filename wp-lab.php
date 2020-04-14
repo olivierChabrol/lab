@@ -19,11 +19,15 @@ require_once("lab-shortcode.php");
 require_once("lab-shortcode-directory.php");
 require_once("lab-admin-ajax.php");
 require_once("lab-admin-core.php");
+require_once("lab-admin-groups.php");
 require_once("lab-admin-params.php");
 require_once("lab-admin-keyring.php");
 require_once(LAB_DIR_PATH."admin/view/lab-admin-tabs.php");
-//require_once(LAB_DIR_PATH."admin/view/lab-admin-tabs.php");
-///locatrequire_once("link-template.php");
+require_once(LAB_DIR_PATH."admin/view/lab-admin-tab-groups.php");
+require_once(LAB_DIR_PATH."admin/view/lab-admin-tab-params.php");
+require_once(LAB_DIR_PATH."admin/view/lab-admin-tab-users.php");
+require_once("lab-html-helper.php");
+
 //Admin Files
 if (is_admin()) {
 }
@@ -86,7 +90,10 @@ add_action( 'wp_ajax_group_root', 'lab_admin_group_createRoot');
 add_action( 'wp_ajax_delete_group', 'lab_admin_group_delete');
 add_action( 'wp_ajax_group_subs_add', 'lab_admin_group_subs_addReq');
 add_action( 'wp_ajax_usermeta_names', 'lab_admin_usermeta_names');
-add_action('wp_ajax_edit_group', 'lab_group_editGroup');
+add_action( 'wp_ajax_group_load_substitutes', 'group_load_substitutes');
+add_action( 'wp_ajax_group_delete_substitutes', 'group_delete_substitutes');
+add_action( 'wp_ajax_group_add_substitutes', 'group_add_substitutes');
+
 //Actions pour la gestion des params
 add_action( 'wp_ajax_param_create_table', 'lab_admin_param_create_table');
 add_action( 'wp_ajax_save_param', 'lab_admin_param_save');
@@ -152,232 +159,6 @@ function lab_admin_tab_general_user()
 <?php
 }
 
-function lab_admin_tab_user()
-{
-?>
-  <table class="form-table" role="presentation">
-    <tr class="user-rich-editing-wrap">
-      <th scope="row">
-        <label for="lab_user_name">Nom de l'utilisateur</label>
-      </th>
-      <td>
-        <input type="text" name="lab_user_email" id="lab_user_email" value="" size="80" /><span id="lab_user_id"></span><br>
-        <input type="hidden" id="lab_searched_user_id" name="lab_searched_user_id" value="" /><br>
-      </td>
-    </tr>
-    <tr class="user-rich-editing-wrap">
-      <th>
-        <label for="lab_user_firstname">Prenom</label>
-      </th>
-      <td>
-        <input type="text" disabled="disabled" id="lab_user_firstname">
-      </td>
-    </tr>
-    <tr class="user-rich-editing-wrap">
-      <th>
-        <label for="lab_user_lastname">Nom</label>
-      </th>
-      <td>
-        <input type="text" disabled="disabled" id="lab_user_lastname">
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <label for="lab_user_left">Parti</label>
-      </td>
-      <td>
-        <input type="checkbox" id="lab_user_left"> <label for="lab_user_left_date">Date de départ</label><input type="text" id="lab_user_left_date">
-        <input type="hidden" id="lab_usermeta_id">
-      </td>
-    </tr>
-  </table>
-  <a href="#" class="page-title-action" id="lab_user_button_save_left">Modifier le statut de l'utilisateur</a>
-
-<?php
-}
-
-/**
- * Function for the parameter lab management
- */
-function lab_admin_tab_params() {
-  global $wpdb;
-?>
-  <div id="lab_createGroup_form">
-    <h3>Manage Parameters :</h3>
-    <table>
-      <tr>
-        <!-- NEW PARAM -->
-        <td>
-    <h4>New Parameters</h4>
-    <label for="wp_lab_param_type">Type param</label>
-    <select id="wp_lab_param_type">
-<?php
-  $results = lab_admin_param_load_param_type();
-  foreach ( $results as $r ) {
-    echo("<option value=\"" . $r->id . "\">" . $r->value . "</option>");
-  }
-?>
-    </select><a href="#" class="page-title-action" id="lab_tab_param_delete">delete</a>
-    <br>
-    <label for="wp_lab_param_value">Param value</label>
-    <input type="text" id="wp_lab_param_value">
-    <a href="#" class="page-title-action" id="lab_tab_param_save">Save param</a>
-        </td>
-        <!-- EDIT PARAM -->
-        <td>
-          <h4>Edit parameters</h4>
-          <label for="lab_param_param_title">Param title</label>
-          <input type="text" id="lab_param_value_search" placeholder="type param first letter">
-          <input type="hidden" id="wp_lab_param_id">
-          <label for="wp_lab_param_type_edit">Param type</label>
-          <select id="wp_lab_param_type_edit"></select>
-          <a href="#" class="page-title-action" id="lab_tab_param_save_edit">Save param</a>
-          <a href="#" class="page-title-action" id="lab_tab_param_delete_edit">Delete param</a>
-
-        </td>
-      </tr>
-    </table>
-    <hr>
-    <h4>Create Table :</h4>
-    <a href="#" class="page-title-action" id="lab_tab_param_create_table">Create table</a>
-  </div>
-<?php
-}
-
-/**
- * Function for the groups management
- */
-function lab_admin_tab_groups() {
-  ?>
-  <div>
-    <label for="wp_lab_group_name">Nom du groupe</label>
-    <input type="text" name="wp_lab_group_name" id="wp_lab_group_name" value="" size="80"/>
-    <button class="page-title-action" id="delete_button">Supprimer le groupe</button><br>
-    <input type="hidden" id="lab_searched_group_id" name="lab_searched_group_id" value=""/>
-    
-  </div>
-  <div id="suppr_result"></div>
-<hr>
- <!-- Modifier un groupe -->
-  <div class="wp_lab_editGroup_form">
-    <h3>Modifier un groupe</h3>
-    <label for="wp_lab_group_acronym_edit">Modifier l'acronyme :</label>
-    <input type="text" name="wp_lab_acronym" id="wp_lab_group_acronym_edit" value="" size=10 placeholder="AA"/>
-    <label for="wp_lab_group_name_edit">Nouveau nom du groupe :</label>
-    <input type="text" name="wp_lab_group_name" id="wp_lab_group_name_edit" value="" size=50 placeholder="Nouveau nom"/><br /><br />
-    <label for="wp_lab_group_chief_edit">Définir un autre chef du groupe :</label>
-    <input required type="text" name="wp_lab_group_chief" id="wp_lab_group_chief_edit" placeholder="Group leader"/><br /><br />
-    <input type="hidden" id="lab_searched_chief_id" name="lab_searched_chief_id" />
-    <label for="wp_lab_group_parent_edit">Modifier le groupe parent :</label>
-    <select name="wp_lab_group_parent" id="wp_lab_group_parent_edit">
-      <option value="0">Aucun</option>
-    <?php
-      $sql = "SELECT id, group_name FROM `wp_lab_groups`";
-      global $wpdb;
-      $results = $wpdb->get_results($sql);
-      foreach ( $results as $r ) {
-        echo("<option value=\"" . $r->id . "\">" . $r->group_name . "</option>");
-      }
-    ?>
-    </select>
-    <label for="wp_lab_group_type_edit">Modifier le type :</label>
-    <select name="wp_lab_group_type" id="wp_lab_group_type_edit">
-      <option value="1">Groupe</option>
-      <option value="2">Équipe</option>
-    </select>
-    <br /><br />
-    
-    <br /><a href="#" class="page-title-action" id="lab_admin_group_edit_button">Save</a>
-  </div>
-  <hr>
-  <!-- Gestion des tables -->
-  <?php
-    if (!lab_admin_checkTable("wp_lab_groups")) {
-      echo "<p id='lab_group_noTableWarning'>La table <em>wp_lab_groups</em> n'a pas été trouvée dans la base, vous devez d'abord la créer ici : </p>";
-    }
-    if (!lab_admin_checkTable("wp_lab_group_substitutes")) {
-      echo "<p id='lab_group_noSubTableWarning'>La table <em>wp_lab_group_substitutes</em> n'a pas été trouvée dans la base, vous devez d'abord la créer ici : </p>";
-    }
-  ?>
-  <button class="page-title-action" id="lab_createGroup_createTable">Créer la table Groups</button>
-  <button class="page-title-action" id="lab_createGroup_createTable_Sub">Créer la table Substitutes</button>
-  <button class="page-title-action" id="lab_createGroup_createRoot">Créer groupe root</button>
-  <hr/>
-  <table class="form-table" role="presentation">
-  <h3>Créer un groupe : </h3>
-  <form action="javascript:void(0);">
-	<tbody>
-    <tr class="form-field form-required">
-      <th scope="row"><label for="lab_createGroup_name">Nom du groupe* : </label></th>
-      <td><input type="text" id="lab_createGroup_name" name="lab_createGroup_name" placeholder="ex: Analyse Appliquée"/></td>
-    </tr class="form-field form-required">
-      <th scope="row"><label for="lab_createGroup_acronym">Acronyme* <span class="description">(unique)</span> : </label></th>
-      <td>
-        <input type="text" id="lab_createGroup_acronym" name="lab_createGroup_acronym" placeholder="AA"/>
-        <label style="padding-left:2em;" id="lab_createGroupe_acronym_hint"></span>
-      </td>
-    </tr>
-    <tr class="form-field">
-      <th scope="row"><label for="lab_createGroup_parentGroup">Groupe parent :</label></th>
-      <td>
-        <select id="lab_createGroup_parent" name="lab_createGroup_parent">
-          <option value="0">None</option>
-          <?php //Récupère la liste des groupes en affichant leur acronymes dans la liste déroulante.
-            $sql = "SELECT id,acronym FROM `wp_lab_groups`";
-            global $wpdb;
-            $results = $wpdb->get_results($sql);
-            $output="";
-            foreach ( $results as $r )
-            {
-              $output .= "<option value =".$r->id.">".$r->acronym."</option>";
-            }
-            echo $output;
-          ?>
-        </select>
-      </td>
-    </tr>
-    <tr class="form-field">
-      <th scope="row"><label for="lab_createGroup_type">Type :</label></th>
-      <td><select id="lab_createGroup_type" name="lab_createGroup_Type">
-        <?php //Récupère la liste des types de groupe existants
-          $output ="";
-          $params = new AdminParams;
-          foreach ( $params->get_params_fromId($params::PARAMS_GROUPTYPE_ID) as $r ) {
-            $output .= "<option value =".$r->id.">".$r->value."</option>";
-          }
-          echo $output;
-        ?>
-      </select></td>
-    </tr>
-    <tr class="form-field">
-      <th scope="row"><label for="lab_createGroup_chief">Responsable du groupe :</label></th>
-      <td>
-        <input id="lab_createGroup_chief" type="text" name="lab_createGroup_chief" placeholder="Pascal HUBERT"/>
-        <input type="hidden" id="lab_createGroup_chiefID"/>
-      </td>
-    </tr>
-    <tr class="form-field">
-      <th scope="row"><label for="lab_createGroup_subInput">Suppléants <span class="description">(facultatif) </span>:</label></th>
-      <td colspan="2">
-        <p id="lab_createGroup_subsList"></p><span style="display:none; cursor:pointer;" id="lab_createGroup_subsDelete">❌ Vider la liste</span>
-      </td>
-    </tr>
-    <tr class="form-field">
-      <td colspan="2" >
-        <input id="lab_createGroup_subInput" type="text" name="lab_createGroup_subInput" placeholder="N'oubliez pas d'appuyer sur ajouter"/>
-        <input type="hidden" id="lab_createGroup_subID" list=""/> 
-      </td>
-      <td><input type="button" id="lab_createGroup_addSub" class="page-title-action" value="+ Ajouter un suppléant"/></td>
-    </tr>
-    <tr class="form-field">
-      <td><input class="page-title-action" type="submit" id="lab_createGroup_create" value="Créer le groupe"/></td>
-    </tr>
-	</tbody></form></table>
-  <br />
-  <hr />
-
-<?php
-}
 
 function lab_admin_tab_seminaire()
 {
