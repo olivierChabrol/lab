@@ -1,7 +1,31 @@
+#lab_keyring_delete_dialog {
+    text-align: center;
+}
+#lab_keyring_delete_dialog p {
+    font-size: 1.3em;
+    margin-bottom: 2em;
+}
+#lab_keyring_delete_dialog_options {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+#lab_keyring_delete_dialog_options a {
+    width: 6em;
+    padding: 0.5em;
+    text-align: center;
+    border-radius: 4px;
+    background: #77b255;
+    color: white;
+    text-decoration: none;
+}
+#lab_keyring_delete_dialog_options a:first-of-type {
+    background: #cf4944;
+}
 #lab_keyring_table td,#lab_keyring_table th {
     text-align: left;
 }
-#lab_keyring_table  tbody tr:nth-child(odd) {
+#lab_keyring_table tbody tr:nth-child(odd) {
    background-color: #DDD;
 }
 #lab_keyring_table tfoot td {
@@ -25,7 +49,7 @@
     font-size: 1.2em;
     text-align: center;
 }
-#lab_keyring_table .lab_keyring_key_lend, #lab_keyring_newKey_create {
+#lab_keyring_table .lab_keyring_key_lend, #lab_keyring_newKey_create, #lab_keyring_editForm_submit {
     width: 7em;
     margin-left: 1em;
 }

@@ -98,6 +98,9 @@ add_action( 'wp_ajax_keyring_table_keys', 'lab_keyring_createTable_keys' );
 add_action( 'wp_ajax_keyring_table_loans', 'lab_keyring_createTable_loans' );
 add_action( 'wp_ajax_keyring_create_key', 'lab_keyring_create_keyReq' );
 add_action( 'wp_ajax_keyring_search_word', 'lab_keyring_search_byWordReq' );
+add_action( 'wp_ajax_keyring_get_key', 'lab_keyring_findKey_Req' );
+add_action( 'wp_ajax_keyring_edit_key', 'lab_keyring_editKey_Req' );
+add_action( 'wp_ajax_keyring_delete_key', 'lab_keyring_deleteKey_Req' );
 
 /**
  * Fonction de création du menu
@@ -118,9 +121,14 @@ function admin_enqueue()
 {
   //wp_enqueue_script('lab', plugins_url('js/lab_global.js',__FILE__), array('jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog'), filemtime(dirname(plugin_basename("__FILE__"))."/js/lab_global.js"), false);
   wp_enqueue_script('lab', plugins_url('js/lab_global.js',__FILE__), array('jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog'), "1.3", false);
+  //Plugin permettant d'afficher les toasts :
   wp_enqueue_style('jqueryToastCSS',plugins_url('css/jquery.toast.css',__FILE__));
   wp_enqueue_script('jqueryToastJS',plugins_url('js/jquery.toast.js',__FILE__),array('jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog'),"1.3.2",false);
+  //Feuille de style de l'onglet keyring :
   wp_enqueue_style('KeyRingTableCSS',plugins_url('css/keyring.css',__FILE__));
+  //Plugin permettant d'afficher des fenêtres modales :
+  wp_enqueue_style('jqueryModalCSS',plugins_url('css/jquery.modal.min.css',__FILE__));
+  wp_enqueue_script('jqueryModalJS',plugins_url('js/jquery.modal.min.js',__FILE__),array('jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog'),"0.9.1",false);
 }
 function wp_lab_global_enqueues()
 {

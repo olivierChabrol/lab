@@ -354,26 +354,92 @@ jQuery(function($){
     }
     params["commentary"] = $("#lab_keyring_newKey_commentary").val();
     createKey(params);
-    clearFields("lab_keyring_newKey_",['type','number','office','brand','site','commentary']);
-    $("#wp_lab_keyring_keySearch").keyup();
+    clearFields("lab_keyring_newKey_",['number','office','brand','commentary']);
+    $("#lab_keyring_keySearch").keyup();
   });
-  $("#wp_lab_keyring_keySearch").keyup(function() {
+  $("#lab_keyring_keySearch").keyup(function() {
     data = {
       'action' : 'keyring_search_word',
       'search' : $(this).val()
     }
     jQuery.post(ajaxurl, data, function(response) {
       if (response.success) {
-        $("#wp_lab_keyring_keysList")[0].innerHTML=response.data;
+        $("#lab_keyring_keysList")[0].innerHTML=response.data;
+        $(".lab_keyring_key_edit").click(function () {
+          console.log('clicked');
+          var data={
+            'action': 'keyring_get_key',
+            'id': $(this).attr('keyid')
+          };
+          jQuery.post(ajaxurl, data, function(response) {
+            if (response.success) {
+              $("#lab_keyring_editForm").show();
+              $("#lab_keyring_editForm").css("background","#b3ffb3");
+              $("#lab_keyring_editForm_submit").attr('keyid',response.data['id']);
+              for (i of ['number', 'office', 'type', 'brand', 'site', 'commentary']) {
+                $("#lab_keyring_edit_"+i).val(response.data[i]);
+              }
+            }
+          });
+        });
+        $(".lab_keyring_key_delete").click(function() {
+          console.log($(this).attr('keyid'));
+          $("#lab_keyring_keyDelete_confirm").attr('keyid',$(this).attr('keyid'));
+        }); 
         return;
       }
       else {
-        $("#wp_lab_keyring_keysList")[0].innerHTML="<tr><td colspan='9'>Aucune clé trouvée. Vous pouvez en créer une ci-dessous :</td></tr>";
-        $("#lab_keyring_newKey_number").val($("#wp_lab_keyring_keySearch").val());
+        $("#lab_keyring_keysList")[0].innerHTML="<tr><td colspan='9'>Aucune clé trouvée. Vous pouvez en créer une ci-dessous :</td></tr>";
+        $("#lab_keyring_newKey_number").val($("#lab_keyring_keySearch").val());
       }
     });
   });
-  $("#wp_lab_keyring_keySearch").keyup();
+  $("#lab_keyring_editForm_submit").click(function() {
+    fields={};
+    for (i of ['number','office']) {
+      if ($("#lab_keyring_edit_"+i).val() == "") {
+        $("#lab_keyring_edit_"+i).css("border-color","#F00");
+        toast_error("Error editing key :<br/>All the required fields must be filled.");
+        return;
+      } else {
+        $("#lab_keyring_edit_"+i).css("border-color","#0071a1");
+      }
+    }
+    for (i of ['type','number','office','brand','site','commentary']) {
+      fields[i] = $("#lab_keyring_edit_"+i).val();
+    }
+    data = {
+      'action': 'keyring_edit_key',
+      'id': $(this).attr('keyid'),
+      'fields': fields
+    };
+    jQuery.post(ajaxurl, data, function(response) {
+      if (response.success) {
+        toast_success("Clé modifiée avec succès");
+        $("#lab_keyring_keySearch").keyup();
+        clearFields("lab_keyring_edit_",['number','office','brand','commentary']);
+        $("#lab_keyring_editForm").hide();
+        return;
+      }
+      toast_error("Key couldn't be edited");
+    });
+  });
+  $("#lab_keyring_keyDelete_confirm").click(function() {
+    data = {
+      'action': 'keyring_delete_key',
+      'id': $(this).attr('keyid')
+    }
+    jQuery.post(ajaxurl, data, function(response) {
+      if (response.success) {
+        toast_success("Clé supprimée avec succès");
+        $("#lab_keyring_keySearch").keyup();
+        return;
+      }
+      toast_error("Key couldn't be deleted");
+    });
+  });
+  $("#lab_keyring_keySearch").keyup();
+  $("#lab_keyring_editForm").hide();
 });
   
   function setinfoToGroupEditionFields(groupId, acronym, groupName, chiefId, parent_group_id, group_type) {
@@ -726,7 +792,7 @@ function createKey(params) {
   jQuery.post(ajaxurl, params, function(response) {
     if (response.success) {
       toast_success("Clé créée avec succès !");
-      jQuery("#wp_lab_keyring_keySearch").keyup();
+      jQuery("#lab_keyring_keySearch").keyup();
       return;
     }
     toast_error("Erreur de création de clé");

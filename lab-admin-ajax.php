@@ -441,3 +441,27 @@ function lab_keyring_search_byWordReq() {
   $html = wp_lab_keyring_tableFromKeysList($res);
   wp_send_json_success($html);
 }
+function lab_keyring_findKey_Req() {
+  $res = lab_keyring_search_key($_POST['id']);
+  if (count($res)) {
+    wp_send_json_success($res[0]);
+    return;
+  }
+  wp_send_json_error();
+}
+function lab_keyring_editKey_Req() {
+  $res = lab_keyring_edit_key($_POST['id'],$_POST['fields']);
+  if ($res === false) {
+    wp_send_json_error();
+    return;
+  }
+  wp_send_json_success();
+}
+function lab_keyring_deleteKey_Req() {
+  $res = lab_keyring_delete_key($_POST['id']);
+  if ($res === false) {
+    wp_send_json_error();
+    return;
+  }
+  wp_send_json_success();
+}

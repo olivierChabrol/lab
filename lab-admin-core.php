@@ -226,3 +226,24 @@ function lab_keyring_search_byWord($word) {
     }
     return $items;
 }
+function lab_keyring_search_key($id) {
+    $sql = "SELECT * from `wp_lab_keys`
+            WHERE `id`=".$id.";";
+    global $wpdb;
+    return $wpdb->get_results($sql);
+}
+function lab_keyring_edit_key($id,$fields) {
+    global $wpdb;
+    return $wpdb->update(
+        'wp_lab_keys',
+        $fields,
+        array('id' => $id)
+    );
+}
+function lab_keyring_delete_key($id) {
+    global $wpdb;
+    return $wpdb->delete(
+        'wp_lab_keys',
+        array('id' => $id)
+    );
+}
