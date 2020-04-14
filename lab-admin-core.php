@@ -213,3 +213,85 @@ function lab_keyring_create_loan($key_id,$user_id,$referent_id,$start_date,$end_
         return $wpdb -> last_error;
     }
 }
+
+/**************************************************************************************************
+ * SETTINGS
+ *************************************************************************************************/
+function userMetaData_get_userId_with_no_key($metadataKey) {
+    $sql = "SELECT ID FROM `wp_users` WHERE NOT EXISTS ( SELECT 1 FROM `wp_usermeta` WHERE `wp_usermeta`.`meta_key` = '".$metadataKey."' AND `wp_usermeta`.`user_id`=`wp_users`.`ID`)";
+    global $wpdb;
+    $results = $wpdb->get_results($sql);
+    $items = array();
+    foreach($results as $r) {
+        $items[] = $r->ID;       
+    }
+    return $items;
+}
+
+function lab_userMetaData_create_metaKeys($metadataKey, $defaultValue) {
+    $userIds = userMetaData_get_userId_with_no_key($metadataKey);
+    //return $userIds;
+    $errors = array();
+    $ids = array();
+    foreach($userIds as $userId) {
+        if (lab_userMetaData_new_key($userId, $metadataKey, $defaultValue) == false) {
+            $errors[] = $wpdb->last_error();
+        }
+    }
+    if (count($errors) > 0) {
+        return $errors;
+    }
+    return true;
+}
+
+function lab_userMetaData_new_key($userId, $metadataKey, $defaultValue) {
+    global $wpdb;
+    if ($defaultValue == 'null') {
+        $defaultValue = null;
+    }
+    $r = $wpdb->insert('wp_usermeta', array('umeta_id'=>null, 'user_id'=>$userId, 'meta_key'=>LAB_META_PREFIX.$metadataKey,'meta_value'=>$defaultValue));
+    if (!$r) {
+        return $wpdb->last_error();
+    }
+    return $r;
+}
+
+function userMetaData_delete_metaKey($metadataKey) {
+    $sql = "DELETE FROM `wp_usermeta` WHERE `wp_usermeta`.`meta_key` = '".LAB_META_PREFIX.$metadataKey."'";
+    global $wpdb;
+    return $wpdb->get_results($sql);
+}
+
+function userMetaData_list_metakeys() {
+    $sql = "SELECT DISTINCT meta_key FROM `wp_usermeta` WHERE meta_key LIKE '".LAB_META_PREFIX."%'";
+    global $wpdb;
+    $items = array();
+    //foreach($wpdb->get_results($sql) as $r)
+    $results = $wpdb->get_results($sql);
+    if (count($results) > 0) {
+        foreach($results as $r) {
+            $items[] = $r->meta_key;
+        }
+    }
+    return $items;
+}
+
+function userMetaData_delete_metakeys($metadataKey) {
+    
+    // theoricaly we only allow to delete metadatakey begin with LAB_META_PREFIX
+    if (substr($metadataKey, 0, strlen(LAB_META_PREFIX)) !== LAB_META_PREFIX) {
+        $metadataKey = LAB_META_PREFIX.$metadataKey;
+    }
+    global $wpdb;
+    return $wpdb->delete('wp_usermeta', array("meta_key"=>$metadataKey));
+}
+
+function userMetaData_exist_metakey($metadataKey) {
+    if (substr($metadataKey, 0, strlen(LAB_META_PREFIX)) !== LAB_META_PREFIX) {
+        $metadataKey = LAB_META_PREFIX.$metadataKey;
+    }
+    global $wpdb;
+    //return "SELECT umeta_id FROM `wp_usermeta` WHERE `meta_key` = '".$metadataKey."'";
+    $results = $wpdb->get_results("SELECT umeta_id FROM `wp_usermeta` WHERE `meta_key` = '".$metadataKey."'");
+    return count($results) > 0;
+}

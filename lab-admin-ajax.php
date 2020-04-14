@@ -464,3 +464,41 @@ function lab_keyring_create_keyReq() {
   }
   wp_send_json_error($res);
 }
+/********************************************************************************************
+ * Settings
+ ********************************************************************************************/
+function lab_ajax_userMetaData_new_key() {
+  wp_send_json_success(lab_userMetaData_new_key($_POST['userId'],$_POST['key'],$_POST['value']));
+}
+function lab_ajax_userMetaData_create_keys() {
+  wp_send_json_success(lab_userMetaData_create_metaKeys($_POST['key'],$_POST['value']));
+}
+function lab_ajax_userMetaData_list_keys() {
+  wp_send_json_success(userMetaData_list_metakeys());
+}
+function lab_ajax_userMetaData_delete_key() {
+  if (isset($_POST['key']) && !empty($_POST['key'])) {
+    wp_send_json_success(userMetaData_delete_metakeys($_POST['key']));
+    //wp_send_json_success($_POST['key']);
+  }
+  else {
+    wp_send_json_success("No key specified");
+  }
+}
+/**
+ * Return false, if key exist, true otherwise
+ */
+function lab_ajax_userMeta_key_not_exist() {
+  if (isset($_POST['key']) && !empty($_POST['key'])) {
+    if (userMetaData_exist_metakey($_POST['key'])) {
+      wp_send_json_error("");
+    }
+    else
+    {
+      wp_send_json_success("");
+    }
+  }
+  else {
+    wp_send_json_success("No key specified");
+  }
+}

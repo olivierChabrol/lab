@@ -12,6 +12,7 @@ Author URI: http://www.i2m.univ-amu.fr
 __("Crée une page qui remonte les publications d'un auteur ou d'une structure en relation avec HAL et un widget des dernières publications d'un auteur ou d'une structure.", "wp-hal");
 
 define('LAB_DIR_PATH', plugin_dir_path(__FILE__));
+define('LAB_META_PREFIX', "lab_");
 
 //Récupère les constantes
 require_once("constantes.php");
@@ -26,6 +27,7 @@ require_once(LAB_DIR_PATH."admin/view/lab-admin-tabs.php");
 require_once(LAB_DIR_PATH."admin/view/lab-admin-tab-groups.php");
 require_once(LAB_DIR_PATH."admin/view/lab-admin-tab-params.php");
 require_once(LAB_DIR_PATH."admin/view/lab-admin-tab-users.php");
+require_once(LAB_DIR_PATH."admin/view/lab-admin-tab-settings.php");
 require_once("lab-html-helper.php");
 
 //Admin Files
@@ -105,6 +107,13 @@ add_action( 'wp_ajax_keyring_table_keys', 'lab_keyring_createTable_keys' );
 add_action( 'wp_ajax_keyring_table_loans', 'lab_keyring_createTable_loans' );
 
 add_action('wp_ajax_edit_group', 'lab_group_editGroup');
+//Action for settings
+//add_action( 'wp_ajax_add_new_metakey', 'lab_userMetaData_new_key');
+add_action( 'wp_ajax_add_new_metakey', 'lab_ajax_userMetaData_new_key');
+add_action( 'wp_ajax_add_new_metakeys', 'lab_ajax_userMetaData_create_keys');
+add_action( 'wp_ajax_list_metakeys', 'lab_ajax_userMetaData_list_keys');
+add_action( 'wp_ajax_delete_metakey', 'lab_ajax_userMetaData_delete_key');
+add_action( 'wp_ajax_not_exist_metakey', 'lab_ajax_userMeta_key_not_exist');
 
 /**
  * Fonction de création du menu
@@ -128,11 +137,12 @@ function admin_enqueue()
   wp_enqueue_style('jqueryToastCSS',plugins_url('css/jquery.toast.css',__FILE__));
   wp_enqueue_script('jqueryToastJS',plugins_url('js/jquery.toast.js',__FILE__),array('jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog'),"1.3.2",false);
 }
+
 function wp_lab_global_enqueues()
 {
   wp_enqueue_script(
     'global',
-    dirname(plugin_basename(__FILE__)) . "/js/lab_global.js",
+    plugins_url('js/lab_global.js',__FILE__),
     array('jquery'),
     '1.3',
     true

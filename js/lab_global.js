@@ -1,6 +1,7 @@
 /* globals global 25 03 2020 */
 jQuery(function($){
   var searchRequest;
+  loadExistingKeys();
   if(!$("#lab_user_left").is(':checked')) {
     $("#lab_user_left_date").prop("disabled", true);
   }
@@ -92,6 +93,24 @@ jQuery(function($){
       return false;
     }
   });
+  $('#usermetadata_user_search').autocomplete({
+    minChars: 3,
+    source: function(term, suggest){
+      try { searchRequest.abort(); } catch(e){}
+      searchRequest = $.post("/wp-admin/admin-ajax.php", { action: 'search_username',search: term, }, function(res) {
+        suggest(res.data);
+      });
+      },
+    select: function( event, ui ) {
+      var label = ui.item.label;
+      var value = ui.item.value;
+      event.preventDefault();
+      $("#usermetadata_user_search").val(label);
+
+      $("#usermetadata_user_id").val(value);
+      return false;
+    }
+  });
   $("#lab_user_button_test").click(function() {
     test();
   });
@@ -103,6 +122,26 @@ jQuery(function($){
     var categoryId = $('select[name="event_categories[]"]').val();
     saveEventCaterory(postId, categoryId);
   });
+  $("#lab_settings_button_addKey").click(function() {
+    var userId = $("#usermetadata_user_id").val();
+    var key = $('#usermetadata_key').val();
+    var value = $('#usermetadata_value').val();
+    saveMetakey(userId, key, value);
+  });
+  $("#usermetadata_key_all").focusout(function() {
+   check_metaKey_exist();
+    //if ($("#usermetadata_key_all").)
+  });
+  $("#lab_settings_button_addKey_all").click(function() {
+    var key = $('#usermetadata_key_all').val();
+    var value = $('#usermetadata_value_all').val();
+    createMetakeys(key, value);
+  });
+  $("#lab_settings_button_delete_keys_all").click(function() {
+    var key = $('#usermetadata_keys').val();
+    deleteMetaKeys(key);
+  });
+
   $("#lab_user_button_save_left").click(function() {
     saveUserLeft($("#lab_user_search_id").val(), $("#lab_user_left_date").val(), $("#lab_user_left").is(":checked"));
   });
@@ -752,4 +791,94 @@ function clearFields(prefix,list) {
   for (i of list) {
     jQuery('#'+prefix+i).val('');
   }
+}
+
+function loadExistingKeys() {
+  var data = {
+    'action' : 'list_metakeys'
+  };
+  callAjax(data, null, loadExistingKeysFields, "Can't load usermeta keys", null);
+}
+
+function loadExistingKeysFields(data) {
+  // delete existing option before loading new ones
+  jQuery("#usermetadata_keys options").each(function() {
+    $(this).remove();
+  });
+  for(i in data) {
+    jQuery("#usermetadata_keys").append(new Option(data[i], data[i]));
+  }
+}
+
+function createMetakeys(key, value) {
+  var data = {
+    'action' : 'add_new_metakeys',
+    'key' : key,
+    'value' : value
+  };
+  console.log(data);
+  callAjax(data, "keys create for all users", resetUserMetaFields, "Error when saving key '" + key + "'", null);
+}
+function deleteMetaKeys(key) {
+  var data = {
+    'action' : 'delete_metakey',
+    'key' : key
+  };
+  callAjax(data, "MetaKey delete for all user", loadExistingKeysFields, "failed to delete key '" + key + "'", null);
+}
+function saveMetakey(userId, key, value) {
+  var data = {
+    'action' : 'add_new_metakey',
+    'userId' : userId,
+    'key' : key,
+    'value' : value
+  };
+  callAjax(data, "MetaKey save", resetUserMetaFields, "Error when saving key '" + key + "'", null);
+}
+function resetUserMetaFields(data) {
+  jQuery("#usermetadata_user_id").val("");
+  jQuery("#usermetadata_key").val("");
+  jQuery("#usermetadata_value").val("");
+  jQuery("#usermetadata_user_search").val("");
+  jQuery("#usermetadata_key_all").val("");
+  jQuery("#usermetadata_value_all").val("");
+}
+
+function check_metaKey_exist() {
+  var data = {
+    'action' : 'not_exist_metakey',
+    'key' : jQuery("#usermetadata_key_all").val()
+  };
+  callAjax(data, null, enabledAddKeyAllButton, "Key " + jQuery("#usermetadata_key_all").val() + " already exist in DB", disabledAddKeyAllButton);
+}
+
+function disabledAddKeyAllButton(data) {
+  jQuery("#lab_settings_button_addKey_all").prop("disabled",true);
+  //jQuery("#lab_settings_button_addKey_all").data('disabled',true);
+}
+
+function enabledAddKeyAllButton(data) {
+  jQuery("#lab_settings_button_addKey_all").prop("disabled",false);
+  //jQuery("#lab_settings_button_addKey_all").data('disabled',false);
+}
+
+function callAjax(data, successMessage, callBackSuccess = null, errorMessage, callBackError = null) {
+  jQuery.post(ajaxurl, data, function(response) {
+    if (response.success) {
+      if (successMessage != null) {
+        toast_success(successMessage);
+      }
+      if (callBackSuccess != null) {
+        callBackSuccess(response.data);
+      }
+    }
+    else {
+      if (errorMessage != null) {
+        toast_error(errorMessage);
+      }
+      if (callBackError != null) {
+        callBackError(response.data);
+      }
+    }
+    });
 }
