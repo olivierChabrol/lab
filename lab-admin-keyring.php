@@ -21,7 +21,26 @@
     <button class="lab_keyring_create_table_loans" id="lab_keyring_create_table_loans">Créer la table Loans</button>
     <hr/>
     <h2>Liste des clés</h2>
-    <input type="text" id="lab_keyring_keySearch" placeholder="Rechercher une clé"/>
+    <div id="lab_keyring_search_options">
+      <input type="text" id="lab_keyring_keySearch" placeholder="Rechercher une clé"/>
+      <div>
+        <label>Page :</label>
+        <select id="lab_keyring_page">
+          <option value="0">1</option>
+        </select>
+      </div>
+      <div>
+        <label> Nombre de clés par page :</label>
+        <select id="lab_keyring_keysPerPage">
+          <option value="10">10</option>
+          <option value="25">25</option>
+          <option value="50">50</option>
+          <option value="custom">Autre :</option>
+        </select>
+        <input type="text" id="lab_keyring_keysPerPage_otherValue" style="width:5em" hidden placeholder="100"/>
+      </div>
+    </div>
+    <p id="lab_keyring_search_totalResults"></p>
     <hr/>
     <table class="widefat fixed" id="lab_keyring_table">
       <thead>
@@ -33,13 +52,16 @@
           <th scope="col">Marque</th>
           <th scope="col">Site</th>
           <th scope="col">Commentaire</th>
-          <th scope="col">Dispo</th>
-          <th scope="col">Actions</th>
+          <th scope="col" class="lab_keyring_icon">Dispo</th>
+          <th scope="col" class="lab_keyring_icon">Actions</th>
         </tr>
       </thead>
       <tbody id="lab_keyring_keysList">
       </tbody>
       <tfoot>
+        <tr style="display:none;" id ="lab_keyring_nextPage">
+          <td scope="col" class="lab_keyring_icon" colspan='9' id='lab_keyring_nextPage_button'>➢ Page suivante</td>
+        </tr>
         <tr id="lab_keyring_editForm">
         <td scope="col">Modifier :</td>
           <td scope="col">
@@ -122,6 +144,9 @@
         </tr>
       </tfoot>
     </table>
+    <hr/>
+    <br/>
+    <h2>Gestion des prêts</h2>
     <?php
   }
   function wp_lab_keyring_tableFromKeysList($list) {

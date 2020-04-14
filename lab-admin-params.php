@@ -15,7 +15,12 @@ class AdminParams {
     {
         return AdminParams::get_params_fromId(AdminParams::PARAMS_GROUPTYPE_ID);
     }
-
+    public function get_param($id) {
+        $sql = "SELECT value FROM `wp_lab_params` WHERE id=".$id.";";
+        global $wpdb;
+        $results = $wpdb->get_results($sql);
+        return $results[0]->value;
+    }
     /* Inutiles, préférer utiliser get_params_fromId(CONSTANTE)
     public function lab_admin_get_params_Types() {
         return $this->lab_admin_get_params_fromId($this->LAB_ADMIN_PARAMS_ID);
@@ -29,11 +34,5 @@ class AdminParams {
 function lab_admin_get_params_groupTypes() {
     return AdminParams::lab_admin_get_params_groupTypes();
 }
-    public function get_param($id) {
-        $sql = "SELECT value FROM `wp_lab_params` WHERE id=".$id.";";
-        global $wpdb;
-        $results = $wpdb->get_results($sql);
-        return $results[0]->value;
-    }
 
 ?>

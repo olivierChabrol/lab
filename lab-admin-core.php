@@ -213,19 +213,24 @@ function lab_keyring_create_loan($key_id,$user_id,$referent_id,$start_date,$end_
         return $wpdb -> last_error;
     }
 }
-function lab_keyring_search_byWord($word) {
+function lab_keyring_search_byWord($word,$limit,$page) {
+    $offset = $page*$limit;
     $sql = "SELECT * from `wp_lab_keys`
             WHERE Concat_ws(`wp_lab_keys`.`number`,`wp_lab_keys`.`office`,`wp_lab_keys`.`site`,`wp_lab_keys`.`brand`,`wp_lab_keys`.`commentary`)
             LIKE '%".$word."%'
-            ORDER BY ABS(`wp_lab_keys`.`number`);";
+            ORDER BY ABS(`wp_lab_keys`.`number`)
+            LIMIT ".$offset.", ".$limit.";";
+    $count = "SELECT COUNT(*) from `wp_lab_keys`
+              WHERE Concat_ws(`wp_lab_keys`.`number`,`wp_lab_keys`.`office`,`wp_lab_keys`.`site`,`wp_lab_keys`.`brand`,`wp_lab_keys`.`commentary`)
+              LIKE '%".$word."%'";
     global $wpdb;
     $results = $wpdb->get_results($sql);
-    $items = array();
-    foreach ( $results as $r )
-    {
-      array_push($items,$r);
-    }
-    return $items;
+    $total = $wpdb->get_var($count);
+    $res = array(
+        "total" => $total,
+        "items" => $results
+    );
+    return $res;
 }
 function lab_keyring_search_key($id) {
     $sql = "SELECT * from `wp_lab_keys`

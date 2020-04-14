@@ -376,13 +376,30 @@ jQuery(function($){
   $("#lab_keyring_keySearch").keyup(function() {
     data = {
       'action' : 'keyring_search_word',
-      'search' : $(this).val()
+      'search' : $(this).val(),
+      'page' : $("#lab_keyring_page").val(),
+      'limit' : ($("#lab_keyring_keysPerPage").val() == 'custom') ? $("#lab_keyring_keysPerPage_otherValue").val() : $("#lab_keyring_keysPerPage").val(),
     }
     jQuery.post(ajaxurl, data, function(response) {
       if (response.success) {
-        $("#lab_keyring_keysList")[0].innerHTML=response.data;
+        //On calcule sur combien de pages s'étalent les lignes trouvées
+        $("#lab_keyring_search_totalResults")[0].innerHTML=response.data[0]+" résultats.";
+        rowsLeft = response.data[0]-data['limit'];
+        output = "<option value='0'>1</option>";
+        i = 1;
+        while (rowsLeft > 0) {
+          $("#lab_keyring_nextPage").show();
+          rowsLeft -= data['limit'];
+          output += "<option value="+i+">"+(i+1)+"</option>";
+          i++;
+        }
+        bak = $("#lab_keyring_page")[0].selectedIndex;
+        $("#lab_keyring_page")[0].innerHTML=output;
+        $("#lab_keyring_page")[0].selectedIndex = bak;
+        //Affiche la liste des clés trouvées :
+        $("#lab_keyring_keysList")[0].innerHTML=response.data[1];
+        //Bind les fonctions aux boutons de modification :
         $(".lab_keyring_key_edit").click(function () {
-          console.log('clicked');
           var data={
             'action': 'keyring_get_key',
             'id': $(this).attr('keyid')
@@ -390,7 +407,6 @@ jQuery(function($){
           jQuery.post(ajaxurl, data, function(response) {
             if (response.success) {
               $("#lab_keyring_editForm").show();
-              $("#lab_keyring_editForm").css("background","#b3ffb3");
               $("#lab_keyring_editForm_submit").attr('keyid',response.data['id']);
               for (i of ['number', 'office', 'type', 'brand', 'site', 'commentary']) {
                 $("#lab_keyring_edit_"+i).val(response.data[i]);
@@ -398,6 +414,7 @@ jQuery(function($){
             }
           });
         });
+        //Bind les fonctions aux boutons de suppression :
         $(".lab_keyring_key_delete").click(function() {
           console.log($(this).attr('keyid'));
           $("#lab_keyring_keyDelete_confirm").attr('keyid',$(this).attr('keyid'));
@@ -454,8 +471,31 @@ jQuery(function($){
       toast_error("Key couldn't be deleted");
     });
   });
+  $("#lab_keyring_keysPerPage").change(function () {
+    if ($(this).val()=="custom") {
+      $("#lab_keyring_keysPerPage_otherValue").show();
+    }
+    else {
+      $("#lab_keyring_keysPerPage_otherValue").hide();
+    }
+    $("#lab_keyring_keySearch").keyup();
+  });
+  $("#lab_keyring_keysPerPage_otherValue").change(function () {
+    $("#lab_keyring_keySearch").keyup();
+  });
+  $("#lab_keyring_nextPage_button").click(function() {
+    do {
+      $("#lab_keyring_page")[0].selectedIndex++;
+    } while ($("#lab_keyring_page")[0].selectedIndex == -1);
+    $("#lab_keyring_keySearch").keyup();
+  });
+  $("#lab_keyring_page").change(function () {
+    console.log("hey");
+    $("#lab_keyring_keySearch").keyup();
+   })
   $("#lab_keyring_keySearch").keyup();
   $("#lab_keyring_editForm").hide();
+
 });
 
 

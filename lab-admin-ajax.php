@@ -465,13 +465,13 @@ function lab_keyring_create_keyReq() {
   wp_send_json_error($res);
 }
 function lab_keyring_search_byWordReq() {
-  $res = lab_keyring_search_byWord($_POST['search']);
+  $res = lab_keyring_search_byWord($_POST['search'],$_POST['limit'],$_POST['page']);
   if (count($res)==0) {
     wp_send_json_error();
     return;
   }
-  $html = wp_lab_keyring_tableFromKeysList($res);
-  wp_send_json_success($html);
+  $html = wp_lab_keyring_tableFromKeysList($res['items']);
+  wp_send_json_success([$res['total'],$html]);
 }
 function lab_keyring_findKey_Req() {
   $res = lab_keyring_search_key($_POST['id']);
