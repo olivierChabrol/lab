@@ -92,6 +92,30 @@ jQuery(function($){
       return false;
     }
   });
+
+  $('#dud_user_srch_val').autocomplete({
+    minChars: 1,
+    source: function(term, suggest){
+      try { searchRequest.abort(); } catch(e){}
+      searchRequest = $.post("/wp-admin/admin-ajax.php", { action: 'search_username',search: term, }, function(res) {
+        suggest(res.data);
+      });
+    },
+    select: function( event, ui ) {
+      var label = ui.item.label;
+      var value = ui.item.value;
+      event.preventDefault();
+      $("#dud_user_srch_val").val(label);
+      $("#lab_searched_directory").val(value);
+      callbUser(value, loadUserMetaData);
+      return false;
+    }
+  });
+
+  $("#bouton_beau").click(function(){
+    document.location.href = "https://www.youtube.com";
+  });
+
   $("#lab_user_button_test").click(function() {
     test();
   });
@@ -733,7 +757,6 @@ function editGroup(groupId, acronym, groupName, chiefId, parent, group_type) {
       toast_error("Failed to save group");
     }
   });
-  //TODO: IHM pour que que l'utilisateur sache que ce qu'il a fait a modifié quelque chose
 }
 
 function resetGroupEdit()
