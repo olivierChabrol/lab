@@ -437,7 +437,7 @@ function lab_admin_group_availableAc() {
   wp_send_json_success();
 }
 function lab_admin_group_createReq() {
-  $res = lab_admin_group_create($_POST['name'],$_POST['acronym'],$_POST['chief_id'],$_POST['parent'],$_POST['type']);
+  $res = lab_admin_group_create($_POST['name'],$_POST['acronym'],$_POST['chiefID'],$_POST['parent'],$_POST['type']);
   if (strlen($res)==0) {
     wp_send_json_success(lab_admin_search_group_by_acronym($_POST['acronym']));
     return;
@@ -470,4 +470,75 @@ function lab_keyring_create_keyReq() {
     return;
   }
   wp_send_json_error($res);
+}
+function lab_keyring_search_byWordReq() {
+  $res = lab_keyring_search_byWord($_POST['search'],$_POST['limit'],$_POST['page']);
+  if (count($res)==0) {
+    wp_send_json_error();
+    return;
+  }
+  $html = wp_lab_keyring_tableFromKeysList($res['items']);
+  wp_send_json_success([$res['total'],$html]);
+}
+function lab_keyring_findKey_Req() {
+  $res = lab_keyring_search_key($_POST['id']);
+  if (count($res)) {
+    wp_send_json_success($res[0]);
+    return;
+  }
+  wp_send_json_error();
+}
+function lab_keyring_editKey_Req() {
+  $res = lab_keyring_edit_key($_POST['id'],$_POST['fields']);
+  if ($res === false) {
+    wp_send_json_error();
+    return;
+  }
+  wp_send_json_success();
+}
+function lab_keyring_deleteKey_Req() {
+  $res = lab_keyring_delete_key($_POST['id']);
+  if ($res === false) {
+    wp_send_json_error();
+    return;
+  }
+  wp_send_json_success();
+}
+/********************************************************************************************
+ * Settings
+ ********************************************************************************************/
+function lab_ajax_userMetaData_new_key() {
+  wp_send_json_success(lab_userMetaData_new_key($_POST['userId'],$_POST['key'],$_POST['value']));
+}
+function lab_ajax_userMetaData_create_keys() {
+  wp_send_json_success(lab_userMetaData_create_metaKeys($_POST['key'],$_POST['value']));
+}
+function lab_ajax_userMetaData_list_keys() {
+  wp_send_json_success(userMetaData_list_metakeys());
+}
+function lab_ajax_userMetaData_delete_key() {
+  if (isset($_POST['key']) && !empty($_POST['key'])) {
+    wp_send_json_success(userMetaData_delete_metakeys($_POST['key']));
+    //wp_send_json_success($_POST['key']);
+  }
+  else {
+    wp_send_json_success("No key specified");
+  }
+}
+/**
+ * Return false, if key exist, true otherwise
+ */
+function lab_ajax_userMeta_key_not_exist() {
+  if (isset($_POST['key']) && !empty($_POST['key'])) {
+    if (userMetaData_exist_metakey($_POST['key'])) {
+      wp_send_json_error("");
+    }
+    else
+    {
+      wp_send_json_success("");
+    }
+  }
+  else {
+    wp_send_json_success("No key specified");
+  }
 }

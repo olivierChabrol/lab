@@ -12,6 +12,7 @@ Author URI: http://www.i2m.univ-amu.fr
 __("Crée une page qui remonte les publications d'un auteur ou d'une structure en relation avec HAL et un widget des dernières publications d'un auteur ou d'une structure.", "wp-hal");
 
 define('LAB_DIR_PATH', plugin_dir_path(__FILE__));
+define('LAB_META_PREFIX', "lab_");
 
 //Récupère les constantes
 require_once("constantes.php");
@@ -26,6 +27,7 @@ require_once(LAB_DIR_PATH."admin/view/lab-admin-tabs.php");
 require_once(LAB_DIR_PATH."admin/view/lab-admin-tab-groups.php");
 require_once(LAB_DIR_PATH."admin/view/lab-admin-tab-params.php");
 require_once(LAB_DIR_PATH."admin/view/lab-admin-tab-users.php");
+require_once(LAB_DIR_PATH."admin/view/lab-admin-tab-settings.php");
 require_once("lab-html-helper.php");
 
 //Admin Files
@@ -104,8 +106,20 @@ add_action( 'wp_ajax_param_search_value', 'lab_admin_param_search_value');
 //Actions pour la gestion des clés - KeyRing
 add_action( 'wp_ajax_keyring_table_keys', 'lab_keyring_createTable_keys' );
 add_action( 'wp_ajax_keyring_table_loans', 'lab_keyring_createTable_loans' );
+add_action( 'wp_ajax_keyring_create_key', 'lab_keyring_create_keyReq' );
+add_action( 'wp_ajax_keyring_search_word', 'lab_keyring_search_byWordReq' );
+add_action( 'wp_ajax_keyring_get_key', 'lab_keyring_findKey_Req' );
+add_action( 'wp_ajax_keyring_edit_key', 'lab_keyring_editKey_Req' );
+add_action( 'wp_ajax_keyring_delete_key', 'lab_keyring_deleteKey_Req' );
 
 add_action('wp_ajax_edit_group', 'lab_group_editGroup');
+//Action for settings
+//add_action( 'wp_ajax_add_new_metakey', 'lab_userMetaData_new_key');
+add_action( 'wp_ajax_add_new_metakey', 'lab_ajax_userMetaData_new_key');
+add_action( 'wp_ajax_add_new_metakeys', 'lab_ajax_userMetaData_create_keys');
+add_action( 'wp_ajax_list_metakeys', 'lab_ajax_userMetaData_list_keys');
+add_action( 'wp_ajax_delete_metakey', 'lab_ajax_userMetaData_delete_key');
+add_action( 'wp_ajax_not_exist_metakey', 'lab_ajax_userMeta_key_not_exist');
 
 /**
  * Fonction de création du menu
@@ -126,8 +140,14 @@ function admin_enqueue()
 {
   //wp_enqueue_script('lab', plugins_url('js/lab_global.js',__FILE__), array('jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog'), filemtime(dirname(plugin_basename("__FILE__"))."/js/lab_global.js"), false);
   wp_enqueue_script('lab', plugins_url('js/lab_global.js',__FILE__), array('jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog'), "1.3", false);
+  //Plugin permettant d'afficher les toasts :
   wp_enqueue_style('jqueryToastCSS',plugins_url('css/jquery.toast.css',__FILE__));
   wp_enqueue_script('jqueryToastJS',plugins_url('js/jquery.toast.js',__FILE__),array('jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog'),"1.3.2",false);
+  //Feuille de style de l'onglet keyring :
+  wp_enqueue_style('KeyRingTableCSS',plugins_url('css/keyring.css',__FILE__));
+  //Plugin permettant d'afficher des fenêtres modales :
+  wp_enqueue_style('jqueryModalCSS',plugins_url('css/jquery.modal.min.css',__FILE__));
+  wp_enqueue_script('jqueryModalJS',plugins_url('js/jquery.modal.min.js',__FILE__),array('jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog'),"0.9.1",false);
 }
 
 function wp_lab_global_enqueues()

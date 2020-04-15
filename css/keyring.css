@@ -1,0 +1,91 @@
+/* ================== Dialogue de confirmation de suppression ================== */
+#lab_keyring_delete_dialog {
+    text-align: center;
+}
+#lab_keyring_delete_dialog p {
+    font-size: 1.3em;
+    margin-bottom: 2em;
+}
+#lab_keyring_delete_dialog_options {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+#lab_keyring_delete_dialog_options a {
+    width: 6em;
+    padding: 0.5em;
+    text-align: center;
+    border-radius: 4px;
+    background: #77b255;
+    color: white;
+    text-decoration: none;
+}
+#lab_keyring_delete_dialog_options a:first-of-type {
+    background: #cf4944;
+}
+/* ================== Options de recherche  ================== */
+#lab_keyring_search_options{
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+}
+#lab_keyring_keySearch {
+    min-width: 40%;
+}
+#lab_keyring_search_options div:last-of-type {
+    display: flex;
+    min-width: 35%;
+    justify-content: left;
+    align-items: center;
+}
+#lab_keyring_search_options div * {
+    margin: 0 1em;
+}
+/* ================== Tableau listant les clés  ================== */
+#lab_keyring_table td,#lab_keyring_table th {
+    text-align: left;
+}
+#lab_keyring_table tbody tr:nth-child(odd) {
+   background-color: #DDD;
+}
+#lab_keyring_table tfoot td {
+    padding: 0;
+    height: 3em;
+    line-height: 3em;
+    text-align: center;
+}
+#lab_keyring_table tfoot td input, #lab_keyring_table tfoot td select,#lab_keyring_table tfoot td input::placeholder {
+    display: inline-block;
+    vertical-align: middle;
+    text-align: left;
+    width: 90%;
+    height: 1.6em;
+    border: none;
+    border-radius: 0;
+    border-bottom: 1px solid #0071a1;
+}
+#lab_keyring_table .lab_keyring_icon {
+    font-size: 1.2em;
+    text-align: center;
+}
+#lab_keyring_table .lab_keyring_key_lend, #lab_keyring_newKey_create, #lab_keyring_editForm_submit {
+    width: 7em;
+    margin-left: 1em;
+}
+#lab_keyring_table tr td:first-of-type {
+    font-weight: 600;
+}
+#lab_keyring_editForm {
+    background: #c6eab9;
+}
+#lab_keyring_newForm {
+    background: #c8e4f0;
+}
+#lab_keyring_table #lab_keyring_nextPage_button {
+    font-size: 1.1em;
+    color: #0071a1;
+    padding: 0 2em;
+    text-decoration: underline;
+    cursor: pointer;
+}

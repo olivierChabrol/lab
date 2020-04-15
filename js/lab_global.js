@@ -1,6 +1,7 @@
 /* globals global 25 03 2020 */
 jQuery(function($){
   var searchRequest;
+  loadExistingKeys();
   if(!$("#lab_user_left").is(':checked')) {
     $("#lab_user_left_date").prop("disabled", true);
   }
@@ -131,6 +132,26 @@ jQuery(function($){
     var categoryId = $('select[name="event_categories[]"]').val();
     saveEventCaterory(postId, categoryId);
   });
+  $("#lab_settings_button_addKey").click(function() {
+    var userId = $("#usermetadata_user_id").val();
+    var key = $('#usermetadata_key').val();
+    var value = $('#usermetadata_value').val();
+    saveMetakey(userId, key, value);
+  });
+  $("#usermetadata_key_all").focusout(function() {
+   check_metaKey_exist();
+    //if ($("#usermetadata_key_all").)
+  });
+  $("#lab_settings_button_addKey_all").click(function() {
+    var key = $('#usermetadata_key_all').val();
+    var value = $('#usermetadata_value_all').val();
+    createMetakeys(key, value);
+  });
+  $("#lab_settings_button_delete_keys_all").click(function() {
+    var key = $('#usermetadata_keys').val();
+    deleteMetaKeys(key);
+  });
+
   $("#lab_user_button_save_left").click(function() {
     saveUserLeft($("#lab_user_search_id").val(), $("#lab_user_left_date").val(), $("#lab_user_left").is(":checked"));
   });
@@ -272,47 +293,26 @@ jQuery(function($){
     });
   });
   $("#lab_createGroup_create").click(function() {
-    let params = [$("#lab_createGroup_name"),$("#lab_createGroup_acronym"),$("#lab_createGroup_type"),$("#lab_createGroup_chiefID"),$("#lab_createGroup_parent"),$("#lab_createGroup_chief")];
-    let values = Array();
-    //let subs = $("#lab_createGroup_subsIDList")[0].innerHTML.split(",");
-    
-    //$('input[id^='lab_createGroup_'] ')
-    params.forEach(element => {
-      if (element.attr("id") != 'lab_createGroup_chiefID' && element.attr("id") != 'lab_createGroup_subID') {
-        if (element.val().length==0) {
-          element.css('border-color','red');
-        }
-        else {
-          element.css('border-color','');
-          values.push(element.val());
-        }
+    valeurs = new Object();
+    for (i of ['name', 'acronym', 'type', 'chiefID','parent']) {
+      if ($("#lab_createGroup_"+i).val()=="") {
+        $("#lab_createGroup_"+i).css("border-color","#F00");
+        toast_error("Group couldn't be created :<br> The form isn't filled properly");
+        return;
       }
-      else if (element.attr("id") != 'lab_createGroup_chiefID') {
-        values.push(element.val());
-      }
-    });
-    let subs = $("#lab_createGroup_subID").attr("list").split(",");
-    console.log($("#lab_createGroup_subID").attr("list"));
-    console.log(subs);
-    subs.pop();
-    console.log(subs);
-    values.push(subs);
-    console.log("values.length : " + values.length);
-    if (values.length == 6) {
-      createGroup(values);
-      //On réinitialise tous les champs du formulaire
-      $("#lab_createGroup_name").val("");
-      $("#lab_createGroup_acronym").val("");
-      $("#lab_createGroup_chiefID").val("");
-      $("#lab_createGroup_chief").val("");
-      $("#lab_createGroup_subInput").val("");
-      $("#lab_createGroup_subID").val("");
-      $("#lab_createGroup_subsList")[0].innerHTML="";
-      $("#lab_createGroup_subsIDList")[0].innerHTML="";
+      $("#lab_createGroup_"+i).css("border-color","");
+      valeurs[i] = $("#lab_createGroup_"+i).val();
     }
-    else {
-      toast_error("Group couldn't be created :<br> The form isn't filled properly");
-    }
+    subs = $("#lab_createGroup_subID").attr('list').split(",");
+    console.log(subs);
+    subs.shift(); //Supprime le dernier élément (vide)
+    valeurs['subsList'] = subs;
+    createGroup(valeurs);
+    //On réinitialise tous les champs du formulaire
+    clearFields('lab_createGroup_',['name', 'acronym', 'type', 'chiefID','chief','subInput','parent']);
+    $("#lab_createGroup_subsList")[0].innerHTML="";
+    $("#lab_createGroup_subID").attr('list','');
+    $("#lab_createGroup_subsDelete").hide();
   })
   $("#lab_group_edit_add_substitute").autocomplete({
     minChars: 3,
@@ -346,26 +346,25 @@ jQuery(function($){
       var label = ui.item.label;
       event.preventDefault();
       $("#lab_createGroup_subInput").val(label);
-
       $("#lab_createGroup_subID").val(value);
-      //$("#lab_createGroup_subID").attr('list', value+","+$("#lab_createGroup_subID").attr('list'));
     }
   });
   $("#lab_createGroup_addSub").click(function(){
-    $("#lab_createGroup_subsDelete").show();
-    if ($("#lab_createGroup_subID").val()!= "" && $("#lab_createGroup_subID").attr("list").split(",").includes($("#lab_createGroup_subID").val())) {
+    $("#lab_createGroup_subsDelete").show(); //Affiche la 'croix' qui permet de vider la liste des suppléants
+    if ($("#lab_createGroup_subID").attr('list').split(",").includes($("#lab_createGroup_subID").val())) {
+      console.log("Déjà présent");
       toast_error("Cette personne est déjà suppléant de ce groupe");
       return;
     }
     $("#lab_createGroup_subsList").append($("#lab_createGroup_subInput").val()+", ");
-    $("#lab_createGroup_subID").attr('list', $("#lab_createGroup_subID").val()+","+$("#lab_createGroup_subID").attr('list'));
+    $("#lab_createGroup_subID").attr("list",function() { return $(this).attr('list')+","+$(this).val()});
     $("#lab_createGroup_subInput").val("");
     $("#lab_createGroup_subID").val("");
   });
   $("#lab_createGroup_subsDelete").click(function () { 
     //Efface la liste des suppléants
     $("#lab_createGroup_subsList")[0].innerHTML="";
-    $("#lab_createGroup_subsIDList")[0].innerHTML="";
+    $("#lab_createGroup_subID").attr('list','');
     //Se cache soi-même
     $("#lab_createGroup_subsDelete").hide();
    });
@@ -407,6 +406,145 @@ jQuery(function($){
       toast_error("Error Creating table : "+response);
     });
   });
+  $("#lab_keyring_newKey_create").click(function () {
+    let params=Object();
+    for (i of ['type','number','office','brand','site']) {
+      if ($("#lab_keyring_newKey_"+i).val() == "") {
+        $("#lab_keyring_newKey_"+i).css("border-color","#F00");
+        toast_error("Error creating key :<br/>All the required fields must be filled.");
+        return;
+      }
+      $("#lab_keyring_newKey_"+i).css("border-color","#0071a1");
+      params[i] = $("#lab_keyring_newKey_"+i).val();
+    }
+    params["commentary"] = $("#lab_keyring_newKey_commentary").val();
+    createKey(params);
+    clearFields("lab_keyring_newKey_",['number','office','brand','commentary']);
+    $("#lab_keyring_keySearch").keyup();
+  });
+  $("#lab_keyring_keySearch").keyup(function() {
+    data = {
+      'action' : 'keyring_search_word',
+      'search' : $(this).val(),
+      'page' : $("#lab_keyring_page").val(),
+      'limit' : ($("#lab_keyring_keysPerPage").val() == 'custom') ? $("#lab_keyring_keysPerPage_otherValue").val() : $("#lab_keyring_keysPerPage").val(),
+    }
+    jQuery.post(ajaxurl, data, function(response) {
+      if (response.success) {
+        //On calcule sur combien de pages s'étalent les lignes trouvées
+        $("#lab_keyring_search_totalResults")[0].innerHTML=response.data[0]+" résultats.";
+        rowsLeft = response.data[0]-data['limit'];
+        output = "<option value='0'>1</option>";
+        i = 1;
+        while (rowsLeft > 0) {
+          $("#lab_keyring_nextPage").show();
+          rowsLeft -= data['limit'];
+          output += "<option value="+i+">"+(i+1)+"</option>";
+          i++;
+        }
+        bak = $("#lab_keyring_page")[0].selectedIndex;
+        $("#lab_keyring_page")[0].innerHTML=output;
+        $("#lab_keyring_page")[0].selectedIndex = bak;
+        //Affiche la liste des clés trouvées :
+        $("#lab_keyring_keysList")[0].innerHTML=response.data[1];
+        //Bind les fonctions aux boutons de modification :
+        $(".lab_keyring_key_edit").click(function () {
+          var data={
+            'action': 'keyring_get_key',
+            'id': $(this).attr('keyid')
+          };
+          jQuery.post(ajaxurl, data, function(response) {
+            if (response.success) {
+              $("#lab_keyring_editForm").show();
+              $("#lab_keyring_editForm_submit").attr('keyid',response.data['id']);
+              for (i of ['number', 'office', 'type', 'brand', 'site', 'commentary']) {
+                $("#lab_keyring_edit_"+i).val(response.data[i]);
+              }
+            }
+          });
+        });
+        //Bind les fonctions aux boutons de suppression :
+        $(".lab_keyring_key_delete").click(function() {
+          console.log($(this).attr('keyid'));
+          $("#lab_keyring_keyDelete_confirm").attr('keyid',$(this).attr('keyid'));
+        }); 
+        return;
+      }
+      else {
+        $("#lab_keyring_keysList")[0].innerHTML="<tr><td colspan='9'>Aucune clé trouvée. Vous pouvez en créer une ci-dessous :</td></tr>";
+        $("#lab_keyring_newKey_number").val($("#lab_keyring_keySearch").val());
+      }
+    });
+  });
+  $("#lab_keyring_editForm_submit").click(function() {
+    fields={};
+    for (i of ['number','office']) {
+      if ($("#lab_keyring_edit_"+i).val() == "") {
+        $("#lab_keyring_edit_"+i).css("border-color","#F00");
+        toast_error("Error editing key :<br/>All the required fields must be filled.");
+        return;
+      } else {
+        $("#lab_keyring_edit_"+i).css("border-color","#0071a1");
+      }
+    }
+    for (i of ['type','number','office','brand','site','commentary']) {
+      fields[i] = $("#lab_keyring_edit_"+i).val();
+    }
+    data = {
+      'action': 'keyring_edit_key',
+      'id': $(this).attr('keyid'),
+      'fields': fields
+    };
+    jQuery.post(ajaxurl, data, function(response) {
+      if (response.success) {
+        toast_success("Clé modifiée avec succès");
+        $("#lab_keyring_keySearch").keyup();
+        clearFields("lab_keyring_edit_",['number','office','brand','commentary']);
+        $("#lab_keyring_editForm").hide();
+        return;
+      }
+      toast_error("Key couldn't be edited");
+    });
+  });
+  $("#lab_keyring_keyDelete_confirm").click(function() {
+    data = {
+      'action': 'keyring_delete_key',
+      'id': $(this).attr('keyid')
+    }
+    jQuery.post(ajaxurl, data, function(response) {
+      if (response.success) {
+        toast_success("Clé supprimée avec succès");
+        $("#lab_keyring_keySearch").keyup();
+        return;
+      }
+      toast_error("Key couldn't be deleted");
+    });
+  });
+  $("#lab_keyring_keysPerPage").change(function () {
+    if ($(this).val()=="custom") {
+      $("#lab_keyring_keysPerPage_otherValue").show();
+    }
+    else {
+      $("#lab_keyring_keysPerPage_otherValue").hide();
+    }
+    $("#lab_keyring_keySearch").keyup();
+  });
+  $("#lab_keyring_keysPerPage_otherValue").change(function () {
+    $("#lab_keyring_keySearch").keyup();
+  });
+  $("#lab_keyring_nextPage_button").click(function() {
+    do {
+      $("#lab_keyring_page")[0].selectedIndex++;
+    } while ($("#lab_keyring_page")[0].selectedIndex == -1);
+    $("#lab_keyring_keySearch").keyup();
+  });
+  $("#lab_keyring_page").change(function () {
+    console.log("hey");
+    $("#lab_keyring_keySearch").keyup();
+   })
+  $("#lab_keyring_keySearch").keyup();
+  $("#lab_keyring_editForm").hide();
+
 });
 
 
@@ -517,29 +655,23 @@ function createGroup(params) {
   //On vérifie d'abord que l'acronyme est bien unique
   var data = {
     'action' : 'group_search_ac',
-    'ac' : params[1]
+    'ac' : params['acronym']
   };
+  console.log(data);
   jQuery.post(ajaxurl, data, function(response) {
     if (!response.success) {
       toast_error("Group couldn't be created : the acronym is already in use");
       return false;
     }
     //On essaie ensuite de rajouter l'entrée dans la table groups 
-    var data2 = {
-      'action' : 'group_create',
-      'name' : params[0],
-      'acronym' : params[1],
-      'type' : params[2],
-      'chief_id' : params[3],
-      'parent' : params[4],
-    };
-    jQuery.post(ajaxurl, data2, function(response) {
+    params['action']='group_create';
+    jQuery.post(ajaxurl, params, function(response) {
       if (response.success) {
         //Enfin, on ajoute les entrées dans la table suppléants
         var data3 = {
           'action' : 'group_subs_add',
           'id' : response.data[0].id,
-          'subList' : params[5]
+          'subList' : params['subsList']
         };
         jQuery.post(ajaxurl, data3, function(resp) {
           if (!resp.success) {
@@ -779,4 +911,107 @@ function clearFields(prefix,list) {
   for (i of list) {
     jQuery('#'+prefix+i).val('');
   }
+}
+
+function loadExistingKeys() {
+  var data = {
+    'action' : 'list_metakeys'
+  };
+  callAjax(data, null, loadExistingKeysFields, "Can't load usermeta keys", null);
+}
+
+function loadExistingKeysFields(data) {
+  // delete existing option before loading new ones
+  jQuery("#usermetadata_keys options").each(function() {
+    $(this).remove();
+  });
+  for(i in data) {
+    jQuery("#usermetadata_keys").append(new Option(data[i], data[i]));
+  }
+}
+
+function createMetakeys(key, value) {
+  var data = {
+    'action' : 'add_new_metakeys',
+    'key' : key,
+    'value' : value
+  };
+  console.log(data);
+  callAjax(data, "keys create for all users", resetUserMetaFields, "Error when saving key '" + key + "'", null);
+}
+function deleteMetaKeys(key) {
+  var data = {
+    'action' : 'delete_metakey',
+    'key' : key
+  };
+  callAjax(data, "MetaKey delete for all user", loadExistingKeysFields, "failed to delete key '" + key + "'", null);
+}
+function saveMetakey(userId, key, value) {
+  var data = {
+    'action' : 'add_new_metakey',
+    'userId' : userId,
+    'key' : key,
+    'value' : value
+  };
+  callAjax(data, "MetaKey save", resetUserMetaFields, "Error when saving key '" + key + "'", null);
+}
+function resetUserMetaFields(data) {
+  jQuery("#usermetadata_user_id").val("");
+  jQuery("#usermetadata_key").val("");
+  jQuery("#usermetadata_value").val("");
+  jQuery("#usermetadata_user_search").val("");
+  jQuery("#usermetadata_key_all").val("");
+  jQuery("#usermetadata_value_all").val("");
+}
+
+function check_metaKey_exist() {
+  var data = {
+    'action' : 'not_exist_metakey',
+    'key' : jQuery("#usermetadata_key_all").val()
+  };
+  callAjax(data, null, enabledAddKeyAllButton, "Key " + jQuery("#usermetadata_key_all").val() + " already exist in DB", disabledAddKeyAllButton);
+}
+
+function disabledAddKeyAllButton(data) {
+  jQuery("#lab_settings_button_addKey_all").prop("disabled",true);
+  //jQuery("#lab_settings_button_addKey_all").data('disabled',true);
+}
+
+function enabledAddKeyAllButton(data) {
+  jQuery("#lab_settings_button_addKey_all").prop("disabled",false);
+  //jQuery("#lab_settings_button_addKey_all").data('disabled',false);
+}
+
+function callAjax(data, successMessage, callBackSuccess = null, errorMessage, callBackError = null) {
+  jQuery.post(ajaxurl, data, function(response) {
+    if (response.success) {
+      if (successMessage != null) {
+        toast_success(successMessage);
+      }
+      if (callBackSuccess != null) {
+        callBackSuccess(response.data);
+      }
+    }
+    else {
+      if (errorMessage != null) {
+        toast_error(errorMessage);
+      }
+      if (callBackError != null) {
+        callBackError(response.data);
+      }
+    }
+    });
+}
+
+function createKey(params) {
+  params['action'] = 'keyring_create_key';
+  console.log(params);
+  jQuery.post(ajaxurl, params, function(response) {
+    if (response.success) {
+      toast_success("Clé créée avec succès !");
+      jQuery("#lab_keyring_keySearch").keyup();
+      return;
+    }
+    toast_error("Erreur de création de clé");
+  });
 }

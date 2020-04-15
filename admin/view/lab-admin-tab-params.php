@@ -40,9 +40,6 @@ function lab_admin_tab_params() {
         </td>
       </tr>
     </table>
-    <hr>
-    <h4>Create Table :</h4>
-    <a href="#" class="page-title-action" id="lab_tab_param_create_table">Create table</a>
   </div>
 <?php
 }
