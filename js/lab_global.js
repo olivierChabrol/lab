@@ -371,7 +371,6 @@ jQuery(function($){
     params["commentary"] = $("#lab_keyring_newKey_commentary").val();
     createKey(params);
     clearFields("lab_keyring_newKey_",['number','office','brand','commentary']);
-    $("#lab_keyring_keySearch").keyup();
   });
   $("#lab_keyring_keySearch").keyup(function() {
     data = {
@@ -384,49 +383,134 @@ jQuery(function($){
       if (response.success) {
         //On calcule sur combien de pages s'étalent les lignes trouvées
         $("#lab_keyring_search_totalResults")[0].innerHTML=response.data[0]+" résultats.";
-        rowsLeft = response.data[0]-data['limit'];
-        output = "<option value='0'>1</option>";
-        i = 1;
-        while (rowsLeft > 0) {
-          $("#lab_keyring_nextPage").show();
-          rowsLeft -= data['limit'];
-          output += "<option value="+i+">"+(i+1)+"</option>";
-          i++;
-        }
-        bak = $("#lab_keyring_page")[0].selectedIndex;
-        $("#lab_keyring_page")[0].innerHTML=output;
-        $("#lab_keyring_page")[0].selectedIndex = bak;
-        //Affiche la liste des clés trouvées :
-        $("#lab_keyring_keysList")[0].innerHTML=response.data[1];
-        //Bind les fonctions aux boutons de modification :
-        $(".lab_keyring_key_edit").click(function () {
-          var data={
-            'action': 'keyring_get_key',
-            'id': $(this).attr('keyid')
-          };
-          jQuery.post(ajaxurl, data, function(response) {
-            if (response.success) {
-              $("#lab_keyring_editForm").show();
-              $("#lab_keyring_editForm_submit").attr('keyid',response.data['id']);
-              for (i of ['number', 'office', 'type', 'brand', 'site', 'commentary']) {
-                $("#lab_keyring_edit_"+i).val(response.data[i]);
+        if (response.data[0]==0) {
+          //Aucun résultat trouvé, on cache le "next page" et on propose de créer une clé
+          $("#lab_keyring_nextPage").hide();
+          console.log("oui");
+          $("#lab_keyring_keysList")[0].innerHTML="<tr><td colspan='9'>Aucune clé trouvée. Vous pouvez en créer une ci-dessous :</td></tr>";
+          $("#lab_keyring_newKey_number").val($("#lab_keyring_keySearch").val());
+        } else {
+          //Combien de lignes restantes à afficher ?
+          rowsLeft = response.data[0]-data['limit'];
+          output = "<option value='0'>1</option>";
+          i = 1;
+          $("#lab_keyring_nextPage").hide();
+          while (rowsLeft > 0) {
+            $("#lab_keyring_nextPage").show();
+            rowsLeft -= data['limit'];
+            output += "<option value="+i+">"+(i+1)+"</option>";
+            i++;
+          }
+          //Récupère la page sélectionnée
+          bak = $("#lab_keyring_page")[0].selectedIndex;
+          //Met à jour le nombre de pages nécessaires :
+          $("#lab_keyring_page")[0].innerHTML=output;
+          $("#lab_keyring_page")[0].selectedIndex = bak;
+
+          //Affiche la liste des clés trouvées :
+          $("#lab_keyring_keysList")[0].innerHTML=response.data[1];
+          //Bind les fonctions aux boutons de modification :
+          $(".lab_keyring_key_edit").click(function () {
+            var data={
+              'action': 'keyring_get_key',
+              'id': $(this).attr('keyid')
+            };
+            jQuery.post(ajaxurl, data, function(response) {
+              if (response.success) {
+                $("#lab_keyring_editForm").show();
+                $("#lab_keyring_editForm_submit").attr('keyid',response.data['id']);
+                for (i of ['number', 'office', 'type', 'brand', 'site', 'commentary']) {
+                  $("#lab_keyring_edit_"+i).val(response.data[i]);
+                }
               }
-            }
+            });
           });
-        });
-        //Bind les fonctions aux boutons de suppression :
-        $(".lab_keyring_key_delete").click(function() {
-          console.log($(this).attr('keyid'));
-          $("#lab_keyring_keyDelete_confirm").attr('keyid',$(this).attr('keyid'));
-        }); 
+          //Bind les fonctions aux boutons de suppression :
+          $(".lab_keyring_key_delete").click(function() {
+            console.log($(this).attr('keyid'));
+            $("#lab_keyring_keyDelete_confirm").attr('keyid',$(this).attr('keyid'));
+          }); 
+          //Fonction de prêt : 
+          $(".lab_keyring_key_lend").click(function () {
+            $("#lab_keyring_loanform").show();
+            //Vide les champs du formulaire :
+            clearFields("lab_keyring_loanform_",['user','end_date','start_date','commentary','referent']);
+            $("#lab_keyring_loanform_user").attr('userid','');
+            $("#lab_keyring_loanform_referent").attr('referent_id','');
+            // Cache tous les éléments spécifiques
+            $(".lab_keyring_loanform_key_sites").hide();
+            $(".lab_keyring_loanform_type").hide();
+            $(".lab_keyring_loan_new").hide();
+            $(".lab_keyring_loan_current").hide();
+            //Cherche les informations sur cette clé :
+            var data={
+              'action': 'keyring_get_key',
+              'id': $(this).attr('keyid')
+            };
+            jQuery.post(ajaxurl, data, function(response) {
+              if (response.success) {
+                for (i of ['id','number', 'type', 'office', 'brand', 'site', 'commentary', 'available']) {
+                  if (i=="site") {
+                    $(".lab_keyring_loanform_key_sites[siteID="+response.data[i]+"]").show();
+                  } else if (i=='type') {
+                    $(".lab_keyring_loanform_type[typeID="+response.data[i]+"]").show();
+                  } else if (i == 'available') {
+                    if (response.data[i]==1) {
+                      //La clé est disponible : on veut créer un nouveau prêt
+                      $(".lab_keyring_loan_new").show();
+                      //Sélectionne la date d'aujourd'hui
+                      $("#lab_keyring_loanform_referent").val($("#lab_keyring_loanform_referent").attr('default'));
+                      $("#lab_keyring_loanform_referent").attr('referent_id',$("#lab_keyring_loanform_referent").attr('default_id'));
+                      $("#lab_keyring_loanform_start_date").val(new Date().toISOString().split("T")[0]);
+                    } else {
+                      //Sinon on affiche le prêt en cours :
+                      $(".lab_keyring_loan_current").show();
+                      //Recherche le prêt non terminé de cette clé
+                      data={
+                        'action': 'keyring_find_loan_byKey',
+                        'key_id': response.data['id']
+                      }
+                      jQuery.post(ajaxurl, data, function(resp) {
+                        if (resp.success) {
+                          for (i of ['commentary', 'start_date','end_date']) {
+                            $("#lab_keyring_loanform_"+i).val(resp.data[i]);
+                          }
+                          $("#lab_keyring_loanform_referent").attr('referent_id',resp.data['referent_id']);
+                          //Stocke l'ID du prêt pour les prochaines actions
+                          $(".lab_keyring_loanform_actions").attr("loan_id",resp.data['id']);
+                          //Récupère le nom de l'utilisateur qui a la clé : 
+                          $("#lab_keyring_loanform_user").attr("userid",resp.data['user_id']);
+                          jQuery.post(ajaxurl, {'action': 'usermeta_names', 'search': {'term':resp.data['user_id']}},function (rep) {
+                            if (rep.success) {
+                              $("#lab_keyring_loanform_user").val(rep.data['first_name']+" "+rep.data['last_name']);
+                            }
+                          });
+                          //Récupère le nom de l'utilisateur référent :
+                          jQuery.post(ajaxurl, {'action': 'usermeta_names', 'search': {'term':resp.data['referent_id']}},function (r) {
+                            if (r.success) {
+                              $("#lab_keyring_loanform_referent").val(r.data['first_name']+" "+r.data['last_name']);
+                            }
+                          });
+                        } else {
+                          toast_error("Couldn't find current key loan");
+                        }
+                      });
+                    }
+                  }
+                  else {
+                    $("#lab_keyring_loanform_key_"+i)[0].innerHTML=response.data[i];
+                  }
+                }
+              }
+            });
+           });
+        }
         return;
-      }
-      else {
-        $("#lab_keyring_keysList")[0].innerHTML="<tr><td colspan='9'>Aucune clé trouvée. Vous pouvez en créer une ci-dessous :</td></tr>";
-        $("#lab_keyring_newKey_number").val($("#lab_keyring_keySearch").val());
       }
     });
   });
+  //Déclenche la recherche au chargement de la page pour afficher la liste de toutes les clés
+  $("#lab_keyring_keySearch").keyup();
   $("#lab_keyring_editForm_submit").click(function() {
     fields={};
     for (i of ['number','office']) {
@@ -491,10 +575,67 @@ jQuery(function($){
   });
   $("#lab_keyring_page").change(function () {
     $("#lab_keyring_keySearch").keyup();
-   })
-  $("#lab_keyring_keySearch").keyup();
-  $("#lab_keyring_editForm").hide();
-
+  });
+  $("#lab_keyring_loanform_referent").autocomplete({
+    minChars: 3,
+    source: function(term, suggest){
+      try { searchRequest.abort(); } catch(e){}
+      searchRequest = $.post(ajaxurl, { action: 'search_username',search: term, }, function(res) {
+        suggest(res.data);
+      });
+      },
+    select: function( event, ui ) {
+      var value = ui.item.value;
+      var label = ui.item.label;
+      event.preventDefault();
+      $("#lab_keyring_loanform_referent").val(label);
+      $("#lab_keyring_loanform_referent").attr('referent_id',value);
+    }
+  });
+  $("#lab_keyring_loanform_user").autocomplete({
+    minChars: 3,
+    source: function(term, suggest){
+      try { searchRequest.abort(); } catch(e){}
+      searchRequest = $.post(ajaxurl, { action: 'search_username',search: term, }, function(res) {
+        suggest(res.data);
+      });
+      },
+    select: function( event, ui ) {
+      var value = ui.item.value;
+      var label = ui.item.label;
+      event.preventDefault();
+      $("#lab_keyring_loanform_user").val(label);
+      $("#lab_keyring_loanform_user").attr('userID',value);
+    }
+  });
+  $("#lab_keyring_loanform_create").click(function(){
+    params={};
+    for (i of ['commentary', 'start_date','end_date']) {
+      params[i] = $("#lab_keyring_loanform_"+i).val();
+    }
+    params["referent_id"] = $("#lab_keyring_referent").attr("referent_id");
+    params["key_id"] = $("#lab_keyring_loanform_key_id").text();
+    params["user_id"] = $("#lab_keyring_loanform_user").attr('userid');
+    createLoan(params);
+    clearFields("lab_keyring_loanform_",['user','end_date','start_date','commentary','referent']);
+    $("#lab_keyring_loanform_user").attr('userid','');
+  });
+  $("#lab_keyring_loanform_edit").click(function () { 
+    params={};
+    for (i of ['commentary', 'start_date','end_date']) {
+      params[i] = $("#lab_keyring_loanform_"+i).val();
+    }
+    params["referent_id"] = $("#lab_keyring_loanform_referent").attr("referent_id");
+    params["key_id"] = $("#lab_keyring_loanform_key_id").text();
+    params["user_id"] = $("#lab_keyring_loanform_user").attr('userid');
+    editLoan($(this).attr('loan_id'), params);
+    clearFields("lab_keyring_loanform_",['user','end_date','start_date','commentary','referent']);
+    $("#lab_keyring_loanform_user").attr('userid','');
+   });
+   $("#lab_keyring_loanform_end").click(function () {
+     console.log("wtf");
+     endLoan($(this).attr('loan_id'),$("#lab_keyring_loanform_key_id").text(),$("#lab_keyring_loanform_end_date").val());
+    });
 });
 
 
@@ -864,14 +1005,60 @@ function clearFields(prefix,list) {
   }
 }
 function createKey(params) {
-  params['action'] = 'keyring_create_key';
-  console.log(params);
-  jQuery.post(ajaxurl, params, function(response) {
+  data = {
+    'action': 'keyring_create_key',
+    'params': params 
+  }
+  jQuery.post(ajaxurl, data, function(response) {
     if (response.success) {
       toast_success("Clé créée avec succès !");
       jQuery("#lab_keyring_keySearch").keyup();
       return;
     }
     toast_error("Erreur de création de clé");
+  });
+}
+function createLoan(params) {
+  data = {
+    'action': 'keyring_create_loan',
+    'params': params
+  }
+  jQuery.post(ajaxurl, data, function(response) {
+    if (response.success) {
+      toast_success("Prêt créé avec succès.");
+      jQuery("#lab_keyring_keySearch").keyup();
+      return;
+    }
+    toast_error("Erreur de création du prêt.");
+  });
+}
+function editLoan(id, params) {
+  data = {
+    'action': 'keyring_edit_loan',
+    'params': params,
+    'id': id
+  }
+  jQuery.post(ajaxurl, data, function(response) {
+    if (response.success) {
+      toast_success("Prêt modifié avec succès.");
+      return;
+    }
+    toast_error("Erreur de modification du prêt.");
+  });
+}
+function endLoan(loan_id, key_id, date) {
+  data = {
+    'action': 'keyring_end_loan',
+    'key_id': key_id,
+    'loan_id': loan_id,
+    'end_date': date
+  }
+  jQuery.post(ajaxurl, data, function(response) {
+    if (response.success) {
+      toast_success("Prêt terminé avec succès.");
+      jQuery("#lab_keyring_keySearch").keyup();
+      return;
+    }
+    toast_error("Erreur lors de la tentative de fin du prêt.");
   });
 }

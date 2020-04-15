@@ -51,26 +51,24 @@
 }
 #lab_keyring_table tfoot td {
     padding: 0;
-    height: 3em;
     line-height: 3em;
     text-align: center;
 }
-#lab_keyring_table tfoot td input, #lab_keyring_table tfoot td select,#lab_keyring_table tfoot td input::placeholder {
-    display: inline-block;
+#lab_keyring_table tfoot td input, #lab_keyring_table tfoot td select, #lab_keyring_loanform input, #lab_keyring_loanform textarea {
     vertical-align: middle;
-    text-align: left;
     width: 90%;
-    height: 1.6em;
     border: none;
     border-radius: 0;
     border-bottom: 1px solid #0071a1;
 }
 #lab_keyring_table .lab_keyring_icon {
     font-size: 1.2em;
+    padding: 0.5em 0;
     text-align: center;
 }
 #lab_keyring_table .lab_keyring_key_lend, #lab_keyring_newKey_create, #lab_keyring_editForm_submit {
-    width: 7em;
+    min-width: 4.5em;
+    display: inline-block;
     margin-left: 1em;
 }
 #lab_keyring_table tr td:first-of-type {
@@ -88,4 +86,44 @@
     padding: 0 2em;
     text-decoration: underline;
     cursor: pointer;
+}
+/* ================== Gestion des prêts  ================== */
+#lab_keyring_loanform {
+    padding: 1em 5em 5em 1em;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+#lab_keyring_loanform>div {
+    min-width: 20em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+#lab_keyring_loanform>div>* {
+    width: 100%;
+}
+#lab_keyring_loanform_table {
+    border-spacing: 0;
+    max-width: 25%;
+}
+#lab_keyring_loanform_table thead {
+    background: #0071a1;
+    color: white;
+}
+#lab_keyring_loanform_table tbody th, #lab_keyring_loanform_table tbody td {
+    text-align: left;
+    min-width: 8em;
+    border-left: 5px solid rgba(200,200,200,0);
+}
+#lab_keyring_loanform_table tbody tr:nth-of-type(even)>* {
+    background-color: #DDD;
+    border-color: #DDD;
+}
+#lab_keyring_loanform label {
+    margin: 0.2em;
+    margin-top: 1em;
+}
+#lab_keyring_loanform input {
+    min-height: 2em;
 }

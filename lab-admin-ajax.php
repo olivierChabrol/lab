@@ -457,7 +457,7 @@ function lab_admin_group_subs_addReq() {
  * KeyRing
  ********************************************************************************************/
 function lab_keyring_create_keyReq() {
-  $res = lab_keyring_create_key($_POST['number'],$_POST['office'],$_POST['type'],$_POST['brand'],$_POST['site'],$_POST['commentary']); 
+  $res = lab_keyring_create_key($_POST['params']); 
   if (strlen($res)==0) {
     wp_send_json_success();
     return;
@@ -496,4 +496,39 @@ function lab_keyring_deleteKey_Req() {
     return;
   }
   wp_send_json_success();
+}
+function lab_keyring_create_loanReq() {
+  $params = $_POST['params'];
+  $res = lab_keyring_setKeyAvailable($params['key_id'],0);
+  if (strlen($res)!=0) {
+    wp_send_json_error("KEY : ".$res);
+  } else {
+    $res = lab_keyring_create_loan($params);
+    (strlen($res)==0) ? wp_send_json_success() : wp_send_json_error("LOAN :".$res);
+  }
+}
+function lab_keyring_find_loan_byKey() {
+  $res = lab_keyring_get_currentLoan_forKey($_POST['key_id']);
+  if (count($res)) {
+    wp_send_json_success($res[0]);
+    return;
+  }
+  wp_send_json_error($res);
+}
+
+function lab_keyring_edit_loanReq() {
+  $res = lab_keyring_edit_loan($_POST['id'],$_POST['params']);
+  if ($res === false) {
+    wp_send_json_error();
+    return;
+  }
+  wp_send_json_success();
+}
+function lab_keyring_end_loanReq() {
+  $res = lab_keyring_end_loan($_POST['loan_id'],$_POST['end_date'], $_POST['key_id']);
+  if (strlen($res)==0) {
+    wp_send_json_success();
+    return;
+  }
+  wp_send_json_error($res);
 }

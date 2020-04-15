@@ -108,7 +108,10 @@ add_action( 'wp_ajax_keyring_search_word', 'lab_keyring_search_byWordReq' );
 add_action( 'wp_ajax_keyring_get_key', 'lab_keyring_findKey_Req' );
 add_action( 'wp_ajax_keyring_edit_key', 'lab_keyring_editKey_Req' );
 add_action( 'wp_ajax_keyring_delete_key', 'lab_keyring_deleteKey_Req' );
-
+add_action( 'wp_ajax_keyring_create_loan', 'lab_keyring_create_loanReq' ); 
+add_action( 'wp_ajax_keyring_find_loan_byKey', 'lab_keyring_find_loan_byKey' ); 
+add_action( 'wp_ajax_keyring_edit_loan', 'lab_keyring_edit_loanReq' ); 
+add_action( 'wp_ajax_keyring_end_loan','lab_keyring_end_loanReq' );
 /**
  * Fonction de création du menu
  */

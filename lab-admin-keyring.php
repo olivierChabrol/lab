@@ -62,7 +62,7 @@
         <tr style="display:none;" id ="lab_keyring_nextPage">
           <td scope="col" class="lab_keyring_icon" colspan='9' id='lab_keyring_nextPage_button'>➢ Page suivante</td>
         </tr>
-        <tr id="lab_keyring_editForm">
+        <tr style="display:none;" id="lab_keyring_editForm">
         <td scope="col">Modifier :</td>
           <td scope="col">
             <select id="lab_keyring_edit_type">
@@ -70,7 +70,7 @@
                 $output ="";
                 $params = new AdminParams;
                 foreach ( $params->get_params_fromId($params::PARAMS_KEYTYPE_ID) as $r ) {
-                  $output .= "<option value =".$r->id.">".$r->value."</option>";
+                  $output .= "<option value=".$r->id.">".$r->value."</option>";
                 }
                 echo $output;
               ?>
@@ -91,7 +91,7 @@
                 $output ="";
                 $params = new AdminParams;
                 foreach ( $params->get_params_fromId($params::PARAMS_SITE_ID) as $r ) {
-                  $output .= "<option value =".$r->id.">".$r->value."</option>";
+                  $output .= "<option value=".$r->id.">".$r->value."</option>";
                 }
                 echo $output;
               ?>
@@ -110,7 +110,7 @@
                 $output ="";
                 $params = new AdminParams;
                 foreach ( $params->get_params_fromId($params::PARAMS_KEYTYPE_ID) as $r ) {
-                  $output .= "<option value =".$r->id.">".$r->value."</option>";
+                  $output .= "<option value=".$r->id.">".$r->value."</option>";
                 }
                 echo $output;
               ?>
@@ -127,11 +127,11 @@
           </td>
           <td scope="col">
             <select id="lab_keyring_newKey_site">
-              <?php //Récupère la liste des types de clés existants
+              <?php //Récupère la liste des Sites existants
                 $output ="";
                 $params = new AdminParams;
                 foreach ( $params->get_params_fromId($params::PARAMS_SITE_ID) as $r ) {
-                  $output .= "<option value =".$r->id.">".$r->value."</option>";
+                  $output .= "<option value=".$r->id.">".$r->value."</option>";
                 }
                 echo $output;
               ?>
@@ -146,48 +146,77 @@
     </table>
     <hr/>
     <br/>
-    <h2>Gestion des prêts</h2>
-    <h3>Nouveau prêt</h3>
-    <div id="lab_keyring_newloan">
-      <table id="lab_keyring_newloan_table">
+    <h2 id="lab_keyring_loan_title">Gestion des prêts</h2>
+    <h3 style="display:none;" class="lab_keyring_loan_titles lab_keyring_loan_new">Nouveau prêt</h3>
+    <h3 style="display:none;" class="lab_keyring_loan_titles lab_keyring_loan_current">Prêt en cours</h3>
+    <div style="display:none;" id="lab_keyring_loanform">
+      <table id="lab_keyring_loanform_table">
         <thead>
-          <tr><th colspan="2">Clé : </th></tr>
+          <tr><th colspan="2">
+          <?php //Récupère la liste des types de clés existants
+                $output ="";
+                $params = new AdminParams;
+                foreach ( $params->get_params_fromId($params::PARAMS_KEYTYPE_ID) as $r ) {
+                  $output .= "<span style='display:none;' class='lab_keyring_loanform_type' typeID=".$r->id.">".$r->value."</span>";
+                }
+                echo $output;
+              ?>
+          </th></tr>
         </thead>
         <tbody>
           <tr>
             <th>ID</th>
-            <td id="lab_keyring_newloan_key_id">1</td>
+            <td id="lab_keyring_loanform_key_id">1</td>
           </tr>
           <tr>
             <th>Numéro</th>
-            <td id="lab_keyring_newloan_key_number">Bla</td>
+            <td id="lab_keyring_loanform_key_number">Bla</td>
           </tr>
           <tr>
             <th>Bureau</th>
-            <td id="lab_keyring_newloan_key_office">Bla</td>
+            <td id="lab_keyring_loanform_key_office">Bla</td>
           </tr>
           <tr>
             <th>Marque</th>
-            <td id="lab_keyring_newloan_key_brand">Bla</td>
+            <td id="lab_keyring_loanform_key_brand">Bla</td>
           </tr>
           <tr>
             <th>Site</th>
-            <td id="lab_keyring_newloan_key_site">Bla</td>
+            <td id="lab_keyring_loanform_key_site">
+            <?php //Récupère la liste des types de clés existants
+                $output ="";
+                $params = new AdminParams;
+                foreach ( $params->get_params_fromId($params::PARAMS_SITE_ID) as $r ) {
+                  $output .= "<span class='lab_keyring_loanform_key_sites' style='display:none' siteID=".$r->id.">".$r->value."</span>";
+                }
+                echo $output;
+              ?>
+            </td>
           </tr>
           <tr>
             <th>Commentaire</th>
-            <td id="lab_keyring_newloan_key_commentary">Bla bla bla Bla bla bla Bla bla bla</td>
+            <td id="lab_keyring_loanform_key_commentary">Bla bla bla Bla bla bla Bla bla bla</td>
           </tr>
         </tbody>
       </table>
-      <div id="lab_keyring_newloan_userOptions">
-        <label for="lab_keyring_newloan_user">Usager :</label>
-        <input type="text" name="lab_keyring_newloan_user" id="lab_keyring_newloan_user"/>
-        <label for="lab_keyring_newloan_referent">Référent :</label>
-        <input type="text" name="lab_keyring_newloan_referent" id="lab_keyring_newloan_referent"/>
+      <div id="lab_keyring_loanform_Useroptions">
+        <label for="lab_keyring_loanform_referent">Référent : </label>
+        <input id="lab_keyring_loanform_referent" type="text" default_id="<?php echo get_current_user_id();?>" default="<?php echo wp_get_current_user()->display_name;?>"/>
+        <label for="lab_keyring_loanform_user">Usager :</label>
+        <input type="text" name="lab_keyring_loanform_user" id="lab_keyring_loanform_user"/>
       </div>
-      <div id="lab_keyring_newloan_options">
-        <input type="date"/>
+      <div id="lab_keyring_loanform_dateOptions">
+        <label for="lab_keyring_loanform_start_date">Date de début :</label>
+        <input type="date" id="lab_keyring_loanform_start_date"/>
+        <label for="">Date de fin : <em class="lab_keyring_loan_new">(facultatif)</em> </label>
+        <input type="date" id="lab_keyring_loanform_end_date"/>
+      </div>
+      <div id="lab_keyring_loanform_actions">
+        <textarea id="lab_keyring_loanform_commentary" placeholder="Commentaire faculatif..."></textarea>
+        <label>Actions</label>
+        <button class="page-title-action lab_keyring_loanform_actions lab_keyring_loan_new" style="display:none" id="lab_keyring_loanform_create">Créer le prêt</button>
+        <button class="page-title-action lab_keyring_loanform_actions lab_keyring_loan_current" style="display:none" id="lab_keyring_loanform_edit">Modifier le prêt</button>
+        <button class="page-title-action lab_keyring_loanform_actions lab_keyring_loan_current" style="display:none" id="lab_keyring_loanform_end">Marquer comme rendu</button>
       </div>
     </div>
     <?php
@@ -207,13 +236,11 @@
         }
       }
       $element->available == 1 ?
-                  $output .= '<td scope="col" class="lab_keyring_icon">✅<button class="page-title-action lab_keyring_key_lend">Prêter</button></td>'
-                : $output.='<td scope="col" class="lab_keyring_icon">❌<button class="page-title-action lab_keyring_key_lend">Voir prêt</button></td>';
+                  $output .= '<td scope="col" class="lab_keyring_icon">✅<a href="#lab_keyring_loan_title" class="page-title-action lab_keyring_key_lend" keyid="'.$element->id.'">Prêter</a></td>'
+                : $output.='<td scope="col" class="lab_keyring_icon">❌<a href="#lab_keyring_loan_title" class="page-title-action lab_keyring_key_lend" keyid="'.$element->id.'">Voir prêt</a></td>';
       $output .= '<td scope="col" class="lab_keyring_icon">
-                    <div class="lab_keyring_key_actions">
-                      <a class="page-title-action lab_keyring_key_edit" href="#lab_keyring_newForm" keyid="'.$element->id.'">🖊Modifier</a>
-                      <a class="page-title-action lab_keyring_key_delete" href="#lab_keyring_delete_dialog" rel="modal:open" keyid="'.$element->id.'">❌</a>
-                    </div>
+                    <a class="page-title-action lab_keyring_key_edit" href="#lab_keyring_newForm" keyid="'.$element->id.'">🖊Modifier</a>
+                    <a class="page-title-action lab_keyring_key_delete" href="#lab_keyring_delete_dialog" rel="modal:open" keyid="'.$element->id.'">❌</a>
                   </td>
                 </tr>';
     }
