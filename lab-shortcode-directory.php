@@ -8,13 +8,32 @@
 
 function lab_directory($param) {
     extract(shortcode_atts(array(
-        'name' => get_option('name'),
-        'group' => get_option('group')
+        'asLeft' => get_option('asLeft')
+        //'group' => get_option('group')
     ),
         $param
     ));
-    
-    $sql = "SELECT um1.`user_id`    AS id, um3.`meta_value` AS first_name, um2.`meta_value` AS last_name,
+
+    if(isset($param) && $param == true) // if shortcode filter is true
+    {
+        $sql = "SELECT um1.`user_id`    AS id, um3.`meta_value` AS first_name, um2.`meta_value` AS last_name,
+                   um4.`user_email` AS mail, um5.`meta_value` AS phone 
+            FROM `wp_usermeta` AS um1 
+            JOIN `wp_usermeta` AS um2 ON um1.`user_id` = um2.`user_id` 
+            JOIN `wp_usermeta` AS um3 ON um1.`user_id` = um3.`user_id` 
+            JOIN `wp_users`    AS um4 ON um1.`user_id` = um4.`ID`
+            JOIN `wp_usermeta` AS um5 ON um1.`user_id` = um5.`user_id`
+            JOIN `wp_usermeta` AS um6 ON um1.`user_id` = um6.`user_id`
+            WHERE um1.`meta_key`='last_name' 
+                AND um2.`meta_key`='last_name' 
+                AND um3.`meta_key`='first_name'
+                AND um5.`meta_key`='lab_user_phone'
+                AND um6.`meta_key`='lab_user_left'
+                AND um6.`meta_value` IS NULL";
+    }
+    else 
+    {
+        $sql = "SELECT um1.`user_id`    AS id, um3.`meta_value` AS first_name, um2.`meta_value` AS last_name,
                    um4.`user_email` AS mail, um5.`meta_value` AS phone
             FROM `wp_usermeta` AS um1 
             JOIN `wp_usermeta` AS um2 ON um1.`user_id` = um2.`user_id` 
@@ -25,6 +44,7 @@ function lab_directory($param) {
                 AND um2.`meta_key`='last_name' 
                 AND um3.`meta_key`='first_name'
                 AND um5.`meta_key`='lab_user_phone'";
+    }
 
     $currentLetter = $_GET["letter"];
     if (isset($currentLetter) && $currentLetter != "") {
@@ -48,15 +68,12 @@ function lab_directory($param) {
     } // letter's url
     $directoryStr .= "<div class=\"alpha-links\" style=\"font-size:15px;\">"; // letters
     $directoryStr .= 
-        "<br><form id='dud_user_srch' method='post'>
+        "<br>
             <div id='user-srch' style='width:350px;'>
                 <input type='text' id='dud_user_srch_val' name='dud_user_srch_val' style='' value='' maxlength='50' placeholder='Chercher un nom'/>
                 <input type='hidden' id='lab_searched_directory' value='' />
-                <button id='bouton_beau'>                    
-                    <i class='fa fa-search fa-lg' aria-hidden='true'></i>
-                </button>
             </div>
-        </form><br>"; // search field
+        <br>"; // search field
     $directoryStr .= 
         "<style>
             tr:nth-child(even) {
@@ -74,5 +91,5 @@ function lab_directory($param) {
         $directoryStr .= "</tr>";
     }
     $directoryStr .= "</table>";
-    return $directoryStr; 
+    return $directoryStr;
 }

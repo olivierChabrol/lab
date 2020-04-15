@@ -74,6 +74,7 @@ add_action( 'wp_enqueue_scripts'  , 'wp_lab_global_enqueues' );
 add_action( 'wp_ajax_search_event', 'lab_admin_search_event' );
 add_action( 'wp_ajax_search_user'      , 'lab_admin_search_user' );
 add_action( 'wp_ajax_search_username', 'lab_admin_search_username' );
+add_action( 'wp_ajax_search_username2', 'lab_admin_search_username2' );
 add_action( 'wp_ajax_search_user_metadata', 'lab_admin_search_user_metadata' );
 add_action( 'wp_ajax_update_user_metadata', 'lab_admin_update_user_metadata' );
 add_action( 'wp_ajax_update_user_metadata_db', 'lab_admin_update_user_metadata_db' );

@@ -227,6 +227,13 @@ function lab_admin_search_username()
   wp_send_json_success(lab_admin_firstname_lastname($search, $name));
 }
 
+function lab_admin_search_username2()
+{
+  $search = $_POST['search'];
+  $name  = $search["term"];
+  wp_send_json_success(lab_admin_firstname_lastname2($name));
+}
+
 function lab_admin_usermeta_names()
 {
   $search = $_POST['search'];

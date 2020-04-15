@@ -97,24 +97,28 @@ jQuery(function($){
     minChars: 1,
     source: function(term, suggest){
       try { searchRequest.abort(); } catch(e){}
-      searchRequest = $.post("/wp-admin/admin-ajax.php", { action: 'search_username',search: term, }, function(res) {
+      searchRequest = $.post("/wp-admin/admin-ajax.php", { action: 'search_username2',search: term, },
+      function(res) {
         suggest(res.data);
       });
     },
     select: function( event, ui ) {
-      var label = ui.item.label;
-      var value = ui.item.value;
+      var label  = ui.item.label; // first name
+      var label2 = ui.item.label2; // last name
+      var value  = ui.item.value;
+      window.location.href = "http://stage.fr/user/" + label + "." + label2;
       event.preventDefault();
-      $("#dud_user_srch_val").val(label);
+      $("#dud_user_srch_val").val(label + " " + label2);
       $("#lab_searched_directory").val(value);
       callbUser(value, loadUserMetaData);
-      return false;
+      //return false;
     }
   });
-
+  
+/*
   $("#bouton_beau").click(function(){
-    document.location.href = "https://www.youtube.com";
-  });
+    window.location.href = "https://www.youtube.com";
+  });*/
 
   $("#lab_user_button_test").click(function() {
     test();
