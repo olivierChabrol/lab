@@ -490,7 +490,6 @@ jQuery(function($){
     $("#lab_keyring_keySearch").keyup();
   });
   $("#lab_keyring_page").change(function () {
-    console.log("hey");
     $("#lab_keyring_keySearch").keyup();
    })
   $("#lab_keyring_keySearch").keyup();

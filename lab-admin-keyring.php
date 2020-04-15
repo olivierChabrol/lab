@@ -30,7 +30,7 @@
         </select>
       </div>
       <div>
-        <label> Nombre de clés par page :</label>
+        <label>Nombre de clés par page :</label>
         <select id="lab_keyring_keysPerPage">
           <option value="10">10</option>
           <option value="25">25</option>
@@ -45,10 +45,10 @@
     <table class="widefat fixed" id="lab_keyring_table">
       <thead>
         <tr>
-          <th scope="col" style="width:4em">ID</th>
-          <th scope="col" style="width:6em">Type</th>
-          <th scope="col" style="width:6em">Numéro</th>
-          <th scope="col" style="width:6em">Bureau</th>
+          <th scope="col" style="max-width:4em">ID</th>
+          <th scope="col" style="max-width:6em">Type</th>
+          <th scope="col" style="max-width:6em">Numéro</th>
+          <th scope="col" style="max-width:6em">Bureau</th>
           <th scope="col">Marque</th>
           <th scope="col">Site</th>
           <th scope="col">Commentaire</th>
@@ -147,6 +147,49 @@
     <hr/>
     <br/>
     <h2>Gestion des prêts</h2>
+    <h3>Nouveau prêt</h3>
+    <div id="lab_keyring_newloan">
+      <table id="lab_keyring_newloan_table">
+        <thead>
+          <tr><th colspan="2">Clé : </th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>ID</th>
+            <td id="lab_keyring_newloan_key_id">1</td>
+          </tr>
+          <tr>
+            <th>Numéro</th>
+            <td id="lab_keyring_newloan_key_number">Bla</td>
+          </tr>
+          <tr>
+            <th>Bureau</th>
+            <td id="lab_keyring_newloan_key_office">Bla</td>
+          </tr>
+          <tr>
+            <th>Marque</th>
+            <td id="lab_keyring_newloan_key_brand">Bla</td>
+          </tr>
+          <tr>
+            <th>Site</th>
+            <td id="lab_keyring_newloan_key_site">Bla</td>
+          </tr>
+          <tr>
+            <th>Commentaire</th>
+            <td id="lab_keyring_newloan_key_commentary">Bla bla bla Bla bla bla Bla bla bla</td>
+          </tr>
+        </tbody>
+      </table>
+      <div id="lab_keyring_newloan_userOptions">
+        <label for="lab_keyring_newloan_user">Usager :</label>
+        <input type="text" name="lab_keyring_newloan_user" id="lab_keyring_newloan_user"/>
+        <label for="lab_keyring_newloan_referent">Référent :</label>
+        <input type="text" name="lab_keyring_newloan_referent" id="lab_keyring_newloan_referent"/>
+      </div>
+      <div id="lab_keyring_newloan_options">
+        <input type="date"/>
+      </div>
+    </div>
     <?php
   }
   function wp_lab_keyring_tableFromKeysList($list) {
@@ -167,8 +210,10 @@
                   $output .= '<td scope="col" class="lab_keyring_icon">✅<button class="page-title-action lab_keyring_key_lend">Prêter</button></td>'
                 : $output.='<td scope="col" class="lab_keyring_icon">❌<button class="page-title-action lab_keyring_key_lend">Voir prêt</button></td>';
       $output .= '<td scope="col" class="lab_keyring_icon">
-                    <a class="page-title-action lab_keyring_key_edit" href="#lab_keyring_newForm" keyid="'.$element->id.'">🖊Modifier</a>
-                    <a class="page-title-action lab_keyring_key_delete" href="#lab_keyring_delete_dialog" rel="modal:open" keyid="'.$element->id.'">❌</a>
+                    <div class="lab_keyring_key_actions">
+                      <a class="page-title-action lab_keyring_key_edit" href="#lab_keyring_newForm" keyid="'.$element->id.'">🖊Modifier</a>
+                      <a class="page-title-action lab_keyring_key_delete" href="#lab_keyring_delete_dialog" rel="modal:open" keyid="'.$element->id.'">❌</a>
+                    </div>
                   </td>
                 </tr>';
     }
