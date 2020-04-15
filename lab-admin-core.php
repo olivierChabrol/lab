@@ -213,6 +213,46 @@ function lab_keyring_create_loan($key_id,$user_id,$referent_id,$start_date,$end_
         return $wpdb -> last_error;
     }
 }
+function lab_keyring_search_byWord($word,$limit,$page) {
+    $offset = $page*$limit;
+    $sql = "SELECT * from `wp_lab_keys`
+            WHERE Concat_ws(`wp_lab_keys`.`number`,`wp_lab_keys`.`office`,`wp_lab_keys`.`site`,`wp_lab_keys`.`brand`,`wp_lab_keys`.`commentary`)
+            LIKE '%".$word."%'
+            ORDER BY ABS(`wp_lab_keys`.`number`)
+            LIMIT ".$offset.", ".$limit.";";
+    $count = "SELECT COUNT(*) from `wp_lab_keys`
+              WHERE Concat_ws(`wp_lab_keys`.`number`,`wp_lab_keys`.`office`,`wp_lab_keys`.`site`,`wp_lab_keys`.`brand`,`wp_lab_keys`.`commentary`)
+              LIKE '%".$word."%'";
+    global $wpdb;
+    $results = $wpdb->get_results($sql);
+    $total = $wpdb->get_var($count);
+    $res = array(
+        "total" => $total,
+        "items" => $results
+    );
+    return $res;
+}
+function lab_keyring_search_key($id) {
+    $sql = "SELECT * from `wp_lab_keys`
+            WHERE `id`=".$id.";";
+    global $wpdb;
+    return $wpdb->get_results($sql);
+}
+function lab_keyring_edit_key($id,$fields) {
+    global $wpdb;
+    return $wpdb->update(
+        'wp_lab_keys',
+        $fields,
+        array('id' => $id)
+    );
+}
+function lab_keyring_delete_key($id) {
+    global $wpdb;
+    return $wpdb->delete(
+        'wp_lab_keys',
+        array('id' => $id)
+    );
+}
 
 /**************************************************************************************************
  * SETTINGS
