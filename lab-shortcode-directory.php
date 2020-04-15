@@ -7,38 +7,59 @@
 */
 
 function lab_directory($param) {
-    extract(shortcode_atts(array(
-        'asLeft' => get_option('asLeft')
-        //'group' => get_option('group')
-    ),
-        $param
-    ));
+    $param = shortcode_atts(array(
+        'as-left' => false
+        ),
+        $param, 
+        "lab-directory"
+    );
 
-    if(isset($param) && $param == true) // if shortcode filter is true
+    $asLeft  = $param['as-left'];
+    
+    $directoryStr = "<h1>Annuaire</h1>"; // title
+
+    if(isset($asLeft) && $asLeft == 0) // to see only those who are still in the Institute : 0
     {
-        $sql = "SELECT um1.`user_id`    AS id, um3.`meta_value` AS first_name, um2.`meta_value` AS last_name,
-                   um4.`user_email` AS mail, um5.`meta_value` AS phone 
+        $sql = "SELECT um1.`user_id` AS id, um3.`meta_value` AS first_name, um2.`meta_value` AS last_name,
+                   u4.`user_email` AS mail, um5.`meta_value` AS phone 
             FROM `wp_usermeta` AS um1 
             JOIN `wp_usermeta` AS um2 ON um1.`user_id` = um2.`user_id` 
             JOIN `wp_usermeta` AS um3 ON um1.`user_id` = um3.`user_id` 
-            JOIN `wp_users`    AS um4 ON um1.`user_id` = um4.`ID`
+            JOIN `wp_users`    AS u4 ON um1.`user_id` = u4.`ID`
             JOIN `wp_usermeta` AS um5 ON um1.`user_id` = um5.`user_id`
             JOIN `wp_usermeta` AS um6 ON um1.`user_id` = um6.`user_id`
-            WHERE um1.`meta_key`='last_name' 
-                AND um2.`meta_key`='last_name' 
+            WHERE um1.`meta_key`='last_name'
+                AND um2.`meta_key` = 'last_name'
                 AND um3.`meta_key`='first_name'
                 AND um5.`meta_key`='lab_user_phone'
                 AND um6.`meta_key`='lab_user_left'
                 AND um6.`meta_value` IS NULL";
     }
-    else 
+    else if(isset($asLeft) && $asLeft == 1) // to see only those who left the Institute : 1
     {
-        $sql = "SELECT um1.`user_id`    AS id, um3.`meta_value` AS first_name, um2.`meta_value` AS last_name,
-                   um4.`user_email` AS mail, um5.`meta_value` AS phone
+        $sql = "SELECT um1.`user_id` AS id, um3.`meta_value` AS first_name, um2.`meta_value` AS last_name,
+                   u4.`user_email` AS mail, um5.`meta_value` AS phone 
             FROM `wp_usermeta` AS um1 
             JOIN `wp_usermeta` AS um2 ON um1.`user_id` = um2.`user_id` 
             JOIN `wp_usermeta` AS um3 ON um1.`user_id` = um3.`user_id` 
-            JOIN `wp_users`    AS um4 ON um1.`user_id` = um4.`ID`
+            JOIN `wp_users`    AS u4 ON um1.`user_id` = u4.`ID`
+            JOIN `wp_usermeta` AS um5 ON um1.`user_id` = um5.`user_id`
+            JOIN `wp_usermeta` AS um6 ON um1.`user_id` = um6.`user_id`
+            WHERE um1.`meta_key`='last_name'
+                AND um2.`meta_key` = 'last_name'
+                AND um3.`meta_key`='first_name'
+                AND um5.`meta_key`='lab_user_phone'
+                AND um6.`meta_key`='lab_user_left'
+                AND um6.`meta_value` IS NOT NULL";
+    }
+    else // to see everybody (no need to type the parameter)
+    {
+        $sql = "SELECT um1.`user_id` AS id, um3.`meta_value` AS first_name, um2.`meta_value` AS last_name,
+                   u4.`user_email` AS mail, um5.`meta_value` AS phone
+            FROM `wp_usermeta` AS um1 
+            JOIN `wp_usermeta` AS um2 ON um1.`user_id` = um2.`user_id` 
+            JOIN `wp_usermeta` AS um3 ON um1.`user_id` = um3.`user_id` 
+            JOIN `wp_users`    AS u4 ON um1.`user_id` = u4.`ID`
             JOIN `wp_usermeta` AS um5 ON um1.`user_id` = um5.`user_id`
             WHERE um1.`meta_key`='last_name' 
                 AND um2.`meta_key`='last_name' 
@@ -47,14 +68,11 @@ function lab_directory($param) {
     }
 
     $currentLetter = $_GET["letter"];
-    if (isset($currentLetter) && $currentLetter != "") {
-        $sql .= " AND um1.`meta_value`LIKE '$currentLetter%'
-                ORDER BY last_name";
+    if (!isset($currentLetter) || empty($currentLetter)) {
+        $currentLetter = 'A';
     }
-    else {
-        $sql .= " AND um1.`meta_value`LIKE 'A%'
+    $sql .= " AND um1.`meta_value`LIKE '$currentLetter%'
                 ORDER BY last_name";
-    } // if there's no letter selected, it's by default on A
 
     global $wpdb;
     $results = $wpdb->get_results($sql);
