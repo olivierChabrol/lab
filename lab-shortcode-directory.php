@@ -3,56 +3,101 @@
  * File Name: lab-shortcode-directory.php
  * Description: shortcode pour générer un annuaire
  * Authors: Astrid BEYER, Lucas URGENTI
- * Version: 0.1
+ * Version: 1.0
 */
+
+/*** 
+ * Shortcode use : [lab-directory {as-left} {group}]
+     as-left="yes" OR as-left="no"
+     group="AA" or whatever group's acronym
+***/ 
 
 function lab_directory($param) {
     $param = shortcode_atts(array(
-        'as-left' => false
+        'as-left' => get_option('lab-directory'),
+        'group' => get_option('lab-directory')
         ),
         $param, 
         "lab-directory"
     );
 
     $asLeft  = $param['as-left'];
-    
+    $group   = $param['group'];
     $directoryStr = "<h1>Annuaire</h1>"; // title
 
-    if(isset($asLeft) && $asLeft == 0) // to see only those who are still in the Institute : 0
+/*** FILTER FOR SHORTCODE PARAMETERS  ***/
+    if(!empty($asLeft) && !empty($group))
     {
-        $sql = "SELECT um1.`user_id` AS id, um3.`meta_value` AS first_name, um2.`meta_value` AS last_name,
-                   u4.`user_email` AS mail, um5.`meta_value` AS phone 
-            FROM `wp_usermeta` AS um1 
-            JOIN `wp_usermeta` AS um2 ON um1.`user_id` = um2.`user_id` 
-            JOIN `wp_usermeta` AS um3 ON um1.`user_id` = um3.`user_id` 
-            JOIN `wp_users`    AS u4 ON um1.`user_id` = u4.`ID`
-            JOIN `wp_usermeta` AS um5 ON um1.`user_id` = um5.`user_id`
-            JOIN `wp_usermeta` AS um6 ON um1.`user_id` = um6.`user_id`
-            WHERE um1.`meta_key`='last_name'
-                AND um2.`meta_key` = 'last_name'
-                AND um3.`meta_key`='first_name'
-                AND um5.`meta_key`='lab_user_phone'
-                AND um6.`meta_key`='lab_user_left'
-                AND um6.`meta_value` IS NULL";
+        $sql = "SELECT DISTINCT um1.`user_id` AS id, um3.`meta_value` AS first_name, um2.`meta_value` AS last_name, 
+        u4.`user_email` AS mail, um5.`meta_value` AS phone 
+        FROM `wp_usermeta` AS um1 
+        JOIN `wp_usermeta` AS um2 ON um1.`user_id` = um2.`user_id` 
+        JOIN `wp_usermeta` AS um3 ON um1.`user_id` = um3.`user_id` 
+        JOIN `wp_users` AS u4 ON um1.`user_id` = u4.`ID` 
+        JOIN `wp_usermeta` AS um5 ON um1.`user_id` = um5.`user_id`
+        JOIN `wp_usermeta` AS um6 ON um1.`user_id` = um6.`user_id` 
+        JOIN `wp_lab_users_groups`AS ug6 ON um1.`user_id` = ug6.`user_id` 
+        JOIN `wp_lab_groups` AS g7 ON ug6.`group_id` = g7.`id` 
+        WHERE   um1.`meta_key`='last_name' 
+            AND um2.`meta_key`='last_name' 
+            AND um3.`meta_key`='first_name' 
+            AND um5.`meta_key`='lab_user_phone'
+            AND um6.`meta_key`='lab_user_left' 
+            AND g7.`acronym`  = '" . $group . "'";
+        if($asLeft == "yes")
+        {
+            $sql .= "AND um6.`meta_value` IS NOT NULL";
+        }
+        else if($asLeft == "no")
+        {
+            $sql .= "AND um6.`meta_value` IS NULL";
+        } 
     }
-    else if(isset($asLeft) && $asLeft == 1) // to see only those who left the Institute : 1
+    else if(!empty($asLeft) xor !empty($group))
     {
-        $sql = "SELECT um1.`user_id` AS id, um3.`meta_value` AS first_name, um2.`meta_value` AS last_name,
-                   u4.`user_email` AS mail, um5.`meta_value` AS phone 
-            FROM `wp_usermeta` AS um1 
-            JOIN `wp_usermeta` AS um2 ON um1.`user_id` = um2.`user_id` 
-            JOIN `wp_usermeta` AS um3 ON um1.`user_id` = um3.`user_id` 
-            JOIN `wp_users`    AS u4 ON um1.`user_id` = u4.`ID`
-            JOIN `wp_usermeta` AS um5 ON um1.`user_id` = um5.`user_id`
-            JOIN `wp_usermeta` AS um6 ON um1.`user_id` = um6.`user_id`
-            WHERE um1.`meta_key`='last_name'
-                AND um2.`meta_key` = 'last_name'
-                AND um3.`meta_key`='first_name'
-                AND um5.`meta_key`='lab_user_phone'
-                AND um6.`meta_key`='lab_user_left'
-                AND um6.`meta_value` IS NOT NULL";
+        if(!empty($asLeft))
+        {
+            $sql = "SELECT um1.`user_id` AS id, um3.`meta_value` AS first_name, um2.`meta_value` AS last_name,
+                                u4.`user_email` AS mail, um5.`meta_value` AS phone 
+                        FROM `wp_usermeta` AS um1 
+                        JOIN `wp_usermeta` AS um2 ON um1.`user_id` = um2.`user_id` 
+                        JOIN `wp_usermeta` AS um3 ON um1.`user_id` = um3.`user_id` 
+                        JOIN `wp_users`    AS u4  ON um1.`user_id` = u4.`ID`
+                        JOIN `wp_usermeta` AS um5 ON um1.`user_id` = um5.`user_id`
+                        JOIN `wp_usermeta` AS um6 ON um1.`user_id` = um6.`user_id`
+                        WHERE   um1.`meta_key`='last_name'
+                            AND um2.`meta_key`= 'last_name'
+                            AND um3.`meta_key`='first_name'
+                            AND um5.`meta_key`='lab_user_phone'
+                            AND um6.`meta_key`='lab_user_left'";
+            if($asLeft == "yes")
+            {
+                $sql .= "AND um6.`meta_value` IS NOT NULL";
+            }
+            else if($asLeft == "no")
+            {
+                $sql .= "AND um6.`meta_value` IS NULL";
+            }
+        }
+        else
+        {
+            $sql = "SELECT DISTINCT um1.`user_id` AS id, um3.`meta_value` AS first_name, um2.`meta_value` AS last_name, 
+                    u4.`user_email` AS mail, um5.`meta_value` AS phone 
+                    FROM `wp_usermeta` AS um1 
+                    JOIN `wp_usermeta` AS um2 ON um1.`user_id` = um2.`user_id` 
+                    JOIN `wp_usermeta` AS um3 ON um1.`user_id` = um3.`user_id` 
+                    JOIN `wp_users` AS u4 ON um1.`user_id` = u4.`ID` 
+                    JOIN `wp_usermeta` AS um5 ON um1.`user_id` = um5.`user_id` 
+                    JOIN `wp_lab_users_groups`AS ug6 ON um1.`user_id` = ug6.`user_id` 
+                    JOIN `wp_lab_groups` AS g7 ON ug6.`group_id` = g7.`id` 
+                    WHERE   um1.`meta_key`='last_name' 
+                        AND um2.`meta_key`='last_name' 
+                        AND um3.`meta_key`='first_name' 
+                        AND um5.`meta_key`='lab_user_phone' 
+                        AND g7.`acronym`  ='" . $group . "'";
+        }
     }
-    else // to see everybody (no need to type the parameter)
+    else
     {
         $sql = "SELECT um1.`user_id` AS id, um3.`meta_value` AS first_name, um2.`meta_value` AS last_name,
                    u4.`user_email` AS mail, um5.`meta_value` AS phone
@@ -103,7 +148,8 @@ function lab_directory($param) {
     $directoryStr .= "<table>";
     foreach ($results as $r) {
         $directoryStr .= "<tr>";
-        $directoryStr .= "<td><a>" . esc_html($r->first_name . " " . $r->last_name) . "</a></td>";
+        $directoryStr .= "<td><a href='http://stage.fr/user/" .  esc_html($r->first_name) . "." . esc_html($r->last_name) . "'>" . 
+                        esc_html($r->first_name . " " . $r->last_name) . "</a></td>";
         $directoryStr .= "<td>" . esc_html($r->mail) . "</td>";
         $directoryStr .= "<td>" . esc_html($r->phone) . "</td>";
         $directoryStr .= "</tr>";
