@@ -104,22 +104,21 @@ jQuery(function($){
       });
     },
     select: function( event, ui ) {
-      var label  = ui.item.label; // first name
-      var label2 = ui.item.label2; // last name
-      var value  = ui.item.value;
-      window.location.href = "http://stage.fr/user/" + label + "." + label2;
+      var firstname  = ui.item.firstname; // first name
+      var lastname = ui.item.lastname; // last name
+      var user_id  = ui.item.user_id;
+      window.location.href = "http://stage.fr/user/" + firstname + "." + lastname;
       event.preventDefault();
-      $("#dud_user_srch_val").val(label + " " + label2);
-      $("#lab_searched_directory").val(value);
-      callbUser(value, loadUserMetaData);
+      $("#dud_user_srch_val").val(firstname + " " + lastname);
+      $("#lab_searched_directory").val(user_id);
+      callbUser(user_id, loadUserMetaData);
       //return false;
     }
   });
-  
-/*
-  $("#bouton_beau").click(function(){
-    window.location.href = "https://www.youtube.com";
-  });*/
+
+  $(".directory_row").click(function() {
+    window.location.href = "http://stage.fr/user/" + $(this).text();
+  });
 
   $("#lab_user_button_test").click(function() {
     test();
@@ -983,7 +982,7 @@ function enabledAddKeyAllButton(data) {
 }
 
 function callAjax(data, successMessage, callBackSuccess = null, errorMessage, callBackError = null) {
-  jQuery.post(ajaxurl, data, function(response) {
+  jQuery.post('/wp-admin/admin-ajax.php', data, function(response) {
     if (response.success) {
       if (successMessage != null) {
         toast_success(successMessage);

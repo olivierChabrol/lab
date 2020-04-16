@@ -45,7 +45,7 @@ function lab_admin_firstname_lastname2($name){
   $items = array();
 
   foreach ($results as $r) {
-    $items[] = array(label => $r->first_name , label2 => $r->last_name , value => $r->id);
+    $items[] = array(label => $r->first_name . " " . $r->last_name , firstname => $r->first_name , lastname => $r->last_name , user_id => $r->id);
   }
   return $items;
 }

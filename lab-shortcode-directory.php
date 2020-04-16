@@ -101,15 +101,15 @@ function lab_directory($param) {
     {
         $sql = "SELECT um1.`user_id` AS id, um3.`meta_value` AS first_name, um2.`meta_value` AS last_name,
                    u4.`user_email` AS mail, um5.`meta_value` AS phone
-            FROM `wp_usermeta` AS um1 
-            JOIN `wp_usermeta` AS um2 ON um1.`user_id` = um2.`user_id` 
-            JOIN `wp_usermeta` AS um3 ON um1.`user_id` = um3.`user_id` 
-            JOIN `wp_users`    AS u4 ON um1.`user_id` = u4.`ID`
-            JOIN `wp_usermeta` AS um5 ON um1.`user_id` = um5.`user_id`
-            WHERE um1.`meta_key`='last_name' 
-                AND um2.`meta_key`='last_name' 
-                AND um3.`meta_key`='first_name'
-                AND um5.`meta_key`='lab_user_phone'";
+                FROM `wp_usermeta` AS um1 
+                JOIN `wp_usermeta` AS um2 ON um1.`user_id` = um2.`user_id` 
+                JOIN `wp_usermeta` AS um3 ON um1.`user_id` = um3.`user_id` 
+                JOIN `wp_users`    AS u4 ON um1.`user_id` = u4.`ID`
+                JOIN `wp_usermeta` AS um5 ON um1.`user_id` = um5.`user_id`
+                WHERE um1.`meta_key`='last_name' 
+                    AND um2.`meta_key`='last_name' 
+                    AND um3.`meta_key`='first_name'
+                    AND um5.`meta_key`='lab_user_phone'";
     }
 
     $currentLetter = $_GET["letter"];
@@ -139,6 +139,12 @@ function lab_directory($param) {
         <br>"; // search field
     $directoryStr .= 
         "<style>
+            .directory_row{
+                cursor: pointer;
+            }
+            .directory_row:hover {
+                background-color: #DADBDD;
+            }
             tr:nth-child(even) {
                 background-color: #f2f2f2;
             }
@@ -147,9 +153,10 @@ function lab_directory($param) {
     /* Table directory */
     $directoryStr .= "<table>";
     foreach ($results as $r) {
-        $directoryStr .= "<tr>";
-        $directoryStr .= "<td><a href='http://stage.fr/user/" .  esc_html($r->first_name) . "." . esc_html($r->last_name) . "'>" . 
-                        esc_html($r->first_name . " " . $r->last_name) . "</a></td>";
+        $directoryStr .= "<tr class='directory_row'>";
+        $directoryStr .= "<td id='name_col'>" . 
+                        esc_html($r->first_name . " " . $r->last_name) . 
+                        "</td>";
         $directoryStr .= "<td>" . esc_html($r->mail) . "</td>";
         $directoryStr .= "<td>" . esc_html($r->phone) . "</td>";
         $directoryStr .= "</tr>";
