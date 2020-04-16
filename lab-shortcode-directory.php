@@ -153,7 +153,7 @@ function lab_directory($param) {
     /* Table directory */
     $directoryStr .= "<table>";
     foreach ($results as $r) {
-        $directoryStr .= "<tr class='directory_row'>";
+        $directoryStr .= "<tr class='directory_row' userId=".$r->first_name.".".$r->last_name.">";
         $directoryStr .= "<td id='name_col'>" . 
                         esc_html($r->first_name . " " . $r->last_name) . 
                         "</td>";

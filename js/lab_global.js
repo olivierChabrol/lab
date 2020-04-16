@@ -117,7 +117,7 @@ jQuery(function($){
   });
 
   $(".directory_row").click(function() {
-    window.location.href = "http://stage.fr/user/" + $(this).text();
+    window.location.href = "http://stage.fr/user/" + $(this).attr('userId');
   });
 
   $("#lab_user_button_test").click(function() {
