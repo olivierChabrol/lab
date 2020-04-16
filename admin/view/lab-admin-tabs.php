@@ -42,6 +42,8 @@ function wp_lab_option()
             lab_admin_tab_params();
           } else if ($active_tab == 'keyring') {
             lab_admin_tab_keyring();
+          } else if ($active_tab == 'loan-contract') {
+            lab_admin_keyring_contract();
           } else {
             lab_admin_tab_seminaire();
           }

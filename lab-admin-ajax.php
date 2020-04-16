@@ -499,12 +499,12 @@ function lab_keyring_deleteKey_Req() {
 }
 function lab_keyring_create_loanReq() {
   $params = $_POST['params'];
-  $res = lab_keyring_setKeyAvailable($params['key_id'],0);
+  $res = lab_keyring_create_loan($params);
   if (strlen($res)!=0) {
-    wp_send_json_error("KEY : ".$res);
+    wp_send_json_error("LOAN : ".$res);
   } else {
-    $res = lab_keyring_create_loan($params);
-    (strlen($res)==0) ? wp_send_json_success() : wp_send_json_error("LOAN :".$res);
+    $res = lab_keyring_setKeyAvailable($params['key_id'],0);
+    (strlen($res)==0) ? wp_send_json_success() : wp_send_json_error("KEY :".$res);
   }
 }
 function lab_keyring_find_loan_byKey() {
@@ -531,4 +531,13 @@ function lab_keyring_end_loanReq() {
     return;
   }
   wp_send_json_error($res);
+}
+function lab_keyring_find_oldLoansReq() {
+  $res = lab_keyring_find_oldLoans($_POST['key_id']);
+  if (count($res)==0) {
+    wp_send_json_error("<tr><td colspan='9'>No loans found</td></tr>");
+    return;
+  } else {
+    wp_send_json_success(wp_lab_keyring_tableFromLoansList($res));
+  }
 }

@@ -176,6 +176,7 @@ function lab_keyring_createTable_loans() {
     $wpdb->get_results($sql);
 }
 function lab_keyring_create_key($params) {
+    $params['commentary'] = strlen($params['commentary']) ? $params['commentary'] : NULL ;
     global $wpdb;
     $wpdb->hide_errors();
     if ( $wpdb->insert(
@@ -189,6 +190,7 @@ function lab_keyring_create_key($params) {
     }
 }
 function lab_keyring_create_loan($params) {
+    $params['commentary'] = strlen($params['commentary']) ? $params['commentary'] : NULL ;
     $params['end_date'] = strlen($params['end_date']) ? $params['end_date'] : NULL ;
     global $wpdb;
     $wpdb->hide_errors();
@@ -227,6 +229,7 @@ function lab_keyring_search_key($id) {
     return $wpdb->get_results($sql);
 }
 function lab_keyring_edit_key($id,$fields) {
+    $fields['commentary'] = strlen($fields['commentary']) ? $fields['commentary'] : NULL ;
     global $wpdb;
     return $wpdb->update(
         'wp_lab_keys',
@@ -258,6 +261,7 @@ function lab_keyring_setKeyAvailable($id,$available) {
 }
 function lab_keyring_edit_loan($id,$params) {
     $params['end_date'] = strlen($params['end_date']) ? $params['end_date'] : NULL ;
+    $params['commentary'] = strlen($params['commentary']) ? $params['commentary'] : NULL ;
     global $wpdb;
     return $wpdb->update(
         'wp_lab_key_loans',
@@ -279,4 +283,9 @@ function lab_keyring_end_loan($loan_id,$end_date, $key_id) {
     } else {
         return $avail;
     }
+}
+function lab_keyring_find_oldLoans($key_id) {
+    $sql = "SELECT * from `wp_lab_key_loans` WHERE `key_id`=".$key_id." ORDER BY `start_date` DESC;";
+    global $wpdb;
+    return $wpdb->get_results($sql);
 }

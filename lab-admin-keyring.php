@@ -16,6 +16,14 @@
         <a href="#" rel="modal:close" id="lab_keyring_keyDelete_confirm" keyid="">Confirmer</a>
       </div>
     </div>
+    <div id="lab_keyring_endLoan_dialog" class="modal">
+      <p>Voulez-vous vraiment terminer ce prêt ?</p>
+      <p>Date de rendu : <span id="lab_keyring_endLoan_date">Aujourd'hui</span></p>
+      <div id="lab_keyring_delete_dialog_options">
+        <a href="#" rel="modal:close">Annuler</a>
+        <a href="#" rel="modal:close" id="lab_keyring_endLoan_confirm" keyid="">Confirmer</a>
+      </div>
+    </div>
     <p></p>
     <button class="lab_keyring_create_table_keys" id="lab_keyring_create_table_keys">Créer la table Keys</button>
     <button class="lab_keyring_create_table_loans" id="lab_keyring_create_table_loans">Créer la table Loans</button>
@@ -42,13 +50,13 @@
     </div>
     <p id="lab_keyring_search_totalResults"></p>
     <hr/>
-    <table class="widefat fixed" id="lab_keyring_table">
+    <table class="widefat fixed lab_keyring_table">
       <thead>
         <tr>
-          <th scope="col" style="max-width:4em">ID</th>
-          <th scope="col" style="max-width:6em">Type</th>
-          <th scope="col" style="max-width:6em">Numéro</th>
-          <th scope="col" style="max-width:6em">Bureau</th>
+          <th scope="col">ID</th>
+          <th scope="col">Type</th>
+          <th scope="col">Numéro</th>
+          <th scope="col">Bureau</th>
           <th scope="col">Marque</th>
           <th scope="col">Site</th>
           <th scope="col">Commentaire</th>
@@ -147,8 +155,12 @@
     <hr/>
     <br/>
     <h2 id="lab_keyring_loan_title">Gestion des prêts</h2>
-    <h3 style="display:none;" class="lab_keyring_loan_titles lab_keyring_loan_new">Nouveau prêt</h3>
-    <h3 style="display:none;" class="lab_keyring_loan_titles lab_keyring_loan_current">Prêt en cours</h3>
+    <!--<a href="admin.php?page=wp-lab.php&tab=loan-contract" target="_blank">​​​​​​​​​​​​​​​​​print pdf</a>-->
+    <h3 style="display:none;" class="lab_keyring_loan_new">Nouveau prêt</h3>
+    <div style="display:none;" class="lab_keyring_loan_current">
+      <h3>Prêt en cours</h3>
+      <h4><button id="lab_keyring_loanContract" class="lab_keyring_loanform_actions">Afficher Reçu</button></h4>
+    </div>
     <div style="display:none;" id="lab_keyring_loanform">
       <table id="lab_keyring_loanform_table">
         <thead>
@@ -166,19 +178,19 @@
         <tbody>
           <tr>
             <th>ID</th>
-            <td id="lab_keyring_loanform_key_id">1</td>
+            <td id="lab_keyring_loanform_key_id"></td>
           </tr>
           <tr>
             <th>Numéro</th>
-            <td id="lab_keyring_loanform_key_number">Bla</td>
+            <td id="lab_keyring_loanform_key_number"></td>
           </tr>
           <tr>
             <th>Bureau</th>
-            <td id="lab_keyring_loanform_key_office">Bla</td>
+            <td id="lab_keyring_loanform_key_office"></td>
           </tr>
           <tr>
             <th>Marque</th>
-            <td id="lab_keyring_loanform_key_brand">Bla</td>
+            <td id="lab_keyring_loanform_key_brand"></td>
           </tr>
           <tr>
             <th>Site</th>
@@ -195,7 +207,7 @@
           </tr>
           <tr>
             <th>Commentaire</th>
-            <td id="lab_keyring_loanform_key_commentary">Bla bla bla Bla bla bla Bla bla bla</td>
+            <td id="lab_keyring_loanform_key_commentary"></td>
           </tr>
         </tbody>
       </table>
@@ -218,6 +230,27 @@
         <button class="page-title-action lab_keyring_loanform_actions lab_keyring_loan_current" style="display:none" id="lab_keyring_loanform_edit">Modifier le prêt</button>
         <button class="page-title-action lab_keyring_loanform_actions lab_keyring_loan_current" style="display:none" id="lab_keyring_loanform_end">Marquer comme rendu</button>
       </div>
+    </div>
+    <div id="lab_keyring_all_loans" style="display: none;">
+      <h3>Tous les prêts :</h3>
+      <table class="widefat fixed lab_keyring_table">
+        <thead>
+          <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Clé</th>
+            <th scope="col">Référent</th>
+            <th scope="col">Utilisateur</th>
+            <th scope="col">Début</th>
+            <th scope="col">Échéance</th>
+            <th scope="col">Commentaire</th>
+            <th scope="col" class="lab_keyring_icon">Terminé</th>
+          </tr>
+        </thead>
+        <tbody id="lab_keyring_loansList">
+        </tbody>
+        <tfoot>
+        </tfoot>
+      </table>
     </div>
     <?php
   }
@@ -243,6 +276,22 @@
                     <a class="page-title-action lab_keyring_key_delete" href="#lab_keyring_delete_dialog" rel="modal:open" keyid="'.$element->id.'">❌</a>
                   </td>
                 </tr>';
+    }
+    return $output;
+  }
+  function wp_lab_keyring_tableFromLoansList($list) {
+    foreach ($list as $element) {
+      $output .= '<tr>';
+      foreach (['id','key_id', 'referent_id','user_id', 'start_date','end_date','commentary','ended'] as $field) {
+        if ($field == "ended") {  
+          $output .= '<td scope="col" class="lab_keyring_icon">'.($element->$field == 1 ? "✅" : "❌").'</td>';
+        } elseif ( $field =='user_id' || $field =='referent_id' ) {
+          $user = lab_admin_username_get($element->$field);
+          $output .= '<td scope="col">'.$user['first_name'].' '.$user['last_name'].'</td>';
+        } else {
+          $output.='<td scope="col">'.$element->$field.'</td>';
+        }
+      }
     }
     return $output;
   }
