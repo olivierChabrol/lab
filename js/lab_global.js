@@ -12,12 +12,31 @@ jQuery(function($){
     }
   });
   $( "#lab_user_left_date" ).datepicker();
+  $("#lab_hal_delete_table").click(function () { 
+    deleteHalTable();
+  });
+  $("#lab_hal_user").autocomplete({
+    minChars: 2,
+    source: function(term, suggest){
+      try { searchRequest.abort(); } catch(e){}
+      searchRequest = $.post(LAB.ajaxurl, { action: 'search_username',search: term, }, function(res) {
+        suggest(res.data);
+      });
+      },
+      select: function( event, ui ) {
+        var label = ui.item.label;
+        var value = ui.item.value;
+        event.preventDefault();
+        $("#lab_hal_user").val(label);
 
+        loadHalJson(value);
+      }
+  });
   $("#wp_lab_group_name").autocomplete({
     minChars: 2,
     source: function(term, suggest){
       try { searchRequest.abort(); } catch(e){}
-      searchRequest = $.post("/wp-admin/admin-ajax.php", { action: 'search_group',search: term, }, function(res) {
+      searchRequest = $.post(LAB.ajaxurl, { action: 'search_group',search: term, }, function(res) {
         suggest(res.data);
       });
       },
@@ -368,7 +387,12 @@ jQuery(function($){
     $type    = jQuery("#wp_lab_group_type_edit").val();
     editGroup($groupId, $acronym, $name, $chief, $parent, $type);
   });
-
+  $("#lab_hal_create").click(function() {
+    var data = {
+      'action' : 'hal_create_table'
+    }
+    callAjax(data, "Table HAL succesfuly created", null, "Can't create table HAL", null);
+  });
   ////////////////////// Onglet KeyRing //////////////////////
   $("#lab_keyring_create_table_keys").click(function () {
     var data = {
@@ -465,6 +489,12 @@ jQuery(function($){
         $("#lab_keyring_newKey_number").val($("#lab_keyring_keySearch").val());
       }
     });
+  });
+  $("#lab_settings_button_fill_hal_name_fields").click(function() {
+    data = {
+      'action': 'hal_fill_hal_name'
+    };
+    callAjax(data, "Fields succesfully filled", null, "Can't fill fields", null);
   });
   $("#lab_keyring_editForm_submit").click(function() {
     fields={};
@@ -965,6 +995,8 @@ function check_metaKey_exist() {
 
 function disabledAddKeyAllButton(data) {
   jQuery("#lab_settings_button_addKey_all").prop("disabled",true);
+  jQuery("#usermetadata_key_all").focus();
+  jQuery("#usermetadata_key_all").select();
   //jQuery("#lab_settings_button_addKey_all").data('disabled',true);
 }
 
@@ -1005,4 +1037,19 @@ function createKey(params) {
     }
     toast_error("Erreur de création de clé");
   });
+}
+
+function loadHalJson(userId) {
+  var data = {
+    'action' : 'hal_download',
+    'userId' : userId
+  };
+  callAjax(data, null, enabledAddKeyAllButton, "Key " + jQuery("#usermetadata_key_all").val() + " already exist in DB", disabledAddKeyAllButton); 
+}
+
+function deleteHalTable() {
+  var data = {
+    'action' : 'hal_empty_table'
+  };
+  callAjax(data, "HAL table deleted", null, "Failed to delete HAL table in DB", null); 
 }

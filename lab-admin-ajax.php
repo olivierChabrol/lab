@@ -535,3 +535,26 @@ function lab_ajax_userMeta_key_not_exist() {
     wp_send_json_success("No key specified");
   }
 }
+/********************************************************************************************
+ * HAL10
+ ********************************************************************************************/
+function lab_ajax_hal_create_table() {
+  wp_send_json_success(createTableHal());
+}
+function lab_ajax_hal_fill_fields() {
+  wp_send_json_success(usermeta_fill_hal_field());
+}
+function lab_ajax_hal_download(){
+  if (isset($_POST['userId']) && !empty($_POST['userId'])) 
+  {
+    wp_send_json_success(hal_download($_POST['userId']));
+  }
+  else
+  {
+    wp_send_json_success("No key specified");
+  }
+}
+function lab_ajax_delete_hal_table() {
+  delete_hal_table();
+  wp_send_json_success("Hal table deleted");
+}

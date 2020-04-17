@@ -13,6 +13,7 @@ __("Crée une page qui remonte les publications d'un auteur ou d'une structure e
 
 define('LAB_DIR_PATH', plugin_dir_path(__FILE__));
 define('LAB_META_PREFIX', "lab_");
+define('LAB_HAL_URL', 'http://api.archives-ouvertes.fr/search/hal/');
 
 //Récupère les constantes
 require_once("constantes.php");
@@ -29,6 +30,15 @@ require_once(LAB_DIR_PATH."admin/view/lab-admin-tab-params.php");
 require_once(LAB_DIR_PATH."admin/view/lab-admin-tab-users.php");
 require_once(LAB_DIR_PATH."admin/view/lab-admin-tab-settings.php");
 require_once("lab-html-helper.php");
+
+global $wpdb;
+$dbTablePrefix = $wpdb->prefix;
+define("LAB_TABLE_HAL", $dbTablePrefix."lab_hal");
+define("LAB_TABLE_GROUPS", $dbTablePrefix."lab_groups");
+define("LAB_TABLE_GROUP_SUBSTITUTE", $dbTablePrefix."lab_group_substitute");
+define("LAB_TABLE_KEYS", $dbTablePrefix."lab_keys");
+define("LAB_TABLE_KEY_LOAN", $dbTablePrefix."lab_key_loan");
+define("LAB_TABLE_PARAMS", $dbTablePrefix."lab_params");
 
 //Admin Files
 if (is_admin()) {
@@ -113,12 +123,50 @@ add_action( 'wp_ajax_keyring_delete_key', 'lab_keyring_deleteKey_Req' );
 
 add_action('wp_ajax_edit_group', 'lab_group_editGroup');
 //Action for settings
-//add_action( 'wp_ajax_add_new_metakey', 'lab_userMetaData_new_key');
 add_action( 'wp_ajax_add_new_metakey', 'lab_ajax_userMetaData_new_key');
 add_action( 'wp_ajax_add_new_metakeys', 'lab_ajax_userMetaData_create_keys');
 add_action( 'wp_ajax_list_metakeys', 'lab_ajax_userMetaData_list_keys');
 add_action( 'wp_ajax_delete_metakey', 'lab_ajax_userMetaData_delete_key');
 add_action( 'wp_ajax_not_exist_metakey', 'lab_ajax_userMeta_key_not_exist');
+//Action for hal
+add_action( 'wp_ajax_hal_create_table', 'lab_ajax_hal_create_table');
+add_action( 'wp_ajax_hal_fill_hal_name', 'lab_ajax_hal_fill_fields');
+add_action( 'wp_ajax_hal_download', 'lab_ajax_hal_download');
+add_action( 'wp_ajax_hal_empty_table', 'lab_ajax_delete_hal_table');
+
+add_action( 'show_user_profile', 'custom_user_profile_fields', 10, 1 );
+add_action( 'edit_user_profile', 'custom_user_profile_fields', 10, 1 );
+
+/**
+ * Show custom user profile fields
+ * 
+ * @param  object $profileuser A WP_User object
+ * @return void
+ */
+function custom_user_profile_fields( $profileuser ) {
+  ?>
+    <table class="form-table">
+      <tr>
+        <th>
+          <label for="user_hal_id">Hal ID</label>
+        </th>
+        <td>
+          <input type="text" name="user_hal_id" id="user_hal_id" value="<?php echo esc_attr( get_user_meta($profileuser->ID, 'lab_hal_id', true) ); ?>" class="regular-text" />
+          <br><span class="description"><?php esc_html_e( 'Your HAL id', 'text-domain' ); ?></span>
+        </td>
+      </tr>
+      <tr>
+        <th>
+          <label for="user_hal_name">Hal Name</label>
+        </th>
+        <td>
+          <input type="text" name="user_hal_name" id="user_hal_name" value="<?php echo esc_attr( get_user_meta($profileuser->ID, 'user_hal_name', true) ); ?>" class="regular-text" />
+          <br><span class="description"><?php esc_html_e( 'Your HAL name', 'text-domain' ); ?></span>
+        </td>
+      </tr>
+    </table>
+  <?php
+  }
 
 /**
  * Fonction de création du menu
@@ -138,7 +186,8 @@ function wp_lab_menu()
 function admin_enqueue()
 {
   //wp_enqueue_script('lab', plugins_url('js/lab_global.js',__FILE__), array('jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog'), filemtime(dirname(plugin_basename("__FILE__"))."/js/lab_global.js"), false);
-  wp_enqueue_script('lab', plugins_url('js/lab_global.js',__FILE__), array('jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog'), "1.3", false);
+  wp_enqueue_script('wp-lab', plugins_url('js/lab_global.js',__FILE__), array('jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog'), "1.3", false);
+  localize_script();
   //Plugin permettant d'afficher les toasts :
   wp_enqueue_style('jqueryToastCSS',plugins_url('css/jquery.toast.css',__FILE__));
   wp_enqueue_script('jqueryToastJS',plugins_url('js/jquery.toast.js',__FILE__),array('jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog'),"1.3.2",false);
@@ -152,13 +201,21 @@ function admin_enqueue()
 function wp_lab_global_enqueues()
 {
   wp_enqueue_script(
-    'global',
+    'wp-lab',
     plugins_url('js/lab_global.js',__FILE__),
     array('jquery'),
     '1.3',
     true
   );
-  wp_localize_script('ajax-script', 'ajax_object', array('ajax_url' => admin_url('admin-ajax.php'), 'we_value' => 1234));
+  localize_script();
+  //wp_localize_script('wp-lab', 'lab', array('ajax_url' => admin_url('admin-ajax.php'), 'we_value' => 1234));
+}
+
+function localize_script() {
+  $js_vars = array();
+  $schema = is_ssl() ? 'https':'http';
+  $js_vars['ajaxurl'] = admin_url('admin-ajax.php', $schema);
+  wp_localize_script('wp-lab', 'LAB', apply_filters('lab_js_vars', $js_vars));
 }
 
 function lab_admin_tab_general_user()
