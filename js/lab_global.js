@@ -112,24 +112,33 @@ jQuery(function($){
       return false;
     }
   });
-  $('#usermetadata_user_search').autocomplete({
-    minChars: 3,
+
+  $('#dud_user_srch_val').autocomplete({
+    minChars: 1,
     source: function(term, suggest){
       try { searchRequest.abort(); } catch(e){}
-      searchRequest = $.post("/wp-admin/admin-ajax.php", { action: 'search_username',search: term, }, function(res) {
+      searchRequest = $.post("/wp-admin/admin-ajax.php", { action: 'search_username2',search: term, },
+      function(res) {
         suggest(res.data);
       });
-      },
+    },
     select: function( event, ui ) {
-      var label = ui.item.label;
-      var value = ui.item.value;
+      var firstname  = ui.item.firstname; // first name
+      var lastname = ui.item.lastname; // last name
+      var user_id  = ui.item.user_id;
+      window.location.href = "http://stage.fr/user/" + firstname + "." + lastname;
       event.preventDefault();
-      $("#usermetadata_user_search").val(label);
-
-      $("#usermetadata_user_id").val(value);
-      return false;
+      $("#dud_user_srch_val").val(firstname + " " + lastname);
+      $("#lab_searched_directory").val(user_id);
+      callbUser(user_id, loadUserMetaData);
+      //return false;
     }
   });
+
+  $(".directory_row").click(function() {
+    window.location.href = "http://stage.fr/user/" + $(this).attr('userId');
+  });
+
   $("#lab_user_button_test").click(function() {
     test();
   });
@@ -913,7 +922,6 @@ function editGroup(groupId, acronym, groupName, chiefId, parent, group_type) {
       toast_error("Failed to save group");
     }
   });
-  //TODO: IHM pour que que l'utilisateur sache que ce qu'il a fait a modifié quelque chose
 }
 
 function resetGroupEdit()
@@ -1006,7 +1014,7 @@ function enabledAddKeyAllButton(data) {
 }
 
 function callAjax(data, successMessage, callBackSuccess = null, errorMessage, callBackError = null) {
-  jQuery.post(ajaxurl, data, function(response) {
+  jQuery.post('/wp-admin/admin-ajax.php', data, function(response) {
     if (response.success) {
       if (successMessage != null) {
         toast_success(successMessage);

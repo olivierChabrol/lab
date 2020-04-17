@@ -1,5 +1,7 @@
 <?php
 
+define ('LAB_SHORTCODE_PARAM_ASLEFT', 'asLeft');
+
 function lab_incoming_event($param) {
   extract(shortcode_atts(array(
         'slug' => get_option('option_event'),
