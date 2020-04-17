@@ -148,6 +148,10 @@ function lab_directory($param) {
             tr:nth-child(even) {
                 background-color: #f2f2f2;
             }
+            .email{
+                unicode-bidi: bidi-override;
+                direction: rtl;
+            }
         </style>"; // style for table (stripped colors)
 
     /* Table directory */
@@ -157,7 +161,7 @@ function lab_directory($param) {
         $directoryStr .= "<td id='name_col'>" . 
                         esc_html($r->first_name . " " . $r->last_name) . 
                         "</td>";
-        $directoryStr .= "<td>" . esc_html($r->mail) . "</td>";
+        $directoryStr .= "<td class='email'>" . esc_html(strrev($r->mail)) . "</td>";
         $directoryStr .= "<td>" . esc_html($r->phone) . "</td>";
         $directoryStr .= "</tr>";
     }

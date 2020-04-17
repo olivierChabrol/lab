@@ -134,6 +134,11 @@ jQuery(function($){
       //return false;
     }
   });
+  $(".email").each(function() {
+    var replaced = $(this).text().replace(/@/g, '[TA]');
+    $(this).text(replaced);
+  });
+  
 
   $(".directory_row").click(function() {
     window.location.href = "http://stage.fr/user/" + $(this).attr('userId');
