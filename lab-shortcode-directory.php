@@ -133,8 +133,8 @@ function lab_directory($param) {
     $directoryStr .= 
         "<br>
             <div id='user-srch' style='width:350px;'>
-                <input type='text' id='dud_user_srch_val' name='dud_user_srch_val' style='' value='' maxlength='50' placeholder='Chercher un nom'/>
-                <input type='hidden' id='lab_searched_directory' value='' />
+                <input type='text' id='lab_directory_user_name' name='dud_user_srch_val' style='' value='' maxlength='50' placeholder='Chercher un nom'/>
+                <input type='hidden' id='lab_directory_user_id' value='' />
             </div>
         <br>"; // search field
     $directoryStr .= 
