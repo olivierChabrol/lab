@@ -12,12 +12,31 @@ jQuery(function($){
     }
   });
   $( "#lab_user_left_date" ).datepicker();
+  $("#lab_hal_delete_table").click(function () { 
+    deleteHalTable();
+  });
+  $("#lab_hal_user").autocomplete({
+    minChars: 2,
+    source: function(term, suggest){
+      try { searchRequest.abort(); } catch(e){}
+      searchRequest = $.post(LAB.ajaxurl, { action: 'search_username',search: term, }, function(res) {
+        suggest(res.data);
+      });
+      },
+      select: function( event, ui ) {
+        var label = ui.item.label;
+        var value = ui.item.value;
+        event.preventDefault();
+        $("#lab_hal_user").val(label);
 
+        loadHalJson(value);
+      }
+  });
   $("#wp_lab_group_name").autocomplete({
     minChars: 2,
     source: function(term, suggest){
       try { searchRequest.abort(); } catch(e){}
-      searchRequest = $.post("/wp-admin/admin-ajax.php", { action: 'search_group',search: term, }, function(res) {
+      searchRequest = $.post(LAB.ajaxurl, { action: 'search_group',search: term, }, function(res) {
         suggest(res.data);
       });
       },
@@ -159,7 +178,7 @@ jQuery(function($){
       'action' : 'group_search_ac',
       'ac' : $("#lab_createGroup_acronym").val()
     };
-    jQuery.post(ajaxurl, data, function(response) {
+    jQuery.post(LAB.ajaxurl, data, function(response) {
       if (!response.success) {
         $("#lab_createGroup_acronym").css('border-color','red');
         $("#lab_createGroupe_acronym_hint").css("color","red");
@@ -180,7 +199,7 @@ jQuery(function($){
     minChars: 3,
     source: function(term, suggest){
       try { searchRequest.abort(); } catch(e){}
-      searchRequest = $.post(ajaxurl, { action: 'search_username',search: term, }, function(res) {
+      searchRequest = $.post(LAB.ajaxurl, { action: 'search_username',search: term, }, function(res) {
         suggest(res.data);
       });
       },
@@ -197,7 +216,7 @@ jQuery(function($){
     minChars: 3,
     source: function(term, suggest){
       try { searchRequest.abort(); } catch(e){}
-      searchRequest = $.post(ajaxurl, { action: 'search_username',search: term, }, function(res) {
+      searchRequest = $.post(LAB.ajaxurl, { action: 'search_username',search: term, }, function(res) {
         suggest(res.data);
       });
       },
@@ -215,7 +234,7 @@ jQuery(function($){
     minChars: 3,
     source: function(term, suggest){
       try { searchRequest.abort(); } catch(e){}
-      searchRequest = $.post(ajaxurl, { action: 'param_search_value',search: term, }, function(res) {
+      searchRequest = $.post(LAB.ajaxurl, { action: 'param_search_value',search: term, }, function(res) {
         suggest(res.data);
       });
       },
@@ -235,7 +254,7 @@ jQuery(function($){
     var data = {
       'action' : 'param_create_table',
     };
-    jQuery.post(ajaxurl, data, function(response) {
+    jQuery.post(LAB.ajaxurl, data, function(response) {
       console.log(response);
     });
   });
@@ -261,7 +280,7 @@ jQuery(function($){
     var data = {
       'action' : 'group_root',
     };
-    jQuery.post(ajaxurl, data, function(response) {
+    jQuery.post(LAB.ajaxurl, data, function(response) {
       (response.success ? toast_success("Group successfully created") : toast_error("Error Creating Group : "+response.data));
     });
   });
@@ -269,7 +288,7 @@ jQuery(function($){
     var data = {
       'action' : 'group_table',
     };
-    jQuery.post(ajaxurl, data, function(response) {
+    jQuery.post(LAB.ajaxurl, data, function(response) {
       if (response==0) {
         toast_success("Table successfully created");
         $("#lab_group_noTableWarning").css("display","none");
@@ -282,7 +301,7 @@ jQuery(function($){
     var data = {
       'action' : 'group_sub_table',
     };
-    jQuery.post(ajaxurl, data, function(response) {
+    jQuery.post(LAB.ajaxurl, data, function(response) {
       if (response==0) {
         toast_success("Table successfully created");
         $("#lab_group_noSubTableWarning").css("display","none");
@@ -317,7 +336,7 @@ jQuery(function($){
     minChars: 3,
     source: function(term, suggest){
       try { searchRequest.abort(); } catch(e){}
-      searchRequest = $.post(ajaxurl, { action: 'search_username',search: term, }, function(res) {
+      searchRequest = $.post(LAB.ajaxurl, { action: 'search_username',search: term, }, function(res) {
         suggest(res.data);
       });
       },
@@ -336,7 +355,7 @@ jQuery(function($){
     minChars: 3,
     source: function(term, suggest){
       try { searchRequest.abort(); } catch(e){}
-      searchRequest = $.post(ajaxurl, { action: 'search_username',search: term, }, function(res) {
+      searchRequest = $.post(LAB.ajaxurl, { action: 'search_username',search: term, }, function(res) {
         suggest(res.data);
       });
       },
@@ -377,13 +396,18 @@ jQuery(function($){
     $type    = jQuery("#wp_lab_group_type_edit").val();
     editGroup($groupId, $acronym, $name, $chief, $parent, $type);
   });
-
+  $("#lab_hal_create").click(function() {
+    var data = {
+      'action' : 'hal_create_table'
+    }
+    callAjax(data, "Table HAL succesfuly created", null, "Can't create table HAL", null);
+  });
   ////////////////////// Onglet KeyRing //////////////////////
   $("#lab_keyring_create_table_keys").click(function () {
     var data = {
       'action' : 'keyring_table_keys',
     };
-    jQuery.post(ajaxurl, data, function(response) {
+    jQuery.post(LAB.ajaxurl, data, function(response) {
       if (response==0) {
         toast_success("Table successfully created");
         $("#lab_keyring_noKeysTableWarning").css("display","none");
@@ -396,7 +420,7 @@ jQuery(function($){
     var data = {
       'action' : 'keyring_table_loans',
     };
-    jQuery.post(ajaxurl, data, function(response) {
+    jQuery.post(LAB.ajaxurl, data, function(response) {
       if (response==0) {
         toast_success("Table successfully created");
         $("#lab_keyring_noLoansTableWarning").css("display","none");
@@ -428,7 +452,7 @@ jQuery(function($){
       'page' : $("#lab_keyring_page").val(),
       'limit' : ($("#lab_keyring_keysPerPage").val() == 'custom') ? $("#lab_keyring_keysPerPage_otherValue").val() : $("#lab_keyring_keysPerPage").val(),
     }
-    jQuery.post(ajaxurl, data, function(response) {
+    jQuery.post(LAB.ajaxurl, data, function(response) {
       if (response.success) {
         //On calcule sur combien de pages s'étalent les lignes trouvées
         $("#lab_keyring_search_totalResults")[0].innerHTML=response.data[0]+" résultats.";
@@ -452,7 +476,7 @@ jQuery(function($){
             'action': 'keyring_get_key',
             'id': $(this).attr('keyid')
           };
-          jQuery.post(ajaxurl, data, function(response) {
+          jQuery.post(LAB.ajaxurl, data, function(response) {
             if (response.success) {
               $("#lab_keyring_editForm").show();
               $("#lab_keyring_editForm_submit").attr('keyid',response.data['id']);
@@ -475,6 +499,12 @@ jQuery(function($){
       }
     });
   });
+  $("#lab_settings_button_fill_hal_name_fields").click(function() {
+    data = {
+      'action': 'hal_fill_hal_name'
+    };
+    callAjax(data, "Fields succesfully filled", null, "Can't fill fields", null);
+  });
   $("#lab_keyring_editForm_submit").click(function() {
     fields={};
     for (i of ['number','office']) {
@@ -494,7 +524,7 @@ jQuery(function($){
       'id': $(this).attr('keyid'),
       'fields': fields
     };
-    jQuery.post(ajaxurl, data, function(response) {
+    jQuery.post(LAB.ajaxurl, data, function(response) {
       if (response.success) {
         toast_success("Clé modifiée avec succès");
         $("#lab_keyring_keySearch").keyup();
@@ -510,7 +540,7 @@ jQuery(function($){
       'action': 'keyring_delete_key',
       'id': $(this).attr('keyid')
     }
-    jQuery.post(ajaxurl, data, function(response) {
+    jQuery.post(LAB.ajaxurl, data, function(response) {
       if (response.success) {
         toast_success("Clé supprimée avec succès");
         $("#lab_keyring_keySearch").keyup();
@@ -564,7 +594,7 @@ function group_edit_deleteSubstitute(id) {
     'action' : 'group_delete_substitutes',
     'id' : id
   };
-  jQuery.post(ajaxurl, data, function(response) 
+  jQuery.post(LAB.ajaxurl, data, function(response) 
   {
     if(response.success) 
     {
@@ -579,7 +609,7 @@ function group_edit_saveNewSubstitute(userId, groupId) {
     'userId' : userId,
     'groupId': groupId
   };
-  jQuery.post(ajaxurl, data, function(response) 
+  jQuery.post(LAB.ajaxurl, data, function(response) 
   {
     jQuery("#lab_group_edit_substitutes").text("");
     if(response.success) 
@@ -597,7 +627,7 @@ function group_loadSubstitute()
     'action' : 'group_load_substitutes',
     'id' : groupId
   };
-  jQuery.post(ajaxurl, data, function(response) 
+  jQuery.post(LAB.ajaxurl, data, function(response) 
   {
     jQuery("#lab_group_edit_substitutes").text("");
     if(response.success) 
@@ -657,14 +687,14 @@ function createGroup(params) {
     'ac' : params['acronym']
   };
   console.log(data);
-  jQuery.post(ajaxurl, data, function(response) {
+  jQuery.post(LAB.ajaxurl, data, function(response) {
     if (!response.success) {
       toast_error("Group couldn't be created : the acronym is already in use");
       return false;
     }
     //On essaie ensuite de rajouter l'entrée dans la table groups 
     params['action']='group_create';
-    jQuery.post(ajaxurl, params, function(response) {
+    jQuery.post(LAB.ajaxurl, params, function(response) {
       if (response.success) {
         //Enfin, on ajoute les entrées dans la table suppléants
         var data3 = {
@@ -672,7 +702,7 @@ function createGroup(params) {
           'id' : response.data[0].id,
           'subList' : params['subsList']
         };
-        jQuery.post(ajaxurl, data3, function(resp) {
+        jQuery.post(LAB.ajaxurl, data3, function(resp) {
           if (!resp.success) {
             console.log("failSubs");
             toast_warn("Group created, but couldn't add substitutes : <br/>"+resp.data);
@@ -706,7 +736,7 @@ function saveParam(paramId, paramType, paramValue, callAfterComplete) {
       'value' : paramValue,
     };
   }
-  jQuery.post(ajaxurl, data, function(response) {
+  jQuery.post(LAB.ajaxurl, data, function(response) {
     if(response.success) {
       callAfterComplete();
     }
@@ -722,7 +752,7 @@ function paramDelete(paramId) {
     'action' : 'param_delete',
     'id' : paramId,
   };
-  jQuery.post(ajaxurl, data, function(response) {
+  jQuery.post(LAB.ajaxurl, data, function(response) {
     if(response.success) {
       load_params_type('#wp_lab_param_type', null);
     }
@@ -740,7 +770,7 @@ function load_params_type(select, selectedId = null) {
   var data = {
     'action' : 'load_param_type',
   };
-  jQuery.post(ajaxurl, data, function(response) {
+  jQuery.post(LAB.ajaxurl, data, function(response) {
     if(response.success) {
       //alert("Sauver");
       jQuery(select+" option").each(function() {
@@ -763,7 +793,7 @@ function test() {
   var data = {
                'action' : 'test',
   };
-  jQuery.post(ajaxurl, data, function(response) {
+  jQuery.post(LAB.ajaxurl, data, function(response) {
     if(response.data) {
       alert("Sauver");
     }
@@ -773,7 +803,7 @@ function updateUserMetaDb() {
   var data = {
                'action' : 'update_user_metadata_db',
   };
-  jQuery.post(ajaxurl, data, function(response) {
+  jQuery.post(LAB.ajaxurl, data, function(response) {
     if(response.data) {
       alert("Sauver");
     }
@@ -789,7 +819,7 @@ function saveUserLeft(userId, date, isChecked) {
                'userMetaId' : umd,
                'dateLeft' : c,
   };
-  jQuery.post(ajaxurl, data, function(response) {
+  jQuery.post(LAB.ajaxurl, data, function(response) {
     if(response.data) {
       toast_success("User saved");
     }
@@ -801,7 +831,7 @@ function callbUser(userId, callback) { // function with callback to operate with
                'action' : 'usermeta_names',
                'search[term]' : userId
   };
-  jQuery.post(ajaxurl, data, function(response) {
+  jQuery.post(LAB.ajaxurl, data, function(response) {
     callback(response);
   });
 }
@@ -844,7 +874,7 @@ function saveEventCaterory(postId,categoryId) {
               'postId': postId,
               'categoryId': categoryId
              };
-  jQuery.post(ajaxurl, data, function(response) {
+  jQuery.post(LAB.ajaxurl, data, function(response) {
     if (response.data) {
       alert("Evenement Modifie");
       jQuery("#wp_lab_event_title").val("");
@@ -860,7 +890,7 @@ function loadEventCategory(postId) {
 	      'action': 'search_event_category',
 	      'postId': postId
 	     };
-  jQuery.post(ajaxurl, data, function(response) {
+  jQuery.post(LAB.ajaxurl, data, function(response) {
     if (response.data) {
       //alert('Got this from the server: ' + response.data["ID"]);
       jQuery("#wp_lab_event_label").html("<b>"+response.data["name"]+"</b>");
@@ -883,7 +913,7 @@ function editGroup(groupId, acronym, groupName, chiefId, parent, group_type) {
                'parent' : parent,
                'group_type' : group_type
   };
-  jQuery.post(ajaxurl, data, function(response) {
+  jQuery.post(LAB.ajaxurl, data, function(response) {
     if (response.success) {
       toast_success("Group saved");
       resetGroupEdit();
@@ -973,6 +1003,8 @@ function check_metaKey_exist() {
 
 function disabledAddKeyAllButton(data) {
   jQuery("#lab_settings_button_addKey_all").prop("disabled",true);
+  jQuery("#usermetadata_key_all").focus();
+  jQuery("#usermetadata_key_all").select();
   //jQuery("#lab_settings_button_addKey_all").data('disabled',true);
 }
 
@@ -982,7 +1014,7 @@ function enabledAddKeyAllButton(data) {
 }
 
 function callAjax(data, successMessage, callBackSuccess = null, errorMessage, callBackError = null) {
-  jQuery.post('/wp-admin/admin-ajax.php', data, function(response) {
+  jQuery.post(LAB.ajaxurl, data, function(response) {
     if (response.success) {
       if (successMessage != null) {
         toast_success(successMessage);
@@ -1005,7 +1037,7 @@ function callAjax(data, successMessage, callBackSuccess = null, errorMessage, ca
 function createKey(params) {
   params['action'] = 'keyring_create_key';
   console.log(params);
-  jQuery.post(ajaxurl, params, function(response) {
+  jQuery.post(LAB.ajaxurl, params, function(response) {
     if (response.success) {
       toast_success("Clé créée avec succès !");
       jQuery("#lab_keyring_keySearch").keyup();
@@ -1013,4 +1045,19 @@ function createKey(params) {
     }
     toast_error("Erreur de création de clé");
   });
+}
+
+function loadHalJson(userId) {
+  var data = {
+    'action' : 'hal_download',
+    'userId' : userId
+  };
+  callAjax(data, null, enabledAddKeyAllButton, "Key " + jQuery("#usermetadata_key_all").val() + " already exist in DB", disabledAddKeyAllButton); 
+}
+
+function deleteHalTable() {
+  var data = {
+    'action' : 'hal_empty_table'
+  };
+  callAjax(data, "HAL table deleted", null, "Failed to delete HAL table in DB", null); 
 }

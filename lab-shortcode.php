@@ -97,7 +97,7 @@ function lab_old_event($param)
         $param
   ));
    $sqlYearCondition = "";
-   if (isset($year) && $year != "") {
+   if (isset($year) && !empty($year)) {
      $sqlYearCondition = " AND YEAR(`p`.`event_end_date`)=".$year." ";
   }
 

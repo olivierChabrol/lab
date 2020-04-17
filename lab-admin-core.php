@@ -354,3 +354,130 @@ function userMetaData_exist_metakey($metadataKey) {
     $results = $wpdb->get_results("SELECT umeta_id FROM `wp_usermeta` WHERE `meta_key` = '".$metadataKey."'");
     return count($results) > 0;
 }
+/**************************************************************************************************
+ * HAL
+ *************************************************************************************************/
+function createTableHal() {
+    $sql = "CREATE TABLE `".$dbTablePrefix."lab_hal` (
+        `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+        `user_id` int NOT NULL,
+        `docid` int NOT NULL COMMENT 'docid issus de hal',
+        `citationFull_s` varchar(1000) NOT NULL,
+        `producedDate_tdate` date,
+        PRIMARY KEY(`id`)
+      ) ENGINE=InnoDB";
+    global $wpdb;
+    return $wpdb->get_results($sql);
+}
+/**
+ * Format name for hal request, replace space character by '+'
+ */
+function hal_format_name($name) {
+    
+    if (strpos($name, " ") > -1)
+    {
+        $t = explode(" ", $name);
+        $arraylenght = count($t);
+        $i = 0;
+        $nameF = "";
+        
+        while ($i < $arraylenght) {
+            $nameF .= ucfirst(strtolower($t[$i]));
+            if ($i + 1 < $arraylenght) {
+                $nameF .= "+";
+            }
+            $i++;
+        }
+        return $nameF;
+        //*/
+    }
+    else {
+        return ucfirst(strtolower($name));
+    }
+}
+
+function usermeta_fill_hal_field() {
+    global $wpdb;
+    $sql = "SELECT u.id as user_id, um1.meta_value as first_name, um2.meta_value as last_name, um3.umeta_id as id FROM `".$wpdb->prefix."users` AS u JOIN `".$wpdb->prefix."usermeta` as um1 ON um1.user_id=u.ID JOIN `".$wpdb->prefix."usermeta` AS um2 ON um2.user_id=u.ID JOIN `".$wpdb->prefix."usermeta` AS um3 ON um3.user_id=u.ID WHERE um1.meta_key='first_name' AND um2.meta_key='last_name' AND um3.meta_key='lab_hal_name'";
+    $results = $wpdb->get_results($sql);
+    $retour = array();
+    foreach($results as $r) {
+        $wpdb->update($wpdb->prefix."usermeta", array('meta_value'=>hal_format_name($r->last_name).'+'.hal_format_name($r->first_name)), array('umeta_id'=> $r->id));
+        //$retour[] = "wpdb->update(".$wpdb->prefix."usermeta, array('meta_value'=>".hal_format_name($r->last_name)."+".hal_format_name($r->first_name)."), array('umeta_id'=> ".$r->id."));";
+        //$retour[] = "UPDATE ".$wpdb->prefix."usermeta SET meta_value='".ucfirst(strtolower($r->last_name)).'+'.ucfirst(strtolower($r->first_name))."' WHERE ".$r->id;
+    }
+    return $retour;
+}
+
+function get_hal_url($userId) {
+    global $wpdb;
+    $sql = "SELECT um1.meta_value as lab_hal_id, um2.meta_value as lab_hal_name FROM `wp_usermeta` AS um1 JOIN `wp_usermeta` AS um2 ON um2.user_id=um1.user_id WHERE um1.`user_id`=".$userId." AND um1.`meta_key`='lab_hal_id' AND um2.`meta_key`='lab_hal_name'";
+    
+    $results = $wpdb->get_results($sql);
+    if (count($results) == 1) {
+        $hal_id   = $results[0]->lab_hal_id;
+        $hal_name = $results[0]->lab_hal_name;
+        if ($hal_id != null) {
+            return "https://api.archives-ouvertes.fr/search/?authIdHal_s:(".$hal_id.")&fl=docid,citationFull_s,producedDate_tdate&sort=producedDate_tdate+desc&wt=json&json.nl=arrarr";
+        }
+        else {
+            return "https://api.archives-ouvertes.fr/search/?q=authLastNameFirstName_s:%22".$hal_name."%22&fl=docid,citationFull_s,producedDate_tdate&sort=producedDate_tdate+desc&wt=json&json.nl=arrarr";
+        }
+    }
+}
+
+function saveHalProduction($userId, $docId, $citation, $productionDate) {
+    global $wpdb;
+    return $wpdb->insert($wpdb->prefix."lab_hal", array('user_id'=>$userId, 'docid'=>$docId, 'citationFull_s'=>$citation, 'producedDate_tdate'=>$productionDate));
+}
+
+function hal_download($userId) {
+    $url = get_hal_url($userId);
+    
+    $json = do_common_curl_call($url);
+    for ($i = 0; $json->response->docs[$i] != ''; $i++) {
+        $docId = $json->response->docs[$i]->docid;
+        $citation = $json->response->docs[$i]->citationFull_s;
+        $producedDate = strtotime($json->response->docs[$i]->producedDate_tdate);
+        
+        saveHalProduction($userId, $docId, $citation, date('Y-m-d', $producedDate));
+        //$content .= '<li>' . $json->response->docs[$i]->citationFull_s . '</li>';
+    }
+    return $url;
+}
+
+function delete_hal_table() {
+    global $wpdb;
+    $wpdb->query("TRUNCATE TABLE ".$wpdb->prefix."lab_hal");//delete( $wpdb->prefix."lab_hal", array());
+    $wpdb->get_results("ALTER TABLE ".$wpdb->prefix."lab_hal AUTO_INCREMENT = 1");
+    return true;
+}
+
+/**
+ * @param $url
+ * @return object
+ */
+/*
+function do_common_curl_call($url) {
+    $ch = curl_init($url);
+    // Options
+    $options = array(
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_HTTPHEADER => array('Content-type: application/json'),
+        CURLOPT_TIMEOUT => 10,
+        CURLOPT_USERAGENT => "HAL Plugin Wordpress " . version
+    );
+    if(defined('WP_PROXY_HOST') && defined('WP_PROXY_PORT') && defined('WP_PROXY_USERNAME') && defined('WP_PROXY_PASSWORD')){
+        curl_setopt($ch, CURLOPT_PROXY, WP_PROXY_HOST);
+        curl_setopt($ch, CURLOPT_PROXYPORT, WP_PROXY_PORT);
+        curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+        curl_setopt($ch, CURLOPT_PROXYUSERPWD, WP_PROXY_USERNAME.':'.WP_PROXY_PASSWORD);
+    }
+    // Bind des options et de l'objet cURL que l'on va utiliser
+    curl_setopt_array($ch, $options);
+    // Récupération du résultat JSON
+    $json = json_decode(curl_exec($ch));
+    curl_close($ch);
+    return $json;
+}
+//*/

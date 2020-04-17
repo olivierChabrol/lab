@@ -10,6 +10,8 @@
 function lab_admin_tab_settings() {
   ?>
   <h1>Database Tables</h1>
+  <hr/>
+    <h4>Create Table :</h4>
 <?php
   if (!lab_admin_checkTable("wp_lab_keys")) {
     echo "<p id='lab_keyring_noKeysTableWarning'>La table <em>wp_lab_keys</em> n'a pas été trouvée dans la base, vous devez d'abord la créer ici : </p>";
@@ -17,31 +19,36 @@ function lab_admin_tab_settings() {
   if (!lab_admin_checkTable("wp_lab_key_loans")) {
     echo "<p id='lab_keyring_noLoansTableWarning'>La table <em>wp_lab_key_loans</em> n'a pas été trouvée dans la base, vous devez d'abord la créer ici : </p>";
   }
-?>
-  <p></p>
-  <button class="lab_keyring_create_table_keys" id="lab_keyring_create_table_keys">Créer la table Keys</button>
-  <button class="lab_keyring_create_table_loans" id="lab_keyring_create_table_loans">Créer la table Loans</button>
-  <hr/>
-  <?php
+  if (!lab_admin_checkTable("wp_lab_hal")) {
+    echo "<p id='lab_keyring_noLoansTableWarning'>La table <em>wp_lab_hal</em> n'a pas été trouvée dans la base, vous devez d'abord la créer ici : </p>";
+  }
   if (!lab_admin_checkTable("wp_lab_keys")) {
     echo "<p id='lab_keyring_noKeysTableWarning'>La table <em>wp_lab_keys</em> n'a pas été trouvée dans la base, vous devez d'abord la créer ici : </p>";
   }
+  if (!lab_admin_checkTable("wp_lab_groups")) {
+    echo "<p id='lab_group_noTableWarning'>La table <em>wp_lab_groups</em> n'a pas été trouvée dans la base, vous devez d'abord la créer ici : </p>";
+  }
+  if (!lab_admin_checkTable("wp_lab_group_substitutes")) {
+    echo "<p id='lab_group_noSubTableWarning'>La table <em>wp_lab_group_substitutes</em> n'a pas été trouvée dans la base, vous devez d'abord la créer ici : </p>";
+  }
 ?>
-    <h4>Create Table :</h4>
-    <a href="#" class="page-title-action" id="lab_tab_param_create_table">Create table</a>
+  <p></p>
+  <button class="page-title-action" id="lab_hal_create">Create table HAL</button>
+  <button class="page-title-action" id="lab_keyring_create_table_keys">Créer la table Keys</button>
+  <button class="page-title-action" id="lab_keyring_create_table_loans">Créer la table Loans</button>
+    <a href="#" class="page-title-action" id="lab_tab_param_create_table">Create table param</a>
   <hr>
   <!-- Gestion des tables -->
   <?php
-    if (!lab_admin_checkTable("wp_lab_groups")) {
-      echo "<p id='lab_group_noTableWarning'>La table <em>wp_lab_groups</em> n'a pas été trouvée dans la base, vous devez d'abord la créer ici : </p>";
-    }
-    if (!lab_admin_checkTable("wp_lab_group_substitutes")) {
-      echo "<p id='lab_group_noSubTableWarning'>La table <em>wp_lab_group_substitutes</em> n'a pas été trouvée dans la base, vous devez d'abord la créer ici : </p>";
-    }
   ?>
   <button class="page-title-action" id="lab_createGroup_createTable">Créer la table Groups</button>
   <button class="page-title-action" id="lab_createGroup_createTable_Sub">Créer la table Substitutes</button>
   <button class="page-title-action" id="lab_createGroup_createRoot">Créer groupe root</button>
+  <hr/>
+    <h4>Fill Table :</h4>
+    <button class="page-title-action" id="lab_settings_button_fill_hal_name_fields">Fill HAL name</button>
+    <input type="text" id="lab_hal_user">
+    <button class="page-title-action" id="lab_hal_delete_table">Empty HAL table</button>
   <hr/>
   <h2>Create usermetadata key</h2>
   <label for="usermetadata_user_search">User</label>
