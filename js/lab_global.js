@@ -53,7 +53,7 @@ jQuery(function($){
   });
 
   $("#lab_group_delete_button").click(function(){
-      $.post("/wp-admin/admin-ajax.php",
+      $.post(LAB.ajaxurl,
           {
             action : 'delete_group',
             id : jQuery("#lab_searched_group_id").val()
@@ -72,7 +72,7 @@ jQuery(function($){
     minChars: 2,
     source: function(term, suggest){
       try { searchRequest.abort(); } catch(e){}
-      searchRequest = $.post("/wp-admin/admin-ajax.php", { action: 'search_event',search: term, }, function(res) {
+      searchRequest = $.post(LAB.ajaxurl, { action: 'search_event',search: term, }, function(res) {
         suggest(res.data);
       });
       },
@@ -97,7 +97,7 @@ jQuery(function($){
     minChars: 3,
     source: function(term, suggest){
       try { searchRequest.abort(); } catch(e){}
-      searchRequest = $.post("/wp-admin/admin-ajax.php", { action: 'search_username',search: term, }, function(res) {
+      searchRequest = $.post(LAB.ajaxurl, { action: 'search_username',search: term, }, function(res) {
         suggest(res.data);
       });
       },
@@ -113,11 +113,11 @@ jQuery(function($){
     }
   });
 
-  $('#dud_user_srch_val').autocomplete({
+  $('#lab_directory_user_name').autocomplete({
     minChars: 1,
     source: function(term, suggest){
       try { searchRequest.abort(); } catch(e){}
-      searchRequest = $.post("/wp-admin/admin-ajax.php", { action: 'search_username2',search: term, },
+      searchRequest = $.post(LAB.ajaxurl, { action: 'search_username2',search: term, },
       function(res) {
         suggest(res.data);
       });
@@ -126,12 +126,9 @@ jQuery(function($){
       var firstname  = ui.item.firstname; // first name
       var lastname = ui.item.lastname; // last name
       var user_id  = ui.item.user_id;
-      window.location.href = "http://stage.fr/user/" + firstname + "." + lastname;
+      window.location.href = "/user/" + firstname + "." + lastname;
       event.preventDefault();
-      $("#dud_user_srch_val").val(firstname + " " + lastname);
-      $("#lab_searched_directory").val(user_id);
-      callbUser(user_id, loadUserMetaData);
-      //return false;
+      $("#lab_directory_user_name").val(firstname + " " + lastname);
     }
   });
 
