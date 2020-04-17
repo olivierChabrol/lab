@@ -6,6 +6,8 @@ Description: Pluggin de l'I2M de gestion du labo
 Authors: Astrid BEYER, Ivan Ivanov, Lucas Argenti, Olivier CHABROL
 Version: 1.0
 Author URI: http://www.i2m.univ-amu.fr
+Text Domain: lab
+Domain Path: /lang
 */
 
 // Traduction de la description
@@ -75,6 +77,7 @@ add_action('widgets_init', 'wplab_init');
  */
 function wplab_init()
 {
+  load_plugin_textdomain( 'lab', false, 'lab/lang');
   register_widget("wplab_widget_week_event");
 }
 
@@ -139,6 +142,11 @@ add_action( 'wp_ajax_hal_empty_table', 'lab_ajax_delete_hal_table');
 add_action( 'show_user_profile', 'custom_user_profile_fields', 10, 1 );
 add_action( 'edit_user_profile', 'custom_user_profile_fields', 10, 1 );
 
+add_action( 'wp_ajax_keyring_create_loan', 'lab_keyring_create_loanReq' ); 
+add_action( 'wp_ajax_keyring_find_loan_byKey', 'lab_keyring_find_loan_byKey' ); 
+add_action( 'wp_ajax_keyring_edit_loan', 'lab_keyring_edit_loanReq' ); 
+add_action( 'wp_ajax_keyring_end_loan','lab_keyring_end_loanReq' );
+add_action( 'wp_ajax_keyring_find_old_loans','lab_keyring_find_oldLoansReq' );
 /**
  * Show custom user profile fields
  * 
@@ -188,16 +196,16 @@ function wp_lab_menu()
 function admin_enqueue()
 {
   //wp_enqueue_script('lab', plugins_url('js/lab_global.js',__FILE__), array('jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog'), filemtime(dirname(plugin_basename("__FILE__"))."/js/lab_global.js"), false);
-  wp_enqueue_script('wp-lab', plugins_url('js/lab_global.js',__FILE__), array('jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog'), "1.3", false);
-  localize_script();
+  wp_enqueue_script('lab', plugins_url('js/lab_global.js',__FILE__), array('wp-i18n','jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog'), "1.3", false);
   //Plugin permettant d'afficher les toasts :
   wp_enqueue_style('jqueryToastCSS',plugins_url('css/jquery.toast.css',__FILE__));
   wp_enqueue_script('jqueryToastJS',plugins_url('js/jquery.toast.js',__FILE__),array('jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog'),"1.3.2",false);
   //Feuille de style de l'onglet keyring :
-  wp_enqueue_style('KeyRingTableCSS',plugins_url('css/keyring.css',__FILE__));
+  wp_enqueue_style('KeyRingCSS',plugins_url('css/keyring.css',__FILE__));
   //Plugin permettant d'afficher des fenêtres modales :
   wp_enqueue_style('jqueryModalCSS',plugins_url('css/jquery.modal.min.css',__FILE__));
   wp_enqueue_script('jqueryModalJS',plugins_url('js/jquery.modal.min.js',__FILE__),array('jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog'),"0.9.1",false);
+  wp_set_script_translations('lab', 'lab');
 }
 
 function wp_lab_global_enqueues()
