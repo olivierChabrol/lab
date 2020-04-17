@@ -1,4 +1,5 @@
 /* globals global 25 03 2020 */
+const { __, _x, _n, sprintf } = wp.i18n;
 jQuery(function($){
   var searchRequest;
   if(!$("#lab_user_left").is(':checked')) {
@@ -214,7 +215,7 @@ jQuery(function($){
       'action' : 'group_root',
     };
     jQuery.post(ajaxurl, data, function(response) {
-      (response.success ? toast_success("Group successfully created") : toast_error("Error Creating Group : "+response.data));
+      (response.success ? toast_success(__("Groupe créé avec succès","lab")) : toast_error(__("Erreur lors de la création du groupe : ","lab")+response.data));
     });
   });
   $('#lab_createGroup_createTable').click(function(){
@@ -1117,26 +1118,26 @@ function loanContract(key_id) {
                     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">\
                     <link rel="stylesheet" id="KeyRingCSS-css" href="http://stage.fr/wp-content/plugins/lab/css/keyring.css?ver=5.4" media="all">\
                     <meta charset="UTF-8">\
-                    <title>Reçu du prêt n'+loan.data["id"]+'</title>\
+                    <title>'+__('Reçu de prêt','lab')+' n'+loan.data["id"]+'</title>\
                     <script>document.onkeydown = function(e) {if (e.which== 27) {window.close();}}</script>\
                   </head>\
                   <body>\
-                    <h2 id="loanContract_title">Reçu de prêt</h2>\
+                    <h2 id="loanContract_title">'+__('Reçu de prêt','lab')+'</h2>\
                     <div id="loanContract">\
                         <article>\
-                          <h4>ID du prêt : <u>'+loan.data["id"]+'</u></h4>\
-                          <h4>Référent : <u>'+referent+'</u></h4>\
-                          <p>La clé/badge numéro : <b>'+key.data["number"]+' </b></p>\
-                          <p>A été prêtée à <b>'+user+'</b></p>';
+                          <h4>'+__('ID du prêt','lab')+' : <u>'+loan.data["id"]+'</u></h4>\
+                          <h4>'+__('Référent','lab')+' : <u>'+referent+'</u></h4>\
+                          <p>'+__('La clé/badge numéro','lab')+' : <b>'+key.data["number"]+' </b></p>\
+                          <p>'+__('A été prêtée à','lab')+' <b>'+user+'</b></p>';
                           start = new Date(loan.data["start_date"]).toLocaleDateString("fr-FR",{ year: 'numeric', month: 'long', day: 'numeric' });
                           end = new Date(loan.data["end_date"]).toLocaleDateString("fr-FR",{ year: 'numeric', month: 'long', day: 'numeric' })
                           output+='<p>Le <b>'+start+'</b></p>';
-                          output+=(loan.data["end_date"]===null) ? '<p>Et devra être rendue.</p>' : '<p>Et devra être rendue avant le <b>'+end+'</b></p>';
-                          output+=(loan.data["commentary"]===null) ? '' : '<p>Commentaire : <i>'+loan.data["commentary"]+'</i></p><br/>';
-                          output+='<p><u>Signature :</u></p>\
+                          output+=(loan.data["end_date"]===null) ? '<p>Et devra être rendue.</p>' : '<p>'+__('Et devra être rendue avant le','lab')+' <b>'+end+'</b></p>';
+                          output+=(loan.data["commentary"]===null) ? '' : '<p>'+__('Commentaire','lab')+' : <i>'+loan.data["commentary"]+'</i></p><br/>';
+                          output+='<p><u>'+__('Signature','lab')+' :</u></p>\
                         </article>';
                         output+= document.getElementById('lab_keyring_loanform_table').outerHTML;
-                      output+='</div><button onclick="window.print();">Imprimer</button>\
+                      output+='</div><button onclick="window.print();">'+__('Imprimer','lab')+'</button>\
                     </body>\
                   </html>';
                   win.document.write(output);

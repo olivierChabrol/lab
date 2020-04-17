@@ -1,0 +1,80 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: LAB\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-04-17 09:37+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: \n"
+"Language: \n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Loco-Version: 2.3.3; wp-5.4"
+
+#: lab-admin-keyring.php:15 lab-admin-keyring.php:23
+msgid "Annuler"
+msgstr ""
+
+#: lab-admin-keyring.php:21
+msgid "Aujourd'hui"
+msgstr ""
+
+#: lab-admin-keyring.php:16 lab-admin-keyring.php:24
+msgid "Confirmer"
+msgstr ""
+
+#: lab-admin-keyring.php:28
+msgid "Créer la table Keys"
+msgstr ""
+
+#: lab-admin-keyring.php:29
+msgid "Créer la table Loans"
+msgstr ""
+
+#: lab-admin-keyring.php:21
+msgid "Date de rendu : "
+msgstr ""
+
+#. Author URI of the plugin
+msgid "http://www.i2m.univ-amu.fr"
+msgstr ""
+
+#. URI of the plugin
+msgid "https://www.i2m.univ-amu.fr"
+msgstr ""
+
+#. Name of the plugin
+msgid "LAB"
+msgstr ""
+
+#: lab-admin-keyring.php:31
+msgid "Liste des clés"
+msgstr ""
+
+#: lab-admin-keyring.php:41
+msgid "Nombre de clés par page :"
+msgstr ""
+
+#: lab-admin-keyring.php:35
+msgid "Page :"
+msgstr ""
+
+#. Description of the plugin
+msgid "Pluggin de l'I2M de gestion du labo"
+msgstr ""
+
+#: lab-admin-keyring.php:33
+msgid "Rechercher une clé"
+msgstr ""
+
+#: lab-admin-keyring.php:13
+msgid "Voulez-vous vraiment supprimer cette clé ?"
+msgstr ""
+
+#: lab-admin-keyring.php:20
+msgid "Voulez-vous vraiment terminer ce prêt ?"
+msgstr ""

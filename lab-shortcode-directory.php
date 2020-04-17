@@ -24,5 +24,6 @@ function lab_directory($param) {
     ),
         $param
   ));
+  esc_html_e("Gestion des clés","lab");
   // SQL
 }

@@ -1,0 +1,302 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: 2020-04-17 12:20+0200\n"
+"PO-Revision-Date: 2020-04-17 12:20+0200\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.3\n"
+"X-Poedit-Basepath: ..\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-KeywordsList: _e;esc_html_e;esc_html__;__\n"
+"X-Poedit-SearchPath-0: lab-admin-keyring.php\n"
+"X-Poedit-SearchPath-1: js/lab_global.js\n"
+
+#: js/lab_global.js:218
+msgid "Groupe créé avec succès"
+msgstr "Group successfully created"
+
+#: js/lab_global.js:218
+msgid "Erreur lors de la création du groupe : "
+msgstr "Error while creating group : "
+
+#: js/lab_global.js:1121 js/lab_global.js:1125
+msgid "Reçu de prêt"
+msgstr "Loan Receipt"
+
+#: js/lab_global.js:1128
+msgid "ID du prêt"
+msgstr "Loan ID"
+
+#: js/lab_global.js:1129 lab-admin-keyring.php:215 lab-admin-keyring.php:241
+msgid "Référent"
+msgstr "Referent"
+
+#: js/lab_global.js:1130
+msgid "La clé/badge numéro"
+msgstr "Key/badge number"
+
+#: js/lab_global.js:1131
+msgid "A été prêtée à"
+msgstr "was loaned to"
+
+#: js/lab_global.js:1135
+msgid "Et devra être rendue avant le"
+msgstr "And must be returned before the"
+
+#: js/lab_global.js:1136 lab-admin-keyring.php:62 lab-admin-keyring.php:209
+#: lab-admin-keyring.php:245
+msgid "Commentaire"
+msgstr "Comments"
+
+#: js/lab_global.js:1137
+msgid "Signature"
+msgstr "Signature"
+
+#: js/lab_global.js:1140
+msgid "Imprimer"
+msgstr "Print"
+
+#: lab-admin-keyring.php:3
+msgid "Gestion des clés"
+msgstr "Keys management"
+
+#: lab-admin-keyring.php:13
+msgid "Voulez-vous vraiment supprimer cette clé ?"
+msgstr "Do you really want to remove this key?"
+
+#: lab-admin-keyring.php:15 lab-admin-keyring.php:23
+msgid "Annuler"
+msgstr "Cancel"
+
+#: lab-admin-keyring.php:16 lab-admin-keyring.php:24
+msgid "Confirmer"
+msgstr "Confirm"
+
+#: lab-admin-keyring.php:20
+msgid "Voulez-vous vraiment terminer ce prêt ?"
+msgstr "Do you really want to end this loan?"
+
+#: lab-admin-keyring.php:21
+msgid "Date de rendu : "
+msgstr "Date of return : "
+
+#: lab-admin-keyring.php:21
+msgid "Aujourd'hui"
+msgstr "Today"
+
+#: lab-admin-keyring.php:28
+msgid "Créer la table Keys"
+msgstr "Create the Keys table"
+
+#: lab-admin-keyring.php:29
+msgid "Créer la table Loans"
+msgstr "Create the Loans table"
+
+#: lab-admin-keyring.php:31
+msgid "Liste des clés"
+msgstr "List of keys"
+
+#: lab-admin-keyring.php:33
+msgid "Rechercher une clé"
+msgstr "Search for a key"
+
+#: lab-admin-keyring.php:35
+msgid "Page :"
+msgstr "Page :"
+
+#: lab-admin-keyring.php:41
+msgid "Nombre de clés par page :"
+msgstr "Keys per page :"
+
+#: lab-admin-keyring.php:46
+msgid "Autre :"
+msgstr "Other :"
+
+#: lab-admin-keyring.php:56 lab-admin-keyring.php:180 lab-admin-keyring.php:239
+msgid "ID"
+msgstr "ID"
+
+#: lab-admin-keyring.php:57
+msgid "Type"
+msgstr "Type"
+
+#: lab-admin-keyring.php:58 lab-admin-keyring.php:184
+msgid "Numéro"
+msgstr "Number"
+
+#: lab-admin-keyring.php:59 lab-admin-keyring.php:188
+msgid "Bureau"
+msgstr "Office"
+
+#: lab-admin-keyring.php:60 lab-admin-keyring.php:94 lab-admin-keyring.php:134
+#: lab-admin-keyring.php:192
+msgid "Marque"
+msgstr "Brand"
+
+#: lab-admin-keyring.php:61 lab-admin-keyring.php:196
+msgid "Site"
+msgstr "Location"
+
+#: lab-admin-keyring.php:63
+msgid "Dispo"
+msgstr "Available"
+
+#: lab-admin-keyring.php:64 lab-admin-keyring.php:228
+msgid "Actions"
+msgstr "Actions"
+
+#: lab-admin-keyring.php:71
+msgid "Page suivante"
+msgstr "Next Page"
+
+#: lab-admin-keyring.php:74 lab-admin-keyring.php:111
+msgid "Modifier"
+msgstr "Edit"
+
+#: lab-admin-keyring.php:88
+msgid "numéro"
+msgstr "number"
+
+#: lab-admin-keyring.php:91
+msgid "bureau"
+msgstr "office"
+
+#: lab-admin-keyring.php:109 lab-admin-keyring.php:149
+msgid "Commentaire (facultatif)"
+msgstr "Comments (optional)"
+
+#: lab-admin-keyring.php:114
+msgid "Nouvelle"
+msgstr "New"
+
+#: lab-admin-keyring.php:151
+msgid "Créer"
+msgstr "Create"
+
+#: lab-admin-keyring.php:157
+msgid "Gestion des prêts"
+msgstr "Loan management"
+
+#: lab-admin-keyring.php:159
+msgid "Nouveau prêt"
+msgstr "New loan"
+
+#: lab-admin-keyring.php:161
+msgid "Prêt en cours"
+msgstr "Ongoing loan"
+
+#: lab-admin-keyring.php:162
+msgid "Afficher Reçu"
+msgstr "Show Receipt"
+
+#: lab-admin-keyring.php:217
+msgid "Usager"
+msgstr "User"
+
+#: lab-admin-keyring.php:221
+msgid "Date de début"
+msgstr "Start date"
+
+#: lab-admin-keyring.php:223
+msgid "Date de fin"
+msgstr "End date"
+
+#: lab-admin-keyring.php:223
+msgid "(facultatif)"
+msgstr "(optional)"
+
+#: lab-admin-keyring.php:227
+msgid "Commentaire faculatif"
+msgstr "Comments (optional)"
+
+#: lab-admin-keyring.php:229
+msgid "Créer le prêt"
+msgstr "Create loan"
+
+#: lab-admin-keyring.php:230
+msgid "Modifier le prêt"
+msgstr "Edit loan"
+
+#: lab-admin-keyring.php:231
+msgid "Marquer comme rendu"
+msgstr "Mark as returned"
+
+#: lab-admin-keyring.php:235
+msgid "Tous les prêts :"
+msgstr "All loans :"
+
+#: lab-admin-keyring.php:240
+msgid "Clé"
+msgstr "Key"
+
+#: lab-admin-keyring.php:242
+msgid "Utilisateur"
+msgstr "User"
+
+#: lab-admin-keyring.php:243
+msgid "Début"
+msgstr "Start"
+
+#: lab-admin-keyring.php:244
+msgid "Échéance"
+msgstr "Deadline"
+
+#: lab-admin-keyring.php:246
+msgid "Terminé"
+msgstr "Ended"
+
+#: lab-admin-keyring.php:272
+msgid "Prêter"
+msgstr "Loan"
+
+#: lab-admin-keyring.php:273
+msgid "Voir prêt"
+msgstr "Show Loan"
+
+#~ msgid "Reçu du prêt"
+#~ msgstr "Loan Receipt"
+
+#, fuzzy
+#~| msgid "Actions"
+#~ msgid "Location"
+#~ msgstr "Actions"
+
+#, fuzzy
+#~| msgid "Date de fin"
+#~ msgid "Date and time"
+#~ msgstr "End date"
+
+#, fuzzy
+#~| msgid "Commentaire"
+#~ msgid "Comment"
+#~ msgstr "Comments"
+
+#, fuzzy
+#~| msgid "Confirmer"
+#~ msgid "Confirmed Spaces"
+#~ msgstr "Confirm"
+
+#, fuzzy
+#~| msgid "Actions"
+#~ msgid "Location:"
+#~ msgstr "Actions"
+
+#, fuzzy
+#~| msgid "Actions"
+#~ msgid "location"
+#~ msgstr "Actions"
+
+#, fuzzy
+#~| msgid "Actions"
+#~ msgid "Locations"
+#~ msgstr "Actions"
+
+#, fuzzy
+#~| msgid "Actions"
+#~ msgid "Bulk Actions"
+#~ msgstr "Actions"
