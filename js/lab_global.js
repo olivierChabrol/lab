@@ -814,18 +814,28 @@ function updateUserMetaDb() {
 
 function saveUserLeft(userId, date, isChecked) {
   var c = isChecked?date:null;
-  var umd = jQuery("#lab_usermeta_id").val();
-  //alert("userId : " + userId + " date " + date + " is checked : " + isChecked + " c : " + c );
   var data = {
                'action' : 'update_user_metadata',
-               'userMetaId' : umd,
+               'userMetaId' : jQuery("#lab_usermeta_id").val(),
                'dateLeft' : c,
   };
-  jQuery.post(LAB.ajaxurl, data, function(response) {
-    if(response.data) {
-      toast_success("User saved");
-    }
-  });
+  callAjax(data, "User saved", resetUserTabFields, "Failed to save user", null);
+}
+function resetUserTabFields()
+{
+  jQuery("#lab_user_search").val("");
+  jQuery("#lab_user_search_id").val("");
+  jQuery("#lab_user_left").prop("checked", false);
+  jQuery("#lab_user_left_date").val("");
+  jQuery("#lab_usermeta_id").val("");
+}
+
+function load_usermeta_dateLeft() {
+  var data = {
+    'action' : 'lab_admin_usermeta_names',
+    'search[term]' : userId
+  };
+  callAjax(data, null, loadUserMetaData, null, null);
 }
 
 function callbUser(userId, callback) { // function with callback to operate with userId
@@ -850,7 +860,7 @@ function loadUserName(response) {
 
 function loadUserMetaData(response) {
   if(response.data) {
-    //alert(response.data["first_name"]["value"]);
+    resetUserMetaFields();
     jQuery("#lab_user_firstname").val(response.data["first_name"]["value"]);
     jQuery("#lab_user_lastname").val(response.data["last_name"]["value"]);
     jQuery("#lab_usermeta_id").val(response.data["lab_user_left"]["id"]);

@@ -2,7 +2,7 @@
 
 function lab_admin_username_get($userId) {
     global $wpdb;
-    $results = $wpdb->get_results( "SELECT * FROM `wp_usermeta` WHERE (meta_key = 'first_name' or meta_key='last_name') and user_id=".$userId  );
+    $results = $wpdb->get_results( "SELECT * FROM `wp_usermeta` WHERE (meta_key = 'first_name' or meta_key='last_name' or meta_key='lab_user_left') and user_id=".$userId  );
     $items = array();
     $items["id"] = $userId;
 
@@ -12,6 +12,11 @@ function lab_admin_username_get($userId) {
             $items['first_name'] = $r->meta_value;
         if ($r->meta_key == 'last_name')
             $items['last_name'] = $r->meta_value;
+        if ($r->meta_key == 'lab_user_left') {
+            $items['lab_user_left'] = array();
+            $items['lab_user_left']['id'] = $r->umeta_id;
+            $items['lab_user_left']['value'] = $r->meta_value;
+        }
     }
     
     return $items;

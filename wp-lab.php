@@ -103,6 +103,7 @@ add_action( 'wp_ajax_group_root', 'lab_admin_group_createRoot');
 add_action( 'wp_ajax_delete_group', 'lab_admin_group_delete');
 add_action( 'wp_ajax_group_subs_add', 'lab_admin_group_subs_addReq');
 add_action( 'wp_ajax_usermeta_names', 'lab_admin_usermeta_names');
+add_action( 'wp_ajax_usermeta_dateLeft', 'lab_admin_usermeta_dateLeft');
 add_action( 'wp_ajax_group_load_substitutes', 'group_load_substitutes');
 add_action( 'wp_ajax_group_delete_substitutes', 'group_delete_substitutes');
 add_action( 'wp_ajax_group_add_substitutes', 'group_add_substitutes');

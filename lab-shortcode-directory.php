@@ -14,103 +14,45 @@
 
 function lab_directory($param) {
     $param = shortcode_atts(array(
-        'as-left' => get_option('lab-directory'),
+        'display-left-user' => get_option('lab-directory'),
         'group' => get_option('lab-directory')
         ),
         $param, 
         "lab-directory"
     );
 
-    $asLeft  = $param['as-left'];
+    $displayLeftUser  = $param['display-left-user'];
     $group   = $param['group'];
     $directoryStr = "<h1>Annuaire</h1>"; // title
 
-/*** FILTER FOR SHORTCODE PARAMETERS  ***/
-    if(!empty($asLeft) && !empty($group))
-    {
-        $sql = "SELECT DISTINCT um1.`user_id` AS id, um3.`meta_value` AS first_name, um2.`meta_value` AS last_name, 
+    $joinAsLeft  = "";
+    $whereAsLeft = "";
+    $joinGroup   = "";
+    $whereGroup  = "";
+
+    /*** FILTER FOR SHORTCODE PARAMETERS  ***/
+    if(!empty($displayLeftUser)) {
+        $displayLeftUserValue = ($displayLeftUser === 'true');
+        $joinDisplayLeftUser = " JOIN `wp_usermeta` AS um6 ON um1.`user_id` = um6.`user_id` ";
+        $whereDisplayLeftUser = " AND um6.`meta_key`='lab_user_left' "."AND um6.`meta_value` IS ".($displayLeftUserValue?"NOT":"")." NULL";
+    }
+    if(!empty($group)) {
+        $joinGroup = " JOIN `wp_lab_users_groups`AS ug6 ON um1.`user_id` = ug6.`user_id` JOIN `wp_lab_groups` AS g7 ON ug6.`group_id` = g7.`id` ";
+        $whereGroup = " AND g7.`acronym`  = '" . $group . "'";
+    }
+
+    $sql = "SELECT um1.`user_id` AS id, um3.`meta_value` AS first_name, um2.`meta_value` AS last_name, 
         u4.`user_email` AS mail, um5.`meta_value` AS phone 
         FROM `wp_usermeta` AS um1 
         JOIN `wp_usermeta` AS um2 ON um1.`user_id` = um2.`user_id` 
         JOIN `wp_usermeta` AS um3 ON um1.`user_id` = um3.`user_id` 
         JOIN `wp_users` AS u4 ON um1.`user_id` = u4.`ID` 
         JOIN `wp_usermeta` AS um5 ON um1.`user_id` = um5.`user_id`
-        JOIN `wp_usermeta` AS um6 ON um1.`user_id` = um6.`user_id` 
-        JOIN `wp_lab_users_groups`AS ug6 ON um1.`user_id` = ug6.`user_id` 
-        JOIN `wp_lab_groups` AS g7 ON ug6.`group_id` = g7.`id` 
+        ".$joinDisplayLeftUser.$joinGroup."
         WHERE   um1.`meta_key`='last_name' 
             AND um2.`meta_key`='last_name' 
             AND um3.`meta_key`='first_name' 
-            AND um5.`meta_key`='lab_user_phone'
-            AND um6.`meta_key`='lab_user_left' 
-            AND g7.`acronym`  = '" . $group . "'";
-        if($asLeft == "yes")
-        {
-            $sql .= "AND um6.`meta_value` IS NOT NULL";
-        }
-        else if($asLeft == "no")
-        {
-            $sql .= "AND um6.`meta_value` IS NULL";
-        } 
-    }
-    else if(!empty($asLeft) xor !empty($group))
-    {
-        if(!empty($asLeft))
-        {
-            $sql = "SELECT um1.`user_id` AS id, um3.`meta_value` AS first_name, um2.`meta_value` AS last_name,
-                                u4.`user_email` AS mail, um5.`meta_value` AS phone 
-                        FROM `wp_usermeta` AS um1 
-                        JOIN `wp_usermeta` AS um2 ON um1.`user_id` = um2.`user_id` 
-                        JOIN `wp_usermeta` AS um3 ON um1.`user_id` = um3.`user_id` 
-                        JOIN `wp_users`    AS u4  ON um1.`user_id` = u4.`ID`
-                        JOIN `wp_usermeta` AS um5 ON um1.`user_id` = um5.`user_id`
-                        JOIN `wp_usermeta` AS um6 ON um1.`user_id` = um6.`user_id`
-                        WHERE   um1.`meta_key`='last_name'
-                            AND um2.`meta_key`= 'last_name'
-                            AND um3.`meta_key`='first_name'
-                            AND um5.`meta_key`='lab_user_phone'
-                            AND um6.`meta_key`='lab_user_left'";
-            if($asLeft == "yes")
-            {
-                $sql .= "AND um6.`meta_value` IS NOT NULL";
-            }
-            else if($asLeft == "no")
-            {
-                $sql .= "AND um6.`meta_value` IS NULL";
-            }
-        }
-        else
-        {
-            $sql = "SELECT DISTINCT um1.`user_id` AS id, um3.`meta_value` AS first_name, um2.`meta_value` AS last_name, 
-                    u4.`user_email` AS mail, um5.`meta_value` AS phone 
-                    FROM `wp_usermeta` AS um1 
-                    JOIN `wp_usermeta` AS um2 ON um1.`user_id` = um2.`user_id` 
-                    JOIN `wp_usermeta` AS um3 ON um1.`user_id` = um3.`user_id` 
-                    JOIN `wp_users` AS u4 ON um1.`user_id` = u4.`ID` 
-                    JOIN `wp_usermeta` AS um5 ON um1.`user_id` = um5.`user_id` 
-                    JOIN `wp_lab_users_groups`AS ug6 ON um1.`user_id` = ug6.`user_id` 
-                    JOIN `wp_lab_groups` AS g7 ON ug6.`group_id` = g7.`id` 
-                    WHERE   um1.`meta_key`='last_name' 
-                        AND um2.`meta_key`='last_name' 
-                        AND um3.`meta_key`='first_name' 
-                        AND um5.`meta_key`='lab_user_phone' 
-                        AND g7.`acronym`  ='" . $group . "'";
-        }
-    }
-    else
-    {
-        $sql = "SELECT um1.`user_id` AS id, um3.`meta_value` AS first_name, um2.`meta_value` AS last_name,
-                   u4.`user_email` AS mail, um5.`meta_value` AS phone
-                FROM `wp_usermeta` AS um1 
-                JOIN `wp_usermeta` AS um2 ON um1.`user_id` = um2.`user_id` 
-                JOIN `wp_usermeta` AS um3 ON um1.`user_id` = um3.`user_id` 
-                JOIN `wp_users`    AS u4 ON um1.`user_id` = u4.`ID`
-                JOIN `wp_usermeta` AS um5 ON um1.`user_id` = um5.`user_id`
-                WHERE um1.`meta_key`='last_name' 
-                    AND um2.`meta_key`='last_name' 
-                    AND um3.`meta_key`='first_name'
-                    AND um5.`meta_key`='lab_user_phone'";
-    }
+            AND um5.`meta_key`='lab_user_phone'".$whereDisplayLeftUser.$whereGroup;
 
     $currentLetter = $_GET["letter"];
     if (!isset($currentLetter) || empty($currentLetter)) {

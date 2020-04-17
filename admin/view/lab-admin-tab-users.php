@@ -6,11 +6,11 @@ function lab_admin_tab_user()
   <table class="form-table" role="presentation">
     <tr class="user-rich-editing-wrap">
       <th scope="row">
-        <label for="lab_user_name">Nom de l'utilisateur</label>
+        <label for="lab_user_name">Nom de l'utilisateur 1</label>
       </th>
       <td>
-        <input type="text" name="lab_user_email" id="lab_user_search" value="" size="80" /><span id="lab_user_id"></span><br>
-        <input type="hidden" id="lab_user_search_id" name="lab_user_search_id" value="" /><br>
+        <input type="text"   id="lab_user_search"    value="" size="80" /><br>
+        <input type="hidden" id="lab_user_search_id" value="" /><br>
       </td>
     </tr>
     <tr>
