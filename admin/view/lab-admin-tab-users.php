@@ -87,14 +87,11 @@ function lab_admin_tab_user() {
           $groups[] = $SV; 
         }
       }
-      else {
-        echo "Vous devez choisir au moins un utilisateur et un groupe !"; //TODO : burger pop-up
-      }
     }
 
     foreach($groups as $g) {
       foreach($users as $u) {
-        $wpdb->insert(
+        $resultsInsert = $wpdb->insert(
           $wpdb->prefix.'lab_users_groups',
           array(
             'group_id' => $g,
@@ -102,12 +99,12 @@ function lab_admin_tab_user() {
           )
         );
       }
-      echo "Utilisateur(s) correctement(s) ajouté(s) au groupe";
     }
     ?>
     
     </div>
-  <input type = 'submit' style='margin-top:10px;' name = 'submit' value = Submit>
+  <input type='submit' style='margin-top:10px;' name = "submit" id='lab_add_users_groups' value='submit'>
+  <input type='hidden' id='lab_add_users_groups_value' value='<?php $resultsInsert ?>' />
   </form>
   <?php
 }

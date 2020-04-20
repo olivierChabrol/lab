@@ -67,6 +67,15 @@ jQuery(function($){
           }
       )
   });
+/*
+  $("#lab_add_users_groups").click(function(){
+    $.post(LAB.ajaxurl,
+      {
+        usernames
+      } 
+      
+    )
+  });*/
   
   $('#wp_lab_event_title').autocomplete({
     minChars: 2,
