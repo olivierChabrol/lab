@@ -461,6 +461,62 @@ function lab_admin_group_subs_addReq() {
   wp_send_json_error($res);
 }
 /********************************************************************************************
+ * Users Settings
+ ********************************************************************************************/
+function wp_send_json_warning() {
+  $warning = "warning";
+  wp_send_json($warning);
+}
+
+function lab_admin_list_users_groups() {
+  $sqlUser = "SELECT um1.`user_id`, um3.`meta_value` AS first_name, um2.`meta_value` AS last_name
+              FROM `wp_usermeta` AS um1
+              JOIN `wp_usermeta` AS um2 ON um1.`user_id` = um2.`user_id` 
+              JOIN `wp_usermeta` AS um3 ON um1.`user_id` = um3.`user_id`
+              WHERE um1.`meta_key`='last_name' 
+                AND um2.`meta_key`='last_name' 
+                AND um3.`meta_key`='first_name'
+                AND um1.`user_id` NOT IN (SELECT `user_id` FROM `wp_lab_users_groups`)
+                ORDER BY last_name";
+    $sqlGroup = "SELECT `id` AS group_id, `group_name` 
+                FROM wp_lab_groups";
+    global $wpdb;
+    $resultsUsers = $wpdb->get_results($sqlUser);
+    $resultsGroups = $wpdb->get_results($sqlGroup);
+    wp_send_json_success(array($resultsUsers, $resultsGroups));
+}
+
+function lab_admin_add_users_groups() {
+  $users  = $_POST['users'];
+  $groups = $_POST['groups'];
+  $condition = count($users) * count($groups);
+  global $wpdb;
+  $count_rows = 0;
+  foreach($groups as $g) {
+    foreach($users as $u) {
+      $count_rows += $wpdb->insert(
+        $wpdb->prefix.'lab_users_groups',
+        array(
+          'group_id' => $g,
+          'user_id' => $u
+        )
+      );
+    }
+  }
+  if ($count_rows == $condition && $condition > 0)
+  {
+    wp_send_json_success();
+  }
+  else if ($condition == 0)
+  {
+    wp_send_json_warning();
+  }
+  else
+  {
+    wp_send_json_error();
+  }
+}
+/********************************************************************************************
  * KeyRing
  ********************************************************************************************/
 function lab_keyring_create_keyReq() {

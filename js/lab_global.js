@@ -67,15 +67,64 @@ jQuery(function($){
           }
       )
   });
-/*
-  $("#lab_add_users_groups").click(function(){
+
+  $(document).ready(function()
+  {
     $.post(LAB.ajaxurl,
       {
-        usernames
-      } 
-      
+        action : 'list_users_groups'
+      },
+      function(response)
+      {
+        for(var i = 0; i< response.data[0].length; ++i)
+        {
+          $("#list_users").append($('<option/>', 
+          { 
+            value : response.data[0][i].user_id,
+            text : response.data[0][i].first_name + " " + response.data[0][i].last_name
+          }));
+        }
+        for(var i = 0; i< response.data[1].length; ++i)
+        {
+          $("#list_groups").append($('<option/>', 
+          {
+            value : response.data[1][i].group_id, 
+            text : response.data[1][i].group_name
+          }));
+        }
+      }
     )
-  });*/
+  });
+
+  $("#lab_add_users_groups").click(function()
+  {
+    var tab_users  = [];
+    var tab_groups = [];
+    $('#list_users option:selected').each(function(){ tab_users.push($(this).val()); });
+    $('#list_groups option:selected').each(function(){ tab_groups.push($(this).val()); });
+    $.post(LAB.ajaxurl,
+      {
+        action : 'add_users_groups',
+        users  : tab_users,
+        groups : tab_groups
+      },
+      function(response) 
+      {
+        if(response.success)
+        {
+          toast_success("Le(s) membre(s) a bien été ajouté au(x) groupe(s)");
+        }
+        else if(response.warning)
+        {
+          toast_warning("Sélectionnez au moins un utilisateur et un groupe !");
+        }
+        else
+        {
+          toast_error("Erreur, la requête n'a pas pu aboutir");
+        }
+      }
+    )
+  });
   
   $('#wp_lab_event_title').autocomplete({
     minChars: 2,

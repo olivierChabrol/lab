@@ -32,79 +32,22 @@ function lab_admin_tab_user() {
   <br/><br/>
   <h3>Affecter des utilisateurs à des groupes</h3>
   <div style="display:flex;">
-    <form method='post'>
-    <?php
-    $sqlUser = "SELECT um1.`user_id`, um3.`meta_value` AS first_name, um2.`meta_value` AS last_name
-            FROM `wp_usermeta` AS um1
-            JOIN `wp_usermeta` AS um2 ON um1.`user_id` = um2.`user_id` 
-            JOIN `wp_usermeta` AS um3 ON um1.`user_id` = um3.`user_id`
-            WHERE um1.`meta_key`='last_name' 
-              AND um2.`meta_key`='last_name' 
-              AND um3.`meta_key`='first_name'
-              AND um1.`user_id` NOT IN (SELECT `user_id` FROM `wp_lab_users_groups`)
-              ORDER BY last_name";
-    $sqlGroup = "SELECT `id` AS group_id, `group_name` 
-                FROM wp_lab_groups";
-    global $wpdb;
-    $resultsUsers = $wpdb->get_results($sqlUser);
-    $resultsGroups = $wpdb->get_results($sqlGroup);
-    
-    /*** CHOIX USER ***/ 
-    $userSettingsStr  = "<div style='float: left; maring-right:50px;'>
+  
+    <!-- CHOIX USER -->
+
+    <div style='float: left; maring-right:50px;'>
                           <label for='users'>Choisissez une ou plusieurs personne(s) à affecter :
-                          </label><br/><br/>";
-    $userSettingsStr .= "<select name='users[]' multiple style='height:300px;'>";
-    foreach ($resultsUsers as $r) {
-      $userSettingsStr .= "<option value='" . $r->user_id . "'>";
-      $userSettingsStr .= esc_html($r->first_name . " " . $r->last_name);
-      $userSettingsStr .= "</option>";
-    }
-    $userSettingsStr   .= "</select></div>";
-
-    /*** CHOIX GROUP ***/ 
-    $userSettingsStr .= "<div style='float: right; margin-left:50px'>
-                          <label for'groups'>Choisissez le ou les groupe(s) au(x)quel(s) vous allez affecter des personnes :
-                          <label><br/><br/>";
-    $userSettingsStr .= "<select name='groups[]' multiple style='height:150px;'>";
-    foreach ($resultsGroups as $r) {
-      $userSettingsStr .= "<option value='" . $r->group_id . "'>";
-      $userSettingsStr .= esc_html($r->group_name);
-      $userSettingsStr .= "</option>";
-    } 
-    $userSettingsStr .= "</select></div>";
+                          </label><br/><br/>
+    <select id='list_users' name='users[]' multiple style='height:300px;'></select></div>
     
-    echo $userSettingsStr;
-    $users = array();
-    $groups = array();
-    if(isset($_POST['submit'])) {
-      if(isset($_POST['users']) && isset($_POST['groups'])){ 
-        $selected_values = $_POST['users'];
-        foreach($selected_values as $SV) { // users selected 
-          $users[] = $SV; 
-        } 
-        $selected_values = $_POST['groups'];
-        foreach($selected_values as $SV){ // groups selected
-          $groups[] = $SV; 
-        }
-      }
-    }
+    <!-- CHOIX GROUP -->
 
-    foreach($groups as $g) {
-      foreach($users as $u) {
-        $resultsInsert = $wpdb->insert(
-          $wpdb->prefix.'lab_users_groups',
-          array(
-            'group_id' => $g,
-            'user_id' => $u
-          )
-        );
-      }
-    }
-    ?>
-    
-    </div>
-  <input type='submit' style='margin-top:10px;' name = "submit" id='lab_add_users_groups' value='submit'>
-  <input type='hidden' id='lab_add_users_groups_value' value='<?php $resultsInsert ?>' />
-  </form>
+    <div style='float: right; margin-left:50px'>
+                          <label for='groups'>Choisissez le ou les groupe(s) au(x)quel(s) vous allez affecter des personnes :
+                          </label><br/><br/>
+    <select id='list_groups' name='groups[]' multiple style='height:150px;'></select></div>
+  
+  </div>
+  <button style='margin-top:10px;' id='lab_add_users_groups'>submit</button>
   <?php
 }
