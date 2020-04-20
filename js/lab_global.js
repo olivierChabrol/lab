@@ -1,5 +1,6 @@
 /* globals global 25 03 2020 */
 const { __, _x, _n, sprintf } = wp.i18n;
+
 jQuery(function($){
   var searchRequest;
   loadExistingKeys();

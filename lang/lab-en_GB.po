@@ -1,14 +1,15 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2020-04-17 12:20+0200\n"
-"PO-Revision-Date: 2020-04-17 12:20+0200\n"
+"Report-Msgid-Bugs-To: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
-"Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2020-04-20 08:51+0200\n"
+"PO-Revision-Date: 2020-04-20 09:00+0200\n"
+"Language: en\n"
 "X-Generator: Poedit 2.3\n"
 "X-Poedit-Basepath: ..\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -16,50 +17,18 @@ msgstr ""
 "X-Poedit-SearchPath-0: lab-admin-keyring.php\n"
 "X-Poedit-SearchPath-1: js/lab_global.js\n"
 
-#: js/lab_global.js:218
-msgid "Groupe créé avec succès"
-msgstr "Group successfully created"
-
-#: js/lab_global.js:218
-msgid "Erreur lors de la création du groupe : "
-msgstr "Error while creating group : "
-
-#: js/lab_global.js:1121 js/lab_global.js:1125
-msgid "Reçu de prêt"
-msgstr "Loan Receipt"
-
-#: js/lab_global.js:1128
-msgid "ID du prêt"
-msgstr "Loan ID"
-
-#: js/lab_global.js:1129 lab-admin-keyring.php:215 lab-admin-keyring.php:241
+#: js/lab_global.js:1312
+#: lab-admin-keyring.php:215
+#: lab-admin-keyring.php:241
 msgid "Référent"
 msgstr "Referent"
 
-#: js/lab_global.js:1130
-msgid "La clé/badge numéro"
-msgstr "Key/badge number"
-
-#: js/lab_global.js:1131
-msgid "A été prêtée à"
-msgstr "was loaned to"
-
-#: js/lab_global.js:1135
-msgid "Et devra être rendue avant le"
-msgstr "And must be returned before the"
-
-#: js/lab_global.js:1136 lab-admin-keyring.php:62 lab-admin-keyring.php:209
+#: js/lab_global.js:1319
+#: lab-admin-keyring.php:62
+#: lab-admin-keyring.php:209
 #: lab-admin-keyring.php:245
 msgid "Commentaire"
 msgstr "Comments"
-
-#: js/lab_global.js:1137
-msgid "Signature"
-msgstr "Signature"
-
-#: js/lab_global.js:1140
-msgid "Imprimer"
-msgstr "Print"
 
 #: lab-admin-keyring.php:3
 msgid "Gestion des clés"
@@ -69,11 +38,13 @@ msgstr "Keys management"
 msgid "Voulez-vous vraiment supprimer cette clé ?"
 msgstr "Do you really want to remove this key?"
 
-#: lab-admin-keyring.php:15 lab-admin-keyring.php:23
+#: lab-admin-keyring.php:15
+#: lab-admin-keyring.php:23
 msgid "Annuler"
 msgstr "Cancel"
 
-#: lab-admin-keyring.php:16 lab-admin-keyring.php:24
+#: lab-admin-keyring.php:16
+#: lab-admin-keyring.php:24
 msgid "Confirmer"
 msgstr "Confirm"
 
@@ -117,7 +88,9 @@ msgstr "Keys per page :"
 msgid "Autre :"
 msgstr "Other :"
 
-#: lab-admin-keyring.php:56 lab-admin-keyring.php:180 lab-admin-keyring.php:239
+#: lab-admin-keyring.php:56
+#: lab-admin-keyring.php:180
+#: lab-admin-keyring.php:239
 msgid "ID"
 msgstr "ID"
 
@@ -125,20 +98,25 @@ msgstr "ID"
 msgid "Type"
 msgstr "Type"
 
-#: lab-admin-keyring.php:58 lab-admin-keyring.php:184
+#: lab-admin-keyring.php:58
+#: lab-admin-keyring.php:184
 msgid "Numéro"
 msgstr "Number"
 
-#: lab-admin-keyring.php:59 lab-admin-keyring.php:188
+#: lab-admin-keyring.php:59
+#: lab-admin-keyring.php:188
 msgid "Bureau"
 msgstr "Office"
 
-#: lab-admin-keyring.php:60 lab-admin-keyring.php:94 lab-admin-keyring.php:134
+#: lab-admin-keyring.php:60
+#: lab-admin-keyring.php:94
+#: lab-admin-keyring.php:134
 #: lab-admin-keyring.php:192
 msgid "Marque"
 msgstr "Brand"
 
-#: lab-admin-keyring.php:61 lab-admin-keyring.php:196
+#: lab-admin-keyring.php:61
+#: lab-admin-keyring.php:196
 msgid "Site"
 msgstr "Location"
 
@@ -146,7 +124,8 @@ msgstr "Location"
 msgid "Dispo"
 msgstr "Available"
 
-#: lab-admin-keyring.php:64 lab-admin-keyring.php:228
+#: lab-admin-keyring.php:64
+#: lab-admin-keyring.php:228
 msgid "Actions"
 msgstr "Actions"
 
@@ -154,7 +133,8 @@ msgstr "Actions"
 msgid "Page suivante"
 msgstr "Next Page"
 
-#: lab-admin-keyring.php:74 lab-admin-keyring.php:111
+#: lab-admin-keyring.php:74
+#: lab-admin-keyring.php:111
 msgid "Modifier"
 msgstr "Edit"
 
@@ -166,7 +146,8 @@ msgstr "number"
 msgid "bureau"
 msgstr "office"
 
-#: lab-admin-keyring.php:109 lab-admin-keyring.php:149
+#: lab-admin-keyring.php:109
+#: lab-admin-keyring.php:149
 msgid "Commentaire (facultatif)"
 msgstr "Comments (optional)"
 
@@ -258,45 +239,34 @@ msgstr "Loan"
 msgid "Voir prêt"
 msgstr "Show Loan"
 
-#~ msgid "Reçu du prêt"
-#~ msgstr "Loan Receipt"
-
 #, fuzzy
-#~| msgid "Actions"
 #~ msgid "Location"
 #~ msgstr "Actions"
 
 #, fuzzy
-#~| msgid "Date de fin"
 #~ msgid "Date and time"
 #~ msgstr "End date"
 
 #, fuzzy
-#~| msgid "Commentaire"
 #~ msgid "Comment"
 #~ msgstr "Comments"
 
 #, fuzzy
-#~| msgid "Confirmer"
 #~ msgid "Confirmed Spaces"
 #~ msgstr "Confirm"
 
 #, fuzzy
-#~| msgid "Actions"
 #~ msgid "Location:"
 #~ msgstr "Actions"
 
 #, fuzzy
-#~| msgid "Actions"
 #~ msgid "location"
 #~ msgstr "Actions"
 
 #, fuzzy
-#~| msgid "Actions"
 #~ msgid "Locations"
 #~ msgstr "Actions"
 
 #, fuzzy
-#~| msgid "Actions"
 #~ msgid "Bulk Actions"
 #~ msgstr "Actions"
