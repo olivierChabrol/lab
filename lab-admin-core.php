@@ -522,7 +522,16 @@ function lab_keyring_end_loan($loan_id,$end_date, $key_id) {
     }
 }
 function lab_keyring_find_oldLoans($key_id) {
-    $sql = "SELECT * from `".$wpdb->prefix."lab_key_loans` WHERE `key_id`=".$key_id." ORDER BY `start_date` DESC;";
     global $wpdb;
+    $sql = "SELECT * from `".$wpdb->prefix."lab_key_loans` WHERE `key_id`=".$key_id." ORDER BY `start_date` DESC";
+    return $wpdb->get_results($sql);
+}
+function lab_hal_getLastArticles($number,$group) {
+    global $wpdb;
+    if ($group == 0) {
+        $sql = "SELECT * from `".$wpdb->prefix."lab_hal` ORDER BY `producedDate_tdate` DESC LIMIT ".$number.";";
+    } else {
+        $sql = "SELECT * FROM `".$wpdb->prefix."lab_hal` WHERE user_id IN (SELECT user_id from `".$wpdb->prefix."lab_users_groups` WHERE `".$wpdb->prefix."lab_users_groups`.`group_id` = ".$group.") ORDER BY `producedDate_tdate` DESC LIMIT ".$number;
+    }
     return $wpdb->get_results($sql);
 }

@@ -26,6 +26,7 @@ require_once("lab-admin-core.php");
 require_once("lab-admin-groups.php");
 require_once("lab-admin-params.php");
 require_once("lab-admin-keyring.php");
+require_once("lab-hal-widget.php");
 require_once(LAB_DIR_PATH."admin/view/lab-admin-tabs.php");
 require_once(LAB_DIR_PATH."admin/view/lab-admin-tab-groups.php");
 require_once(LAB_DIR_PATH."admin/view/lab-admin-tab-params.php");
@@ -90,6 +91,7 @@ function myplugin_load_textdomain() {
 function wplab_init()
 {
   register_widget("wplab_widget_week_event");
+  register_widget("lab_hal_widget");
 }
 
 /**
