@@ -1,5 +1,7 @@
 <?php
 
+
+
 function lab_admin_username_get($userId) {
     global $wpdb;
     $results = $wpdb->get_results( "SELECT * FROM `".$wpdb->prefix."usermeta` WHERE (meta_key = 'first_name' or meta_key='last_name' or meta_key='lab_user_left') and user_id=".$userId  );
@@ -20,6 +22,28 @@ function lab_admin_username_get($userId) {
     }
     
     return $items;
+}
+
+function lab_admin_createTable_param() {
+    global $wpdb;
+    $sql = "CREATE TABLE `".$wpdb->prefix."lab_params` (
+        `id` bigint UNSIGNED NOT NULL,
+        `type_param` bigint UNSIGNED NOT NULL,
+        `value` varchar(20) DEFAULT NULL
+      ) ENGINE=InnoDB";
+    $wpdb->get_results($sql);
+}
+
+function lab_admin_initTable_param() {
+    global $wpdb;
+    $sql = "INSERT INTO `".$wpdb->prefix."lab_params` (`id`, `type_param`, `value`) VALUES
+(1, 1, 'PARAM'),
+(2, 1, 'GROUP TYPE'),
+(3, 1, 'KEY TYPE'),
+(4, 1, 'SITE'),
+(5, 2, 'Equipe'),
+(6, 2, 'Groupe');B";
+    $wpdb->get_results($sql);
 }
 
 function lab_admin_param_delete_by_id($paramId) {
@@ -55,6 +79,14 @@ function lab_admin_firstname_lastname2($name){
   return $items;
 }
 
+function lab_admin_initTable_usermeta()
+{
+    lab_userMetaData_create_metaKeys("hab_id", "");
+    lab_userMetaData_create_metaKeys("hab_name", "");
+    lab_userMetaData_create_metaKeys("user_left", null);
+    lab_userMetaData_create_metaKeys("user_phone", "");
+}
+
 function lab_admin_firstname_lastname($param, $name){
     global $wpdb;
     $sql = "SELECT um1.`user_id` AS id, um3.`meta_value` as first_name, um2.`meta_value` as last_name 
@@ -74,8 +106,8 @@ function lab_admin_firstname_lastname($param, $name){
   return $items;
 }
 function lab_admin_checkTable($tableName) {
-    $sql = "SHOW TABLES LIKE '".$tableName."';";
     global $wpdb;
+    $sql = "SHOW TABLES LIKE '".$wpdb->prefix.$tableName."';";
     $results = $wpdb->get_results($sql);
     if (count($results)) {
     return true;
@@ -86,6 +118,22 @@ function lab_admin_checkTable($tableName) {
 /********************************************************************************************
  * GROUPS
  ********************************************************************************************/
+
+function lab_admin_delete_group($groupId) {
+    lab_admin_delete_group_substitutes_by_groupId($groupId);
+    lab_admin_delete_users_groups_by_groupId($groupId);
+    global $wpdb;
+    $wpdb->delete($wpdb->prefix."lab_groups", array("id"=>$groupId));
+}
+
+function lab_admin_delete_group_substitutes_by_groupId($groupId) {
+    global $wpdb;
+    $wpdb->delete($wpdb->prefix."lab_group_substitutes", array("group_id"=>$groupId));
+}
+function lab_admin_delete_users_groups_by_groupId($groupId) {
+    global $wpdb;
+    $wpdb->delete($wpdb->prefix."lab_users_groups", array("group_id"=>$groupId));
+}
 
 function lab_admin_search_group_by_acronym($ac) {
     global $wpdb;
@@ -368,7 +416,7 @@ function userMetaData_exist_metakey($metadataKey) {
 /**************************************************************************************************
  * HAL
  *************************************************************************************************/
-function createTableHal() {
+function lab_hal_createTable_hal() {
     global $wpdb;
     $sql = "CREATE TABLE `".$wpdb->prefix."lab_hal` (
         `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -564,4 +612,37 @@ function lab_hal_getLastArticles($number,$group) {
         $sql = "SELECT * FROM `".$wpdb->prefix."lab_hal` WHERE user_id IN (SELECT user_id from `".$wpdb->prefix."lab_users_groups` WHERE `".$wpdb->prefix."lab_users_groups`.`group_id` = ".$group.") ORDER BY `producedDate_tdate` DESC LIMIT ".$number;
     }
     return $wpdb->get_results($sql);
+}
+
+function create_all_tables() {
+    lab_admin_createTable_param();
+    lab_admin_initTable_param();
+    lab_hal_createTable_hal();
+    lab_admin_createUserGroupTable();
+    lab_keyring_createTable_loans();
+    lab_keyring_createTable_keys();
+    lab_admin_createGroupTable();
+    lab_admin_initTable_usermeta();
+}
+
+function delete_all_tables() {
+    lab_admin_delete_group();
+    drop_table("lab_group_substitutes");
+    drop_table("lab_group_substitutes");
+    drop_table("lab_params");
+    drop_table("lab_key_loans");
+    drop_table("lab_keys");
+    drop_table("lab_hal");
+    drop_table("lab_groups");
+}
+
+/**
+ * DROP TABLE 
+ * @param : table name without prefix
+ */
+function drop_table($tableName) {
+    global $wpdb;
+    $sql = "DROP TABLE `".$wpdb->prefix.$tableName."`";
+    $wpdb->get_results($sql);
+
 }

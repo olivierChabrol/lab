@@ -128,9 +128,7 @@ function lab_admin_group_search() {
 
 function lab_admin_group_delete(){
     $group_id = $_POST['id'];
-    global $wpdb;
-    $wpdb->delete($wpdb->prefix.'lab_group_substitutes', array('group_id' => $group_id));
-    $wpdb->delete($wpdb->prefix.'lab_groups', array('id' => $group_id));
+    lab_admin_delete_group($group_id);
     wp_send_json_success();
 }
 
@@ -592,7 +590,7 @@ function lab_ajax_userMeta_key_not_exist() {
  * HAL10
  ********************************************************************************************/
 function lab_ajax_hal_create_table() {
-  wp_send_json_success(createTableHal());
+  wp_send_json_success(lab_hal_createTable_hal());
 }
 function lab_ajax_hal_fill_fields() {
   wp_send_json_success(usermeta_fill_hal_field());
