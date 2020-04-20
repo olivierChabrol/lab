@@ -28,6 +28,9 @@ function lab_admin_tab_settings() {
   if (!lab_admin_checkTable("wp_lab_groups")) {
     echo "<p id='lab_group_noTableWarning'>La table <em>wp_lab_groups</em> n'a pas été trouvée dans la base, vous devez d'abord la créer ici : </p>";
   }
+  if (!lab_admin_checkTable("wp_lab_users_groups")) {
+    echo "<p id='lab_group_noSubTableWarning'>La table <em>wp_lab_users_groups</em> n'a pas été trouvée dans la base, vous devez d'abord la créer ici : </p>";
+  }
   if (!lab_admin_checkTable("wp_lab_group_substitutes")) {
     echo "<p id='lab_group_noSubTableWarning'>La table <em>wp_lab_group_substitutes</em> n'a pas été trouvée dans la base, vous devez d'abord la créer ici : </p>";
   }
@@ -42,6 +45,7 @@ function lab_admin_tab_settings() {
   <?php
   ?>
   <button class="page-title-action" id="lab_createGroup_createTable">Créer la table Groups</button>
+  <button class="page-title-action" id="lab_user_group_create_table">Créer la table User Groups</button>
   <button class="page-title-action" id="lab_createGroup_createTable_Sub">Créer la table Substitutes</button>
   <button class="page-title-action" id="lab_createGroup_createRoot">Créer groupe root</button>
   <hr/>

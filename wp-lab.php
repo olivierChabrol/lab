@@ -115,6 +115,7 @@ add_action( 'wp_ajax_test', 'lab_admin_test');
 add_action( 'wp_ajax_group_search_ac', 'lab_admin_group_availableAc' );
 add_action( 'wp_ajax_group_create', 'lab_admin_group_createReq' );
 add_action( 'wp_ajax_group_table', 'lab_admin_createGroupTable' );
+add_action( 'wp_ajax_user_group_table', 'lab_admin_createUserGroupTable' );
 add_action( 'wp_ajax_group_sub_table', 'lab_admin_createSubTable' );
 add_action( 'wp_ajax_group_root', 'lab_admin_group_createRoot');
 add_action( 'wp_ajax_delete_group', 'lab_admin_group_delete');

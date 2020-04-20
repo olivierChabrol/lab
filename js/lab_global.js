@@ -301,6 +301,19 @@ jQuery(function($){
       toast_error("Error Creating table : "+response);
     });
   });
+  $('#lab_user_group_create_table').click(function(){
+    var data = {
+      'action' : 'user_group_table',
+    };
+    jQuery.post(LAB.ajaxurl, data, function(response) {
+      if (response==0) {
+        toast_success("Table successfully created");
+        $("#lab_group_noTableWarning").css("display","none");
+        return;
+      }
+      toast_error("Error Creating table : "+response);
+    });
+  });
   $('#lab_createGroup_createTable_Sub').click(function(){
     var data = {
       'action' : 'group_sub_table',
