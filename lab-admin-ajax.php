@@ -33,7 +33,7 @@ function group_delete_substitutes()
 {
   $id = $_POST['id'];
   global $wpdb;
-  wp_send_json_success($wpdb->delete('wp_lab_group_substitutes', array('id' => $id)));
+  wp_send_json_success($wpdb->delete($wpdb->prefix.'lab_group_substitutes', array('id' => $id)));
 }
 
 function group_add_substitutes()
@@ -41,7 +41,7 @@ function group_add_substitutes()
   $userId = $_POST['userId'];
   $groupId = $_POST['groupId'];
   global $wpdb;
-  wp_send_json_success($wpdb->insert('wp_lab_group_substitutes', array('group_id'=>$groupId,'substitute_id'=>$userId)));
+  wp_send_json_success($wpdb->insert($wpdb->prefix.'lab_group_substitutes', array('group_id'=>$groupId,'substitute_id'=>$userId)));
 
 }
 
@@ -129,8 +129,8 @@ function lab_admin_group_search() {
 function lab_admin_group_delete(){
     $group_id = $_POST['id'];
     global $wpdb;
-    $wpdb->delete('wp_lab_group_substitutes', array('group_id' => $group_id));
-    $wpdb->delete('wp_lab_groups', array('id' => $group_id));
+    $wpdb->delete($wpdb->prefix.'lab_group_substitutes', array('group_id' => $group_id));
+    $wpdb->delete($wpdb->prefix.'lab_groups', array('id' => $group_id));
     wp_send_json_success();
 }
 
@@ -464,7 +464,7 @@ function lab_admin_test()
   //*/
   wp_send_json_error( $translations );
   //wp_send_json_success(load_script_textdomain( 'wp-lab', 'lab', basename( plugin_basename( __FILE__ ) ) . '/lang' ));
-  //$wpdb->delete('wp_lab_groups', array('id' => $group_id));
+  //$wpdb->delete($wpdb->prefix.'lab_groups', array('id' => $group_id));
   //$user = 1;
   //wp_send_json_success("UM()->options()->get( 'author_redirect' ) : " . UM()->options()->get('author_redirect') . " /  um_fetch_user($user) : " . um_fetch_user(1));
 }

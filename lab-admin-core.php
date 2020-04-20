@@ -26,7 +26,7 @@ function lab_admin_param_delete_by_id($paramId) {
     global $wpdb;
     // can't delete param Id 1, because it is the default parameter
     if ($paramId != 1) {
-        return $wpdb->delete('wp_lab_params', array('id' => $paramId));
+        return $wpdb->delete($wpdb->prefix.'lab_params', array('id' => $paramId));
     }
 }
 
@@ -141,7 +141,7 @@ function lab_admin_group_create($name,$acronym,$chief_id,$parent,$type) {
     global $wpdb;
     $wpdb->hide_errors();
     if ( $wpdb->insert(
-        'wp_lab_groups',
+        $wpdb->prefix.'lab_groups',
         array(
             'acronym' => $acronym,
             'group_name' => $name,
@@ -162,7 +162,7 @@ function lab_admin_group_subs_add($id,$list) {
     foreach ($list as $r) {
         $sql = "INSERT INTO `".$wpdb->prefix."lab_group_substitutes` (`id`, `group_id`, `substitute_id`) VALUES (NULL, '".$id."', '".$r."'); ";
         if (!$wpdb->insert(
-            'wp_lab_group_substitutes',
+            $wpdb->prefix.'lab_group_substitutes',
             array(
                 'group_id' => $id,
                 'substitute_id' => $r)) 
@@ -215,7 +215,7 @@ function lab_keyring_create_key($params) {
     global $wpdb;
     $wpdb->hide_errors();
     if ( $wpdb->insert(
-        'wp_lab_keys',
+        $wpdb->prefix.'lab_keys',
         $params
         )
     ) {
@@ -230,7 +230,7 @@ function lab_keyring_create_loan($params) {
     global $wpdb;
     $wpdb->hide_errors();
     if ( $wpdb->insert(
-        'wp_lab_key_loans',
+        $wpdb->prefix.'lab_key_loans',
         $params
     ) ) {
         return;
@@ -267,17 +267,21 @@ function lab_keyring_edit_key($id,$fields) {
     $fields['commentary'] = strlen($fields['commentary']) ? $fields['commentary'] : NULL ;
     global $wpdb;
     return $wpdb->update(
-        'wp_lab_keys',
+        $wpdb->prefix.'lab_keys',
         $fields,
         array('id' => $id)
     );
 }
 function lab_keyring_delete_key($id) {
     global $wpdb;
-    return $wpdb->delete(
-        'wp_lab_keys',
-        array('id' => $id)
-    );
+    if ($wpdb->delete($wpdb->prefix.'lab_key_loans',array('key_id'=>$id))) {
+        return $wpdb->delete(
+            $wpdb->prefix.'lab_keys',
+            array('id' => $id)
+        );
+    } else {
+        return false;
+    }
 }
 
 /**************************************************************************************************
@@ -511,7 +515,7 @@ function lab_keyring_setKeyAvailable($id,$available) {
     global $wpdb;
     $wpdb->hide_errors();
     if ($wpdb->update(
-        'wp_lab_keys',
+        $wpdb->prefix.'lab_keys',
         array(
             'available'=>$available
         ),
@@ -527,7 +531,7 @@ function lab_keyring_edit_loan($id,$params) {
     $params['commentary'] = strlen($params['commentary']) ? $params['commentary'] : NULL ;
     global $wpdb;
     return $wpdb->update(
-        'wp_lab_key_loans',
+        $wpdb->prefix.'lab_key_loans',
         $params,
         array('id' => $id)
     );
