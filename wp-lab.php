@@ -57,6 +57,18 @@ if (locale == 'fr_FR') {
 } else {
   define('lab_lang', 'en');
 }
+/**
+ * Load plugin textdomain.
+ *
+ * @since 1.0.0
+ */
+function myplugin_load_textdomain() {
+  //load_plugin_textdomain( 'my-plugin', false, basename( dirname( __FILE__ ) ) . '/languages' ); 
+  load_plugin_textdomain( 'lab', false, 'lab/lang');
+}
+
+add_action( 'plugins_loaded', 'myplugin_load_textdomain' );
+
 
 add_shortcode('lab-directory', 'lab_directory');
 add_shortcode('lab_old-event', 'lab_old_event');
@@ -64,6 +76,7 @@ add_shortcode('lab-old-event', 'lab_old_event');
 add_shortcode('lab-event', 'lab_event');
 add_shortcode('lab-event-of-the-week', 'lab_event_of_the_week');
 add_shortcode('lab-incoming-event', 'lab_incoming_event');
+
 
 add_action('admin_enqueue_scripts', 'admin_enqueue');
 
@@ -218,7 +231,7 @@ function wp_lab_global_enqueues()
   wp_enqueue_script(
     'wp-lab',
     plugins_url('js/lab_global.js',__FILE__),
-    array('jquery'),
+    array('jquery','wp-i18n'),
     '1.3',
     true
   );

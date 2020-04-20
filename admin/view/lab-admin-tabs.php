@@ -16,7 +16,7 @@ function wp_lab_option()
   }
 ?>
   <div class="wrap">
-    <h1 class="wp-heading-inline">Lab <?php echo (dirname(plugin_basename("__FILE__" . "js/lab_global.js"))); ?></h1>
+    <h1 class="wp-heading-inline">Lab <?php echo (dirname(__FILE__)); ?></h1>
     <!--    <a href="https://www.i2m.univ-amu.fr/wp-admin/post-new.php?post_type=event" class="page-title-action">Ajouter un évènement</a> -->
     <hr class="wp-header-end">
     <h2 class="nav-tab-wrapper">
