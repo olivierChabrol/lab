@@ -99,6 +99,17 @@ function lab_admin_search_group_by_acronym($ac) {
     return $items;
 }
 
+function lab_admin_createUserGroupTable()
+{
+    global $wpdb;
+    $sql = "CREATE TABLE `".$wpdb->prefix."lab_users_groups` (
+        `id` bigint UNSIGNED NOT NULL,
+        `group_id` bigint UNSIGNED NOT NULL,
+        `user_id` bigint UNSIGNED NOT NULL
+      ) ENGINE=InnoDB;";
+    $wpdb->get_results($sql);
+}
+
 function lab_admin_createGroupTable() {
     global $wpdb;
     $sql = "CREATE TABLE `".$wpdb->prefix."lab_groups`(
@@ -429,16 +440,31 @@ function saveHalProduction($userId, $docId, $citation, $productionDate, $title, 
     return $wpdb->insert($wpdb->prefix."lab_hal", array('user_id'=>$userId, 'docid'=>$docId, 'citationFull_s'=>$citation, 'producedDate_tdate'=>$productionDate, 'title'=>$title, 'url'=>$url));
 }
 
+/**
+ * Download HAL info for all user in db
+ */
+function hal_download_all()
+{
+    global $wpdb;
+    $sql = "SELECT id FROM `".$wpdb->prefix."users`";
+    $results = $wpdb->get_results($sql);
+    foreach($results as $r) 
+    {
+        hal_download($r->id);
+    }
+}
+
 function hal_download($userId) {
     $url = get_hal_url($userId);
     
     $json = do_common_curl_call($url);
-    for ($i = 0; $json->response->docs[$i] != ''; $i++) {
+    $c =count($json->response->docs);
+    for ($i = 0; $i < $c; $i++) {
         $docId = $json->response->docs[$i]->docid;
         $citation = $json->response->docs[$i]->citationFull_s;
         $producedDate = strtotime($json->response->docs[$i]->producedDate_tdate);
         $title = $json->response->docs[$i]->title_s[0];
-        $url = $json->response->docs[$i]->uri_s[0];
+        $url = $json->response->docs[$i]->uri_s;
         
         saveHalProduction($userId, $docId, $citation, date('Y-m-d', $producedDate), $title, $url);
         //$content .= '<li>' . $json->response->docs[$i]->citationFull_s . '</li>';
