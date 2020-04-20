@@ -2,7 +2,7 @@
 
 function lab_admin_username_get($userId) {
     global $wpdb;
-    $results = $wpdb->get_results( "SELECT * FROM `wp_usermeta` WHERE (meta_key = 'first_name' or meta_key='last_name' or meta_key='lab_user_left') and user_id=".$userId  );
+    $results = $wpdb->get_results( "SELECT * FROM `".$wpdb->prefix."usermeta` WHERE (meta_key = 'first_name' or meta_key='last_name' or meta_key='lab_user_left') and user_id=".$userId  );
     $items = array();
     $items["id"] = $userId;
 
@@ -37,14 +37,14 @@ function lab_admin_param_search_by_value($value) {
 }
 
 function lab_admin_firstname_lastname2($name){
+    global $wpdb;
     $sql = "SELECT um1.`user_id` AS id, um3.`meta_value` as first_name, um2.`meta_value` as last_name 
-          FROM `wp_usermeta` AS um1 JOIN `wp_usermeta` AS um2 ON um1.`user_id` = um2.`user_id` JOIN `wp_usermeta` AS um3 ON um1.`user_id` = um3.`user_id` 
+          FROM `".$wpdb->prefix."usermeta` AS um1 JOIN `".$wpdb->prefix."usermeta` AS um2 ON um1.`user_id` = um2.`user_id` JOIN `".$wpdb->prefix."usermeta` AS um3 ON um1.`user_id` = um3.`user_id` 
           WHERE (um1.`meta_key`='first_name' OR um1.`meta_key`='last_name') 
             AND um2.`meta_key`='last_name' 
             AND um3.`meta_key`='first_name'            
             AND um1.`meta_value`LIKE '%" . $name . "%'";
 
-  global $wpdb;
   $results = $wpdb->get_results($sql);
   $nbResult = $wpdb->num_rows;
   $items = array();
@@ -56,14 +56,14 @@ function lab_admin_firstname_lastname2($name){
 }
 
 function lab_admin_firstname_lastname($param, $name){
+    global $wpdb;
     $sql = "SELECT um1.`user_id` AS id, um3.`meta_value` as first_name, um2.`meta_value` as last_name 
-          FROM `wp_usermeta` AS um1 JOIN `wp_usermeta` AS um2 ON um1.`user_id` = um2.`user_id` JOIN `wp_usermeta` AS um3 ON um1.`user_id` = um3.`user_id` 
+          FROM `".$wpdb->prefix."usermeta` AS um1 JOIN `".$wpdb->prefix."usermeta` AS um2 ON um1.`user_id` = um2.`user_id` JOIN `".$wpdb->prefix."usermeta` AS um3 ON um1.`user_id` = um3.`user_id` 
           WHERE (um1.`meta_key`='first_name' OR um1.`meta_key`='last_name') 
             AND um2.`meta_key`='last_name' 
             AND um3.`meta_key`='first_name'            
             AND um1.`meta_value`LIKE '%" . $name . "%'";
 
-  global $wpdb;
   $results = $wpdb->get_results($sql);
   $nbResult = $wpdb->num_rows;
   $items = array();
@@ -88,8 +88,8 @@ function lab_admin_checkTable($tableName) {
  ********************************************************************************************/
 
 function lab_admin_search_group_by_acronym($ac) {
-    $sql = "SELECT group_name,id FROM `wp_lab_groups` WHERE acronym = '".$ac."';";
     global $wpdb;
+    $sql = "SELECT group_name,id FROM `".$wpdb->prefix."lab_groups` WHERE acronym = '".$ac."';";
     $results = $wpdb->get_results($sql);
     $items = array();
     foreach ( $results as $r )
@@ -100,7 +100,8 @@ function lab_admin_search_group_by_acronym($ac) {
 }
 
 function lab_admin_createGroupTable() {
-    $sql = "CREATE TABLE `wp_lab_groups`(
+    global $wpdb;
+    $sql = "CREATE TABLE `".$wpdb->prefix."lab_groups`(
         `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
         `acronym` varchar(20) UNIQUE,
         `group_name` varchar(255) NOT NULL,
@@ -108,25 +109,24 @@ function lab_admin_createGroupTable() {
         `group_type` TINYINT NOT NULL,
         `parent_group_id` BIGINT UNSIGNED,
         PRIMARY KEY(`id`),
-        FOREIGN KEY(`chief_id`) REFERENCES `wp_users`(`ID`),
-        FOREIGN KEY(`parent_group_id`) REFERENCES `wp_lab_groups`(`id`)) ENGINE = INNODB;";
-    global $wpdb;
+        FOREIGN KEY(`chief_id`) REFERENCES `".$wpdb->prefix."users`(`ID`),
+        FOREIGN KEY(`parent_group_id`) REFERENCES `".$wpdb->prefix."lab_groups`(`id`)) ENGINE = INNODB;";
     $wpdb->get_results($sql);
 }
 function lab_admin_createSubTable() {
-    $sql = "CREATE TABLE `wp_lab_group_substitutes`(
+    global $wpdb;
+    $sql = "CREATE TABLE `".$wpdb->prefix."lab_group_substitutes`(
         `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
         `group_id` BIGINT UNSIGNED NOT NULL ,
         `substitute_id` BIGINT UNSIGNED NOT NULL,
         PRIMARY KEY(`id`),
-        FOREIGN KEY(`substitute_id`) REFERENCES `wp_users`(`ID`),
-        FOREIGN KEY(`group_id`) REFERENCES `wp_lab_groups`(`id`)) ENGINE = INNODB;";
-    global $wpdb;
+        FOREIGN KEY(`substitute_id`) REFERENCES `".$wpdb->prefix."users`(`ID`),
+        FOREIGN KEY(`group_id`) REFERENCES `".$wpdb->prefix."lab_groups`(`id`)) ENGINE = INNODB;";
     $wpdb->get_results($sql);
 }
 
 function lab_admin_group_create($name,$acronym,$chief_id,$parent,$type) {
-    //$sql = "INSERT INTO `wp_lab_groups` (`id`, `acronym`, `group_name`, `chief_id`, `group_type`, `parent_group_id`) VALUES (NULL, '".$acronym."', '".$name."', '".$chief_id."', '".$type."', ".($parent == 0 ? "NULL" : "'".$parent."'").");";
+    //$sql = "INSERT INTO `".$wpdb->prefix."lab_groups` (`id`, `acronym`, `group_name`, `chief_id`, `group_type`, `parent_group_id`) VALUES (NULL, '".$acronym."', '".$name."', '".$chief_id."', '".$type."', ".($parent == 0 ? "NULL" : "'".$parent."'").");";
     global $wpdb;
     $wpdb->hide_errors();
     if ( $wpdb->insert(
@@ -149,7 +149,7 @@ function lab_admin_group_subs_add($id,$list) {
     global $wpdb;
     $wpdb->hide_errors();
     foreach ($list as $r) {
-        $sql = "INSERT INTO `wp_lab_group_substitutes` (`id`, `group_id`, `substitute_id`) VALUES (NULL, '".$id."', '".$r."'); ";
+        $sql = "INSERT INTO `".$wpdb->prefix."lab_group_substitutes` (`id`, `group_id`, `substitute_id`) VALUES (NULL, '".$id."', '".$r."'); ";
         if (!$wpdb->insert(
             'wp_lab_group_substitutes',
             array(
@@ -167,7 +167,8 @@ function lab_admin_group_subs_add($id,$list) {
  * KeyRing
  ********************************************************************************************/
 function lab_keyring_createTable_keys() {
-    $sql = "CREATE TABLE `wp_lab_keys` (
+    global $wpdb;
+    $sql = "CREATE TABLE `".$wpdb->prefix."lab_keys` (
         `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
         `number` varchar(10) NOT NULL,
         `office` varchar(20),
@@ -178,11 +179,11 @@ function lab_keyring_createTable_keys() {
         `available` boolean NOT NULL DEFAULT TRUE,
         PRIMARY KEY(`id`)
         ) ENGINE=INNODB;";
-    global $wpdb;
     $wpdb->get_results($sql);
 }
 function lab_keyring_createTable_loans() {
-    $sql = "CREATE TABLE `wp_lab_key_loans` (
+    global $wpdb;
+    $sql = "CREATE TABLE `".$wpdb->prefix."lab_key_loans` (
         `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
         `key_id` bigint UNSIGNED NOT NULL,
         `user_id` bigint UNSIGNED NOT NULL,
@@ -192,11 +193,10 @@ function lab_keyring_createTable_loans() {
         `ended` boolean NOT NULL DEFAULT FALSE,
         `commentary` text,
         PRIMARY KEY(`id`),
-        FOREIGN KEY (`key_id`) REFERENCES `wp_lab_keys` (`id`),
-        FOREIGN KEY (`user_id`) REFERENCES `wp_users` (`ID`),
-        FOREIGN KEY (`referent_id`) REFERENCES `wp_users` (`ID`)
+        FOREIGN KEY (`key_id`) REFERENCES `".$wpdb->prefix."lab_keys` (`id`),
+        FOREIGN KEY (`user_id`) REFERENCES `".$wpdb->prefix."users` (`ID`),
+        FOREIGN KEY (`referent_id`) REFERENCES `".$wpdb->prefix."users` (`ID`)
       ) ENGINE=InnoDB;";
-    global $wpdb;
     $wpdb->get_results($sql);
 }
 function lab_keyring_create_key($params) {
@@ -228,16 +228,16 @@ function lab_keyring_create_loan($params) {
     }
 }
 function lab_keyring_search_byWord($word,$limit,$page) {
-    $offset = $page*$limit;
-    $sql = "SELECT * from `wp_lab_keys`
-            WHERE Concat_ws(`wp_lab_keys`.`number`,`wp_lab_keys`.`office`,`wp_lab_keys`.`site`,`wp_lab_keys`.`brand`,`wp_lab_keys`.`commentary`)
-            LIKE '%".$word."%'
-            ORDER BY ABS(`wp_lab_keys`.`number`)
-            LIMIT ".$offset.", ".$limit.";";
-    $count = "SELECT COUNT(*) from `wp_lab_keys`
-              WHERE Concat_ws(`wp_lab_keys`.`number`,`wp_lab_keys`.`office`,`wp_lab_keys`.`site`,`wp_lab_keys`.`brand`,`wp_lab_keys`.`commentary`)
-              LIKE '%".$word."%'";
     global $wpdb;
+    $offset = $page*$limit;
+    $sql = "SELECT * from `".$wpdb->prefix."lab_keys`
+            WHERE Concat_ws(`".$wpdb->prefix."lab_keys`.`number`,`".$wpdb->prefix."lab_keys`.`office`,`".$wpdb->prefix."lab_keys`.`site`,`".$wpdb->prefix."lab_keys`.`brand`,`".$wpdb->prefix."lab_keys`.`commentary`)
+            LIKE '%".$word."%'
+            ORDER BY ABS(`".$wpdb->prefix."lab_keys`.`number`)
+            LIMIT ".$offset.", ".$limit.";";
+    $count = "SELECT COUNT(*) from `".$wpdb->prefix."lab_keys`
+              WHERE Concat_ws(`".$wpdb->prefix."lab_keys`.`number`,`".$wpdb->prefix."lab_keys`.`office`,`".$wpdb->prefix."lab_keys`.`site`,`".$wpdb->prefix."lab_keys`.`brand`,`".$wpdb->prefix."lab_keys`.`commentary`)
+              LIKE '%".$word."%'";
     $results = $wpdb->get_results($sql);
     $total = $wpdb->get_var($count);
     $res = array(
@@ -247,9 +247,9 @@ function lab_keyring_search_byWord($word,$limit,$page) {
     return $res;
 }
 function lab_keyring_search_key($id) {
-    $sql = "SELECT * from `wp_lab_keys`
-            WHERE `id`=".$id.";";
     global $wpdb;
+    $sql = "SELECT * from `".$wpdb->prefix."lab_keys`
+            WHERE `id`=".$id.";";
     return $wpdb->get_results($sql);
 }
 function lab_keyring_edit_key($id,$fields) {
@@ -273,8 +273,8 @@ function lab_keyring_delete_key($id) {
  * SETTINGS
  *************************************************************************************************/
 function userMetaData_get_userId_with_no_key($metadataKey) {
-    $sql = "SELECT ID FROM `wp_users` WHERE NOT EXISTS ( SELECT 1 FROM `wp_usermeta` WHERE `wp_usermeta`.`meta_key` = '".$metadataKey."' AND `wp_usermeta`.`user_id`=`wp_users`.`ID`)";
     global $wpdb;
+    $sql = "SELECT ID FROM `".$wpdb->prefix."users` WHERE NOT EXISTS ( SELECT 1 FROM `".$wpdb->prefix."usermeta` WHERE `".$wpdb->prefix."usermeta`.`meta_key` = '".$metadataKey."' AND `".$wpdb->prefix."usermeta`.`user_id`=`".$wpdb->prefix."users`.`ID`)";
     $results = $wpdb->get_results($sql);
     $items = array();
     foreach($results as $r) {
@@ -312,14 +312,14 @@ function lab_userMetaData_new_key($userId, $metadataKey, $defaultValue) {
 }
 
 function userMetaData_delete_metaKey($metadataKey) {
-    $sql = "DELETE FROM `wp_usermeta` WHERE `wp_usermeta`.`meta_key` = '".LAB_META_PREFIX.$metadataKey."'";
     global $wpdb;
+    $sql = "DELETE FROM `".$wpdb->prefix."usermeta` WHERE `".$wpdb->prefix."usermeta`.`meta_key` = '".LAB_META_PREFIX.$metadataKey."'";
     return $wpdb->get_results($sql);
 }
 
 function userMetaData_list_metakeys() {
-    $sql = "SELECT DISTINCT meta_key FROM `wp_usermeta` WHERE meta_key LIKE '".LAB_META_PREFIX."%'";
     global $wpdb;
+    $sql = "SELECT DISTINCT meta_key FROM `".$wpdb->prefix."usermeta` WHERE meta_key LIKE '".LAB_META_PREFIX."%'";
     $items = array();
     //foreach($wpdb->get_results($sql) as $r)
     $results = $wpdb->get_results($sql);
@@ -346,23 +346,25 @@ function userMetaData_exist_metakey($metadataKey) {
         $metadataKey = LAB_META_PREFIX.$metadataKey;
     }
     global $wpdb;
-    //return "SELECT umeta_id FROM `wp_usermeta` WHERE `meta_key` = '".$metadataKey."'";
-    $results = $wpdb->get_results("SELECT umeta_id FROM `wp_usermeta` WHERE `meta_key` = '".$metadataKey."'");
+    //return "SELECT umeta_id FROM `".$wpdb->prefix."usermeta` WHERE `meta_key` = '".$metadataKey."'";
+    $results = $wpdb->get_results("SELECT umeta_id FROM `".$wpdb->prefix."usermeta` WHERE `meta_key` = '".$metadataKey."'");
     return count($results) > 0;
 }
 /**************************************************************************************************
  * HAL
  *************************************************************************************************/
 function createTableHal() {
-    $sql = "CREATE TABLE `".$dbTablePrefix."lab_hal` (
+    global $wpdb;
+    $sql = "CREATE TABLE `".$wpdb->prefix."lab_hal` (
         `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
         `user_id` int NOT NULL,
         `docid` int NOT NULL COMMENT 'docid issus de hal',
         `citationFull_s` varchar(1000) NOT NULL,
+        `title` varchar(200) DEFAULT NULL,
+        `url` varchar(200) DEFAULT NULL,
         `producedDate_tdate` date,
         PRIMARY KEY(`id`)
       ) ENGINE=InnoDB";
-    global $wpdb;
     return $wpdb->get_results($sql);
 }
 /**
@@ -407,24 +409,24 @@ function usermeta_fill_hal_field() {
 
 function get_hal_url($userId) {
     global $wpdb;
-    $sql = "SELECT um1.meta_value as lab_hal_id, um2.meta_value as lab_hal_name FROM `wp_usermeta` AS um1 JOIN `wp_usermeta` AS um2 ON um2.user_id=um1.user_id WHERE um1.`user_id`=".$userId." AND um1.`meta_key`='lab_hal_id' AND um2.`meta_key`='lab_hal_name'";
+    $sql = "SELECT um1.meta_value as lab_hal_id, um2.meta_value as lab_hal_name FROM `".$wpdb->prefix."usermeta` AS um1 JOIN `".$wpdb->prefix."usermeta` AS um2 ON um2.user_id=um1.user_id WHERE um1.`user_id`=".$userId." AND um1.`meta_key`='lab_hal_id' AND um2.`meta_key`='lab_hal_name'";
     
     $results = $wpdb->get_results($sql);
     if (count($results) == 1) {
         $hal_id   = $results[0]->lab_hal_id;
         $hal_name = $results[0]->lab_hal_name;
         if ($hal_id != null) {
-            return "https://api.archives-ouvertes.fr/search/?authIdHal_s:(".$hal_id.")&fl=docid,citationFull_s,producedDate_tdate&sort=producedDate_tdate+desc&wt=json&json.nl=arrarr";
+            return "https://api.archives-ouvertes.fr/search/?authIdHal_s:(".$hal_id.")&fl=docid,citationFull_s,producedDate_tdate,uri_s,title_s&sort=producedDate_tdate+desc&wt=json&json.nl=arrarr";
         }
         else {
-            return "https://api.archives-ouvertes.fr/search/?q=authLastNameFirstName_s:%22".$hal_name."%22&fl=docid,citationFull_s,producedDate_tdate&sort=producedDate_tdate+desc&wt=json&json.nl=arrarr";
+            return "https://api.archives-ouvertes.fr/search/?q=authLastNameFirstName_s:%22".$hal_name."%22&fl=docid,citationFull_s,producedDate_tdate,uri_s,title_s&sort=producedDate_tdate+desc&wt=json&json.nl=arrarr";
         }
     }
 }
 
-function saveHalProduction($userId, $docId, $citation, $productionDate) {
+function saveHalProduction($userId, $docId, $citation, $productionDate, $title, $url) {
     global $wpdb;
-    return $wpdb->insert($wpdb->prefix."lab_hal", array('user_id'=>$userId, 'docid'=>$docId, 'citationFull_s'=>$citation, 'producedDate_tdate'=>$productionDate));
+    return $wpdb->insert($wpdb->prefix."lab_hal", array('user_id'=>$userId, 'docid'=>$docId, 'citationFull_s'=>$citation, 'producedDate_tdate'=>$productionDate, 'title'=>$title, 'url'=>$url));
 }
 
 function hal_download($userId) {
@@ -435,8 +437,10 @@ function hal_download($userId) {
         $docId = $json->response->docs[$i]->docid;
         $citation = $json->response->docs[$i]->citationFull_s;
         $producedDate = strtotime($json->response->docs[$i]->producedDate_tdate);
+        $title = $json->response->docs[$i]->title_s[0];
+        $url = $json->response->docs[$i]->uri_s[0];
         
-        saveHalProduction($userId, $docId, $citation, date('Y-m-d', $producedDate));
+        saveHalProduction($userId, $docId, $citation, date('Y-m-d', $producedDate), $title, $url);
         //$content .= '<li>' . $json->response->docs[$i]->citationFull_s . '</li>';
     }
     return $url;
@@ -503,8 +507,8 @@ function lab_keyring_edit_loan($id,$params) {
     );
 }
 function lab_keyring_get_currentLoan_forKey($id) {
-    $sql = "SELECT * FROM `wp_lab_key_loans` WHERE `key_id`=".$id." AND ended=false";
     global $wpdb;
+    $sql = "SELECT * FROM `".$wpdb->prefix."lab_key_loans` WHERE `key_id`=".$id." AND ended=false";
     return $wpdb->get_results($sql);
 }
 function lab_keyring_end_loan($loan_id,$end_date, $key_id) {
@@ -518,7 +522,7 @@ function lab_keyring_end_loan($loan_id,$end_date, $key_id) {
     }
 }
 function lab_keyring_find_oldLoans($key_id) {
-    $sql = "SELECT * from `wp_lab_key_loans` WHERE `key_id`=".$key_id." ORDER BY `start_date` DESC;";
+    $sql = "SELECT * from `".$wpdb->prefix."lab_key_loans` WHERE `key_id`=".$key_id." ORDER BY `start_date` DESC;";
     global $wpdb;
     return $wpdb->get_results($sql);
 }
