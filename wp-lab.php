@@ -62,10 +62,6 @@ if (locale == 'fr_FR') {
  *
  * @since 1.0.0
  */
-function myplugin_load_textdomain() {
-  //load_plugin_textdomain( 'my-plugin', false, basename( dirname( __FILE__ ) ) . '/languages' ); 
-  load_plugin_textdomain( 'lab', false, 'lab/lang');
-}
 
 add_action( 'plugins_loaded', 'myplugin_load_textdomain' );
 
