@@ -13,25 +13,25 @@ function lab_admin_tab_settings() {
   <hr/>
     <h4>Create Table :</h4>
 <?php
-  if (!lab_admin_checkTable("wp_lab_keys")) {
+  if (!lab_admin_checkTable("lab_keys")) {
     echo "<p id='lab_keyring_noKeysTableWarning'>La table <em>wp_lab_keys</em> n'a pas été trouvée dans la base, vous devez d'abord la créer ici : </p>";
   }
-  if (!lab_admin_checkTable("wp_lab_key_loans")) {
+  if (!lab_admin_checkTable("lab_key_loans")) {
     echo "<p id='lab_keyring_noLoansTableWarning'>La table <em>wp_lab_key_loans</em> n'a pas été trouvée dans la base, vous devez d'abord la créer ici : </p>";
   }
-  if (!lab_admin_checkTable("wp_lab_hal")) {
+  if (!lab_admin_checkTable("lab_hal")) {
     echo "<p id='lab_keyring_noLoansTableWarning'>La table <em>wp_lab_hal</em> n'a pas été trouvée dans la base, vous devez d'abord la créer ici : </p>";
   }
-  if (!lab_admin_checkTable("wp_lab_keys")) {
+  if (!lab_admin_checkTable("lab_keys")) {
     echo "<p id='lab_keyring_noKeysTableWarning'>La table <em>wp_lab_keys</em> n'a pas été trouvée dans la base, vous devez d'abord la créer ici : </p>";
   }
-  if (!lab_admin_checkTable("wp_lab_groups")) {
+  if (!lab_admin_checkTable("lab_groups")) {
     echo "<p id='lab_group_noTableWarning'>La table <em>wp_lab_groups</em> n'a pas été trouvée dans la base, vous devez d'abord la créer ici : </p>";
   }
-  if (!lab_admin_checkTable("wp_lab_users_groups")) {
+  if (!lab_admin_checkTable("lab_users_groups")) {
     echo "<p id='lab_group_noSubTableWarning'>La table <em>wp_lab_users_groups</em> n'a pas été trouvée dans la base, vous devez d'abord la créer ici : </p>";
   }
-  if (!lab_admin_checkTable("wp_lab_group_substitutes")) {
+  if (!lab_admin_checkTable("lab_group_substitutes")) {
     echo "<p id='lab_group_noSubTableWarning'>La table <em>wp_lab_group_substitutes</em> n'a pas été trouvée dans la base, vous devez d'abord la créer ici : </p>";
   }
 ?>
