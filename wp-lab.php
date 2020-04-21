@@ -66,6 +66,7 @@ if (locale == 'fr_FR') {
  */
 
 add_action( 'plugins_loaded', 'myplugin_load_textdomain' );
+add_action('admin_enqueue_scripts', 'admin_enqueue');
 
 
 add_shortcode('lab-directory', 'lab_directory');
@@ -74,9 +75,6 @@ add_shortcode('lab-old-event', 'lab_old_event');
 add_shortcode('lab-event', 'lab_event');
 add_shortcode('lab-event-of-the-week', 'lab_event_of_the_week');
 add_shortcode('lab-incoming-event', 'lab_incoming_event');
-
-
-add_action('admin_enqueue_scripts', 'admin_enqueue');
 
 /**
  * Ajoute le widget wphal à l'initialisation des widgets

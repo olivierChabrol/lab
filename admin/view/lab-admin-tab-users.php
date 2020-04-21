@@ -1,7 +1,12 @@
 <?php
+/*
+ * File Name: lab-admin-tab-users.php
+ * Description: interface de paramètres utilisateurs, affecter un groupe à un utilisateur
+ * Authors: Olivier CHABROL, Astrid BEYER, Lucas URGENTI
+ * Version: 1.0
+*/
 
-function lab_admin_tab_user()
-{
+function lab_admin_tab_user() {
 ?>
   <table class="form-table" role="presentation">
     <tr class="user-rich-editing-wrap">
@@ -24,6 +29,25 @@ function lab_admin_tab_user()
     </tr>
   </table>
   <a href="#" class="page-title-action" id="lab_user_button_save_left">Modifier le statut de l'utilisateur</a>
+  <br/><br/>
+  <h3>Affecter des utilisateurs à des groupes</h3>
+  <div style="display:flex;">
+  
+    <!-- CHOIX USER -->
 
-<?php
+    <div style='float: left; maring-right:50px;'>
+                          <label for='users'>Choisissez une ou plusieurs personne(s) à affecter :
+                          </label><br/><br/>
+    <select id='list_users' name='users[]' multiple style='height:300px;'></select></div>
+    
+    <!-- CHOIX GROUP -->
+
+    <div style='float: right; margin-left:50px'>
+                          <label for='groups'>Choisissez le ou les groupe(s) au(x)quel(s) vous allez affecter des personnes :
+                          </label><br/><br/>
+    <select id='list_groups' name='groups[]' multiple style='height:150px;'></select></div>
+  
+  </div>
+  <button style='margin-top:10px;' id='lab_add_users_groups'>submit</button>
+  <?php
 }
