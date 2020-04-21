@@ -1140,11 +1140,6 @@ function resetGroupEdit()
   jQuery("#wp_lab_group_name").val("");
   jQuery("#lab_group_edit_substitutes").text("");
 }
-function clearFields(prefix,list) {
-  for (i of list) {
-    jQuery('#'+prefix+i).val('');
-  }
-}
 
 function loadExistingKeys() {
   var data = {

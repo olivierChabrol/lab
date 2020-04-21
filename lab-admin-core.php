@@ -333,6 +333,21 @@ function lab_keyring_delete_key($id) {
     }
 }
 
+function lab_keyring_search_current_loans($user,$page,$limit) {
+    global $wpdb;
+    $offset = $page*$limit;
+    $count = $user == 0 ? "SELECT COUNT(*) FROM `".$wpdb->prefix."lab_key_loans` WHERE `ended`=0;" : "SELECT COUNT(*) FROM `wp_lab_key_loans` WHERE `user_id`=".$user." AND `ended`=0";
+    $sql = $user == 0 ? "SELECT * FROM `".$wpdb->prefix."lab_key_loans` WHERE `ended`=0;" : "SELECT * FROM `wp_lab_key_loans` WHERE `user_id`=".$user." AND `ended`=0";
+    $sql .= "LIMIT ".$offset.", ".$limit.";";
+    $total = $wpdb->get_var($count);
+    $results = $wpdb->get_results($sql);
+    $res = array(
+        "total" => $total,
+        "items" => $results
+    );
+    return $res;
+}
+
 /**************************************************************************************************
  * SETTINGS
  *************************************************************************************************/

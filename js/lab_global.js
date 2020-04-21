@@ -44,3 +44,8 @@ function html_delete_select_options(fieldId) {
     jQuery(this).remove();
   });
 }
+function clearFields(prefix,list) { //Empties the values of all the fields in the list
+  for (i of list) {
+    jQuery('#'+prefix+i).val('');
+  }
+}

@@ -283,7 +283,7 @@
         <a href="#" rel="modal:close" id="lab_keyring_endLoan_confirm" keyid=""><?php esc_html_e('Confirmer','lab'); ?></a>
       </div>
     </div>
-    <h2><?php esc_html_e('Liste des prêts','lab'); ?></h2>
+    <h2><?php esc_html_e('Liste des prêts en cours','lab'); ?></h2>
     <div id="lab_keyring_search_options">
       <input type="text" id="lab_keyring_loanSearch" placeholder="<?php esc_html_e('Rechercher un utilisateur','lab'); ?>"/>
       <div>
