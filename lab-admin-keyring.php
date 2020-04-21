@@ -1,6 +1,18 @@
 <?php
-  function lab_admin_tab_keyring() {
-    echo "<h1>".__('Gestion des clés','lab')."</h1>";
+  function lab_keyring() {
+    $active_tab = 'default';
+    if (isset($_GET['tab'])) {
+      $active_tab = $_GET['tab'];
+    }
+    ?>
+    <div class="wrap">
+    <h1 class="wp-heading-inline"><?php esc_html_e('Gestion des clés','lab'); ?></h1>
+    <hr class="wp-header-end">
+    <h2 class="nav-tab-wrapper">
+      <a id="lab_keyring_default_tab_pointer" style="position: relative" class="nav-tab <?php echo $active_tab == 'default' ? 'nav-tab-active' : ''; ?>" href="<?php echo add_query_arg(array('tab' => 'default'), $_SERVER['REQUEST_URI']); ?>"><?php esc_html_e('Clés','lab'); ?></a>
+      <a id="lab_keyring_second_tab_pointer" style="position: relative" class="nav-tab <?php echo $active_tab == 'second' ? 'nav-tab-active' : ''; ?>" href="<?php echo add_query_arg(array('tab' => 'second'), $_SERVER['REQUEST_URI']); ?>"><?php esc_html_e('Prêts Utilisateurs','lab'); ?></a>
+    </h2>
+    <?php
     if (!lab_admin_checkTable("lab_keys")) {
       echo "<p id='lab_keyring_noKeysTableWarning'>La table <em>wp_lab_keys</em> n'a pas été trouvée dans la base, vous devez d'abord la créer ici : </p>";
       echo '<button class="lab_keyring_create_table_keys" id="lab_keyring_create_table_keys">'.esc_html__('Créer la table Keys','lab').'</button>';
@@ -9,8 +21,15 @@
       echo "<p id='lab_keyring_noLoansTableWarning'>La table <em>wp_lab_key_loans</em> n'a pas été trouvée dans la base, vous devez d'abord la créer ici : </p>";
       echo '<button class="lab_keyring_create_table_loans" id="lab_keyring_create_table_loans">'.esc_html__('Créer la table Loans','lab').'</button>';
     }
+    if ($active_tab == 'default') {
+      lab_keyring_tab_keys();
+    } else {
+      lab_keyring_tab_users();
+    }
+  }
+  function lab_keyring_tab_keys() {
     ?>
-    <!-- Dialogue de confirmation modal s'affichant lorsque l'utilisateur essaie de supprimer une clé-->
+    <!-- Dialogue de confirmation modal s'affichant lorsque l'utilisateur essaie de supprimer une clé -->
     <div id="lab_keyring_delete_dialog" class="modal">
       <p><?php esc_html_e('Voulez-vous vraiment supprimer cette clé ?','lab');?></p>
       <div id="lab_keyring_delete_dialog_options">
@@ -18,6 +37,7 @@
         <a href="#" rel="modal:close" id="lab_keyring_keyDelete_confirm" keyid=""><?php esc_html_e('Confirmer','lab'); ?></a>
       </div>
     </div>
+    <!-- Dialogue de confirmation modal s'affichant lorsque l'utilisateur essaie de supprimer un prêt -->
     <div id="lab_keyring_endLoan_dialog" class="modal">
       <p><?php esc_html_e('Voulez-vous vraiment terminer ce prêt ?','lab'); ?></p>
       <p><?php esc_html_e('Date de rendu : ','lab'); ?><span id="lab_keyring_endLoan_date"><?php esc_html_e("Aujourd'hui",'lab') ?></span></p>
@@ -26,8 +46,6 @@
         <a href="#" rel="modal:close" id="lab_keyring_endLoan_confirm" keyid=""><?php esc_html_e('Confirmer','lab'); ?></a>
       </div>
     </div>
-    <p></p>
-    <hr/>
     <h2><?php esc_html_e('Liste des clés','lab'); ?></h2>
     <div id="lab_keyring_search_options">
       <input type="text" id="lab_keyring_keySearch" placeholder="<?php esc_html_e('Rechercher une clé','lab'); ?>"/>
@@ -38,7 +56,7 @@
         </select>
       </div>
       <div>
-        <label><?php esc_html_e('Nombre de clés par page :','lab'); ?></label>
+        <label><?php esc_html_e('Nombre de résultats par page :','lab'); ?></label>
         <select id="lab_keyring_keysPerPage">
           <option value="10">10</option>
           <option value="25">25</option>
@@ -251,6 +269,163 @@
         <tfoot>
         </tfoot>
       </table>
+    </div>
+    </div>
+    <?php
+  }
+  function lab_keyring_tab_users() {
+    ?>
+    <div id="lab_keyring_endLoan_dialog" class="modal">
+      <p><?php esc_html_e('Voulez-vous vraiment terminer ce prêt ?','lab'); ?></p>
+      <p><?php esc_html_e('Date de rendu : ','lab'); ?><span id="lab_keyring_endLoan_date"><?php esc_html_e("Aujourd'hui",'lab') ?></span></p>
+      <div id="lab_keyring_delete_dialog_options">
+        <a href="#" rel="modal:close"><?php esc_html_e('Annuler','lab'); ?></a>
+        <a href="#" rel="modal:close" id="lab_keyring_endLoan_confirm" keyid=""><?php esc_html_e('Confirmer','lab'); ?></a>
+      </div>
+    </div>
+    <h2><?php esc_html_e('Liste des prêts','lab'); ?></h2>
+    <div id="lab_keyring_search_options">
+      <input type="text" id="lab_keyring_loanSearch" placeholder="<?php esc_html_e('Rechercher un utilisateur','lab'); ?>"/>
+      <div>
+        <label><?php esc_html_e('Page :','lab'); ?></label>
+        <select id="lab_keyring_page">
+          <option value="0">1</option>
+        </select>
+      </div>
+      <div>
+        <label><?php esc_html_e('Nombre de résultats par page :','lab'); ?></label>
+        <select id="lab_keyring_keysPerPage">
+          <option value="10">10</option>
+          <option value="25">25</option>
+          <option value="50">50</option>
+          <option value="custom"><?php esc_html_e('Autre :','lab'); ?></option>
+        </select>
+        <input type="text" id="lab_keyring_keysPerPage_otherValue" style="width:5em" hidden placeholder="100"/>
+      </div>
+    </div>
+    <p id="lab_keyring_search_totalResults"></p>
+    <hr/>
+    <div id="lab_keyring_all_loans" style="display: none;">
+      <h3><?php esc_html_e('Historique des prêts pour cette clé','lab'); ?> :</h3>
+      <table class="widefat fixed lab_keyring_table">
+        <thead>
+          <tr>
+            <th scope="col"><?php esc_html_e('ID','lab'); ?></th>
+            <th scope="col"><?php esc_html_e('Clé','lab'); ?></th>
+            <th scope="col"><?php esc_html_e('Référent','lab'); ?></th>
+            <th scope="col"><?php esc_html_e('Utilisateur','lab'); ?></th>
+            <th scope="col"><?php esc_html_e('Début','lab'); ?></th>
+            <th scope="col"><?php esc_html_e('Échéance','lab'); ?></th>
+            <th scope="col"><?php esc_html_e('Commentaire','lab'); ?></th>
+            <th scope="col" class="lab_keyring_icon"><?php esc_html_e('Terminé','lab'); ?></th>
+          </tr>
+        </thead>
+        <tbody id="lab_keyring_loansList">
+        </tbody>
+        <tfoot>
+        </tfoot>
+      </table>
+    </div>
+    <hr/>
+    <br/>
+    <h2 id="lab_keyring_loan_title"><?php esc_html_e('Gestion des prêts','lab'); ?></h2>
+    <!--<a href="admin.php?page=wp-lab.php&tab=loan-contract" target="_blank">​​​​​​​​​​​​​​​​​print pdf</a>-->
+    <h3 style="display:none;" class="lab_keyring_loan_new"><?php esc_html_e('Nouveau prêt','lab'); ?></h3>
+    <div style="display:none;" class="lab_keyring_loan_current">
+      <h3><?php esc_html_e('Prêt en cours','lab'); ?></h3>
+      <h4><button id="lab_keyring_loanContract" class="lab_keyring_loanform_actions"><?php esc_html_e('Afficher Reçu','lab'); ?></button></h4>
+    </div>
+    <div style="display:none;" id="lab_keyring_loanform">
+      <table id="lab_keyring_loanform_table">
+        <thead>
+          <tr><th colspan="2">
+          <?php //Récupère la liste des types de clés existants
+                $output ="";
+                $params = new AdminParams;
+                foreach ( $params->get_params_fromId($params::PARAMS_KEYTYPE_ID) as $r ) {
+                  $output .= "<span style='display:none;' class='lab_keyring_loanform_type' typeID=".$r->id.">".$r->value."</span>";
+                }
+                echo $output;
+              ?>
+          </th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th><?php esc_html_e('ID','lab'); ?></th>
+            <td id="lab_keyring_loanform_key_id"></td>
+          </tr>
+          <tr>
+            <th><?php esc_html_e('Numéro','lab'); ?></th>
+            <td id="lab_keyring_loanform_key_number"></td>
+          </tr>
+          <tr>
+            <th><?php esc_html_e('Bureau','lab'); ?></th>
+            <td id="lab_keyring_loanform_key_office"></td>
+          </tr>
+          <tr>
+            <th><?php esc_html_e('Marque','lab'); ?></th>
+            <td id="lab_keyring_loanform_key_brand"></td>
+          </tr>
+          <tr>
+            <th><?php esc_html_e('Site','lab'); ?></th>
+            <td id="lab_keyring_loanform_key_site">
+            <?php //Récupère la liste des types de clés existants
+                $output ="";
+                $params = new AdminParams;
+                foreach ( $params->get_params_fromId($params::PARAMS_SITE_ID) as $r ) {
+                  $output .= "<span class='lab_keyring_loanform_key_sites' style='display:none' siteID=".$r->id.">".$r->value."</span>";
+                }
+                echo $output;
+              ?>
+            </td>
+          </tr>
+          <tr>
+            <th><?php esc_html_e('Commentaire','lab'); ?></th>
+            <td id="lab_keyring_loanform_key_commentary"></td>
+          </tr>
+        </tbody>
+      </table>
+      <div id="lab_keyring_loanform_Useroptions">
+        <label for="lab_keyring_loanform_referent"><?php esc_html_e('Référent','lab'); ?> : </label>
+        <input id="lab_keyring_loanform_referent" type="text" default_id="<?php echo get_current_user_id();?>" default="<?php echo wp_get_current_user()->display_name;?>"/>
+        <label for="lab_keyring_loanform_user"><?php esc_html_e('Usager','lab'); ?> :</label>
+        <input type="text" name="lab_keyring_loanform_user" id="lab_keyring_loanform_user"/>
+      </div>
+      <div id="lab_keyring_loanform_dateOptions">
+        <label for="lab_keyring_loanform_start_date"><?php esc_html_e('Date de début','lab'); ?> :</label>
+        <input type="date" id="lab_keyring_loanform_start_date"/>
+        <label for=""><?php esc_html_e('Date de fin','lab'); ?> : <em class="lab_keyring_loan_new"><?php esc_html_e('(facultatif)','lab'); ?></em> </label>
+        <input type="date" id="lab_keyring_loanform_end_date"/>
+      </div>
+      <div id="lab_keyring_loanform_actions">
+        <textarea id="lab_keyring_loanform_commentary" placeholder="<?php esc_html_e('Commentaire faculatif','lab'); ?>..."></textarea>
+        <label><?php esc_html_e('Actions','lab'); ?></label>
+        <button class="page-title-action lab_keyring_loanform_actions lab_keyring_loan_new" style="display:none" id="lab_keyring_loanform_create"><?php esc_html_e('Créer le prêt','lab'); ?></button>
+        <button class="page-title-action lab_keyring_loanform_actions lab_keyring_loan_current" style="display:none" id="lab_keyring_loanform_edit"><?php esc_html_e('Modifier le prêt','lab'); ?></button>
+        <button class="page-title-action lab_keyring_loanform_actions lab_keyring_loan_current" style="display:none" id="lab_keyring_loanform_end"><?php esc_html_e('Marquer comme rendu','lab'); ?></button>
+      </div>
+    </div>
+    <div id="lab_keyring_all_loans" style="display: none;">
+      <h3><?php esc_html_e('Historique des prêts pour cette clé','lab'); ?> :</h3>
+      <table class="widefat fixed lab_keyring_table">
+        <thead>
+          <tr>
+            <th scope="col"><?php esc_html_e('ID','lab'); ?></th>
+            <th scope="col"><?php esc_html_e('Clé','lab'); ?></th>
+            <th scope="col"><?php esc_html_e('Référent','lab'); ?></th>
+            <th scope="col"><?php esc_html_e('Utilisateur','lab'); ?></th>
+            <th scope="col"><?php esc_html_e('Début','lab'); ?></th>
+            <th scope="col"><?php esc_html_e('Échéance','lab'); ?></th>
+            <th scope="col"><?php esc_html_e('Commentaire','lab'); ?></th>
+            <th scope="col" class="lab_keyring_icon"><?php esc_html_e('Terminé','lab'); ?></th>
+          </tr>
+        </thead>
+        <tbody id="lab_keyring_loansList">
+        </tbody>
+        <tfoot>
+        </tfoot>
+      </table>
+    </div>
     </div>
     <?php
   }
