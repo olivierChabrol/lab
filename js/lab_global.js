@@ -70,9 +70,36 @@ jQuery(function($){
       )
   });
 
+  var allUsers = false;
+  var isLeft = false;
+
+  $("#lab_all_users").click(function(){
+    if($("#lab_all_users").is(':checked'))
+    {
+      allUsers = true;
+    }
+    else
+    {
+      allUsers = false;
+    }
+    reset_and_load_groups_users(allUsers, isLeft);
+  })
+
+  $("#lab_no_users_left").click(function(){
+    if($("#lab_no_users_left").is(':checked'))
+    {
+      isLeft = true;
+    }
+    else
+    {
+      isLeft = false;
+    }
+    reset_and_load_groups_users(allUsers, isLeft);
+  })
+
   $(document).ready(function()
   {
-    reset_and_load_groups_users();
+    reset_and_load_groups_users(allUsers, isLeft);
   });
 
   $("#lab_add_users_groups").click(function()
@@ -92,7 +119,7 @@ jQuery(function($){
         if(response.success)
         {
           toast_success("Le(s) membre(s) a bien été ajouté au(x) groupe(s)");
-          reset_and_load_groups_users();
+          reset_and_load_groups_users(allUsers, isLeft);
         }
         else if(response == "warning")
         {
@@ -760,10 +787,12 @@ function html_delete_select_options(fieldId) {
   });
 }
 
-function reset_and_load_groups_users() {
+function reset_and_load_groups_users(cond1, cond2) {
   jQuery.post(LAB.ajaxurl,
     {
-      action : 'list_users_groups'
+      action : 'list_users_groups',
+      check1 : cond1,
+      check2 : cond2
     },
     function(response)
     {
