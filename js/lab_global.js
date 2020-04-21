@@ -94,9 +94,9 @@ jQuery(function($){
           toast_success("Le(s) membre(s) a bien été ajouté au(x) groupe(s)");
           reset_and_load_groups_users();
         }
-        else if(response.warning)
+        else if(response == "warning")
         {
-          toast_warning("Sélectionnez au moins un utilisateur et un groupe !");
+          toast_warn("Sélectionnez au moins un utilisateur et un groupe !");
         }
         else
         {
@@ -150,35 +150,7 @@ jQuery(function($){
       return false;
     }
   });
-
-  $('#lab_directory_user_name').autocomplete({
-    minChars: 1,
-    source: function(term, suggest){
-      try { searchRequest.abort(); } catch(e){}
-      searchRequest = $.post(LAB.ajaxurl, { action: 'search_username2',search: term, },
-      function(res) {
-        suggest(res.data);
-      });
-    },
-    select: function( event, ui ) {
-      var firstname  = ui.item.firstname; // first name
-      var lastname = ui.item.lastname; // last name
-      var user_id  = ui.item.user_id;
-      window.location.href = "/user/" + firstname + "." + lastname;
-      event.preventDefault();
-      $("#lab_directory_user_name").val(firstname + " " + lastname);
-    }
-  });
-  $(".email").each(function() {
-    var replaced = $(this).text().replace(/@/g, '[TA]');
-    $(this).text(replaced);
-  });
   
-
-  $(".directory_row").click(function() {
-    window.location.href = "http://stage.fr/user/" + $(this).attr('userId');
-  });
-
   $("#lab_user_button_test").click(function() {
     test();
   });
@@ -800,7 +772,7 @@ function reset_and_load_groups_users() {
 
       for(var i = 0; i< response.data[0].length; ++i)
       {
-        jQuery("#list_users").append($('<option/>', 
+        jQuery("#list_users").append(jQuery('<option/>', 
         { 
           value : response.data[0][i].user_id,
           text : response.data[0][i].first_name + " " + response.data[0][i].last_name
@@ -808,7 +780,7 @@ function reset_and_load_groups_users() {
       }
       for(var i = 0; i< response.data[1].length; ++i)
       {
-        jQuery("#list_groups").append($('<option/>', 
+        jQuery("#list_groups").append(jQuery('<option/>', 
         {
           value : response.data[1][i].group_id, 
           text : response.data[1][i].group_name

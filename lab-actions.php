@@ -12,6 +12,7 @@
 add_action( 'plugins_loaded', 'myplugin_load_textdomain' );
 add_action( 'admin_menu'          , 'wp_lab_menu' );
 add_action( 'wp_enqueue_scripts'  , 'wp_lab_global_enqueues' );
+add_action( 'wp_enqueue_scripts'  , 'wp_lab_fe_enqueues' );
 add_action( 'wp_ajax_search_event', 'lab_admin_search_event' );
 add_action( 'wp_ajax_search_user'      , 'lab_admin_search_user' );
 add_action( 'wp_ajax_search_username', 'lab_admin_search_username' );
