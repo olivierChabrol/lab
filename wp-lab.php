@@ -52,9 +52,9 @@ if (isset($_GET['tab'])) {
   $active_tab = $_GET['tab'];
 }
 
-if (locale == 'fr_FR') {
+if (lab_locale == 'fr_FR') {
   define('lab_lang', 'fr');
-} elseif (locale == 'es_ES') {
+} elseif (lab_locale == 'es_ES') {
   define('lab_lang', 'es');
 } else {
   define('lab_lang', 'en');
@@ -76,6 +76,11 @@ add_shortcode('lab-event', 'lab_event');
 add_shortcode('lab-event-of-the-week', 'lab_event_of_the_week');
 add_shortcode('lab-incoming-event', 'lab_incoming_event');
 
+
+add_action('admin_enqueue_scripts', 'admin_enqueue');
+register_activation_hook( __FILE__, 'lab_activation_hook' );
+register_uninstall_hook(__FILE__, 'lab_uninstall_hook');
+  
 /**
  * Ajoute le widget wphal à l'initialisation des widgets
  */
@@ -129,7 +134,14 @@ function custom_user_profile_fields( $profileuser ) {
  */
 function wp_lab_menu()
 {
-  add_menu_page('Options', 'LAB', 'manage_options', 'wp-lab.php', 'wp_lab_option', '', 21);
+  add_menu_page('Options', 'LAB', 'edit_plugins', 'wp-lab.php', 'wp_lab_option', '', 21);
+  add_menu_page("KeyRing","KeyRing",'keyring','lab-keyring','lab_admin_tab_keyring','
+  dashicons-admin-network',22);
+  if ( ! current_user_can('edit_plugins') ) {
+    remove_menu_page('ultimatemember');
+    remove_menu_page('wpfastestcacheoptions');
+    remove_menu_page('options-general.php');
+  }
 }
 
 /***********************************************************************************************
@@ -144,6 +156,7 @@ function admin_enqueue()
   //wp_enqueue_script('lab', plugins_url('js/lab_global.js',__FILE__), array('jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog'), filemtime(dirname(plugin_basename("__FILE__"))."/js/lab_global.js"), false);
   wp_register_script('wp-lab', plugins_url('js/lab_global.js',__FILE__), array('jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog'), "1.3");
   wp_enqueue_script('wp-lab','', array('jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog'), "1.3", false);
+  wp_enqueue_script('lab-keyring',plugins_url('js/lab_keyring.js',__FILE__), array('jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog'), "1.3", false);
   //Plugin permettant d'afficher les toasts :
   wp_enqueue_style('jqueryToastCSS',plugins_url('css/jquery.toast.css',__FILE__));
   wp_enqueue_script('jqueryToastJS',plugins_url('js/jquery.toast.js',__FILE__),array('jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog'),"1.3.2",false);
@@ -154,6 +167,7 @@ function admin_enqueue()
   wp_enqueue_script('jqueryModalJS',plugins_url('js/jquery.modal.min.js',__FILE__),array('jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog'),"0.9.1",false);
   localize_script();
   wp_set_script_translations( 'wp-lab', 'lab', dirname(__FILE__).'/lang' );
+  wp_set_script_translations( 'lab-keyring', 'lab', dirname(__FILE__).'/lang' );
 }
 
 function wp_lab_global_enqueues()

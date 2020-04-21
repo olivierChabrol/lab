@@ -24,134 +24,6 @@ function lab_admin_search_event() {
     wp_send_json_success( $items );
 }
 
-
-/********************************************************************************************
- * GROUP
- ********************************************************************************************/
-
-function group_delete_substitutes() 
-{
-  $id = $_POST['id'];
-  global $wpdb;
-  wp_send_json_success($wpdb->delete($wpdb->prefix.'lab_group_substitutes', array('id' => $id)));
-}
-
-function group_add_substitutes()
-{
-  $userId = $_POST['userId'];
-  $groupId = $_POST['groupId'];
-  global $wpdb;
-  wp_send_json_success($wpdb->insert($wpdb->prefix.'lab_group_substitutes', array('group_id'=>$groupId,'substitute_id'=>$userId)));
-
-}
-
-function group_load_substitutes()
-{
-  $id = $_POST['id'];
-  $sql = "SELECT lgs.id AS id, um1.meta_value AS last_name, um2.meta_value AS first_name FROM `wp_lab_group_substitutes` AS lgs JOIN wp_usermeta AS um1 ON um1.user_id=lgs.substitute_id JOIN wp_usermeta AS um2 ON um2.user_id=lgs.substitute_id WHERE lgs.`group_id`=33 AND um1.meta_key='last_name' AND um2.meta_key='first_name'";
-  global $wpdb;
-  $results = $wpdb->get_results($sql);
-  $items = array();
-  foreach ( $results as $r )
-  {
-    $items[] = array(id=>$r->id, first_name=>$r->first_name, last_name=>$r->last_name, );
-  }
-  wp_send_json_success( $items );
-}
-
-function lab_admin_search_group_acronym() {
-  $ac = $_POST['ac'];
-  $sql = "SELECT group_name FROM `wp_lab_groups` WHERE acronym = '".$ac."';";
-  global $wpdb;
-  $results = $wpdb->get_results($sql);
-  $items = array();
-  foreach ( $results as $r )
-  {
-    array_push($items,$r->group_name);
-  }
-  if (count($items)) {
-    wp_send_json_error( $items );
-  }
-  else {
-    wp_send_json_success();
-  }
-}
-function lab_createGroupTable() {
-  $sql = "CREATE TABLE `wp_lab_groups`(
-    `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-    `acronym` varchar(20) UNIQUE,
-    `group_name` varchar(255) NOT NULL,
-    `chief_id` BIGINT UNSIGNED NOT NULL,
-    `group_type` TINYINT NOT NULL,
-    `parent_group_id` BIGINT UNSIGNED,
-    PRIMARY KEY(`id`),
-    FOREIGN KEY(`chief_id`) REFERENCES `wp_users`(`ID`),
-    FOREIGN KEY(`parent_group_id`) REFERENCES `wp_lab_groups`(`id`)) ENGINE = INNODB;";
-    //echo $sql;
-  global $wpdb;
-  $wpdb->get_results($sql);
-}
-function lab_group_createRoot() {
-  $sql = "INSERT INTO `wp_lab_groups` (`id`, `acronym`, `group_name`, `chief_id`, `group_type`, `parent_group_id`) VALUES (NULL, 'root', 'root', '1', '0', NULL);";
-  //echo $sql;
-  global $wpdb;
-  $results = $wpdb->get_results($sql);
-}
-function lab_group_createGroup() {
-  $name = $_POST['name'];
-  $acronym = $_POST['acronym'];
-  $chief_id = $_POST['chief_id'];
-  $parent = $_POST['parent'];
-  $type = $_POST['type'];
-  $sql = "INSERT INTO `wp_lab_groups` (`id`, `acronym`, `group_name`, `chief_id`, `group_type`, `parent_group_id`) VALUES (NULL, '".$acronym."', '".$name."', '".$chief_id."', '".$type."', ".($parent == 0 ? "NULL" : "'".$parent."'").");";
-  global $wpdb;
-  $wpdb->get_results($sql);
-}
-/**
- * Fonction qui répond a la requete d'un recherche par nom de groupe
- */
-function lab_admin_group_search() {
-    $search = $_POST['search'];
-    $groupName  = $search["term"];
-
-    $sql = "SELECT * FROM `wp_lab_groups` WHERE `group_name` LIKE '%".$groupName."%' ";
-    global $wpdb;
-    $results = $wpdb->get_results($sql);
-    $items = array();
-    $url = esc_url(home_url('/'));
-    foreach ( $results as $r )
-    {
-      $items[] = array(label=>$r->group_name, value=>$r->id, id=>$r->id, group_name=>$r->group_name, group_type=>$r->group_type, acronym=>$r->acronym, chief_id=>$r->chief_id, parent_group_id=>$r->parent_group_id);
-    }
-    wp_send_json_success( $items ); 
-}
-
-function lab_admin_group_delete(){
-    $group_id = $_POST['id'];
-    lab_admin_delete_group($group_id);
-    wp_send_json_success();
-}
-
-function lab_group_editGroup() {
-  $id = $_POST['groupId'];
-  $acronym = $_POST['acronym'];
-  $groupName = $_POST['groupName'];
-  $chiefId = $_POST['chiefId'];
-  $parent = $_POST['parent'];
-  $type = $_POST['group_type'];
-
-  $sql = "UPDATE `wp_lab_groups` SET `group_name` = '$groupName', `acronym` = '$acronym',
-   `chief_id` = '$chiefId', `group_type` = '$type', `parent_group_id` = '$parent'
-    WHERE id= '$id';";
-  global $wpdb;
-  
-  wp_send_json_success($wpdb->get_results($sql));
-}
-
-
-
-
-
 /********************************************************************************************
  * PARAMS
  ********************************************************************************************/
@@ -471,6 +343,76 @@ function lab_admin_test()
 /********************************************************************************************
  * GROUPS
  ********************************************************************************************/
+/**
+ * Fonction qui répond a la requete d'un recherche par nom de groupe
+ */
+function lab_admin_group_search() {
+  $search = $_POST['search'];
+  $groupName  = $search["term"];
+
+  $sql = "SELECT * FROM `wp_lab_groups` WHERE `group_name` LIKE '%".$groupName."%' ";
+  global $wpdb;
+  $results = $wpdb->get_results($sql);
+  $items = array();
+  $url = esc_url(home_url('/'));
+  foreach ( $results as $r )
+  {
+    $items[] = array(label=>$r->group_name, value=>$r->id, id=>$r->id, group_name=>$r->group_name, group_type=>$r->group_type, acronym=>$r->acronym, chief_id=>$r->chief_id, parent_group_id=>$r->parent_group_id);
+  }
+  wp_send_json_success( $items ); 
+}
+
+function lab_admin_group_delete(){
+  $group_id = $_POST['id'];
+  lab_admin_delete_group($group_id);
+  wp_send_json_success();
+}
+
+function lab_group_editGroup() {
+  $id = $_POST['groupId'];
+  $acronym = $_POST['acronym'];
+  $groupName = $_POST['groupName'];
+  $chiefId = $_POST['chiefId'];
+  $parent = $_POST['parent'];
+  $type = $_POST['group_type'];
+
+  $sql = "UPDATE `wp_lab_groups` SET `group_name` = '$groupName', `acronym` = '$acronym',
+  `chief_id` = '$chiefId', `group_type` = '$type', `parent_group_id` = '$parent'
+    WHERE id= '$id';";
+  global $wpdb;
+
+  wp_send_json_success($wpdb->get_results($sql));
+}
+function group_delete_substitutes() 
+{
+  $id = $_POST['id'];
+  global $wpdb;
+  wp_send_json_success($wpdb->delete($wpdb->prefix.'lab_group_substitutes', array('id' => $id)));
+}
+
+function group_add_substitutes()
+{
+  $userId = $_POST['userId'];
+  $groupId = $_POST['groupId'];
+  global $wpdb;
+  wp_send_json_success($wpdb->insert($wpdb->prefix.'lab_group_substitutes', array('group_id'=>$groupId,'substitute_id'=>$userId)));
+
+}
+
+function group_load_substitutes()
+{
+  $id = $_POST['id'];
+  $sql = "SELECT lgs.id AS id, um1.meta_value AS last_name, um2.meta_value AS first_name FROM `wp_lab_group_substitutes` AS lgs JOIN wp_usermeta AS um1 ON um1.user_id=lgs.substitute_id JOIN wp_usermeta AS um2 ON um2.user_id=lgs.substitute_id WHERE lgs.`group_id`=33 AND um1.meta_key='last_name' AND um2.meta_key='first_name'";
+  global $wpdb;
+  $results = $wpdb->get_results($sql);
+  $items = array();
+  foreach ( $results as $r )
+  {
+    $items[] = array(id=>$r->id, first_name=>$r->first_name, last_name=>$r->last_name, );
+  }
+  wp_send_json_success( $items );
+}
+
 function lab_admin_group_availableAc() {
   //Vérifie la disponibilité de l'acronyme
   $res = lab_admin_search_group_by_acronym($_POST['ac']);
@@ -488,7 +430,7 @@ function lab_admin_group_createReq() {
   }
   wp_send_json_error($res);
 }
-function lab_admin_group_createRoot() {
+function lab_admin_group_createRoot() { 
   $res = lab_admin_group_create('root', 'root', '1', '0', '0');
   if (strlen($res)==0) {
     wp_send_json_success();

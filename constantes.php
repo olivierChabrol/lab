@@ -35,3 +35,6 @@ define('lab_version', '2.0.8');
 
 // absolute path to this directory
 define('LAB_DIR', dirname( __FILE__ ));
+
+// Redirige les erreurs dans wp-content/debug.log
+ini_set( 'error_log', WP_CONTENT_DIR . '/debug.log' );
