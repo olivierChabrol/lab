@@ -69,42 +69,6 @@ jQuery(function($){
           }
       )
   });
-
-  $(document).ready(function()
-  {
-    reset_and_load_groups_users();
-  });
-
-  $("#lab_add_users_groups").click(function()
-  {
-    var tab_users  = [];
-    var tab_groups = [];
-    $('#list_users option:selected').each(function(){ tab_users.push($(this).val()); });
-    $('#list_groups option:selected').each(function(){ tab_groups.push($(this).val()); });
-    $.post(LAB.ajaxurl,
-      {
-        action : 'add_users_groups',
-        users  : tab_users,
-        groups : tab_groups
-      },
-      function(response) 
-      {
-        if(response.success)
-        {
-          toast_success("Le(s) membre(s) a bien été ajouté au(x) groupe(s)");
-          reset_and_load_groups_users();
-        }
-        else if(response.warning)
-        {
-          toast_warning("Sélectionnez au moins un utilisateur et un groupe !");
-        }
-        else
-        {
-          toast_error("Erreur, la requête n'a pas pu aboutir");
-        }
-      }
-    )
-  });
   
   $('#wp_lab_event_title').autocomplete({
     minChars: 2,
@@ -789,7 +753,7 @@ jQuery(function($){
 
   $(document).ready(function()
   {
-    reset_and_load_groups_users(!$("#lab_all_users").is(':checked'), $("#lab_no_users_left").is(':checked'));
+    reset_and_load_groups_users($("#lab_all_users").is(':checked'), $("#lab_no_users_left").is(':checked'));
   });
 
   $("#lab_add_users_groups").click(function()
