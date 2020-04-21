@@ -72,30 +72,7 @@ jQuery(function($){
 
   $(document).ready(function()
   {
-    $.post(LAB.ajaxurl,
-      {
-        action : 'list_users_groups'
-      },
-      function(response)
-      {
-        for(var i = 0; i< response.data[0].length; ++i)
-        {
-          $("#list_users").append($('<option/>', 
-          { 
-            value : response.data[0][i].user_id,
-            text : response.data[0][i].first_name + " " + response.data[0][i].last_name
-          }));
-        }
-        for(var i = 0; i< response.data[1].length; ++i)
-        {
-          $("#list_groups").append($('<option/>', 
-          {
-            value : response.data[1][i].group_id, 
-            text : response.data[1][i].group_name
-          }));
-        }
-      }
-    )
+    reset_and_load_groups_users();
   });
 
   $("#lab_add_users_groups").click(function()
@@ -115,6 +92,7 @@ jQuery(function($){
         if(response.success)
         {
           toast_success("Le(s) membre(s) a bien été ajouté au(x) groupe(s)");
+          reset_and_load_groups_users();
         }
         else if(response.warning)
         {
@@ -799,6 +777,46 @@ jQuery(function($){
     loanContract($("#lab_keyring_loanform_key_id").text());
   });
 });
+
+/*************************************************************************************************************************************************
+ * FUNCTIONS
+ *************************************************************************************************************************************************/
+
+function html_delete_select_options(fieldId) {
+  jQuery(fieldId+" option").each(function() {
+    jQuery(this).remove();
+  });
+}
+
+function reset_and_load_groups_users() {
+  jQuery.post(LAB.ajaxurl,
+    {
+      action : 'list_users_groups'
+    },
+    function(response)
+    {
+      html_delete_select_options("#list_users");
+      html_delete_select_options("#list_groups");
+
+      for(var i = 0; i< response.data[0].length; ++i)
+      {
+        jQuery("#list_users").append($('<option/>', 
+        { 
+          value : response.data[0][i].user_id,
+          text : response.data[0][i].first_name + " " + response.data[0][i].last_name
+        }));
+      }
+      for(var i = 0; i< response.data[1].length; ++i)
+      {
+        jQuery("#list_groups").append($('<option/>', 
+        {
+          value : response.data[1][i].group_id, 
+          text : response.data[1][i].group_name
+        }));
+      }
+    }
+  );
+}
 
 
 function setinfoToGroupEditionFields(groupId, acronym, groupName, chiefId, parent_group_id, group_type) {
