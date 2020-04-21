@@ -26,7 +26,7 @@ function lab_admin_username_get($userId) {
 
 function lab_admin_createTable_param() {
     global $wpdb;
-    $sql = "CREATE TABLE `".$wpdb->prefix."lab_params` (
+    $sql = "CREATE TABLE IF NOT EXISTS `".$wpdb->prefix."lab_params` (
         `id` bigint UNSIGNED NOT NULL,
         `type_param` bigint UNSIGNED NOT NULL,
         `value` varchar(20) DEFAULT NULL
@@ -36,13 +36,14 @@ function lab_admin_createTable_param() {
 
 function lab_admin_initTable_param() {
     global $wpdb;
+    $wpdb->query("DELETE FROM ".$wpdb->prefix."lab_params WHERE ID < 7");
     $sql = "INSERT INTO `".$wpdb->prefix."lab_params` (`id`, `type_param`, `value`) VALUES
-(1, 1, 'PARAM'),
-(2, 1, 'GROUP TYPE'),
-(3, 1, 'KEY TYPE'),
-(4, 1, 'SITE'),
-(5, 2, 'Equipe'),
-(6, 2, 'Groupe');B";
+            (1, 1, 'PARAM'),
+            (2, 1, 'GROUP TYPE'),
+            (3, 1, 'KEY TYPE'),
+            (4, 1, 'SITE'),
+            (5, 2, 'Equipe'),
+            (6, 2, 'Groupe');";
     $wpdb->get_results($sql);
 }
 
@@ -150,7 +151,7 @@ function lab_admin_search_group_by_acronym($ac) {
 function lab_admin_createUserGroupTable()
 {
     global $wpdb;
-    $sql = "CREATE TABLE `".$wpdb->prefix."lab_users_groups` (
+    $sql = "CREATE TABLE IF NOT EXISTS `".$wpdb->prefix."lab_users_groups` (
         `id` bigint UNSIGNED NOT NULL,
         `group_id` bigint UNSIGNED NOT NULL,
         `user_id` bigint UNSIGNED NOT NULL
@@ -160,7 +161,7 @@ function lab_admin_createUserGroupTable()
 
 function lab_admin_createGroupTable() {
     global $wpdb;
-    $sql = "CREATE TABLE `".$wpdb->prefix."lab_groups`(
+    $sql = "CREATE TABLE IF NOT EXISTS `".$wpdb->prefix."lab_groups`(
         `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
         `acronym` varchar(20) UNIQUE,
         `group_name` varchar(255) NOT NULL,
@@ -174,7 +175,7 @@ function lab_admin_createGroupTable() {
 }
 function lab_admin_createSubTable() {
     global $wpdb;
-    $sql = "CREATE TABLE `".$wpdb->prefix."lab_group_substitutes`(
+    $sql = "CREATE TABLE IF NOT EXISTS `".$wpdb->prefix."lab_group_substitutes`(
         `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
         `group_id` BIGINT UNSIGNED NOT NULL ,
         `substitute_id` BIGINT UNSIGNED NOT NULL,
@@ -227,7 +228,7 @@ function lab_admin_group_subs_add($id,$list) {
  ********************************************************************************************/
 function lab_keyring_createTable_keys() {
     global $wpdb;
-    $sql = "CREATE TABLE `".$wpdb->prefix."lab_keys` (
+    $sql = "CREATE TABLE IF NOT EXISTS `".$wpdb->prefix."lab_keys` (
         `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
         `number` varchar(10) NOT NULL,
         `office` varchar(20),
@@ -242,7 +243,7 @@ function lab_keyring_createTable_keys() {
 }
 function lab_keyring_createTable_loans() {
     global $wpdb;
-    $sql = "CREATE TABLE `".$wpdb->prefix."lab_key_loans` (
+    $sql = "CREATE TABLE IF NOT EXISTS `".$wpdb->prefix."lab_key_loans` (
         `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
         `key_id` bigint UNSIGNED NOT NULL,
         `user_id` bigint UNSIGNED NOT NULL,
@@ -418,7 +419,7 @@ function userMetaData_exist_metakey($metadataKey) {
  *************************************************************************************************/
 function lab_hal_createTable_hal() {
     global $wpdb;
-    $sql = "CREATE TABLE `".$wpdb->prefix."lab_hal` (
+    $sql = "CREATE TABLE IF NOT EXISTS `".$wpdb->prefix."lab_hal` (
         `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
         `user_id` int NOT NULL,
         `docid` int NOT NULL COMMENT 'docid issus de hal',
@@ -614,21 +615,33 @@ function lab_hal_getLastArticles($number,$group) {
     return $wpdb->get_results($sql);
 }
 
+/**************************************************************************************************
+ * Plug-in Setup and Uninstallation
+ *************************************************************************************************/
+
+function lab_activation_hook() {
+    lab_create_roles();
+    create_all_tables();
+}
+function lab_uninstall_hook() {
+    delete_all_tables();
+}
+
 function create_all_tables() {
     lab_admin_createTable_param();
     lab_admin_initTable_param();
     lab_hal_createTable_hal();
-    lab_admin_createUserGroupTable();
-    lab_keyring_createTable_loans();
-    lab_keyring_createTable_keys();
     lab_admin_createGroupTable();
+    lab_admin_createUserGroupTable();
+    lab_keyring_createTable_keys();
+    lab_keyring_createTable_loans();
     lab_admin_initTable_usermeta();
 }
 
 function delete_all_tables() {
-    lab_admin_delete_group();
+    lab_admin_delete_group(0);
     drop_table("lab_group_substitutes");
-    drop_table("lab_group_substitutes");
+    drop_table("lab_group_users_groups");
     drop_table("lab_params");
     drop_table("lab_key_loans");
     drop_table("lab_keys");
@@ -645,4 +658,18 @@ function drop_table($tableName) {
     $sql = "DROP TABLE `".$wpdb->prefix.$tableName."`";
     $wpdb->get_results($sql);
 
+}
+
+function lab_create_roles() {
+    add_role(
+        'key_manager',
+        'Key Manager',
+        [
+            'read'      => true
+        ]
+    );
+    $role = get_role('key_manager');
+    $role ->add_cap('keyring',true);
+    $role = get_role('administrator');
+    $role ->add_cap('keyring',true);
 }
