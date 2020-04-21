@@ -779,17 +779,17 @@ jQuery(function($){
 
   $("#lab_all_users").click(function() 
   {
-    reset_and_load_groups_users($("#lab_all_users").is(':checked'),  $("#lab_no_users_left").is(':checked'));
+    reset_and_load_groups_users(!$("#lab_all_users").is(':checked'),  $("#lab_no_users_left").is(':checked'));
   });
 
   $("#lab_no_users_left").click(function()
   {
-    reset_and_load_groups_users($("#lab_all_users").is(':checked'),  $("#lab_no_users_left").is(':checked'));
+    reset_and_load_groups_users(!$("#lab_all_users").is(':checked'),  $("#lab_no_users_left").is(':checked'));
   });
 
   $(document).ready(function()
   {
-    reset_and_load_groups_users($("#lab_all_users").is(':checked'), $("#lab_no_users_left").is(':checked'));
+    reset_and_load_groups_users(!$("#lab_all_users").is(':checked'), $("#lab_no_users_left").is(':checked'));
   });
 
   $("#lab_add_users_groups").click(function()
