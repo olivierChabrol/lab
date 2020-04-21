@@ -33,7 +33,7 @@ function group_delete_substitutes()
 {
   $id = $_POST['id'];
   global $wpdb;
-  wp_send_json_success($wpdb->delete('wp_lab_group_substitutes', array('id' => $id)));
+  wp_send_json_success($wpdb->delete($wpdb->prefix.'lab_group_substitutes', array('id' => $id)));
 }
 
 function group_add_substitutes()
@@ -41,7 +41,7 @@ function group_add_substitutes()
   $userId = $_POST['userId'];
   $groupId = $_POST['groupId'];
   global $wpdb;
-  wp_send_json_success($wpdb->insert('wp_lab_group_substitutes', array('group_id'=>$groupId,'substitute_id'=>$userId)));
+  wp_send_json_success($wpdb->insert($wpdb->prefix.'lab_group_substitutes', array('group_id'=>$groupId,'substitute_id'=>$userId)));
 
 }
 
@@ -128,9 +128,7 @@ function lab_admin_group_search() {
 
 function lab_admin_group_delete(){
     $group_id = $_POST['id'];
-    global $wpdb;
-    $wpdb->delete('wp_lab_group_substitutes', array('group_id' => $group_id));
-    $wpdb->delete('wp_lab_groups', array('id' => $group_id));
+    lab_admin_delete_group($group_id);
     wp_send_json_success();
 }
 
@@ -415,10 +413,56 @@ function lab_usermeta_lab_left_key_exist($userId)
 
 function lab_admin_test()
 { 
-  $group_id = 1;
+  //$group_id = 1;
 
-  global $wpdb;
-  $wpdb->delete('wp_lab_groups', array('id' => $group_id));
+  //global $wpdb;
+  $handle = "wp-lab";
+  $domain = 'lab';
+  $path = "/home/olivier/stage/wp-content/plugins/lab/lang/";
+  wp_register_script( $handle, plugins_url('js/lab_global.js',__FILE__), array('wp-i18n','jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog'),"1.3", false );
+  
+  $translations = plugin_basename( __FILE__ ).'/lang';//load_script_textdomain( $handle, $domain, $path);
+  /*
+  $wp_scripts = wp_scripts();
+
+	if ( ! isset( $wp_scripts->registered[ $handle ] ) ) {
+		wp_send_json_success("PAS de handle");
+	}
+
+	$path   = untrailingslashit( $path );
+	$locale = determine_locale();
+
+	// If a path was given and the handle file exists simply return it.
+	$file_base       = 'default' === $domain ? $locale : $domain . '-' . $locale;
+	$handle_filename = $file_base . '-' . $handle . '.json';
+
+	if ( $path ) {
+		$translations = load_script_translations( $path . '/' . $handle_filename, $handle, $domain );
+
+		if ( $translations ) {
+			wp_send_json_success($translations);
+		}
+  }
+  
+  /*
+  $wp_scripts = wp_scripts();
+  $obj = $wp_scripts->registered[ $handle ];
+
+	$path   = untrailingslashit( $path );
+	$locale = determine_locale();
+
+  $file_base       = 'default' === $domain ? $locale : $domain . '-' . $locale;
+  $handle_filename = $file_base . '-' . $handle . '.json';
+  
+  //$translations = load_script_translations( $path . '/' . $handle_filename, $handle, $domain );
+  $file = $path . '/' . $handle_filename;
+  $translations = apply_filters( 'pre_load_script_translations', null, $file, $handle, $domain );
+  $file = apply_filters( 'load_script_translation_file', $file, $handle, $domain );
+  $translations = file_get_contents( $file );
+  //*/
+  wp_send_json_error( $translations );
+  //wp_send_json_success(load_script_textdomain( 'wp-lab', 'lab', basename( plugin_basename( __FILE__ ) ) . '/lang' ));
+  //$wpdb->delete($wpdb->prefix.'lab_groups', array('id' => $group_id));
   //$user = 1;
   //wp_send_json_success("UM()->options()->get( 'author_redirect' ) : " . UM()->options()->get('author_redirect') . " /  um_fetch_user($user) : " . um_fetch_user(1));
 }
@@ -520,7 +564,7 @@ function lab_admin_add_users_groups() {
  * KeyRing
  ********************************************************************************************/
 function lab_keyring_create_keyReq() {
-  $res = lab_keyring_create_key($_POST['number'],$_POST['office'],$_POST['type'],$_POST['brand'],$_POST['site'],$_POST['commentary']); 
+  $res = lab_keyring_create_key($_POST['params']); 
   if (strlen($res)==0) {
     wp_send_json_success();
     return;
@@ -602,7 +646,7 @@ function lab_ajax_userMeta_key_not_exist() {
  * HAL10
  ********************************************************************************************/
 function lab_ajax_hal_create_table() {
-  wp_send_json_success(createTableHal());
+  wp_send_json_success(lab_hal_createTable_hal());
 }
 function lab_ajax_hal_fill_fields() {
   wp_send_json_success(usermeta_fill_hal_field());
@@ -620,4 +664,48 @@ function lab_ajax_hal_download(){
 function lab_ajax_delete_hal_table() {
   delete_hal_table();
   wp_send_json_success("Hal table deleted");
+}
+function lab_keyring_create_loanReq() {
+  $params = $_POST['params'];
+  $res = lab_keyring_create_loan($params);
+  if (strlen($res)!=0) {
+    wp_send_json_error("LOAN : ".$res);
+  } else {
+    $res = lab_keyring_setKeyAvailable($params['key_id'],0);
+    (strlen($res)==0) ? wp_send_json_success() : wp_send_json_error("KEY :".$res);
+  }
+}
+function lab_keyring_find_loan_byKey() {
+  $res = lab_keyring_get_currentLoan_forKey($_POST['key_id']);
+  if (count($res)) {
+    wp_send_json_success($res[0]);
+    return;
+  }
+  wp_send_json_error($res);
+}
+
+function lab_keyring_edit_loanReq() {
+  $res = lab_keyring_edit_loan($_POST['id'],$_POST['params']);
+  if ($res === false) {
+    wp_send_json_error();
+    return;
+  }
+  wp_send_json_success();
+}
+function lab_keyring_end_loanReq() {
+  $res = lab_keyring_end_loan($_POST['loan_id'],$_POST['end_date'], $_POST['key_id']);
+  if (strlen($res)==0) {
+    wp_send_json_success();
+    return;
+  }
+  wp_send_json_error($res);
+}
+function lab_keyring_find_oldLoansReq() {
+  $res = lab_keyring_find_oldLoans($_POST['key_id']);
+  if (count($res)==0) {
+    wp_send_json_error("<tr><td colspan='9'>No loans found</td></tr>");
+    return;
+  } else {
+    wp_send_json_success(wp_lab_keyring_tableFromLoansList($res));
+  }
 }
