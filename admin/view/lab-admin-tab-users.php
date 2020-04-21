@@ -30,7 +30,7 @@ function lab_admin_tab_user() {
   </table>
   <a href="#" class="page-title-action" id="lab_user_button_save_left">Modifier le statut de l'utilisateur</a>
   <br/><br/>
-  <h3>Affecter des utilisateurs à des groupes</h3>
+  <h3><?php esc_html_e('Affecter des utilisateurs à des groupes','lab') ?></h3>
   
   <label for="lab_all_users"><b>Afficher aussi les personnes qui ont déjà un groupe</b></label>
   <input type="checkbox" id="lab_all_users"/><br/>
