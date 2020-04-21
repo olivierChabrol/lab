@@ -776,6 +776,52 @@ jQuery(function($){
   $("#lab_keyring_loanContract").click(function() {
     loanContract($("#lab_keyring_loanform_key_id").text());
   });
+
+  $("#lab_all_users").click(function() 
+  {
+    reset_and_load_groups_users($("#lab_all_users").is(':checked'),  $("#lab_no_users_left").is(':checked'));
+  });
+
+  $("#lab_no_users_left").click(function()
+  {
+    reset_and_load_groups_users($("#lab_all_users").is(':checked'),  $("#lab_no_users_left").is(':checked'));
+  });
+
+  $(document).ready(function()
+  {
+    reset_and_load_groups_users($("#lab_all_users").is(':checked'), $("#lab_no_users_left").is(':checked'));
+  });
+
+  $("#lab_add_users_groups").click(function()
+  {
+    var tab_users  = [];
+    var tab_groups = [];
+    $('#list_users option:selected').each(function(){ tab_users.push($(this).val()); });
+    $('#list_groups option:selected').each(function(){ tab_groups.push($(this).val()); });
+    $.post(LAB.ajaxurl,
+      {
+        action : 'add_users_groups',
+        users  : tab_users,
+        groups : tab_groups
+      },
+      function(response) 
+      {
+        if(response.success)
+        {
+          toast_success("Le(s) membre(s) a bien été ajouté au(x) groupe(s)");
+          reset_and_load_groups_users($("#lab_all_users").is(':checked'), $("#lab_no_users_left").is(':checked'));
+        }
+        else if(response == "warning")
+        {
+          toast_warn("Sélectionnez au moins un utilisateur et un groupe !");
+        }
+        else
+        {
+          toast_error("Erreur, la requête n'a pas pu aboutir");
+        }
+      }
+    )
+  });
 });
 
 /*************************************************************************************************************************************************
@@ -783,34 +829,36 @@ jQuery(function($){
  *************************************************************************************************************************************************/
 
 
-function reset_and_load_groups_users() {
-  jQuery.post(LAB.ajaxurl,
-    {
-      action : 'list_users_groups'
-    },
-    function(response)
-    {
-      html_delete_select_options("#list_users");
-      html_delete_select_options("#list_groups");
-
-      for(var i = 0; i< response.data[0].length; ++i)
-      {
-        jQuery("#list_users").append(jQuery('<option/>', 
-        { 
-          value : response.data[0][i].user_id,
-          text : response.data[0][i].first_name + " " + response.data[0][i].last_name
-        }));
-      }
-      for(var i = 0; i< response.data[1].length; ++i)
-      {
-        jQuery("#list_groups").append(jQuery('<option/>', 
+function reset_and_load_groups_users(cond1, cond2) {
+    jQuery.post(LAB.ajaxurl,
         {
-          value : response.data[1][i].group_id, 
-          text : response.data[1][i].group_name
-        }));
-      }
-    }
-  );
+        action : 'list_users_groups',
+        check1 : cond1,
+        check2 : cond2
+        },
+        function(response)
+        {
+        html_delete_select_options("#list_users");
+        html_delete_select_options("#list_groups");
+
+        for(var i = 0; i< response.data[0].length; ++i)
+        {
+            jQuery("#list_users").append(jQuery('<option/>', 
+            { 
+            value : response.data[0][i].user_id,
+            text : response.data[0][i].first_name + " " + response.data[0][i].last_name
+            }));
+        }
+        for(var i = 0; i< response.data[1].length; ++i)
+        {
+            jQuery("#list_groups").append(jQuery('<option/>', 
+            {
+            value : response.data[1][i].group_id, 
+            text : response.data[1][i].group_name
+            }));
+        }
+        }
+    );
 }
 
 

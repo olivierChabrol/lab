@@ -455,17 +455,38 @@ function wp_send_json_warning() {
 }
 
 function lab_admin_list_users_groups() {
+  $condNotInGroup = $_POST['check1'];
+  $condIsLeft = $_POST['check2'];
+  
+  $notInGroup  = "";
+  $joinIsLeft  = "";
+  $whereIsLeft = "";
+
+  /*** FILTER FOR SELECT FIELDS ***/
+  if($condNotInGroup == 'true')
+  {
+    $notInGroup = "AND um1.`user_id` NOT IN (SELECT `user_id` FROM `wp_lab_users_groups`)";
+  }
+
+  if($condIsLeft == 'true')
+  {
+    $joinIsLeft  = "JOIN `wp_usermeta` AS um6 ON um1.`user_id` = um6.`user_id`";
+    $whereIsLeft = "AND um6.`meta_key`='lab_user_left' "."AND um6.`meta_value` IS NULL ";;
+  }
+
   $sqlUser = "SELECT um1.`user_id`, um3.`meta_value` AS first_name, um2.`meta_value` AS last_name
               FROM `wp_usermeta` AS um1
               JOIN `wp_usermeta` AS um2 ON um1.`user_id` = um2.`user_id` 
-              JOIN `wp_usermeta` AS um3 ON um1.`user_id` = um3.`user_id`
-              WHERE um1.`meta_key`='last_name' 
+              JOIN `wp_usermeta` AS um3 ON um1.`user_id` = um3.`user_id`"
+              . $joinIsLeft . 
+              "WHERE um1.`meta_key`='last_name' 
                 AND um2.`meta_key`='last_name' 
-                AND um3.`meta_key`='first_name'
-                AND um1.`user_id` NOT IN (SELECT `user_id` FROM `wp_lab_users_groups`)
-                ORDER BY last_name";
-    $sqlGroup = "SELECT `id` AS group_id, `group_name` 
-                FROM wp_lab_groups";
+                AND um3.`meta_key`='first_name'"
+                . $notInGroup . $whereIsLeft .
+              "ORDER BY last_name";
+
+  $sqlGroup = "SELECT `id` AS group_id, `group_name` 
+               FROM wp_lab_groups";
     global $wpdb;
     $resultsUsers = $wpdb->get_results($sqlUser);
     $resultsGroups = $wpdb->get_results($sqlGroup);

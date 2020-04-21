@@ -32,7 +32,7 @@ function lab_admin_tab_user() {
   <br/><br/>
   <h3>Affecter des utilisateurs à des groupes</h3>
   
-  <label for="lab_all_users"><b>Afficher tous les utilisateurs présents</b></label>
+  <label for="lab_all_users"><b>Afficher aussi les personnes qui ont déjà un groupe</b></label>
   <input type="checkbox" id="lab_all_users"/><br/>
   <label for="lab_no_users_left"><b>Ne pas afficher les utilisateurs qui ont quitté l'Institut</b></label>
   <input type="checkbox" id="lab_no_users_left"/>
