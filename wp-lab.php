@@ -142,8 +142,7 @@ function custom_user_profile_fields( $profileuser ) {
 function wp_lab_menu()
 {
   add_menu_page('Options', 'LAB', 'edit_plugins', 'wp-lab.php', 'wp_lab_option', '', 21);
-  add_menu_page("KeyRing","KeyRing",'keyring','lab-keyring','lab_admin_tab_keyring','
-  dashicons-admin-network',22);
+  add_menu_page("KeyRing","KeyRing",'keyring','lab-keyring','lab_admin_tab_keyring','dashicons-admin-network',22);
   if ( ! current_user_can('edit_plugins') ) {
     remove_menu_page('ultimatemember');
     remove_menu_page('wpfastestcacheoptions');
@@ -175,43 +174,24 @@ function admin_enqueue()
   //Plugin permettant d'afficher des fenêtres modales :
   wp_enqueue_style('jqueryModalCSS',plugins_url('css/jquery.modal.min.css',__FILE__));
   wp_enqueue_script('jqueryModalJS',plugins_url('js/jquery.modal.min.js',__FILE__),array('jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog'),"0.9.1",false);
-  localize_script();
+  localize_script('lab-global');
   wp_set_script_translations( 'lab-global' , 'lab', dirname(__FILE__).'/lang' );
   wp_set_script_translations( 'lab-admin'  , 'lab', dirname(__FILE__).'/lang' );
   wp_set_script_translations( 'lab-keyring', 'lab', dirname(__FILE__).'/lang' );
 }
 
-function wp_lab_global_enqueues()
-{
-  wp_enqueue_script(
-    'wp-lab',
-    plugins_url('js/lab_global.js',__FILE__),
-    array('jquery','wp-i18n'),
-    version_id(),
-    true
-  );
-  localize_script();
-  //wp_localize_script('wp-lab', 'lab', array('ajax_url' => admin_url('admin-ajax.php'), 'we_value' => 1234));
-}
-
 function wp_lab_fe_enqueues()
 {
-  wp_enqueue_script(
-    'wp-lab',
-    plugins_url('js/lab_fe.js',__FILE__),
-    array('jquery','wp-i18n'),
-    '1',
-    true
-  );
-  localize_script();
-  //wp_localize_script('wp-lab', 'lab', array('ajax_url' => admin_url('admin-ajax.php'), 'we_value' => 1234));
+  wp_enqueue_script('lab-fe', plugins_url('js/lab_fe.js',__FILE__), array('jquery','wp-i18n'), version_id(), true);
+  localize_script('lab-fe');
+  wp_set_script_translations( 'lab-fe', 'lab', dirname(__FILE__).'/lang' );
 }
 
-function localize_script() {
+function localize_script($domain) {
   $js_vars = array();
   $schema = is_ssl() ? 'https':'http';
   $js_vars['ajaxurl'] = admin_url('admin-ajax.php', $schema);
-  wp_localize_script('wp-lab', 'LAB', apply_filters('lab_js_vars', $js_vars));
+  wp_localize_script($domain, 'LAB', apply_filters('lab_js_vars', $js_vars));
 }
 
 function lab_admin_tab_general_user()

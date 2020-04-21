@@ -1,14 +1,6 @@
 <?php
   function lab_admin_tab_keyring() {
     echo "<h1>".__('Gestion des clés','lab')."</h1>";
-    if (!lab_admin_checkTable("lab_keys")) {
-      echo "<p id='lab_keyring_noKeysTableWarning'>La table <em>wp_lab_keys</em> n'a pas été trouvée dans la base, vous devez d'abord la créer ici : </p>";
-      echo '<button class="lab_keyring_create_table_keys" id="lab_keyring_create_table_keys">'.esc_html__('Créer la table Keys','lab').'</button>';
-    }
-    if (!lab_admin_checkTable("lab_key_loans")) {
-      echo "<p id='lab_keyring_noLoansTableWarning'>La table <em>wp_lab_key_loans</em> n'a pas été trouvée dans la base, vous devez d'abord la créer ici : </p>";
-      echo '<button class="lab_keyring_create_table_loans" id="lab_keyring_create_table_loans">'.esc_html__('Créer la table Loans','lab').'</button>';
-    }
     ?>
     <!-- Dialogue de confirmation modal s'affichant lorsque l'utilisateur essaie de supprimer une clé-->
     <div id="lab_keyring_delete_dialog" class="modal">

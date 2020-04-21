@@ -16,19 +16,19 @@ jQuery(function($){
     select: function( event, ui ) {
       var firstname  = ui.item.firstname; // first name
       var lastname = ui.item.lastname; // last name
-      var user_id  = ui.item.user_id;
       window.location.href = "/user/" + firstname + "." + lastname;
       event.preventDefault();
       $("#lab_directory_user_name").val(firstname + " " + lastname);
     }
   });
+  
   $(".email").each(function() {
     var replaced = $(this).text().replace(/@/g, '[TA]');
     $(this).text(replaced);
   });
 
   $(".directory_row").click(function() {
-    window.location.href = "http://stage.fr/user/" + $(this).attr('userId');
+    window.location.href = "/user/" + $(this).attr('userId');
   });
 
 });
