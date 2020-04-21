@@ -743,17 +743,17 @@ jQuery(function($){
 
   $("#lab_all_users").click(function() 
   {
-    reset_and_load_groups_users(!$("#lab_all_users").is(':checked'),  $("#lab_no_users_left").is(':checked'));
+    reset_and_load_groups_users(!$("#lab_all_users").is(':checked'),  !$("#lab_no_users_left").is(':checked'));
   });
 
   $("#lab_no_users_left").click(function()
   {
-    reset_and_load_groups_users(!$("#lab_all_users").is(':checked'),  $("#lab_no_users_left").is(':checked'));
+    reset_and_load_groups_users(!$("#lab_all_users").is(':checked'),  !$("#lab_no_users_left").is(':checked'));
   });
 
   $(document).ready(function()
   {
-    reset_and_load_groups_users($("#lab_all_users").is(':checked'), $("#lab_no_users_left").is(':checked'));
+    reset_and_load_groups_users(!$("#lab_all_users").is(':checked'), !$("#lab_no_users_left").is(':checked'));
   });
 
   $("#lab_add_users_groups").click(function()
@@ -810,7 +810,7 @@ function reset_and_load_groups_users(cond1, cond2) {
             jQuery("#list_users").append(jQuery('<option/>', 
             { 
             value : response.data[0][i].user_id,
-            text : response.data[0][i].first_name + " " + response.data[0][i].last_name
+            text : response.data[0][i].last_name + " " + response.data[0][i].first_name
             }));
         }
         for(var i = 0; i< response.data[1].length; ++i)
