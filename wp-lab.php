@@ -194,6 +194,19 @@ function wp_lab_global_enqueues()
   //wp_localize_script('wp-lab', 'lab', array('ajax_url' => admin_url('admin-ajax.php'), 'we_value' => 1234));
 }
 
+function wp_lab_fe_enqueues()
+{
+  wp_enqueue_script(
+    'wp-lab',
+    plugins_url('js/lab_fe.js',__FILE__),
+    array('jquery','wp-i18n'),
+    '1',
+    true
+  );
+  localize_script();
+  //wp_localize_script('wp-lab', 'lab', array('ajax_url' => admin_url('admin-ajax.php'), 'we_value' => 1234));
+}
+
 function localize_script() {
   $js_vars = array();
   $schema = is_ssl() ? 'https':'http';
