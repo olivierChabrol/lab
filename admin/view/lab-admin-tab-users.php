@@ -31,8 +31,15 @@ function lab_admin_tab_user() {
   <a href="#" class="page-title-action" id="lab_user_button_save_left">Modifier le statut de l'utilisateur</a>
   <br/><br/>
   <h3>Affecter des utilisateurs à des groupes</h3>
-  <div style="display:flex;">
   
+  <label for="lab_all_users"><b>Afficher tous les utilisateurs présents</b></label>
+  <input type="checkbox" id="lab_all_users"/><br/>
+  <label for="lab_no_users_left"><b>Ne pas afficher les utilisateurs qui ont quitté l'Institut</b></label>
+  <input type="checkbox" id="lab_no_users_left"/>
+  <br/><br/>
+
+  <div style="display:flex;">
+    
     <!-- CHOIX USER -->
 
     <div style='float: left; maring-right:50px;'>

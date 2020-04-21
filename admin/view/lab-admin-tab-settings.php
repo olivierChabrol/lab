@@ -34,6 +34,12 @@ function lab_admin_tab_settings() {
   if (!lab_admin_checkTable("lab_group_substitutes")) {
     echo "<p id='lab_group_noSubTableWarning'>La table <em>wp_lab_group_substitutes</em> n'a pas été trouvée dans la base, vous devez d'abord la créer ici : </p>";
   }
+  if (!lab_admin_checkTable("lab_keys")) {
+    echo "<p id='lab_keyring_noKeysTableWarning'>La table <em>wp_lab_keys</em> n'a pas été trouvée dans la base, vous devez d'abord la créer ici : </p>";
+  }
+  if (!lab_admin_checkTable("lab_key_loans")) {
+    echo "<p id='lab_keyring_noLoansTableWarning'>La table <em>wp_lab_key_loans</em> n'a pas été trouvée dans la base, vous devez d'abord la créer ici : </p>";
+  }
 ?>
   <p></p>
   <button class="page-title-action" id="lab_hal_create">Create table HAL</button>
@@ -49,6 +55,9 @@ function lab_admin_tab_settings() {
   <button class="page-title-action" id="lab_createGroup_createTable_Sub">Créer la table Substitutes</button>
   <button class="page-title-action" id="lab_createGroup_createRoot">Créer groupe root</button>
   <hr/>
+  <button class="page-title-action" id="lab_keyring_create_table_keys"><?php echo esc_html__('Créer la table Keys','lab'); ?></button>
+  <button class="page-title-action" id="lab_keyring_create_table_loans"><?php echo esc_html__('Créer la table Loans','lab'); ?></button>
+  <hr>
     <h4>Fill Table :</h4>
     <button class="page-title-action" id="lab_settings_button_fill_hal_name_fields">Fill HAL name</button>
     <input type="text" id="lab_hal_user">
