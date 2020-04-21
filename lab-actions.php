@@ -37,6 +37,8 @@ add_action( 'wp_ajax_usermeta_dateLeft', 'lab_admin_usermeta_dateLeft');
 add_action( 'wp_ajax_group_load_substitutes', 'group_load_substitutes');
 add_action( 'wp_ajax_group_delete_substitutes', 'group_delete_substitutes');
 add_action( 'wp_ajax_group_add_substitutes', 'group_add_substitutes');
+add_action( 'wp_ajax_list_users_groups' , 'lab_admin_list_users_groups');
+add_action( 'wp_ajax_add_users_groups' , 'lab_admin_add_users_groups');
 
 //Actions pour la gestion des params
 add_action( 'wp_ajax_param_create_table', 'lab_admin_param_create_table');
