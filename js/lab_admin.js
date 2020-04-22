@@ -138,7 +138,6 @@ jQuery(function($){
     $(this).text(replaced);
   });
   
-
   $(".directory_row").click(function() {
     window.location.href = "http://stage.fr/user/" + $(this).attr('userId');
   });
@@ -177,6 +176,10 @@ jQuery(function($){
   $("#lab_user_button_save_left").click(function() {
     saveUserLeft($("#lab_user_search_id").val(), $("#lab_user_left_date").val(), $("#lab_user_left").is(":checked"));
   });
+
+  $("#lab_settings_correct_um").click(function() {
+    correctUMFields();
+  });
   $("#lab_createGroup_acronym").change(function() {
     var data = {
       'action' : 'group_search_ac',
@@ -198,7 +201,8 @@ jQuery(function($){
         $("#lab_createGroup_create").css('color','#0071a1');
       }
     });
-  })
+  });
+  
   $("#lab_createGroup_chief").autocomplete({
     minChars: 3,
     source: function(term, suggest){
@@ -1190,6 +1194,12 @@ function deleteMetaKeys(key) {
     'key' : key
   };
   callAjax(data, "MetaKey delete for all user", loadExistingKeysFields, "failed to delete key '" + key + "'", null);
+}
+function correctUMFields() {
+  var data = {
+    'action' : 'um_correct'
+  };
+  callAjax(data, "UM Field corrected", null, "failed to correct UM fields", null);
 }
 function saveMetakey(userId, key, value) {
   var data = {

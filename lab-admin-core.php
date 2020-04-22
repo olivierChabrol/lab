@@ -431,6 +431,13 @@ function lab_hal_createTable_hal() {
       ) ENGINE=InnoDB";
     return $wpdb->get_results($sql);
 }
+
+function lab_hal_get_publication($userId) {
+    global $wpdb;
+    $sql = "SELECT * FROM `wp_lab_hal` WHERE `user_id` = ".$userId." ORDER BY `producedDate_tdate` DESC ";
+    return $wpdb->get_results($sql);
+}
+
 /**
  * Format name for hal request, replace space character by '+'
  */
@@ -510,7 +517,7 @@ function hal_download_all()
 function hal_download($userId) {
     $url = get_hal_url($userId);
     
-    $json = do_common_curl_call($url);
+    $json = lab_do_common_curl_call($url);
     $c =count($json->response->docs);
     for ($i = 0; $i < $c; $i++) {
         $docId = $json->response->docs[$i]->docid;
@@ -536,15 +543,15 @@ function delete_hal_table() {
  * @param $url
  * @return object
  */
-/*
-function do_common_curl_call($url) {
+
+function lab_do_common_curl_call($url) {
     $ch = curl_init($url);
     // Options
     $options = array(
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_HTTPHEADER => array('Content-type: application/json'),
         CURLOPT_TIMEOUT => 10,
-        CURLOPT_USERAGENT => "HAL Plugin Wordpress " . version
+        CURLOPT_USERAGENT => "LAB Plugin Wordpress "
     );
     if(defined('WP_PROXY_HOST') && defined('WP_PROXY_PORT') && defined('WP_PROXY_USERNAME') && defined('WP_PROXY_PASSWORD')){
         curl_setopt($ch, CURLOPT_PROXY, WP_PROXY_HOST);
@@ -605,8 +612,11 @@ function lab_keyring_find_oldLoans($key_id) {
     $sql = "SELECT * from `".$wpdb->prefix."lab_key_loans` WHERE `key_id`=".$key_id." ORDER BY `start_date` DESC";
     return $wpdb->get_results($sql);
 }
-function lab_hal_getLastArticles($number,$group) {
+function lab_hal_getLastArticles($number, $group) {
     global $wpdb;
+    if (!isset($number) || empty($number)) {
+        $number = 5;
+    }
     if ($group == 0) {
         $sql = "SELECT * from `".$wpdb->prefix."lab_hal` ORDER BY `producedDate_tdate` DESC LIMIT ".$number.";";
     } else {
@@ -672,4 +682,22 @@ function lab_create_roles() {
     $role ->add_cap('keyring',true);
     $role = get_role('administrator');
     $role ->add_cap('keyring',true);
+}
+
+/**
+ * Correct the um_user_profile_url_slug_name of the ultimate member pluggin
+ */
+function lab_usermeta_correct_um_fields() {
+    $sql = "UPDATE `wp_usermeta` SET `meta_value`=substr(meta_value,1,length(meta_value)-3) WHERE `meta_key` LIKE 'um_user_profile_url_slug_name' AND `meta_value` LIKE '%2A'";
+    global $wpdb;
+    return $wpdb->get_results($sql);
+}
+
+/**
+ * return True if $string begins with $pattern
+ * @param : $string 
+ * @param : $pattern
+ */
+function beginWith($string, $pattern) {
+    return substr($string, 0, strlen($pattern)) === $pattern;
 }
