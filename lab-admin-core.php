@@ -688,9 +688,22 @@ function lab_create_roles() {
  * Correct the um_user_profile_url_slug_name of the ultimate member pluggin
  */
 function lab_usermeta_correct_um_fields() {
-    $sql = "UPDATE `wp_usermeta` SET `meta_value`=substr(meta_value,1,length(meta_value)-3) WHERE `meta_key` LIKE 'um_user_profile_url_slug_name' AND `meta_value` LIKE '%2A'";
     global $wpdb;
+    $sql = "UPDATE `".$wpdb->prefix."usermeta` SET `meta_value`=substr(meta_value,1,length(meta_value)-3) WHERE `meta_key` LIKE 'um_user_profile_url_slug_name' AND `meta_value` LIKE '%2A'";
     return $wpdb->get_results($sql);
+}
+
+/**
+ * copy data from usermetadata dbem_phone to lab_user_phone fields in usermeta TABLE
+ */
+function lab_usermeta_copy_existing_phone() {
+    global $wpdb;
+    $sql = "select user_id, meta_value FROM `".$wpdb->prefix."usermeta` WHERE meta_key='dbem_phone'";
+    $results = $wpdb->get_results($sql);
+    foreach($results as $r) {
+        $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$r->meta_value), array("user_id"=>$r->user_id,"meta_key"=>"lab_user_phone"));
+    }
+    return true;
 }
 
 /**

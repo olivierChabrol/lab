@@ -19,6 +19,7 @@ if (is_admin()) {
     add_action( 'wp_ajax_search_user'      , 'lab_admin_search_user' );
     add_action( 'wp_ajax_search_username', 'lab_admin_search_username' );
     add_action( 'wp_ajax_nopriv_search_username2', 'lab_admin_search_username2' );
+    add_action( 'wp_ajax_search_username2', 'lab_admin_search_username2' );
     add_action( 'wp_ajax_search_user_metadata', 'lab_admin_search_user_metadata' );
     add_action( 'wp_ajax_update_user_metadata', 'lab_admin_update_user_metadata' );
     add_action( 'wp_ajax_update_user_metadata_db', 'lab_admin_update_user_metadata_db' );
@@ -66,6 +67,7 @@ if (is_admin()) {
     add_action( 'wp_ajax_delete_metakey', 'lab_ajax_userMetaData_delete_key');
     add_action( 'wp_ajax_not_exist_metakey', 'lab_ajax_userMeta_key_not_exist');
     add_action( 'wp_ajax_um_correct', 'lab_usermeta_correct_um_fields');
+    add_action( 'wp_ajax_copy_phone', 'lab_admin_usermeta_update_phone');
     //Action for hal
     add_action( 'wp_ajax_hal_create_table', 'lab_ajax_hal_create_table');
     add_action( 'wp_ajax_hal_fill_hal_name', 'lab_ajax_hal_fill_fields');

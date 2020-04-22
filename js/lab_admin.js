@@ -176,9 +176,11 @@ jQuery(function($){
   $("#lab_user_button_save_left").click(function() {
     saveUserLeft($("#lab_user_search_id").val(), $("#lab_user_left_date").val(), $("#lab_user_left").is(":checked"));
   });
-
   $("#lab_settings_correct_um").click(function() {
     correctUMFields();
+  });
+  $("#lab_settings_copy_phone").click(function() {
+    lab_settings_copy_phone();
   });
   $("#lab_createGroup_acronym").change(function() {
     var data = {
@@ -1200,6 +1202,12 @@ function correctUMFields() {
     'action' : 'um_correct'
   };
   callAjax(data, "UM Field corrected", null, "failed to correct UM fields", null);
+}
+function lab_settings_copy_phone() {
+  var data = {
+    'action' : 'copy_phone'
+  };
+  callAjax(data, "Copy phone successful", null, "Failed to copy phones", null);
 }
 function saveMetakey(userId, key, value) {
   var data = {

@@ -58,7 +58,9 @@ function lab_admin_tab_settings() {
   <button class="page-title-action" id="lab_keyring_create_table_keys"><?php echo esc_html__('Créer la table Keys','lab'); ?></button>
   <button class="page-title-action" id="lab_keyring_create_table_loans"><?php echo esc_html__('Créer la table Loans','lab'); ?></button>
   <hr>
+    <h4>Correct DB :</h4>
   <button class="page-title-action" id="lab_settings_correct_um"><?php echo esc_html__('Corriger usermeta fields UM','lab'); ?></button>
+  <button class="page-title-action" id="lab_settings_copy_phone"><?php echo esc_html__('Copier les champs phone','lab'); ?></button>
   <hr>
     <h4>Fill Table :</h4>
     <button class="page-title-action" id="lab_settings_button_fill_hal_name_fields">Fill HAL name</button>

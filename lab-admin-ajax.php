@@ -108,8 +108,11 @@ function lab_admin_usermeta_names()
 {
   $search = $_POST['search'];
   $userId  = $search["term"];
-  //wp_send_json_success($userId);
   wp_send_json_success(lab_admin_username_get($userId));
+}
+function lab_admin_usermeta_update_phone()
+{
+  wp_send_json_success(lab_usermeta_copy_existing_phone());
 }
 /********************************************************************************************
  * EVENT

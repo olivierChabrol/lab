@@ -47,7 +47,7 @@ function lab_hal($param) {
     $i = 0;
     foreach($publications as $p) {
         $i++;
-        $html .= $i."<a href=\"".$p->url."\">".$p->title."</a><br><br>";
+        $html .= $i." - <a href=\"".$p->url."\">".$p->title."</a><br><br>";
     }
     
     return $html;
