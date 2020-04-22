@@ -1,5 +1,3 @@
-
-
 jQuery(function($){
     //$.getScript("lab_global.js");
     $("#lab_keyring_create_table_keys").click(function () {

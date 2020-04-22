@@ -2,8 +2,12 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-04-22 11:55+0200\n"
+"PO-Revision-Date: 2020-04-22 11:57+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
+"Language: en_150\n"
+"X-Source-Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -17,6 +21,8 @@ msgstr ""
 "X-Poedit-KeywordsList: _e;esc_html_e;esc_html__;__\n"
 "X-Poedit-SearchPath-0: lab-admin-keyring.php\n"
 "X-Poedit-SearchPath-1: js/lab_global.js\n"
+"X-Poedit-SearchPath-2: shortcode/lab-shortcode-hal.php\n"
+"X-Poedit-SearchPath-3: lab-shortcode-directory.php\n"
 "X-Poedit-SearchPath-2: admin/view/lab-admin-tab-users.php\n"
 "X-Poedit-SearchPath-3: js/lab_admin.js\n"
 
@@ -155,6 +161,10 @@ msgstr "Brand"
 msgid "Site"
 msgstr "Location"
 
+#: lab-admin-keyring.php:54 lab-admin-keyring.php:201 lab-admin-keyring.php:237
+msgid "Commentaire"
+msgstr "Comments"
+
 #: lab-admin-keyring.php:55
 msgid "Dispo"
 msgstr "Available"
@@ -210,6 +220,10 @@ msgstr "Ongoing loan"
 msgid "Afficher Reçu"
 msgstr "Show Receipt"
 
+#: lab-admin-keyring.php:207 lab-admin-keyring.php:233
+msgid "Référent"
+msgstr "Referent"
+
 #: lab-admin-keyring.php:209
 msgid "Usager"
 msgstr "User"
@@ -244,7 +258,7 @@ msgstr "Mark as returned"
 
 #: lab-admin-keyring.php:227
 msgid "Historique des prêts pour cette clé"
-msgstr ""
+msgstr "Loans history for this key"
 
 #: lab-admin-keyring.php:232
 msgid "Clé"
@@ -273,6 +287,118 @@ msgstr "Loan"
 #: lab-admin-keyring.php:265
 msgid "Voir prêt"
 msgstr "Show Loan"
+
+#: lab-shortcode-directory.php:67
+msgid "Annuaire"
+msgstr "Directory"
+
+#: shortcode/lab-shortcode-hal.php:32
+msgid "Publications HAL"
+msgstr "HAL Publlications"
+
+#~ msgid "Nom du groupe  "
+#~ msgstr "Group name "
+
+#~ msgid "Supprimer le groupe"
+#~ msgstr "Delete group"
+
+#~ msgid "Modifier l'acronyme"
+#~ msgstr "Modify acronym"
+
+#~ msgid "Nouveau nom du groupe"
+#~ msgstr "New group name"
+
+#~ msgid "Définir un autre responsable du groupe"
+#~ msgstr "Defined a new group leader"
+
+#~ msgid "Co responsable"
+#~ msgstr "Substitute"
+
+#~ msgid "Ajouter un co-responsable"
+#~ msgstr "Add substitute"
+
+#~ msgid "Modifier le groupe parent"
+#~ msgstr "Modify parent group"
+
+#~ msgid "Modifier le type"
+#~ msgstr "Modify group"
+
+#~ msgid "Créer un groupe"
+#~ msgstr "Create group"
+
+#~ msgid "Nom du groupe"
+#~ msgstr "Group name"
+
+#~ msgid "Acronym"
+#~ msgstr "Acronym"
+
+#~ msgid "Groupe parent"
+#~ msgstr "parent's group"
+
+#, fuzzy
+#~| msgid "Définir un autre responsable du groupe"
+#~ msgid "Responsable du groupe"
+#~ msgstr "Defined a new group leader"
+
+#, fuzzy
+#~| msgid "(facultatif)"
+#~ msgid "Facultatif"
+#~ msgstr "(optional)"
+
+#, fuzzy
+#~| msgid "Supprimer le groupe"
+#~ msgid "Créer le groupe"
+#~ msgstr "Delete group"
+
+#~ msgid "Créer la table Keys"
+#~ msgstr "Create the Keys table"
+
+#~ msgid "Créer la table Loans"
+#~ msgstr "Create the Loans table"
+
+#~ msgid "Séminaire"
+#~ msgstr "Seminar"
+
+#~ msgid "Paramètres globaux des utilisateurs"
+#~ msgstr "Users global settings"
+
+#~ msgid "Groupes"
+#~ msgstr "Groups"
+
+#~ msgid "Paramètres"
+#~ msgstr "Settings"
+
+#~ msgid "Paramètres globaux"
+#~ msgstr "General settings"
+
+#~ msgid "Groupe créé avec succès"
+#~ msgstr "Group created sucessfully"
+
+#~ msgid "Erreur lors de la création du groupe : "
+#~ msgstr "Failed to create group : "
+
+#, fuzzy
+#~| msgid "Gestion des prêts"
+#~ msgid "Reçu de prêt"
+#~ msgstr "Loan management"
+
+#~ msgid "ID du prêt"
+#~ msgstr "Loan ID"
+
+#~ msgid "La clé/badge numéro"
+#~ msgstr "Key/Badge number"
+
+#~ msgid "A été prêtée à"
+#~ msgstr "loan to"
+
+#~ msgid "Signature"
+#~ msgstr "Signature"
+
+#~ msgid "Imprimer"
+#~ msgstr "Print"
+
+#~ msgid "Publications Hal"
+#~ msgstr "Hal publications"
 
 #, fuzzy
 #~ msgid "Location"
