@@ -58,6 +58,7 @@ if (is_admin()) {
     add_action( 'wp_ajax_keyring_get_key', 'lab_keyring_findKey_Req' );
     add_action( 'wp_ajax_keyring_edit_key', 'lab_keyring_editKey_Req' );
     add_action( 'wp_ajax_keyring_delete_key', 'lab_keyring_deleteKey_Req' );
+    add_action( 'wp_ajax_keyring_find_curr_loans', 'lab_keyring_search_current_loans_Req');
 
     add_action('wp_ajax_edit_group', 'lab_group_editGroup');
     //Action for settings
@@ -80,4 +81,5 @@ if (is_admin()) {
     add_action( 'wp_ajax_keyring_edit_loan', 'lab_keyring_edit_loanReq' ); 
     add_action( 'wp_ajax_keyring_end_loan','lab_keyring_end_loanReq' );
     add_action( 'wp_ajax_keyring_find_old_loans','lab_keyring_find_oldLoansReq' );
+    add_action( 'wp_ajax_keyring_find_loan_byID','lab_keyring_get_loan_Req' );
 }

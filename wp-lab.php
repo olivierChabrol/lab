@@ -142,7 +142,7 @@ function custom_user_profile_fields( $profileuser ) {
 function wp_lab_menu()
 {
   add_menu_page('Options', 'LAB', 'edit_plugins', 'wp-lab.php', 'wp_lab_option', '', 21);
-  add_menu_page("KeyRing","KeyRing",'keyring','lab-keyring','lab_admin_tab_keyring','dashicons-admin-network',22);
+  add_menu_page("KeyRing","KeyRing",'keyring','lab_keyring','lab_keyring','dashicons-admin-network',22);
   if ( ! current_user_can('edit_plugins') ) {
     remove_menu_page('ultimatemember');
     remove_menu_page('wpfastestcacheoptions');
