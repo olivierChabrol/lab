@@ -97,6 +97,14 @@ function lab_directory($param) {
             }
         </style>"; // style for table (stripped colors)
 
+    /* Display numbers correctly */
+    function correctNumber($currentNumber) { // currentNumber = esc_html($r->phone)
+        $currentNumber = str_replace(" ", "", $currentNumber);
+        $currentNumber = str_replace(".", "", $currentNumber);
+        $currentNumber = chunk_split($currentNumber, 2, ' ');
+        return $currentNumber;
+    }
+
     /* Table directory */
     $directoryStr .= "<table>";
     foreach ($results as $r) {
@@ -105,7 +113,8 @@ function lab_directory($param) {
                         esc_html($r->last_name . " " . $r->first_name) . 
                         "</td>";
         $directoryStr .= "<td class='email'>" . esc_html(strrev($r->mail)) . "</td>";
-        $directoryStr .= "<td>" . esc_html($r->phone) . "</td>";
+        $currentNumber = esc_html($r->phone);
+        $directoryStr .= "<td>" . correctNumber($currentNumber) . "</td>";
         $directoryStr .= "</tr>";
     }
     $directoryStr .= "</table>";
