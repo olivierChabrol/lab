@@ -66,6 +66,7 @@ function lab_directory($param) {
     $nbResult = $wpdb->num_rows;
     $items = array();
     $directoryStr = "<h1>Annuaire</h1>"; // title
+    //$directoryStr .= $sql;
     $alphachar = array_merge(range('A', 'Z'));
     $url = explode('?', $_SERVER['REQUEST_URI']); // current url (without parameters)
     foreach ($alphachar as $element) {
@@ -99,9 +100,9 @@ function lab_directory($param) {
     /* Table directory */
     $directoryStr .= "<table>";
     foreach ($results as $r) {
-        $directoryStr .= "<tr class='directory_row' userId=".$r->first_name.".".$r->last_name.">";
+        $directoryStr .= "<tr class='directory_row' userId='".esc_html($r->first_name).".".esc_html($r->last_name)."'>";
         $directoryStr .= "<td id='name_col'>" . 
-                        esc_html($r->first_name . " " . $r->last_name) . 
+                        esc_html($r->last_name . " " . $r->first_name) . 
                         "</td>";
         $directoryStr .= "<td class='email'>" . esc_html(strrev($r->mail)) . "</td>";
         $directoryStr .= "<td>" . esc_html($r->phone) . "</td>";

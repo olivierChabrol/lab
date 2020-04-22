@@ -267,33 +267,956 @@ msgstr "Show Loan"
 #~ msgstr "All loans :"
 
 #, fuzzy
-#~ msgid "Location"
-#~ msgstr "Actions"
+msgid "Location"
+msgstr "Actions"
 
+#: templates/buddypress/group-events.php:44
+#: templates/buddypress/my-group-events.php:45 templates/tables/events.php:69
 #, fuzzy
-#~ msgid "Date and time"
-#~ msgstr "End date"
+msgid "Date and time"
+msgstr "End date"
 
-#, fuzzy
-#~ msgid "Comment"
-#~ msgstr "Comments"
+#: templates/buddypress/group-events.php:87
+#: templates/buddypress/my-group-events.php:81 templates/tables/events.php:102
+msgid "Bookings"
+msgstr ""
 
-#, fuzzy
-#~ msgid "Confirmed Spaces"
-#~ msgstr "Confirm"
+#: templates/buddypress/group-events.php:88
+#: templates/buddypress/my-group-events.php:82 templates/tables/events.php:103
+#: templates/templates/bookings-event-printable.php:44
+msgid "Booked"
+msgstr ""
 
-#, fuzzy
-#~ msgid "Location:"
-#~ msgstr "Actions"
+#: templates/buddypress/group-events.php:90
+#: templates/buddypress/my-group-events.php:84 templates/tables/events.php:25
+#: templates/tables/events.php:105
+msgid "Pending"
+msgstr ""
 
-#, fuzzy
-#~ msgid "location"
-#~ msgstr "Actions"
+#: templates/buddypress/group-events.php:96
+#: templates/buddypress/my-group-events.php:90
+#: templates/buddypress/my-group-events.php:120
+#: templates/forms/event/bookings.php:92 templates/tables/events.php:111
+#: templates/tables/events.php:139
+msgid "Delete"
+msgstr ""
 
-#, fuzzy
-#~ msgid "Locations"
-#~ msgstr "Actions"
+#: templates/buddypress/group-events.php:100
+#, php-format
+msgid "Duplicate %s"
+msgstr ""
 
+#: templates/buddypress/group-events.php:100
+#: templates/forms/event-editor.php:13 templates/forms/event-editor.php:88
+#: templates/forms/event-editor.php:90 templates/templates/my-bookings.php:39
+msgid "Event"
+msgstr ""
+
+#: templates/buddypress/group-events.php:101
+msgid "Duplicate"
+msgstr ""
+
+#: templates/buddypress/group-events.php:118
+#: templates/buddypress/my-group-events.php:114 templates/tables/events.php:133
+msgid ""
+"WARNING! You will delete ALL recurrences of this event, including booking "
+"history associated with any event in this recurrence. To keep booking "
+"information, go to the relevant single event and save it to detach it from "
+"this recurrence series."
+msgstr ""
+
+#: templates/buddypress/group-events.php:122
+#: templates/buddypress/my-group-events.php:118 templates/tables/events.php:137
+msgid "Edit Recurring Events"
+msgstr ""
+
+#: templates/buddypress/my-group-events.php:95 templates/tables/events.php:116
+msgid "Duplicate this event"
+msgstr ""
+
+#: templates/buddypress/my-group-events.php:102
+#: templates/forms/event/categories-public.php:13
+msgid "Category"
+msgstr ""
+
+#: templates/buddypress/profile.php:7
+msgid "My Events"
+msgstr ""
+
+#: templates/buddypress/profile.php:24
+msgid "Add Event"
+msgstr ""
+
+#: templates/buddypress/profile.php:31
+msgid "Events I'm Attending"
+msgstr ""
+
+#: templates/buddypress/profile.php:44
+msgid "Not attending any events yet."
+msgstr ""
+
+#: templates/emails/bookingsummary.php:13 templates/emails/bookingtickets.php:7
+msgid "Quantity"
+msgstr ""
+
+#: templates/emails/bookingsummary.php:15 templates/emails/bookingtickets.php:9
+#: templates/forms/event/bookings-ticket-form.php:20
+#: templates/forms/event/bookings.php:60
+msgid "Price"
+msgstr ""
+
+#: templates/emails/bookingsummary.php:25
+msgid "Sub Total"
+msgstr ""
+
+#: templates/emails/bookingsummary.php:29
+msgid "Discounts Before Taxes"
+msgstr ""
+
+#: templates/emails/bookingsummary.php:38
+msgid "Surcharges Before Taxes"
+msgstr ""
+
+#: templates/emails/bookingsummary.php:47
+msgid "Taxes"
+msgstr ""
+
+#: templates/emails/bookingsummary.php:52
+msgid "Discounts (After Taxes)"
+msgstr ""
+
+#: templates/emails/bookingsummary.php:61
+msgid "Surcharges (After Taxes)"
+msgstr ""
+
+#: templates/emails/bookingsummary.php:69
+msgid "Total Price"
+msgstr ""
+
+#: templates/forms/bookingform/booking-fields.php:16
+msgid "Phone"
+msgstr ""
+
+#: templates/forms/bookingform/booking-fields.php:20
+#: templates/templates/bookings-event-printable.php:25
+msgid "E-mail"
+msgstr ""
+
+#: templates/forms/bookingform/booking-fields.php:26
+#: templates/templates/bookings-event-printable.php:28
 #, fuzzy
-#~ msgid "Bulk Actions"
-#~ msgstr "Actions"
+msgid "Comment"
+msgstr "Comments"
+
+#: templates/forms/bookingform/login.php:8
+msgid "Log in if you already have an account with us."
+msgstr ""
+
+#: templates/forms/bookingform/login.php:10
+msgid "Username"
+msgstr ""
+
+#: templates/forms/bookingform/login.php:14
+msgid "Password"
+msgstr ""
+
+#: templates/forms/bookingform/login.php:18
+msgid "Log In"
+msgstr ""
+
+#: templates/forms/bookingform/login.php:19
+msgid "Remember Me"
+msgstr ""
+
+#: templates/forms/bookingform/login.php:34
+msgid "Sign Up"
+msgstr ""
+
+#: templates/forms/bookingform/login.php:38
+msgid "Password Lost and Found"
+msgstr ""
+
+#: templates/forms/bookingform/login.php:38
+msgid "Lost your password?"
+msgstr ""
+
+#: templates/forms/bookingform/ticket-single.php:37
+#: templates/forms/bookingform/tickets-list.php:45
+msgid "N/A"
+msgstr ""
+
+#: templates/forms/event-editor.php:13 templates/forms/location-editor.php:11
+msgid "Unauthorized Access"
+msgstr ""
+
+#: templates/forms/event-editor.php:13 templates/forms/location-editor.php:11
+#, php-format
+msgid "You do not have the rights to manage this %s."
+msgstr ""
+
+#: templates/forms/event-editor.php:30
+msgid "Event Name"
+msgstr ""
+
+#: templates/forms/event-editor.php:40
+msgid "When"
+msgstr ""
+
+#: templates/forms/event-editor.php:54
+msgid "Where"
+msgstr ""
+
+#: templates/forms/event-editor.php:60 templates/forms/location-editor.php:37
+msgid "Details"
+msgstr ""
+
+#: templates/forms/event-editor.php:68
+msgid "Details about the event."
+msgstr ""
+
+#: templates/forms/event-editor.php:68
+msgid "HTML allowed."
+msgstr ""
+
+#: templates/forms/event-editor.php:77
+msgid "Event Image"
+msgstr ""
+
+#: templates/forms/event-editor.php:88 templates/forms/location-editor.php:65
+#, php-format
+msgid "Submit %s"
+msgstr ""
+
+#: templates/forms/event-editor.php:90 templates/forms/location-editor.php:67
+#, php-format
+msgid "Update %s"
+msgstr ""
+
+#: templates/forms/event/attributes.php:43
+#, php-format
+msgid ""
+"You don't have any custom attributes defined in any of your Events Manager "
+"template settings. Please add them the <a href='%s'>settings page</a>"
+msgstr ""
+
+#: templates/forms/event/attributes.php:51
+#: templates/forms/location/attributes.php:51
+msgid ""
+"In order to use attributes, you must define some in your templates, "
+"otherwise they'll never show. Go to Events > Settings > General to add "
+"attribute placeholders."
+msgstr ""
+
+#: templates/forms/event/booking-stats.php:12
+msgid "Available Spaces"
+msgstr ""
+
+#: templates/forms/event/booking-stats.php:13
+#, fuzzy
+msgid "Confirmed Spaces"
+msgstr "Confirm"
+
+#: templates/forms/event/booking-stats.php:14
+#, fuzzy
+msgid "Pending Spaces"
+msgstr "Confirm"
+
+#: templates/forms/event/booking-stats.php:20
+msgid "No responses yet!"
+msgstr ""
+
+#: templates/forms/event/booking-stats.php:27
+msgid "manage bookings"
+msgstr ""
+
+#: templates/forms/event/booking-stats.php:28
+msgid "printable view"
+msgstr ""
+
+#: templates/forms/event/booking-stats.php:30
+msgid "export csv"
+msgstr ""
+
+#: templates/forms/event/bookings-ticket-form.php:17
+msgid "Description"
+msgstr ""
+
+#: templates/forms/event/bookings-ticket-form.php:22
+#: templates/templates/bookings-event-printable.php:27
+#: templates/templates/my-bookings.php:41
+msgid "Spaces"
+msgstr ""
+
+#: templates/forms/event/bookings-ticket-form.php:30
+#: templates/forms/event/bookings-ticket-form.php:35
+msgid "spaces per booking"
+msgstr ""
+
+#: templates/forms/event/bookings-ticket-form.php:40
+msgid "Available from"
+msgstr ""
+
+#: templates/forms/event/bookings-ticket-form.php:48
+#: templates/forms/event/bookings-ticket-form.php:67
+#: templates/forms/event/bookings.php:110
+#: templates/forms/event/bookings.php:115
+#: templates/forms/event/bookings.php:181
+msgid "day(s)"
+msgstr ""
+
+#: templates/forms/event/bookings-ticket-form.php:50
+#: templates/forms/event/bookings-ticket-form.php:69
+#: templates/forms/event/bookings.php:183
+msgid "Before"
+msgstr ""
+
+#: templates/forms/event/bookings-ticket-form.php:51
+#: templates/forms/event/bookings-ticket-form.php:70
+#: templates/forms/event/bookings.php:184
+msgid "After"
+msgstr ""
+
+#: templates/forms/event/bookings-ticket-form.php:59
+msgid "Available until"
+msgstr ""
+
+#: templates/forms/event/bookings-ticket-form.php:79
+msgid "Required?"
+msgstr ""
+
+#: templates/forms/event/bookings-ticket-form.php:84
+msgid "Available for"
+msgstr ""
+
+#: templates/forms/event/bookings-ticket-form.php:86
+msgid "Everyone"
+msgstr ""
+
+#: templates/forms/event/bookings-ticket-form.php:87
+msgid "Logged In Users"
+msgstr ""
+
+#: templates/forms/event/bookings-ticket-form.php:88
+msgid "Guest Users"
+msgstr ""
+
+#: templates/forms/event/bookings-ticket-form.php:92
+msgid "Restrict to"
+msgstr ""
+
+#: templates/forms/event/bookings-ticket-form.php:107
+msgid "Show Advanced Options"
+msgstr ""
+
+#: templates/forms/event/bookings-ticket-form.php:107
+msgid "Hide Advanced Options"
+msgstr ""
+
+#: templates/forms/event/bookings.php:8
+msgid "Enable registration for this event"
+msgstr ""
+
+#: templates/forms/event/bookings.php:25
+msgid "Ticket Options"
+msgstr ""
+
+#: templates/forms/event/bookings.php:29
+msgid "Tickets"
+msgstr ""
+
+#: templates/forms/event/bookings.php:36
+msgid ""
+"Modifications to event tickets will cause all bookings to individual "
+"recurrences of this event to be deleted."
+msgstr ""
+
+#: templates/forms/event/bookings.php:39
+#: templates/forms/event/recurring-when.php:31
+msgid ""
+"You can edit individual recurrences and disassociate them with this "
+"recurring event."
+msgstr ""
+
+#: templates/forms/event/bookings.php:55
+msgid ""
+"You can have single or multiple tickets, where certain tickets become "
+"available under certain conditions, e.g. early bookings, group discounts, "
+"maximum bookings per ticket, etc."
+msgstr ""
+
+#: templates/forms/event/bookings.php:55
+msgid "Basic HTML is allowed in ticket labels and descriptions."
+msgstr ""
+
+#: templates/forms/event/bookings.php:59
+msgid "Ticket Name"
+msgstr ""
+
+#: templates/forms/event/bookings.php:61
+msgid "Min/Max"
+msgstr ""
+
+#: templates/forms/event/bookings.php:62
+msgid "Start/End"
+msgstr ""
+
+#: templates/forms/event/bookings.php:63
+msgid "Avail. Spaces"
+msgstr ""
+
+#: templates/forms/event/bookings.php:64
+#, fuzzy
+msgid "Booked Spaces"
+msgstr "Confirm"
+
+#: templates/forms/event/bookings.php:71
+msgid "Add new ticket"
+msgstr ""
+
+#: templates/forms/event/bookings.php:90
+msgid "Edit"
+msgstr ""
+
+#: templates/forms/event/bookings.php:94
+msgid "View Bookings"
+msgstr ""
+
+#: templates/forms/event/bookings.php:99
+msgid "Free"
+msgstr ""
+
+#: templates/forms/event/bookings.php:131
+msgid "Close Ticket Editor"
+msgstr ""
+
+#: templates/forms/event/bookings.php:149
+msgid "Cancel Ticket Recreation"
+msgstr ""
+
+#: templates/forms/event/bookings.php:152
+msgid "Modify Recurring Event Tickets "
+msgstr ""
+
+#: templates/forms/event/bookings.php:160
+msgid "Event Options"
+msgstr ""
+
+#: templates/forms/event/bookings.php:162
+msgid "Total Spaces"
+msgstr ""
+
+#: templates/forms/event/bookings.php:164
+msgid ""
+"Individual tickets with remaining spaces will not be available if total "
+"booking spaces reach this limit. Leave blank for no limit."
+msgstr ""
+
+#: templates/forms/event/bookings.php:167
+msgid "Maximum Spaces Per Booking"
+msgstr ""
+
+#: templates/forms/event/bookings.php:169
+msgid ""
+"If set, the total number of spaces for a single booking to this event cannot "
+"exceed this amount."
+msgstr ""
+
+#: templates/forms/event/bookings.php:169
+msgid "Leave blank for no limit."
+msgstr ""
+
+#: templates/forms/event/bookings.php:172
+msgid "Booking Cut-Off Date"
+msgstr ""
+
+#: templates/forms/event/bookings.php:186
+msgid "at"
+msgstr ""
+
+#: templates/forms/event/bookings.php:190
+msgid ""
+"This is the definite date after which bookings will be closed for this "
+"event, regardless of individual ticket settings above. Default value will be "
+"the event start date."
+msgstr ""
+
+#: templates/forms/event/featured-image-public.php:13
+msgid "No image uploaded for this event yet"
+msgstr ""
+
+#: templates/forms/event/featured-image-public.php:16
+#: templates/forms/location/featured-image-public.php:16
+msgid "Upload/change picture"
+msgstr ""
+
+#: templates/forms/event/featured-image-public.php:19
+#: templates/forms/location/featured-image-public.php:19
+msgid "Delete Image?"
+msgstr ""
+
+#: templates/forms/event/group.php:22
+msgid "Not a Group Event"
+msgstr ""
+
+#: templates/forms/event/group.php:40
+msgid ""
+"Select a group you admin to attach this event to it. Note that all other "
+"admins of that group can modify the booking."
+msgstr ""
+
+#: templates/forms/event/group.php:43
+msgid ""
+"As a site admin, you see all group events, users will only be able to choose "
+"groups they are admins of."
+msgstr ""
+
+#: templates/forms/event/group.php:47
+msgid "No groups defined yet."
+msgstr ""
+
+#: templates/forms/event/location.php:9
+msgid "This event does not have a physical location."
+msgstr ""
+
+#: templates/forms/event/location.php:32
+#, fuzzy
+msgid "Location:"
+msgstr "Actions"
+
+#: templates/forms/event/location.php:35
+#, fuzzy
+msgid "No Location"
+msgstr "Actions"
+
+#: templates/forms/event/location.php:74
+#, fuzzy
+msgid "Location Name:"
+msgstr "Actions"
+
+#: templates/forms/event/location.php:79
+msgid ""
+"Create a location or start typing to search a previously created location."
+msgstr ""
+
+#: templates/forms/event/location.php:80
+msgid "You cannot edit saved locations here."
+msgstr ""
+
+#: templates/forms/event/location.php:80
+msgid "Reset this form to create a location or search again."
+msgstr ""
+
+#: templates/forms/event/location.php:84 templates/forms/location/where.php:11
+msgid "Address:"
+msgstr ""
+
+#: templates/forms/event/location.php:90 templates/forms/location/where.php:17
+msgid "City/Town:"
+msgstr ""
+
+#: templates/forms/event/location.php:96 templates/forms/location/where.php:23
+msgid "State/County:"
+msgstr ""
+
+#: templates/forms/event/location.php:102 templates/forms/location/where.php:29
+msgid "Postcode:"
+msgstr ""
+
+#: templates/forms/event/location.php:108 templates/forms/location/where.php:35
+msgid "Region:"
+msgstr ""
+
+#: templates/forms/event/location.php:114 templates/forms/location/where.php:42
+msgid "Country:"
+msgstr ""
+
+#: templates/forms/event/location.php:117 templates/forms/location/where.php:45
+msgid "none selected"
+msgstr ""
+
+#: templates/forms/event/recurring-when.php:10
+#: templates/forms/event/when-with-recurring.php:22
+msgid "Events start from"
+msgstr ""
+
+#: templates/forms/event/recurring-when.php:12
+#: templates/forms/event/recurring-when.php:78
+#: templates/forms/event/when-with-recurring.php:16
+#: templates/forms/event/when-with-recurring.php:17
+#: templates/forms/event/when-with-recurring.php:25
+#: templates/forms/event/when.php:11 templates/forms/event/when.php:18
+msgid "to"
+msgstr ""
+
+#: templates/forms/event/recurring-when.php:14
+#: templates/forms/event/when-with-recurring.php:27
+#: templates/forms/event/when.php:20
+msgid "All day"
+msgstr ""
+
+#: templates/forms/event/recurring-when.php:18
+msgid "Timezone"
+msgstr ""
+
+#: templates/forms/event/recurring-when.php:27
+#, php-format
+msgid "Current Recurrence Pattern: %s"
+msgstr ""
+
+#: templates/forms/event/recurring-when.php:28
+msgid ""
+"Modifications to event dates will cause all recurrences of this event to be "
+"deleted and recreated, previous bookings will be deleted."
+msgstr ""
+
+#: templates/forms/event/recurring-when.php:37
+#: templates/forms/event/when-with-recurring.php:31
+msgid "This event repeats"
+msgstr ""
+
+#: templates/forms/event/recurring-when.php:40
+#: templates/forms/event/when-with-recurring.php:34
+msgid "Daily"
+msgstr ""
+
+#: templates/forms/event/recurring-when.php:40
+#: templates/forms/event/when-with-recurring.php:34
+msgid "Weekly"
+msgstr ""
+
+#: templates/forms/event/recurring-when.php:40
+#: templates/forms/event/when-with-recurring.php:34
+msgid "Monthly"
+msgstr ""
+
+#: templates/forms/event/recurring-when.php:40
+#: templates/forms/event/when-with-recurring.php:34
+msgid "Yearly"
+msgstr ""
+
+#: templates/forms/event/recurring-when.php:44
+#: templates/forms/event/when-with-recurring.php:38
+msgid "every"
+msgstr ""
+
+#: templates/forms/event/recurring-when.php:46
+#: templates/forms/event/when-with-recurring.php:40
+msgid "day"
+msgstr ""
+
+#: templates/forms/event/recurring-when.php:47
+#: templates/forms/event/when-with-recurring.php:41
+msgid "days"
+msgstr ""
+
+#: templates/forms/event/recurring-when.php:48
+#: templates/forms/event/when-with-recurring.php:42
+msgid "week on"
+msgstr ""
+
+#: templates/forms/event/recurring-when.php:49
+#: templates/forms/event/when-with-recurring.php:43
+msgid "weeks on"
+msgstr ""
+
+#: templates/forms/event/recurring-when.php:50
+#: templates/forms/event/when-with-recurring.php:44
+msgid "month on the"
+msgstr ""
+
+#: templates/forms/event/recurring-when.php:51
+#: templates/forms/event/when-with-recurring.php:45
+msgid "months on the"
+msgstr ""
+
+#: templates/forms/event/recurring-when.php:52
+#: templates/forms/event/when-with-recurring.php:46
+msgid "year"
+msgstr ""
+
+#: templates/forms/event/recurring-when.php:53
+#: templates/forms/event/when-with-recurring.php:47
+msgid "years"
+msgstr ""
+
+#: templates/forms/event/recurring-when.php:63
+#: templates/forms/event/when-with-recurring.php:58
+msgid "first"
+msgstr ""
+
+#: templates/forms/event/recurring-when.php:63
+#: templates/forms/event/when-with-recurring.php:58
+msgid "second"
+msgstr ""
+
+#: templates/forms/event/recurring-when.php:63
+#: templates/forms/event/when-with-recurring.php:58
+msgid "third"
+msgstr ""
+
+#: templates/forms/event/recurring-when.php:63
+#: templates/forms/event/when-with-recurring.php:58
+msgid "fourth"
+msgstr ""
+
+#: templates/forms/event/recurring-when.php:63
+#: templates/forms/event/when-with-recurring.php:58
+msgid "fifth"
+msgstr ""
+
+#: templates/forms/event/recurring-when.php:63
+#: templates/forms/event/when-with-recurring.php:58
+msgid "last"
+msgstr ""
+
+#: templates/forms/event/recurring-when.php:70
+#: templates/forms/event/when-with-recurring.php:65
+msgid "of each month"
+msgstr ""
+
+#: templates/forms/event/recurring-when.php:75
+#: templates/forms/event/when-with-recurring.php:12
+msgid "Recurrences span from "
+msgstr ""
+
+#: templates/forms/event/recurring-when.php:83
+#: templates/forms/event/when-with-recurring.php:68
+#, php-format
+msgid "Each event spans %s day(s)"
+msgstr ""
+
+#: templates/forms/event/recurring-when.php:85
+#: templates/forms/event/when-with-recurring.php:70
+msgid ""
+"For a recurring event, a one day event will be created on each recurring "
+"date within this date range."
+msgstr ""
+
+#: templates/forms/event/recurring-when.php:91
+msgid "Cancel Reschedule"
+msgstr ""
+
+#: templates/forms/event/recurring-when.php:94
+msgid "Reschedule Recurring Event"
+msgstr ""
+
+#: templates/forms/event/when-with-recurring.php:10
+msgid "This is a recurring event."
+msgstr ""
+
+#: templates/forms/event/when-with-recurring.php:13
+#: templates/forms/event/when.php:8
+msgid "From "
+msgstr ""
+
+#: templates/forms/event/when-with-recurring.php:23
+#: templates/forms/event/when.php:16
+msgid "Event starts at"
+msgstr ""
+
+#: templates/forms/event/when.php:23
+msgid ""
+"This event spans every day between the beginning and end date, with start/"
+"end times applying to each day."
+msgstr ""
+
+#: templates/forms/location-editor.php:11
+#, fuzzy
+msgid "location"
+msgstr "Actions"
+
+#: templates/forms/location-editor.php:25
+#, fuzzy
+msgid "Location Name"
+msgstr "Actions"
+
+#: templates/forms/location-editor.php:29
+msgid "The name of the location"
+msgstr ""
+
+#: templates/forms/location-editor.php:44
+msgid "Details about the location."
+msgstr ""
+
+#: templates/forms/location-editor.php:44
+msgid "HTML Allowed."
+msgstr ""
+
+#: templates/forms/location-editor.php:52
+#, fuzzy
+msgid "Location Image"
+msgstr "Actions"
+
+#: templates/forms/location/attributes.php:43
+#, php-format
+msgid ""
+"You don't have any custom attributes defined in any of your Locations "
+"Manager template settings. Please add them the <a href='%s'>settings page</a>"
+msgstr ""
+
+#: templates/forms/location/featured-image-public.php:13
+msgid "No image uploaded for this location yet"
+msgstr ""
+
+#: templates/forms/location/where.php:6
+msgid ""
+"If you're using the Google Maps, the more detail you provide, the more "
+"accurate Google can be at finding your location. If your address isn't being "
+"found, please <a href='http://maps.google.com'>try it on maps.google.com</a> "
+"by adding all the fields below separated by commas."
+msgstr ""
+
+#: templates/forms/map-container.php:3
+#, fuzzy
+msgid "Location not found"
+msgstr "Actions"
+
+#: templates/placeholders/locationmap.php:30
+#: templates/templates/map-global.php:13
+msgid "Loading Map...."
+msgstr ""
+
+#: templates/placeholders/locationmap.php:45
+msgid "Map Unavailable"
+msgstr ""
+
+#: templates/tables/events.php:18 templates/tables/locations.php:4
+msgid "Add New"
+msgstr ""
+
+#: templates/tables/events.php:23
+msgid "Upcoming"
+msgstr ""
+
+#: templates/tables/events.php:28
+msgid "Draft"
+msgstr ""
+
+#: templates/tables/events.php:30
+msgid "Past Events"
+msgstr ""
+
+#: templates/tables/events.php:33 templates/tables/events.php:38
+msgid "Search Events"
+msgstr ""
+
+#: templates/tables/locations.php:11
+#, php-format
+msgid "My %s"
+msgstr ""
+
+#: templates/tables/locations.php:11 templates/tables/locations.php:14
+#, fuzzy
+msgid "Locations"
+msgstr "Actions"
+
+#: templates/tables/locations.php:14
+#, php-format
+msgid "All %s"
+msgstr ""
+
+#: templates/tables/locations.php:22
+#, fuzzy
+msgid "Bulk Actions"
+msgstr "Actions"
+
+#: templates/tables/locations.php:24
+msgid "Delete selected"
+msgstr ""
+
+#: templates/tables/locations.php:27
+msgid "Apply"
+msgstr ""
+
+#: templates/tables/locations.php:45 templates/tables/locations.php:56
+msgid "Address"
+msgstr ""
+
+#: templates/tables/locations.php:46 templates/tables/locations.php:57
+msgid "State"
+msgstr ""
+
+#: templates/tables/locations.php:47 templates/tables/locations.php:58
+msgid "Country"
+msgstr ""
+
+#: templates/tables/locations.php:77
+msgid "View"
+msgstr ""
+
+#: templates/tables/locations.php:89
+msgid "No locations have been inserted yet!"
+msgstr ""
+
+#: templates/templates/bookings-event-printable.php:13
+#: templates/templates/bookings-event-printable.php:18
+#, php-format
+msgid "Bookings for %s"
+msgstr ""
+
+#: templates/templates/bookings-event-printable.php:21
+msgid "Bookings data"
+msgstr ""
+
+#: templates/templates/bookings-event-printable.php:26
+msgid "Phone number"
+msgstr ""
+
+#: templates/templates/bookings-event-printable.php:49
+msgid "Available"
+msgstr ""
+
+#: templates/templates/my-bookings.php:40
+msgid "Date"
+msgstr ""
+
+#: templates/templates/my-bookings.php:42
+msgid "Status"
+msgstr ""
+
+#: templates/templates/my-bookings.php:69
+msgid "Cancel"
+msgstr ""
+
+#: templates/templates/my-bookings.php:85
+msgid "You do not have any bookings."
+msgstr ""
+
+#: templates/templates/my-bookings.php:96
+#, php-format
+msgid "Please <a href=\"%s\">Log In</a> to view your bookings."
+msgstr ""
+
+#: templates/templates/search/geo-units.php:13
+msgid "distance units"
+msgstr ""
+
+#: wp-lab.php:14
+msgid ""
+"Crée une page qui remonte les publications d'un auteur ou d'une structure en "
+"relation avec HAL et un widget des dernières publications d'un auteur ou "
+"d'une structure."
+msgstr ""
+
+#: wp-lab.php:123
+msgid "Your HAL id"
+msgstr ""
+
+#: wp-lab.php:132
+msgid "Your HAL name"
+msgstr ""
+
+#: wp-lab.php:266
+msgid "Affiche les evenements de la semaine en cour."
+msgstr ""
+
+#: wp-lab.php:271
+msgid "Semaine du laboratoire"
+msgstr ""
+
+#: wp-lab.php:322
+msgid "Publications récentes"
+msgstr ""
+
+#~ msgid "Tous les prêts :"
+#~ msgstr "All loans :"
