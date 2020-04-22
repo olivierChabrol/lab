@@ -776,16 +776,16 @@ jQuery(function($){
       {
         if(response.success)
         {
-          toast_success("Le(s) membre(s) a bien été ajouté au(x) groupe(s)");
+          toast_success(__("Le(s) membre(s) a bien été ajouté au(x) groupe(s)", "lab"));
           reset_and_load_groups_users($("#lab_all_users").is(':checked'), $("#lab_no_users_left").is(':checked'));
         }
         else if(response == "warning")
         {
-          toast_warn("Sélectionnez au moins un utilisateur et un groupe !");
+          toast_warn(__("Sélectionnez au moins un utilisateur et un groupe !","lab"));
         }
         else
         {
-          toast_error("Erreur, la requête n'a pas pu aboutir");
+          toast_error(__("Erreur, la requête n'a pas pu aboutir", "lab"));
         }
       }
     )
@@ -806,25 +806,25 @@ function reset_and_load_groups_users(cond1, cond2) {
         },
         function(response)
         {
-        html_delete_select_options("#list_users");
-        html_delete_select_options("#list_groups");
+          html_delete_select_options("#list_users");
+          html_delete_select_options("#list_groups");
 
-        for(var i = 0; i< response.data[0].length; ++i)
-        {
-            jQuery("#list_users").append(jQuery('<option/>', 
-            { 
-            value : response.data[0][i].user_id,
-            text : response.data[0][i].last_name + " " + response.data[0][i].first_name
-            }));
-        }
-        for(var i = 0; i< response.data[1].length; ++i)
-        {
-            jQuery("#list_groups").append(jQuery('<option/>', 
-            {
-            value : response.data[1][i].group_id, 
-            text : response.data[1][i].group_name
-            }));
-        }
+          for(var i = 0; i< response.data[0].length; ++i)
+          {
+              jQuery("#list_users").append(jQuery('<option/>', 
+              { 
+              value : response.data[0][i].user_id,
+              text : response.data[0][i].last_name + " " + response.data[0][i].first_name
+              }));
+          }
+          for(var i = 0; i< response.data[1].length; ++i)
+          {
+              jQuery("#list_groups").append(jQuery('<option/>', 
+              {
+              value : response.data[1][i].group_id, 
+              text : response.data[1][i].group_name
+              }));
+          }
         }
     );
 }

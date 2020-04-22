@@ -471,7 +471,7 @@ function lab_admin_list_users_groups() {
   if($condIsLeft == 'true')
   {
     $joinIsLeft  = "JOIN `wp_usermeta` AS um6 ON um1.`user_id` = um6.`user_id`";
-    $whereIsLeft = "AND um6.`meta_key`='lab_user_left' "."AND um6.`meta_value` IS NULL ";;
+    $whereIsLeft = "AND um6.`meta_key`='lab_user_left' "."AND um6.`meta_value` IS NULL ";
   }
 
   $sqlUser = "SELECT um1.`user_id`, um3.`meta_value` AS first_name, um2.`meta_value` AS last_name
