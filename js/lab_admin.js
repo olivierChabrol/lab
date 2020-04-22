@@ -138,7 +138,6 @@ jQuery(function($){
     $(this).text(replaced);
   });
   
-
   $(".directory_row").click(function() {
     window.location.href = "http://stage.fr/user/" + $(this).attr('userId');
   });
@@ -177,6 +176,12 @@ jQuery(function($){
   $("#lab_user_button_save_left").click(function() {
     saveUserLeft($("#lab_user_search_id").val(), $("#lab_user_left_date").val(), $("#lab_user_left").is(":checked"));
   });
+  $("#lab_settings_correct_um").click(function() {
+    correctUMFields();
+  });
+  $("#lab_settings_copy_phone").click(function() {
+    lab_settings_copy_phone();
+  });
   $("#lab_createGroup_acronym").change(function() {
     var data = {
       'action' : 'group_search_ac',
@@ -198,7 +203,8 @@ jQuery(function($){
         $("#lab_createGroup_create").css('color','#0071a1');
       }
     });
-  })
+  });
+  
   $("#lab_createGroup_chief").autocomplete({
     minChars: 3,
     source: function(term, suggest){
@@ -772,16 +778,16 @@ jQuery(function($){
       {
         if(response.success)
         {
-          toast_success("Le(s) membre(s) a bien été ajouté au(x) groupe(s)");
+          toast_success(__("Le(s) membre(s) a bien été ajouté au(x) groupe(s)", "lab"));
           reset_and_load_groups_users($("#lab_all_users").is(':checked'), $("#lab_no_users_left").is(':checked'));
         }
         else if(response == "warning")
         {
-          toast_warn("Sélectionnez au moins un utilisateur et un groupe !");
+          toast_warn(__("Sélectionnez au moins un utilisateur et un groupe !","lab"));
         }
         else
         {
-          toast_error("Erreur, la requête n'a pas pu aboutir");
+          toast_error(__("Erreur, la requête n'a pas pu aboutir", "lab"));
         }
       }
     )
@@ -1190,6 +1196,18 @@ function deleteMetaKeys(key) {
     'key' : key
   };
   callAjax(data, "MetaKey delete for all user", loadExistingKeysFields, "failed to delete key '" + key + "'", null);
+}
+function correctUMFields() {
+  var data = {
+    'action' : 'um_correct'
+  };
+  callAjax(data, "UM Field corrected", null, "failed to correct UM fields", null);
+}
+function lab_settings_copy_phone() {
+  var data = {
+    'action' : 'copy_phone'
+  };
+  callAjax(data, "Copy phone successful", null, "Failed to copy phones", null);
 }
 function saveMetakey(userId, key, value) {
   var data = {
