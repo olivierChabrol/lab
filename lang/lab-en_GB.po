@@ -2,194 +2,63 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-21 15:57+0200\n"
-"PO-Revision-Date: 2020-04-21 15:58+0200\n"
+"POT-Creation-Date: 2020-04-22 09:40+0200\n"
+"PO-Revision-Date: 2020-04-22 09:41+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.2.4\n"
+"X-Generator: Poedit 2.3\n"
 "X-Poedit-Basepath: ..\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-KeywordsList: _e;esc_html_e;esc_html__;__\n"
 "X-Poedit-SearchPath-0: lab-admin-keyring.php\n"
 "X-Poedit-SearchPath-1: js/lab_global.js\n"
-"X-Poedit-SearchPath-2: .\n"
+"X-Poedit-SearchPath-2: admin/view/lab-admin-tab-users.php\n"
 
-#: admin/view/lab-admin-tab-groups.php:9
-#, fuzzy
-#| msgid "Nom du groupe"
-msgid "Nom du groupe  "
-msgstr "Group name"
+#: admin/view/lab-admin-tab-users.php:14
+msgid "Nom de l'utilisateur"
+msgstr "User's name"
 
-#: admin/view/lab-admin-tab-groups.php:11
-msgid "Supprimer le groupe"
-msgstr "Delete group"
+#: admin/view/lab-admin-tab-users.php:23
+msgid "Parti"
+msgstr "Left"
 
-#: admin/view/lab-admin-tab-groups.php:20
-msgid "Modifier l'acronyme"
-msgstr "Modify acronym"
+#: admin/view/lab-admin-tab-users.php:26
+msgid "Date de départ"
+msgstr "Departure date"
 
-#: admin/view/lab-admin-tab-groups.php:22
-msgid "Nouveau nom du groupe"
-msgstr "New group name"
+#: admin/view/lab-admin-tab-users.php:31
+msgid "Modifier le statut de l'utilisateur"
+msgstr "Modify user's status"
 
-#: admin/view/lab-admin-tab-groups.php:24
-msgid "Définir un autre responsable du groupe"
-msgstr "Defined a new group leader"
+#: admin/view/lab-admin-tab-users.php:33
+msgid "Affecter des utilisateurs à des groupes"
+msgstr "Assign users to groups"
 
-#: admin/view/lab-admin-tab-groups.php:26
-msgid "Co responsable"
-msgstr "Substitute"
+#: admin/view/lab-admin-tab-users.php:35
+msgid "Afficher aussi les personnes qui ont déjà un groupe"
+msgstr "Show also people who already have a group"
 
-#: admin/view/lab-admin-tab-groups.php:28
-msgid "Ajouter un co-responsable"
-msgstr "Add substitute"
+#: admin/view/lab-admin-tab-users.php:37
+msgid "Afficher aussi les utilisateurs qui ont quitté l'Institut"
+msgstr "Show also users who have left the Institute"
 
-#: admin/view/lab-admin-tab-groups.php:32
-msgid "Modifier le groupe parent"
-msgstr "Modify parent group"
+#: admin/view/lab-admin-tab-users.php:46
+msgid "Choisissez une ou plusieurs personne(s) à affecter :"
+msgstr "Choose one or more people to assign :"
 
-#: admin/view/lab-admin-tab-groups.php:34
-msgid "Modifier le type"
-msgstr "Modify group"
+#: admin/view/lab-admin-tab-users.php:53
+msgid ""
+"Choisissez le ou les groupe(s) au(x)quel(s) vous allez affecter des "
+"personnes :"
+msgstr "Choose which group or groups you're going to assign people to :"
 
-#: admin/view/lab-admin-tab-groups.php:45
-msgid "Créer un groupe"
-msgstr "Create group"
-
-#: admin/view/lab-admin-tab-groups.php:49
-msgid "Nom du groupe"
-msgstr "Group name"
-
-#: admin/view/lab-admin-tab-groups.php:52
-msgid "Acronym"
-msgstr "Acronym"
-
-#: admin/view/lab-admin-tab-groups.php:59
-msgid "Groupe parent"
-msgstr "parent's group"
-
-#: admin/view/lab-admin-tab-groups.php:65 lab-admin-keyring.php:49
-msgid "Type"
-msgstr "Type"
-
-#: admin/view/lab-admin-tab-groups.php:71
-#, fuzzy
-#| msgid "Définir un autre responsable du groupe"
-msgid "Responsable du groupe"
-msgstr "Defined a new group leader"
-
-#: admin/view/lab-admin-tab-groups.php:78
-msgid "Suppléant"
-msgstr ""
-
-#: admin/view/lab-admin-tab-groups.php:78
-#, fuzzy
-#| msgid "(facultatif)"
-msgid "Facultatif"
-msgstr "(optional)"
-
-#: admin/view/lab-admin-tab-groups.php:80
-msgid "Vider la liste"
-msgstr ""
-
-#: admin/view/lab-admin-tab-groups.php:85
-msgid "N'oubliez pas d'appuyer sur ajouter"
-msgstr ""
-
-#: admin/view/lab-admin-tab-groups.php:88
-msgid "+ Ajouter un suppléant"
-msgstr ""
-
-#: admin/view/lab-admin-tab-groups.php:91
-#, fuzzy
-#| msgid "Supprimer le groupe"
-msgid "Créer le groupe"
-msgstr "Delete group"
-
-#: admin/view/lab-admin-tab-settings.php:58
-msgid "Créer la table Keys"
-msgstr "Create the Keys table"
-
-#: admin/view/lab-admin-tab-settings.php:59
-msgid "Créer la table Loans"
-msgstr "Create the Loans table"
-
-#: admin/view/lab-admin-tabs.php:23
-msgid "Séminaire"
-msgstr "Seminar"
-
-#: admin/view/lab-admin-tabs.php:24 lab-admin-keyring.php:234
-msgid "Utilisateur"
-msgstr "User"
-
-#: admin/view/lab-admin-tabs.php:25
-msgid "Paramètres globaux des utilisateurs"
-msgstr "Users global settings"
-
-#: admin/view/lab-admin-tabs.php:26
-msgid "Groupes"
-msgstr "Groups"
-
-#: admin/view/lab-admin-tabs.php:27
-msgid "Paramètres"
-msgstr "Settings"
-
-#: admin/view/lab-admin-tabs.php:29
-msgid "Paramètres globaux"
-msgstr "General settings"
-
-#: js/lab_admin.js:324
-msgid "Groupe créé avec succès"
-msgstr "Group created sucessfully"
-
-#: js/lab_admin.js:324
-msgid "Erreur lors de la création du groupe : "
-msgstr "Failed to create group : "
-
-#: js/lab_admin.js:1393 js/lab_admin.js:1397 js/lab_keyring.js:430
-#: js/lab_keyring.js:434
-#, fuzzy
-#| msgid "Gestion des prêts"
-msgid "Reçu de prêt"
-msgstr "Loan management"
-
-#: js/lab_admin.js:1400 js/lab_keyring.js:437
-msgid "ID du prêt"
-msgstr "Loan ID"
-
-#: js/lab_admin.js:1401 js/lab_keyring.js:438 lab-admin-keyring.php:207
-#: lab-admin-keyring.php:233
-msgid "Référent"
-msgstr "Referent"
-
-#: js/lab_admin.js:1402 js/lab_keyring.js:439
-msgid "La clé/badge numéro"
-msgstr "Key/Badge number"
-
-#: js/lab_admin.js:1403 js/lab_keyring.js:440
-msgid "A été prêtée à"
-msgstr "loan to"
-
-#: js/lab_admin.js:1407 js/lab_keyring.js:444
-msgid "Et devra être rendue avant le"
-msgstr ""
-
-#: js/lab_admin.js:1408 js/lab_keyring.js:445 lab-admin-keyring.php:54
-#: lab-admin-keyring.php:201 lab-admin-keyring.php:237
-msgid "Commentaire"
-msgstr "Comments"
-
-#: js/lab_admin.js:1409 js/lab_keyring.js:446
-msgid "Signature"
-msgstr "Signature"
-
-#: js/lab_admin.js:1412 js/lab_keyring.js:449
-msgid "Imprimer"
-msgstr "Print"
+#: admin/view/lab-admin-tab-users.php:58
+msgid "envoyer"
+msgstr "submit"
 
 #: lab-admin-keyring.php:3
 msgid "Gestion des clés"
@@ -243,6 +112,10 @@ msgstr "Other :"
 msgid "ID"
 msgstr "ID"
 
+#: lab-admin-keyring.php:49
+msgid "Type"
+msgstr "Type"
+
 #: lab-admin-keyring.php:50 lab-admin-keyring.php:176
 msgid "Numéro"
 msgstr "Number"
@@ -259,6 +132,10 @@ msgstr "Brand"
 #: lab-admin-keyring.php:53 lab-admin-keyring.php:188
 msgid "Site"
 msgstr "Location"
+
+#: lab-admin-keyring.php:54 lab-admin-keyring.php:201 lab-admin-keyring.php:237
+msgid "Commentaire"
+msgstr "Comments"
 
 #: lab-admin-keyring.php:55
 msgid "Dispo"
@@ -312,6 +189,10 @@ msgstr "Ongoing loan"
 msgid "Afficher Reçu"
 msgstr "Show Receipt"
 
+#: lab-admin-keyring.php:207 lab-admin-keyring.php:233
+msgid "Référent"
+msgstr "Referent"
+
 #: lab-admin-keyring.php:209
 msgid "Usager"
 msgstr "User"
@@ -352,6 +233,10 @@ msgstr ""
 msgid "Clé"
 msgstr "Key"
 
+#: lab-admin-keyring.php:234
+msgid "Utilisateur"
+msgstr "User"
+
 #: lab-admin-keyring.php:235
 msgid "Début"
 msgstr "Start"
@@ -372,55 +257,15 @@ msgstr "Loan"
 msgid "Voir prêt"
 msgstr "Show Loan"
 
-#: lab-hal-widget.php:9
-msgid "Affiche les dernières publications HAL d'un groupe"
-msgstr ""
+#~ msgid "Créer la table Keys"
+#~ msgstr "Create the Keys table"
 
-#: lab-hal-widget.php:14
-msgid "Lab - Publications HAL"
-msgstr ""
+#~ msgid "Créer la table Loans"
+#~ msgstr "Create the Loans table"
 
-#: lab-hal-widget.php:40
-msgid "Aucun article trouvé"
-msgstr ""
+#~ msgid "Tous les prêts :"
+#~ msgstr "All loans :"
 
-#: lab-hal-widget.php:69
-msgid "Publications Hal"
-msgstr ""
-
-#: lab-hal-widget.php:76
-msgid "Titre"
-msgstr ""
-
-#: lab-hal-widget.php:80
-msgid "Nombre de documents affichés"
-msgstr ""
-
-#: lab-hal-widget.php:85
-msgid "Groupe"
-msgstr ""
-
-#: templates/buddypress/group-events.php:29
-#: templates/buddypress/my-group-events.php:30
-#: templates/buddypress/profile.php:22
-msgid "No Events"
-msgstr ""
-
-#: templates/buddypress/group-events.php:42
-#: templates/buddypress/my-group-events.php:42
-#: templates/forms/bookingform/booking-fields.php:12
-#: templates/forms/event/bookings-ticket-form.php:13
-#: templates/tables/events.php:64 templates/tables/locations.php:44
-#: templates/tables/locations.php:55
-#: templates/templates/bookings-event-printable.php:24
-msgid "Name"
-msgstr ""
-
-#: templates/buddypress/group-events.php:43
-#: templates/buddypress/my-group-events.php:44
-#: templates/forms/location-editor.php:32
-#: templates/forms/location-editor.php:65
-#: templates/forms/location-editor.php:67 templates/tables/events.php:67
 #, fuzzy
 msgid "Location"
 msgstr "Actions"
