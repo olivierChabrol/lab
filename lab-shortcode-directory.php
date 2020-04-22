@@ -23,6 +23,7 @@ function lab_directory($param) {
 
     $displayLeftUser  = $param['display-left-user'];
     $group   = $param['group'];
+    $directoryStr = "<h1>Annuaire</h1>"; // title
 
     $joinAsLeft  = "";
     $whereAsLeft = "";
@@ -64,7 +65,8 @@ function lab_directory($param) {
     $results = $wpdb->get_results($sql);
     $nbResult = $wpdb->num_rows;
     $items = array();
-    $directoryStr = "<h1>" .__('Annuaire', 'lab') . "</h1>"; // title
+    $directoryStr = "<h1>Annuaire</h1>"; // title
+    //$directoryStr .= $sql;
     $alphachar = array_merge(range('A', 'Z'));
     $url = explode('?', $_SERVER['REQUEST_URI']); // current url (without parameters)
     foreach ($alphachar as $element) {
@@ -74,7 +76,7 @@ function lab_directory($param) {
     $directoryStr .= 
         "<br>
             <div id='user-srch' style='width:350px;'>
-                <input type='text' id='lab_directory_user_name' name='dud_user_srch_val' style='' value='' maxlength='50' placeholder=" .__('Chercher un nom', 'lab') . "/>
+                <input type='text' id='lab_directory_user_name' name='dud_user_srch_val' style='' value='' maxlength='50' placeholder='Chercher un nom'/>
                 <input type='hidden' id='lab_directory_user_id' value='' />
             </div>
         <br>"; // search field
