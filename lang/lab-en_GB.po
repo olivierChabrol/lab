@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-21 17:19+0200\n"
-"PO-Revision-Date: 2020-04-21 17:19+0200\n"
+"POT-Creation-Date: 2020-04-22 09:40+0200\n"
+"PO-Revision-Date: 2020-04-22 09:41+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en\n"
@@ -18,9 +18,47 @@ msgstr ""
 "X-Poedit-SearchPath-1: js/lab_global.js\n"
 "X-Poedit-SearchPath-2: admin/view/lab-admin-tab-users.php\n"
 
+#: admin/view/lab-admin-tab-users.php:14
+msgid "Nom de l'utilisateur"
+msgstr "User's name"
+
+#: admin/view/lab-admin-tab-users.php:23
+msgid "Parti"
+msgstr "Left"
+
+#: admin/view/lab-admin-tab-users.php:26
+msgid "Date de départ"
+msgstr "Departure date"
+
+#: admin/view/lab-admin-tab-users.php:31
+msgid "Modifier le statut de l'utilisateur"
+msgstr "Modify user's status"
+
 #: admin/view/lab-admin-tab-users.php:33
 msgid "Affecter des utilisateurs à des groupes"
 msgstr "Assign users to groups"
+
+#: admin/view/lab-admin-tab-users.php:35
+msgid "Afficher aussi les personnes qui ont déjà un groupe"
+msgstr "Show also people who already have a group"
+
+#: admin/view/lab-admin-tab-users.php:37
+msgid "Afficher aussi les utilisateurs qui ont quitté l'Institut"
+msgstr "Show also users who have left the Institute"
+
+#: admin/view/lab-admin-tab-users.php:46
+msgid "Choisissez une ou plusieurs personne(s) à affecter :"
+msgstr "Choose one or more people to assign :"
+
+#: admin/view/lab-admin-tab-users.php:53
+msgid ""
+"Choisissez le ou les groupe(s) au(x)quel(s) vous allez affecter des "
+"personnes :"
+msgstr "Choose which group or groups you're going to assign people to :"
+
+#: admin/view/lab-admin-tab-users.php:58
+msgid "envoyer"
+msgstr "submit"
 
 #: lab-admin-keyring.php:3
 msgid "Gestion des clés"
