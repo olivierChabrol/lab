@@ -772,16 +772,16 @@ jQuery(function($){
       {
         if(response.success)
         {
-          toast_success("Le(s) membre(s) a bien été ajouté au(x) groupe(s)");
+          toast_success(__("Le(s) membre(s) a bien été ajouté au(x) groupe(s)", "lab"));
           reset_and_load_groups_users($("#lab_all_users").is(':checked'), $("#lab_no_users_left").is(':checked'));
         }
         else if(response == "warning")
         {
-          toast_warn("Sélectionnez au moins un utilisateur et un groupe !");
+          toast_warn(__("Sélectionnez au moins un utilisateur et un groupe !","lab"));
         }
         else
         {
-          toast_error("Erreur, la requête n'a pas pu aboutir");
+          toast_error(__("Erreur, la requête n'a pas pu aboutir", "lab"));
         }
       }
     )
