@@ -178,6 +178,7 @@ function admin_enqueue()
   wp_set_script_translations( 'lab-global' , 'lab', dirname(__FILE__).'/lang' );
   wp_set_script_translations( 'lab-admin'  , 'lab', dirname(__FILE__).'/lang' );
   wp_set_script_translations( 'lab-keyring', 'lab', dirname(__FILE__).'/lang' );
+  wp_set_script_translations( 'lab-shortcode-directory', 'lab', dirname(__FILE__).'/lang' ); // ?
 }
 
 function wp_lab_fe_enqueues()
