@@ -16,7 +16,7 @@ function lab_admin_tab_groups() {
 <hr>
  <!-- Modifier un groupe -->
   <div class="wp_lab_editGroup_form">
-    <h3>Modifier un groupe</h3>
+    <h3><?php esc_html_e("Modifier un groupe", "lab")?></h3>
     <label for="wp_lab_group_acronym_edit"><?php esc_html_e("Modifier l'acronyme",'lab'); ?> :</label>
     <input type="text" name="wp_lab_acronym" id="wp_lab_group_acronym_edit" value="" size=10 placeholder="AA"/>
     <label for="wp_lab_group_name_edit"><?php esc_html_e("Nouveau nom du groupe",'lab'); ?> :</label>

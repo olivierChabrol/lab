@@ -2,18 +2,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-22 11:55+0200\n"
-"PO-Revision-Date: 2020-04-22 11:57+0200\n"
+"POT-Creation-Date: 2020-04-22 15:24+0200\n"
+"PO-Revision-Date: 2020-04-22 15:25+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
-"Language: en_150\n"
-"X-Source-Language: fr\n"
+"Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2020-04-22 14:09+0200\n"
-"PO-Revision-Date: 2020-04-22 14:13+0200\n"
-"Language: en\n"
+"X-Source-Language: fr\n"
 "X-Source-Language: fr\n"
 "X-Generator: Poedit 2.3\n"
 "X-Poedit-Basepath: ..\n"
@@ -23,8 +20,98 @@ msgstr ""
 "X-Poedit-SearchPath-1: js/lab_global.js\n"
 "X-Poedit-SearchPath-2: shortcode/lab-shortcode-hal.php\n"
 "X-Poedit-SearchPath-3: lab-shortcode-directory.php\n"
-"X-Poedit-SearchPath-2: admin/view/lab-admin-tab-users.php\n"
-"X-Poedit-SearchPath-3: js/lab_admin.js\n"
+"X-Poedit-SearchPath-4: admin/view/lab-admin-tab-groups.php\n"
+"X-Poedit-SearchPath-5: admin/view/lab-admin-tab-users.php\n"
+"X-Poedit-SearchPath-6: admin/view/lab-admin-tabs.php\n"
+"X-Poedit-SearchPath-7: admin/view/tabs.php\n"
+
+#: admin/view/lab-admin-tab-groups.php:9
+msgid "Nom du groupe  "
+msgstr "Group name "
+
+#: admin/view/lab-admin-tab-groups.php:11
+msgid "Supprimer le groupe"
+msgstr "Delete group"
+
+#: admin/view/lab-admin-tab-groups.php:19
+msgid "Modifier un groupe"
+msgstr "Modify group"
+
+#: admin/view/lab-admin-tab-groups.php:20
+msgid "Modifier l'acronyme"
+msgstr "Modify acronym"
+
+#: admin/view/lab-admin-tab-groups.php:22
+msgid "Nouveau nom du groupe"
+msgstr "New group name"
+
+#: admin/view/lab-admin-tab-groups.php:24
+msgid "Définir un autre responsable du groupe"
+msgstr "Defined a new group leader"
+
+#: admin/view/lab-admin-tab-groups.php:26
+msgid "Co responsable"
+msgstr "Substitute"
+
+#: admin/view/lab-admin-tab-groups.php:28
+msgid "Ajouter un co-responsable"
+msgstr "Add substitute"
+
+#: admin/view/lab-admin-tab-groups.php:32
+msgid "Modifier le groupe parent"
+msgstr "Modify parent group"
+
+#: admin/view/lab-admin-tab-groups.php:34
+msgid "Modifier le type"
+msgstr "Modify group"
+
+#: admin/view/lab-admin-tab-groups.php:45
+msgid "Créer un groupe"
+msgstr "Create group"
+
+#: admin/view/lab-admin-tab-groups.php:49
+msgid "Nom du groupe"
+msgstr "Group name"
+
+#: admin/view/lab-admin-tab-groups.php:52
+msgid "Acronym"
+msgstr "Acronym"
+
+#: admin/view/lab-admin-tab-groups.php:59
+msgid "Groupe parent"
+msgstr "parent's group"
+
+#: admin/view/lab-admin-tab-groups.php:65 lab-admin-keyring.php:49
+msgid "Type"
+msgstr "Type"
+
+#: admin/view/lab-admin-tab-groups.php:71
+msgid "Responsable du groupe"
+msgstr "Group leader"
+
+#: admin/view/lab-admin-tab-groups.php:78
+msgid "Suppléant"
+msgstr ""
+
+#: admin/view/lab-admin-tab-groups.php:78
+msgid "Facultatif"
+msgstr "(optional)"
+
+#: admin/view/lab-admin-tab-groups.php:80
+msgid "Vider la liste"
+msgstr ""
+
+#: admin/view/lab-admin-tab-groups.php:85
+msgid "N'oubliez pas d'appuyer sur ajouter"
+msgstr ""
+
+#: admin/view/lab-admin-tab-groups.php:88
+msgid "+ Ajouter un suppléant"
+msgstr ""
+
+#: admin/view/lab-admin-tab-groups.php:91
+msgid "Créer le groupe"
+msgstr "Create group"
 
 #: admin/view/lab-admin-tab-users.php:14
 msgid "Nom de l'utilisateur"
@@ -59,25 +146,38 @@ msgid "Choisissez une ou plusieurs personne(s) à affecter :"
 msgstr "Choose one or more people to assign :"
 
 #: admin/view/lab-admin-tab-users.php:53
-msgid "Choisissez le ou les groupe(s) au(x)quel(s) vous allez affecter des personnes :"
+msgid ""
+"Choisissez le ou les groupe(s) au(x)quel(s) vous allez affecter des "
+"personnes :"
 msgstr "Choose which group or groups you're going to assign people to :"
 
 #: admin/view/lab-admin-tab-users.php:58
 msgid "envoyer"
 msgstr "submit"
 
-#: js/lab_admin.js:1365
-#: lab-admin-keyring.php:207
-#: lab-admin-keyring.php:233
-msgid "Référent"
-msgstr "Referent"
+#: admin/view/lab-admin-tabs.php:23
+msgid "Séminaire"
+msgstr "Seminar"
 
-#: js/lab_admin.js:1372
-#: lab-admin-keyring.php:54
-#: lab-admin-keyring.php:201
-#: lab-admin-keyring.php:237
-msgid "Commentaire"
-msgstr "Comments"
+#: admin/view/lab-admin-tabs.php:24 lab-admin-keyring.php:234
+msgid "Utilisateur"
+msgstr "User"
+
+#: admin/view/lab-admin-tabs.php:25
+msgid "Paramètres globaux des utilisateurs"
+msgstr "Users global settings"
+
+#: admin/view/lab-admin-tabs.php:26
+msgid "Groupes"
+msgstr "Groups"
+
+#: admin/view/lab-admin-tabs.php:27
+msgid "Paramètres"
+msgstr "Settings"
+
+#: admin/view/lab-admin-tabs.php:29
+msgid "Paramètres globaux"
+msgstr "General settings"
 
 #: lab-admin-keyring.php:3
 msgid "Gestion des clés"
@@ -87,13 +187,11 @@ msgstr "Keys management"
 msgid "Voulez-vous vraiment supprimer cette clé ?"
 msgstr "Do you really want to remove this key?"
 
-#: lab-admin-keyring.php:9
-#: lab-admin-keyring.php:17
+#: lab-admin-keyring.php:9 lab-admin-keyring.php:17
 msgid "Annuler"
 msgstr "Cancel"
 
-#: lab-admin-keyring.php:10
-#: lab-admin-keyring.php:18
+#: lab-admin-keyring.php:10 lab-admin-keyring.php:18
 msgid "Confirmer"
 msgstr "Confirm"
 
@@ -129,35 +227,24 @@ msgstr "Keys per page :"
 msgid "Autre :"
 msgstr "Other :"
 
-#: lab-admin-keyring.php:48
-#: lab-admin-keyring.php:172
-#: lab-admin-keyring.php:231
+#: lab-admin-keyring.php:48 lab-admin-keyring.php:172 lab-admin-keyring.php:231
 msgid "ID"
 msgstr "ID"
 
-#: lab-admin-keyring.php:49
-msgid "Type"
-msgstr "Type"
-
-#: lab-admin-keyring.php:50
-#: lab-admin-keyring.php:176
+#: lab-admin-keyring.php:50 lab-admin-keyring.php:176
 msgid "Numéro"
 msgstr "Number"
 
-#: lab-admin-keyring.php:51
-#: lab-admin-keyring.php:180
+#: lab-admin-keyring.php:51 lab-admin-keyring.php:180
 msgid "Bureau"
 msgstr "Office"
 
-#: lab-admin-keyring.php:52
-#: lab-admin-keyring.php:86
-#: lab-admin-keyring.php:126
+#: lab-admin-keyring.php:52 lab-admin-keyring.php:86 lab-admin-keyring.php:126
 #: lab-admin-keyring.php:184
 msgid "Marque"
 msgstr "Brand"
 
-#: lab-admin-keyring.php:53
-#: lab-admin-keyring.php:188
+#: lab-admin-keyring.php:53 lab-admin-keyring.php:188
 msgid "Site"
 msgstr "Location"
 
@@ -169,8 +256,7 @@ msgstr "Comments"
 msgid "Dispo"
 msgstr "Available"
 
-#: lab-admin-keyring.php:56
-#: lab-admin-keyring.php:220
+#: lab-admin-keyring.php:56 lab-admin-keyring.php:220
 msgid "Actions"
 msgstr "Actions"
 
@@ -178,8 +264,7 @@ msgstr "Actions"
 msgid "Page suivante"
 msgstr "Next Page"
 
-#: lab-admin-keyring.php:66
-#: lab-admin-keyring.php:103
+#: lab-admin-keyring.php:66 lab-admin-keyring.php:103
 msgid "Modifier"
 msgstr "Edit"
 
@@ -191,8 +276,7 @@ msgstr "number"
 msgid "bureau"
 msgstr "office"
 
-#: lab-admin-keyring.php:101
-#: lab-admin-keyring.php:141
+#: lab-admin-keyring.php:101 lab-admin-keyring.php:141
 msgid "Commentaire (facultatif)"
 msgstr "Comments (optional)"
 
@@ -264,10 +348,6 @@ msgstr "Loans history for this key"
 msgid "Clé"
 msgstr "Key"
 
-#: lab-admin-keyring.php:234
-msgid "Utilisateur"
-msgstr "User"
-
 #: lab-admin-keyring.php:235
 msgid "Début"
 msgstr "Start"
@@ -292,84 +372,21 @@ msgstr "Show Loan"
 msgid "Annuaire"
 msgstr "Directory"
 
+#: lab-shortcode-directory.php:78
+#, fuzzy
+#| msgid "Rechercher une clé"
+msgid "Chercher un nom"
+msgstr "Search for a key"
+
 #: shortcode/lab-shortcode-hal.php:32
 msgid "Publications HAL"
-msgstr "HAL Publlications"
-
-#~ msgid "Nom du groupe  "
-#~ msgstr "Group name "
-
-#~ msgid "Supprimer le groupe"
-#~ msgstr "Delete group"
-
-#~ msgid "Modifier l'acronyme"
-#~ msgstr "Modify acronym"
-
-#~ msgid "Nouveau nom du groupe"
-#~ msgstr "New group name"
-
-#~ msgid "Définir un autre responsable du groupe"
-#~ msgstr "Defined a new group leader"
-
-#~ msgid "Co responsable"
-#~ msgstr "Substitute"
-
-#~ msgid "Ajouter un co-responsable"
-#~ msgstr "Add substitute"
-
-#~ msgid "Modifier le groupe parent"
-#~ msgstr "Modify parent group"
-
-#~ msgid "Modifier le type"
-#~ msgstr "Modify group"
-
-#~ msgid "Créer un groupe"
-#~ msgstr "Create group"
-
-#~ msgid "Nom du groupe"
-#~ msgstr "Group name"
-
-#~ msgid "Acronym"
-#~ msgstr "Acronym"
-
-#~ msgid "Groupe parent"
-#~ msgstr "parent's group"
-
-#, fuzzy
-#~| msgid "Définir un autre responsable du groupe"
-#~ msgid "Responsable du groupe"
-#~ msgstr "Defined a new group leader"
-
-#, fuzzy
-#~| msgid "(facultatif)"
-#~ msgid "Facultatif"
-#~ msgstr "(optional)"
-
-#, fuzzy
-#~| msgid "Supprimer le groupe"
-#~ msgid "Créer le groupe"
-#~ msgstr "Delete group"
+msgstr "HAL Publications"
 
 #~ msgid "Créer la table Keys"
 #~ msgstr "Create the Keys table"
 
 #~ msgid "Créer la table Loans"
 #~ msgstr "Create the Loans table"
-
-#~ msgid "Séminaire"
-#~ msgstr "Seminar"
-
-#~ msgid "Paramètres globaux des utilisateurs"
-#~ msgstr "Users global settings"
-
-#~ msgid "Groupes"
-#~ msgstr "Groups"
-
-#~ msgid "Paramètres"
-#~ msgstr "Settings"
-
-#~ msgid "Paramètres globaux"
-#~ msgstr "General settings"
 
 #~ msgid "Groupe créé avec succès"
 #~ msgstr "Group created sucessfully"
@@ -459,12 +476,6 @@ msgstr "HAL Publlications"
 #, fuzzy
 #~ msgid "Bulk Actions"
 #~ msgstr "Actions"
-
-#~ msgid "Créer la table Keys"
-#~ msgstr "Create the Keys table"
-
-#~ msgid "Créer la table Loans"
-#~ msgstr "Create the Loans table"
 
 #~ msgid "Tous les prêts :"
 #~ msgstr "All loans :"
