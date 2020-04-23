@@ -543,7 +543,7 @@ function lab_keyring_search_byWordReq() {
     wp_send_json_error();
     return;
   }
-  $html = wp_lab_keyring_tableFromKeysList($res['items']);
+  $html = lab_keyringtableFromKeysList($res['items']);
   wp_send_json_success([$res['total'],$html]);
 }
 function lab_keyring_findKey_Req() {
@@ -672,11 +672,35 @@ function lab_keyring_end_loanReq() {
   wp_send_json_error($res);
 }
 function lab_keyring_find_oldLoansReq() {
-  $res = lab_keyring_find_oldLoans($_POST['key_id']);
+  if (isset($_POST['key_id'])) {
+    $res = lab_keyring_find_oldLoans('key_id',$_POST['key_id']);
+  } else if (isset($_POST['user_id'])) {
+    $res = lab_keyring_find_oldLoans('user_id',$_POST['user_id']);
+  } 
   if (count($res)==0) {
     wp_send_json_error("<tr><td colspan='9'>No loans found</td></tr>");
     return;
   } else {
-    wp_send_json_success(wp_lab_keyring_tableFromLoansList($res));
+    wp_send_json_success(lab_keyringtableFromLoansList($res));
   }
+}
+/// Second onglet : 
+
+function lab_keyring_search_current_loans_Req() {
+  $res = lab_keyring_search_current_loans($_POST["user"],$_POST["page"],$_POST["limit"]);
+  if (count($res)==0) {
+    wp_send_json_error("<tr><td colspan='9'>No loans found</td></tr>");
+    return;
+  } else {
+    $html = lab_keyringtableFromLoansList($res['items']);
+    wp_send_json_success([$res['total'],$html]);
+  }
+}
+function lab_keyring_get_loan_Req() {
+  $res = lab_keyring_get_loan($_POST['id']);
+  if (count($res)) {
+    wp_send_json_success($res[0]);
+    return;
+  }
+  wp_send_json_error($res);
 }
