@@ -1,5 +1,9 @@
 <?php
 
+/***********************************************************************************************************************
+ * PLUGIN SHORTCODE lab_incoming_event
+ **********************************************************************************************************************/
+
 function lab_incoming_event($param) 
 {
     $param = shortcode_atts(array(
@@ -9,21 +13,31 @@ function lab_incoming_event($param)
         "lab-incoming-event"
     );
     $eventCategory = $param['slug'];
+    $category      = explode(",", $eventCategory);
 
+    /***  SQL ***/
     $sql = "SELECT p.*
             FROM `wp_terms` AS t 
             JOIN `wp_term_relationships` AS tr 
                 ON tr.`term_taxonomy_id`=t.`term_id` 
             JOIN `wp_em_events` as p 
                 ON p.`post_id`=tr.`object_id` 
-            WHERE t.slug ='" .$eventCategory. "' 
-                AND `p`.`event_end_date` >= NOW() 
-                ORDER BY `p`.`event_start_date` 
-                ASC ";
+            WHERE t.slug = '" . $category[0] . "'";
+    
+    for($i = 1 ; $i < count($category) ; ++$i)
+    {
+        $sql .= "OR t.slug = '" . $category[$i] . "'";
+    }
+
+    $sql .= "AND `p`.`event_end_date` >= NOW() 
+             ORDER BY `p`.`event_start_date` 
+             ASC ";
     global $wpdb;
     $results       = $wpdb->get_results($sql);
+    
+    /***  DISPLAY ***/
     $listEventStr  = "<h1>Événements à venir</h1>
-                     <br/><table>";
+                      <br/><table>";
     $url           = esc_url(home_url('/'));
     foreach ($results as $r )
     {
@@ -43,11 +57,19 @@ function lab_incoming_event($param)
 
 function lab_event_of_the_week($param) 
 {
-    $day = date('w');
+    $day        = date('w');
     $week_start = date('Y-m-d', strtotime('-'.($day-1).' days'));
-    $week_end = date('Y-m-d', strtotime('+'.(7-$day).' days'));
+    $week_end   = date('Y-m-d', strtotime('+'.(7-$day).' days'));
 
-    $sql = "SELECT t.name, p.* FROM `wp_terms` AS t JOIN `wp_term_relationships` AS tr ON tr.`term_taxonomy_id`=t.`term_id` JOIN `wp_em_events` as p ON p.`post_id`=tr.`object_id` WHERE p.`event_start_date` >= '".$week_start."' AND p.`event_end_date` <= '".$week_end."' ORDER BY `p`.`event_start_date` ASC";
+    $sql = "SELECT t.name, p.* 
+            FROM `wp_terms` AS t 
+            JOIN `wp_term_relationships` AS tr 
+                ON tr.`term_taxonomy_id`=t.`term_id` 
+            JOIN `wp_em_events` as p 
+                ON p.`post_id`=tr.`object_id` 
+            WHERE p.`event_start_date` >= '".$week_start."' 
+                AND p.`event_end_date` <= '".$week_end."' 
+            ORDER BY `p`.`event_start_date` ASC";
     global $wpdb;
     $results = $wpdb->get_results($sql);
 
@@ -94,22 +116,41 @@ function lab_event($param)
  **********************************************************************************************************************/
 function lab_old_event($param)
 {
-    extract(shortcode_atts(array(
-        'slug' => get_option('option_event'),
-        'year' => get_option('option_event')
+    $param = shortcode_atts(array(
+        'slug' => get_option('lab-old-event'),
+        'year' => get_option('lab-old-event')
     ),
-        $param
-    ));
-    $sqlYearCondition = "";
-    if (isset($year) && !empty($year)) 
-    {
-        $sqlYearCondition = " AND YEAR(`p`.`event_end_date`)=".$year." ";
-    }
+        $param,
+        "lab-old-event"
+    );
+    $eventCategory = $param['slug'];
+    $eventYear     = $param['year'];
 
-    $eventCategory = get_option('option_event');
-    $sql = "SELECT p.* FROM `wp_terms` AS t JOIN `wp_term_relationships` AS tr ON tr.`term_taxonomy_id`=t.`term_id` JOIN `wp_em_events` as p ON p.`post_id`=tr.`object_id` WHERE t.slug='".$slug."'".$sqlYearCondition." AND `p`.`event_end_date` < NOW() ORDER BY `p`.`event_end_date` DESC ";
+    $category      = explode(",", $eventCategory);
+    $sqlYearCondition = "";
+    if (isset($eventYear) && !empty($eventYear)) 
+    {
+        $sqlYearCondition = " AND YEAR(`p`.`event_end_date`) = '".$eventYear."'";
+    }
+    /***  SQL ***/
+    $sql = "SELECT p.* 
+            FROM `wp_terms` AS t 
+            JOIN `wp_term_relationships` AS tr 
+                ON tr.`term_taxonomy_id`=t.`term_id` 
+            JOIN `wp_em_events` as p 
+                ON p.`post_id`=tr.`object_id` 
+            WHERE t.slug='".$category[0]."'";
+    for($i = 1 ; $i < count($category) ; ++$i)
+    {
+        $sql .= "OR t.slug = '" . $category[$i] . "'";
+    }
+    $sql .=     $sqlYearCondition  . " 
+                AND `p`.`event_end_date` < NOW() 
+                ORDER BY `p`.`event_end_date` DESC ";
     global $wpdb;
     $results = $wpdb->get_results($sql);
+
+    /***  DISPLAY ***/
     $listEventStr = "<table>";
     $url = esc_url(home_url('/'));
     foreach ( $results as $r )
