@@ -910,6 +910,7 @@ function createGroup(params) {
     params['action']='group_create';
     jQuery.post(LAB.ajaxurl, params, function(response) {
       if (response.success) {
+        console.log(reponse.data);
         //Enfin, on ajoute les entrées dans la table suppléants
         var data3 = {
           'action' : 'group_subs_add',

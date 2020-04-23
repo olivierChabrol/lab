@@ -121,6 +121,12 @@ function lab_admin_checkTable($tableName) {
  * GROUPS
  ********************************************************************************************/
 
+function lab_group_get_user_groups($userId)
+{
+    global $wpdb;
+    return $wpdb->get_results("SELECT lg.group_name FROM `".$wpdb->prefix."lab_users_groups` as lug JOIN `".$wpdb->prefix."lab_groups` AS lg ON lg.id=lug.group_id WHERE lug.`user_id`=".$userId);
+}
+
 function lab_admin_delete_group($groupId) {
     lab_admin_delete_group_substitutes_by_groupId($groupId);
     lab_admin_delete_users_groups_by_groupId($groupId);
@@ -153,7 +159,7 @@ function lab_admin_createUserGroupTable()
 {
     global $wpdb;
     $sql = "CREATE TABLE IF NOT EXISTS `".$wpdb->prefix."lab_users_groups` (
-        `id` bigint UNSIGNED NOT NULL,
+        `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
         `group_id` bigint UNSIGNED NOT NULL,
         `user_id` bigint UNSIGNED NOT NULL
       ) ENGINE=InnoDB;";
@@ -194,16 +200,33 @@ function lab_admin_group_create($name,$acronym,$chief_id,$parent,$type) {
         $wpdb->prefix.'lab_groups',
         array(
             'acronym' => $acronym,
-            'group_name' => $name,
+            'group_name' => stripslashes($name),
             'chief_id' => $chief_id,
             'group_type' => $type,
             'parent_group_id' => $parent == 0 ? NULL : $parent
         )
     ) ) {
-        return;
+        $groupId = $wpdb->insert_id;
+        // add chief ID to the group
+        lab_admin_users_groups_check_and_add_user($chief_id, $groupId);
+        //return "groupId :".$groupId;
     } else {
         return $wpdb -> last_error;
     }
+}
+
+function lab_admin_users_groups_check_and_add_user($userId, $groupId) {
+    global $wpdb;
+    $results = $wpdb->get_results("SELECT * from ".$wpdb->prefix."lab_users_groups WHERE user_id=".$userId." AND group_id=".$groupId);
+    if (count($results) == 0) {
+        return lab_admin_users_groups_add_user($userId, $groupId);
+    }
+    return false;
+}
+
+function lab_admin_users_groups_add_user($userId, $groupId) {
+    global $wpdb;
+    return $wpdb->insert($wpdb->prefix.'lab_users_groups', array("user_id"=>$userId, "group_id"=>$groupId));
 }
 
 function lab_admin_group_subs_add($id,$list) {
@@ -218,6 +241,8 @@ function lab_admin_group_subs_add($id,$list) {
                 'substitute_id' => $r)) 
             ) {
             return $wpdb -> last_error;
+        } else {
+            lab_admin_users_groups_check_and_add_user($r, $id);
         }
     }
     return;

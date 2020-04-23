@@ -502,15 +502,31 @@ function lab_admin_add_users_groups() {
   $condition = count($users) * count($groups);
   global $wpdb;
   $count_rows = 0;
+
+  $sql = "SELECT group_id, user_id FROM ".$wpdb->prefix."lab_users_groups WHERE ";
+
+  foreach($groups as $g) {
+    $sql .= " group_id=".$g." OR";
+  }
+  $sql = substr($sql, 0, strlen($sql) -3);
+  $results = $wpdb->get_results($sql);
+  $existingGroups = array();
+  foreach($results as $r) {
+    if (!array_key_exists($r->group_id, $existingGroups)) {
+      $existingGroups[$r->group_id] = array();  
+    }
+    $existingGroups[$r->group_id][$r->user_id] = "";
+  }
+
   foreach($groups as $g) {
     foreach($users as $u) {
-      $count_rows += $wpdb->insert(
-        $wpdb->prefix.'lab_users_groups',
-        array(
-          'group_id' => $g,
-          'user_id' => $u
-        )
-      );
+      // if user doesn't exist already in the group
+      if (!array_key_exists($u, $existingGroups[$g])) {
+        $count_rows += lab_admin_users_groups_add_user($u, $g);
+      // user already exist in db
+      } else {
+        $count_rows++;
+      }
     }
   }
   if ($count_rows == $condition && $condition > 0)
