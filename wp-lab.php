@@ -19,8 +19,7 @@ define('LAB_HAL_URL', 'http://api.archives-ouvertes.fr/search/hal/');
 
 //Récupère les constantes
 require_once("constantes.php");
-require_once("lab-shortcode.php");
-require_once("lab-shortcode-directory.php");
+//require_once("lab-shortcode.php");
 require_once("lab-admin-ajax.php");
 require_once("lab-admin-core.php");
 require_once("lab-admin-groups.php");
@@ -28,7 +27,9 @@ require_once("lab-admin-params.php");
 require_once("lab-admin-keyring.php");
 require_once("lab-actions.php");
 require_once("lab-hal-widget.php");
+require_once(LAB_DIR_PATH."shortcode/lab-shortcode-directory.php");
 require_once(LAB_DIR_PATH."shortcode/lab-shortcode-hal.php");
+require_once(LAB_DIR_PATH."shortcode/lab-shortcode-event.php");
 require_once(LAB_DIR_PATH."admin/view/lab-admin-tabs.php");
 require_once(LAB_DIR_PATH."admin/view/lab-admin-tab-groups.php");
 require_once(LAB_DIR_PATH."admin/view/lab-admin-tab-params.php");

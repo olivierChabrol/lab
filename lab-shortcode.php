@@ -1,4 +1,4 @@
-<?php
+<?php/*
 
 define ('LAB_SHORTCODE_PARAM_ASLEFT', 'asLeft');
 
@@ -31,12 +31,10 @@ function lab_incoming_event($param) {
   //return "category de l'evenement : ".$event."<br>".$sql."<br>".$listEventStr;
   return $listEventStr;  
 }
-//*/
-
 
 /***********************************************************************************************************************
  * PLUGIN SHORTCODE lab_event_of_the_week
- **********************************************************************************************************************/
+ *********************************************************************************************************************
 
 function lab_event_of_the_week($param) {
   $day = date('w');
@@ -60,7 +58,7 @@ function lab_event_of_the_week($param) {
 
 /***********************************************************************************************************************
  * PLUGIN SHORTCODE lab-event
- **********************************************************************************************************************/
+ **********************************************************************************************************************
 function lab_locate_template( $template_name, $load=false, $the_args = array() ) {
         //First we check if there are overriding tempates in the child or parent theme
         $located = locate_template(array('plugins/lab/'.$template_name));
@@ -87,7 +85,7 @@ function lab_event($param)
 
 /***********************************************************************************************************************
  * SHORTCODE lab-old-event
- **********************************************************************************************************************/
+ **********************************************************************************************************************
 function lab_old_event($param)
 {
   extract(shortcode_atts(array(
@@ -116,4 +114,5 @@ function lab_old_event($param)
   $listEventStr .= "</table>";
   //return "category de l'evenement : ".$event."<br>".$sql."<br>".$listEventStr;
   return $listEventStr;
-}
+}*/
+?>
