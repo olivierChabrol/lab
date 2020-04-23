@@ -82,10 +82,11 @@ function lab_admin_firstname_lastname2($name){
 
 function lab_admin_initTable_usermeta()
 {
-    lab_userMetaData_create_metaKeys("hab_id", "");
-    lab_userMetaData_create_metaKeys("hab_name", "");
-    lab_userMetaData_create_metaKeys("user_left", null);
     lab_userMetaData_create_metaKeys("user_phone", "");
+    lab_userMetaData_create_metaKeys("user_left", null);
+    lab_userMetaData_create_metaKeys("hal_id", null);
+    lab_userMetaData_create_metaKeys("hal_name", null);
+    usermeta_fill_hal_field();
 }
 
 function lab_admin_firstname_lastname($param, $name){
@@ -553,17 +554,24 @@ function get_hal_url($userId) {
         $hal_id   = $results[0]->lab_hal_id;
         $hal_name = $results[0]->lab_hal_name;
         if ($hal_id != null) {
-            return "https://api.archives-ouvertes.fr/search/?authIdHal_s:(".$hal_id.")&fl=docid,citationFull_s,producedDate_tdate,uri_s,title_s&sort=producedDate_tdate+desc&wt=json&json.nl=arrarr";
+            return "https://api.archives-ouvertes.fr/search/?authIdHal_s:(".$hal_id.")&fl=docid,citationFull_s,producedDate_tdate,uri_s,title_s,journalTitle_s&sort=producedDate_tdate+desc&wt=json&json.nl=arrarr";
         }
         else {
-            return "https://api.archives-ouvertes.fr/search/?q=authLastNameFirstName_s:%22".$hal_name."%22&fl=docid,citationFull_s,producedDate_tdate,uri_s,title_s&sort=producedDate_tdate+desc&wt=json&json.nl=arrarr";
+            return "https://api.archives-ouvertes.fr/search/?q=authLastNameFirstName_s:%22".$hal_name."%22&fl=docid,citationFull_s,producedDate_tdate,uri_s,title_s,journalTitle_s&sort=producedDate_tdate+desc&wt=json&json.nl=arrarr";
         }
     }
 }
 
-function saveHalProduction($userId, $docId, $citation, $productionDate, $title, $url) {
+function saveHalProduction($docId, $citation, $productionDate, $title, $url, $journal) {
     global $wpdb;
-    return $wpdb->insert($wpdb->prefix."lab_hal", array('user_id'=>$userId, 'docid'=>$docId, 'citationFull_s'=>$citation, 'producedDate_tdate'=>$productionDate, 'title'=>$title, 'url'=>$url));
+    $wpdb->insert($wpdb->prefix."lab_hal", array('journalTitle_s'=>$journal, 'docid'=>$docId, 'citationFull_s'=>$citation, 'producedDate_tdate'=>$productionDate, 'title'=>$title, 'url'=>$url));
+    return $wpdb->insert_id;
+}
+
+function saveHalUsers($userId, $halId) {
+    global $wpdb;
+    $wpdb->insert($wpdb->prefix."lab_hal_users", array('user_id'=>$userId, 'hal_id'=>$halId));
+    return $wpdb->insert_id;
 }
 
 /**
@@ -580,19 +588,36 @@ function hal_download_all()
     }
 }
 
+
 function hal_download($userId) {
     $url = get_hal_url($userId);
     
     $json = lab_do_common_curl_call($url);
     $c =count($json->response->docs);
+    $docIds = array();
     for ($i = 0; $i < $c; $i++) {
+        $keep = false;
         $docId = $json->response->docs[$i]->docid;
         $citation = $json->response->docs[$i]->citationFull_s;
         $producedDate = strtotime($json->response->docs[$i]->producedDate_tdate);
         $title = $json->response->docs[$i]->title_s[0];
         $url = $json->response->docs[$i]->uri_s;
+        if (isset($json->response->docs[$i]->journalTitle_s))
+        {
+            $journal = $json->response->docs[$i]->journalTitle_s;
+        }
+        else {
+            $journal = null;
+        }
+        if (!array_key_exists ($docId, $docIds)) {
+            $id = saveHalProduction($docId, $citation, date('Y-m-d', $producedDate), $title, $url, $journal);
+            $docIds[$docId] = $id;
+            $halId = $id;
+            //echo "La clef n'existe pas on la crée docIds[".$docId."]=".$id."\n";
+        }
+        saveHalUsers($userId, $docIds[$docId]);
         
-        saveHalProduction($userId, $docId, $citation, date('Y-m-d', $producedDate), $title, $url);
+
         //$content .= '<li>' . $json->response->docs[$i]->citationFull_s . '</li>';
     }
     return $url;
@@ -600,8 +625,9 @@ function hal_download($userId) {
 
 function delete_hal_table() {
     global $wpdb;
-    $wpdb->query("TRUNCATE TABLE ".$wpdb->prefix."lab_hal");//delete( $wpdb->prefix."lab_hal", array());
-    $wpdb->get_results("ALTER TABLE ".$wpdb->prefix."lab_hal AUTO_INCREMENT = 1");
+    $wpdb->query("TRUNCATE TABLE `".$wpdb->prefix."lab_hal_users`");
+    $wpdb->query("TRUNCATE TABLE `".$wpdb->prefix."lab_hal`");//delete( $wpdb->prefix."lab_hal", array());
+    $wpdb->get_results("ALTER TABLE `".$wpdb->prefix."lab_hal` AUTO_INCREMENT = 1");
     return true;
 }
 
@@ -657,6 +683,7 @@ function lab_activation_hook() {
 function lab_uninstall_hook() {
     delete_all_tables();
 }
+
 
 function create_all_tables() {
     lab_admin_createTable_param();
