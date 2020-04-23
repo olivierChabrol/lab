@@ -333,6 +333,72 @@ function lab_keyring_delete_key($id) {
     }
 }
 
+function lab_keyring_search_current_loans($user,$page,$limit) {
+    global $wpdb;
+    $offset = $page*$limit;
+    $count = $user == 0 ? "SELECT COUNT(*) FROM `".$wpdb->prefix."lab_key_loans` WHERE `ended`=0;" : "SELECT COUNT(*) FROM `wp_lab_key_loans` WHERE `user_id`=".$user." AND `ended`=0;";
+    $sql = $user == 0 ? "SELECT * FROM `".$wpdb->prefix."lab_key_loans` WHERE `ended`=0" : "SELECT * FROM `wp_lab_key_loans` WHERE `user_id`=".$user." AND `ended`=0";
+    $sql .= " ORDER BY `start_date` DESC";
+    $sql .= " LIMIT ".$offset.", ".$limit.";";
+    $total = $wpdb->get_var($count);
+    $results = $wpdb->get_results($sql);
+    $res = array(
+        "total" => $total,
+        "items" => $results
+    );
+    return $res;
+}
+function lab_keyring_setKeyAvailable($id,$available) {
+    global $wpdb;
+    $wpdb->hide_errors();
+    if ($wpdb->update(
+        $wpdb->prefix.'lab_keys',
+        array(
+            'available'=>$available
+        ),
+        array('id' => $id)
+    )) {
+        return;
+    } else {
+        return $wpdb -> last_error;
+    }
+}
+function lab_keyring_edit_loan($id,$params) {
+    $params['end_date'] = strlen($params['end_date']) ? $params['end_date'] : NULL ;
+    $params['commentary'] = strlen($params['commentary']) ? $params['commentary'] : NULL ;
+    global $wpdb;
+    return $wpdb->update(
+        $wpdb->prefix.'lab_key_loans',
+        $params,
+        array('id' => $id)
+    );
+}
+function lab_keyring_get_currentLoan_forKey($id) {
+    global $wpdb;
+    $sql = "SELECT * FROM `".$wpdb->prefix."lab_key_loans` WHERE `key_id`=".$id." AND ended=false";
+    return $wpdb->get_results($sql);
+}
+function lab_keyring_end_loan($loan_id,$end_date, $key_id) {
+    $avail = lab_keyring_setKeyAvailable($key_id,1);
+    global $wpdb;
+    if (strlen($avail)==0) {
+        $res = lab_keyring_edit_loan($loan_id,array('ended'=> 1, 'end_date' => $end_date));
+        return ($res === false) ? $wpdb->last_error : null;
+    } else {
+        return $avail;
+    }
+}
+function lab_keyring_find_oldLoans($field, $id) {
+    global $wpdb;
+    $sql = "SELECT * from `".$wpdb->prefix."lab_key_loans` WHERE `".$field."`=".$id." ORDER BY `start_date` DESC";
+    return $wpdb->get_results($sql);
+}
+function lab_keyring_get_loan($id) {
+    global $wpdb;
+    $sql = "SELECT * FROM `".$wpdb->prefix."lab_key_loans` WHERE `id`=".$id.";";
+    return $wpdb->get_results($sql);
+}
+
 /**************************************************************************************************
  * SETTINGS
  *************************************************************************************************/
@@ -567,52 +633,7 @@ function lab_do_common_curl_call($url) {
     return $json;
 }
 //*/
-function lab_keyring_setKeyAvailable($id,$available) {
-    global $wpdb;
-    $wpdb->hide_errors();
-    if ($wpdb->update(
-        $wpdb->prefix.'lab_keys',
-        array(
-            'available'=>$available
-        ),
-        array('id' => $id)
-    )) {
-        return;
-    } else {
-        return $wpdb -> last_error;
-    }
-}
-function lab_keyring_edit_loan($id,$params) {
-    $params['end_date'] = strlen($params['end_date']) ? $params['end_date'] : NULL ;
-    $params['commentary'] = strlen($params['commentary']) ? $params['commentary'] : NULL ;
-    global $wpdb;
-    return $wpdb->update(
-        $wpdb->prefix.'lab_key_loans',
-        $params,
-        array('id' => $id)
-    );
-}
-function lab_keyring_get_currentLoan_forKey($id) {
-    global $wpdb;
-    $sql = "SELECT * FROM `".$wpdb->prefix."lab_key_loans` WHERE `key_id`=".$id." AND ended=false";
-    return $wpdb->get_results($sql);
-}
-function lab_keyring_end_loan($loan_id,$end_date, $key_id) {
-    $avail = lab_keyring_setKeyAvailable($key_id,1);
-    global $wpdb;
-    if (strlen($avail)==0) {
-        $res = lab_keyring_edit_loan($loan_id,array('ended'=> 1, 'end_date' => $end_date));
-        return ($res === false) ? $wpdb->last_error : null;
-    } else {
-        return $avail;
-    }
-}
-function lab_keyring_find_oldLoans($key_id) {
-    global $wpdb;
-    $sql = "SELECT * from `".$wpdb->prefix."lab_key_loans` WHERE `key_id`=".$key_id." ORDER BY `start_date` DESC";
-    return $wpdb->get_results($sql);
-}
-function lab_hal_getLastArticles($number, $group) {
+function lab_hal_getLastArticles($number,$group) {
     global $wpdb;
     if (!isset($number) || empty($number)) {
         $number = 5;

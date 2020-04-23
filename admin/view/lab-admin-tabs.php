@@ -40,8 +40,6 @@ function wp_lab_option()
             lab_admin_tab_groups();
           } else if ($active_tab == 'params') {
             lab_admin_tab_params();
-          } else if ($active_tab == 'keyring') {
-            lab_admin_tab_keyring();
           } else if ($active_tab == 'settings') {
             lab_admin_tab_settings();
           } else {

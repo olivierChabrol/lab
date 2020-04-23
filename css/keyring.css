@@ -80,7 +80,7 @@
 #lab_keyring_newForm {
     background: #c8e4f0;
 }
-.lab_keyring_table #lab_keyring_nextPage_button {
+.lab_keyring_table .lab_keyring_pageNav span {
     font-size: 1.1em;
     color: #0071a1;
     padding: 0 2em;
@@ -88,6 +88,9 @@
     cursor: pointer;
 }
 /* ================== Gestion des prêts  ================== */
+#lab_keyring_loading_gif {
+    margin:1em 40%;
+}
 #lab_keyring_loanform {
     padding: 1em 5em 5em 1em;
     display: flex;
