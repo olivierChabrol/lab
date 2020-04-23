@@ -2,17 +2,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-22 15:24+0200\n"
-"PO-Revision-Date: 2020-04-22 15:39+0200\n"
+"POT-Creation-Date: 2020-04-23 11:32+0200\n"
+"PO-Revision-Date: 2020-04-23 12:01+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2020-04-22 16:41+0200\n"
-"PO-Revision-Date: 2020-04-22 16:41+0200\n"
-"Language: en\n"
 "X-Generator: Poedit 2.3\n"
 "X-Poedit-Basepath: ..\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -21,21 +18,334 @@ msgstr ""
 "X-Poedit-SearchPath-0: lab-admin-keyring.php\n"
 "X-Poedit-SearchPath-1: js/lab_global.js\n"
 "X-Poedit-SearchPath-2: js/lab_keyring.js\n"
+"X-Poedit-SearchPath-3: admin/view/lab-admin-tab-users.php\n"
+"X-Poedit-SearchPath-4: admin/view/lab-admin-tabs.php\n"
+"X-Poedit-SearchPath-5: admin/view/lab-admin-tab-settings.php\n"
+"X-Poedit-SearchPath-6: admin/view/lab-admin-tab-groups.php\n"
+"X-Poedit-SearchPath-7: admin/view/lab-admin-tab-params.php\n"
 
-#: js/lab_keyring.js:521
-#: lab-admin-keyring.php:243
-#: lab-admin-keyring.php:314
+#: admin/view/lab-admin-tab-groups.php:9
+msgid "Nom du groupe  "
+msgstr ""
+
+#: admin/view/lab-admin-tab-groups.php:11
+msgid "Supprimer le groupe"
+msgstr "Delete group"
+
+#: admin/view/lab-admin-tab-groups.php:19
+msgid "Modifier un groupe"
+msgstr "Modify group"
+
+#: admin/view/lab-admin-tab-groups.php:20
+msgid "Modifier l'acronyme"
+msgstr "Modify acronym"
+
+#: admin/view/lab-admin-tab-groups.php:22
+msgid "Nouveau nom du groupe"
+msgstr "New group name"
+
+#: admin/view/lab-admin-tab-groups.php:24
+msgid "Définir un autre responsable du groupe"
+msgstr "Define a new group leader"
+
+#: admin/view/lab-admin-tab-groups.php:26
+msgid "Co responsable"
+msgstr "Co-responsible"
+
+#: admin/view/lab-admin-tab-groups.php:28
+msgid "Ajouter un co-responsable"
+msgstr "Add co-responsible"
+
+#: admin/view/lab-admin-tab-groups.php:32
+msgid "Modifier le groupe parent"
+msgstr "Modify parent group"
+
+#: admin/view/lab-admin-tab-groups.php:34
+msgid "Modifier le type"
+msgstr "Modify group"
+
+#: admin/view/lab-admin-tab-groups.php:45
+msgid "Créer un groupe"
+msgstr "Create group"
+
+#: admin/view/lab-admin-tab-groups.php:49
+msgid "Nom du groupe"
+msgstr "Group name"
+
+#: admin/view/lab-admin-tab-groups.php:52
+msgid "Acronym"
+msgstr "Acronym"
+
+#: admin/view/lab-admin-tab-groups.php:59
+msgid "Groupe parent"
+msgstr "parent's group"
+
+#: admin/view/lab-admin-tab-groups.php:65 lab-admin-keyring.php:76
+msgid "Type"
+msgstr "Type"
+
+#: admin/view/lab-admin-tab-groups.php:71
+msgid "Responsable du groupe"
+msgstr "Group leader"
+
+#: admin/view/lab-admin-tab-groups.php:78
+msgid "Suppléant"
+msgstr "Substitute"
+
+#: admin/view/lab-admin-tab-groups.php:78
+msgid "Facultatif"
+msgstr "(optional)"
+
+#: admin/view/lab-admin-tab-groups.php:80
+msgid "Vider la liste"
+msgstr "Clear list"
+
+#: admin/view/lab-admin-tab-groups.php:85
+msgid "N'oubliez pas d'appuyer sur ajouter"
+msgstr "Don't forget to press add"
+
+#: admin/view/lab-admin-tab-groups.php:88
+msgid "+ Ajouter un suppléant"
+msgstr "Add co-responsible"
+
+#: admin/view/lab-admin-tab-groups.php:91
+msgid "Créer le groupe"
+msgstr "Create group"
+
+#: admin/view/lab-admin-tab-settings.php:58 lab-admin-keyring.php:18
+msgid "Créer la table Keys"
+msgstr "Create the Keys table"
+
+#: admin/view/lab-admin-tab-settings.php:59 lab-admin-keyring.php:22
+msgid "Créer la table Loans"
+msgstr "Create the Loans table"
+
+#: admin/view/lab-admin-tab-settings.php:62
+msgid "Corriger usermeta fields UM"
+msgstr ""
+
+#: admin/view/lab-admin-tab-settings.php:63
+msgid "Copier les champs phone"
+msgstr ""
+
+#: admin/view/lab-admin-tab-users.php:14
+msgid "Nom de l'utilisateur"
+msgstr "Username"
+
+#: admin/view/lab-admin-tab-users.php:23
+msgid "Parti"
+msgstr "Left"
+
+#: admin/view/lab-admin-tab-users.php:26
+msgid "Date de départ"
+msgstr "Departure date"
+
+#: admin/view/lab-admin-tab-users.php:31
+msgid "Modifier le statut de l'utilisateur"
+msgstr "Modify user's status"
+
+#: admin/view/lab-admin-tab-users.php:33
+msgid "Affecter des utilisateurs à des groupes"
+msgstr "Assign users to groups"
+
+#: admin/view/lab-admin-tab-users.php:35
+msgid "Afficher aussi les personnes qui ont déjà un groupe"
+msgstr "Show also people who already have a group"
+
+#: admin/view/lab-admin-tab-users.php:37
+msgid "Afficher aussi les utilisateurs qui ont quitté l'Institut"
+msgstr "Show also users who have left the Institute"
+
+#: admin/view/lab-admin-tab-users.php:46
+msgid "Choisissez une ou plusieurs personne(s) à affecter :"
+msgstr "Choose one or more people to assign :"
+
+#: admin/view/lab-admin-tab-users.php:53
+msgid ""
+"Choisissez le ou les groupe(s) au(x)quel(s) vous allez affecter des "
+"personnes :"
+msgstr "Choose which group or groups you're going to assign people to :"
+
+#: admin/view/lab-admin-tab-users.php:58
+msgid "envoyer"
+msgstr "submit"
+
+#: admin/view/lab-admin-tabs.php:23
+msgid "Séminaire"
+msgstr "Seminar"
+
+#: admin/view/lab-admin-tabs.php:24 lab-admin-keyring.php:244
+msgid "Utilisateur"
+msgstr "User"
+
+#: admin/view/lab-admin-tabs.php:25
+msgid "Paramètres globaux des utilisateurs"
+msgstr "Users global settings"
+
+#: admin/view/lab-admin-tabs.php:26
+msgid "Groupes"
+msgstr "Groups"
+
+#: admin/view/lab-admin-tabs.php:27
+msgid "Paramètres"
+msgstr "Settings"
+
+#: admin/view/lab-admin-tabs.php:29
+msgid "Paramètres globaux"
+msgstr "General settings"
+
+#: js/lab_keyring.js:9 js/lab_keyring.js:22
+msgid "Table créée avec succès"
+msgstr "Group created sucessfully"
+
+#: js/lab_keyring.js:13 js/lab_keyring.js:26
+msgid "Erreur lors de la création de la table"
+msgstr "Failed to create table"
+
+#: js/lab_keyring.js:34
+msgid "Erreur lors de la création de la clé"
+msgstr "Failed to create key"
+
+#: js/lab_keyring.js:34 js/lab_keyring.js:160
+msgid "Tous les champs requis doivent être remplis"
+msgstr "All required fields must be completed"
+
+#: js/lab_keyring.js:89
+msgid "Impossible de trouver le prêt correspondant à cette clé"
+msgstr ""
+
+#: js/lab_keyring.js:98 js/lab_keyring.js:394
+msgid "Impossible de trouver les informations de cette clé"
+msgstr ""
+
+#: js/lab_keyring.js:112 js/lab_keyring.js:576
+msgid "résultat(s)"
+msgstr ""
+
+#: js/lab_keyring.js:115
+msgid "Aucune clé trouvée. Vous pouvez en créer une ci-dessous"
+msgstr ""
+
+#: js/lab_keyring.js:160
+#, fuzzy
+#| msgid "Erreur lors de la création du groupe : "
+msgid "Erreur lors de la modification de la clé"
+msgstr "Failed to create group : "
+
+#: js/lab_keyring.js:176
+#, fuzzy
+#| msgid "Groupe créé avec succès"
+msgid "Clé modifiée avec succès"
+msgstr "Group created sucessfully"
+
+#: js/lab_keyring.js:182
+msgid "Échec de modification de la clé"
+msgstr ""
+
+#: js/lab_keyring.js:192
+#, fuzzy
+#| msgid "Groupe créé avec succès"
+msgid "Clé supprimée avec succès"
+msgstr "Group created sucessfully"
+
+#: js/lab_keyring.js:196
+msgid "La clé n'a pas pu être supprimée"
+msgstr ""
+
+#: js/lab_keyring.js:271
+msgid ""
+"Impossible de créer le prêt : le formulaire n'est pas rempli correctement"
+msgstr ""
+
+#: js/lab_keyring.js:398
+msgid "Impossible de trouver le prêt d'ID"
+msgstr ""
+
+#: js/lab_keyring.js:417
+#, fuzzy
+#| msgid "Groupe créé avec succès"
+msgid "Clé créée avec succès"
+msgstr "Group created sucessfully"
+
+#: js/lab_keyring.js:421
+#, fuzzy
+#| msgid "Erreur lors de la création du groupe : "
+msgid "Erreur de création de clé"
+msgstr "Failed to create group : "
+
+#: js/lab_keyring.js:431
+#, fuzzy
+#| msgid "Groupe créé avec succès"
+msgid "Prêt créé avec succès"
+msgstr "Group created sucessfully"
+
+#: js/lab_keyring.js:440
+#, fuzzy
+#| msgid "Erreur lors de la création du groupe : "
+msgid "Erreur de création du prêt"
+msgstr "Failed to create group : "
+
+#: js/lab_keyring.js:451
+#, fuzzy
+#| msgid "Groupe créé avec succès"
+msgid "Prêt modifié avec succès"
+msgstr "Group created sucessfully"
+
+#: js/lab_keyring.js:457
+msgid "Erreur de modification du prêt"
+msgstr ""
+
+#: js/lab_keyring.js:469
+#, fuzzy
+#| msgid "Groupe créé avec succès"
+msgid "Prêt terminé avec succès"
+msgstr "Group created sucessfully"
+
+#: js/lab_keyring.js:479
+#, fuzzy
+#| msgid "Erreur lors de la création du groupe : "
+msgid "Erreur lors de la tentative de fin du prêt"
+msgstr "Failed to create group : "
+
+#: js/lab_keyring.js:523 js/lab_keyring.js:527
+#, fuzzy
+#| msgid "Gestion des prêts"
+msgid "Reçu de prêt"
+msgstr "Loan management"
+
+#: js/lab_keyring.js:530
+msgid "ID du prêt"
+msgstr "Loan ID"
+
+#: js/lab_keyring.js:531 lab-admin-keyring.php:243 lab-admin-keyring.php:314
 msgid "Référent"
 msgstr "Referent"
 
-#: js/lab_keyring.js:528
-#: lab-admin-keyring.php:81
-#: lab-admin-keyring.php:131
-#: lab-admin-keyring.php:171
-#: lab-admin-keyring.php:247
+#: js/lab_keyring.js:532
+msgid "La clé/badge numéro"
+msgstr "Key/Badge number"
+
+#: js/lab_keyring.js:533
+msgid "A été prêtée à"
+msgstr "loan to"
+
+#: js/lab_keyring.js:537
+msgid "Et devra être rendue avant le"
+msgstr ""
+
+#: js/lab_keyring.js:538 lab-admin-keyring.php:81 lab-admin-keyring.php:131
+#: lab-admin-keyring.php:171 lab-admin-keyring.php:247
 #: lab-admin-keyring.php:308
 msgid "Commentaire"
 msgstr "Comments"
+
+#: js/lab_keyring.js:539
+msgid "Signature"
+msgstr "Signature"
+
+#: js/lab_keyring.js:542
+msgid "Imprimer"
+msgstr "Print"
 
 #: lab-admin-keyring.php:9
 msgid "Gestion des clés"
@@ -49,32 +359,19 @@ msgstr "Keys"
 msgid "Prêts"
 msgstr "Loans"
 
-#: lab-admin-keyring.php:18
-msgid "Créer la table Keys"
-msgstr "Create the Keys table"
-
-#: lab-admin-keyring.php:22
-msgid "Créer la table Loans"
-msgstr "Create the Loans table"
-
 #: lab-admin-keyring.php:34
 msgid "Voulez-vous vraiment supprimer cette clé ?"
 msgstr "Do you really want to remove this key?"
 
-#: lab-admin-keyring.php:36
-#: lab-admin-keyring.php:45
-#: lab-admin-keyring.php:189
+#: lab-admin-keyring.php:36 lab-admin-keyring.php:45 lab-admin-keyring.php:189
 msgid "Annuler"
 msgstr "Cancel"
 
-#: lab-admin-keyring.php:37
-#: lab-admin-keyring.php:46
-#: lab-admin-keyring.php:190
+#: lab-admin-keyring.php:37 lab-admin-keyring.php:46 lab-admin-keyring.php:190
 msgid "Confirmer"
 msgstr "Confirm"
 
-#: lab-admin-keyring.php:42
-#: lab-admin-keyring.php:186
+#: lab-admin-keyring.php:42 lab-admin-keyring.php:186
 msgid "Voulez-vous vraiment terminer ce prêt ?"
 msgstr "Do you really want to end this loan?"
 
@@ -82,8 +379,7 @@ msgstr "Do you really want to end this loan?"
 msgid "Date de rendu"
 msgstr "Date of return"
 
-#: lab-admin-keyring.php:43
-#: lab-admin-keyring.php:187
+#: lab-admin-keyring.php:43 lab-admin-keyring.php:187
 msgid "Aujourd'hui"
 msgstr "Today"
 
@@ -95,50 +391,36 @@ msgstr "List of keys"
 msgid "Rechercher une clé"
 msgstr "Search for a key"
 
-#: lab-admin-keyring.php:54
-#: lab-admin-keyring.php:197
+#: lab-admin-keyring.php:54 lab-admin-keyring.php:197
 msgid "Page"
 msgstr "Page"
 
-#: lab-admin-keyring.php:60
-#: lab-admin-keyring.php:203
+#: lab-admin-keyring.php:60 lab-admin-keyring.php:203
 msgid "Nombre de résultats par page"
 msgstr "Results per page"
 
-#: lab-admin-keyring.php:65
-#: lab-admin-keyring.php:208
+#: lab-admin-keyring.php:65 lab-admin-keyring.php:208
 msgid "Autre"
 msgstr "Other"
 
-#: lab-admin-keyring.php:75
-#: lab-admin-keyring.php:241
-#: lab-admin-keyring.php:279
+#: lab-admin-keyring.php:75 lab-admin-keyring.php:241 lab-admin-keyring.php:279
 msgid "ID"
 msgstr "ID"
 
-#: lab-admin-keyring.php:76
-msgid "Type"
-msgstr "Type"
-
-#: lab-admin-keyring.php:77
-#: lab-admin-keyring.php:283
+#: lab-admin-keyring.php:77 lab-admin-keyring.php:283
 msgid "Numéro"
 msgstr "Number"
 
-#: lab-admin-keyring.php:78
-#: lab-admin-keyring.php:287
+#: lab-admin-keyring.php:78 lab-admin-keyring.php:287
 msgid "Bureau"
 msgstr "Office"
 
-#: lab-admin-keyring.php:79
-#: lab-admin-keyring.php:116
-#: lab-admin-keyring.php:156
+#: lab-admin-keyring.php:79 lab-admin-keyring.php:116 lab-admin-keyring.php:156
 #: lab-admin-keyring.php:291
 msgid "Marque"
 msgstr "Brand"
 
-#: lab-admin-keyring.php:80
-#: lab-admin-keyring.php:295
+#: lab-admin-keyring.php:80 lab-admin-keyring.php:295
 msgid "Site"
 msgstr "Location"
 
@@ -146,25 +428,19 @@ msgstr "Location"
 msgid "Dispo"
 msgstr "Available"
 
-#: lab-admin-keyring.php:83
-#: lab-admin-keyring.php:249
-#: lab-admin-keyring.php:327
+#: lab-admin-keyring.php:83 lab-admin-keyring.php:249 lab-admin-keyring.php:327
 msgid "Actions"
 msgstr "Actions"
 
-#: lab-admin-keyring.php:91
-#: lab-admin-keyring.php:225
+#: lab-admin-keyring.php:91 lab-admin-keyring.php:225
 msgid "Page précédente"
 msgstr "Previous page"
 
-#: lab-admin-keyring.php:92
-#: lab-admin-keyring.php:226
+#: lab-admin-keyring.php:92 lab-admin-keyring.php:226
 msgid "Page suivante"
 msgstr "Next Page"
 
-#: lab-admin-keyring.php:96
-#: lab-admin-keyring.php:133
-#: lab-admin-keyring.php:392
+#: lab-admin-keyring.php:96 lab-admin-keyring.php:133 lab-admin-keyring.php:392
 msgid "Modifier"
 msgstr "Edit"
 
@@ -176,8 +452,7 @@ msgstr "number"
 msgid "bureau"
 msgstr "office"
 
-#: lab-admin-keyring.php:131
-#: lab-admin-keyring.php:171
+#: lab-admin-keyring.php:131 lab-admin-keyring.php:171
 #: lab-admin-keyring.php:322
 msgid "facultatif"
 msgstr "optional"
@@ -205,10 +480,6 @@ msgstr "Search for an user"
 #: lab-admin-keyring.php:242
 msgid "Clé"
 msgstr "Key"
-
-#: lab-admin-keyring.php:244
-msgid "Utilisateur"
-msgstr "User"
 
 #: lab-admin-keyring.php:245
 msgid "Début"
@@ -282,8 +553,13 @@ msgstr "Loan"
 msgid "Voir prêt"
 msgstr "Show Loan"
 
-#~ msgid "Prêts Utilisateurs"
-#~ msgstr "Users Loans"
+#, fuzzy
+#~| msgid "Rechercher une clé"
+#~ msgid "Chercher un nom"
+#~ msgstr "Search for a key"
+
+#~ msgid "Publications HAL"
+#~ msgstr "HAL Publications"
 
 #~ msgid "Page :"
 #~ msgstr "Page :"
@@ -299,47 +575,6 @@ msgstr "Show Loan"
 
 #~ msgid "Tous les prêts :"
 #~ msgstr "All loans :"
-
-#, fuzzy
-#| msgid "Rechercher une clé"
-msgid "Chercher un nom"
-msgstr "Search for a key"
-
-#: shortcode/lab-shortcode-hal.php:32
-msgid "Publications HAL"
-msgstr "HAL Publications"
-
-#~ msgid "Créer la table Keys"
-#~ msgstr "Create the Keys table"
-
-#~ msgid "Créer la table Loans"
-#~ msgstr "Create the Loans table"
-
-#~ msgid "Groupe créé avec succès"
-#~ msgstr "Group created sucessfully"
-
-#~ msgid "Erreur lors de la création du groupe : "
-#~ msgstr "Failed to create group : "
-
-#, fuzzy
-#~| msgid "Gestion des prêts"
-#~ msgid "Reçu de prêt"
-#~ msgstr "Loan management"
-
-#~ msgid "ID du prêt"
-#~ msgstr "Loan ID"
-
-#~ msgid "La clé/badge numéro"
-#~ msgstr "Key/Badge number"
-
-#~ msgid "A été prêtée à"
-#~ msgstr "loan to"
-
-#~ msgid "Signature"
-#~ msgstr "Signature"
-
-#~ msgid "Imprimer"
-#~ msgstr "Print"
 
 #~ msgid "Publications Hal"
 #~ msgstr "Hal publications"
@@ -403,6 +638,3 @@ msgstr "HAL Publications"
 #, fuzzy
 #~ msgid "Bulk Actions"
 #~ msgstr "Actions"
-
-#~ msgid "Tous les prêts :"
-#~ msgstr "All loans :"
