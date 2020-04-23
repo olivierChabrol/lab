@@ -501,7 +501,8 @@ function lab_hal_createTable_hal() {
 
 function lab_hal_get_publication($userId) {
     global $wpdb;
-    $sql = "SELECT * FROM `wp_lab_hal` WHERE `user_id` = ".$userId." ORDER BY `producedDate_tdate` DESC ";
+    //$sql = "SELECT * FROM `wp_lab_hal` WHERE `user_id` = ".$userId." ORDER BY `producedDate_tdate` DESC ";
+    $sql = "SELECT lh.* FROM `".$wpdb->prefix."lab_hal` as lh JOIN `".$wpdb->prefix."lab_hal_users` AS lhu ON lhu.hal_id=lh.id WHERE lhu.user_id=".$userId;
     return $wpdb->get_results($sql);
 }
 
