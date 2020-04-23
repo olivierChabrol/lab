@@ -1,4 +1,10 @@
 <?php
+
+if ( !function_exists('curl_init' ) ) {
+    echo "Pas de lib CURL";
+    return;
+}
+
 define( 'BLOCK_LOAD', true );
 define( 'SHORTINIT', true );
 echo __FILE__."\n";
