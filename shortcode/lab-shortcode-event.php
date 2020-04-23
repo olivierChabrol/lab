@@ -4,6 +4,12 @@
  * PLUGIN SHORTCODE lab_incoming_event
  **********************************************************************************************************************/
 
+/*** 
+ * Shortcode use : [lab-incoming-event {slug}]
+     slug='categoryName1, categoryName2...'
+     You can add as more slugs as you want but there must be at least one
+***/ 
+
 function lab_incoming_event($param) 
 {
     $param = shortcode_atts(array(
@@ -54,6 +60,10 @@ function lab_incoming_event($param)
 /***********************************************************************************************************************
  * PLUGIN SHORTCODE lab_event_of_the_week
  **********************************************************************************************************************/
+/*** 
+ * Shortcode use : [lab-event-of-the-week]
+    No parameters
+***/ 
 
 function lab_event_of_the_week($param) 
 {
@@ -86,7 +96,11 @@ function lab_event_of_the_week($param)
 /***********************************************************************************************************************
  * PLUGIN SHORTCODE lab-event
  **********************************************************************************************************************/
-function lab_locate_template($template_name, $load=false, $the_args = array()) 
+/*** 
+ * Shortcode use : [lab-event]
+    No parameters
+***/ 
+ function lab_locate_template($template_name, $load=false, $the_args = array()) 
 {
     //First we check if there are overriding tempates in the child or parent theme
     $located = locate_template(array('plugins/lab/'.$template_name));
@@ -112,9 +126,17 @@ function lab_event($param)
 }
 
 /***********************************************************************************************************************
- * SHORTCODE lab-old-event
+ * PLUGIN SHORTCODE lab-old-event
  **********************************************************************************************************************/
-function lab_old_event($param)
+/*** 
+ * Shortcode use : [lab-old-event {slug} {year}]
+    slug='categoryName1, categoryName2...'
+     You can add as more slugs as you want but there must be at least one
+    year='20xx'
+     Year is optional
+***/ 
+
+ function lab_old_event($param)
 {
     $param = shortcode_atts(array(
         'slug' => get_option('lab-old-event'),
