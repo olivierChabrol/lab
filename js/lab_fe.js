@@ -32,3 +32,10 @@ jQuery(function($){
   });
 
 });
+
+/*******************************  */
+jQuery(function($) {
+  $("#lab_profile_edit").click( function() {
+    $(".lab_profile_edit").show();
+  });
+});
