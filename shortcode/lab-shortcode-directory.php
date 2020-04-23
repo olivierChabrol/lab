@@ -15,7 +15,8 @@
 function lab_directory($param) {
     $param = shortcode_atts(array(
         'display-left-user' => get_option('lab-directory'),
-        'group' => get_option('lab-directory')
+        'group' => get_option('lab-directory'),
+        'display-group' => get_option('display-group'),
         ),
         $param, 
         "lab-directory"
@@ -23,6 +24,8 @@ function lab_directory($param) {
 
     $displayLeftUser  = $param['display-left-user'];
     $group   = $param['group'];
+    $displayGroupParam   = $param['display-group'];
+    $displayGroup = false;
 
     $joinAsLeft  = "";
     $whereAsLeft = "";
@@ -40,13 +43,18 @@ function lab_directory($param) {
         $whereGroup = " AND g7.`acronym`  = '" . $group . "'";
     }
 
+    if (isset($displayGroupParam) && !empty($displayGroupParam) && $displayGroup == "true") {
+        $displayGroup = true;
+    }
+
+    global $wpdb;
     $sql = "SELECT um1.`user_id` AS id, um3.`meta_value` AS first_name, um2.`meta_value` AS last_name, 
         u4.`user_email` AS mail, um5.`meta_value` AS phone 
-        FROM `wp_usermeta` AS um1 
-        JOIN `wp_usermeta` AS um2 ON um1.`user_id` = um2.`user_id` 
-        JOIN `wp_usermeta` AS um3 ON um1.`user_id` = um3.`user_id` 
-        JOIN `wp_users` AS u4 ON um1.`user_id` = u4.`ID` 
-        JOIN `wp_usermeta` AS um5 ON um1.`user_id` = um5.`user_id`
+        FROM `".$wpdb->prefix."usermeta` AS um1 
+        JOIN `".$wpdb->prefix."usermeta` AS um2 ON um1.`user_id` = um2.`user_id` 
+        JOIN `".$wpdb->prefix."usermeta` AS um3 ON um1.`user_id` = um3.`user_id` 
+        JOIN `".$wpdb->prefix."users` AS u4 ON um1.`user_id` = u4.`ID` 
+        JOIN `".$wpdb->prefix."usermeta` AS um5 ON um1.`user_id` = um5.`user_id`
         ".$joinDisplayLeftUser.$joinGroup."
         WHERE   um1.`meta_key`='last_name' 
             AND um2.`meta_key`='last_name' 
@@ -60,12 +68,11 @@ function lab_directory($param) {
     $sql .= " AND um1.`meta_value`LIKE '$currentLetter%'
                 ORDER BY last_name";
 
-    global $wpdb;
     $results = $wpdb->get_results($sql);
     $nbResult = $wpdb->num_rows;
     $items = array();
-    $directoryStr = "<h1>".__("Annuaire","lab")."</h1>"; // title
-    //$directoryStr .= $sql;
+    $directoryStr = "";//"<h1>".__("Annuaire","lab")."</h1>"; // title
+    $directoryStr .= $sql;
     $alphachar = array_merge(range('A', 'Z'));
     $url = explode('?', $_SERVER['REQUEST_URI']); // current url (without parameters)
     foreach ($alphachar as $element) {
@@ -114,8 +121,21 @@ function lab_directory($param) {
         $directoryStr .= "<td class='email'>" . esc_html(strrev($r->mail)) . "</td>";
         $currentNumber = esc_html($r->phone);
         $directoryStr .= "<td>" . correctNumber($currentNumber) . "</td>";
+        $directoryStr .= "<td>" . formatGroupsName($r->id) . "</td>";
         $directoryStr .= "</tr>";
     }
     $directoryStr .= "</table>";
     return $directoryStr;
+}
+
+function formatGroupsName($userId) {
+    $groupNames = lab_group_get_user_groups($userId);
+    if (count($groupNames) == 0) {
+        return "";
+    }
+    $items = array();
+    foreach($groupNames as $g) {
+        $items[] = esc_html($g->group_name);
+    }
+    return join(", ", $items);
 }

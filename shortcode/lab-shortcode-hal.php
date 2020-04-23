@@ -37,6 +37,7 @@ function lab_hal($param) {
             $umUser = substr ($wp->request, strlen($userPattern));
             global $wpdb;
             $sql = "SELECT user_id FROM `".$wpdb->prefix."usermeta` WHERE meta_key='um_user_profile_url_slug_name' AND meta_value='".$umUser."'";
+            //$sql = "SELECT lh.* FROM `".$wpdb->prefix."lab_hal` as lh JOIN `".$wpdb->prefix."lab_hal_users` AS lhu ON lhu.hal_id=lh.id WHERE lhu.user_id=".$umUser;
             $results = $wpdb->get_results($sql);
             if (count($results) == 1) {
                 $userId = $results[0]->user_id;
@@ -47,7 +48,8 @@ function lab_hal($param) {
     $i = 0;
     foreach($publications as $p) {
         $i++;
-        $html .= $i." - <a href=\"".$p->url."\">".$p->title."</a><br><br>";
+        $html .= date("Y/m", strtotime($p->producedDate_tdate))." <i>".($p->journalTitle_s !=null?$p->journalTitle_s :"")."</i> - <a href=\"".$p->url."\">".$p->title."</a><br>";
+        $html .= "<br>";
     }
     
     return $html;
