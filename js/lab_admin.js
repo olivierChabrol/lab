@@ -75,42 +75,6 @@ jQuery(function($){
           }
       )
   });
-
-  $(document).ready(function()
-  {
-    reset_and_load_groups_users();
-  });
-
-  $("#lab_add_users_groups").click(function()
-  {
-    var tab_users  = [];
-    var tab_groups = [];
-    $('#list_users option:selected').each(function(){ tab_users.push($(this).val()); });
-    $('#list_groups option:selected').each(function(){ tab_groups.push($(this).val()); });
-    $.post(LAB.ajaxurl,
-      {
-        action : 'add_users_groups',
-        users  : tab_users,
-        groups : tab_groups
-      },
-      function(response) 
-      {
-        if(response.success)
-        {
-          toast_success("Le(s) membre(s) a bien été ajouté au(x) groupe(s)");
-          reset_and_load_groups_users();
-        }
-        else if(response.warning)
-        {
-          toast_warning("Sélectionnez au moins un utilisateur et un groupe !");
-        }
-        else
-        {
-          toast_error("Erreur, la requête n'a pas pu aboutir");
-        }
-      }
-    )
-  });
   
   $('#wp_lab_event_title').autocomplete({
     minChars: 2,
@@ -180,7 +144,6 @@ jQuery(function($){
     $(this).text(replaced);
   });
   
-
   $(".directory_row").click(function() {
     window.location.href = "http://stage.fr/user/" + $(this).attr('userId');
   });
@@ -219,6 +182,12 @@ jQuery(function($){
   $("#lab_user_button_save_left").click(function() {
     saveUserLeft($("#lab_user_search_id").val(), $("#lab_user_left_date").val(), $("#lab_user_left").is(":checked"));
   });
+  $("#lab_settings_correct_um").click(function() {
+    correctUMFields();
+  });
+  $("#lab_settings_copy_phone").click(function() {
+    lab_settings_copy_phone();
+  });
   $("#lab_createGroup_acronym").change(function() {
     var data = {
       'action' : 'group_search_ac',
@@ -240,7 +209,8 @@ jQuery(function($){
         $("#lab_createGroup_create").css('color','#0071a1');
       }
     });
-  })
+  });
+  
   $("#lab_createGroup_chief").autocomplete({
     minChars: 3,
     source: function(term, suggest){
@@ -468,34 +438,36 @@ jQuery(function($){
  *************************************************************************************************************************************************/
 
 
-function reset_and_load_groups_users() {
-  jQuery.post(LAB.ajaxurl,
-    {
-      action : 'list_users_groups'
-    },
-    function(response)
-    {
-      html_delete_select_options("#list_users");
-      html_delete_select_options("#list_groups");
-
-      for(var i = 0; i< response.data[0].length; ++i)
-      {
-        jQuery("#list_users").append(jQuery('<option/>', 
-        { 
-          value : response.data[0][i].user_id,
-          text : response.data[0][i].first_name + " " + response.data[0][i].last_name
-        }));
-      }
-      for(var i = 0; i< response.data[1].length; ++i)
-      {
-        jQuery("#list_groups").append(jQuery('<option/>', 
+function reset_and_load_groups_users(cond1, cond2) {
+    jQuery.post(LAB.ajaxurl,
         {
-          value : response.data[1][i].group_id, 
-          text : response.data[1][i].group_name
-        }));
-      }
-    }
-  );
+        action : 'list_users_groups',
+        check1 : cond1,
+        check2 : cond2
+        },
+        function(response)
+        {
+          html_delete_select_options("#list_users");
+          html_delete_select_options("#list_groups");
+
+          for(var i = 0; i< response.data[0].length; ++i)
+          {
+              jQuery("#list_users").append(jQuery('<option/>', 
+              { 
+              value : response.data[0][i].user_id,
+              text : response.data[0][i].last_name + " " + response.data[0][i].first_name
+              }));
+          }
+          for(var i = 0; i< response.data[1].length; ++i)
+          {
+              jQuery("#list_groups").append(jQuery('<option/>', 
+              {
+              value : response.data[1][i].group_id, 
+              text : response.data[1][i].group_name
+              }));
+          }
+        }
+    );
 }
 
 
@@ -858,6 +830,18 @@ function deleteMetaKeys(key) {
     'key' : key
   };
   callAjax(data, "MetaKey delete for all user", loadExistingKeysFields, "failed to delete key '" + key + "'", null);
+}
+function correctUMFields() {
+  var data = {
+    'action' : 'um_correct'
+  };
+  callAjax(data, "UM Field corrected", null, "failed to correct UM fields", null);
+}
+function lab_settings_copy_phone() {
+  var data = {
+    'action' : 'copy_phone'
+  };
+  callAjax(data, "Copy phone successful", null, "Failed to copy phones", null);
 }
 function saveMetakey(userId, key, value) {
   var data = {

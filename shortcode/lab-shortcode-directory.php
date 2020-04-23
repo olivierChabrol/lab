@@ -23,7 +23,6 @@ function lab_directory($param) {
 
     $displayLeftUser  = $param['display-left-user'];
     $group   = $param['group'];
-    $directoryStr = "<h1>Annuaire</h1>"; // title
 
     $joinAsLeft  = "";
     $whereAsLeft = "";
@@ -65,7 +64,8 @@ function lab_directory($param) {
     $results = $wpdb->get_results($sql);
     $nbResult = $wpdb->num_rows;
     $items = array();
-    $directoryStr = "<h1>Annuaire</h1>"; // title
+    $directoryStr = "<h1>".__("Annuaire","lab")."</h1>"; // title
+    //$directoryStr .= $sql;
     $alphachar = array_merge(range('A', 'Z'));
     $url = explode('?', $_SERVER['REQUEST_URI']); // current url (without parameters)
     foreach ($alphachar as $element) {
@@ -75,7 +75,7 @@ function lab_directory($param) {
     $directoryStr .= 
         "<br>
             <div id='user-srch' style='width:350px;'>
-                <input type='text' id='lab_directory_user_name' name='dud_user_srch_val' style='' value='' maxlength='50' placeholder='Chercher un nom'/>
+                <input type='text' id='lab_directory_user_name' name='dud_user_srch_val' style='' value='' maxlength='50' placeholder=\"" . __('Chercher un nom', 'lab') . "\"/>
                 <input type='hidden' id='lab_directory_user_id' value='' />
             </div>
         <br>"; // search field
@@ -96,15 +96,24 @@ function lab_directory($param) {
             }
         </style>"; // style for table (stripped colors)
 
+    /* Display numbers correctly */
+    function correctNumber($currentNumber) { // currentNumber = esc_html($r->phone)
+        $currentNumber = str_replace(" ", "", $currentNumber);
+        $currentNumber = str_replace(".", "", $currentNumber);
+        $currentNumber = chunk_split($currentNumber, 2, ' ');
+        return $currentNumber;
+    }
+
     /* Table directory */
     $directoryStr .= "<table>";
     foreach ($results as $r) {
-        $directoryStr .= "<tr class='directory_row' userId=".$r->first_name.".".$r->last_name.">";
+        $directoryStr .= "<tr class='directory_row' userId='".esc_html($r->first_name).".".esc_html($r->last_name)."'>";
         $directoryStr .= "<td id='name_col'>" . 
-                        esc_html($r->first_name . " " . $r->last_name) . 
+                        esc_html($r->last_name . " " . $r->first_name) . 
                         "</td>";
         $directoryStr .= "<td class='email'>" . esc_html(strrev($r->mail)) . "</td>";
-        $directoryStr .= "<td>" . esc_html($r->phone) . "</td>";
+        $currentNumber = esc_html($r->phone);
+        $directoryStr .= "<td>" . correctNumber($currentNumber) . "</td>";
         $directoryStr .= "</tr>";
     }
     $directoryStr .= "</table>";

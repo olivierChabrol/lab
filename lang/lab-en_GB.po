@@ -2,8 +2,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-04-22 15:24+0200\n"
+"PO-Revision-Date: 2020-04-22 15:39+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
+"Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -298,6 +301,50 @@ msgstr "Show Loan"
 #~ msgstr "All loans :"
 
 #, fuzzy
+#| msgid "Rechercher une clé"
+msgid "Chercher un nom"
+msgstr "Search for a key"
+
+#: shortcode/lab-shortcode-hal.php:32
+msgid "Publications HAL"
+msgstr "HAL Publications"
+
+#~ msgid "Créer la table Keys"
+#~ msgstr "Create the Keys table"
+
+#~ msgid "Créer la table Loans"
+#~ msgstr "Create the Loans table"
+
+#~ msgid "Groupe créé avec succès"
+#~ msgstr "Group created sucessfully"
+
+#~ msgid "Erreur lors de la création du groupe : "
+#~ msgstr "Failed to create group : "
+
+#, fuzzy
+#~| msgid "Gestion des prêts"
+#~ msgid "Reçu de prêt"
+#~ msgstr "Loan management"
+
+#~ msgid "ID du prêt"
+#~ msgstr "Loan ID"
+
+#~ msgid "La clé/badge numéro"
+#~ msgstr "Key/Badge number"
+
+#~ msgid "A été prêtée à"
+#~ msgstr "loan to"
+
+#~ msgid "Signature"
+#~ msgstr "Signature"
+
+#~ msgid "Imprimer"
+#~ msgstr "Print"
+
+#~ msgid "Publications Hal"
+#~ msgstr "Hal publications"
+
+#, fuzzy
 #~ msgid "Location"
 #~ msgstr "Actions"
 
@@ -314,11 +361,39 @@ msgstr "Show Loan"
 #~ msgstr "Confirm"
 
 #, fuzzy
+#~ msgid "Pending Spaces"
+#~ msgstr "Confirm"
+
+#, fuzzy
+#~ msgid "Booked Spaces"
+#~ msgstr "Confirm"
+
+#, fuzzy
 #~ msgid "Location:"
 #~ msgstr "Actions"
 
 #, fuzzy
+#~ msgid "No Location"
+#~ msgstr "Actions"
+
+#, fuzzy
+#~ msgid "Location Name:"
+#~ msgstr "Actions"
+
+#, fuzzy
 #~ msgid "location"
+#~ msgstr "Actions"
+
+#, fuzzy
+#~ msgid "Location Name"
+#~ msgstr "Actions"
+
+#, fuzzy
+#~ msgid "Location Image"
+#~ msgstr "Actions"
+
+#, fuzzy
+#~ msgid "Location not found"
 #~ msgstr "Actions"
 
 #, fuzzy
@@ -328,3 +403,6 @@ msgstr "Show Loan"
 #, fuzzy
 #~ msgid "Bulk Actions"
 #~ msgstr "Actions"
+
+#~ msgid "Tous les prêts :"
+#~ msgstr "All loans :"
