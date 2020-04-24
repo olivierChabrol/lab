@@ -1,0 +1,66 @@
+#lab_profile_card {
+    background-color:#F2F2F2;
+    color:#555555;
+    padding: 1.5em;
+    font-family: Roboto, sans-serif;
+}
+
+#lab_pic_name {
+    display:flex;
+    align-items: center;
+}
+
+#lab_avatar {
+    margin: 1em 1em 1em 0;
+    width:6em;
+    height:6em;
+    -webkit-border-radius:3em;
+    -moz-border-radius:3em;
+    border-radius:3em;
+    box-shadow: -1px 2px 5px 1px rgba(0, 0, 0, 0.1); 
+}
+
+#lab_profile_name {
+    font-size: 24px;
+    flex-grow: 1;
+}
+#lab_profile_name>p {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+#lab_profile_name input {
+    width: 100%;
+}
+#lab_profile_links {
+    font-size: 16px;
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+#lab_profile_links>p a {
+    margin-left: 0.5em
+}
+#lab_profile_bio {
+    padding-left: 2em;
+    font-size: 13px;
+}
+
+.fa-user-edit, .fa-user-check{
+    cursor: pointer;
+    font-size: 20px;
+}
+.fa-user-edit:hover, .fa-user-check:hover {
+    color: black;
+}
+
+#lab_profile_links a {
+    text-decoration: none; 
+}
+
+.lab_profile_mail {
+    unicode-bidi: bidi-override;
+    direction: rtl;
+}

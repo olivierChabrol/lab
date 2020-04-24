@@ -725,3 +725,21 @@ function lab_keyring_get_loan_Req() {
   }
   wp_send_json_error($res);
 }
+
+/********************************************************************************************
+ * Lab_Profile
+ ********************************************************************************************/
+function lab_profile_edit() {
+  $user_id=$_POST['user_id'];
+  $phone = $_POST['phone'];
+  $url = $_POST['url'];
+  $description = $_POST['description'];
+  if (get_current_user_id()==$user_id || current_user_can('edit_users')) {
+    strlen($description) ? lab_profile_setDesc($user_id,$description) : false;
+    strlen($url) ? lab_profile_setURL($user_id,$url) : false;
+    strlen($phone) ? lab_profile_setPhone($user_id,$phone) : false;
+    wp_send_json_success(lab_profile(array()));
+    return;
+  }
+  wp_send_json_error();
+}

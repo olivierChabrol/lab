@@ -28,6 +28,7 @@ require_once("lab-admin-keyring.php");
 require_once("lab-actions.php");
 require_once("lab-hal-widget.php");
 require_once(LAB_DIR_PATH."shortcode/lab-shortcode-directory.php");
+require_once(LAB_DIR_PATH."shortcode/lab-shortcode-profile.php");
 require_once(LAB_DIR_PATH."shortcode/lab-shortcode-hal.php");
 require_once(LAB_DIR_PATH."shortcode/lab-shortcode-event.php");
 require_once(LAB_DIR_PATH."admin/view/lab-admin-tabs.php");
@@ -79,6 +80,7 @@ add_action('admin_enqueue_scripts', 'admin_enqueue');
 
 
 add_shortcode('lab-directory', 'lab_directory');
+add_shortcode('lab-profile', 'lab_profile' );
 add_shortcode('lab_old-event', 'lab_old_event');
 add_shortcode('lab-old-event', 'lab_old_event');
 add_shortcode('lab-event', 'lab_event');
@@ -191,8 +193,10 @@ function admin_enqueue()
 function wp_lab_fe_enqueues()
 {
   wp_enqueue_script('lab-fe', plugins_url('js/lab_fe.js',__FILE__), array('jquery','wp-i18n'), version_id(), true);
+  wp_enqueue_style('profileCSS',plugins_url('css/lab-profile.css',__FILE__));
   localize_script('lab-fe');
   wp_set_script_translations( 'lab-fe', 'lab', dirname(__FILE__).'/lang' );
+  wp_enqueue_script('fontAwesome',"https://kit.fontawesome.com/341f99cb81.js",array(),"3.2",false);
 }
 
 function localize_script($domain) {
