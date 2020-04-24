@@ -601,6 +601,12 @@ jQuery(function($){
     };
     callAjax(data, "Fields succesfully filled", null, "Can't fill fields", null);
   });
+  $("#lab_settings_button_fill_user_slug_fields").click(function() {
+    data = {
+      'action': 'usermeta_fill_user_slug'
+    };
+    callAjax(data, "Fields succesfully filled", null, "Can't fill fields", null);
+  });
   $("#lab_keyring_keySearch").keyup();//Déclenche la recherche au chargement de la page pour afficher la liste de toutes les clés
   $("#lab_keyring_editForm_submit").click(function() {
     fields={};
@@ -951,7 +957,7 @@ function saveParam(paramId, paramType, paramValue, callAfterComplete) {
       'value' : paramValue,
     };
   }
-  callAjax(data, "Param " + paramValue + " successfully created", callAfterComplete, "Error when create PARAM '" + paramValue + "'", null);
+  callAjax(data, "Param " + paramValue + " successfully created", callAfterComplete, null, null);
 }
 
 function loadEditParam(paramId, paramType, paramValue) {
@@ -1253,6 +1259,11 @@ function callAjax(data, successMessage, callBackSuccess = null, errorMessage, ca
     else {
       if (errorMessage != null) {
         toast_error(errorMessage);
+      } 
+      else {
+        if (response.data) {
+          toast_error(response.data);
+        }
       }
       if (callBackError != null) {
         callBackError(response.data);

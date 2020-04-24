@@ -2,15 +2,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-23 11:32+0200\n"
-"PO-Revision-Date: 2020-04-23 12:01+0200\n"
+"POT-Creation-Date: 2020-04-24 12:19+0200\n"
+"PO-Revision-Date: 2020-04-24 12:19+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.3\n"
+"X-Generator: Poedit 2.2.4\n"
 "X-Poedit-Basepath: ..\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-KeywordsList: _e;esc_html_e;esc_html__;__\n"
@@ -23,10 +23,11 @@ msgstr ""
 "X-Poedit-SearchPath-5: admin/view/lab-admin-tab-settings.php\n"
 "X-Poedit-SearchPath-6: admin/view/lab-admin-tab-groups.php\n"
 "X-Poedit-SearchPath-7: admin/view/lab-admin-tab-params.php\n"
+"X-Poedit-SearchPath-8: lab-admin-core.php\n"
 
 #: admin/view/lab-admin-tab-groups.php:9
 msgid "Nom du groupe  "
-msgstr ""
+msgstr "Group name"
 
 #: admin/view/lab-admin-tab-groups.php:11
 msgid "Supprimer le groupe"
@@ -122,11 +123,11 @@ msgstr "Create the Loans table"
 
 #: admin/view/lab-admin-tab-settings.php:62
 msgid "Corriger usermeta fields UM"
-msgstr ""
+msgstr "Correct usermeta fields UM"
 
 #: admin/view/lab-admin-tab-settings.php:63
 msgid "Copier les champs phone"
-msgstr ""
+msgstr "Copy usermeta phone fields"
 
 #: admin/view/lab-admin-tab-users.php:14
 msgid "Nom de l'utilisateur"

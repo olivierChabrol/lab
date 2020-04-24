@@ -38,6 +38,7 @@ if (is_admin()) {
     add_action( 'wp_ajax_group_subs_add', 'lab_admin_group_subs_addReq');
     add_action( 'wp_ajax_usermeta_names', 'lab_admin_usermeta_names');
     add_action( 'wp_ajax_usermeta_dateLeft', 'lab_admin_usermeta_dateLeft');
+    add_action( 'wp_ajax_usermeta_fill_user_slug', 'lab_ajax_admin_usermeta_fill_user_slug');
     add_action( 'wp_ajax_group_load_substitutes', 'group_load_substitutes');
     add_action( 'wp_ajax_group_delete_substitutes', 'group_delete_substitutes');
     add_action( 'wp_ajax_group_add_substitutes', 'group_add_substitutes');
@@ -46,7 +47,7 @@ if (is_admin()) {
 
     //Actions pour la gestion des params
     add_action( 'wp_ajax_param_create_table', 'lab_admin_param_create_table');
-    add_action( 'wp_ajax_save_param', 'lab_admin_param_save');
+    add_action( 'wp_ajax_save_param', 'lab_admin_ajax_param_save');
     add_action( 'wp_ajax_load_param_type', 'lab_admin_param_load_type');
     add_action( 'wp_ajax_param_delete', 'lab_admin_param_delete');
     add_action( 'wp_ajax_param_search_value', 'lab_admin_param_search_value');

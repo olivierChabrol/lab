@@ -28,28 +28,23 @@ function lab_admin_search_event() {
  * PARAMS
  ********************************************************************************************/
 function lab_admin_param_create_table() {
-  $sql = "CREATE TABLE `wp_lab_params`(
-    `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-    `type_param` BIGINT UNSIGNED NOT NULL,
-    `value` varchar(20),
-    PRIMARY KEY(`id`)) ENGINE = INNODB;";
-  global $wpdb;
-  $results = $wpdb->get_results($sql);
-  $sql = "INSERT INTO `wp_lab_params` (`id`, `type_param`, `value`) VALUES (NULL, 1, 'PARAM');";
-  $results = $wpdb->get_results($sql);
+  lab_admin_createTable_param();
+  lab_admin_initTable_param();
   wp_send_json_success();
 }
 
-function lab_admin_param_save() {
+function lab_admin_ajax_param_save() {
   $type   = $_POST['type'];
   $value = $_POST['value'];
-  global $wpdb;
-  if ($type == -1) {
-    $type = 0;
+    
+  $ok = lab_admin_param_save($type, $value);
+  if ($ok) {
+    wp_send_json_success();
   }
-  $sql = "INSERT INTO `wp_lab_params` (`id`, `type_param`, `value`) VALUES (NULL, '".$type."', '".$value."');";
-  $results = $wpdb->get_results($sql);
-  wp_send_json_success();
+  else
+  {
+    wp_send_json_error(sprintf(__("A param key with '%1s' already exist in db", "lab"), $value));
+  }
 }
 
 function lab_admin_param_load_param_type() {
@@ -66,7 +61,13 @@ function lab_admin_param_load_type() {
 function lab_admin_param_delete() {
   $paramId   = $_POST['id'];
   if (isset($paramId) && !empty($paramId)) {
-    wp_send_json_success(lab_admin_param_delete_by_id($paramId));
+    $deleteOk = lab_admin_param_delete_by_id($paramId);
+    if ($deleteOk) {
+      wp_send_json_success();
+    }
+    else {
+      wp_send_json_error(__("Cant delete system param", "lab"));
+    }
   }
   else {
     wp_send_json_error("No id send");
@@ -627,6 +628,10 @@ function lab_ajax_userMeta_key_not_exist() {
 
 function lab_ajax_userMeta_um_correction() {
   wp_send_json_success(lab_usermeta_correct_um_fields());
+}
+
+function lab_ajax_admin_usermeta_fill_user_slug() {
+  wp_send_json_success(lab_admin_usermeta_fill_user_slug());
 }
 
 /********************************************************************************************

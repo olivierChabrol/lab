@@ -183,6 +183,11 @@ function admin_enqueue()
   wp_set_script_translations( 'lab-keyring', 'lab', dirname(__FILE__).'/lang' );
 }
 
+/**
+ * enqueues script for the frontend
+ *
+ * @return void
+ */
 function wp_lab_fe_enqueues()
 {
   wp_enqueue_script('lab-fe', plugins_url('js/lab_fe.js',__FILE__), array('jquery','wp-i18n'), version_id(), true);

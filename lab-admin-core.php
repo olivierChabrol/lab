@@ -24,6 +24,34 @@ function lab_admin_username_get($userId) {
     return $items;
 }
 
+/*******************************************************************************************************
+ * PARAM
+ *******************************************************************************************************/
+
+function lab_admin_param_save($paramType, $paramName)
+{
+    global $wpdb;
+    if ($type == -1) {
+      $type = 0;
+    }
+    return !lab_admin_param_exist($paramType, $paramName);
+    if (lab_admin_param_exist($paramType, $paramName)) {
+        return false;
+    } else {
+        $sql = "INSERT INTO `".$wpdb->prefix."lab_params` (`id`, `type_param`, `value`) VALUES (NULL, '".$paramType."', '".$paramName."');";
+        $results = $wpdb->get_results($sql);
+        return $wpdb->insert_id;
+    }
+}
+
+function lab_admin_param_exist($paramType, $paramName)
+{
+    global $wpdb;
+    $sql = "SELECT id FROM `".$wpdb->prefix."lab_params` WHERE `type_param` = ".$paramType." AND  `value` = '".$paramName."'";
+    $results = $wpdb->get_results($sql);
+    return count($results) == 1;
+}
+
 function lab_admin_createTable_param() {
     global $wpdb;
     $sql = "CREATE TABLE IF NOT EXISTS `".$wpdb->prefix."lab_params` (
@@ -42,16 +70,27 @@ function lab_admin_initTable_param() {
             (2, 1, 'GROUP TYPE'),
             (3, 1, 'KEY TYPE'),
             (4, 1, 'SITE'),
-            (5, 2, 'Equipe'),
-            (6, 2, 'Groupe');";
+            (5, 1, 'USER FUNCTION'),
+            (6, 2, 'Equipe'),
+            (7, 2, 'Groupe');";
     $wpdb->get_results($sql);
 }
 
+/**
+ * Delete param key, can't delete param with id < 5, because param system
+ *
+ * @param [int] $paramId : param identifier
+ * @return boolean
+ */
 function lab_admin_param_delete_by_id($paramId) {
     global $wpdb;
     // can't delete param Id 1, because it is the default parameter
-    if ($paramId != 1) {
-        return $wpdb->delete($wpdb->prefix.'lab_params', array('id' => $paramId));
+    if ($paramId < 6 ) {
+        $wpdb->delete($wpdb->prefix.'lab_params', array('id' => $paramId));
+        return true;
+    }
+    else {
+        return false;
     }
 }
 
@@ -80,10 +119,16 @@ function lab_admin_firstname_lastname2($name){
   return $items;
 }
 
+/**
+ * Initialise usermeta table with our lab fields
+ *
+ * @return void
+ */
 function lab_admin_initTable_usermeta()
 {
     lab_userMetaData_create_metaKeys("user_phone", "");
     lab_userMetaData_create_metaKeys("user_left", null);
+    lab_userMetaData_create_metaKeys("user_position", null);
     lab_userMetaData_create_metaKeys("hal_id", null);
     lab_userMetaData_create_metaKeys("hal_name", null);
     usermeta_fill_hal_field();
@@ -450,6 +495,16 @@ function userMetaData_get_userId_with_no_key($metadataKey) {
     }
     return $items;
 }
+function lab_admin_usermeta_fill_user_slug()
+{
+    global $wpdb;
+    $sql = "SELECT u.id as user_id, um1.meta_value as first_name, um2.meta_value as last_name, um3.umeta_id as id FROM `".$wpdb->prefix."users` AS u JOIN `".$wpdb->prefix."usermeta` as um1 ON um1.user_id=u.ID JOIN `".$wpdb->prefix."usermeta` AS um2 ON um2.user_id=u.ID JOIN `".$wpdb->prefix."usermeta` AS um3 ON um3.user_id=u.ID WHERE um1.meta_key='first_name' AND um2.meta_key='last_name' AND um3.meta_key='lab_user_slug'";
+    $results = $wpdb->get_results($sql);
+    $retour = array();
+    foreach($results as $r) {
+        $wpdb->update($wpdb->prefix."usermeta", array('meta_value'=>usermeta_format_name_to_slug($r->first_name, $r->last_name)), array('umeta_id'=> $r->id));
+    }
+}
 
 function lab_userMetaData_create_metaKeys($metadataKey, $defaultValue) {
     $userIds = userMetaData_get_userId_with_no_key($metadataKey);
@@ -548,6 +603,34 @@ function lab_hal_get_publication($userId) {
     //$sql = "SELECT * FROM `wp_lab_hal` WHERE `user_id` = ".$userId." ORDER BY `producedDate_tdate` DESC ";
     $sql = "SELECT lh.* FROM `".$wpdb->prefix."lab_hal` as lh JOIN `".$wpdb->prefix."lab_hal_users` AS lhu ON lhu.hal_id=lh.id WHERE lhu.user_id=".$userId;
     return $wpdb->get_results($sql);
+}
+
+function format_spaced_string($s) {
+    if (strpos($s, " ") > 0) {
+        $ef = explode(" ", $s);
+        for ($i = 0 ; $i < count($ef); $i++) {
+            if ($i > 0) {
+                $ef[$i] = ucfirst($ef[$i]);
+            }
+        }
+        $s = join("", $ef);
+    }
+    return $s;
+}
+
+/**
+ * Format user firstname and lastname to slug format (noSpace,fistname.lastName)
+ *
+ * @param [type] $f firstname
+ * @param [type] $l lastname
+ * @return slug
+ */
+function usermeta_format_name_to_slug($f, $l) {
+    $f = strtolower($f);
+    $l = strtolower($l);
+    $f = format_spaced_string($f);
+    $l = format_spaced_string($l);
+    return $f.".".$l;
 }
 
 /**
