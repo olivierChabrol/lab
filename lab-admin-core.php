@@ -224,6 +224,18 @@ function lab_admin_users_groups_check_and_add_user($userId, $groupId) {
     return false;
 }
 
+function formatGroupsName($userId) {
+    $groupNames = lab_group_get_user_groups($userId);
+    if (count($groupNames) == 0) {
+        return "";
+    }
+    $items = array();
+    foreach($groupNames as $g) {
+        $items[] = esc_html($g->group_name);
+    }
+    return join(", ", $items);
+}
+
 function lab_admin_users_groups_add_user($userId, $groupId) {
     global $wpdb;
     return $wpdb->insert($wpdb->prefix.'lab_users_groups', array("user_id"=>$userId, "group_id"=>$groupId));

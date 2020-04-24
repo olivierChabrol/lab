@@ -72,13 +72,14 @@ function lab_directory($param) {
     $nbResult = $wpdb->num_rows;
     $items = array();
     $directoryStr = "";//"<h1>".__("Annuaire","lab")."</h1>"; // title
-    $directoryStr .= $sql;
+    //$directoryStr .= $sql;
     $alphachar = array_merge(range('A', 'Z'));
     $url = explode('?', $_SERVER['REQUEST_URI']); // current url (without parameters)
+    $directoryStr .= "<div class=\"alpha-links\" style=\"font-size:15px;\">";
     foreach ($alphachar as $element) {
-        $directoryStr .= '<a href="' . $url[0] . '?letter=' . $element . '"><b>' . $element . '</b></a><span style="padding-right:12px;"></span>'; 
+        $directoryStr .= '<a href="' . $url[0] . '?letter=' . $element . '"><b>' . $element . '</b></a>'; 
     } // letter's url
-    $directoryStr .= "<div class=\"alpha-links\" style=\"font-size:15px;\">"; // letters
+    $directoryStr .= "</div>"; // letters
     $directoryStr .= 
         "<br>
             <div id='user-srch' style='width:350px;'>
@@ -112,30 +113,15 @@ function lab_directory($param) {
     }
 
     /* Table directory */
-    $directoryStr .= "<table>";
+    $directoryStr .= "<table class=\"directory\"><thead><tr><td>Name</td><td>mail & phone</td><td>groupe</td></tr></thead><tbody>";
     foreach ($results as $r) {
         $directoryStr .= "<tr class='directory_row' userId='".esc_html($r->first_name).".".esc_html($r->last_name)."'>";
-        $directoryStr .= "<td id='name_col'>" . 
-                        esc_html($r->last_name . " " . $r->first_name) . 
-                        "</td>";
-        $directoryStr .= "<td class='email'>" . esc_html(strrev($r->mail)) . "</td>";
-        $currentNumber = esc_html($r->phone);
-        $directoryStr .= "<td>" . correctNumber($currentNumber) . "</td>";
+        $directoryStr .= "<td id='name_col'>".esc_html($r->last_name . " " . $r->first_name)."</td>";
+        $directoryStr .= "<td><span class=\"email\">" . esc_html(strrev($r->mail))."</span><br>".correctNumber(esc_html($r->phone))."</td>";
+        //$directoryStr .= "<td>" . correctNumber(esc_html($r->phone)) . "</td>";
         $directoryStr .= "<td>" . formatGroupsName($r->id) . "</td>";
         $directoryStr .= "</tr>";
     }
-    $directoryStr .= "</table>";
+    $directoryStr .= "</tbody></table>";
     return $directoryStr;
-}
-
-function formatGroupsName($userId) {
-    $groupNames = lab_group_get_user_groups($userId);
-    if (count($groupNames) == 0) {
-        return "";
-    }
-    $items = array();
-    foreach($groupNames as $g) {
-        $items[] = esc_html($g->group_name);
-    }
-    return join(", ", $items);
 }
