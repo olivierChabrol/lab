@@ -62,7 +62,7 @@ function lab_profile_edit($user_id,$phone,$url,$bio) {
     'description' : $bio
   }
   jQuery.post(LAB.ajaxurl, data, function(response) {
-    jQuery(".entry-content")[0].innerHTML=response.data;
+    jQuery("#lab_profile_card")[0].outerHTML=response.data;
     load();
   });
 }
