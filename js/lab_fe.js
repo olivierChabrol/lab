@@ -36,6 +36,7 @@ jQuery(function($){
 /*******************************  */
 function load() {
   jQuery(function($) {
+    $(".entry-title").text("Profil de "+$('#lab_profile_name').text().replace("• "," "))
     $("#lab_profile_edit").click( function() {
       $(".lab_profile_edit").show();
       $("#lab_profile_edit").hide();

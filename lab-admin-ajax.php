@@ -738,7 +738,7 @@ function lab_profile_edit() {
     strlen($description) ? lab_profile_setDesc($user_id,$description) : false;
     strlen($url) ? lab_profile_setURL($user_id,$url) : false;
     strlen($phone) ? lab_profile_setPhone($user_id,$phone) : false;
-    wp_send_json_success(lab_profile(array()));
+    wp_send_json_success(lab_profile($user_id));
     return;
   }
   wp_send_json_error();
