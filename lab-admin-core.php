@@ -531,7 +531,14 @@ function lab_hal_createTable_hal() {
         `title` varchar(200) DEFAULT NULL,
         `url` varchar(200) DEFAULT NULL,
         `producedDate_tdate` date,
+        `journalTitle_s` varchar(100) DEFAULT NULL
         PRIMARY KEY(`id`)
+      ) ENGINE=InnoDB";
+    $wpdb->get_results($sql);
+    $sql = "CREATE TABLE `".$wpdb->prefix."lab_hal_users` (
+        `id` bigint UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
+        `hal_id` bigint UNSIGNED NOT NULL,
+        `user_id` bigint UNSIGNED NOT NULL
       ) ENGINE=InnoDB";
     return $wpdb->get_results($sql);
 }

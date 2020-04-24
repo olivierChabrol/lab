@@ -66,7 +66,7 @@ function lab_directory($param) {
         $currentLetter = 'A';
     }
     $sql .= " AND um1.`meta_value`LIKE '$currentLetter%'
-                ORDER BY last_name";
+                ORDER BY last_name"; 
 
     $results = $wpdb->get_results($sql);
     $nbResult = $wpdb->num_rows;
