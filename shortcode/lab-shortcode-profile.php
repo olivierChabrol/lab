@@ -22,27 +22,28 @@ function lab_profile($param) {
 		<div id="lab_pic_name">
 			<img src="'.$user->gravatar.'" id="lab_avatar"></img>
 			<div id="lab_profile_name">
-			<p>'.$user->first_name.' • '.$user->last_name.' '
-			. ($is_current_user || current_user_can('edit_users') ? '<i id="lab_profile_edit" class="fas fa-user-edit lab_profile_edit"></i>' : '').
-			'	<i style="display:none" class="fas fa-user-check" id="lab_confirm_change" user_id="'.$user->id.'"></i>
-			  	<div id="lab_profile_links">
-					<p><i class="fas fa-at"></i>'.$user->print_mail().'</p>
-					<p id="lab_profile_url">
-						<span class="lab_current">'.$user->print_url().'</span>
-						<input style="display:none;" type="text" class="lab_profile_edit" id="lab_profile_edit_url" placeholder="Adresse site web" value="' . $user->url .'"/>
-					</p>
-					<p id="lab_profile_phone">
-						<span class="lab_current">'.$user->print_phone().'</span>
-						<input style="display:none;" type="text" class="lab_profile_edit" id="lab_profile_edit_phone" placeholder="Numéro de téléphone" value="' . $user->phone .'"/>
-					</p> 
+				<p>'.$user->first_name.' • '.$user->last_name.' '
+				. ($is_current_user || current_user_can('edit_users') ? '<i id="lab_profile_edit" class="fas fa-user-edit lab_profile_edit"></i>' : '').
+				'	<i style="display:none" class="fas fa-user-check" id="lab_confirm_change" user_id="'.$user->id.'"></i>
+					<div id="lab_profile_links">
+						<p><i class="fas fa-at"></i>'.$user->print_mail().'</p>
+						<p id="lab_profile_url">
+							<span class="lab_current">'.$user->print_url().'</span>
+							<input style="display:none;" type="text" class="lab_profile_edit" id="lab_profile_edit_url" placeholder="Adresse site web" value="' . $user->url .'"/>
+						</p>
+						<p id="lab_profile_phone">
+							<span class="lab_current">'.$user->print_phone().'</span>
+							<input style="display:none;" type="text" class="lab_profile_edit" id="lab_profile_edit_phone" placeholder="Numéro de téléphone" value="' . $user->phone .'"/>
+						</p> 
+					</div>
+				<hr>
+				<div id="lab_profile_bio">
+					<input style="display:none;" type="text" class="lab_profile_edit" id="lab_profile_edit_bio" placeholder="Biographie" value="'.$user->description.'"/>
+					<span class="lab_current">'.(isset($user->description) ? $user->description :  '...' ).'</span>
 				</div>
-			<hr>
-			<div id="lab_profile_bio">
-				<input style="display:none;" type="text" class="lab_profile_edit" id="lab_profile_edit_bio" placeholder="Biographie" value="'.$user->description.'"/>
-				<span class="lab_current">'.(isset($user->description) ? $user->description :  '...' ).'</span>
 			</div>
 		</div>
-    </div>';
+	</div>';
     return $profileStr;
 }
 
