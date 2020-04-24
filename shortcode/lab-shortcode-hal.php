@@ -33,6 +33,7 @@ function lab_hal($param) {
     if ($useUltimaterMemberPlugin) {
         // if begins with user/ 
         $userPattern = "user/";
+        /*
         if (beginWith($wp->request, $userPattern)) {
             $umUser = substr ($wp->request, strlen($userPattern));
             global $wpdb;
@@ -43,7 +44,19 @@ function lab_hal($param) {
                 $userId = $results[0]->user_id;
             }
         }
+        //*/
+        if (beginWith($wp->request, $userPattern)) {
+            $umUser = substr ($wp->request, strlen($userPattern));
+            global $wpdb;
+            $sql = "SELECT user_id FROM `".$wpdb->prefix."usermeta` WHERE meta_key='lab_user_slug' AND meta_value='".$umUser."'";
+            $results = $wpdb->get_results($sql);
+            if (count($results) == 1) {
+                $userId = $results[0]->user_id;
+            }
+            //$html .= "sub SQL :".$sql."<br>";
+        }
     }
+    //$html .= "userId :".$userId."<br>";
     $publications = lab_hal_get_publication($userId);
     $i = 0;
     foreach($publications as $p) {

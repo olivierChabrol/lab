@@ -34,8 +34,35 @@ jQuery(function($){
 });
 
 /*******************************  */
-jQuery(function($) {
-  $("#lab_profile_edit").click( function() {
-    $(".lab_profile_edit").show();
+function load() {
+  jQuery(function($) {
+    $("#lab_profile_edit").click( function() {
+      $(".lab_profile_edit").show();
+      $("#lab_profile_edit").hide();
+      $("#lab_confirm_change").show();
+      $(".lab_current").hide();
+    });
+
+    $("#lab_confirm_change").click(function(){
+      $(".lab_profile_edit").hide();
+      $("#lab_profile_edit").show();
+      $("#lab_confirm_change").hide();
+      $(".lab_current").show();
+      lab_profile_edit($(this).attr('user_id'), $("#lab_profile_edit_phone").val(), $("#lab_profile_edit_url").val(), $("#lab_profile_edit_bio").val())
+    })
   });
-});
+}
+load();
+function lab_profile_edit($user_id,$phone,$url,$bio) {
+  data = {
+    'action' : 'lab_profile_edit',
+    'phone' : $phone,
+    'user_id' : $user_id,
+    'url' : $url,
+    'description' : $bio
+  }
+  jQuery.post(LAB.ajaxurl, data, function(response) {
+    jQuery("#lab_profile_card")[0].outerHTML=response.data;
+    load();
+  });
+}

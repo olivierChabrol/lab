@@ -49,16 +49,18 @@ function lab_directory($param) {
 
     global $wpdb;
     $sql = "SELECT um1.`user_id` AS id, um3.`meta_value` AS first_name, um2.`meta_value` AS last_name, 
-        u4.`user_email` AS mail, um5.`meta_value` AS phone 
+        u4.`user_email` AS mail, um5.`meta_value` AS phone, um8.`meta_value` AS slug 
         FROM `".$wpdb->prefix."usermeta` AS um1 
         JOIN `".$wpdb->prefix."usermeta` AS um2 ON um1.`user_id` = um2.`user_id` 
         JOIN `".$wpdb->prefix."usermeta` AS um3 ON um1.`user_id` = um3.`user_id` 
         JOIN `".$wpdb->prefix."users` AS u4 ON um1.`user_id` = u4.`ID` 
         JOIN `".$wpdb->prefix."usermeta` AS um5 ON um1.`user_id` = um5.`user_id`
+        JOIN `".$wpdb->prefix."usermeta` AS um8 ON um1.`user_id` = um8.`user_id`
         ".$joinDisplayLeftUser.$joinGroup."
         WHERE   um1.`meta_key`='last_name' 
             AND um2.`meta_key`='last_name' 
             AND um3.`meta_key`='first_name' 
+            AND um8.`meta_key`='lab_user_slug' 
             AND um5.`meta_key`='lab_user_phone'".$whereDisplayLeftUser.$whereGroup;
 
     $currentLetter = $_GET["letter"];
@@ -66,19 +68,20 @@ function lab_directory($param) {
         $currentLetter = 'A';
     }
     $sql .= " AND um1.`meta_value`LIKE '$currentLetter%'
-                ORDER BY last_name";
+                ORDER BY last_name"; 
 
     $results = $wpdb->get_results($sql);
     $nbResult = $wpdb->num_rows;
     $items = array();
     $directoryStr = "";//"<h1>".__("Annuaire","lab")."</h1>"; // title
-    $directoryStr .= $sql;
+    //$directoryStr .= $sql;
     $alphachar = array_merge(range('A', 'Z'));
     $url = explode('?', $_SERVER['REQUEST_URI']); // current url (without parameters)
+    $directoryStr .= "<div class=\"alpha-links\" style=\"font-size:15px;\">";
     foreach ($alphachar as $element) {
-        $directoryStr .= '<a href="' . $url[0] . '?letter=' . $element . '"><b>' . $element . '</b></a><span style="padding-right:12px;"></span>'; 
+        $directoryStr .= '<a href="' . $url[0] . '?letter=' . $element . '"><b>' . $element . '</b></a>'; 
     } // letter's url
-    $directoryStr .= "<div class=\"alpha-links\" style=\"font-size:15px;\">"; // letters
+    $directoryStr .= "</div>"; // letters
     $directoryStr .= 
         "<br>
             <div id='user-srch' style='width:350px;'>
@@ -112,30 +115,15 @@ function lab_directory($param) {
     }
 
     /* Table directory */
-    $directoryStr .= "<table>";
+    $directoryStr .= "<table class=\"directory\"><thead><tr><td>Name</td><td>mail & phone</td><td>groupe</td></tr></thead><tbody>";
     foreach ($results as $r) {
-        $directoryStr .= "<tr class='directory_row' userId='".esc_html($r->first_name).".".esc_html($r->last_name)."'>";
-        $directoryStr .= "<td id='name_col'>" . 
-                        esc_html($r->last_name . " " . $r->first_name) . 
-                        "</td>";
-        $directoryStr .= "<td class='email'>" . esc_html(strrev($r->mail)) . "</td>";
-        $currentNumber = esc_html($r->phone);
-        $directoryStr .= "<td>" . correctNumber($currentNumber) . "</td>";
+        $directoryStr .= "<tr class='directory_row' userId='".esc_html($r->slug)."'>";
+        $directoryStr .= "<td id='name_col'>".esc_html($r->last_name . " " . $r->first_name)."</td>";
+        $directoryStr .= "<td><span class=\"email\">" . esc_html(strrev($r->mail))."</span><br>".correctNumber(esc_html($r->phone))."</td>";
+        //$directoryStr .= "<td>" . correctNumber(esc_html($r->phone)) . "</td>";
         $directoryStr .= "<td>" . formatGroupsName($r->id) . "</td>";
         $directoryStr .= "</tr>";
     }
-    $directoryStr .= "</table>";
+    $directoryStr .= "</tbody></table>";
     return $directoryStr;
-}
-
-function formatGroupsName($userId) {
-    $groupNames = lab_group_get_user_groups($userId);
-    if (count($groupNames) == 0) {
-        return "";
-    }
-    $items = array();
-    foreach($groupNames as $g) {
-        $items[] = esc_html($g->group_name);
-    }
-    return join(", ", $items);
 }

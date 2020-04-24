@@ -64,6 +64,7 @@ function lab_admin_tab_settings() {
   <hr>
     <h4>Fill Table :</h4>
     <button class="page-title-action" id="lab_settings_button_fill_hal_name_fields">Fill HAL name</button>
+    <button class="page-title-action" id="lab_settings_button_fill_user_slug_fields">Fill user slug</button>
     <input type="text" id="lab_hal_user">
     <button class="page-title-action" id="lab_hal_delete_table">Empty HAL table</button>
   <hr/>
