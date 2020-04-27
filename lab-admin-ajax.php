@@ -668,10 +668,12 @@ function lab_profile_edit() {
   $phone = $_POST['phone'];
   $url = $_POST['url'];
   $description = $_POST['description'];
+  $bg_color = $_POST['bg_color'];
   if (get_current_user_id()==$user_id || current_user_can('edit_users')) {
     strlen($description) ? lab_profile_setDesc($user_id,$description) : false;
     strlen($url) ? lab_profile_setURL($user_id,$url) : false;
     strlen($phone) ? lab_profile_setPhone($user_id,$phone) : false;
+    strlen($bg_color) ? lab_profile_setBgColor($user_id,$bg_color) : false;
     wp_send_json_success(lab_profile($user_id));
     return;
   }

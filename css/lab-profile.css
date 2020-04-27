@@ -32,7 +32,7 @@
 #lab_profile_info {
     flex-grow: 1;
 }
-#lab_profile_info>p {
+#lab_profile_name {
     font-size: 24px;
     display: flex;
     justify-content: space-between;
@@ -60,11 +60,12 @@
     font-style: italic;
 }
 
-.fa-user-edit, .fa-user-check{
+#lab_profile_icons i {
+    margin-left: 0.5em;
     cursor: pointer;
     font-size: 20px;
 }
-.fa-user-edit:hover, .fa-user-check:hover {
+#lab_profile_icons i:hover {
     color: black;
 }
 
@@ -75,4 +76,14 @@
 .lab_profile_mail {
     unicode-bidi: bidi-override;
     direction: rtl;
+}
+
+#lab_profile_color {
+    display: block;
+    position: absolute;
+    transform: translateX(5em);
+    padding: 1em;
+    background-color: #F2F2F2;
+    border: 1px solid blue;
+    border-radius: 5px;
 }
