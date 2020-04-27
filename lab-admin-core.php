@@ -733,6 +733,7 @@ function hal_download($userId, &$docIds) {
 
     $json = lab_do_common_curl_call($url);
     $c =count($json->response->docs);
+    $display = false;
     for ($i = 0; $i < $c; $i++) {
         $keep = false;
         $docId = $json->response->docs[$i]->docid;
@@ -747,11 +748,23 @@ function hal_download($userId, &$docIds) {
         else {
             $journal = null;
         }
+
+        $display = $docId == "2508732";
+        
+
         if (!array_key_exists ($docId, $docIds)) {
             $id = saveHalProduction($docId, $citation, date('Y-m-d', $producedDate), $title, $url, $journal);
             $docIds[$docId] = $id;
             $halId = $id;
+            if ($display) {
+                echo "[$userId] La clef n'existe pas on la crée docIds[".$docId."]=".$id."\n";
+            }
             //echo "La clef n'existe pas on la crée docIds[".$docId."]=".$id."\n";
+        }
+        else {
+            if ($display) {
+                echo "[".$userId."] La clef existe deja\n";
+            }
         }
         saveHalUsers($userId, $docIds[$docId]);
         
