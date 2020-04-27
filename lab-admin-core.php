@@ -698,12 +698,12 @@ function saveHalProduction($docId, $citation, $productionDate, $title, $url, $jo
     global $wpdb;
     $wpdb->show_errors(true);
     if ($wpdb->insert($wpdb->prefix."lab_hal", array('journalTitle_s'=>$journal, 'docid'=>$docId, 'citationFull_s'=>$citation, 'producedDate_tdate'=>$productionDate, 'title'=>$title, 'url'=>$url))) {
-        $results = $wpdb->get_results("SELECT id from `".$wpdb->prefix."lab_hal` WHERE docid='".$docId."'");
+        //$results = $wpdb->get_results("SELECT id from `".$wpdb->prefix."lab_hal` WHERE docid='".$docId."'");
     }
     else{
         echo "[".$docid."] : ".$wpdb->last_error."\n";
     }
-    return $results[0]->id;
+    return $wpdb->insert_id;
 }
 
 function saveHalUsers($userId, $halId) {
