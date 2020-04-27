@@ -712,21 +712,27 @@ function saveHalUsers($userId, $halId) {
 function hal_download_all()
 {
     global $wpdb;
-    $sql = "SELECT id FROM `".$wpdb->prefix."users`";
+    $sql = "SELECT u.id FROM `".$wpdb->prefix."users` AS u JOIN `".$wpdb->prefix."usermeta` AS um ON um.user_id=u.ID WHERE um.meta_key='lab_user_left' AND um.meta_value IS NULL";
     $results = $wpdb->get_results($sql);
+
+    $docIds = array();
     foreach($results as $r) 
     {
-        hal_download($r->id);
+        hal_download($r->id, $docIds);
     }
 }
 
 
-function hal_download($userId) {
+function hal_download($userId, &$docIds) {
     $url = get_hal_url($userId);
     
+    if ($docIds == null) {
+        $docId = array();
+    }
+
+
     $json = lab_do_common_curl_call($url);
     $c =count($json->response->docs);
-    $docIds = array();
     for ($i = 0; $i < $c; $i++) {
         $keep = false;
         $docId = $json->response->docs[$i]->docid;
@@ -760,6 +766,7 @@ function delete_hal_table() {
     $wpdb->query("TRUNCATE TABLE `".$wpdb->prefix."lab_hal_users`");
     $wpdb->query("TRUNCATE TABLE `".$wpdb->prefix."lab_hal`");//delete( $wpdb->prefix."lab_hal", array());
     $wpdb->get_results("ALTER TABLE `".$wpdb->prefix."lab_hal` AUTO_INCREMENT = 1");
+    $wpdb->get_results("ALTER TABLE `".$wpdb->prefix."lab_hal_users` AUTO_INCREMENT = 1");
     return true;
 }
 
