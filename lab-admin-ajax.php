@@ -669,11 +669,15 @@ function lab_profile_edit() {
   $url = $_POST['url'];
   $description = $_POST['description'];
   $bg_color = $_POST['bg_color'];
+  $hal_id = $_POST['hal_id'];
+  $hal_name = $_POST['hal_name'];
   if (get_current_user_id()==$user_id || current_user_can('edit_users')) {
-    strlen($description) ? lab_profile_setDesc($user_id,$description) : false;
-    strlen($url) ? lab_profile_setURL($user_id,$url) : false;
-    strlen($phone) ? lab_profile_setPhone($user_id,$phone) : false;
-    strlen($bg_color) ? lab_profile_setBgColor($user_id,$bg_color) : false;
+    lab_profile_set_MetaKey($user_id,'description',$description);
+    lab_profile_setURL($user_id,$url);
+    lab_profile_set_MetaKey($user_id,'lab_user_phone',$phone);
+    lab_profile_set_MetaKey($user_id,'lab_hal_id',$hal_id);
+    lab_profile_set_MetaKey($user_id,'lab_hal_name',$hal_name);
+    strlen($bg_color) ? lab_profile_set_MetaKey($user_id,'lab_profile_bg_color',$bg_color) : false;
     wp_send_json_success(lab_profile($user_id));
     return;
   }

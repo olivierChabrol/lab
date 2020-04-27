@@ -41,7 +41,7 @@ function LABloadProfile() {
   jQuery(function($) {
     $("#lab_profile_card").css('background-color',$("#lab_profile_card").attr('bg-color'));
     $("#lab_profile_colorpicker").spectrum({
-      color: "#f2f2f2",
+      color: $("#lab_profile_card").attr('bg-color'),
       move: function(tinycolor) {
         jQuery("#lab_profile_card").css('background-color',tinycolor);
       },
@@ -68,7 +68,13 @@ function LABloadProfile() {
         $("#lab_confirm_change").hide();
         $(".lab_current").show();
         regex=/\"/g;
-        lab_profile_edit($(this).attr('user_id'), $("#lab_profile_edit_phone").val(), $("#lab_profile_edit_url").val(), $("#lab_profile_edit_bio").val().replace(regex,"”").replace(/\'/g,"’"),jQuery("#lab_profile_card").attr('bg-color'));
+        lab_profile_edit($(this).attr('user_id'),
+                         $("#lab_profile_edit_phone").val(),
+                         $("#lab_profile_edit_url").val(),
+                         $("#lab_profile_edit_bio").val().replace(regex,"”").replace(/\'/g,"’"),
+                         $("#lab_profile_card").attr('bg-color'),
+                         $("#lab_profile_edit_halID").val(),
+                         $("#lab_profile_edit_halName").val());
       }
     })
   });
@@ -76,14 +82,16 @@ function LABloadProfile() {
 if ( jQuery( "#lab_profile_card" ).length ) {
   LABloadProfile();
 }
-function lab_profile_edit($user_id,$phone,$url,$bio,$color) {
+function lab_profile_edit($user_id,$phone,$url,$bio,$color,$hal_id,$hal_name) {
   data = {
     'action' : 'lab_profile_edit',
     'phone' : $phone,
     'user_id' : $user_id,
     'url' : $url,
     'description' : $bio,
-    'bg_color': $color
+    'bg_color': $color,
+    'hal_id': $hal_id,
+    'hal_name': $hal_name
   }
   jQuery.post(LAB.ajaxurl, data, function(response) {
     jQuery("#lab_profile_card")[0].outerHTML=response.data;
