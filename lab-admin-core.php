@@ -755,7 +755,7 @@ function hal_download($userId, &$docIds) {
 
         if (!array_key_exists ($docId, $docIds)) {
             $id = saveHalProduction($docId, $citation, date('Y-m-d', $producedDate), $title, $url, $journal);
-            echo $id."\n";
+            echo "id=".$id."\n";
             $docIds[$docId] = $id;
             $halId = $id;
             if ($display) {
