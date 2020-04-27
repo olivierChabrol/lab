@@ -697,7 +697,8 @@ function get_hal_url($userId) {
 function saveHalProduction($docId, $citation, $productionDate, $title, $url, $journal) {
     global $wpdb;
     $wpdb->insert($wpdb->prefix."lab_hal", array('journalTitle_s'=>$journal, 'docid'=>$docId, 'citationFull_s'=>$citation, 'producedDate_tdate'=>$productionDate, 'title'=>$title, 'url'=>$url));
-    return $wpdb->insert_id;
+    $results = $wpdb->get_results("SELECT id from `".$wpdb->prefix."lab_hal` WHERE docid='".$docId."'");
+    return $results[0]->id;
 }
 
 function saveHalUsers($userId, $halId) {
