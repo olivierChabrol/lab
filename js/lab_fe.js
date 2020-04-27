@@ -16,7 +16,9 @@ jQuery(function($){
     select: function( event, ui ) {
       var firstname  = ui.item.firstname; // first name
       var lastname = ui.item.lastname; // last name
-      window.location.href = "/user/" + firstname + "." + lastname;
+      var userslug = ui.item.userslug;
+      console.log(userslug);
+      window.location.href = "/user/" + userslug;
       event.preventDefault();
       $("#lab_directory_user_name").val(firstname + " " + lastname);
     }
@@ -34,7 +36,8 @@ jQuery(function($){
 });
 
 /*******************************  */
-function load() {
+function LABloadProfile() {
+  console.log("loaded by"+this);
   jQuery(function($) {
     $(".entry-title").text("Profil de "+$('#lab_profile_name').text().replace("• "," "))
     $("#lab_profile_edit").click( function() {
@@ -53,7 +56,9 @@ function load() {
     })
   });
 }
-load();
+if ( jQuery( "#lab_profile_card" ).length ) {
+  LABloadProfile();
+}
 function lab_profile_edit($user_id,$phone,$url,$bio) {
   data = {
     'action' : 'lab_profile_edit',
@@ -64,6 +69,6 @@ function lab_profile_edit($user_id,$phone,$url,$bio) {
   }
   jQuery.post(LAB.ajaxurl, data, function(response) {
     jQuery("#lab_profile_card")[0].outerHTML=response.data;
-    load();
+    LABloadProfile();
   });
 }

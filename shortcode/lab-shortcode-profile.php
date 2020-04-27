@@ -23,7 +23,7 @@ function lab_profile($id=0) {
 				<p id="lab_avatar_change" class="lab_profile_edit"><a target="_blank" href="https://fr.gravatar.com/">Modifier l\'avatar</a></p>
 			</div>
 			<div id="lab_profile_info">
-				<p id="lab_profile_name">'.$user->first_name.' • '.$user->last_name.' '.$url
+				<p id="lab_profile_name">'.$user->first_name.' • '.$user->last_name.' '
 				. ($is_current_user || current_user_can('edit_users') ? '<i id="lab_profile_edit" class="fas fa-user-edit lab_profile_edit"></i>' : '').
 				'	<i style="display:none" class="fas fa-user-check" id="lab_confirm_change" user_id="'.$user->id.'"></i>
 				<div id="lab_profile_links">

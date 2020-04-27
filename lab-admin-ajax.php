@@ -289,58 +289,8 @@ function lab_usermeta_lab_left_key_exist($userId)
 
 function lab_admin_test()
 { 
-  //$group_id = 1;
-
-  //global $wpdb;
-  $handle = "wp-lab";
-  $domain = 'lab';
-  $path = "/home/olivier/stage/wp-content/plugins/lab/lang/";
-  wp_register_script( $handle, plugins_url('js/lab_global.js',__FILE__), array('wp-i18n','jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog'),"1.3", false );
-  
-  $translations = plugin_basename( __FILE__ ).'/lang';//load_script_textdomain( $handle, $domain, $path);
-  /*
-  $wp_scripts = wp_scripts();
-
-	if ( ! isset( $wp_scripts->registered[ $handle ] ) ) {
-		wp_send_json_success("PAS de handle");
-	}
-
-	$path   = untrailingslashit( $path );
-	$locale = determine_locale();
-
-	// If a path was given and the handle file exists simply return it.
-	$file_base       = 'default' === $domain ? $locale : $domain . '-' . $locale;
-	$handle_filename = $file_base . '-' . $handle . '.json';
-
-	if ( $path ) {
-		$translations = load_script_translations( $path . '/' . $handle_filename, $handle, $domain );
-
-		if ( $translations ) {
-			wp_send_json_success($translations);
-		}
-  }
-  
-  /*
-  $wp_scripts = wp_scripts();
-  $obj = $wp_scripts->registered[ $handle ];
-
-	$path   = untrailingslashit( $path );
-	$locale = determine_locale();
-
-  $file_base       = 'default' === $domain ? $locale : $domain . '-' . $locale;
-  $handle_filename = $file_base . '-' . $handle . '.json';
-  
-  //$translations = load_script_translations( $path . '/' . $handle_filename, $handle, $domain );
-  $file = $path . '/' . $handle_filename;
-  $translations = apply_filters( 'pre_load_script_translations', null, $file, $handle, $domain );
-  $file = apply_filters( 'load_script_translation_file', $file, $handle, $domain );
-  $translations = file_get_contents( $file );
-  //*/
-  wp_send_json_error( $translations );
-  //wp_send_json_success(load_script_textdomain( 'wp-lab', 'lab', basename( plugin_basename( __FILE__ ) ) . '/lang' ));
-  //$wpdb->delete($wpdb->prefix.'lab_groups', array('id' => $group_id));
-  //$user = 1;
-  //wp_send_json_success("UM()->options()->get( 'author_redirect' ) : " . UM()->options()->get('author_redirect') . " /  um_fetch_user($user) : " . um_fetch_user(1));
+  global $wp_rewrite;
+  wp_send_json_error($wp_rewrite);
 }
 
 
@@ -503,31 +453,15 @@ function lab_admin_add_users_groups() {
   $condition = count($users) * count($groups);
   global $wpdb;
   $count_rows = 0;
-
-  $sql = "SELECT group_id, user_id FROM ".$wpdb->prefix."lab_users_groups WHERE ";
-
-  foreach($groups as $g) {
-    $sql .= " group_id=".$g." OR";
-  }
-  $sql = substr($sql, 0, strlen($sql) -3);
-  $results = $wpdb->get_results($sql);
-  $existingGroups = array();
-  foreach($results as $r) {
-    if (!array_key_exists($r->group_id, $existingGroups)) {
-      $existingGroups[$r->group_id] = array();  
-    }
-    $existingGroups[$r->group_id][$r->user_id] = "";
-  }
-
   foreach($groups as $g) {
     foreach($users as $u) {
-      // if user doesn't exist already in the group
-      if (!array_key_exists($u, $existingGroups[$g])) {
-        $count_rows += lab_admin_users_groups_add_user($u, $g);
-      // user already exist in db
-      } else {
-        $count_rows++;
-      }
+      $count_rows += $wpdb->insert(
+        $wpdb->prefix.'lab_users_groups',
+        array(
+          'group_id' => $g,
+          'user_id' => $u
+        )
+      );
     }
   }
   if ($count_rows == $condition && $condition > 0)
