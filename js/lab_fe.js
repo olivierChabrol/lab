@@ -34,7 +34,8 @@ jQuery(function($){
 });
 
 /*******************************  */
-function load() {
+function LABloadProfile() {
+  console.log("loaded by"+this);
   jQuery(function($) {
     $(".entry-title").text("Profil de "+$('#lab_profile_name').text().replace("• "," "))
     $("#lab_profile_edit").click( function() {
@@ -53,7 +54,9 @@ function load() {
     })
   });
 }
-load();
+if ( jQuery( "#lab_profile_card" ).length ) {
+  LABloadProfile();
+}
 function lab_profile_edit($user_id,$phone,$url,$bio) {
   data = {
     'action' : 'lab_profile_edit',
@@ -64,6 +67,6 @@ function lab_profile_edit($user_id,$phone,$url,$bio) {
   }
   jQuery.post(LAB.ajaxurl, data, function(response) {
     jQuery("#lab_profile_card")[0].outerHTML=response.data;
-    load();
+    LABloadProfile();
   });
 }
