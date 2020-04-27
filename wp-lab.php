@@ -106,10 +106,24 @@ function myplugin_load_textdomain() {
  */
 function wplab_init()
 {
+  $RewriteRules = new LabRewriteRules();
   register_widget("wplab_widget_week_event");
   register_widget("lab_hal_widget");
+  add_filter('admin_init', array($RewriteRules, 'flush_rewrite_rules'));
+  add_filter('rewrite_rules_array', array($RewriteRules, 'create_rewrite_rules'));
 }
-
+class LabRewriteRules {
+  function create_rewrite_rules($rules) {
+      global $wp_rewrite;
+      $newRule = array('user/(.+)$' => 'index.php?pagename=user');
+      $newRules = $newRule + $rules;
+      return $newRules;
+  }
+  function flush_rewrite_rules() {
+    global $wp_rewrite;
+    $wp_rewrite->flush_rules();
+  }
+}
 /**
  * Show custom user profile fields
  * 
