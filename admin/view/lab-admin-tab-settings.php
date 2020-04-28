@@ -63,19 +63,19 @@ function lab_admin_tab_settings() {
   <button class="page-title-action" id="lab_settings_copy_phone"><?php echo esc_html__('Copier les champs phone','lab'); ?></button>
   <hr>
     <h4>Fill Table :</h4>
-    <button class="page-title-action" id="lab_settings_button_fill_hal_name_fields">Fill HAL name</button>
-    <button class="page-title-action" id="lab_settings_button_fill_user_slug_fields">Fill user slug</button>
+    <button class="page-title-action" id="lab_settings_button_fill_hal_name_fields"><?php echo esc_html_e('Fill HAL name','lab'); ?></button>
+    <button class="page-title-action" id="lab_settings_button_fill_user_slug_fields"><?php echo esc_html_e('Fill user slug','lab'); ?></button>
     <input type="text" id="lab_hal_user">
-    <button class="page-title-action" id="lab_hal_delete_table">Empty HAL table</button>
+    <button class="page-title-action" id="lab_hal_delete_table"><?php echo esc_html_e('Empty HAL Table','lab'); ?></button>
   <hr/>
   <h2>Create usermetadata key</h2>
   <label for="usermetadata_user_search">User</label>
-  <input type="text" id="usermetadata_user_search"><input type="hidden" id="usermetadata_user_id">
+  <input type="text" id="usermetadata_user_search"><input type="hidden" id="usermetadata_user_search_id">
   <label for="usermetadata_key">Key</label>
   <input type="text" id="usermetadata_key">
   <label for="usermetadata_value">Value</label>
   <input type="text" id="usermetadata_value">
-  <a href="#" class="page-title-action" id="lab_settings_button_addKey">Add Key</a>
+  <a href="#" class="page-title-action" id="lab_settings_button_addKey"><?php echo esc_html_e('Add Meta Key','lab'); ?></a>
   <hr/>
   <h2>Create Metadata key for all user</h2>
   <label for="usermetadata_key_all">Key</label>

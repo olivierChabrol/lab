@@ -516,7 +516,7 @@ function lab_userMetaData_create_metaKeys($metadataKey, $defaultValue) {
     $errors = array();
     $ids = array();
     foreach($userIds as $userId) {
-        if (lab_userMetaData_new_key($userId, $metadataKey, $defaultValue) == false) {
+        if (lab_userMetaData_save_key($userId, $metadataKey, $defaultValue) == false) {
             $errors[] = $wpdb->last_error();
         }
     }
@@ -526,12 +526,32 @@ function lab_userMetaData_create_metaKeys($metadataKey, $defaultValue) {
     return true;
 }
 
-function lab_userMetaData_new_key($userId, $metadataKey, $defaultValue) {
+/**
+ * Save meta key, create e new one if metakey doesn't exist, update an existing one
+ *
+ * @param [type] $userId
+ * @param [type] $metadataKey
+ * @param [type] $defaultValue
+ * @return Last insert id or update id, false otherwise
+ */
+function lab_userMetaData_save_key($userId, $metadataKey, $defaultValue) {
     global $wpdb;
     if ($defaultValue == 'null') {
         $defaultValue = null;
     }
-    $r = $wpdb->insert($wpdb->prefix.'usermeta', array('umeta_id'=>null, 'user_id'=>$userId, 'meta_key'=>LAB_META_PREFIX.$metadataKey,'meta_value'=>$defaultValue));
+    if (substr($metadataKey, 0, strlen(LAB_META_PREFIX)) !== LAB_META_PREFIX) {
+        $metadataKey = LAB_META_PREFIX.$metadataKey;
+    }
+
+
+    $umId = userMetaData_exist_metakey_for_user($metadataKey, $userId);
+    if (!$umId) {
+        $wpdb->insert($wpdb->prefix."usermeta", array('meta_value'=>$defaultValue, 'umeta_id'=>null, 'user_id'=>$userId, 'meta_key'=>$metadataKey));
+        $r = $wpdb->insert_id;
+    } else {
+        $wpdb->update($wpdb->prefix."usermeta", array('meta_value'=>$defaultValue), array('umeta_id'=>$umId, 'user_id'=>$userId, 'meta_key'=>$metadataKey));
+        $r = $umId;
+    }
     if (!$r) {
         return $wpdb->last_error();
     }
@@ -568,14 +588,28 @@ function userMetaData_delete_metakeys($metadataKey) {
     return $wpdb->delete($wpdb->prefix.'usermeta', array("meta_key"=>$metadataKey));
 }
 
+function userMetaData_exist_metakey_for_user($metadataKey, $userId) {
+    if (substr($metadataKey, 0, strlen(LAB_META_PREFIX)) !== LAB_META_PREFIX) {
+        $metadataKey = LAB_META_PREFIX.$metadataKey;
+    }
+    global $wpdb;
+    $results = $wpdb->get_results("SELECT umeta_id FROM `".$wpdb->prefix."usermeta` WHERE `meta_key` = '".$metadataKey."' AND `user_id`=".$userId);
+    if (count($results) > 0) {
+        return $results[0]->umeta_id;
+    }
+    return false;
+}
+
 function userMetaData_exist_metakey($metadataKey) {
     if (substr($metadataKey, 0, strlen(LAB_META_PREFIX)) !== LAB_META_PREFIX) {
         $metadataKey = LAB_META_PREFIX.$metadataKey;
     }
     global $wpdb;
-    //return "SELECT umeta_id FROM `".$wpdb->prefix."usermeta` WHERE `meta_key` = '".$metadataKey."'";
     $results = $wpdb->get_results("SELECT umeta_id FROM `".$wpdb->prefix."usermeta` WHERE `meta_key` = '".$metadataKey."'");
-    return count($results) > 0;
+    if (count($results) > 0) {
+        return $results[0]->umeta_id;
+    }
+    return false;
 }
 /**************************************************************************************************
  * HAL
@@ -586,11 +620,11 @@ function lab_hal_createTable_hal() {
         `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
         `user_id` int NOT NULL,
         `docid` int NOT NULL COMMENT 'docid issus de hal',
-        `citationFull_s` varchar(1000) NOT NULL,
-        `title` varchar(200) DEFAULT NULL,
-        `url` varchar(200) DEFAULT NULL,
+        `citationFull_s` varchar(1000) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+        `title` varchar(200) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+        `url` varchar(200) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
         `producedDate_tdate` date,
-        `journalTitle_s` varchar(100) DEFAULT NULL
+        `journalTitle_s` varchar(100) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL
         PRIMARY KEY(`id`)
       ) ENGINE=InnoDB";
     $wpdb->get_results($sql);

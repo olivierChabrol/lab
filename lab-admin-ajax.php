@@ -526,7 +526,7 @@ function lab_keyring_deleteKey_Req() {
  * Settings
  ********************************************************************************************/
 function lab_ajax_userMetaData_new_key() {
-  wp_send_json_success(lab_userMetaData_new_key($_POST['userId'],$_POST['key'],$_POST['value']));
+  wp_send_json_success(lab_userMetaData_save_key($_POST['userId'],$_POST['key'],$_POST['value']));
 }
 function lab_ajax_userMetaData_create_keys() {
   wp_send_json_success(lab_userMetaData_create_metaKeys($_POST['key'],$_POST['value']));

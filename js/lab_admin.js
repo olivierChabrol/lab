@@ -154,7 +154,7 @@ jQuery(function($){
     saveEventCaterory(postId, categoryId);
   });
   $("#lab_settings_button_addKey").click(function() {
-    var userId = $("#usermetadata_user_id").val();
+    var userId = $("#usermetadata_user_search_id").val();
     var key = $('#usermetadata_key').val();
     var value = $('#usermetadata_value').val();
     saveMetakey(userId, key, value);
@@ -705,6 +705,27 @@ jQuery(function($){
       $("#lab_keyring_loanform_user").attr('userID',value);
     }
   });
+
+
+  $("#usermetadata_user_search").autocomplete({
+    minChars: 3,
+    source: function(term, suggest){
+      try { searchRequest.abort(); } catch(e){}
+      searchRequest = $.post(ajaxurl, { action: 'search_username',search: term, }, function(res) {
+        suggest(res.data);
+      });
+      },
+    select: function( event, ui ) {
+      var value = ui.item.value;
+      var label = ui.item.label;
+      event.preventDefault();
+      $("#usermetadata_user_search").val(label);
+      $("#usermetadata_user_search_id").val(value);
+      return false;
+    }
+  });
+
+
   $("#lab_keyring_loanform_create").click(function(){
     params={};
     for (i of ['referent','user','start_date']) {
@@ -765,6 +786,7 @@ jQuery(function($){
   {
     reset_and_load_groups_users(!$("#lab_all_users").is(':checked'), !$("#lab_no_users_left").is(':checked'));
   });
+
 
   $("#lab_add_users_groups").click(function()
   {
@@ -1238,12 +1260,10 @@ function disabledAddKeyAllButton(data) {
   jQuery("#lab_settings_button_addKey_all").prop("disabled",true);
   jQuery("#usermetadata_key_all").focus();
   jQuery("#usermetadata_key_all").select();
-  //jQuery("#lab_settings_button_addKey_all").data('disabled',true);
 }
 
 function enabledAddKeyAllButton(data) {
   jQuery("#lab_settings_button_addKey_all").prop("disabled",false);
-  //jQuery("#lab_settings_button_addKey_all").data('disabled',false);
 }
 
 function callAjax(data, successMessage, callBackSuccess = null, errorMessage, callBackError = null) {
