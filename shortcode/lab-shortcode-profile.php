@@ -37,6 +37,7 @@ function lab_profile($id=0) {
 				  <p id="lab_profile_halName">
 					<span class="lab_current">'.(strlen($user->hal_name) ? 'Votre nom Hal : '.$user->hal_name : '<i>Vous n\'avez pas défini votre nom Hal</i>').'</span>
 					<input style="display:none;" type="text" class="lab_profile_edit" id="lab_profile_edit_halName" placeholder="Nom Hal" value="' . $user->hal_name .'"/>
+					<a href="">tester sur HAL</a>
 				  </p>';
 	$profileStr = '
     <div id="lab_profile_card" bg-color="'.$user->bg_color.'">

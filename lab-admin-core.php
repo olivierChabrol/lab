@@ -138,6 +138,7 @@ function lab_admin_initTable_usermeta()
     lab_userMetaData_create_metaKeys("profile_bg_color", "#F2F2F2");
     lab_admin_usermeta_fill_hal_name();
     lab_admin_usermeta_fill_user_slug();
+    lab_admin_createSocial();
 }
 
 function lab_admin_firstname_lastname($param, $name){

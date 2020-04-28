@@ -94,12 +94,6 @@ function lab_directory($param) {
             .directory_row{
                 cursor: pointer;
             }
-            .directory_row:hover {
-                background-color: #DADBDD;
-            }
-            tr:nth-child(even) {
-                background-color: #f2f2f2;
-            }
             .email{
                 unicode-bidi: bidi-override;
                 direction: rtl;
@@ -115,15 +109,15 @@ function lab_directory($param) {
     }
 
     /* Table directory */
-    $directoryStr .= "<table class=\"directory\"><thead><tr><td>Name</td><td>mail & phone</td><td>groupe</td></tr></thead><tbody>";
+    $directoryStr .= "<div class=\"table-responsive\"><table class=\"table table-striped\"><thead class=\"thead-dark\"><tr><th>".esc_html__("Name", "lab")."</th><th>".esc_html__("Name", "lab")."</th><th>".esc_html__("Name", "lab")."</td></th></thead><tbody>";
     foreach ($results as $r) {
-        $directoryStr .= "<tr class='directory_row' userId='".esc_html($r->slug)."'>";
+        $directoryStr .= "<tr  userId='".esc_html($r->slug)."'>";
         $directoryStr .= "<td id='name_col'>".esc_html($r->last_name . " " . $r->first_name)."</td>";
         $directoryStr .= "<td><span class=\"email\">" . esc_html(strrev($r->mail))."</span><br>".correctNumber(esc_html($r->phone))."</td>";
         //$directoryStr .= "<td>" . correctNumber(esc_html($r->phone)) . "</td>";
         $directoryStr .= "<td>" . formatGroupsName($r->id) . "</td>";
         $directoryStr .= "</tr>";
     }
-    $directoryStr .= "</tbody></table>";
+    $directoryStr .= "</tbody></table></div>";
     return $directoryStr;
 }
