@@ -3,7 +3,7 @@
  * File Name: lab-shortcode-profile.php
  * Description: shortcode pour générer le profil d\'une personne
  * Authors: Astrid BEYER, Ivan Ivanov, Lucas URGENTI
- * Version: 0.5
+ * Version: 0.6
 */
 function lab_profile($id=0) {
 	apply_filters( 'document_title_parts', array("oui") );
@@ -15,11 +15,21 @@ function lab_profile($id=0) {
 		$user = new labUser($id);
 	}
 	$is_current_user = $user->id == get_current_user_id() ? true : false; 
-	$editIcons = '<div id="lab_profile_icons">
+	$editIcons = '<div id="lab_profile_icons" class="lab_profile_edit">
 					<i style="display:none" id="lab_profile_colorpicker" class="fas fa-fill-drip lab_profile_edit"></i>
 					<i id="lab_profile_edit" class="fas fa-user-edit lab_profile_edit"></i> 
 					<i style="display:none" class="fas fa-user-check" id="lab_confirm_change" user_id="'.$user->id.'"></i>
 				</div>';
+	$SocialIcons = '<div id="lab_profile_social">
+						<a style="display:none" class="lab_profile_social" href="'.$user->social['facebook'].'" social="facebook" target="_blank"><i class="fab fa-facebook-square"></i></a>
+						<a style="display:none" class="lab_profile_social" href="'.$user->social['pinterest'].'" social="pinterest" target="_blank"><i class="fab fa-pinterest-square"></i></a>
+						<a style="display:none" class="lab_profile_social" href="'.$user->social['instagram'].'" social="instagram" target="_blank"><i class="fab fa-instagram-square"></i></a>
+						<a style="display:none" class="lab_profile_social" href="'.$user->social['twitter'].'" social="twitter" target="_blank"><i class="fab fa-twitter-square"></i></a>
+						<a style="display:none" class="lab_profile_social" href="'.$user->social['linkedin'].'" social="linkedin" target="_blank"><i class="fab fa-linkedin"></i></a>
+						<a style="display:none" class="lab_profile_social" href="'.$user->social['tumblr'].'" social="tumblr" target="_blank"><i class="fab fa-tumblr-square"></i></a>
+						<a style="display:none" class="lab_profile_social" href="'.$user->social['youtube'].'" social="youtube" target="_blank"><i class="fab fa-youtube-square"></i></a>
+					</div>';
+	$editSocial ='<p><input style="display:none;" type="text" class="lab_profile_edit" id="lab_profile_edit_social" placeholder="Cliquez sur l\'icône d\'un réseau social pour le modifier"/></p>';
 	$halFields = '<p id="lab_profile_halID">
 					<span class="lab_current">'.(strlen($user->hal_id) ? 'Votre ID Hal : '.$user->hal_id : '<i>Vous n\'avez pas défini votre ID Hal</i>').'</span>
 					<input style="display:none;" type="text" class="lab_profile_edit" id="lab_profile_edit_halID" placeholder="ID Hal" value="' . $user->hal_id .'"/>
@@ -34,6 +44,7 @@ function lab_profile($id=0) {
 			<div>
 				<img src="'.$user->gravatar.'" id="lab_avatar"></img>'
 				.($is_current_user || current_user_can('edit_users') ? '<p id="lab_avatar_change" class="lab_profile_edit"><a target="_blank" href="https://fr.gravatar.com/">Modifier l\'avatar</a></p>' :'').
+				$SocialIcons.
 			'</div>
 			<div id="lab_profile_info">
 				<div id="lab_profile_name">'.$user->first_name.' • '.$user->last_name.''
@@ -48,8 +59,8 @@ function lab_profile($id=0) {
 					<p id="lab_profile_phone">
 						<span class="lab_current">'.$user->print_phone().'</span>'
 						.($is_current_user || current_user_can('edit_users') ? '<input style="display:none;" type="text" class="lab_profile_edit" id="lab_profile_edit_phone" placeholder="Numéro de téléphone" value="' . $user->phone .'"/>' : '').
-					'</p>
-					'.($is_current_user || current_user_can('edit_users') ? $halFields : '').'
+					'</p>'
+					.($is_current_user || current_user_can('edit_users') ? $editSocial.$halFields : '').'
 				</div>
 			</div>
 			</div>
@@ -81,6 +92,7 @@ class labUser {
 	public $bg_color;
 	public $hal_name;
 	public $hal_id;
+	public $social;
 
 	function __construct($id) {
 		$this -> id = $id;
@@ -98,6 +110,9 @@ class labUser {
 		$this -> bg_color = lab_profile_get_metaKey($id,'lab_profile_bg_color');
 		$this -> hal_id = lab_profile_get_metaKey($id,'lab_hal_id');
 		$this -> hal_name = lab_profile_get_metaKey($id,'lab_hal_name');
+		foreach (['facebook','instagram','linkedin','pinterest','twitter','tumblr','youtube'] as $reseau) {
+			$this->social[$reseau] = lab_profile_get_metaKey($id,'lab_'.$reseau);
+		}
 	}
 	public function print_mail() {
 		$temp = str_replace('@', ']AT[', $this->email);

@@ -85,6 +85,10 @@ function lab_admin_tab_settings() {
   <!-- <a href="#" class="page-title-action" id="lab_settings_button_addKey_all">Add Keys</a> -->
   <button class="lab_keyring_create_table_keys" id="lab_settings_button_addKey_all">Add Keys</button>
   <hr/>
+  <h2>Social networks for all user</h2>
+  <button class="page-title-action" id="lab_setting_social_delete_button">Delete all social networks keys</button>
+  <button class="page-title-action" id="lab_setting_social_create_button">Create all social networks keys</button>
+  <hr/>
   <h2>Existing usermeta keys</h2>
   <label for="usermetadata_keys">Existing keys : </label>
   <select id="usermetadata_keys"></select> 
