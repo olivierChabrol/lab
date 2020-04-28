@@ -884,7 +884,7 @@ function resetGroupEdit()
   jQuery("#wp_lab_group_type_edit").val("0");
   jQuery("#wp_lab_group_name").val("");
   jQuery("#lab_group_edit_substitutes").text("");
-  jQuery("#lab_group_url_edit").val("");
+  jQuery("#wp_lab_group_url_edit").val("");
 }
 function clearFields(prefix,list) {
   for (i of list) {

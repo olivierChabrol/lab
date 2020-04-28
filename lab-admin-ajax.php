@@ -304,8 +304,8 @@ function lab_admin_group_search() {
   $search = $_POST['search'];
   $groupName  = $search["term"];
 
-  $sql = "SELECT * FROM `".$wpdb->prefix."lab_groups` WHERE `group_name` LIKE '%".$groupName."%' ";
   global $wpdb;
+  $sql = "SELECT * FROM `".$wpdb->prefix."lab_groups` WHERE `group_name` LIKE '%".$groupName."%' ";
   $results = $wpdb->get_results($sql);
   $items = array();
   $url = esc_url(home_url('/'));
@@ -329,16 +329,12 @@ function lab_group_editGroup() {
   $chiefId = $_POST['chiefId'];
   $parent = $_POST['parent'];
   $type = $_POST['group_type'];
-  $url = $_POST['url'];
-  $pos = strpos($url, '//');
-  $url2 = substr($url, $pos + 2); // on efface http://
-  $pos2 = strpos($url2, '/');
-  $url3 = substr($url2, $pos2); // on efface le nom de domaine
-
-  $sql = "UPDATE `".$wpdb->prefix."lab_groups` SET `group_name` = '$groupName', `acronym` = '$acronym',
-  `chief_id` = '$chiefId', `group_type` = '$type', `parent_group_id` = '$parent'
-    WHERE id= '$id';";
+  $url = delete_http_and_domain($_POST['url']);
+  
   global $wpdb;
+  $sql = "UPDATE `".$wpdb->prefix."lab_groups` SET `group_name` = '$groupName', `acronym` = '$acronym',
+  `chief_id` = '$chiefId', `group_type` = '$type', `parent_group_id` = '$parent', `url`='$url'
+    WHERE id= '$id';";
 
   wp_send_json_success($wpdb->get_results($sql));
 }
@@ -382,13 +378,20 @@ function lab_admin_group_availableAc() {
   }
   wp_send_json_success();
 }
+
+function delete_http_and_domain($url) {
+  $pos = strpos($url, '//');
+  if ($pos > 0) {
+    $url2 = substr($url, $pos + 2); // on efface http://
+    $pos2 = strpos($url2, '/');
+    return substr($url2, $pos2); // on efface le nom de domaine
+  }
+  return $url;
+}
+
 function lab_admin_group_createReq() {
   $url = $_POST['url'];
-  $pos = strpos($url, '//');
-  $url2 = substr($url, $pos + 2); // on efface http://
-  $pos2 = strpos($url2, '/');
-  $url3 = substr($url2, $pos2); // on efface le nom de domaine
-  $res = lab_admin_group_create($_POST['name'],$_POST['acronym'],$_POST['chiefID'],$_POST['parent'],$_POST['type'],$url3);
+  $res = lab_admin_group_create($_POST['name'],$_POST['acronym'],$_POST['chiefID'],$_POST['parent'],$_POST['type'],delete_http_and_domain($url));
   if (strlen($res)==0) {
     wp_send_json_success(lab_admin_search_group_by_acronym($_POST['acronym']));
     return;
