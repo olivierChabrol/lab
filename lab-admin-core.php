@@ -696,7 +696,13 @@ function get_hal_url($userId) {
 
 function saveHalProduction($docId, $citation, $productionDate, $title, $url, $journal) {
     global $wpdb;
-    $wpdb->insert($wpdb->prefix."lab_hal", array('journalTitle_s'=>$journal, 'docid'=>$docId, 'citationFull_s'=>$citation, 'producedDate_tdate'=>$productionDate, 'title'=>$title, 'url'=>$url));
+    //$wpdb->show_errors(true);
+    if ($wpdb->insert($wpdb->prefix."lab_hal", array('journalTitle_s'=>$journal, 'docid'=>$docId, 'citationFull_s'=>$citation, 'producedDate_tdate'=>$productionDate, 'title'=>$title, 'url'=>$url))) {
+        //$results = $wpdb->get_results("SELECT id from `".$wpdb->prefix."lab_hal` WHERE docid='".$docId."'");
+    }
+    else{
+        //echo "[".$docid."] : ".$wpdb->last_error."\n";
+    }
     return $wpdb->insert_id;
 }
 
@@ -712,21 +718,28 @@ function saveHalUsers($userId, $halId) {
 function hal_download_all()
 {
     global $wpdb;
-    $sql = "SELECT id FROM `".$wpdb->prefix."users`";
+    $sql = "SELECT u.id FROM `".$wpdb->prefix."users` AS u JOIN `".$wpdb->prefix."usermeta` AS um ON um.user_id=u.ID WHERE um.meta_key='lab_user_left' AND um.meta_value IS NULL";
     $results = $wpdb->get_results($sql);
+
+    $docIds = array();
     foreach($results as $r) 
     {
-        hal_download($r->id);
+        hal_download($r->id, $docIds);
     }
 }
 
 
-function hal_download($userId) {
+function hal_download($userId, &$docIds) {
     $url = get_hal_url($userId);
     
+    if ($docIds == null) {
+        $docId = array();
+    }
+
+
     $json = lab_do_common_curl_call($url);
     $c =count($json->response->docs);
-    $docIds = array();
+    $display = false;
     for ($i = 0; $i < $c; $i++) {
         $keep = false;
         $docId = $json->response->docs[$i]->docid;
@@ -741,11 +754,24 @@ function hal_download($userId) {
         else {
             $journal = null;
         }
+
+        $display = $docId == "2508732";
+        
+
         if (!array_key_exists ($docId, $docIds)) {
             $id = saveHalProduction($docId, $citation, date('Y-m-d', $producedDate), $title, $url, $journal);
+            //echo "id=".$id."\n";
             $docIds[$docId] = $id;
             $halId = $id;
+            if ($display) {
+                echo "[$userId] La clef n'existe pas on la crée docIds[".$docId."]=".$id."\n";
+            }
             //echo "La clef n'existe pas on la crée docIds[".$docId."]=".$id."\n";
+        }
+        else {
+            if ($display) {
+                echo "[".$userId."] La clef existe deja\n";
+            }
         }
         saveHalUsers($userId, $docIds[$docId]);
         
@@ -760,6 +786,7 @@ function delete_hal_table() {
     $wpdb->query("TRUNCATE TABLE `".$wpdb->prefix."lab_hal_users`");
     $wpdb->query("TRUNCATE TABLE `".$wpdb->prefix."lab_hal`");//delete( $wpdb->prefix."lab_hal", array());
     $wpdb->get_results("ALTER TABLE `".$wpdb->prefix."lab_hal` AUTO_INCREMENT = 1");
+    $wpdb->get_results("ALTER TABLE `".$wpdb->prefix."lab_hal_users` AUTO_INCREMENT = 1");
     return true;
 }
 
