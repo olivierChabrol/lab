@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-28 14:11+0200\n"
-"PO-Revision-Date: 2020-04-28 14:12+0200\n"
+"POT-Creation-Date: 2020-04-28 14:39+0200\n"
+"PO-Revision-Date: 2020-04-28 14:39+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en\n"
@@ -197,7 +197,7 @@ msgstr "Settings"
 msgid "Paramètres globaux"
 msgstr "General settings"
 
-#: js/lab_fe.js:88
+#: js/lab_fe.js:90
 msgid "Votre biographie est trop longue (max 200 caractères)"
 msgstr ""
 
@@ -538,39 +538,44 @@ msgstr "Loan"
 msgid "Voir prêt"
 msgstr "Show Loan"
 
-#: shortcode/lab-shortcode-profile.php:19
+#: shortcode/lab-shortcode-profile.php:21
 msgid "Modifier la couleur d'arrière plan"
 msgstr "Change background color"
 
-#: shortcode/lab-shortcode-profile.php:20
+#: shortcode/lab-shortcode-profile.php:22
 msgid "Modifier le profil"
 msgstr "Edit profile"
 
-#: shortcode/lab-shortcode-profile.php:21
+#: shortcode/lab-shortcode-profile.php:23
 msgid "Valider les changements"
 msgstr "Confirm changes"
 
-#: shortcode/lab-shortcode-profile.php:32
+#: shortcode/lab-shortcode-profile.php:34
 msgid "Cliquez sur l'icône d'un réseau social pour le modifier"
 msgstr "Click on a social network icon to change it"
 
-#: shortcode/lab-shortcode-profile.php:34
+#: shortcode/lab-shortcode-profile.php:36
 msgid "Votre ID HAL"
 msgstr "Your HAL ID"
 
-#: shortcode/lab-shortcode-profile.php:34
+#: shortcode/lab-shortcode-profile.php:36
 msgid "Vous n'avez pas défini votre ID HAL"
 msgstr "You haven't defined your HAL ID"
 
-#: shortcode/lab-shortcode-profile.php:38
+#: shortcode/lab-shortcode-profile.php:37
+#: shortcode/lab-shortcode-profile.php:41
+msgid "Tester sur HAL"
+msgstr "Test on HAL"
+
+#: shortcode/lab-shortcode-profile.php:40
 msgid "Votre nom HAL"
 msgstr "Your HAL name"
 
-#: shortcode/lab-shortcode-profile.php:38
+#: shortcode/lab-shortcode-profile.php:40
 msgid "Vous n'avez pas défini votre nom HAL"
 msgstr "You haven't defined your HAL Name"
 
-#: shortcode/lab-shortcode-profile.php:39
+#: shortcode/lab-shortcode-profile.php:41
 msgid "Nom HAL"
 msgstr "HAL Name"
 

@@ -3,7 +3,7 @@
  * File Name: lab-shortcode-profile.php
  * Description: shortcode pour générer le profil d\'une personne
  * Authors: Astrid BEYER, Ivan Ivanov, Lucas URGENTI
- * Version: 0.61
+ * Version: 0.66
 */
 function lab_profile($id=0) {
 	apply_filters( 'document_title_parts', array("oui") );
@@ -15,6 +15,8 @@ function lab_profile($id=0) {
 		$user = new labUser($id);
 	}
 	$is_current_user = $user->id == get_current_user_id() ? true : false; 
+	$HalID_URL = "https://api.archives-ouvertes.fr/search/?authIdHal_s:(".$user->hal_id.")&fl=docid,citationFull_s,producedDate_tdate,uri_s,title_s,journalTitle_s&sort=producedDate_tdate+desc&wt=json&json.nl=arrarr";
+	$HalName_URL = "https://api.archives-ouvertes.fr/search/?q=authLastNameFirstName_s:%22".$user->hal_name."%22&fl=docid,citationFull_s,producedDate_tdate,uri_s,title_s,journalTitle_s&sort=producedDate_tdate+desc&wt=json&json.nl=arrarr";
 	$editIcons = '<div id="lab_profile_icons" class="lab_profile_edit">
 					<i title="'.esc_html__("Modifier la couleur d'arrière plan","lab").'" style="display:none" id="lab_profile_colorpicker" class="fas fa-fill-drip lab_profile_edit"></i>
 					<i id="lab_profile_edit" title="'.esc_html__('Modifier le profil','lab').'" class="fas fa-user-edit"></i> 
@@ -32,11 +34,11 @@ function lab_profile($id=0) {
 	$editSocial ='<p><input style="display:none;" type="text" class="lab_profile_edit" id="lab_profile_edit_social" placeholder="'.esc_html__("Cliquez sur l'icône d'un réseau social pour le modifier","lab").'"/></p>';
 	$halFields = '<p id="lab_profile_halID">
 					<span class="lab_current">'.(strlen($user->hal_id) ? '<i>'.esc_html__('Votre ID HAL','lab').' : </i>'.$user->hal_id : '<i>'.esc_html__('Vous n\'avez pas défini votre ID HAL','lab').'</i>').'</span>
-					<input style="display:none;" type="text" class="lab_profile_edit" id="lab_profile_edit_halID" placeholder="ID HAL" value="' . $user->hal_id .'"/>
+					<input style="display:none;" type="text" class="lab_profile_edit" id="lab_profile_edit_halID" placeholder="ID HAL" value="' . $user->hal_id .'"/><a id="lab_profile_testHal_id" target="_blank" style="display:none" class="lab_profile_edit" href="'.$HalID_URL.'">'.esc_html__('Tester sur HAL','lab').'</a>
 				  </p>
 				  <p id="lab_profile_halName">
 					<span class="lab_current">'.(strlen($user->hal_name) ? '<i>'.esc_html__('Votre nom HAL','lab').' : </i>'.$user->hal_name : '<i>'.esc_html__('Vous n\'avez pas défini votre nom HAL','lab').'</i>').'</span>
-					<input style="display:none;" type="text" class="lab_profile_edit" id="lab_profile_edit_halName" placeholder="'.esc_html__('Nom HAL','lab').'" value="' . $user->hal_name .'"/>
+					<input style="display:none;" type="text" class="lab_profile_edit" id="lab_profile_edit_halName" placeholder="'.esc_html__('Nom HAL','lab').'" value="' . $user->hal_name .'"/><a id="lab_profile_testHal_name" target="_blank" style="display:none" class="lab_profile_edit" href="'.$HalName_URL.'">'.esc_html__('Tester sur HAL','lab').'</a>
 				  </p>';
 	$profileStr = '
     <div id="lab_profile_card" bg-color="'.$user->bg_color.'">

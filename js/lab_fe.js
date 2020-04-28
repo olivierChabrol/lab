@@ -46,6 +46,8 @@ function LABloadProfile() {
     'youtube': 'https://www.youtube.com/user/@',
     'tumblr': 'https://@.tumblr.com/'
   };
+  HalID_URL = "https://api.archives-ouvertes.fr/search/?authIdHal_s:(@)&fl=docid,citationFull_s,producedDate_tdate,uri_s,title_s,journalTitle_s&sort=producedDate_tdate+desc&wt=json&json.nl=arrarr";
+	HalName_URL = "https://api.archives-ouvertes.fr/search/?q=authLastNameFirstName_s:%22@%22&fl=docid,citationFull_s,producedDate_tdate,uri_s,title_s,journalTitle_s&sort=producedDate_tdate+desc&wt=json&json.nl=arrarr";
   jQuery(function($) {
     //Attribue la couleur de l'utilisateur à l'arrière plan
     $("#lab_profile_card").css('background-color',$("#lab_profile_card").attr('bg-color'));
@@ -123,7 +125,13 @@ function LABloadProfile() {
       } else {
         $(".lab_profile_social[social="+$(this).attr('social')+"]").attr('href',socialURLS[$(this).attr('social')].replace('@',$(this).val()));
       }
-      $(".lab_profile_social[social="+$(this).attr('social')+"]").attr('modified','true')
+      $(".lab_profile_social[social="+$(this).attr('social')+"]").attr('modified','true');
+    });
+    $("#lab_profile_edit_halID").keyup(function() {
+      $("#lab_profile_testHal_id").attr("href",HalID_URL.replace('@',$(this).val()));
+    });
+    $("#lab_profile_edit_halName").keyup(function() {
+      $("#lab_profile_testHal_name").attr("href",HalName_URL.replace('@',$(this).val()));
     });
   });
 }
