@@ -34,8 +34,8 @@ function lab_admin_tab_groups() {
     <label for="wp_lab_group_type_edit"><?php esc_html_e("Modifier le type",'lab'); ?> :</label>
     <?php lab_html_select("wp_lab_group_type_edit", "wp_lab_group_type", "", lab_admin_get_params_groupTypes); ?>
     <br /></br />
-    <label for="wp_lab_group_url_edit"><?php esc_html_e("Page du groupe",'lab');?> :</label>
-    <input type="text" name="wp_lab_group_url" id="wp_lab_group_url_edit" value="" size="80"/>
+    <label for="wp_lab_group_url_edit"><?php esc_html_e("Page web du groupe",'lab');?> :</label>
+    <input type="text" name="wp_lab_group_url" id="wp_lab_group_url_edit" value="" size="80" placeholder="Url"/>
     
     <br />
     
@@ -70,7 +70,7 @@ function lab_admin_tab_groups() {
       </td>
     </tr>
     <tr class="form-field">
-      <th scope="row"><label for="lab_createGroup_url"><?php esc_html_e("Page du groupe",'lab'); ?> :</label></th>
+      <th scope="row"><label for="lab_createGroup_url"><?php esc_html_e("Page web du groupe",'lab'); ?> :</label></th>
       <td>
       <input type="text" id="lab_createGroup_url" name="lab_createGroup_url" placeholder="Url"/>
       </td>
