@@ -217,6 +217,8 @@ function wp_lab_fe_enqueues()
   wp_set_script_translations( 'lab-fe', 'lab', dirname(__FILE__).'/lang' );
   wp_enqueue_script('fontAwesome',"https://kit.fontawesome.com/341f99cb81.js",array(),"3.2",false);
   wp_enqueue_style('InvitationCSS',plugins_url('css/lab-invitation.css',__FILE__));
+  wp_enqueue_style('CountrySelectCSS',plugins_url('css/countrySelect.scss',__FILE__));
+  wp_enqueue_script('CountrySelectJS',plugins_url('js/countrySelect.js',__FILE__),array(),"3.2",false);
 }
 
 function localize_script($domain) {

@@ -35,7 +35,7 @@ jQuery(function($){
 
 });
 
-/*******************************  */
+/******************************* ShortCode Profile *******************************/
 function LABloadProfile() {
   socialURLS = {
     'facebook': 'https://www.facebook.com/@',
@@ -155,3 +155,5 @@ function lab_profile_edit(user_id,phone,url,bio,color,hal_id,hal_name) {
     LABloadProfile();
   });
 }
+
+/******************************* ShortCode Guest Invitation *******************************/
