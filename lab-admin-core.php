@@ -135,7 +135,9 @@ function lab_admin_initTable_usermeta()
     lab_userMetaData_create_metaKeys("user_position", null);
     lab_userMetaData_create_metaKeys("hal_id", null);
     lab_userMetaData_create_metaKeys("hal_name", null);
-    usermeta_fill_hal_field();
+    lab_userMetaData_create_metaKeys("profile_bg_color", "#F2F2F2");
+    lab_admin_usermeta_fill_hal_name();
+    lab_admin_usermeta_fill_user_slug();
 }
 
 function lab_admin_firstname_lastname($param, $name){
@@ -697,7 +699,7 @@ function hal_format_name($name) {
     }
 }
 
-function usermeta_fill_hal_field() {
+function lab_admin_usermeta_fill_hal_name() {
     global $wpdb;
     $sql = "SELECT u.id as user_id, um1.meta_value as first_name, um2.meta_value as last_name, um3.umeta_id as id FROM `".$wpdb->prefix."users` AS u JOIN `".$wpdb->prefix."usermeta` as um1 ON um1.user_id=u.ID JOIN `".$wpdb->prefix."usermeta` AS um2 ON um2.user_id=u.ID JOIN `".$wpdb->prefix."usermeta` AS um3 ON um3.user_id=u.ID WHERE um1.meta_key='first_name' AND um2.meta_key='last_name' AND um3.meta_key='lab_hal_name'";
     $results = $wpdb->get_results($sql);

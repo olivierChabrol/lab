@@ -417,6 +417,7 @@ function lab_admin_list_users_groups() {
   $joinIsLeft  = "";
   $whereIsLeft = "";
 
+  global $wpdb;
   /*** FILTER FOR SELECT FIELDS ***/
   if($condNotInGroup == 'true')
   {
@@ -442,7 +443,6 @@ function lab_admin_list_users_groups() {
 
   $sqlGroup = "SELECT `id` AS group_id, `group_name` 
                FROM ".$wpdb->prefix."lab_groups";
-    global $wpdb;
     $resultsUsers = $wpdb->get_results($sqlUser);
     $resultsGroups = $wpdb->get_results($sqlGroup);
     wp_send_json_success(array($resultsUsers, $resultsGroups));
@@ -576,7 +576,7 @@ function lab_ajax_hal_create_table() {
   wp_send_json_success(lab_hal_createTable_hal());
 }
 function lab_ajax_hal_fill_fields() {
-  wp_send_json_success(usermeta_fill_hal_field());
+  wp_send_json_success(lab_admin_usermeta_fill_hal_name());
 }
 function lab_ajax_hal_download(){
   if (isset($_POST['userId']) && !empty($_POST['userId'])) 
