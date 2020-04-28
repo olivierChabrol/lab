@@ -176,7 +176,10 @@ function lab_admin_checkTable($tableName) {
 function lab_group_get_user_groups($userId)
 {
     global $wpdb;
-    return $wpdb->get_results("SELECT lg.group_name FROM `".$wpdb->prefix."lab_users_groups` as lug JOIN `".$wpdb->prefix."lab_groups` AS lg ON lg.id=lug.group_id WHERE lug.`user_id`=".$userId);
+    return $wpdb->get_results("SELECT lg.group_name, lg.url
+                                FROM `".$wpdb->prefix."lab_users_groups` as lug 
+                                JOIN `".$wpdb->prefix."lab_groups` AS lg ON lg.id=lug.group_id 
+                                WHERE lug.`user_id`=".$userId);
 }
 
 function lab_admin_delete_group($groupId) {
@@ -284,7 +287,7 @@ function formatGroupsName($userId) {
     }
     $items = array();
     foreach($groupNames as $g) {
-        $items[] = esc_html($g->group_name);
+        $items[] ="<a href=\"$g->url\">" . esc_html($g->group_name) . "</a>";
     }
     return join(", ", $items);
 }
