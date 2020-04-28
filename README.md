@@ -3,6 +3,28 @@ wordpress pluggin for i2m lab
 
 ### Authors
 
+### Citation
+We reuse code from :
+* [Baptiste Blondelle](https://profiles.wordpress.org/friz/) from the [HAL pluggin](https://fr.wordpress.org/plugins/hal/)
+* [Marcus Sykes](https://profiles.wordpress.org/netweblogic/) and [nutsmuggler](https://profiles.wordpress.org/nutsmuggler/)  from the [Event manager pluggin](https://wordpress.org/plugins/events-manager/)
+
+### Installation
+
 ### Features
 
-### Shortcodes
+## Shortcodes
+### Directory
+
+
+[lab-directory] Display all user in lab
+
+[lab-directory] display-left-user=false Display only user present in lab (not declare as left)
+
+[lab-directory] display-left-user=true Display only left user
+
+[lab-directory] group=AA Display user associated to a group (the acronym group is use)
+
+### Profile
+[lab-profile]
+### Event
+[lab-old-event]

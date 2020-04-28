@@ -11,7 +11,6 @@
     align-items: center;
     justify-content: space-between;
 }
-
 #lab_avatar {
     margin: 1em 1em 1em 0;
     width:7em;
@@ -21,7 +20,20 @@
     border-radius:3.5em;
     box-shadow: -1px 2px 5px 1px rgba(0, 0, 0, 0.1); 
 }
-
+#lab_profile_social {
+    margin: 0em 1em 1em 0;
+    font-size: 1.5em;
+    width: 4.5em;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+#lab_profile_social i {
+    margin-right: 0.2em;
+}
+#lab_profile_social a[href=""] {
+    color:gray;
+}
 #lab_avatar_change {
     margin: 1em 1em 1em 0;
     font-size: 0.8em;
@@ -59,7 +71,13 @@
     margin-bottom: 1em;
     font-style: italic;
 }
-
+#lab_confirm_change {
+    color: green; 
+}
+#lab_profile_icons #lab_confirm_change:hover {
+    font-weight: 600;
+    color: #00A000;
+}
 #lab_profile_icons i {
     margin-left: 0.5em;
     cursor: pointer;

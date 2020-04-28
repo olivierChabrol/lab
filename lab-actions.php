@@ -70,6 +70,8 @@ if (is_admin()) {
     add_action( 'wp_ajax_not_exist_metakey', 'lab_ajax_userMeta_key_not_exist');
     add_action( 'wp_ajax_um_correct', 'lab_usermeta_correct_um_fields');
     add_action( 'wp_ajax_copy_phone', 'lab_admin_usermeta_update_phone');
+    add_action( 'wp_ajax_create_social', 'lab_admin_createSocial' );
+    add_action( 'wp_ajax_delete_social', 'lab_admin_deleteSocial' );
     //Action for hal
     add_action( 'wp_ajax_hal_create_table', 'lab_ajax_hal_create_table');
     add_action( 'wp_ajax_hal_fill_hal_name', 'lab_ajax_hal_fill_fields');
