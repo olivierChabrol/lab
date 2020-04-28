@@ -39,7 +39,9 @@ function lab_invitation()
                 <option value="parrot">Parrot</option>
                 <option value="spider">Spider</option>
                 <option value="goldfish">Goldfish</option>
+                <option value="other">'.esc_html__("Autre","lab").'</option>
             </select>
+            <input hidden type="text" id="lab_mission_other">
         </div>
         <div id="lab_phone_country">
             <div  class="lab_invite_field">
