@@ -46,7 +46,8 @@ function LABloadProfile() {
     'youtube': 'https://www.youtube.com/user/@',
     'tumblr': 'https://@.tumblr.com/'
   };
-  console.log("loaded by"+this);
+  HalID_URL = "https://api.archives-ouvertes.fr/search/?authIdHal_s:(@)&fl=docid,citationFull_s,producedDate_tdate,uri_s,title_s,journalTitle_s&sort=producedDate_tdate+desc&wt=json&json.nl=arrarr";
+	HalName_URL = "https://api.archives-ouvertes.fr/search/?q=authLastNameFirstName_s:%22@%22&fl=docid,citationFull_s,producedDate_tdate,uri_s,title_s,journalTitle_s&sort=producedDate_tdate+desc&wt=json&json.nl=arrarr";
   jQuery(function($) {
     //Attribue la couleur de l'utilisateur à l'arrière plan
     $("#lab_profile_card").css('background-color',$("#lab_profile_card").attr('bg-color'));
@@ -63,11 +64,11 @@ function LABloadProfile() {
       }
     });
     //Remplace le titre de la page par "Profil de "+Nom Prénom
-    $(".entry-title").text("Profil de "+$('#lab_profile_name').text().replace("• "," "))
+    $(".entry-title").text("Profil de "+$('#lab_profile_name_span').text().replace("• "," "))
     //Fonction d'édition du profil
     $("#lab_profile_edit").click( function() {
       //Cache le bouton d'édition et les champs actuels
-      $("#lab_profile_edit").hide();
+      $(this).hide();
       $(".lab_current").hide();
       //Affiche les champs à remplir
       $(".lab_profile_edit").show();
@@ -86,7 +87,7 @@ function LABloadProfile() {
     $("#lab_confirm_change").click(function(){
       if ($("#lab_profile_edit_bio").val().length > 200)
       {
-        $("#lab_alert").html("Votre biographie est trop longue (max 200 caractères).")
+        $("#lab_alert").html(_('Votre biographie est trop longue (max 200 caractères)','lab'));
       }
       else{
         //Cache tous les champs de modification
@@ -120,13 +121,17 @@ function LABloadProfile() {
     });
     $("#lab_profile_edit_social").keyup(function(){
       if ( $("#lab_profile_edit_social").val().startsWith('http') || $("#lab_profile_edit_social").val().length==0) {
-        console.log("is url");
         $(".lab_profile_social[social="+$(this).attr('social')+"]").attr('href',$(this).val());
       } else {
-        console.log("not url");
         $(".lab_profile_social[social="+$(this).attr('social')+"]").attr('href',socialURLS[$(this).attr('social')].replace('@',$(this).val()));
       }
-      $(".lab_profile_social[social="+$(this).attr('social')+"]").attr('modified','true')
+      $(".lab_profile_social[social="+$(this).attr('social')+"]").attr('modified','true');
+    });
+    $("#lab_profile_edit_halID").keyup(function() {
+      $("#lab_profile_testHal_id").attr("href",HalID_URL.replace('@',$(this).val()));
+    });
+    $("#lab_profile_edit_halName").keyup(function() {
+      $("#lab_profile_testHal_name").attr("href",HalName_URL.replace('@',$(this).val()));
     });
   });
 }
