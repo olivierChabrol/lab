@@ -96,7 +96,7 @@ function lab_admin_param_delete_by_id($paramId) {
 
 function lab_admin_param_search_by_value($value) {
     global $wpdb;
-    $sql = "SELECT * FROM wp_lab_params WHERE `value` LIKE '%".$value."%'";
+    $sql = "SELECT * FROM `".$wpdb->prefix."lab_params` WHERE `value` LIKE '%".$value."%'";
     return $wpdb->get_results($sql);
 }
 
@@ -423,8 +423,8 @@ function lab_keyring_delete_key($id) {
 function lab_keyring_search_current_loans($user,$page,$limit) {
     global $wpdb;
     $offset = $page*$limit;
-    $count = $user == 0 ? "SELECT COUNT(*) FROM `".$wpdb->prefix."lab_key_loans` WHERE `ended`=0;" : "SELECT COUNT(*) FROM `wp_lab_key_loans` WHERE `user_id`=".$user." AND `ended`=0;";
-    $sql = $user == 0 ? "SELECT * FROM `".$wpdb->prefix."lab_key_loans` WHERE `ended`=0" : "SELECT * FROM `wp_lab_key_loans` WHERE `user_id`=".$user." AND `ended`=0";
+    $count = $user == 0 ? "SELECT COUNT(*) FROM `".$wpdb->prefix."lab_key_loans` WHERE `ended`=0;" : "SELECT COUNT(*) FROM `".$wpdb->prefix."lab_key_loans` WHERE `user_id`=".$user." AND `ended`=0;";
+    $sql = $user == 0 ? "SELECT * FROM `".$wpdb->prefix."lab_key_loans` WHERE `ended`=0" : "SELECT * FROM `".$wpdb->prefix."lab_key_loans` WHERE `user_id`=".$user." AND `ended`=0";
     $sql .= " ORDER BY `start_date` DESC";
     $sql .= " LIMIT ".$offset.", ".$limit.";";
     $total = $wpdb->get_var($count);
@@ -531,7 +531,7 @@ function lab_userMetaData_new_key($userId, $metadataKey, $defaultValue) {
     if ($defaultValue == 'null') {
         $defaultValue = null;
     }
-    $r = $wpdb->insert('wp_usermeta', array('umeta_id'=>null, 'user_id'=>$userId, 'meta_key'=>LAB_META_PREFIX.$metadataKey,'meta_value'=>$defaultValue));
+    $r = $wpdb->insert($wpdb->prefix.'usermeta', array('umeta_id'=>null, 'user_id'=>$userId, 'meta_key'=>LAB_META_PREFIX.$metadataKey,'meta_value'=>$defaultValue));
     if (!$r) {
         return $wpdb->last_error();
     }
@@ -565,7 +565,7 @@ function userMetaData_delete_metakeys($metadataKey) {
         $metadataKey = LAB_META_PREFIX.$metadataKey;
     }
     global $wpdb;
-    return $wpdb->delete('wp_usermeta', array("meta_key"=>$metadataKey));
+    return $wpdb->delete($wpdb->prefix.'usermeta', array("meta_key"=>$metadataKey));
 }
 
 function userMetaData_exist_metakey($metadataKey) {
@@ -604,7 +604,6 @@ function lab_hal_createTable_hal() {
 
 function lab_hal_get_publication($userId) {
     global $wpdb;
-    //$sql = "SELECT * FROM `wp_lab_hal` WHERE `user_id` = ".$userId." ORDER BY `producedDate_tdate` DESC ";
     $sql = "SELECT lh.* FROM `".$wpdb->prefix."lab_hal` as lh JOIN `".$wpdb->prefix."lab_hal_users` AS lhu ON lhu.hal_id=lh.id WHERE lhu.user_id=".$userId;
     return $wpdb->get_results($sql);
 }
