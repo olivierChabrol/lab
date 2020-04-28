@@ -961,3 +961,20 @@ function lab_usermeta_copy_existing_phone() {
 function beginWith($string, $pattern) {
     return substr($string, 0, strlen($pattern)) === $pattern;
 }
+
+/**************************************************************************************************************************************
+ * UTILS
+ *************************************************************************************************************************************/
+
+/**
+ * Display numbers correctly
+ *
+ * @param [type] $currentNumber
+ * @return void
+ */
+function correctNumber($currentNumber) { // currentNumber = esc_html($r->phone)
+    $currentNumber = str_replace(" ", "", $currentNumber);
+    $currentNumber = str_replace(".", "", $currentNumber);
+    $currentNumber = chunk_split($currentNumber, 2, ' ');
+    return $currentNumber;
+}
