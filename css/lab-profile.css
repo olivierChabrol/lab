@@ -29,7 +29,7 @@
     flex-wrap: wrap;
 }
 #lab_profile_social i {
-    margin: 0.2em 0.2em 0 0;
+    margin-right: 0.2em;
 }
 #lab_profile_social a[href=""] {
     color:gray;
@@ -71,7 +71,13 @@
     margin-bottom: 1em;
     font-style: italic;
 }
-
+#lab_confirm_change {
+    color: green; 
+}
+#lab_profile_icons #lab_confirm_change:hover {
+    font-weight: 600;
+    color: #00A000;
+}
 #lab_profile_icons i {
     margin-left: 0.5em;
     cursor: pointer;
