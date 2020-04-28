@@ -343,7 +343,6 @@ jQuery(function($){
       valeurs[i] = $("#lab_createGroup_"+i).val();
     }
     subs = $("#lab_createGroup_subID").attr('list').split(",");
-    console.log(subs);
     subs.shift(); //Supprime le dernier élément (vide)
     valeurs['subsList'] = subs;
     createGroup(valeurs);
@@ -391,7 +390,6 @@ jQuery(function($){
   $("#lab_createGroup_addSub").click(function(){
     $("#lab_createGroup_subsDelete").show(); //Affiche la 'croix' qui permet de vider la liste des suppléants
     if ($("#lab_createGroup_subID").attr('list').split(",").includes($("#lab_createGroup_subID").val())) {
-      console.log("Déjà présent");
       toast_error("Cette personne est déjà suppléant de ce groupe");
       return;
     }
@@ -618,13 +616,11 @@ function group_loadSubstitute()
 }
 
 function createGroup(params) {
-  console.log(params);
   //On vérifie d'abord que l'acronyme est bien unique
   var data = {
     'action' : 'group_search_ac',
     'ac' : params['acronym']
   };
-  console.log(data);
   jQuery.post(LAB.ajaxurl, data, function(response) {
     if (!response.success) {
       toast_error("Group couldn't be created : the acronym is already in use");
@@ -632,18 +628,16 @@ function createGroup(params) {
     }
     //On essaie ensuite de rajouter l'entrée dans la table groups 
     params['action']='group_create';
-    jQuery.post(LAB.ajaxurl, params, function(response) {
-      if (response.success) {
-        console.log(reponse.data);
+    jQuery.post(LAB.ajaxurl, params, function(respons) {
+      if (respons.success) {
         //Enfin, on ajoute les entrées dans la table suppléants
         var data3 = {
           'action' : 'group_subs_add',
-          'id' : response.data[0].id,
+          'id' : respons.data[0].id,
           'subList' : params['subsList']
         };
         jQuery.post(LAB.ajaxurl, data3, function(resp) {
           if (!resp.success) {
-            console.log("failSubs");
             toast_warn("Group created, but couldn't add substitutes : <br/>"+resp.data);
             return false;
           }

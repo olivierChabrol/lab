@@ -3,7 +3,7 @@
  * File Name: lab-shortcode-profile.php
  * Description: shortcode pour générer le profil d\'une personne
  * Authors: Astrid BEYER, Ivan Ivanov, Lucas URGENTI
- * Version: 0.6
+ * Version: 0.61
 */
 function lab_profile($id=0) {
 	apply_filters( 'document_title_parts', array("oui") );
@@ -16,27 +16,27 @@ function lab_profile($id=0) {
 	}
 	$is_current_user = $user->id == get_current_user_id() ? true : false; 
 	$editIcons = '<div id="lab_profile_icons" class="lab_profile_edit">
-					<i style="display:none" id="lab_profile_colorpicker" class="fas fa-fill-drip lab_profile_edit"></i>
-					<i id="lab_profile_edit" class="fas fa-user-edit lab_profile_edit"></i> 
-					<i style="display:none" class="fas fa-user-check" id="lab_confirm_change" user_id="'.$user->id.'"></i>
+					<i title="'.esc_html__("Modifier la couleur d'arrière plan","lab").'" style="display:none" id="lab_profile_colorpicker" class="fas fa-fill-drip lab_profile_edit"></i>
+					<i id="lab_profile_edit" title="'.esc_html__('Modifier le profil','lab').'" class="fas fa-user-edit"></i> 
+					<i style="display:none" class="fas fa-user-check" title="'.esc_html__('Valider les changements','lab').'" id="lab_confirm_change" user_id="'.$user->id.'"></i>
 				</div>';
 	$SocialIcons = '<div id="lab_profile_social">
-						<a style="display:none" class="lab_profile_social" href="'.$user->social['facebook'].'" social="facebook" target="_blank"><i class="fab fa-facebook-square"></i></a>
-						<a style="display:none" class="lab_profile_social" href="'.$user->social['pinterest'].'" social="pinterest" target="_blank"><i class="fab fa-pinterest-square"></i></a>
-						<a style="display:none" class="lab_profile_social" href="'.$user->social['instagram'].'" social="instagram" target="_blank"><i class="fab fa-instagram-square"></i></a>
-						<a style="display:none" class="lab_profile_social" href="'.$user->social['twitter'].'" social="twitter" target="_blank"><i class="fab fa-twitter-square"></i></a>
-						<a style="display:none" class="lab_profile_social" href="'.$user->social['linkedin'].'" social="linkedin" target="_blank"><i class="fab fa-linkedin"></i></a>
-						<a style="display:none" class="lab_profile_social" href="'.$user->social['tumblr'].'" social="tumblr" target="_blank"><i class="fab fa-tumblr-square"></i></a>
-						<a style="display:none" class="lab_profile_social" href="'.$user->social['youtube'].'" social="youtube" target="_blank"><i class="fab fa-youtube-square"></i></a>
+						<a style="display:none" class="lab_profile_social" title="Facebook" href="'.$user->social['facebook'].'" social="facebook" target="_blank"><i class="fab fa-facebook-square"></i></a>
+						<a style="display:none" class="lab_profile_social" title="Pinterest" href="'.$user->social['pinterest'].'" social="pinterest" target="_blank"><i class="fab fa-pinterest-square"></i></a>
+						<a style="display:none" class="lab_profile_social" title="Instagram" href="'.$user->social['instagram'].'" social="instagram" target="_blank"><i class="fab fa-instagram-square"></i></a>
+						<a style="display:none" class="lab_profile_social" title="Twitter" href="'.$user->social['twitter'].'" social="twitter" target="_blank"><i class="fab fa-twitter-square"></i></a>
+						<a style="display:none" class="lab_profile_social" title="Linkedin" href="'.$user->social['linkedin'].'" social="linkedin" target="_blank"><i class="fab fa-linkedin"></i></a>
+						<a style="display:none" class="lab_profile_social" title="Tumblr" href="'.$user->social['tumblr'].'" social="tumblr" target="_blank"><i class="fab fa-tumblr-square"></i></a>
+						<a style="display:none" class="lab_profile_social" title="Youtube" href="'.$user->social['youtube'].'" social="youtube" target="_blank"><i class="fab fa-youtube-square"></i></a>
 					</div>';
-	$editSocial ='<p><input style="display:none;" type="text" class="lab_profile_edit" id="lab_profile_edit_social" placeholder="Cliquez sur l\'icône d\'un réseau social pour le modifier"/></p>';
+	$editSocial ='<p><input style="display:none;" type="text" class="lab_profile_edit" id="lab_profile_edit_social" placeholder="'.esc_html__("Cliquez sur l'icône d'un réseau social pour le modifier","lab").'"/></p>';
 	$halFields = '<p id="lab_profile_halID">
-					<span class="lab_current">'.(strlen($user->hal_id) ? 'Votre ID Hal : '.$user->hal_id : '<i>Vous n\'avez pas défini votre ID Hal</i>').'</span>
-					<input style="display:none;" type="text" class="lab_profile_edit" id="lab_profile_edit_halID" placeholder="ID Hal" value="' . $user->hal_id .'"/>
+					<span class="lab_current">'.(strlen($user->hal_id) ? '<i>'.esc_html__('Votre ID HAL','lab').' : </i>'.$user->hal_id : '<i>'.esc_html__('Vous n\'avez pas défini votre ID HAL','lab').'</i>').'</span>
+					<input style="display:none;" type="text" class="lab_profile_edit" id="lab_profile_edit_halID" placeholder="ID HAL" value="' . $user->hal_id .'"/>
 				  </p>
 				  <p id="lab_profile_halName">
-					<span class="lab_current">'.(strlen($user->hal_name) ? 'Votre nom Hal : '.$user->hal_name : '<i>Vous n\'avez pas défini votre nom Hal</i>').'</span>
-					<input style="display:none;" type="text" class="lab_profile_edit" id="lab_profile_edit_halName" placeholder="Nom Hal" value="' . $user->hal_name .'"/>
+					<span class="lab_current">'.(strlen($user->hal_name) ? '<i>'.esc_html__('Votre nom HAL','lab').' : </i>'.$user->hal_name : '<i>'.esc_html__('Vous n\'avez pas défini votre nom HAL','lab').'</i>').'</span>
+					<input style="display:none;" type="text" class="lab_profile_edit" id="lab_profile_edit_halName" placeholder="'.esc_html__('Nom HAL','lab').'" value="' . $user->hal_name .'"/>
 				  </p>';
 	$profileStr = '
     <div id="lab_profile_card" bg-color="'.$user->bg_color.'">
@@ -47,7 +47,7 @@ function lab_profile($id=0) {
 				$SocialIcons.
 			'</div>
 			<div id="lab_profile_info">
-				<div id="lab_profile_name">'.$user->first_name.' • '.$user->last_name.''
+				<div id="lab_profile_name"><span id="lab_profile_name_span">'.$user->first_name.' • '.$user->last_name.'</span>'
 					.($is_current_user || current_user_can('edit_users') ? $editIcons : ' ').
 				'</div>
 				<div id="lab_profile_links">
