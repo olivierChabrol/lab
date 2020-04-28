@@ -244,7 +244,7 @@ function lab_admin_createSubTable() {
     $wpdb->get_results($sql);
 }
 
-function lab_admin_group_create($name,$acronym,$chief_id,$parent,$type) {
+function lab_admin_group_create($name,$acronym,$chief_id,$parent,$type,$url) {
     //$sql = "INSERT INTO `".$wpdb->prefix."lab_groups` (`id`, `acronym`, `group_name`, `chief_id`, `group_type`, `parent_group_id`) VALUES (NULL, '".$acronym."', '".$name."', '".$chief_id."', '".$type."', ".($parent == 0 ? "NULL" : "'".$parent."'").");";
     global $wpdb;
     $wpdb->hide_errors();
@@ -255,7 +255,8 @@ function lab_admin_group_create($name,$acronym,$chief_id,$parent,$type) {
             'group_name' => stripslashes($name),
             'chief_id' => $chief_id,
             'group_type' => $type,
-            'parent_group_id' => $parent == 0 ? NULL : $parent
+            'parent_group_id' => $parent == 0 ? NULL : $parent,
+            'url' => $url
         )
     ) ) {
         $groupId = $wpdb->insert_id;

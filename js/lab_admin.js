@@ -50,7 +50,7 @@ jQuery(function($){
 
         $("#lab_searched_group_id").val(value);
         setinfoToGroupEditionFields(ui.item.id, ui.item.acronym, ui.item.label, ui.item.chief_id,
-          ui.item.parent_group_id, ui.item.group_type);
+          ui.item.parent_group_id, ui.item.group_type, ui.item.url);
       }
   });
 
@@ -333,7 +333,7 @@ jQuery(function($){
   });
   $("#lab_createGroup_create").click(function() {
     valeurs = new Object();
-    for (i of ['name', 'acronym', 'type', 'chiefID','parent']) {
+    for (i of ['name', 'acronym', 'type', 'chiefID','parent','url']) {
       if ($("#lab_createGroup_"+i).val()=="") {
         $("#lab_createGroup_"+i).css("border-color","#F00");
         toast_error("Group couldn't be created :<br> The form isn't filled properly");
@@ -348,7 +348,7 @@ jQuery(function($){
     valeurs['subsList'] = subs;
     createGroup(valeurs);
     //On réinitialise tous les champs du formulaire
-    clearFields('lab_createGroup_',['name', 'acronym', 'type', 'chiefID','chief','subInput','parent']);
+    clearFields('lab_createGroup_',['name', 'acronym', 'type', 'chiefID','chief','subInput','parent','url']);
     $("#lab_createGroup_subsList")[0].innerHTML="";
     $("#lab_createGroup_subID").attr('list','');
     $("#lab_createGroup_subsDelete").hide();
@@ -415,7 +415,8 @@ jQuery(function($){
     $chief   = jQuery("#lab_searched_chief_id").val();
     $parent  = jQuery("#wp_lab_group_parent_edit").val();
     $type    = jQuery("#wp_lab_group_type_edit").val();
-    editGroup($groupId, $acronym, $name, $chief, $parent, $type);
+    $url     = jQuery("#wp_lab_group_url_edit").val();
+    editGroup($groupId, $acronym, $name, $chief, $parent, $type, $url);
   });
   $("#lab_hal_create").click(function() {
     var data = {
@@ -555,13 +556,14 @@ function reset_and_load_groups_users(cond1, cond2) {
 }
 
 
-function setinfoToGroupEditionFields(groupId, acronym, groupName, chiefId, parent_group_id, group_type) {
+function setinfoToGroupEditionFields(groupId, acronym, groupName, chiefId, parent_group_id, group_type, url) {
   jQuery('#wp_lab_group_to_edit').val(groupId);
   jQuery('#wp_lab_group_acronym_edit').val(acronym);
   jQuery('#wp_lab_group_name_edit').val(groupName);
   jQuery('#lab_searched_chief_id').val(chiefId);
   jQuery('#wp_lab_group_chief_edit').val(callbUser(chiefId, loadUserName));
   jQuery('#wp_lab_group_parent_edit').val(parent_group_id);
+  jQuery('#wp_lab_group_url_edit').val(url)
 
   jQuery('#wp_lab_group_type_edit').val(group_type);
   group_loadSubstitute();
@@ -635,7 +637,7 @@ function createGroup(params) {
     params['action']='group_create';
     jQuery.post(LAB.ajaxurl, params, function(response) {
       if (response.success) {
-        console.log(reponse.data);
+        console.log(response.data);
         //Enfin, on ajoute les entrées dans la table suppléants
         var data3 = {
           'action' : 'group_subs_add',
@@ -849,7 +851,7 @@ function loadEventCategory(postId) {
   });
 }
 
-function editGroup(groupId, acronym, groupName, chiefId, parent, group_type) {
+function editGroup(groupId, acronym, groupName, chiefId, parent, group_type, url) {
   var data = {
                'action' : 'edit_group',
                'groupId' : groupId,
@@ -857,7 +859,8 @@ function editGroup(groupId, acronym, groupName, chiefId, parent, group_type) {
                'groupName' : groupName,
                'chiefId' : chiefId,
                'parent' : parent,
-               'group_type' : group_type
+               'group_type' : group_type,
+               'url' : url
   };
   jQuery.post(LAB.ajaxurl, data, function(response) {
     if (response.success) {
@@ -881,6 +884,7 @@ function resetGroupEdit()
   jQuery("#wp_lab_group_type_edit").val("0");
   jQuery("#wp_lab_group_name").val("");
   jQuery("#lab_group_edit_substitutes").text("");
+  jQuery("#lab_group_url_edit").val("");
 }
 function clearFields(prefix,list) {
   for (i of list) {

@@ -311,7 +311,7 @@ function lab_admin_group_search() {
   $url = esc_url(home_url('/'));
   foreach ( $results as $r )
   {
-    $items[] = array(label=>$r->group_name, value=>$r->id, id=>$r->id, group_name=>$r->group_name, group_type=>$r->group_type, acronym=>$r->acronym, chief_id=>$r->chief_id, parent_group_id=>$r->parent_group_id);
+    $items[] = array(label=>$r->group_name, value=>$r->id, id=>$r->id, group_name=>$r->group_name, group_type=>$r->group_type, acronym=>$r->acronym, chief_id=>$r->chief_id, parent_group_id=>$r->parent_group_id, url=>$r->url);
   }
   wp_send_json_success( $items ); 
 }
@@ -329,6 +329,11 @@ function lab_group_editGroup() {
   $chiefId = $_POST['chiefId'];
   $parent = $_POST['parent'];
   $type = $_POST['group_type'];
+  $url = $_POST['url'];
+  $pos = strpos($url, '//');
+  $url2 = substr($url, $pos + 2); // on efface http://
+  $pos2 = strpos($url2, '/');
+  $url3 = substr($url2, $pos2); // on efface le nom de domaine
 
   $sql = "UPDATE `".$wpdb->prefix."lab_groups` SET `group_name` = '$groupName', `acronym` = '$acronym',
   `chief_id` = '$chiefId', `group_type` = '$type', `parent_group_id` = '$parent'
@@ -378,7 +383,12 @@ function lab_admin_group_availableAc() {
   wp_send_json_success();
 }
 function lab_admin_group_createReq() {
-  $res = lab_admin_group_create($_POST['name'],$_POST['acronym'],$_POST['chiefID'],$_POST['parent'],$_POST['type']);
+  $url = $_POST['url'];
+  $pos = strpos($url, '//');
+  $url2 = substr($url, $pos + 2); // on efface http://
+  $pos2 = strpos($url2, '/');
+  $url3 = substr($url2, $pos2); // on efface le nom de domaine
+  $res = lab_admin_group_create($_POST['name'],$_POST['acronym'],$_POST['chiefID'],$_POST['parent'],$_POST['type'],$url3);
   if (strlen($res)==0) {
     wp_send_json_success(lab_admin_search_group_by_acronym($_POST['acronym']));
     return;
