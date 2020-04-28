@@ -122,7 +122,7 @@ class labUser {
 		if (count($this->groups)==0) { return "<i>(Aucun)</i>";}
 		$output='';
 		foreach ($this->groups as $g) {
-			$output .= "<li>$g->acronym • $g->group_name</li>";
+			$output .= "<li><a href=http://stage.fr\"$g->url\" target=\"_blank\"> $g->acronym • $g->group_name </a></li>";
 		}
 		return $output;
 	}
