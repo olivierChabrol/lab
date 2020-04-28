@@ -669,12 +669,35 @@ function lab_profile_edit() {
   $phone = $_POST['phone'];
   $url = $_POST['url'];
   $description = $_POST['description'];
+  $bg_color = $_POST['bg_color'];
+  $hal_id = $_POST['hal_id'];
+  $hal_name = $_POST['hal_name'];
+  $socials = $_POST['socials'];
   if (get_current_user_id()==$user_id || current_user_can('edit_users')) {
-    strlen($description) ? lab_profile_setDesc($user_id,$description) : false;
-    strlen($url) ? lab_profile_setURL($user_id,$url) : false;
-    strlen($phone) ? lab_profile_setPhone($user_id,$phone) : false;
+    lab_profile_set_MetaKey($user_id,'description',$description);
+    lab_profile_setURL($user_id,$url);
+    lab_profile_set_MetaKey($user_id,'lab_user_phone',$phone);
+    lab_profile_set_MetaKey($user_id,'lab_hal_id',$hal_id);
+    lab_profile_set_MetaKey($user_id,'lab_hal_name',$hal_name);
+    lab_profile_set_MetaKey($user_id,'lab_profile_bg_color',$bg_color);
+    foreach (array_keys($socials) as $key) {
+      lab_profile_set_MetaKey($user_id,"lab_$key",$socials[$key]);
+    }
     wp_send_json_success(lab_profile($user_id));
     return;
   }
   wp_send_json_error();
+}
+
+function lab_admin_createSocial() {
+  foreach (['facebook','instagram','linkedin','pinterest','twitter','tumblr','youtube'] as $reseau) {
+    lab_userMetaData_create_metaKeys($reseau,'');
+  }
+  wp_send_json_success();
+}
+function lab_admin_deleteSocial() {
+  foreach (['facebook','instagram','linkedin','pinterest','twitter','tumblr','youtube'] as $reseau) {
+    userMetaData_delete_metakeys($reseau);
+  }
+  wp_send_json_success();
 }
