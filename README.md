@@ -3,6 +3,13 @@ wordpress pluggin for i2m lab
 
 ### Authors
 
+### Citation
+We reuse code from :
+* [Baptiste Blondelle](https://profiles.wordpress.org/friz/) from the [HAL pluggin](https://fr.wordpress.org/plugins/hal/)
+* [Marcus Sykes](https://profiles.wordpress.org/netweblogic/) and [nutsmuggler](https://profiles.wordpress.org/nutsmuggler/)  from the [Event manager pluggin](https://wordpress.org/plugins/events-manager/)
+
+### Installation
+
 ### Features
 
 ## Shortcodes
