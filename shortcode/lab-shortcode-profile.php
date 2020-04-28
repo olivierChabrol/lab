@@ -3,7 +3,7 @@
  * File Name: lab-shortcode-profile.php
  * Description: shortcode pour générer le profil d\'une personne
  * Authors: Astrid BEYER, Ivan Ivanov, Lucas URGENTI
- * Version: 0.61
+ * Version: 0.62
 */
 function lab_profile($id=0) {
 	apply_filters( 'document_title_parts', array("oui") );
