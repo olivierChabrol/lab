@@ -6,19 +6,26 @@
  * Version: 0.2
 */
 
-function lab_invitation($params) { 
+function lab_invitation($args) { 
     $param = shortcode_atts(array(
-        'host' => 0 //0 pour invité, 1 pour invitant
+        'hostPage' => 0 //0 pour invité, 1 pour invitant
         ),
-        $params, 
+        $args, 
         "lab-invitation"
     );
     global $wp;
     $url = $wp->request;
-    $host = isset(explode("/",$url)[1]) ? new labUser(lab_profile_getID(explode("/",$url)[1])) : 0 ;
-    $host->groups;
+    if ( $param['hostPage'] ) {
+        if ( ! isset(explode("/",$url)[1])) {
+            return esc_html__("Token d'invitation manquant.",'lab');
+        } else {
+            $token = explode("/",$url)[1];
+        }
+    } else {
+        $host = isset(explode("/",$url)[1]) ? new labUser(lab_profile_getID(explode("/",$url)[1])) : 0 ;
+    }
     $invitationStr = '
-    <div id="invitationForm" hostForm='.$param['host'].'>
+    <div id="invitationForm" hostForm='.$param['hostPage'].'>
         <h3>'.esc_html__("Informations personnelles","lab").'</h3>
         <form action="">
         <div class="lab_invite_row" id="lab_fullname">
@@ -106,7 +113,7 @@ function lab_invitation($params) {
             </div>
         </div>
         <hr>';
-        if ( !$params["host"] ) {
+        if ( $param["hostPage"] ) {
             $invitationStr .=
             '<div id="lab_inviting_fields" class="lab_invite_row">
                 <div class="lab_invite_field">

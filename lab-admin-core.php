@@ -96,7 +96,7 @@ function lab_admin_param_delete_by_id($paramId) {
 
 function lab_admin_param_search_by_value($value) {
     global $wpdb;
-    $sql = "SELECT * FROM wp_lab_1params WHERE `value` LIKE '%".$value."%'";
+    $sql = "SELECT * FROM wp_lab_params WHERE `value` LIKE '%".$value."%'";
     return $wpdb->get_results($sql);
 }
 
