@@ -4,7 +4,7 @@ const { __, _x, _n, sprintf } = wp.i18n;
 /*** DIRECTORY ***/
 
 jQuery(function($){
-   $('#lab_directory_user_name').autocomplete({
+  $('#lab_directory_user_name').autocomplete({
     minChars: 1,
     source: function(term, suggest){
       try { searchRequest.abort(); } catch(e){}
@@ -157,3 +157,118 @@ function lab_profile_edit(user_id,phone,url,bio,color,hal_id,hal_name) {
 }
 
 /******************************* ShortCode Guest Invitation *******************************/
+function LABLoadInvitation() {
+  //Plug-in international phone : https://github.com/jackocnr/intl-tel-input 
+  var inputTel = document.querySelector("input[type=tel]");
+  iti = window.intlTelInput(inputTel,({
+    // utilsScript: "utils.js", //Inutile car utils JS chargé en dépendance
+    initialCountry: "fr"
+  }));
+  jQuery(function($) {
+    //Plug-in country selector : https://github.com/mrmarkfrench/country-select-js
+    $("#lab_country").countrySelect({
+      defaultCountry: "fr",
+      preferredCountries: ['fr', 'de', 'it', 'es', 'us'],
+    });
+    $("#lab_phone").keyup(function() {
+      if ( !iti.isValidNumber() ) {
+        $(this).css("border-color","#FF0000");   
+      } else {
+        $(this).css("border-color","");   
+      }
+    });
+    $("#lab_phone").blur(function() {
+      iti.setNumber(iti.getNumber())
+      $("#lab_phone").attr('phoneVal',iti.getNumber());
+    });
+    $("#lab_mission").click(function(){
+      if ($(this).val() == "other") {
+        $("#lab_mission_other").show();
+        $("#lab_mission_other_desc").show();    
+      } else {
+        $("#lab_mission_other").hide();
+        $("#lab_mission_other_desc").hide();
+      }
+    });
+    $("#lab_credit").click(function(){
+      if ($(this).val() == "other")
+      {
+        $("#lab_credit_other").show();
+        $("#lab_credit_other_desc").show();    
+      }
+      else
+      {
+        $("#lab_credit_other").hide();
+        $("#lab_credit_other_desc").hide();  
+      }
+    });
+    $("#lab_transport_to").click(function(){
+      if ($(this).val() == "other") {
+        $("#lab_transport_to_other").show();
+      } else {
+        $("#lab_transport_to_other").hide();
+      }
+    });
+    $("#lab_transport_from").click(function(){
+      if ($(this).val() == "other") {
+        $("#lab_transport_from_other").show();
+      } else {
+        $("#lab_transport_from_other").hide();
+      }
+    });
+    $('#lab_hostname').autocomplete({
+      minChars: 2,
+      source: function(term, suggest){
+        try { searchRequest.abort(); } catch(e){}
+        searchRequest = $.post(LAB.ajaxurl, { action: 'search_username2',search: term, },
+        function(res) {
+          suggest(res.data);
+        });
+      },
+      select: function( event, ui ) {
+        var firstname  = ui.item.firstname; // first name
+        var lastname = ui.item.lastname; // last name
+        event.preventDefault();
+        $("#lab_hostname").val(firstname + " " + lastname);
+        $("#lab_hostname").attr('host_id', ui.item.user_id);
+      }
+    });
+    $("input[type=submit]").click(function (e) {
+      e.preventDefault();
+      invitation_submit();
+    });
+  });
+}
+if ( jQuery( "#invitationForm" ).length ) {
+  LABLoadInvitation();
+}
+function invitation_submit() {
+  jQuery(function($) {
+    fields = { 
+      'guest_firstName': $("#lab_firstname").val(),
+      'guest_lastName': $("#lab_lastname").val(),
+      'guest_email': $("#lab_email").val(),
+      'guest_phone': $("#lab_phone").attr('phoneval'),
+      'guest_country': $("#lab_country").countrySelect("getSelectedCountryData")['iso2'],
+      'host_id': $("#lab_hostname").attr('host_id'),
+      'mission_objective': $("#lab_mission").val()=="other" ? $("#lab_mission_other").val() : $("#lab_mission").val(),
+      'needs_hostel' : $("#lab_hostel").prop('checked'),
+      'travel_mean_from':  $("#lab_transport_from").val()=="other" ? $("#lab_transport_from_other").val() : $("#lab_transport_from").val(),
+      'travel_mean_to':  $("#lab_transport_to").val()=="other" ? $("#lab_transport_to_other").val() : $("#lab_transport_to").val(),
+      'start_date': $("#lab_arrival").val(),
+      'end_date': $("#lab_departure").val(),
+    }
+    if ($("#invitationForm").attr("hostForm")==0) {//à modifier en 1
+      fields['host_group_id'] = $("#lab_group_name").val();
+      fields['funding_source'] = $("#lab_credit").val()=="other" ? $("#lab_credit_other").val() : $("#lab_credit").val();
+    }
+    console.log(fields);
+    data = {
+      'action': 'lab_invitations_form',
+      'fields': fields
+    };
+    jQuery.post(LAB.ajaxurl, data, function(response) {
+      console.log(response);
+    });
+  });
+}

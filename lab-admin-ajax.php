@@ -714,3 +714,34 @@ function lab_admin_deleteSocial() {
   }
   wp_send_json_success();
 }
+
+/********************************************************************************************
+ * Lab_Invitations
+ ********************************************************************************************/
+function lab_invitations_formSubmit() {
+  $fields = $_POST['fields'];
+  $params = array (
+    'first_name'=> $fields['guest_firstName'],
+    'last_name'=> $fields['guest_lastName'],
+    'email'=> $fields['guest_email'],
+    'phone'=> $fields['guest_phone'],
+    'country'=> $fields['guest_country']
+  );
+  $invite = array (
+    'guest_id'=>lab_invitations_createGuest($params),
+    'token'=>bin2hex(random_bytes(10)),
+    'needs_hostel'=>$fields['needs_hostel']=='false' ? 0 : 1,
+    'host_group_id'=> (int) $fields['host_group_id'],
+    'host_id'=> (int) $fields['host_id'],
+  );
+  foreach (['mission_objective','start_date','end_date','travel_mean_to','travel_mean_from','funding_source'] as $champ) {
+    $invite[$champ]=$fields[$champ];
+  }
+  var_dump($invite);
+  
+  global $wpdb;
+  $wpdb->insert($wpdb->prefix.'lab_invitations',$invite);
+  echo $wpdb->last_query;
+  //lab_invitations_createInvite($invite);
+  wp_send_json_success();
+}

@@ -8,6 +8,12 @@
   flex-direction: column;
   margin:1em;
 }
+#invitationForm .lab_invite_field input, #invitationForm .lab_invite_field select {
+  width: 100%;
+}
+#invitationForm .lab_invite_field input[type=checkbox] {
+  width: 1em;
+}
 #invitationForm .lab_invite_row {
   display: flex;
   justify-content: space-between;
