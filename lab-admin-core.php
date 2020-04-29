@@ -182,6 +182,15 @@ function lab_group_get_user_groups($userId)
                                 WHERE lug.`user_id`=".$userId);
 }
 
+function lab_admin_delete_all_group() {
+    global $wpdb;
+    $sql = "SELECT id FROM `".$wpdb->prefix."lab_groups`";
+    $results =  $wpdb->get_results($sql);
+    foreach($results as $r) {
+        lab_admin_delete_group($r);
+    }
+}
+
 function lab_admin_delete_group($groupId) {
     lab_admin_delete_group_substitutes_by_groupId($groupId);
     lab_admin_delete_users_groups_by_groupId($groupId);
@@ -496,6 +505,7 @@ function lab_keyring_get_loan($id) {
 /**************************************************************************************************
  * SETTINGS
  *************************************************************************************************/
+
 function userMetaData_get_userId_with_no_key($metadataKey) {
     global $wpdb;
     $sql = "SELECT ID FROM `".$wpdb->prefix."users` WHERE NOT EXISTS ( SELECT 1 FROM `".$wpdb->prefix."usermeta` WHERE `".$wpdb->prefix."usermeta`.`meta_key` = '".$metadataKey."' AND `".$wpdb->prefix."usermeta`.`user_id`=`".$wpdb->prefix."users`.`ID`)";
@@ -631,7 +641,7 @@ function lab_hal_createTable_hal() {
         `title` varchar(200) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
         `url` varchar(200) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
         `producedDate_tdate` date,
-        `journalTitle_s` varchar(100) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL
+        `journalTitle_s` varchar(100) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
         PRIMARY KEY(`id`)
       ) ENGINE=InnoDB";
     $wpdb->get_results($sql);
@@ -883,6 +893,12 @@ function lab_uninstall_hook() {
     delete_all_tables();
 }
 
+function lab_admin_setting_reset_tables()
+{
+    delete_all_tables();
+    create_all_tables();
+}
+
 
 function create_all_tables() {
     lab_admin_createTable_param();
@@ -890,19 +906,22 @@ function create_all_tables() {
     lab_hal_createTable_hal();
     lab_admin_createGroupTable();
     lab_admin_createUserGroupTable();
+    lab_admin_createSubTable();
     lab_keyring_createTable_keys();
     lab_keyring_createTable_loans();
     lab_admin_initTable_usermeta();
 }
 
 function delete_all_tables() {
-    lab_admin_delete_group(0);
+    //lab_admin_delete_group(0);
+    lab_admin_delete_all_group();
     drop_table("lab_group_substitutes");
     drop_table("lab_group_users_groups");
     drop_table("lab_params");
     drop_table("lab_key_loans");
     drop_table("lab_keys");
     drop_table("lab_hal");
+    drop_table("lab_hal_users");
     drop_table("lab_groups");
 }
 

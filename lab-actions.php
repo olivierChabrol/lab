@@ -72,6 +72,7 @@ if (is_admin()) {
     add_action( 'wp_ajax_copy_phone', 'lab_admin_usermeta_update_phone');
     add_action( 'wp_ajax_create_social', 'lab_admin_createSocial' );
     add_action( 'wp_ajax_delete_social', 'lab_admin_deleteSocial' );
+    add_action( 'wp_ajax_reset_lab_db', 'lab_admin_setting_reset_tables');
     //Action for hal
     add_action( 'wp_ajax_hal_create_table', 'lab_ajax_hal_create_table');
     add_action( 'wp_ajax_hal_fill_hal_name', 'lab_ajax_hal_fill_fields');
