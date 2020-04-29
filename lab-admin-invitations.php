@@ -54,7 +54,29 @@ function lab_invitations_createPrefGroupTable() {
   }
   wp_send_json_error();
 }
-function lab_invitations_createInvite() {
-  
+function lab_invitations_createGuest($params) {
+  global $wpdb;
+  $wpdb->hide_errors();
+  if ( $wpdb->insert(
+      $wpdb->prefix.'lab_guests',
+      $params
+      )
+  ) {
+      return $wpdb->insert_id;
+  } else {
+      return $wpdb -> last_error;
+  }
+}
+function lab_invitations_createInvite($params) {
+  global $wpdb;
+  if ( $wpdb->insert(
+      $wpdb->prefix.'lab_invitations',
+      $params
+      )
+  ) {
+      return;
+  } else {
+      return $wpdb -> last_error;
+  }
 }
 ?>

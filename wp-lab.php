@@ -89,7 +89,7 @@ add_shortcode('lab-event', 'lab_event');
 add_shortcode('lab-event-of-the-week', 'lab_event_of_the_week');
 add_shortcode('lab-incoming-event', 'lab_incoming_event');
 add_shortcode('lab-hal', 'lab_hal');
-add_shortcode('lab-guest-invite', 'lab_invitation');
+add_shortcode('lab-invite', 'lab_invitation');
 
 
 add_action('admin_enqueue_scripts', 'admin_enqueue');
@@ -120,6 +120,10 @@ class LabRewriteRules {
       global $wp_rewrite;
       $newRule = array('user/(.+)$' => 'index.php?pagename=user');
       $newRules = $newRule + $rules;
+      $newRule = array('invitation/(.+)$' => 'index.php?pagename=invitation');
+      $newRules = $newRule + $newRules;
+      $newRule = array('invite/(.+)$' => 'index.php?pagename=invitation');
+      $newRules = $newRule + $newRules;
       return $newRules;
   }
   function flush_rewrite_rules() {
@@ -217,8 +221,11 @@ function wp_lab_fe_enqueues()
   wp_set_script_translations( 'lab-fe', 'lab', dirname(__FILE__).'/lang' );
   wp_enqueue_script('fontAwesome',"https://kit.fontawesome.com/341f99cb81.js",array(),"3.2",false);
   wp_enqueue_style('InvitationCSS',plugins_url('css/lab-invitation.css',__FILE__));
-  wp_enqueue_style('CountrySelectCSS',plugins_url('css/countrySelect.scss',__FILE__));
-  wp_enqueue_script('CountrySelectJS',plugins_url('js/countrySelect.js',__FILE__),array(),"3.2",false);
+  wp_enqueue_style('CountrySelectCSS',plugins_url('css/countrySelect.min.css',__FILE__));
+  wp_enqueue_script('CountrySelectJS',plugins_url('js/countrySelect.min.js',__FILE__),array('jquery'),"3.4",false);
+  wp_enqueue_style('TelInputCSS',plugins_url('css/intlTelInput.min.css',__FILE__));
+  wp_enqueue_script('TelInputUtils',plugins_url('js/utils.js',__FILE__),array(),"3.4",false);
+  wp_enqueue_script('TelInputJS',plugins_url('js/intlTelInput.min.js',__FILE__),array('TelInputUtils'),"3.4",false);
 }
 
 function localize_script($domain) {
