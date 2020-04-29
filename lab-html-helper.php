@@ -9,6 +9,11 @@
  * @param defaultValue : add an default <option> in the select, must be this form : ex. : array("value"=>0,"label"=>"None")
  */
 function lab_html_select($htmlId, $htmlName, $htmlClass, $fctCallback, $fctArgs = null, $defaultValue = null) {
+    echo lab_html_select_str($htmlId, $htmlName, $htmlClass, $fctCallback, $fctArgs, $defaultValue);
+}
+
+
+function lab_html_select_str($htmlId, $htmlName, $htmlClass, $fctCallback, $fctArgs = null, $defaultValue = null, $idValues = null) {
     $output ='<select id="'.$htmlId.'" name="'.$htmlName.'" class="'.$htmlClass.'">';
     $results = null;
     if ($fctArgs == null) {
@@ -16,13 +21,22 @@ function lab_html_select($htmlId, $htmlName, $htmlClass, $fctCallback, $fctArgs 
     } else {
         $results = $fctCallback($fctArgs);
     }
+    //$output .= "<option value =\"\">".$results."</option>";
+    //$output .= "</select>";
+    //return $output;
     if ($defaultValue != null) {
-        $output .= "<option value =".$defaultValue["value"].">".$defaultValue["label"]."</option>";
+        $output .= "<option value =\"".$defaultValue["value"]."\">".$defaultValue["label"]."</option>";
     }
-
-    foreach ( $results as $r ) {
-    $output .= "<option value =".$r->id.">".$r->value."</option>";
+    if ($idValues == null) {
+        foreach ( $results as $r ) {
+            $output .= "<option value=\"".$r->id."\">".$r->value."</option>";
+        }
+    }
+    else {
+        foreach ( $results as $r ) {
+            $output .= "<option value=\"".$r->{$idValues["id"]}."\">".$r->{$idValues["value"]}."</option>";
+        }
     }
     $output .= "</select>";
-    echo $output;
+    return $output;
 }

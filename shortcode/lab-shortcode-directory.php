@@ -32,6 +32,21 @@ function lab_directory($param) {
     $joinGroup   = "";
     $whereGroup  = "";
 
+    
+    global $wp;
+    $url = $wp->request;
+    if (isset( $_GET["group"] ) && !empty( $_GET["group"] ) ) {
+        $group = $_GET["group"];
+    }
+    var_dump($_GET["group"]);
+    var_dump($_GET);
+    /*
+    $urlArray = explode("/",$url);
+    $group = isset($urlArray[count($urlArray)-1]) ? $urlArray[count($urlArray)-1] : $param['group'];
+    //var_dump($urlArray );
+    $group = "";
+    //*/
+
     /*** FILTER FOR SHORTCODE PARAMETERS  ***/
     if(!empty($displayLeftUser)) {
         $displayLeftUserValue = ($displayLeftUser === 'true');
@@ -74,9 +89,13 @@ function lab_directory($param) {
     $nbResult = $wpdb->num_rows;
     $items = array();
     $directoryStr = "";//"<h1>".__("Annuaire","lab")."</h1>"; // title
-    //$directoryStr .= $sql;
+    $directoryStr .= "**** LETTER :". $_GET["letter"]."<br>";
+    $directoryStr .= "**** GROUP :". $group."<br>";
+    $directoryStr .= $sql;
     $alphachar = array_merge(range('A', 'Z'));
     $url = explode('?', $_SERVER['REQUEST_URI']); // current url (without parameters)
+    $directoryStr .= "<input type=\"hidden\" id=\"letterSearch\" value=\"".$currentLetter."\">";
+    $directoryStr .= "<input type=\"hidden\" id=\"groupSearch\" value=\"".$group."\">";
     $directoryStr .= "<div class=\"alpha-links\" style=\"font-size:15px;\">";
     foreach ($alphachar as $element) {
         $directoryStr .= '<a href="' . $url[0] . '?letter=' . $element . '"><b>' . $element . '</b></a>'; 
@@ -84,10 +103,13 @@ function lab_directory($param) {
     $directoryStr .= "</div>"; // letters
     $directoryStr .= 
         "<br>
-            <div id='user-srch' style='width:350px;'>
+            <div id='user-srch' style='width:750px;' class=\"actions\">
                 <input type='text' id='lab_directory_user_name' name='dud_user_srch_val' style='' value='' maxlength='50' placeholder=\"" . __('Chercher un nom', 'lab') . "\"/>
                 <input type='hidden' id='lab_directory_user_id' value='' />
-            </div>
+            ";
+    $directoryStr .= __('Show only group', 'lab')." : ";
+    $directoryStr .= lab_html_select_str("lab-directory-group-id", "lab-directory-group-id", "", lab_admin_group_select_group, "acronym, group_name", array("value"=>0,"label"=>"None"), array("id"=>"acronym", "value"=>"value"));
+    $directoryStr .= "</div>
         <br>"; // search field
     $directoryStr .= 
         "<style>
@@ -98,7 +120,7 @@ function lab_directory($param) {
         </style>"; // style for table (stripped colors)
 
     /* Table directory */
-    $directoryStr .= "<div class=\"table-responsive\"><table  id=\"lab-table-directory\" class=\"table table-striped\"><thead class=\"thead-dark\"><tr><th>".esc_html__("Name", "lab")."</th><th>".esc_html__("Name", "lab")."</th><th>".esc_html__("Name", "lab")."</td></th></thead><tbody>";
+    $directoryStr .= "<div class=\"table-responsive\"><table  id=\"lab-table-directory\" class=\"table table-striped\"><thead class=\"thead-dark\"><tr><th>".esc_html__("Name", "lab")."</th><th>".esc_html__("User details", "lab")."</th><th>".esc_html__("Group", "lab")."</td></th></thead><tbody>";
     foreach ($results as $r) {
         $directoryStr .= "<tr  userId='".esc_html($r->slug)."'>";
         $directoryStr .= "<td id='name_col'>".esc_html($r->last_name . " " . $r->first_name)."</td>";
