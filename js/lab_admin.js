@@ -50,15 +50,9 @@ jQuery(function($){
 
         $("#lab_searched_group_id").val(value);
         setinfoToGroupEditionFields(ui.item.id, ui.item.acronym, ui.item.label, ui.item.chief_id,
-          ui.item.parent_group_id, ui.item.group_type);
+          ui.item.parent_group_id, ui.item.group_type, ui.item.url);
       }
   });
-  $("#lab_settings_button_fill_hal_name_fields").click(function() {
-    data = {
-    'action': 'hal_fill_hal_name'
-    };
-    callAjax(data, "Fields succesfully filled", null, "Can't fill fields", null);
-});
 
   $("#lab_group_delete_button").click(function(){
       $.post(LAB.ajaxurl,
@@ -74,6 +68,14 @@ jQuery(function($){
             }
           }
       )
+  });
+
+  $("#lab_admin_reset_db").click(function() {
+    $("#lab_admin_setting_delete_dialog").modal();
+  });
+
+  $("#lab_admin_setting_delete_dialog_confirm").click(function() {
+    callAjax({action : 'reset_lab_db'}, "LAB DB successfuly reset", null, "Failed to reset LAB DB", null);
   });
   
   $('#wp_lab_event_title').autocomplete({
@@ -160,7 +162,7 @@ jQuery(function($){
     saveEventCaterory(postId, categoryId);
   });
   $("#lab_settings_button_addKey").click(function() {
-    var userId = $("#usermetadata_user_id").val();
+    var userId = $("#usermetadata_user_search_id").val();
     var key = $('#usermetadata_key').val();
     var value = $('#usermetadata_value').val();
     saveMetakey(userId, key, value);
@@ -182,11 +184,9 @@ jQuery(function($){
   $("#lab_user_button_save_left").click(function() {
     saveUserLeft($("#lab_user_search_id").val(), $("#lab_user_left_date").val(), $("#lab_user_left").is(":checked"));
   });
+
   $("#lab_settings_correct_um").click(function() {
     correctUMFields();
-  });
-  $("#lab_settings_copy_phone").click(function() {
-    lab_settings_copy_phone();
   });
   $("#lab_createGroup_acronym").change(function() {
     var data = {
@@ -341,7 +341,7 @@ jQuery(function($){
   });
   $("#lab_createGroup_create").click(function() {
     valeurs = new Object();
-    for (i of ['name', 'acronym', 'type', 'chiefID','parent']) {
+    for (i of ['name', 'acronym', 'type', 'chiefID','parent','url']) {
       if ($("#lab_createGroup_"+i).val()=="") {
         $("#lab_createGroup_"+i).css("border-color","#F00");
         toast_error("Group couldn't be created :<br> The form isn't filled properly");
@@ -351,12 +351,11 @@ jQuery(function($){
       valeurs[i] = $("#lab_createGroup_"+i).val();
     }
     subs = $("#lab_createGroup_subID").attr('list').split(",");
-    console.log(subs);
     subs.shift(); //Supprime le dernier élément (vide)
     valeurs['subsList'] = subs;
     createGroup(valeurs);
     //On réinitialise tous les champs du formulaire
-    clearFields('lab_createGroup_',['name', 'acronym', 'type', 'chiefID','chief','subInput','parent']);
+    clearFields('lab_createGroup_',['name', 'acronym', 'type', 'chiefID','chief','subInput','parent','url']);
     $("#lab_createGroup_subsList")[0].innerHTML="";
     $("#lab_createGroup_subID").attr('list','');
     $("#lab_createGroup_subsDelete").hide();
@@ -399,7 +398,6 @@ jQuery(function($){
   $("#lab_createGroup_addSub").click(function(){
     $("#lab_createGroup_subsDelete").show(); //Affiche la 'croix' qui permet de vider la liste des suppléants
     if ($("#lab_createGroup_subID").attr('list').split(",").includes($("#lab_createGroup_subID").val())) {
-      console.log("Déjà présent");
       toast_error("Cette personne est déjà suppléant de ce groupe");
       return;
     }
@@ -423,13 +421,106 @@ jQuery(function($){
     $chief   = jQuery("#lab_searched_chief_id").val();
     $parent  = jQuery("#wp_lab_group_parent_edit").val();
     $type    = jQuery("#wp_lab_group_type_edit").val();
-    editGroup($groupId, $acronym, $name, $chief, $parent, $type);
+    $url     = jQuery("#wp_lab_group_url_edit").val();
+    editGroup($groupId, $acronym, $name, $chief, $parent, $type, $url);
   });
   $("#lab_hal_create").click(function() {
     var data = {
       'action' : 'hal_create_table'
     }
     callAjax(data, "Table HAL succesfuly created", null, "Can't create table HAL", null);
+  });
+  ////////////////////// Onglet KeyRing //////////////////////
+  $("#lab_keyring_create_table_keys").click(function () {
+    var data = {
+      'action' : 'keyring_table_keys',
+    };
+    jQuery.post(LAB.ajaxurl, data, function(response) {
+      if (response==0) {
+        toast_success("Table successfully created");
+        $("#lab_keyring_noKeysTableWarning").css("display","none");
+        return;
+      }
+      toast_error("Error Creating table : "+response);
+    });
+  });
+  $("#lab_keyring_create_table_loans").click(function () {
+    var data = {
+      'action' : 'keyring_table_loans',
+    };
+    jQuery.post(LAB.ajaxurl, data, function(response) {
+      if (response==0) {
+        toast_success("Table successfully created");
+        $("#lab_keyring_noLoansTableWarning").css("display","none");
+        return;
+      }
+      toast_error("Error Creating table : "+response);
+    });
+  });
+  $("#lab_settings_button_fill_hal_name_fields").click(function() {
+    data = {
+      'action': 'hal_fill_hal_name'
+    };
+    callAjax(data, "Fields succesfully filled", null, "Can't fill fields", null);
+  });
+  $("#lab_settings_button_fill_user_slug_fields").click(function() {
+    data = {
+      'action': 'usermeta_fill_user_slug'
+    };
+    callAjax(data, "Fields succesfully filled", null, "Can't fill fields", null);
+  });
+
+  $("#lab_all_users").click(function() 
+  {
+    reset_and_load_groups_users(!$("#lab_all_users").is(':checked'),  !$("#lab_no_users_left").is(':checked'));
+  });
+
+  $("#lab_no_users_left").click(function()
+  {
+    reset_and_load_groups_users(!$("#lab_all_users").is(':checked'),  !$("#lab_no_users_left").is(':checked'));
+  });
+
+  $(document).ready(function()
+  {
+    reset_and_load_groups_users(!$("#lab_all_users").is(':checked'), !$("#lab_no_users_left").is(':checked'));
+  });
+
+
+  $("#lab_add_users_groups").click(function()
+  {
+    var tab_users  = [];
+    var tab_groups = [];
+    $('#list_users option:selected').each(function(){ tab_users.push($(this).val()); });
+    $('#list_groups option:selected').each(function(){ tab_groups.push($(this).val()); });
+    $.post(LAB.ajaxurl,
+      {
+        action : 'add_users_groups',
+        users  : tab_users,
+        groups : tab_groups
+      },
+      function(response) 
+      {
+        if(response.success)
+        {
+          toast_success(__("Le(s) membre(s) a bien été ajouté au(x) groupe(s)", "lab"));
+          reset_and_load_groups_users($("#lab_all_users").is(':checked'), $("#lab_no_users_left").is(':checked'));
+        }
+        else if(response == "warning")
+        {
+          toast_warn(__("Sélectionnez au moins un utilisateur et un groupe !","lab"));
+        }
+        else
+        {
+          toast_error(__("Erreur, la requête n'a pas pu aboutir", "lab"));
+        }
+      }
+    )
+  });
+  $("#lab_setting_social_delete_button").click(function() {
+    deleteAllSocial();
+  });
+  $("#lab_setting_social_create_button").click(function() {
+    createAllSocial();
   });
 });
 
@@ -471,13 +562,14 @@ function reset_and_load_groups_users(cond1, cond2) {
 }
 
 
-function setinfoToGroupEditionFields(groupId, acronym, groupName, chiefId, parent_group_id, group_type) {
+function setinfoToGroupEditionFields(groupId, acronym, groupName, chiefId, parent_group_id, group_type, url) {
   jQuery('#wp_lab_group_to_edit').val(groupId);
   jQuery('#wp_lab_group_acronym_edit').val(acronym);
   jQuery('#wp_lab_group_name_edit').val(groupName);
   jQuery('#lab_searched_chief_id').val(chiefId);
   jQuery('#wp_lab_group_chief_edit').val(callbUser(chiefId, loadUserName));
   jQuery('#wp_lab_group_parent_edit').val(parent_group_id);
+  jQuery('#wp_lab_group_url_edit').val(url)
 
   jQuery('#wp_lab_group_type_edit').val(group_type);
   group_loadSubstitute();
@@ -535,13 +627,11 @@ function group_loadSubstitute()
 }
 
 function createGroup(params) {
-  console.log(params);
   //On vérifie d'abord que l'acronyme est bien unique
   var data = {
     'action' : 'group_search_ac',
     'ac' : params['acronym']
   };
-  console.log(data);
   jQuery.post(LAB.ajaxurl, data, function(response) {
     if (!response.success) {
       toast_error("Group couldn't be created : the acronym is already in use");
@@ -549,17 +639,16 @@ function createGroup(params) {
     }
     //On essaie ensuite de rajouter l'entrée dans la table groups 
     params['action']='group_create';
-    jQuery.post(LAB.ajaxurl, params, function(response) {
-      if (response.success) {
+    jQuery.post(LAB.ajaxurl, params, function(respons) {
+      if (respons.success) {
         //Enfin, on ajoute les entrées dans la table suppléants
         var data3 = {
           'action' : 'group_subs_add',
-          'id' : response.data[0].id,
+          'id' : respons.data[0].id,
           'subList' : params['subsList']
         };
         jQuery.post(LAB.ajaxurl, data3, function(resp) {
           if (!resp.success) {
-            console.log("failSubs");
             toast_warn("Group created, but couldn't add substitutes : <br/>"+resp.data);
             return false;
           }
@@ -591,7 +680,7 @@ function saveParam(paramId, paramType, paramValue, callAfterComplete) {
       'value' : paramValue,
     };
   }
-  callAjax(data, "Param " + paramValue + " successfully created", callAfterComplete, "Error when create PARAM '" + paramValue + "'", null);
+  callAjax(data, "Param " + paramValue + " successfully created", callAfterComplete, null, null);
 }
 
 function loadEditParam(paramId, paramType, paramValue) {
@@ -764,7 +853,7 @@ function loadEventCategory(postId) {
   });
 }
 
-function editGroup(groupId, acronym, groupName, chiefId, parent, group_type) {
+function editGroup(groupId, acronym, groupName, chiefId, parent, group_type, url) {
   var data = {
                'action' : 'edit_group',
                'groupId' : groupId,
@@ -772,7 +861,8 @@ function editGroup(groupId, acronym, groupName, chiefId, parent, group_type) {
                'groupName' : groupName,
                'chiefId' : chiefId,
                'parent' : parent,
-               'group_type' : group_type
+               'group_type' : group_type,
+               'url' : url
   };
   jQuery.post(LAB.ajaxurl, data, function(response) {
     if (response.success) {
@@ -796,6 +886,12 @@ function resetGroupEdit()
   jQuery("#wp_lab_group_type_edit").val("0");
   jQuery("#wp_lab_group_name").val("");
   jQuery("#lab_group_edit_substitutes").text("");
+  jQuery("#wp_lab_group_url_edit").val("");
+}
+function clearFields(prefix,list) {
+  for (i of list) {
+    jQuery('#'+prefix+i).val('');
+  }
 }
 
 function loadExistingKeys() {
@@ -837,12 +933,6 @@ function correctUMFields() {
   };
   callAjax(data, "UM Field corrected", null, "failed to correct UM fields", null);
 }
-function lab_settings_copy_phone() {
-  var data = {
-    'action' : 'copy_phone'
-  };
-  callAjax(data, "Copy phone successful", null, "Failed to copy phones", null);
-}
 function saveMetakey(userId, key, value) {
   var data = {
     'action' : 'add_new_metakey',
@@ -873,12 +963,10 @@ function disabledAddKeyAllButton(data) {
   jQuery("#lab_settings_button_addKey_all").prop("disabled",true);
   jQuery("#usermetadata_key_all").focus();
   jQuery("#usermetadata_key_all").select();
-  //jQuery("#lab_settings_button_addKey_all").data('disabled',true);
 }
 
 function enabledAddKeyAllButton(data) {
   jQuery("#lab_settings_button_addKey_all").prop("disabled",false);
-  //jQuery("#lab_settings_button_addKey_all").data('disabled',false);
 }
 
 function callAjax(data, successMessage, callBackSuccess = null, errorMessage, callBackError = null) {
@@ -894,162 +982,17 @@ function callAjax(data, successMessage, callBackSuccess = null, errorMessage, ca
     else {
       if (errorMessage != null) {
         toast_error(errorMessage);
+      } 
+      else {
+        if (response.data) {
+          toast_error(response.data);
+        }
       }
       if (callBackError != null) {
         callBackError(response.data);
       }
     }
     });
-}
-
-function createKey(params) {
-  data = {
-    'action': 'keyring_create_key',
-    'params': params 
-  }
-  jQuery.post(ajaxurl, data, function(response) {
-    if (response.success) {
-      toast_success("Clé créée avec succès !");
-      jQuery("#lab_keyring_keySearch").keyup();
-      return;
-    }
-    toast_error("Erreur de création de clé");
-  });
-}
-function createLoan(params) {
-  data = {
-    'action': 'keyring_create_loan',
-    'params': params
-  }
-  jQuery.post(ajaxurl, data, function(response) {
-    if (response.success) {
-      toast_success("Prêt créé avec succès.");
-      jQuery("#lab_keyring_keySearch").keyup();
-      oldLoans(params['key_id']);
-      jQuery("#lab_keyring_loanform").hide();
-      return;
-    }
-    toast_error("Erreur de création du prêt.");
-  });
-}
-function editLoan(id, params) {
-  data = {
-    'action': 'keyring_edit_loan',
-    'params': params,
-    'id': id
-  }
-  jQuery.post(ajaxurl, data, function(response) {
-    if (response.success) {
-      toast_success("Prêt modifié avec succès.");
-      oldLoans(params['key_id']);
-      return;
-    }
-    toast_error("Erreur de modification du prêt.");
-  });
-}
-function endLoan(loan_id, key_id, date) {
-  data = {
-    'action': 'keyring_end_loan',
-    'key_id': key_id,
-    'loan_id': loan_id,
-    'end_date': date
-  }
-  jQuery.post(ajaxurl, data, function(response) {
-    if (response.success) {
-      toast_success("Prêt terminé avec succès.");
-      jQuery("#lab_keyring_loanform").hide();
-      jQuery("#lab_keyring_keySearch").keyup();
-      oldLoans(key_id);
-      return;
-    }
-    toast_error("Erreur lors de la tentative de fin du prêt.");
-  });
-}
-function getKeyInfo(key_id,callback) {
-  var data={
-    'action': 'keyring_get_key',
-    'id': key_id
-  };
-  jQuery.post(ajaxurl,data,callback);
-}
-function getLoanForKey(key_id, callback) {
-  data={
-    'action': 'keyring_find_loan_byKey',
-    'key_id': key_id
-  }
-  jQuery.post(ajaxurl,data,callback);
-}
-function getUserNames_fromID(user_id,callback) {
-  data = {
-    'action': 'usermeta_names',
-    'search': {'term':user_id}
-  };
-  jQuery.post(ajaxurl,data,callback);
-}
-
-function loanContract(key_id) {
-  //Ouvre une fenêtre popup vide, sans barre d'outils etc.
-  var win = window.open("", "", "toolbar=no,dependent=yes,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=800,height=500,top=0,left="+(screen.width/3));                  
-  //Récupère les informations sur la clé, le prêt et les noms complets des utilisateurs
-  getKeyInfo(key_id, function (key) { 
-    if (key.success) {
-      getLoanForKey(key_id, function(loan) {
-        if (loan.success) {
-          getUserNames_fromID(loan.data['referent_id'], function (ref) {
-            if (ref.success) {
-              referent = ref.data['first_name']+" "+ref.data['last_name'];
-              getUserNames_fromID(loan.data['user_id'],function(userRep) {
-                if (userRep.success) {
-                  user = userRep.data['first_name']+" "+userRep.data['last_name'];
-                  output='<html>\
-                  <head>\
-                    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">\
-                    <link rel="stylesheet" id="KeyRingCSS-css" href="http://stage.fr/wp-content/plugins/lab/css/keyring.css?ver=5.4" media="all">\
-                    <meta charset="UTF-8">\
-                    <title>'+__('Reçu de prêt','lab')+' n'+loan.data["id"]+'</title>\
-                    <script>document.onkeydown = function(e) {if (e.which== 27) {window.close();}}</script>\
-                  </head>\
-                  <body>\
-                    <h2 id="loanContract_title">'+__('Reçu de prêt','lab')+'</h2>\
-                    <div id="loanContract">\
-                        <article>\
-                          <h4>'+__('ID du prêt','lab')+' : <u>'+loan.data["id"]+'</u></h4>\
-                          <h4>'+__('Référent','lab')+' : <u>'+referent+'</u></h4>\
-                          <p>'+__('La clé/badge numéro','lab')+' : <b>'+key.data["number"]+' </b></p>\
-                          <p>'+__('A été prêtée à','lab')+' <b>'+user+'</b></p>';
-                          start = new Date(loan.data["start_date"]).toLocaleDateString("fr-FR",{ year: 'numeric', month: 'long', day: 'numeric' });
-                          end = new Date(loan.data["end_date"]).toLocaleDateString("fr-FR",{ year: 'numeric', month: 'long', day: 'numeric' })
-                          output+='<p>Le <b>'+start+'</b></p>';
-                          output+=(loan.data["end_date"]===null) ? '<p>Et devra être rendue.</p>' : '<p>'+__('Et devra être rendue avant le','lab')+' <b>'+end+'</b></p>';
-                          output+=(loan.data["commentary"]===null) ? '' : '<p>'+__('Commentaire','lab')+' : <i>'+loan.data["commentary"]+'</i></p><br/>';
-                          output+='<p><u>'+__('Signature','lab')+' :</u></p>\
-                        </article>';
-                        output+= document.getElementById('lab_keyring_loanform_table').outerHTML;
-                      output+='</div><button onclick="window.print();">'+__('Imprimer','lab')+'</button>\
-                    </body>\
-                  </html>';
-                  win.document.write(output);
-                  win.print();
-                }
-              });
-            }
-          });
-        }
-      });    
-    }
-   });
-}
-function oldLoans(key_id) {
-  data = {
-    'action': 'keyring_find_old_loans',
-    'key_id': key_id
-  }
-  jQuery.post(ajaxurl, data, function(response) {
-    jQuery("#lab_keyring_loansList")[0].innerHTML=response.data;
-  });
-}
-function defaultTodayDate(date) {
-  return date.length == 0 ? new Date().toISOString().split("T")[0] : date;
 }
 
 function loadHalJson(userId) {
@@ -1065,4 +1008,18 @@ function deleteHalTable() {
     'action' : 'hal_empty_table'
   };
   callAjax(data, "HAL table deleted", null, "Failed to delete HAL table in DB", null); 
+}
+
+function deleteAllSocial() {
+  var data = {
+    'action': 'delete_social'
+  }
+  callAjax(data, "All social metakeys deleted", null, "Failed to delete social metakeys in DB", null); 
+}
+
+function createAllSocial() {
+  var data = {
+    'action': 'create_social'
+  }
+  callAjax(data, "All social metakeys created", null, "Failed to create social metakeys in DB", null); 
 }

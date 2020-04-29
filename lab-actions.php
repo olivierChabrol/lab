@@ -38,6 +38,7 @@ if (is_admin()) {
     add_action( 'wp_ajax_group_subs_add', 'lab_admin_group_subs_addReq');
     add_action( 'wp_ajax_usermeta_names', 'lab_admin_usermeta_names');
     add_action( 'wp_ajax_usermeta_dateLeft', 'lab_admin_usermeta_dateLeft');
+    add_action( 'wp_ajax_usermeta_fill_user_slug', 'lab_ajax_admin_usermeta_fill_user_slug');
     add_action( 'wp_ajax_group_load_substitutes', 'group_load_substitutes');
     add_action( 'wp_ajax_group_delete_substitutes', 'group_delete_substitutes');
     add_action( 'wp_ajax_group_add_substitutes', 'group_add_substitutes');
@@ -46,7 +47,7 @@ if (is_admin()) {
 
     //Actions pour la gestion des params
     add_action( 'wp_ajax_param_create_table', 'lab_admin_param_create_table');
-    add_action( 'wp_ajax_save_param', 'lab_admin_param_save');
+    add_action( 'wp_ajax_save_param', 'lab_admin_ajax_param_save');
     add_action( 'wp_ajax_load_param_type', 'lab_admin_param_load_type');
     add_action( 'wp_ajax_param_delete', 'lab_admin_param_delete');
     add_action( 'wp_ajax_param_search_value', 'lab_admin_param_search_value');
@@ -69,6 +70,9 @@ if (is_admin()) {
     add_action( 'wp_ajax_not_exist_metakey', 'lab_ajax_userMeta_key_not_exist');
     add_action( 'wp_ajax_um_correct', 'lab_usermeta_correct_um_fields');
     add_action( 'wp_ajax_copy_phone', 'lab_admin_usermeta_update_phone');
+    add_action( 'wp_ajax_create_social', 'lab_admin_createSocial' );
+    add_action( 'wp_ajax_delete_social', 'lab_admin_deleteSocial' );
+    add_action( 'wp_ajax_reset_lab_db', 'lab_admin_setting_reset_tables');
     //Action for hal
     add_action( 'wp_ajax_hal_create_table', 'lab_ajax_hal_create_table');
     add_action( 'wp_ajax_hal_fill_hal_name', 'lab_ajax_hal_fill_fields');
@@ -77,11 +81,12 @@ if (is_admin()) {
 
     add_action( 'show_user_profile', 'custom_user_profile_fields', 10, 1 );
     add_action( 'edit_user_profile', 'custom_user_profile_fields', 10, 1 );
-
+    //Actions pour keyring - Prêts
     add_action( 'wp_ajax_keyring_create_loan', 'lab_keyring_create_loanReq' ); 
     add_action( 'wp_ajax_keyring_find_loan_byKey', 'lab_keyring_find_loan_byKey' ); 
     add_action( 'wp_ajax_keyring_edit_loan', 'lab_keyring_edit_loanReq' ); 
     add_action( 'wp_ajax_keyring_end_loan','lab_keyring_end_loanReq' );
     add_action( 'wp_ajax_keyring_find_old_loans','lab_keyring_find_oldLoansReq' );
     add_action( 'wp_ajax_keyring_find_loan_byID','lab_keyring_get_loan_Req' );
+    add_action( 'wp_ajax_lab_profile_edit','lab_profile_edit' );
 }

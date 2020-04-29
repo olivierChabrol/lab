@@ -106,10 +106,24 @@ function myplugin_load_textdomain() {
  */
 function wplab_init()
 {
+  $RewriteRules = new LabRewriteRules();
   register_widget("wplab_widget_week_event");
   register_widget("lab_hal_widget");
+  add_filter('admin_init', array($RewriteRules, 'flush_rewrite_rules'));
+  add_filter('rewrite_rules_array', array($RewriteRules, 'create_rewrite_rules'));
 }
-
+class LabRewriteRules {
+  function create_rewrite_rules($rules) {
+      global $wp_rewrite;
+      $newRule = array('user/(.+)$' => 'index.php?pagename=user');
+      $newRules = $newRule + $rules;
+      return $newRules;
+  }
+  function flush_rewrite_rules() {
+    global $wp_rewrite;
+    $wp_rewrite->flush_rules();
+  }
+}
 /**
  * Show custom user profile fields
  * 
@@ -185,10 +199,17 @@ function admin_enqueue()
   wp_set_script_translations( 'lab-keyring', 'lab', dirname(__FILE__).'/lang' );
 }
 
+/**
+ * enqueues script for the frontend
+ *
+ * @return void
+ */
 function wp_lab_fe_enqueues()
 {
   wp_enqueue_script('lab-fe', plugins_url('js/lab_fe.js',__FILE__), array('jquery','wp-i18n'), version_id(), true);
   wp_enqueue_style('profileCSS',plugins_url('css/lab-profile.css',__FILE__));
+  wp_enqueue_script('SpectrumJS', plugins_url('js/spectrum.js',__FILE__), array('jquery','wp-i18n'), '1.8.0', true);
+  wp_enqueue_style('SpectrumCSS',plugins_url('css/spectrum.css',__FILE__));
   localize_script('lab-fe');
   wp_set_script_translations( 'lab-fe', 'lab', dirname(__FILE__).'/lang' );
   wp_enqueue_script('fontAwesome',"https://kit.fontawesome.com/341f99cb81.js",array(),"3.2",false);

@@ -33,7 +33,9 @@ function lab_admin_tab_groups() {
     <?php lab_html_select("wp_lab_group_parent_edit", "wp_lab_group_parent", "", lab_admin_group_select_group, "group_name", array("value"=>0,"label"=>"None")); ?>
     <label for="wp_lab_group_type_edit"><?php esc_html_e("Modifier le type",'lab'); ?> :</label>
     <?php lab_html_select("wp_lab_group_type_edit", "wp_lab_group_type", "", lab_admin_get_params_groupTypes); ?>
-    <br />
+    <br /></br />
+    <label for="wp_lab_group_url_edit"><?php esc_html_e("Page web du groupe",'lab');?> :</label>
+    <input type="text" name="wp_lab_group_url" id="wp_lab_group_url_edit" value="" size="80" placeholder="Url"/>
     
     <br />
     
@@ -65,6 +67,12 @@ function lab_admin_tab_groups() {
       <th scope="row"><label for="lab_createGroup_type"><?php esc_html_e("Type",'lab'); ?> :</label></th>
       <td>
       <?php lab_html_select("lab_createGroup_type", "lab_createGroup_Type", "", lab_admin_get_params_groupTypes); ?>
+      </td>
+    </tr>
+    <tr class="form-field">
+      <th scope="row"><label for="lab_createGroup_url"><?php esc_html_e("Page web du groupe",'lab'); ?> :</label></th>
+      <td>
+      <input type="text" id="lab_createGroup_url" name="lab_createGroup_url" placeholder="Url"/>
       </td>
     </tr>
     <tr class="form-field">

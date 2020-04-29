@@ -40,7 +40,7 @@ class lab_hal_widget extends WP_widget{
             $content .= '<li>'.__('Aucun article trouvé').'</li>' ;
         } else {
             foreach ($articles as $article) {
-                $content .= '<li><a href="'.$article->url.'">'.$article->title.'</a></li>';
+                $content .= '<li><a href="'.$article->url.'" target="'.$article->docid.'">'.$article->title.'</a></li>';
             }
         }
         $content .= '</ul>';

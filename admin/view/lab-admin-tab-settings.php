@@ -56,25 +56,35 @@ function lab_admin_tab_settings() {
   <button class="page-title-action" id="lab_createGroup_createRoot">Créer groupe root</button>
   <hr/>
   <button class="page-title-action" id="lab_keyring_create_table_keys"><?php echo esc_html__('Créer la table Keys','lab'); ?></button>
-  <button class="page-title-action" id="lab_keyring_create_table_loans"><?php echo esc_html__('Créer la table Loans','lab'); ?></button>
+  <button class="page-title-action" id="lab_keyring_create_table_loans"><?php echo esc_html__('Créer la table Loans','lab'); ?></button><br><br>
+
+  <button class="page-title-action" id="lab_admin_reset_db"><?php echo esc_html__('Reset DB','lab'); ?></button>
+  <div id="lab_admin_setting_delete_dialog" class="modal">
+      <p><?php esc_html_e('Reset LAB DB ?','lab');?></p>
+      <div id="lab_admin_setting_delete_dialog_options">
+        <a href="#" rel="modal:close"><?php esc_html_e('Annuler','lab')?></a>
+        <a href="#" rel="modal:close" id="lab_admin_setting_delete_dialog_confirm" keyid=""><?php esc_html_e('Confirmer','lab'); ?></a>
+      </div>
+    </div>
   <hr>
     <h4>Correct DB :</h4>
   <button class="page-title-action" id="lab_settings_correct_um"><?php echo esc_html__('Corriger usermeta fields UM','lab'); ?></button>
   <button class="page-title-action" id="lab_settings_copy_phone"><?php echo esc_html__('Copier les champs phone','lab'); ?></button>
   <hr>
     <h4>Fill Table :</h4>
-    <button class="page-title-action" id="lab_settings_button_fill_hal_name_fields">Fill HAL name</button>
+    <button class="page-title-action" id="lab_settings_button_fill_hal_name_fields"><?php echo esc_html_e('Fill HAL name','lab'); ?></button>
+    <button class="page-title-action" id="lab_settings_button_fill_user_slug_fields"><?php echo esc_html_e('Fill user slug','lab'); ?></button>
     <input type="text" id="lab_hal_user">
-    <button class="page-title-action" id="lab_hal_delete_table">Empty HAL table</button>
+    <button class="page-title-action" id="lab_hal_delete_table"><?php echo esc_html_e('Empty HAL Table','lab'); ?></button>
   <hr/>
   <h2>Create usermetadata key</h2>
   <label for="usermetadata_user_search">User</label>
-  <input type="text" id="usermetadata_user_search"><input type="hidden" id="usermetadata_user_id">
+  <input type="text" id="usermetadata_user_search"><input type="hidden" id="usermetadata_user_search_id">
   <label for="usermetadata_key">Key</label>
   <input type="text" id="usermetadata_key">
   <label for="usermetadata_value">Value</label>
   <input type="text" id="usermetadata_value">
-  <a href="#" class="page-title-action" id="lab_settings_button_addKey">Add Key</a>
+  <a href="#" class="page-title-action" id="lab_settings_button_addKey"><?php echo esc_html_e('Add Meta Key','lab'); ?></a>
   <hr/>
   <h2>Create Metadata key for all user</h2>
   <label for="usermetadata_key_all">Key</label>
@@ -83,6 +93,10 @@ function lab_admin_tab_settings() {
   <input type="text" id="usermetadata_value_all">
   <!-- <a href="#" class="page-title-action" id="lab_settings_button_addKey_all">Add Keys</a> -->
   <button class="lab_keyring_create_table_keys" id="lab_settings_button_addKey_all">Add Keys</button>
+  <hr/>
+  <h2>Social networks for all user</h2>
+  <button class="page-title-action" id="lab_setting_social_delete_button">Delete all social networks keys</button>
+  <button class="page-title-action" id="lab_setting_social_create_button">Create all social networks keys</button>
   <hr/>
   <h2>Existing usermeta keys</h2>
   <label for="usermetadata_keys">Existing keys : </label>

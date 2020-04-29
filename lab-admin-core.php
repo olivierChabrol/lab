@@ -24,6 +24,34 @@ function lab_admin_username_get($userId) {
     return $items;
 }
 
+/*******************************************************************************************************
+ * PARAM
+ *******************************************************************************************************/
+
+function lab_admin_param_save($paramType, $paramName)
+{
+    global $wpdb;
+    if ($type == -1) {
+      $type = 0;
+    }
+    return !lab_admin_param_exist($paramType, $paramName);
+    if (lab_admin_param_exist($paramType, $paramName)) {
+        return false;
+    } else {
+        $sql = "INSERT INTO `".$wpdb->prefix."lab_params` (`id`, `type_param`, `value`) VALUES (NULL, '".$paramType."', '".$paramName."');";
+        $results = $wpdb->get_results($sql);
+        return $wpdb->insert_id;
+    }
+}
+
+function lab_admin_param_exist($paramType, $paramName)
+{
+    global $wpdb;
+    $sql = "SELECT id FROM `".$wpdb->prefix."lab_params` WHERE `type_param` = ".$paramType." AND  `value` = '".$paramName."'";
+    $results = $wpdb->get_results($sql);
+    return count($results) == 1;
+}
+
 function lab_admin_createTable_param() {
     global $wpdb;
     $sql = "CREATE TABLE IF NOT EXISTS `".$wpdb->prefix."lab_params` (
@@ -42,32 +70,47 @@ function lab_admin_initTable_param() {
             (2, 1, 'GROUP TYPE'),
             (3, 1, 'KEY TYPE'),
             (4, 1, 'SITE'),
-            (5, 2, 'Equipe'),
-            (6, 2, 'Groupe');";
+            (5, 1, 'USER FUNCTION'),
+            (6, 2, 'Equipe'),
+            (7, 2, 'Groupe');";
     $wpdb->get_results($sql);
 }
 
+/**
+ * Delete param key, can't delete param with id < 5, because param system
+ *
+ * @param [int] $paramId : param identifier
+ * @return boolean
+ */
 function lab_admin_param_delete_by_id($paramId) {
     global $wpdb;
     // can't delete param Id 1, because it is the default parameter
-    if ($paramId != 1) {
-        return $wpdb->delete($wpdb->prefix.'lab_params', array('id' => $paramId));
+    if ($paramId < 6 ) {
+        $wpdb->delete($wpdb->prefix.'lab_params', array('id' => $paramId));
+        return true;
+    }
+    else {
+        return false;
     }
 }
 
 function lab_admin_param_search_by_value($value) {
     global $wpdb;
-    $sql = "SELECT * FROM wp_lab_params WHERE `value` LIKE '%".$value."%'";
+    $sql = "SELECT * FROM `".$wpdb->prefix."lab_params` WHERE `value` LIKE '%".$value."%'";
     return $wpdb->get_results($sql);
 }
 
 function lab_admin_firstname_lastname2($name){
     global $wpdb;
-    $sql = "SELECT um1.`user_id` AS id, um3.`meta_value` as first_name, um2.`meta_value` as last_name 
-          FROM `".$wpdb->prefix."usermeta` AS um1 JOIN `".$wpdb->prefix."usermeta` AS um2 ON um1.`user_id` = um2.`user_id` JOIN `".$wpdb->prefix."usermeta` AS um3 ON um1.`user_id` = um3.`user_id` 
+    $sql = "SELECT um1.`user_id` AS id, um3.`meta_value` as first_name, um2.`meta_value` as last_name, um4.`meta_value` as slug
+          FROM `".$wpdb->prefix."usermeta` AS um1 
+          JOIN `".$wpdb->prefix."usermeta` AS um2 ON um1.`user_id` = um2.`user_id` 
+          JOIN `".$wpdb->prefix."usermeta` AS um3 ON um1.`user_id` = um3.`user_id`
+          JOIN `".$wpdb->prefix."usermeta` AS um4 ON um1.`user_id` = um4.`user_id` 
           WHERE (um1.`meta_key`='first_name' OR um1.`meta_key`='last_name') 
             AND um2.`meta_key`='last_name' 
-            AND um3.`meta_key`='first_name'            
+            AND um3.`meta_key`='first_name'   
+            AND um4.`meta_key`='lab_user_slug'         
             AND um1.`meta_value`LIKE '%" . $name . "%'";
 
   $results = $wpdb->get_results($sql);
@@ -75,17 +118,27 @@ function lab_admin_firstname_lastname2($name){
   $items = array();
 
   foreach ($results as $r) {
-    $items[] = array(label => $r->first_name . " " . $r->last_name , firstname => $r->first_name , lastname => $r->last_name , user_id => $r->id);
+    $items[] = array(label => $r->first_name . " " . $r->last_name , firstname => $r->first_name , lastname => $r->last_name , user_id => $r->id, userslug => $r->slug);
   }
   return $items;
 }
 
+/**
+ * Initialise usermeta table with our lab fields
+ *
+ * @return void
+ */
 function lab_admin_initTable_usermeta()
 {
-    lab_userMetaData_create_metaKeys("hab_id", "");
-    lab_userMetaData_create_metaKeys("hab_name", "");
-    lab_userMetaData_create_metaKeys("user_left", null);
     lab_userMetaData_create_metaKeys("user_phone", "");
+    lab_userMetaData_create_metaKeys("user_left", null);
+    lab_userMetaData_create_metaKeys("user_position", null);
+    lab_userMetaData_create_metaKeys("hal_id", null);
+    lab_userMetaData_create_metaKeys("hal_name", null);
+    lab_userMetaData_create_metaKeys("profile_bg_color", "#F2F2F2");
+    lab_admin_usermeta_fill_hal_name();
+    lab_admin_usermeta_fill_user_slug();
+    lab_admin_createSocial();
 }
 
 function lab_admin_firstname_lastname($param, $name){
@@ -120,6 +173,24 @@ function lab_admin_checkTable($tableName) {
  * GROUPS
  ********************************************************************************************/
 
+function lab_group_get_user_groups($userId)
+{
+    global $wpdb;
+    return $wpdb->get_results("SELECT lg.group_name, lg.url
+                                FROM `".$wpdb->prefix."lab_users_groups` as lug 
+                                JOIN `".$wpdb->prefix."lab_groups` AS lg ON lg.id=lug.group_id 
+                                WHERE lug.`user_id`=".$userId);
+}
+
+function lab_admin_delete_all_group() {
+    global $wpdb;
+    $sql = "SELECT id FROM `".$wpdb->prefix."lab_groups`";
+    $results =  $wpdb->get_results($sql);
+    foreach($results as $r) {
+        lab_admin_delete_group($r);
+    }
+}
+
 function lab_admin_delete_group($groupId) {
     lab_admin_delete_group_substitutes_by_groupId($groupId);
     lab_admin_delete_users_groups_by_groupId($groupId);
@@ -152,7 +223,7 @@ function lab_admin_createUserGroupTable()
 {
     global $wpdb;
     $sql = "CREATE TABLE IF NOT EXISTS `".$wpdb->prefix."lab_users_groups` (
-        `id` bigint UNSIGNED NOT NULL,
+        `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
         `group_id` bigint UNSIGNED NOT NULL,
         `user_id` bigint UNSIGNED NOT NULL
       ) ENGINE=InnoDB;";
@@ -185,7 +256,7 @@ function lab_admin_createSubTable() {
     $wpdb->get_results($sql);
 }
 
-function lab_admin_group_create($name,$acronym,$chief_id,$parent,$type) {
+function lab_admin_group_create($name,$acronym,$chief_id,$parent,$type,$url) {
     //$sql = "INSERT INTO `".$wpdb->prefix."lab_groups` (`id`, `acronym`, `group_name`, `chief_id`, `group_type`, `parent_group_id`) VALUES (NULL, '".$acronym."', '".$name."', '".$chief_id."', '".$type."', ".($parent == 0 ? "NULL" : "'".$parent."'").");";
     global $wpdb;
     $wpdb->hide_errors();
@@ -193,16 +264,46 @@ function lab_admin_group_create($name,$acronym,$chief_id,$parent,$type) {
         $wpdb->prefix.'lab_groups',
         array(
             'acronym' => $acronym,
-            'group_name' => $name,
+            'group_name' => stripslashes($name),
             'chief_id' => $chief_id,
             'group_type' => $type,
-            'parent_group_id' => $parent == 0 ? NULL : $parent
+            'parent_group_id' => $parent == 0 ? NULL : $parent,
+            'url' => $url
         )
     ) ) {
-        return;
+        $groupId = $wpdb->insert_id;
+        // add chief ID to the group
+        lab_admin_users_groups_check_and_add_user($chief_id, $groupId);
+        //return "groupId :".$groupId;
     } else {
         return $wpdb -> last_error;
     }
+}
+
+function lab_admin_users_groups_check_and_add_user($userId, $groupId) {
+    global $wpdb;
+    $results = $wpdb->get_results("SELECT * from ".$wpdb->prefix."lab_users_groups WHERE user_id=".$userId." AND group_id=".$groupId);
+    if (count($results) == 0) {
+        return lab_admin_users_groups_add_user($userId, $groupId);
+    }
+    return false;
+}
+
+function formatGroupsName($userId) {
+    $groupNames = lab_group_get_user_groups($userId);
+    if (count($groupNames) == 0) {
+        return "";
+    }
+    $items = array();
+    foreach($groupNames as $g) {
+        $items[] ="<a href=\"$g->url\">" . esc_html($g->group_name) . "</a>";
+    }
+    return join(", ", $items);
+}
+
+function lab_admin_users_groups_add_user($userId, $groupId) {
+    global $wpdb;
+    return $wpdb->insert($wpdb->prefix.'lab_users_groups', array("user_id"=>$userId, "group_id"=>$groupId));
 }
 
 function lab_admin_group_subs_add($id,$list) {
@@ -217,6 +318,8 @@ function lab_admin_group_subs_add($id,$list) {
                 'substitute_id' => $r)) 
             ) {
             return $wpdb -> last_error;
+        } else {
+            lab_admin_users_groups_check_and_add_user($r, $id);
         }
     }
     return;
@@ -336,8 +439,8 @@ function lab_keyring_delete_key($id) {
 function lab_keyring_search_current_loans($user,$page,$limit) {
     global $wpdb;
     $offset = $page*$limit;
-    $count = $user == 0 ? "SELECT COUNT(*) FROM `".$wpdb->prefix."lab_key_loans` WHERE `ended`=0;" : "SELECT COUNT(*) FROM `wp_lab_key_loans` WHERE `user_id`=".$user." AND `ended`=0;";
-    $sql = $user == 0 ? "SELECT * FROM `".$wpdb->prefix."lab_key_loans` WHERE `ended`=0" : "SELECT * FROM `wp_lab_key_loans` WHERE `user_id`=".$user." AND `ended`=0";
+    $count = $user == 0 ? "SELECT COUNT(*) FROM `".$wpdb->prefix."lab_key_loans` WHERE `ended`=0;" : "SELECT COUNT(*) FROM `".$wpdb->prefix."lab_key_loans` WHERE `user_id`=".$user." AND `ended`=0;";
+    $sql = $user == 0 ? "SELECT * FROM `".$wpdb->prefix."lab_key_loans` WHERE `ended`=0" : "SELECT * FROM `".$wpdb->prefix."lab_key_loans` WHERE `user_id`=".$user." AND `ended`=0";
     $sql .= " ORDER BY `start_date` DESC";
     $sql .= " LIMIT ".$offset.", ".$limit.";";
     $total = $wpdb->get_var($count);
@@ -402,6 +505,7 @@ function lab_keyring_get_loan($id) {
 /**************************************************************************************************
  * SETTINGS
  *************************************************************************************************/
+
 function userMetaData_get_userId_with_no_key($metadataKey) {
     global $wpdb;
     $sql = "SELECT ID FROM `".$wpdb->prefix."users` WHERE NOT EXISTS ( SELECT 1 FROM `".$wpdb->prefix."usermeta` WHERE `".$wpdb->prefix."usermeta`.`meta_key` = '".$metadataKey."' AND `".$wpdb->prefix."usermeta`.`user_id`=`".$wpdb->prefix."users`.`ID`)";
@@ -412,6 +516,16 @@ function userMetaData_get_userId_with_no_key($metadataKey) {
     }
     return $items;
 }
+function lab_admin_usermeta_fill_user_slug()
+{
+    global $wpdb;
+    $sql = "SELECT u.id as user_id, um1.meta_value as first_name, um2.meta_value as last_name, um3.umeta_id as id FROM `".$wpdb->prefix."users` AS u JOIN `".$wpdb->prefix."usermeta` as um1 ON um1.user_id=u.ID JOIN `".$wpdb->prefix."usermeta` AS um2 ON um2.user_id=u.ID JOIN `".$wpdb->prefix."usermeta` AS um3 ON um3.user_id=u.ID WHERE um1.meta_key='first_name' AND um2.meta_key='last_name' AND um3.meta_key='lab_user_slug'";
+    $results = $wpdb->get_results($sql);
+    $retour = array();
+    foreach($results as $r) {
+        $wpdb->update($wpdb->prefix."usermeta", array('meta_value'=>usermeta_format_name_to_slug($r->first_name, $r->last_name)), array('umeta_id'=> $r->id));
+    }
+}
 
 function lab_userMetaData_create_metaKeys($metadataKey, $defaultValue) {
     $userIds = userMetaData_get_userId_with_no_key($metadataKey);
@@ -419,7 +533,7 @@ function lab_userMetaData_create_metaKeys($metadataKey, $defaultValue) {
     $errors = array();
     $ids = array();
     foreach($userIds as $userId) {
-        if (lab_userMetaData_new_key($userId, $metadataKey, $defaultValue) == false) {
+        if (lab_userMetaData_save_key($userId, $metadataKey, $defaultValue) == false) {
             $errors[] = $wpdb->last_error();
         }
     }
@@ -429,12 +543,32 @@ function lab_userMetaData_create_metaKeys($metadataKey, $defaultValue) {
     return true;
 }
 
-function lab_userMetaData_new_key($userId, $metadataKey, $defaultValue) {
+/**
+ * Save meta key, create e new one if metakey doesn't exist, update an existing one
+ *
+ * @param [type] $userId
+ * @param [type] $metadataKey
+ * @param [type] $defaultValue
+ * @return Last insert id or update id, false otherwise
+ */
+function lab_userMetaData_save_key($userId, $metadataKey, $defaultValue) {
     global $wpdb;
     if ($defaultValue == 'null') {
         $defaultValue = null;
     }
-    $r = $wpdb->insert('wp_usermeta', array('umeta_id'=>null, 'user_id'=>$userId, 'meta_key'=>LAB_META_PREFIX.$metadataKey,'meta_value'=>$defaultValue));
+    if (substr($metadataKey, 0, strlen(LAB_META_PREFIX)) !== LAB_META_PREFIX) {
+        $metadataKey = LAB_META_PREFIX.$metadataKey;
+    }
+
+
+    $umId = userMetaData_exist_metakey_for_user($metadataKey, $userId);
+    if (!$umId) {
+        $wpdb->insert($wpdb->prefix."usermeta", array('meta_value'=>$defaultValue, 'umeta_id'=>null, 'user_id'=>$userId, 'meta_key'=>$metadataKey));
+        $r = $wpdb->insert_id;
+    } else {
+        $wpdb->update($wpdb->prefix."usermeta", array('meta_value'=>$defaultValue), array('umeta_id'=>$umId, 'user_id'=>$userId, 'meta_key'=>$metadataKey));
+        $r = $umId;
+    }
     if (!$r) {
         return $wpdb->last_error();
     }
@@ -468,7 +602,19 @@ function userMetaData_delete_metakeys($metadataKey) {
         $metadataKey = LAB_META_PREFIX.$metadataKey;
     }
     global $wpdb;
-    return $wpdb->delete('wp_usermeta', array("meta_key"=>$metadataKey));
+    return $wpdb->delete($wpdb->prefix.'usermeta', array("meta_key"=>$metadataKey));
+}
+
+function userMetaData_exist_metakey_for_user($metadataKey, $userId) {
+    if (substr($metadataKey, 0, strlen(LAB_META_PREFIX)) !== LAB_META_PREFIX) {
+        $metadataKey = LAB_META_PREFIX.$metadataKey;
+    }
+    global $wpdb;
+    $results = $wpdb->get_results("SELECT umeta_id FROM `".$wpdb->prefix."usermeta` WHERE `meta_key` = '".$metadataKey."' AND `user_id`=".$userId);
+    if (count($results) > 0) {
+        return $results[0]->umeta_id;
+    }
+    return false;
 }
 
 function userMetaData_exist_metakey($metadataKey) {
@@ -476,9 +622,11 @@ function userMetaData_exist_metakey($metadataKey) {
         $metadataKey = LAB_META_PREFIX.$metadataKey;
     }
     global $wpdb;
-    //return "SELECT umeta_id FROM `".$wpdb->prefix."usermeta` WHERE `meta_key` = '".$metadataKey."'";
     $results = $wpdb->get_results("SELECT umeta_id FROM `".$wpdb->prefix."usermeta` WHERE `meta_key` = '".$metadataKey."'");
-    return count($results) > 0;
+    if (count($results) > 0) {
+        return $results[0]->umeta_id;
+    }
+    return false;
 }
 /**************************************************************************************************
  * HAL
@@ -489,19 +637,54 @@ function lab_hal_createTable_hal() {
         `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
         `user_id` int NOT NULL,
         `docid` int NOT NULL COMMENT 'docid issus de hal',
-        `citationFull_s` varchar(1000) NOT NULL,
-        `title` varchar(200) DEFAULT NULL,
-        `url` varchar(200) DEFAULT NULL,
+        `citationFull_s` varchar(1000) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+        `title` varchar(200) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+        `url` varchar(200) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
         `producedDate_tdate` date,
+        `journalTitle_s` varchar(100) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
         PRIMARY KEY(`id`)
+      ) ENGINE=InnoDB";
+    $wpdb->get_results($sql);
+    $sql = "CREATE TABLE `".$wpdb->prefix."lab_hal_users` (
+        `id` bigint UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
+        `hal_id` bigint UNSIGNED NOT NULL,
+        `user_id` bigint UNSIGNED NOT NULL
       ) ENGINE=InnoDB";
     return $wpdb->get_results($sql);
 }
 
 function lab_hal_get_publication($userId) {
     global $wpdb;
-    $sql = "SELECT * FROM `wp_lab_hal` WHERE `user_id` = ".$userId." ORDER BY `producedDate_tdate` DESC ";
+    $sql = "SELECT lh.* FROM `".$wpdb->prefix."lab_hal` as lh JOIN `".$wpdb->prefix."lab_hal_users` AS lhu ON lhu.hal_id=lh.id WHERE lhu.user_id=".$userId;
     return $wpdb->get_results($sql);
+}
+
+function format_spaced_string($s) {
+    if (strpos($s, " ") > 0) {
+        $ef = explode(" ", $s);
+        for ($i = 0 ; $i < count($ef); $i++) {
+            if ($i > 0) {
+                $ef[$i] = ucfirst($ef[$i]);
+            }
+        }
+        $s = join("", $ef);
+    }
+    return $s;
+}
+
+/**
+ * Format user firstname and lastname to slug format (noSpace,fistname.lastName)
+ *
+ * @param [type] $f firstname
+ * @param [type] $l lastname
+ * @return slug
+ */
+function usermeta_format_name_to_slug($f, $l) {
+    $f = strtolower($f);
+    $l = strtolower($l);
+    $f = format_spaced_string($f);
+    $l = format_spaced_string($l);
+    return $f.".".$l;
 }
 
 /**
@@ -531,7 +714,7 @@ function hal_format_name($name) {
     }
 }
 
-function usermeta_fill_hal_field() {
+function lab_admin_usermeta_fill_hal_name() {
     global $wpdb;
     $sql = "SELECT u.id as user_id, um1.meta_value as first_name, um2.meta_value as last_name, um3.umeta_id as id FROM `".$wpdb->prefix."users` AS u JOIN `".$wpdb->prefix."usermeta` as um1 ON um1.user_id=u.ID JOIN `".$wpdb->prefix."usermeta` AS um2 ON um2.user_id=u.ID JOIN `".$wpdb->prefix."usermeta` AS um3 ON um3.user_id=u.ID WHERE um1.meta_key='first_name' AND um2.meta_key='last_name' AND um3.meta_key='lab_hal_name'";
     $results = $wpdb->get_results($sql);
@@ -553,17 +736,30 @@ function get_hal_url($userId) {
         $hal_id   = $results[0]->lab_hal_id;
         $hal_name = $results[0]->lab_hal_name;
         if ($hal_id != null) {
-            return "https://api.archives-ouvertes.fr/search/?authIdHal_s:(".$hal_id.")&fl=docid,citationFull_s,producedDate_tdate,uri_s,title_s&sort=producedDate_tdate+desc&wt=json&json.nl=arrarr";
+            return "https://api.archives-ouvertes.fr/search/?authIdHal_s:(".$hal_id.")&fl=docid,citationFull_s,producedDate_tdate,uri_s,title_s,journalTitle_s&sort=producedDate_tdate+desc&wt=json&json.nl=arrarr";
         }
         else {
-            return "https://api.archives-ouvertes.fr/search/?q=authLastNameFirstName_s:%22".$hal_name."%22&fl=docid,citationFull_s,producedDate_tdate,uri_s,title_s&sort=producedDate_tdate+desc&wt=json&json.nl=arrarr";
+            return "https://api.archives-ouvertes.fr/search/?q=authLastNameFirstName_s:%22".$hal_name."%22&fl=docid,citationFull_s,producedDate_tdate,uri_s,title_s,journalTitle_s&sort=producedDate_tdate+desc&wt=json&json.nl=arrarr";
         }
     }
 }
 
-function saveHalProduction($userId, $docId, $citation, $productionDate, $title, $url) {
+function saveHalProduction($docId, $citation, $productionDate, $title, $url, $journal) {
     global $wpdb;
-    return $wpdb->insert($wpdb->prefix."lab_hal", array('user_id'=>$userId, 'docid'=>$docId, 'citationFull_s'=>$citation, 'producedDate_tdate'=>$productionDate, 'title'=>$title, 'url'=>$url));
+    //$wpdb->show_errors(true);
+    if ($wpdb->insert($wpdb->prefix."lab_hal", array('journalTitle_s'=>$journal, 'docid'=>$docId, 'citationFull_s'=>$citation, 'producedDate_tdate'=>$productionDate, 'title'=>$title, 'url'=>$url))) {
+        //$results = $wpdb->get_results("SELECT id from `".$wpdb->prefix."lab_hal` WHERE docid='".$docId."'");
+    }
+    else{
+        //echo "[".$docid."] : ".$wpdb->last_error."\n";
+    }
+    return $wpdb->insert_id;
+}
+
+function saveHalUsers($userId, $halId) {
+    global $wpdb;
+    $wpdb->insert($wpdb->prefix."lab_hal_users", array('user_id'=>$userId, 'hal_id'=>$halId));
+    return $wpdb->insert_id;
 }
 
 /**
@@ -572,27 +768,64 @@ function saveHalProduction($userId, $docId, $citation, $productionDate, $title, 
 function hal_download_all()
 {
     global $wpdb;
-    $sql = "SELECT id FROM `".$wpdb->prefix."users`";
+    $sql = "SELECT u.id FROM `".$wpdb->prefix."users` AS u JOIN `".$wpdb->prefix."usermeta` AS um ON um.user_id=u.ID WHERE um.meta_key='lab_user_left' AND um.meta_value IS NULL";
     $results = $wpdb->get_results($sql);
+
+    $docIds = array();
     foreach($results as $r) 
     {
-        hal_download($r->id);
+        hal_download($r->id, $docIds);
     }
 }
 
-function hal_download($userId) {
+
+function hal_download($userId, &$docIds) {
     $url = get_hal_url($userId);
     
+    if ($docIds == null) {
+        $docId = array();
+    }
+
+
     $json = lab_do_common_curl_call($url);
     $c =count($json->response->docs);
+    $display = false;
     for ($i = 0; $i < $c; $i++) {
+        $keep = false;
         $docId = $json->response->docs[$i]->docid;
         $citation = $json->response->docs[$i]->citationFull_s;
         $producedDate = strtotime($json->response->docs[$i]->producedDate_tdate);
         $title = $json->response->docs[$i]->title_s[0];
         $url = $json->response->docs[$i]->uri_s;
+        if (isset($json->response->docs[$i]->journalTitle_s))
+        {
+            $journal = $json->response->docs[$i]->journalTitle_s;
+        }
+        else {
+            $journal = null;
+        }
+
+        $display = $docId == "2508732";
         
-        saveHalProduction($userId, $docId, $citation, date('Y-m-d', $producedDate), $title, $url);
+
+        if (!array_key_exists ($docId, $docIds)) {
+            $id = saveHalProduction($docId, $citation, date('Y-m-d', $producedDate), $title, $url, $journal);
+            //echo "id=".$id."\n";
+            $docIds[$docId] = $id;
+            $halId = $id;
+            if ($display) {
+                echo "[$userId] La clef n'existe pas on la crée docIds[".$docId."]=".$id."\n";
+            }
+            //echo "La clef n'existe pas on la crée docIds[".$docId."]=".$id."\n";
+        }
+        else {
+            if ($display) {
+                echo "[".$userId."] La clef existe deja\n";
+            }
+        }
+        saveHalUsers($userId, $docIds[$docId]);
+        
+
         //$content .= '<li>' . $json->response->docs[$i]->citationFull_s . '</li>';
     }
     return $url;
@@ -600,8 +833,10 @@ function hal_download($userId) {
 
 function delete_hal_table() {
     global $wpdb;
-    $wpdb->query("TRUNCATE TABLE ".$wpdb->prefix."lab_hal");//delete( $wpdb->prefix."lab_hal", array());
-    $wpdb->get_results("ALTER TABLE ".$wpdb->prefix."lab_hal AUTO_INCREMENT = 1");
+    $wpdb->query("TRUNCATE TABLE `".$wpdb->prefix."lab_hal_users`");
+    $wpdb->query("TRUNCATE TABLE `".$wpdb->prefix."lab_hal`");//delete( $wpdb->prefix."lab_hal", array());
+    $wpdb->get_results("ALTER TABLE `".$wpdb->prefix."lab_hal` AUTO_INCREMENT = 1");
+    $wpdb->get_results("ALTER TABLE `".$wpdb->prefix."lab_hal_users` AUTO_INCREMENT = 1");
     return true;
 }
 
@@ -658,25 +893,35 @@ function lab_uninstall_hook() {
     delete_all_tables();
 }
 
+function lab_admin_setting_reset_tables()
+{
+    delete_all_tables();
+    create_all_tables();
+}
+
+
 function create_all_tables() {
     lab_admin_createTable_param();
     lab_admin_initTable_param();
     lab_hal_createTable_hal();
     lab_admin_createGroupTable();
     lab_admin_createUserGroupTable();
+    lab_admin_createSubTable();
     lab_keyring_createTable_keys();
     lab_keyring_createTable_loans();
     lab_admin_initTable_usermeta();
 }
 
 function delete_all_tables() {
-    lab_admin_delete_group(0);
+    //lab_admin_delete_group(0);
+    lab_admin_delete_all_group();
     drop_table("lab_group_substitutes");
     drop_table("lab_group_users_groups");
     drop_table("lab_params");
     drop_table("lab_key_loans");
     drop_table("lab_keys");
     drop_table("lab_hal");
+    drop_table("lab_hal_users");
     drop_table("lab_groups");
 }
 
@@ -734,4 +979,21 @@ function lab_usermeta_copy_existing_phone() {
  */
 function beginWith($string, $pattern) {
     return substr($string, 0, strlen($pattern)) === $pattern;
+}
+
+/**************************************************************************************************************************************
+ * UTILS
+ *************************************************************************************************************************************/
+
+/**
+ * Display numbers correctly
+ *
+ * @param [type] $currentNumber
+ * @return void
+ */
+function correctNumber($currentNumber) { // currentNumber = esc_html($r->phone)
+    $currentNumber = str_replace(" ", "", $currentNumber);
+    $currentNumber = str_replace(".", "", $currentNumber);
+    $currentNumber = chunk_split($currentNumber, 2, ' ');
+    return $currentNumber;
 }
