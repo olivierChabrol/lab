@@ -4,6 +4,17 @@ const { __, _x, _n, sprintf } = wp.i18n;
 /*** DIRECTORY ***/
 
 jQuery(function($){
+
+
+  $("#lab-table-directory tr").click(function() {
+    window.location.href = "/user/" + $(this).attr('userId');
+  });
+
+  $(".email").each(function() {
+    var replaced = $(this).text().replace(/@/g, '[TA]');
+    $(this).text(replaced);
+  });
+
   $('#lab_directory_user_name').autocomplete({
     minChars: 1,
     source: function(term, suggest){
@@ -23,16 +34,6 @@ jQuery(function($){
       $("#lab_directory_user_name").val(firstname + " " + lastname);
     }
   });
-  
-  $(".email").each(function() {
-    var replaced = $(this).text().replace(/@/g, '[TA]');
-    $(this).text(replaced);
-  });
-
-  $(".directory_row").click(function() {
-    window.location.href = "/user/" + $(this).attr('userId');
-  });
-
 });
 
 /******************************* ShortCode Profile *******************************/

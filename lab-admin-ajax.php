@@ -10,7 +10,7 @@ function lab_admin_search_event() {
     $search = $_POST['search'];
     $title  = $search["term"];
 
-    $sql = 'SELECT post_id, `event_name`,`event_start_date` FROM `wp_em_events` AS ee LEFT JOIN `wp_term_relationships` AS tr ON tr.`object_id`=ee.post_id WHERE tr.`object_id` IS NULL AND `event_name` LIKE \'%'.$title.'%\' LIMIT 30';
+    $sql = "SELECT post_id, `event_name`,`event_start_date` FROM `".$wpdb->prefix."em_events` AS ee LEFT JOIN `".$wpdb->prefix."term_relationships` AS tr ON tr.`object_id`=ee.post_id WHERE tr.`object_id` IS NULL AND `event_name` LIKE \'%'.$title.'%\' LIMIT 30";
     global $wpdb;
     $results = $wpdb->get_results($sql);
     $nbResult = $wpdb->num_rows;
@@ -49,7 +49,7 @@ function lab_admin_ajax_param_save() {
 
 function lab_admin_param_load_param_type() {
   global $wpdb;
-  $sql = "SELECT id, value FROM `wp_lab_params` WHERE type_param = 1";
+  $sql = "SELECT id, value FROM `".$wpdb->prefix."lab_params` WHERE type_param = 1";
   $results = $wpdb->get_results($sql);
   return $results;
 }
@@ -141,7 +141,7 @@ function lab_admin_save_event_actegory()
 function lab_admin_get_event_category()
 {
   $postId  = $_POST["postId"];
-  $sql = 'SELECT p.ID, p.`post_title`, p.`post_date`, t.term_id, t.name, t.slug FROM `wp_posts` AS p JOIN `wp_term_relationships` AS tr ON tr.`object_id`=p.ID JOIN `wp_term_taxonomy` AS tt ON tt.`term_taxonomy_id`=tr.`term_taxonomy_id` JOIN `wp_terms` AS t ON t.term_id=tt.term_id WHERE p.ID=' . $postId;
+  $sql = "SELECT p.ID, p.`post_title`, p.`post_date`, t.term_id, t.name, t.slug FROM `".$wpdb->prefix."posts` AS p JOIN `".$wpdb->prefix."term_relationships` AS tr ON tr.`object_id`=p.ID JOIN `".$wpdb->prefix."term_taxonomy` AS tt ON tt.`term_taxonomy_id`=tr.`term_taxonomy_id` JOIN `".$wpdb->prefix."terms` AS t ON t.term_id=tt.term_id WHERE p.ID=" . $postId;
   global $wpdb;
 
   $results = $wpdb->get_row($wpdb->prepare($sql));
@@ -174,7 +174,7 @@ function lab_admin_search_user_email()
 {
   $search = $_POST['search'];
   $email  = $search["term"];
-  $sql = "SELECT ID, user_email FROM `wp_users`  WHERE user_email LIKE '%" . $email . "%'";
+  $sql = "SELECT ID, user_email FROM `".$wpdb->prefix."users`  WHERE user_email LIKE '%" . $email . "%'";
   global $wpdb;
   $results = $wpdb->get_results($sql);
   $nbResult = $wpdb->num_rows;
@@ -193,7 +193,7 @@ function lab_admin_search_user()
   $email  = $search["term"];
 
 
-  $sql = "SELECT um.* FROM `wp_users` AS u JOIN `wp_usermeta` AS um ON u.`ID`=um.user_id WHERE u.user_email='" . $email . "'";
+  $sql = "SELECT um.* FROM `".$wpdb->prefix."users` AS u JOIN `".$wpdb->prefix."usermeta` AS um ON u.`ID`=um.user_id WHERE u.user_email='" . $email . "'";
   global $wpdb;
   $results = $wpdb->get_results($sql);
   $nbResult = $wpdb->num_rows;
@@ -208,7 +208,7 @@ function lab_admin_search_user()
 
 function lab_admin_update_user_metadata_db()
 {
-  $sql = "SELECT DISTINCT user_id FROM `wp_usermeta` AS m WHERE user_id NOT IN ( SELECT 1 FROM wp_usermeta AS e WHERE e.user_id = m.user_id AND meta_key = 'lab_user_left' )";
+  $sql = "SELECT DISTINCT user_id FROM `".$wpdb->prefix."usermeta` AS m WHERE user_id NOT IN ( SELECT 1 FROM `".$wpdb->prefix."usermeta` AS e WHERE e.user_id = m.user_id AND meta_key = 'lab_user_left' )";
   global $wpdb;
   $results = $wpdb->get_results($sql);
   $nbResult = $wpdb->num_rows;
@@ -216,7 +216,7 @@ function lab_admin_update_user_metadata_db()
   foreach ($results as $r) {
     $user_id = $r->user_id;
     $items[] =  $user_id;
-    $wpdb->insert('wp_usermeta', array(
+    $wpdb->insert($wpdb->prefix.'usermeta', array(
       'umeta_id' => NULL,
       'user_id' => $user_id,
       'meta_key' => 'lab_user_left',
@@ -239,9 +239,9 @@ function lab_usermeta_update_lab_left_key($usermetaId, $left)
   global $wpdb;
   $sql = "";
   if ($left != null || !empty($left)) {
-    $sql = "UPDATE `wp_usermeta` SET `meta_value` = '" . $left . "' WHERE `wp_usermeta`.`umeta_id` = " . $usermetaId;
+    $sql = "UPDATE `".$wpdb->prefix."usermeta` SET `meta_value` = '" . $left . "' WHERE `".$wpdb->prefix."usermeta`.`umeta_id` = " . $usermetaId;
   } else {
-    $sql = "UPDATE `wp_usermeta` SET `meta_value` = NULL WHERE `wp_usermeta`.`umeta_id` = " . $usermetaId;
+    $sql = "UPDATE `".$wpdb->prefix."usermeta` SET `meta_value` = NULL WHERE `".$wpdb->prefix."usermeta`.`umeta_id` = " . $usermetaId;
   }
   $sql = $wpdb->prepare($sql);
   $wpdb->query($sql);
@@ -259,8 +259,8 @@ function lab_usermeta_lab_check_and_create($userId)
 function lab_usermeta_create_left_key($userId)
 {
   global $wpdb;
-  $sql = "INSERT INTO `wp_usermeta` (`umeta_id`, `user_id`, `meta_key`, `meta_value`) VALUES (NULL, '" . $userId . "', 'lab_user_left', NULL)";
-  $wpdb->insert('wp_usermeta', array(
+  $sql = "INSERT INTO `".$wpdb->prefix."usermeta` (`umeta_id`, `user_id`, `meta_key`, `meta_value`) VALUES (NULL, '" . $userId . "', 'lab_user_left', NULL)";
+  $wpdb->insert($wpdb->prefix.'usermeta', array(
     'umeta_id' => NULL,
     'user_id' => $userId,
     'meta_key' => 'lab_user_left',
@@ -274,7 +274,7 @@ function lab_usermeta_lab_left_key_exist($userId)
   if (!isset($userId) || $userId == NULL) {
     return false;
   }
-  $sql = "SELECT * FROM `wp_usermeta` WHERE `user_id` = " . $userId . " AND `meta_key` = 'lab_user_left'";
+  $sql = "SELECT * FROM `".$wpdb->prefix."usermeta` WHERE `user_id` = " . $userId . " AND `meta_key` = 'lab_user_left'";
   global $wpdb;
   $results = $wpdb->get_results($sql);
   $nbResult = $wpdb->num_rows;
@@ -304,14 +304,14 @@ function lab_admin_group_search() {
   $search = $_POST['search'];
   $groupName  = $search["term"];
 
-  $sql = "SELECT * FROM `wp_lab_groups` WHERE `group_name` LIKE '%".$groupName."%' ";
   global $wpdb;
+  $sql = "SELECT * FROM `".$wpdb->prefix."lab_groups` WHERE `group_name` LIKE '%".$groupName."%' ";
   $results = $wpdb->get_results($sql);
   $items = array();
   $url = esc_url(home_url('/'));
   foreach ( $results as $r )
   {
-    $items[] = array(label=>$r->group_name, value=>$r->id, id=>$r->id, group_name=>$r->group_name, group_type=>$r->group_type, acronym=>$r->acronym, chief_id=>$r->chief_id, parent_group_id=>$r->parent_group_id);
+    $items[] = array(label=>$r->group_name, value=>$r->id, id=>$r->id, group_name=>$r->group_name, group_type=>$r->group_type, acronym=>$r->acronym, chief_id=>$r->chief_id, parent_group_id=>$r->parent_group_id, url=>$r->url);
   }
   wp_send_json_success( $items ); 
 }
@@ -329,11 +329,12 @@ function lab_group_editGroup() {
   $chiefId = $_POST['chiefId'];
   $parent = $_POST['parent'];
   $type = $_POST['group_type'];
-
-  $sql = "UPDATE `wp_lab_groups` SET `group_name` = '$groupName', `acronym` = '$acronym',
-  `chief_id` = '$chiefId', `group_type` = '$type', `parent_group_id` = '$parent'
-    WHERE id= '$id';";
+  $url = delete_http_and_domain($_POST['url']);
+  
   global $wpdb;
+  $sql = "UPDATE `".$wpdb->prefix."lab_groups` SET `group_name` = '$groupName', `acronym` = '$acronym',
+  `chief_id` = '$chiefId', `group_type` = '$type', `parent_group_id` = '$parent', `url`='$url'
+    WHERE id= '$id';";
 
   wp_send_json_success($wpdb->get_results($sql));
 }
@@ -356,7 +357,8 @@ function group_add_substitutes()
 function group_load_substitutes()
 {
   $id = $_POST['id'];
-  $sql = "SELECT lgs.id AS id, um1.meta_value AS last_name, um2.meta_value AS first_name FROM `wp_lab_group_substitutes` AS lgs JOIN wp_usermeta AS um1 ON um1.user_id=lgs.substitute_id JOIN wp_usermeta AS um2 ON um2.user_id=lgs.substitute_id WHERE lgs.`group_id`=33 AND um1.meta_key='last_name' AND um2.meta_key='first_name'";
+  $sql = "SELECT lgs.id AS id, um1.meta_value AS last_name, um2.meta_value AS first_name FROM `".$wpdb->prefix."lab_group_substitutes`  AS lgs JOIN `".$wpdb->prefix."usermeta` AS um1 ON um1.user_id=lgs.substitute_id JOIN `".$wpdb->prefix."usermeta` AS um2 ON um2.user_id=lgs.substitute_id WHERE lgs.`group_id`=33 AND um1.meta_key='last_name' AND um2.meta_key='first_name'";
+  //$sql = "SELECT lgs.id AS id, um1.meta_value AS last_name, um2.meta_value AS first_name FROM `".$wpdb->prefix."lab_group_substitutes` AS lgs JOIN `".$wpdb->prefix."usermeta` AS um1 ON um1.user_id=lgs.substitute_id JOIN `".$wpdb->prefix."usermeta AS um2 ON um2.user_id=lgs.substitute_id WHERE lgs.`group_id`=33 AND um1.meta_key='last_name' AND um2.meta_key='first_name'";
   global $wpdb;
   $results = $wpdb->get_results($sql);
   $items = array();
@@ -376,8 +378,20 @@ function lab_admin_group_availableAc() {
   }
   wp_send_json_success();
 }
+
+function delete_http_and_domain($url) {
+  $pos = strpos($url, '//');
+  if ($pos > 0) {
+    $url2 = substr($url, $pos + 2); // on efface http://
+    $pos2 = strpos($url2, '/');
+    return substr($url2, $pos2); // on efface le nom de domaine
+  }
+  return $url;
+}
+
 function lab_admin_group_createReq() {
-  $res = lab_admin_group_create($_POST['name'],$_POST['acronym'],$_POST['chiefID'],$_POST['parent'],$_POST['type']);
+  $url = $_POST['url'];
+  $res = lab_admin_group_create($_POST['name'],$_POST['acronym'],$_POST['chiefID'],$_POST['parent'],$_POST['type'],delete_http_and_domain($url));
   if (strlen($res)==0) {
     wp_send_json_success(lab_admin_search_group_by_acronym($_POST['acronym']));
     return;
@@ -416,22 +430,23 @@ function lab_admin_list_users_groups() {
   $joinIsLeft  = "";
   $whereIsLeft = "";
 
+  global $wpdb;
   /*** FILTER FOR SELECT FIELDS ***/
   if($condNotInGroup == 'true')
   {
-    $notInGroup = "AND um1.`user_id` NOT IN (SELECT `user_id` FROM `wp_lab_users_groups`)";
+    $notInGroup = "AND um1.`user_id` NOT IN (SELECT `user_id` FROM `".$wpdb->prefix."lab_users_groups`)";
   }
 
   if($condIsLeft == 'true')
   {
-    $joinIsLeft  = "JOIN `wp_usermeta` AS um6 ON um1.`user_id` = um6.`user_id`";
+    $joinIsLeft  = "JOIN `".$wpdb->prefix."usermeta` AS um6 ON um1.`user_id` = um6.`user_id`";
     $whereIsLeft = "AND um6.`meta_key`='lab_user_left' "."AND um6.`meta_value` IS NULL ";
   }
 
   $sqlUser = "SELECT um1.`user_id`, um3.`meta_value` AS first_name, um2.`meta_value` AS last_name
-              FROM `wp_usermeta` AS um1
-              JOIN `wp_usermeta` AS um2 ON um1.`user_id` = um2.`user_id` 
-              JOIN `wp_usermeta` AS um3 ON um1.`user_id` = um3.`user_id`"
+              FROM `".$wpdb->prefix."usermeta` AS um1
+              JOIN `".$wpdb->prefix."usermeta` AS um2 ON um1.`user_id` = um2.`user_id` 
+              JOIN `".$wpdb->prefix."usermeta` AS um3 ON um1.`user_id` = um3.`user_id`"
               . $joinIsLeft . 
               "WHERE um1.`meta_key`='last_name' 
                 AND um2.`meta_key`='last_name' 
@@ -440,8 +455,7 @@ function lab_admin_list_users_groups() {
               "ORDER BY last_name";
 
   $sqlGroup = "SELECT `id` AS group_id, `group_name` 
-               FROM wp_lab_groups";
-    global $wpdb;
+               FROM ".$wpdb->prefix."lab_groups";
     $resultsUsers = $wpdb->get_results($sqlUser);
     $resultsGroups = $wpdb->get_results($sqlGroup);
     wp_send_json_success(array($resultsUsers, $resultsGroups));
@@ -525,7 +539,7 @@ function lab_keyring_deleteKey_Req() {
  * Settings
  ********************************************************************************************/
 function lab_ajax_userMetaData_new_key() {
-  wp_send_json_success(lab_userMetaData_new_key($_POST['userId'],$_POST['key'],$_POST['value']));
+  wp_send_json_success(lab_userMetaData_save_key($_POST['userId'],$_POST['key'],$_POST['value']));
 }
 function lab_ajax_userMetaData_create_keys() {
   wp_send_json_success(lab_userMetaData_create_metaKeys($_POST['key'],$_POST['value']));
@@ -575,7 +589,7 @@ function lab_ajax_hal_create_table() {
   wp_send_json_success(lab_hal_createTable_hal());
 }
 function lab_ajax_hal_fill_fields() {
-  wp_send_json_success(usermeta_fill_hal_field());
+  wp_send_json_success(lab_admin_usermeta_fill_hal_name());
 }
 function lab_ajax_hal_download(){
   if (isset($_POST['userId']) && !empty($_POST['userId'])) 
