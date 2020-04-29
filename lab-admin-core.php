@@ -239,6 +239,7 @@ function lab_admin_createGroupTable() {
         `chief_id` BIGINT UNSIGNED NOT NULL,
         `group_type` TINYINT NOT NULL,
         `parent_group_id` BIGINT UNSIGNED,
+        `url` VARCHAR(255) NULL,
         PRIMARY KEY(`id`),
         FOREIGN KEY(`chief_id`) REFERENCES `".$wpdb->prefix."users`(`ID`),
         FOREIGN KEY(`parent_group_id`) REFERENCES `".$wpdb->prefix."lab_groups`(`id`)) ENGINE = INNODB;";

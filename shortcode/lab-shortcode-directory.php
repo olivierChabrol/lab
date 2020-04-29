@@ -77,9 +77,9 @@ function lab_directory($param) {
     //$directoryStr .= $sql;
     $alphachar = array_merge(range('A', 'Z'));
     $url = explode('?', $_SERVER['REQUEST_URI']); // current url (without parameters)
-    $directoryStr .= "<div class=\"alpha-links\" style=\"font-size:15px;\">";
+    $directoryStr .= "<div class=\"alpha-links break-text\"  style=\"font-size:15px;\">";
     foreach ($alphachar as $element) {
-        $directoryStr .= '<a href="' . $url[0] . '?letter=' . $element . '"><b>' . $element . '</b></a>'; 
+        $directoryStr .= '<a href="' . $url[0] . '?letter=' . $element . '"><b>' . $element . '&nbsp&nbsp</b></a>'; 
     } // letter's url
     $directoryStr .= "</div>"; // letters
     $directoryStr .= 
@@ -95,15 +95,24 @@ function lab_directory($param) {
                 unicode-bidi: bidi-override;
                 direction: rtl;
             }
-        </style>"; // style for table (stripped colors)
+            .break-text {
+                word-wrap: break-word;
+            }
+        </style>";
 
     /* Table directory */
-    $directoryStr .= "<div class=\"table-responsive\"><table  id=\"lab-table-directory\" class=\"table table-striped\"><thead class=\"thead-dark\"><tr><th>".esc_html__("Name", "lab")."</th><th>".esc_html__("Name", "lab")."</th><th>".esc_html__("Name", "lab")."</td></th></thead><tbody>";
+    $directoryStr .= "<div class=\"table-responsive-sm\">
+                        <table  id=\"lab-table-directory\" class=\"table table-striped\">
+                            <thead class=\"thead-dark\"><tr>
+                                <th scope=\"col\">".esc_html__("Personne",    "lab")."</th>
+                                <th scope=\"col\">".esc_html__("Coordonnées", "lab")."</th>
+                                <th scope=\"col\">".esc_html__("Groupe(s)",   "lab")."</th>
+                            </tr></thead>
+                            <tbody>";
     foreach ($results as $r) {
         $directoryStr .= "<tr  userId='".esc_html($r->slug)."'>";
         $directoryStr .= "<td id='name_col'>".esc_html($r->last_name . " " . $r->first_name)."</td>";
         $directoryStr .= "<td><span class=\"email\">" . esc_html(strrev($r->mail))."</span><br>".correctNumber(esc_html($r->phone))."</td>";
-        //$directoryStr .= "<td>" . correctNumber(esc_html($r->phone)) . "</td>";
         $directoryStr .= "<td>" . formatGroupsName($r->id) . "</td>";
         $directoryStr .= "</tr>";
     }
