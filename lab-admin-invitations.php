@@ -79,6 +79,22 @@ function lab_invitations_createInvite($params) {
       return $wpdb -> last_error;
   }
 }
+function lab_invitations_editGuest($id, $params) {
+  global $wpdb;
+  return $wpdb->update(
+    $wpdb->prefix.'lab_guests',
+    $params,
+    array('id' => $id)
+  );
+}
+function lab_invitations_editInvitation($token, $params) {
+  global $wpdb;
+  return $wpdb->update(
+    $wpdb->prefix.'lab_invitations',
+    $params,
+    array('token' => $token)
+  );
+}
 function lab_invitations_getByToken($token) {
   global $wpdb;
   $sql = "SELECT * FROM `".$wpdb->prefix."lab_invitations` WHERE token='".$token."';";
@@ -90,5 +106,10 @@ function lab_invitations_getGuest($id) {
   $sql = "SELECT * FROM `".$wpdb->prefix."lab_guests` WHERE id='".$id."';";
   $res = $wpdb->get_results($sql);
   return $res[0];
+}
+function lab_invitations_getByGroup($group_id,$params=array()) {
+  global $wpdb;
+  $sql = "SELECT * FROM `".$wpdb->prefix."lab_invitations` WHERE `host_group_id`=".$group_id.";";
+  $res = $wpdb->get_results($sql);
 }
 ?>
