@@ -3,7 +3,7 @@
  * File Name: lab-shortcode-directory.php
  * Description: shortcode pour générer un annuaire
  * Authors: Ivan Ivanov, Lucas Urgenti
- * Version: 0.4
+ * Version: 0.5
 */
 
 function lab_invitation($args) { 
@@ -32,7 +32,7 @@ function lab_invitation($args) {
     }
     $newForm = (!$param['hostpage'] || $token=='0') ? 1 : 0 ;
     $invitationStr = '
-    <div id="invitationForm" hostForm='.$param['hostpage'].' token="'.(($param['hostpage'] && strlen($token)>1) ? $token : 'non').'" newForm='.$newForm.'>
+    <div id="invitationForm" hostForm='.$param['hostpage'].' token="'.(($param['hostpage'] && strlen($token)>1) ? $token : '').'" newForm='.$newForm.'>
         <h3>'.esc_html__("Informations personnelles","lab").'</h3>
         <form action="javascript:invitation_submit()">
         <div class="lab_invite_row" id="lab_fullname">
@@ -52,7 +52,7 @@ function lab_invitation($args) {
         <div id="lab_phone_country">
             <div class="lab_invite_field">
                 <label for="lab_phone">'.esc_html__("Numéro de téléphone","lab").'</label>
-                <input type="tel" required id="lab_phone" value="'.(!$newForm ? $guest->phone : '').'">
+                <input type="tel" required id="lab_phone" phoneval="'.(!$newForm ? $guest->phone : '').'">
             </div>
             <div class="lab_invite_field">
                 <label for="lab_country">'.esc_html__("Pays","lab").'</label>
@@ -135,17 +135,23 @@ function lab_invitation($args) {
         <hr>';
         if ( $param["hostpage"] ) {
             $invitationStr .=
-            '<div id="lab_inviting_fields" class="lab_invite_row">
-                <div required class="lab_invite_field">
-                    <label for="lab_group_name">'.esc_html__("Nom du groupe","lab").'</label>
-                    <select id="lab_group_name" name="lab_group_name">';
+
+            '<h3>'.esc_html__("Champs pour l'invitant : ","lab").'</h3>
+            <div required class="lab_invite_field">
+                <label for="lab_group_name">'.esc_html__("Nom du groupe","lab").'</label>
+                <select id="lab_group_name" name="lab_group_name">';
             foreach ($host->groups as $g)
             {
                 $invitationStr .= '<option value="'.$g->id.'">'.$g->group_name.'</option>';
             }
 
             $invitationStr .=
-                    '</select>
+                '</select>
+            </div>
+            <div id="lab_inviting_fields" class="lab_invite_row">
+                <div class="lab_invite_field">
+                    <label for="lab_estimated_cost">'.esc_html__("Coût estimé (en €)","lab").'</label>
+                    <input type="text" id="lab_estimated_cost" value="'.(!$newForm ? $invitation->estimated_cost : '').'">
                 </div>
                 <div class="lab_invite_field">
                     <label for="lab_credit">'.esc_html__("Origine des crédits","lab").'</label>
@@ -155,7 +161,7 @@ function lab_invitation($args) {
                         <option value="amu">'.esc_html__("AMU","lab").'</option>
                         <option value="other">'.esc_html__("Autre","lab").'</option>
                     </select>
-                    <input hidden type="text" id="lab_credit_other">
+                    <input hidden type="text" id="lab_credit_other" value="'.(!$newForm ? $invitation->funding_source : '').'">
                     <p style="display:none" id="lab_credit_other_desc">'.esc_html__("Précisez l'origine de crédit ici.","lab").'</p>
                 </div>
             </div>';
@@ -167,6 +173,23 @@ function lab_invitation($args) {
     </div>';
     return $invitationStr;
 }
+
+function lab_invitations_interface($args) {
+    $listInvitationStr = '<table>
+                            <thead>
+                                <tr id="lab_list_header">
+                                    <th>'.esc_html__("Nom de l'invité","lab").'</th>
+                                    <th>'.esc_html__("Date de l'invitation","lab").'</th>
+                                    <th>'.esc_html__("Mission").'</th>
+                                </tr>';
+
+    $listInvitationStr .=   '</thead>
+                          </table>';
+    
+    return $listInvitationStr;
+}
+
+
 
 ?>
 

@@ -107,4 +107,9 @@ function lab_invitations_getGuest($id) {
   $res = $wpdb->get_results($sql);
   return $res[0];
 }
+function lab_invitations_getByGroup($group_id,$params=array()) {
+  global $wpdb;
+  $sql = "SELECT * FROM `".$wpdb->prefix."lab_invitations` WHERE `host_group_id`=".$group_id.";";
+  $res = $wpdb->get_results($sql);
+}
 ?>

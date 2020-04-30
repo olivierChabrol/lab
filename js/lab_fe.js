@@ -174,14 +174,15 @@ function LABLoadInvitation() {
       $("#lab_country").countrySelect("selectCountry",$("#lab_country").attr('countryCode'));
     }
     $("#lab_phone").keyup(function() {
-      if ( !iti.isValidNumber() ) {
-        $(this).css("border-color","#FF0000");   
+      if ( !iti.isValidNumber() && iti.getValidationError()!=0) {
+        $(this).css("border-color","#FF0000");
       } else {
         $(this).css("border-color","");   
       }
     });
     $("#lab_phone").blur(function() {
-      iti.setNumber(iti.getNumber())
+      $("#lab_phone").keyup();
+      iti.setNumber(iti.getNumber());
       $("#lab_phone").attr('phoneVal',iti.getNumber());
     });
     $("#lab_mission").change(function(){
@@ -248,6 +249,7 @@ function LABLoadInvitation() {
       else
       {
         $('#lab_mission option[value="other"]').prop('selected', true);
+        $("$lab_mission_other").show();
       }
 
       if($('#lab_credit option[value="' + $("#lab_credit_other").val() + '"]').length > 0)
@@ -257,6 +259,7 @@ function LABLoadInvitation() {
       else
       {
         $('#lab_credit option[value="other"]').prop('selected', true);
+        $("#lab_credit_other").show();
       }
       
       if($('#lab_transport_to option[value="' + $("#lab_transport_to_other").val() + '"]').length > 0)
@@ -266,6 +269,7 @@ function LABLoadInvitation() {
       else
       {
         $('#lab_transport_to option[value="other"]').prop('selected', true);
+        $("#lab_transport_to_other").show();
       }
 
       if($('#lab_transport_from option[value="' + $("#lab_transport_from_other").val() + '"]').length > 0)
@@ -275,6 +279,10 @@ function LABLoadInvitation() {
       else
       {
         $('#lab_transport_from option[value="other"]').prop('selected', true);
+        $("#lab_transport_from_other").show();
+      }
+      if($('#lab_phone').attr('phoneval').length>0) {
+        iti.setNumber($('#lab_phone').attr('phoneval'));
       }
     }
   });
@@ -286,7 +294,8 @@ jQuery(document).ready(function() {
   }
 });
 function invitation_submit() {
-  document.querySelector("#primary-menu").scrollIntoView({behavior:"smooth"})
+  console.log("submitted");
+  document.querySelector("#primary-menu").scrollIntoView({behavior:"smooth"});
   jQuery(function($) {
     fields = { 
       'guest_firstName': $("#lab_firstname").val(),
@@ -305,6 +314,7 @@ function invitation_submit() {
     if ($("#invitationForm").attr("hostForm")==1) {//La version invitant est affichée 
       fields['host_group_id'] = $("#lab_group_name").val();
       fields['funding_source'] = $("#lab_credit").val()=="other" ? $("#lab_credit_other").val() : $("#lab_credit").val();
+      $fields['estimated_cost'] = $("#lab_estimated_cost").val();
     }
     if ($("#invitationForm").attr("newForm")==1) {//On crée une nouvelle invitation
       data = {
