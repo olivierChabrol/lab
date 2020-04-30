@@ -28,7 +28,6 @@ jQuery(function($){
       var firstname  = ui.item.firstname; // first name
       var lastname = ui.item.lastname; // last name
       var userslug = ui.item.userslug;
-      console.log(userslug);
       window.location.href = "/user/" + userslug;
       event.preventDefault();
       $("#lab_directory_user_name").val(firstname + " " + lastname);
@@ -171,8 +170,8 @@ function LABLoadInvitation() {
       defaultCountry: "fr",
       preferredCountries: ['fr', 'de', 'it', 'es', 'us'],
     });
-    if ($("#lab_country").val()!="") {
-      $("#lab_country").countrySelect("selectCountry",$("#lab_country").val());
+    if ($("#lab_country").attr('countryCode')!="") {
+      $("#lab_country").countrySelect("selectCountry",$("#lab_country").attr('countryCode'));
     }
     $("#lab_phone").keyup(function() {
       if ( !iti.isValidNumber() ) {
@@ -185,7 +184,7 @@ function LABLoadInvitation() {
       iti.setNumber(iti.getNumber())
       $("#lab_phone").attr('phoneVal',iti.getNumber());
     });
-    $("#lab_mission").click(function(){
+    $("#lab_mission").change(function(){
       if ($(this).val() == "other") {
         $("#lab_mission_other").show();
         $("#lab_mission_other_desc").show();    
@@ -194,7 +193,7 @@ function LABLoadInvitation() {
         $("#lab_mission_other_desc").hide();
       }
     });
-    $("#lab_credit").click(function(){
+    $("#lab_credit").change(function(){
       if ($(this).val() == "other")
       {
         $("#lab_credit_other").show();
@@ -206,14 +205,14 @@ function LABLoadInvitation() {
         $("#lab_credit_other_desc").hide();  
       }
     });
-    $("#lab_transport_to").click(function(){
+    $("#lab_transport_to").change(function(){
       if ($(this).val() == "other") {
         $("#lab_transport_to_other").show();
       } else {
         $("#lab_transport_to_other").hide();
       }
     });
-    $("#lab_transport_from").click(function(){
+    $("#lab_transport_from").change(function(){
       if ($(this).val() == "other") {
         $("#lab_transport_from_other").show();
       } else {
@@ -237,10 +236,47 @@ function LABLoadInvitation() {
         $("#lab_hostname").attr('host_id', ui.item.user_id);
       }
     });
-    $("input[type=submit]").click(function (e) {
-      e.preventDefault();
-      new_invitation_submit();
-    });
+    // $("input[type=submit]").click(function (e) {
+    //   e.preventDefault();
+    //   new_invitation_submit();
+    // });
+    if ($("#invitationForm").attr("newForm")==0) {
+      if($('#lab_mission option[value="' + $("#lab_mission_other").val() + '"]').length > 0)
+      {
+        $('#lab_mission option[value="' + $("#lab_mission_other").val() + '"]').prop('selected', true); 
+      }
+      else
+      {
+        $('#lab_mission option[value="other"]').prop('selected', true);
+      }
+
+      if($('#lab_credit option[value="' + $("#lab_credit_other").val() + '"]').length > 0)
+      {
+        $('#lab_credit option[value="' + $("#lab_credit_other").val() + '"]').prop('selected', true); 
+      }
+      else
+      {
+        $('#lab_credit option[value="other"]').prop('selected', true);
+      }
+      
+      if($('#lab_transport_to option[value="' + $("#lab_transport_to_other").val() + '"]').length > 0)
+      {
+        $('#lab_transport_to option[value="' + $("#lab_transport_to_other").val() + '"]').prop('selected', true); 
+      }
+      else
+      {
+        $('#lab_transport_to option[value="other"]').prop('selected', true);
+      }
+
+      if($('#lab_transport_from option[value="' + $("#lab_transport_from_other").val() + '"]').length > 0)
+      {
+        $('#lab_transport_from option[value="' + $("#lab_transport_from_other").val() + '"]').prop('selected', true); 
+      }
+      else
+      {
+        $('#lab_transport_from option[value="other"]').prop('selected', true);
+      }
+    }
   });
 }
 
@@ -249,7 +285,8 @@ jQuery(document).ready(function() {
     LABLoadInvitation();
   }
 });
-function new_invitation_submit() {
+function invitation_submit() {
+  document.querySelector("#primary-menu").scrollIntoView({behavior:"smooth"})
   jQuery(function($) {
     fields = { 
       'guest_firstName': $("#lab_firstname").val(),
@@ -262,22 +299,35 @@ function new_invitation_submit() {
       'needs_hostel' : $("#lab_hostel").prop('checked'),
       'travel_mean_from':  $("#lab_transport_from").val()=="other" ? $("#lab_transport_from_other").val() : $("#lab_transport_from").val(),
       'travel_mean_to':  $("#lab_transport_to").val()=="other" ? $("#lab_transport_to_other").val() : $("#lab_transport_to").val(),
-      'start_date': $("#lab_arrival").val(),
-      'end_date': $("#lab_departure").val(),
+      'start_date': $("#lab_arrival").val()+" "+$("#lab_arrival_time").val(),
+      'end_date': $("#lab_departure").val()+" "+$("#lab_departure_time").val(),
     }
-    if ($("#invitationForm").attr("hostForm")==1) {//à modifier en 1
+    if ($("#invitationForm").attr("hostForm")==1) {//La version invitant est affichée 
       fields['host_group_id'] = $("#lab_group_name").val();
       fields['funding_source'] = $("#lab_credit").val()=="other" ? $("#lab_credit_other").val() : $("#lab_credit").val();
     }
-    console.log(fields);
-    data = {
-      'action': 'lab_invitations_form',
-      'fields': fields
-    };
-    jQuery.post(LAB.ajaxurl, data, function(response) {
-      if (response.success) {
-        jQuery("#invitationForm")[0].outerHTML=response.data;
-      }
-    });
+    if ($("#invitationForm").attr("newForm")==1) {//On crée une nouvelle invitation
+      data = {
+        'action': 'lab_invitations_new',
+        'fields': fields
+      };
+      jQuery.post(LAB.ajaxurl, data, function(response) {
+        if (response.success) {
+          $("#invitationForm")[0].outerHTML=response.data;
+        }
+      });
+    } else { //On met à jour l'invitation existante
+      fields['guest_id']=$("#lab_firstname").attr("guest_id");
+      fields['token']=$("#invitationForm").attr("token");
+      data = {
+        'action': 'lab_invitations_edit',
+        'fields': fields
+      };
+      jQuery.post(LAB.ajaxurl, data, function(response) {
+        if (response.success) {
+          jQuery("#invitationForm")[0].outerHTML=response.data;
+        }
+      });
+    }
   });
 }

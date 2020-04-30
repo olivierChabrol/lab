@@ -92,5 +92,6 @@ if (is_admin()) {
     add_action( 'wp_ajax_keyring_find_loan_byID','lab_keyring_get_loan_Req' );
     add_action( 'wp_ajax_lab_profile_edit','lab_profile_edit' );
     //Actions pour les invitations
-    add_action( 'wp_ajax_lab_invitations_form','lab_invitations_formSubmit' );
+    add_action( 'wp_ajax_lab_invitations_new','lab_invitations_new' );
+    add_action( 'wp_ajax_lab_invitations_edit','lab_invitations_edit' );
 }
