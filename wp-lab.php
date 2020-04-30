@@ -122,7 +122,7 @@ class LabRewriteRules {
       $newRules = $newRule + $rules;
       $newRule = array('invitation/(.+)$' => 'index.php?pagename=invitation');
       $newRules = $newRule + $newRules;
-      $newRule = array('invite/(.+)$' => 'index.php?pagename=invitation');
+      $newRule = array('invite/(.+)$' => 'index.php?pagename=invite');
       $newRules = $newRule + $newRules;
       return $newRules;
   }

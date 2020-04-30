@@ -91,25 +91,14 @@ function lab_directory($param) {
         <br>"; // search field
     $directoryStr .= 
         "<style>
-            .directory_row{
-                cursor: pointer;
-            }
             .email{
                 unicode-bidi: bidi-override;
                 direction: rtl;
             }
         </style>"; // style for table (stripped colors)
 
-    /* Display numbers correctly */
-    function correctNumber($currentNumber) { // currentNumber = esc_html($r->phone)
-        $currentNumber = str_replace(" ", "", $currentNumber);
-        $currentNumber = str_replace(".", "", $currentNumber);
-        $currentNumber = chunk_split($currentNumber, 2, ' ');
-        return $currentNumber;
-    }
-
     /* Table directory */
-    $directoryStr .= "<div class=\"table-responsive\"><table class=\"table table-striped\"><thead class=\"thead-dark\"><tr><th>".esc_html__("Name", "lab")."</th><th>".esc_html__("Name", "lab")."</th><th>".esc_html__("Name", "lab")."</td></th></thead><tbody>";
+    $directoryStr .= "<div class=\"table-responsive\"><table  id=\"lab-table-directory\" class=\"table table-striped\"><thead class=\"thead-dark\"><tr><th>".esc_html__("Name", "lab")."</th><th>".esc_html__("Name", "lab")."</th><th>".esc_html__("Name", "lab")."</td></th></thead><tbody>";
     foreach ($results as $r) {
         $directoryStr .= "<tr  userId='".esc_html($r->slug)."'>";
         $directoryStr .= "<td id='name_col'>".esc_html($r->last_name . " " . $r->first_name)."</td>";

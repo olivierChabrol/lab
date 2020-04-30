@@ -727,21 +727,18 @@ function lab_invitations_formSubmit() {
     'phone'=> $fields['guest_phone'],
     'country'=> $fields['guest_country']
   );
+  do {
+    $token = bin2hex(random_bytes(10));
+  } while ( lab_invitations_getByToken($token)!=NULL );
   $invite = array (
     'guest_id'=>lab_invitations_createGuest($params),
-    'token'=>bin2hex(random_bytes(10)),
-    'needs_hostel'=>$fields['needs_hostel']=='false' ? 0 : 1,
-    'host_group_id'=> (int) $fields['host_group_id'],
-    'host_id'=> (int) $fields['host_id'],
+    'token'=>$token,
+    'needs_hostel'=>$fields['needs_hostel']=='true' ? 1 : 0
   );
-  foreach (['mission_objective','start_date','end_date','travel_mean_to','travel_mean_from','funding_source'] as $champ) {
+  foreach (['host_group_id','host_id','mission_objective','start_date','end_date','travel_mean_to','travel_mean_from','funding_source'] as $champ) {
     $invite[$champ]=$fields[$champ];
   }
-  var_dump($invite);
-  
-  global $wpdb;
-  $wpdb->insert($wpdb->prefix.'lab_invitations',$invite);
-  echo $wpdb->last_query;
-  //lab_invitations_createInvite($invite);
-  wp_send_json_success();
+  lab_invitations_createInvite($invite);
+  $html = "<p>Votre demande d'invitation a bien été prise en compte<br><a href='http://stage.fr/invite/".$token."'> lien d'édition par l'invitant</a></p>";
+  wp_send_json_success($html);
 }

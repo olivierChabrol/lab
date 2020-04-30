@@ -79,4 +79,16 @@ function lab_invitations_createInvite($params) {
       return $wpdb -> last_error;
   }
 }
+function lab_invitations_getByToken($token) {
+  global $wpdb;
+  $sql = "SELECT * FROM `".$wpdb->prefix."lab_invitations` WHERE token='".$token."';";
+  $res = $wpdb->get_results($sql);
+  return $res[0];
+}
+function lab_invitations_getGuest($id) {
+  global $wpdb;
+  $sql = "SELECT * FROM `".$wpdb->prefix."lab_guests` WHERE id='".$id."';";
+  $res = $wpdb->get_results($sql);
+  return $res[0];
+}
 ?>

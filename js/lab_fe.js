@@ -4,6 +4,17 @@ const { __, _x, _n, sprintf } = wp.i18n;
 /*** DIRECTORY ***/
 
 jQuery(function($){
+
+
+  $("#lab-table-directory tr").click(function() {
+    window.location.href = "/user/" + $(this).attr('userId');
+  });
+
+  $(".email").each(function() {
+    var replaced = $(this).text().replace(/@/g, '[TA]');
+    $(this).text(replaced);
+  });
+
   $('#lab_directory_user_name').autocomplete({
     minChars: 1,
     source: function(term, suggest){
@@ -23,16 +34,6 @@ jQuery(function($){
       $("#lab_directory_user_name").val(firstname + " " + lastname);
     }
   });
-  
-  $(".email").each(function() {
-    var replaced = $(this).text().replace(/@/g, '[TA]');
-    $(this).text(replaced);
-  });
-
-  $(".directory_row").click(function() {
-    window.location.href = "/user/" + $(this).attr('userId');
-  });
-
 });
 
 /******************************* ShortCode Profile *******************************/
@@ -170,6 +171,9 @@ function LABLoadInvitation() {
       defaultCountry: "fr",
       preferredCountries: ['fr', 'de', 'it', 'es', 'us'],
     });
+    if ($("#lab_country").val()!="") {
+      $("#lab_country").countrySelect("selectCountry",$("#lab_country").val());
+    }
     $("#lab_phone").keyup(function() {
       if ( !iti.isValidNumber() ) {
         $(this).css("border-color","#FF0000");   
@@ -235,14 +239,17 @@ function LABLoadInvitation() {
     });
     $("input[type=submit]").click(function (e) {
       e.preventDefault();
-      invitation_submit();
+      new_invitation_submit();
     });
   });
 }
-if ( jQuery( "#invitationForm" ).length ) {
-  LABLoadInvitation();
-}
-function invitation_submit() {
+
+jQuery(document).ready(function() {
+  if ( jQuery( "#invitationForm" ).length ) {
+    LABLoadInvitation();
+  }
+});
+function new_invitation_submit() {
   jQuery(function($) {
     fields = { 
       'guest_firstName': $("#lab_firstname").val(),
@@ -258,7 +265,7 @@ function invitation_submit() {
       'start_date': $("#lab_arrival").val(),
       'end_date': $("#lab_departure").val(),
     }
-    if ($("#invitationForm").attr("hostForm")==0) {//à modifier en 1
+    if ($("#invitationForm").attr("hostForm")==1) {//à modifier en 1
       fields['host_group_id'] = $("#lab_group_name").val();
       fields['funding_source'] = $("#lab_credit").val()=="other" ? $("#lab_credit_other").val() : $("#lab_credit").val();
     }
@@ -268,7 +275,9 @@ function invitation_submit() {
       'fields': fields
     };
     jQuery.post(LAB.ajaxurl, data, function(response) {
-      console.log(response);
+      if (response.success) {
+        jQuery("#invitationForm")[0].outerHTML=response.data;
+      }
     });
   });
 }

@@ -3,46 +3,59 @@
  * File Name: lab-shortcode-directory.php
  * Description: shortcode pour générer un annuaire
  * Authors: Ivan Ivanov, Lucas Urgenti
- * Version: 0.2
+ * Version: 0.3
 */
 
-function lab_invitation($params) { 
+function lab_invitation($args) { 
     $param = shortcode_atts(array(
-        'host' => 0 //0 pour invité, 1 pour invitant
+        'hostpage' => 0 //0 pour invité, 1 pour invitant
         ),
-        $params, 
+        $args, 
         "lab-invitation"
     );
     global $wp;
     $url = $wp->request;
-    $host = isset(explode("/",$url)[1]) ? new labUser(lab_profile_getID(explode("/",$url)[1])) : 0 ;
-    $host->groups;
+    if ( $param['hostpage'] ) {
+        if ( ! isset(explode("/",$url)[1])) {
+            return esc_html__("Token d'invitation manquant.",'lab');
+        } else {
+            $token = explode("/",$url)[1];
+            $invitation=lab_invitations_getByToken($token);
+            if (!isset($invitation)) {
+                return esc_html__("Token d'invitation invalide",'lab');
+            }
+            $guest = lab_invitations_getGuest($invitation->guest_id);
+            $host = new labUser($invitation->host_id);
+        }
+    } else {
+        $host = isset(explode("/",$url)[1]) ? new labUser(lab_profile_getID(explode("/",$url)[1])) : 0 ;
+    }
     $invitationStr = '
-    <div id="invitationForm" hostForm='.$param['host'].'>
+    <div id="invitationForm" hostForm='.$param['hostpage'].'>
         <h3>'.esc_html__("Informations personnelles","lab").'</h3>
         <form action="">
         <div class="lab_invite_row" id="lab_fullname">
             <div class="lab_invite_field">
                 <label for="lab_firstname">'.esc_html__("Prénom","lab").'</label>
-                <input type="text" id="lab_firstname" name="lab_firstname">
+                <input type="text" id="lab_firstname" name="lab_firstname" value="'.($param['hostpage'] ? $guest->first_name : '').'">
             </div>
             <div class="lab_invite_field">
                 <label for="lab_lastname">'.esc_html__("Nom","lab").'</label>
-                <input type="text" id="lab_lastname" name="lab_lastname">
+                <input type="text" id="lab_lastname" name="lab_lastname" value="'.($param['hostpage'] ? $guest->last_name : '').'">
             </div>
         </div>
         <div class="lab_invite_field">
             <label for="lab_email">'.esc_html__("Email","lab").'</label>
-            <input type="email" id="lab_email" name="lab_email">
+            <input type="email" id="lab_email" name="lab_email"value="'.($param['hostpage'] ? $guest->email : '').'">
         </div>
         <div id="lab_phone_country">
             <div class="lab_invite_field">
                 <label for="lab_phone">'.esc_html__("Numéro de téléphone","lab").'</label>
-                <input type="tel" id="lab_phone">
+                <input type="tel" id="lab_phone" value="'.($param['hostpage'] ? $guest->phone : '').'">
             </div>
             <div class="lab_invite_field">
                 <label for="lab_country">'.esc_html__("Pays","lab").'</label>
-                <input type="text" id="lab_country" name="lab_country">
+                <input type="text" id="lab_country" name="lab_country" value="'.($param['hostpage'] ? $guest->country : '').'">
             </div>
         </div>
         <div class="lab_invite_field">
@@ -51,16 +64,24 @@ function lab_invitation($params) {
         </div>
         <div class="lab_invite_field">
             <label for="lab_mission">'.esc_html__("Objectif de mission","lab").'</label>
-            <select id="lab_mission" name="lab_mission">
+            <select id="lab_mission" name="lab_mission" value="'.($param['hostpage'] ? $invitation->mission_objective : '').'">
                 <option value="seminar">'.esc_html__("Séminaire","lab").'</option>
                 <option value="other">'.esc_html__("Autre","lab").'</option>
             </select>
-            <input hidden type="text" id="lab_mission_other">
+            <input hidden type="text" id="lab_mission_other" value="'.($param['hostpage'] ? $invitation->misson_objective : '').'">
             <p style="display:none" id="lab_mission_other_desc">'.esc_html__("Précisez la nature de votre mission ici.","lab").'</p>
         </div>
         <hr>
-        <div class="lab_invite_field">
-            <input type="checkbox" id="lab_hostel" name="lab_hostel">
+        <div class="lab_invite_row">
+            <input type="checkbox" id="lab_hostel" name="lab_hostel" ';
+
+        if($param['hostpage'] && $invitation->needs_hostel == 1)
+        {
+            $invitationStr .= 'checked';
+        }
+            
+        $invitationStr .=
+            '>
             <label for="lab_hostel">'.esc_html__("Besoin d'un hôtel","lab").'</label>
         </div>
         <hr>
@@ -68,7 +89,7 @@ function lab_invitation($params) {
         <div id="lab_mean_travel" class="lab_invite_row">
             <div class="lab_invite_field">
                 <label for="lab_transport_to">'.esc_html__("Vers l'I2M","lab").'</label>
-                <select id="lab_transport_to" name="lab_transport_to">
+                <select id="lab_transport_to" name="lab_transport_to" value="'.($param['hostpage'] ? $invitation->travel_mean_to : '').'">
                     <option value="car">'.esc_html__("Voiture","lab").'</option>
                     <option value="train">'.esc_html__("Train","lab").'</option>
                     <option value="plane">'.esc_html__("Avion","lab").'</option>
@@ -76,12 +97,12 @@ function lab_invitation($params) {
                     <option value="none">'.esc_html__("Aucun","lab").'</option>
                     <option value="other">'.esc_html__("Autre","lab").'</option>
                 </select>
-                <input hidden type="text" id="lab_transport_to_other">
+                <input hidden type="text" id="lab_transport_to_other" value="'.($param['hostpage'] ? $invitation->travel_mean_to : '').'">
                 <p>'.esc_html__("Moyen de transport depuis votre domicile vers notre laboratoire","lab").'</p>
             </div>
             <div class="lab_invite_field">
                 <label for="lab_transport_from">'.esc_html__("Depuis l'I2M","lab").'</label>
-                <select id="lab_transport_from" name="lab_transport_from">
+                <select id="lab_transport_from" name="lab_transport_from" value="'.($param['hostpage'] ? $invitation->travel_mean_from : '').'">
                     <option value="car">'.esc_html__("Voiture","lab").'</option>
                     <option value="train">'.esc_html__("Train","lab").'</option>
                     <option value="plane">'.esc_html__("Avion","lab").'</option>
@@ -89,24 +110,24 @@ function lab_invitation($params) {
                     <option value="none">'.esc_html__("Aucun","lab").'</option>
                     <option value="other">'.esc_html__("Autre","lab").'</option>
                 </select>
-                <input hidden type="text" id="lab_transport_from_other">
+                <input hidden type="text" id="lab_transport_from_other" value="'.($param['hostpage'] ? $invitation->travel_mean_from : '').'">
                 <p>'.esc_html__("Moyen de transport depuis notre laboratoire vers votre domicile","lab").'</p>
             </div>
         </div> 
         <div id="lab_date" class="lab_invite_row">
             <div class="lab_invite_field" >
                 <label for="lab_arrival">'.esc_html__("Date d'arrivée","lab").'</label>
-                <input type="date" id="lab_arrival" name="lab_arrival">
+                <input type="date" id="lab_arrival" name="lab_arrival" value="'.($param['hostpage'] ? $invitation->start_date : '').'">
                 <p>'.esc_html__("Précisez la date de réservation du voyage, l'heure est quand vous quittez votre domicile","lab").'</p>
             </div>
             <div class="lab_invite_field">
                 <label for="lab_departure">'.esc_html__("Date de départ","lab").'</label>
-                <input type="date" id="lab_departure" name="lab_departure">
+                <input type="date" id="lab_departure" name="lab_departure" value="'.($param['hostpage'] ? $invitation->end_date : '').'">
                 <p>'.esc_html__("Précisez la date de réservation du voyage","lab").'</p>
             </div>
         </div>
         <hr>';
-        if ( !$params["host"] ) {
+        if ( $param["hostpage"] ) {
             $invitationStr .=
             '<div id="lab_inviting_fields" class="lab_invite_row">
                 <div class="lab_invite_field">
