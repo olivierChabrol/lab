@@ -108,7 +108,7 @@ function lab_directory($param) {
             $forwardUrl .= "&group=".$group;
         }
 
-        $directoryStr .= '<a href="' .$forwardUrl. '" '.$letterClass.'><b>' . $element . '</b></a>'; 
+        $directoryStr .= '<a href="' .$forwardUrl. '" '.$letterClass.'><b>' . $element . '&nbsp;&nbsp;</b></a>'; 
     } // letter's url
     $directoryStr .= "</div>"; // letters
     $directoryStr .= 
