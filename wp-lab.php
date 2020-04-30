@@ -121,10 +121,9 @@ class LabRewriteRules {
       global $wp_rewrite;
       $newRule = array('user/(.+)$' => 'index.php?pagename=user');
       $newRules = $newRule + $rules;
-      $newRule = array('invitation/(.+)$' => 'index.php?pagename=invitation');
       $newRules = $newRule + $newRules;
-      $newRule = array('invite/(.+)$' => 'index.php?pagename=invite');
-      $newRules = $newRule + $newRules;
+      //$newRule1 = array('linstitut/annuaire/(.+)$' => 'index.php?pagename=directory');
+      //$newRules = $newRule + $newRule1 + $rules;
       return $newRules;
   }
   function flush_rewrite_rules() {

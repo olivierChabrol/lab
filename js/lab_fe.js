@@ -5,6 +5,24 @@ const { __, _x, _n, sprintf } = wp.i18n;
 
 jQuery(function($){
 
+  $("#lab-directory-group-id").on('change', function() {
+    $("#groupSearch").val($(this).val());
+    letter = $("#letterSearch").val();
+    group = $("#groupSearch").val();
+    href = "/linstitut/annuaire/";
+    if (letter != "") {
+      href += "?letter="+letter;
+    }
+    if (group != "") {
+      if (letter != "") {
+        href += "&";
+      } else {
+        href += "?";
+      }
+      href += "group="+group;
+    }
+    window.location.href = href;
+  });
 
   $("#lab-table-directory tr").click(function() {
     window.location.href = "/user/" + $(this).attr('userId');
