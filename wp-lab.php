@@ -124,6 +124,10 @@ class LabRewriteRules {
       $newRules = $newRule + $newRules;
       //$newRule1 = array('linstitut/annuaire/(.+)$' => 'index.php?pagename=directory');
       //$newRules = $newRule + $newRule1 + $rules;
+      $newRule = array('invitation/(.+)$' => 'index.php?pagename=invitation');
+      $newRules = $newRule + $newRules;
+      $newRule = array('invite/(.+)$' => 'index.php?pagename=invite');
+      $newRules = $newRule + $newRules;
       return $newRules;
   }
   function flush_rewrite_rules() {

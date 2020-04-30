@@ -267,7 +267,7 @@ function LABLoadInvitation() {
       else
       {
         $('#lab_mission option[value="other"]').prop('selected', true);
-        $("$lab_mission_other").show();
+        $("#lab_mission_other").show();
       }
 
       if($('#lab_credit option[value="' + $("#lab_credit_other").val() + '"]').length > 0)
@@ -332,7 +332,7 @@ function invitation_submit() {
     if ($("#invitationForm").attr("hostForm")==1) {//La version invitant est affichée 
       fields['host_group_id'] = $("#lab_group_name").val();
       fields['funding_source'] = $("#lab_credit").val()=="other" ? $("#lab_credit_other").val() : $("#lab_credit").val();
-      $fields['estimated_cost'] = $("#lab_estimated_cost").val();
+      fields['estimated_cost'] = $("#lab_estimated_cost").val();
     }
     if ($("#invitationForm").attr("newForm")==1) {//On crée une nouvelle invitation
       data = {

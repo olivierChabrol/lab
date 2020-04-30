@@ -175,21 +175,73 @@ function lab_invitation($args) {
 }
 
 function lab_invitations_interface($args) {
-    $listInvitationStr = '<table>
+    $param = shortcode_atts(array(
+        'view' => 'host' //host, chief or admin 
+        ),
+        $args, 
+        "lab-invite-interface"
+    );
+    $listInvitationStr = '';
+    switch ($param['view']) {
+        case 'host':
+            $list = lab_invitations_getByHost(get_current_user_id());
+            break;
+        case 'chief':
+            $listInvitationStr .= '<h3>Groupes dont vous êtes le chef :</h3><select>';
+            foreach (lab_admin_get_groups_byChief(get_current_user_id()) as $g)
+                {
+                    $listInvitationStr .= '<option value="'.$g->id.'">'.$g->group_name.'</option>';
+                }
+            $listInvitationStr .='</select>';
+            $list = lab_invitations_getByGroup(lab_admin_get_groups_byChief(get_current_user_id())[0]->id);
+            break;
+        case 'admin':
+            $listInvitationStr .= '<h3>Groupes Préférés :</h3><select>';
+            foreach (lab_invitations_getPrefGroups(get_current_user_id()) as $g)
+                {
+                    $listInvitationStr .= '<option value="'.$g->id.'">'.$g->group_name.'</option>';
+                }
+            $listInvitationStr .='</select>';
+            $list = lab_invitations_getByGroup(lab_invitations_getPrefGroups(get_current_user_id())[0]);
+            var_dump($list);
+            break;
+    }
+    $listInvitationStr .= '<table>
                             <thead>
                                 <tr id="lab_list_header">
-                                    <th>'.esc_html__("Nom de l'invité","lab").'</th>
-                                    <th>'.esc_html__("Date de l'invitation","lab").'</th>
-                                    <th>'.esc_html__("Mission").'</th>
-                                </tr>';
-
-    $listInvitationStr .=   '</thead>
+                                <th>'.esc_html__("Nom de l'invité","lab").'</th>
+                                '.($param['view']!='host' ? '<th>'.esc_html__("Invitant","lab").'</th>' : '').
+                                '<th>'.esc_html__("Mission","lab").'</th>
+                                <th>'.esc_html__("Date de création","lab").'</th>
+                                <th>'.esc_html__("Statut","lab").'</th>
+                                <th>'.esc_html__("Actions","lab").'</th>
+                                </tr>
+                            </thead>
+                            <tbody>';
+    
+    $listInvitationStr .= lab_invitations_interface_fromList($list,$param['view']);
+    $listInvitationStr .=   '</tbody>
                           </table>';
     
     return $listInvitationStr;
 }
 
-
+function lab_invitations_interface_fromList($list,$view) {
+    $listStr = '';
+    foreach ($list as $invitation) {
+        $guest = lab_invitations_getGuest($invitation->guest_id);
+        $host = new LabUser($invitation->host_id);
+        $listStr .= '<tr>
+                        <td><a href="mailto:'.$guest->email.'">'. $guest->first_name . ' ' . $guest->last_name .'</a></td>'
+                        .($view!='host' ? '<td><a href="mailto:'.$host->email.'">'. $host->first_name . ' ' . $host->last_name .'</a></td>':'').
+                        '<td>'. $invitation->mission_objective .'</td>
+                        <td>'. $invitation->creation_time .'</td>
+                        <td>'. $invitation->status .'</td>
+                        <td><a href="/invite/'. $invitation->token.'">'.esc_html__("Lien de modification",'lab').'</a></td>
+                    </tr>';
+    }
+    return $listStr;
+}
 
 ?>
 

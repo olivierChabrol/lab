@@ -102,7 +102,7 @@ function lab_admin_param_search_by_value($value) {
 
 function lab_admin_firstname_lastname2($name){
     global $wpdb;
-    $sql="SELECT DISTINCT um1.`user_id` AS id, um3.`meta_value` as first_name, um2.`meta_value` as last_name, um4.`meta_value` as slug
+    $sql="SELECT DISTINCT um1.`user_id` AS id, um3.`meta_value` AS first_name, um2.`meta_value` as last_name, um4.`meta_value` as slug
             FROM `".$wpdb->prefix."usermeta` AS um1 
             JOIN `".$wpdb->prefix."usermeta` AS um2 ON um1.`user_id` = um2.`user_id` 
             JOIN `".$wpdb->prefix."usermeta` AS um3 ON um1.`user_id` = um3.`user_id`
@@ -321,7 +321,11 @@ function lab_admin_group_subs_add($groupId,$listUserId) {
     }
     return;
 }
-
+function lab_admin_get_groups_byChief($chief_id) {
+    global $wpdb;
+    $sql="SELECT * FROM `".$wpdb->prefix."lab_groups` WHERE `chief_id`=".$chief_id.";";
+    return $wpdb->get_results($sql);
+}
 
 /********************************************************************************************
  * KeyRing
