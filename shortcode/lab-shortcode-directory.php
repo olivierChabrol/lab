@@ -23,12 +23,14 @@ function lab_directory($param) {
         'display-left-user' => get_option('lab-directory'),
         'group' => get_option('lab-directory'),
         'display-group' => get_option('display-group'),
+        'all-group' => get_option('all-group'),
         ),
         $param, 
         "lab-directory"
     );
 
     $displayLeftUser  = $param['display-left-user'];
+    $displayAllgroup  = $param['all-group'];
     $group   = $param['group'];
     $displayGroupParam   = $param['display-group'];
     $displayGroup = false;
@@ -39,12 +41,14 @@ function lab_directory($param) {
     $whereGroup  = "";
 
     // if the searchedGroup is passed as an URL parameter
-    $groupAsParameter = isset($displayGroupParam) && !empty($displayGroupParam && $displayGroupParam=="true");
+    $groupAsParameter = isset($displayGroupParam) && !empty($displayGroupParam) && $displayGroupParam=="true";
     // if searchedGroup is fixed By shortcode option
     $groupAsSCOption = isset($displayGroupParam) && !empty($group);
+    // if $displayAllgroup is set to true, don't display alphabet
+    $displayAllgroup  = isset($displayAllgroup) && !empty($displayAllgroup) && $displayAllgroup=="true";
 
     global $wpdb;
-    if (!$groupAsSCOption) {
+    if (!$displayAllgroup && !$groupAsSCOption) {
         if (isset( $_GET["group"] ) && !empty( $_GET["group"] ) ) {
             $group = $_GET["group"];
             $groupAsParameter = true;
@@ -82,47 +86,52 @@ function lab_directory($param) {
             AND um8.`meta_key`='lab_user_slug' 
             AND um5.`meta_key`='lab_user_phone'".$whereDisplayLeftUser.$whereGroup;
 
-    $currentLetter = $_GET["letter"];
-    if (!isset($currentLetter) || empty($currentLetter)) {
-        $currentLetter = 'A';
+    if (!$displayAllgroup) {
+        $currentLetter = $_GET["letter"];
+        if (!isset($currentLetter) || empty($currentLetter)) {
+            $currentLetter = 'A';
+        }
+        $sql .= " AND um1.`meta_value`LIKE '$currentLetter%'"; 
     }
-    $sql .= " AND um1.`meta_value`LIKE '$currentLetter%'
-                ORDER BY last_name"; 
+    $sql .= "ORDER BY last_name";
 
     $results = $wpdb->get_results($sql);
     $nbResult = $wpdb->num_rows;
     $items = array();
-    $directoryStr = "";//"<h1>".__("Annuaire","lab")."</h1>"; // title
+    $directoryStr = "";
     //$directoryStr .= "**** LETTER :". $_GET["letter"]."<br>";
     //$directoryStr .= "**** GROUP :". $group."<br>";
     //$directoryStr .= $sql;
-    $alphachar = array_merge(range('A', 'Z'));
-    $url = explode('?', $_SERVER['REQUEST_URI']); // current url (without parameters)
-    $directoryStr .= "<input type=\"hidden\" id=\"letterSearch\" value=\"".$currentLetter."\">";
-    $directoryStr .= "<input type=\"hidden\" id=\"groupSearch\" value=\"".$group."\">";
-    $directoryStr .= "<div class=\"alpha-links\" style=\"font-size:15px;\">";
-    foreach ($alphachar as $element) {
-        $letterClass = ($element == $currentLetter?"class=\"labSelectedLetter\"":"");
-        $forwardUrl  = $url[0]."?letter=".$element;
-        if ($groupAsParameter) {
-            $forwardUrl .= "&group=".$group;
-        }
+    if (!$displayAllgroup) 
+    {
+        $alphachar = array_merge(range('A', 'Z'));
+        $url = explode('?', $_SERVER['REQUEST_URI']); // current url (without parameters)
+        $directoryStr .= "<input type=\"hidden\" id=\"letterSearch\" value=\"".$currentLetter."\">";
+        $directoryStr .= "<input type=\"hidden\" id=\"groupSearch\" value=\"".$group."\">";
+        $directoryStr .= "<div class=\"alpha-links\" style=\"font-size:15px;\">";
+        foreach ($alphachar as $element) {
+            $letterClass = ($element == $currentLetter?"class=\"labSelectedLetter\"":"");
+            $forwardUrl  = $url[0]."?letter=".$element;
+            if ($groupAsParameter) {
+                $forwardUrl .= "&group=".$group;
+            }
 
-        $directoryStr .= '<a href="' .$forwardUrl. '" '.$letterClass.'><b>' . $element . '&nbsp;&nbsp;</b></a>'; 
-    } // letter's url
-    $directoryStr .= "</div>"; // letters
-    $directoryStr .= 
-        "<br>
-            <div id='user-srch' style='width:750px;' class=\"actions\">
-                <input type='text' id='lab_directory_user_name' name='dud_user_srch_val' style='' value='' maxlength='50' placeholder=\"" . __('Chercher un nom', 'lab') . "\"/>
-                <input type='hidden' id='lab_directory_user_id' value='' />
-            ";
-    if (!$groupAsSCOption && $groupAsParameter) {
-        $directoryStr .= __('Show only group', 'lab')." : ";
-        $directoryStr .= lab_html_select_str("lab-directory-group-id", "lab-directory-group-id", "", lab_admin_group_select_group, "acronym, group_name", array("value"=>0,"label"=>"None"), $group, array("id"=>"acronym", "value"=>"value"));
+            $directoryStr .= '<a href="' .$forwardUrl. '" '.$letterClass.'><b>' . $element . '</b></a>&nbsp;&nbsp;'; 
+        } // letter's url
+        $directoryStr .= "</div>"; // letters
+        $directoryStr .= 
+            "<br>
+                <div id='user-srch' style='width:750px;' class=\"actions\">
+                    <input type='text' id='lab_directory_user_name' name='dud_user_srch_val' style='' value='' maxlength='50' placeholder=\"" . __('Chercher un nom', 'lab') . "\"/>
+                    <input type='hidden' id='lab_directory_user_id' value='' />
+                ";
+        if (!$groupAsSCOption && $groupAsParameter) {
+            $directoryStr .= __('Show only group', 'lab')." : ";
+            $directoryStr .= lab_html_select_str("lab-directory-group-id", "lab-directory-group-id", "", lab_admin_group_select_group, "acronym, group_name", array("value"=>0,"label"=>"None"), $group, array("id"=>"acronym", "value"=>"value"));
+        }
+        $directoryStr .= "</div>
+            <br>"; // search field
     }
-    $directoryStr .= "</div>
-        <br>"; // search field
     $directoryStr .= 
         "<style>
             .email{
