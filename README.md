@@ -22,7 +22,9 @@ We reuse code from :
 
 [lab-directory] display-left-user=true Display only left user
 
-[lab-directory] group=AA Display user associated to a group (the acronym group is use)
+[lab-directory group=AA] Display user associated to a group (the acronym group is use) with alphabet letters for search
+
+[lab-directory group=AA all-group=true] Display user associated to a group (the acronym group is use) without alphabet letters for search
 
 ### Profile
 [lab-profile]
