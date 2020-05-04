@@ -67,6 +67,10 @@ function lab_admin_tab_settings() {
       </div>
     </div>
   <hr>
+  <h4>Invitations</h4>
+  <button class="page-title-action" id="lab_invite_create_tables"><?php echo esc_html__('Créer la table Invitation','lab'); ?></button>
+  <button class="page-title-action" id="lab_invite_create_table_prefGroups"><?php echo esc_html__('Créer la table Prefered Groups','lab'); ?></button>
+  <hr>
     <h4>Correct DB :</h4>
   <button class="page-title-action" id="lab_settings_correct_um"><?php echo esc_html__('Corriger usermeta fields UM','lab'); ?></button>
   <button class="page-title-action" id="lab_settings_copy_phone"><?php echo esc_html__('Copier les champs phone','lab'); ?></button>

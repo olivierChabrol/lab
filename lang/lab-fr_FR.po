@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-27 20:54+0200\n"
-"PO-Revision-Date: 2020-04-28 09:13+0200\n"
+"POT-Creation-Date: 2020-04-30 10:25+0200\n"
+"PO-Revision-Date: 2020-04-30 10:26+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en\n"
@@ -24,6 +24,7 @@ msgstr ""
 "X-Poedit-SearchPath-6: admin/view/lab-admin-tab-groups.php\n"
 "X-Poedit-SearchPath-7: admin/view/lab-admin-tab-params.php\n"
 "X-Poedit-SearchPath-8: lab-admin-core.php\n"
+"X-Poedit-SearchPath-9: shortcode/lab-shortcode-directory.php\n"
 
 #: admin/view/lab-admin-tab-groups.php:9
 msgid "Nom du groupe  "
@@ -65,51 +66,56 @@ msgstr "Modify parent group"
 msgid "Modifier le type"
 msgstr "Modify group"
 
-#: admin/view/lab-admin-tab-groups.php:45
+#: admin/view/lab-admin-tab-groups.php:37
+#: admin/view/lab-admin-tab-groups.php:73
+msgid "Page web du groupe"
+msgstr "Page web du groupe"
+
+#: admin/view/lab-admin-tab-groups.php:47
 msgid "Créer un groupe"
 msgstr "Create group"
 
-#: admin/view/lab-admin-tab-groups.php:49
+#: admin/view/lab-admin-tab-groups.php:51
 msgid "Nom du groupe"
 msgstr "Group name"
 
-#: admin/view/lab-admin-tab-groups.php:52
+#: admin/view/lab-admin-tab-groups.php:54
 msgid "Acronym"
 msgstr "Acronym"
 
-#: admin/view/lab-admin-tab-groups.php:59
+#: admin/view/lab-admin-tab-groups.php:61
 msgid "Groupe parent"
 msgstr "Groupe parent"
 
-#: admin/view/lab-admin-tab-groups.php:65 lab-admin-keyring.php:76
+#: admin/view/lab-admin-tab-groups.php:67 lab-admin-keyring.php:76
 msgid "Type"
 msgstr "Type"
 
-#: admin/view/lab-admin-tab-groups.php:71
+#: admin/view/lab-admin-tab-groups.php:79
 msgid "Responsable du groupe"
 msgstr "Group leader"
 
-#: admin/view/lab-admin-tab-groups.php:78
+#: admin/view/lab-admin-tab-groups.php:86
 msgid "Suppléant"
 msgstr "Substitute"
 
-#: admin/view/lab-admin-tab-groups.php:78
+#: admin/view/lab-admin-tab-groups.php:86
 msgid "Facultatif"
 msgstr "(optional)"
 
-#: admin/view/lab-admin-tab-groups.php:80
+#: admin/view/lab-admin-tab-groups.php:88
 msgid "Vider la liste"
 msgstr "Clear list"
 
-#: admin/view/lab-admin-tab-groups.php:85
+#: admin/view/lab-admin-tab-groups.php:93
 msgid "N'oubliez pas d'appuyer sur ajouter"
 msgstr "N'oubliez pas d'appuyer sur ajouter"
 
-#: admin/view/lab-admin-tab-groups.php:88
+#: admin/view/lab-admin-tab-groups.php:96
 msgid "+ Ajouter un suppléant"
 msgstr "+ Ajouter un suppléant"
 
-#: admin/view/lab-admin-tab-groups.php:91
+#: admin/view/lab-admin-tab-groups.php:99
 msgid "Créer le groupe"
 msgstr "Créer le groupe"
 
@@ -121,27 +127,45 @@ msgstr "Créer la table Keys"
 msgid "Créer la table Loans"
 msgstr "Créer la table Keys"
 
-#: admin/view/lab-admin-tab-settings.php:62
+#: admin/view/lab-admin-tab-settings.php:61
+msgid "Reset DB"
+msgstr "Reset DB"
+
+#: admin/view/lab-admin-tab-settings.php:63
+msgid "Reset LAB DB ?"
+msgstr "Reset LAB DB?"
+
+#: admin/view/lab-admin-tab-settings.php:65 lab-admin-keyring.php:36
+#: lab-admin-keyring.php:45 lab-admin-keyring.php:189
+msgid "Annuler"
+msgstr "Annuler"
+
+#: admin/view/lab-admin-tab-settings.php:66 lab-admin-keyring.php:37
+#: lab-admin-keyring.php:46 lab-admin-keyring.php:190
+msgid "Confirmer"
+msgstr "Confirmer"
+
+#: admin/view/lab-admin-tab-settings.php:71
 msgid "Corriger usermeta fields UM"
 msgstr "Corriger usermeta fields UM"
 
-#: admin/view/lab-admin-tab-settings.php:63
+#: admin/view/lab-admin-tab-settings.php:72
 msgid "Copier les champs phone"
 msgstr "Copier les champs phone"
 
-#: admin/view/lab-admin-tab-settings.php:66
+#: admin/view/lab-admin-tab-settings.php:75
 msgid "Fill HAL name"
 msgstr "Remplir metakey hal_name"
 
-#: admin/view/lab-admin-tab-settings.php:67
+#: admin/view/lab-admin-tab-settings.php:76
 msgid "Fill user slug"
 msgstr "Remplir metakey user slug"
 
-#: admin/view/lab-admin-tab-settings.php:69
+#: admin/view/lab-admin-tab-settings.php:78
 msgid "Empty HAL Table"
 msgstr "Vider la table HAL"
 
-#: admin/view/lab-admin-tab-settings.php:78
+#: admin/view/lab-admin-tab-settings.php:87
 msgid "Add Meta Key"
 msgstr "Ajouter une metakey"
 
@@ -361,14 +385,6 @@ msgstr "Prêts"
 msgid "Voulez-vous vraiment supprimer cette clé ?"
 msgstr "Voulez-vous vraiment supprimer cette clé ?"
 
-#: lab-admin-keyring.php:36 lab-admin-keyring.php:45 lab-admin-keyring.php:189
-msgid "Annuler"
-msgstr "Annuler"
-
-#: lab-admin-keyring.php:37 lab-admin-keyring.php:46 lab-admin-keyring.php:190
-msgid "Confirmer"
-msgstr "Confirmer"
-
 #: lab-admin-keyring.php:42 lab-admin-keyring.php:186
 msgid "Voulez-vous vraiment terminer ce prêt ?"
 msgstr "Voulez-vous vraiment terminer ce prêt ?"
@@ -551,10 +567,27 @@ msgstr "Prêter"
 msgid "Voir prêt"
 msgstr "Voir prêt"
 
+#: shortcode/lab-shortcode-directory.php:117
+msgid "Chercher un nom"
+msgstr "Chercher un nom"
+
+#: shortcode/lab-shortcode-directory.php:121
+msgid "Show only group"
+msgstr "Afficher les membres du groupe"
+
+#: shortcode/lab-shortcode-directory.php:138
+msgid "Name"
+msgstr "Nom"
+
+#: shortcode/lab-shortcode-directory.php:138
+msgid "User details"
+msgstr "Coordonnées"
+
+#: shortcode/lab-shortcode-directory.php:141
 #, fuzzy
-#~| msgid "Rechercher une clé"
-#~ msgid "Chercher un nom"
-#~ msgstr "Search for a key"
+#| msgid "Groupes"
+msgid "Group"
+msgstr "Groupes"
 
 #~ msgid "Publications HAL"
 #~ msgstr "HAL Publications"

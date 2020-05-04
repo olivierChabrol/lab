@@ -73,6 +73,8 @@ if (is_admin()) {
     add_action( 'wp_ajax_create_social', 'lab_admin_createSocial' );
     add_action( 'wp_ajax_delete_social', 'lab_admin_deleteSocial' );
     add_action( 'wp_ajax_reset_lab_db', 'lab_admin_setting_reset_tables');
+    add_action( 'wp_ajax_invite_createTablePrefGroup', 'lab_invitations_createPrefGroupTable' );
+    add_action( 'wp_ajax_invite_createTables', 'lab_invitations_createTables' );
     //Action for hal
     add_action( 'wp_ajax_hal_create_table', 'lab_ajax_hal_create_table');
     add_action( 'wp_ajax_hal_fill_hal_name', 'lab_ajax_hal_fill_fields');
@@ -89,4 +91,8 @@ if (is_admin()) {
     add_action( 'wp_ajax_keyring_find_old_loans','lab_keyring_find_oldLoansReq' );
     add_action( 'wp_ajax_keyring_find_loan_byID','lab_keyring_get_loan_Req' );
     add_action( 'wp_ajax_lab_profile_edit','lab_profile_edit' );
+    //Actions pour les invitations
+    add_action( 'wp_ajax_lab_invitations_new','lab_invitations_new' );
+    add_action( 'wp_ajax_nopriv_lab_invitations_new','lab_invitations_new' );
+    add_action( 'wp_ajax_lab_invitations_edit','lab_invitations_edit' );
 }
