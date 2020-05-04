@@ -3,7 +3,7 @@
  * File Name: lab-shortcode-directory.php
  * Description: shortcode pour générer un annuaire
  * Authors: Ivan Ivanov, Lucas Urgenti
- * Version: 0.5
+ * Version: 0.7
 */
 
 function lab_invitation($args) { 
@@ -241,6 +241,53 @@ function lab_invitations_interface_fromList($list,$view) {
                     </tr>';
     }
     return $listStr;
+}
+function lab_invitations_mail($type=1, $guest, $invite) {
+    switch ($type) {
+        case 1: //Envoi de mail récapitulatif à l'invité lorsqu'il crée sa demande d'invitation
+            $dest = $guest["email"];
+            $subj = esc_html__("Votre demande d'invitation à l'I2M",'lab');
+            $content = $invite["creation_time"];
+            $content .= "<p>".esc_html__("Votre demande d'invitation a bien été prise en compte",'lab')."<br>".esc_html__("Elle a été transmise à votre invitant",'lab')."</p>";
+            $content .= lab_InviteForm($guest,$invite);
+            break;
+        case 5: //Envoi de mail récapitulatif à l'invitant lorsque l'invité a créé une demande
+            $host = new LabUser($invite['host_id']);
+            $dest = $host->email;
+            $content .= "<p>".esc_html__("Une demande d'invitation à l'I2M vous a été transmise.",'lab')."<br>"
+            .esc_html__("Vous pouvez la modifier en suivant",'lab')." <a href='http://stage.fr/invite/".$invite['token']."'>".esc_html__('ce lien','lab')."</a></p>";
+            $content .= lab_InviteForm($guest,$invite);
+            break;
+        default:
+            return 'unkown mail type';
+            break;
+    }
+    wp_mail($dest,$subj,$content);
+    return $content;
+}
+function lab_InviteForm($guest,$invite) {
+    $host = new LabUser($invite['host_id']);
+    $out = '<p>Récapitulatif de votre demande d\'invitation : </p>
+            <p>Informations personnelles de l\'invité :</p>
+                <ul>
+                <li>Prénom : '.$guest['first_name'].'</li>
+                <li>Nom : '.$guest['last_name'].'</li>
+                <li>Email : '.$guest['email'].'</li>
+                <li>Téléphone : '.$guest['phone'].'</li>
+                <li>Pays : '.$guest['country'].'</li>
+            </ul>
+            <p>Contexte de l\'invitation
+            <ul>
+                <li>Nom de l\'invitant : '.$host->first_name.' '.$host->last_name.'</li>
+                <li>Objectif de mission : '.$invite['mission_objective'].'</li>
+                <li>Besoin d\'un hotel : '.($invite['needs_hostel'] == 1 ? esc_html__('oui','lab') : esc_html__('non','lab')).'</li>
+                <li>Moyen de transport :   <ul>
+                                                <li>Vers l\'I2M : '.$invite['travel_mean_to'].'</li>
+                                                <li>Depuis l\'I2M : '.$invite['travel_mean_from'].'</li>
+                                            </ul></li>
+                <li>Date d\'arrivée : '.$invite['start_date'].'</li>
+                <li>Date de départ : '.$invite['end_date'].'</li>';
+    return $out;
 }
 
 ?>
