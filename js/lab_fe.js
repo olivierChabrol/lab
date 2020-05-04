@@ -28,6 +28,66 @@ jQuery(function($){
     window.location.href = "/user/" + $(this).attr('userId');
   });
 
+  $("[id^=lab_presence_div_]").each(function() {
+    $(this).hide();
+  });
+  $("#lab_presence_table td[id^=lab_presence_td_]").each(function() {
+    num = $(this).attr("num");
+    //console.log("id " + $(this).attr("id") + " " + num);
+    if (num == 1) {
+      $(this).css("background-color", "#c6e48b");
+    }
+    if (num == 2) {
+      $(this).css("background-color", "#7bc96f");
+    }
+    if (num == 3) {
+      $(this).css("background-color", "#239a3b");
+    }
+    if (num > 3) {
+      $(this).css("background-color", "#196127");
+    }
+  });
+
+  var tdColor = "";
+  $("#lab_presence_table td[id^=lab_presence_td_]").mouseover(function() {
+    var id = $(this).attr("id");
+    var pattern = "lab_presence_td_";
+    var realId = id.substring(pattern.length, id.length);
+    realId = "lab_presence_div_" + realId;
+//    console.log(realId);
+    $("#"+realId).show();
+    //Popper.createPopper($(this), $("#"+realId));
+    var popper = new Popper($(this),$("#"+realId),{
+      placement: 'right',
+      onCreate: function(data){
+              //console.log(data);
+      },
+      modifiers: {
+              flip: {
+                      behavior: ['left', 'right', 'top','bottom']
+              },
+              offset: { 
+                      enabled: true,
+                      offset: '0,10'
+              }
+      }
+});
+
+    //Popper.createPopper($(this), tooltip);
+    tdColor = $(this).css("background-color");
+    $(this).css("background-color","yellow");
+  });
+
+  $("#lab_presence_table td[id^=lab_presence_td_]").mouseout(function() {
+    var id = $(this).attr("id");
+    var pattern = "lab_presence_td_";
+    var realId = id.substring(pattern.length, id.length);
+    realId = "lab_presence_div_" + realId;
+    //console.log(realId);
+    $("#"+realId).hide();;
+    $(this).css("background-color",tdColor);
+  });
+
   $(".email").each(function() {
     var replaced = $(this).text().replace(/@/g, '[TA]');
     $(this).text(replaced);
@@ -51,6 +111,7 @@ jQuery(function($){
       $("#lab_directory_user_name").val(firstname + " " + lastname);
     }
   });
+
 });
 
 /******************************* ShortCode Profile *******************************/
