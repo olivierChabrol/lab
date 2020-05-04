@@ -111,5 +111,24 @@ function lab_invitations_getByGroup($group_id,$params=array()) {
   global $wpdb;
   $sql = "SELECT * FROM `".$wpdb->prefix."lab_invitations` WHERE `host_group_id`=".$group_id.";";
   $res = $wpdb->get_results($sql);
+  return $res;
+}
+function lab_invitations_getByHost($host_id,$params=array()) {
+  global $wpdb;
+  $sql = "SELECT * FROM `".$wpdb->prefix."lab_invitations` WHERE `host_id`=".$host_id.";";
+  $res = $wpdb->get_results($sql);
+  return $res;
+}
+function lab_invitations_getPrefGroups($user_id,$params=array()) {
+  global $wpdb;
+  $sql = "SELECT * FROM `wp_lab_groups`, `wp_lab_prefered_groups`
+  WHERE `wp_lab_groups`.`id`=`wp_lab_prefered_groups`.`group_id`
+  AND `wp_lab_prefered_groups`.`user_id`=".$user_id.";";
+// $sql2 = "SELECT g1.* AS all
+//     FROM `wp_lab_groups` AS g1 
+//     JOIN `wp_lab_prefered_groups` ON `wp_lab_groups`.`id`=`wp_lab_prefered_groups`.`group_id`
+//     WHERE `wp_lab_prefered_groups`.`user_id`=1;";
+  $res = $wpdb->get_results($sql);
+  return $res;
 }
 ?>

@@ -2,15 +2,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-28 14:39+0200\n"
-"PO-Revision-Date: 2020-04-28 14:39+0200\n"
+"POT-Creation-Date: 2020-04-30 10:27+0200\n"
+"PO-Revision-Date: 2020-04-30 10:27+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.3\n"
+"X-Generator: Poedit 2.2.4\n"
 "X-Poedit-Basepath: ..\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-KeywordsList: _e;esc_html_e;esc_html__;__\n"
@@ -26,6 +26,7 @@ msgstr ""
 "X-Poedit-SearchPath-8: lab-admin-core.php\n"
 "X-Poedit-SearchPath-9: shortcode/lab-shortcode-profile.php\n"
 "X-Poedit-SearchPath-10: js/lab_fe.js\n"
+"X-Poedit-SearchPath-11: shortcode/lab-shortcode-directory.php\n"
 
 #: admin/view/lab-admin-tab-groups.php:9
 msgid "Nom du groupe  "
@@ -128,27 +129,45 @@ msgstr "Create the Keys table"
 msgid "Créer la table Loans"
 msgstr "Create the Loans table"
 
-#: admin/view/lab-admin-tab-settings.php:62
+#: admin/view/lab-admin-tab-settings.php:61
+msgid "Reset DB"
+msgstr "Reset DB"
+
+#: admin/view/lab-admin-tab-settings.php:63
+msgid "Reset LAB DB ?"
+msgstr "Reset LAB DB ?"
+
+#: admin/view/lab-admin-tab-settings.php:65 lab-admin-keyring.php:36
+#: lab-admin-keyring.php:45 lab-admin-keyring.php:189
+msgid "Annuler"
+msgstr "Cancel"
+
+#: admin/view/lab-admin-tab-settings.php:66 lab-admin-keyring.php:37
+#: lab-admin-keyring.php:46 lab-admin-keyring.php:190
+msgid "Confirmer"
+msgstr "Confirm"
+
+#: admin/view/lab-admin-tab-settings.php:71
 msgid "Corriger usermeta fields UM"
 msgstr "Correct usermeta fields UM"
 
-#: admin/view/lab-admin-tab-settings.php:63
+#: admin/view/lab-admin-tab-settings.php:72
 msgid "Copier les champs phone"
 msgstr "Copy usermeta phone fields"
 
-#: admin/view/lab-admin-tab-settings.php:66
+#: admin/view/lab-admin-tab-settings.php:75
 msgid "Fill HAL name"
 msgstr "Fill HAL name"
 
-#: admin/view/lab-admin-tab-settings.php:67
+#: admin/view/lab-admin-tab-settings.php:76
 msgid "Fill user slug"
 msgstr "Fill user slug"
 
-#: admin/view/lab-admin-tab-settings.php:69
+#: admin/view/lab-admin-tab-settings.php:78
 msgid "Empty HAL Table"
 msgstr "Empty HAL Table"
 
-#: admin/view/lab-admin-tab-settings.php:78
+#: admin/view/lab-admin-tab-settings.php:87
 msgid "Add Meta Key"
 msgstr "Add Meta Key"
 
@@ -218,9 +237,9 @@ msgstr "Settings"
 msgid "Paramètres globaux"
 msgstr "General settings"
 
-#: js/lab_fe.js:90
+#: js/lab_fe.js:109
 msgid "Votre biographie est trop longue (max 200 caractères)"
-msgstr ""
+msgstr "Your bio is too long (max 200 char)"
 
 #: js/lab_keyring.js:9 js/lab_keyring.js:22
 msgid "Table créée avec succès"
@@ -368,14 +387,6 @@ msgstr "Loans"
 #: lab-admin-keyring.php:34
 msgid "Voulez-vous vraiment supprimer cette clé ?"
 msgstr "Do you really want to remove this key?"
-
-#: lab-admin-keyring.php:36 lab-admin-keyring.php:45 lab-admin-keyring.php:189
-msgid "Annuler"
-msgstr "Cancel"
-
-#: lab-admin-keyring.php:37 lab-admin-keyring.php:46 lab-admin-keyring.php:190
-msgid "Confirmer"
-msgstr "Confirm"
 
 #: lab-admin-keyring.php:42 lab-admin-keyring.php:186
 msgid "Voulez-vous vraiment terminer ce prêt ?"
@@ -559,6 +570,26 @@ msgstr "Loan"
 msgid "Voir prêt"
 msgstr "Show Loan"
 
+#: shortcode/lab-shortcode-directory.php:117
+msgid "Chercher un nom"
+msgstr "Search for name"
+
+#: shortcode/lab-shortcode-directory.php:121
+msgid "Show only group"
+msgstr "Show only group"
+
+#: shortcode/lab-shortcode-directory.php:138
+msgid "Name"
+msgstr "Name"
+
+#: shortcode/lab-shortcode-directory.php:138
+msgid "User details"
+msgstr "User details"
+
+#: shortcode/lab-shortcode-directory.php:141
+msgid "Group"
+msgstr "Group"
+
 #: shortcode/lab-shortcode-profile.php:21
 msgid "Modifier la couleur d'arrière plan"
 msgstr "Change background color"
@@ -599,11 +630,6 @@ msgstr "You haven't defined your HAL Name"
 #: shortcode/lab-shortcode-profile.php:41
 msgid "Nom HAL"
 msgstr "HAL Name"
-
-#, fuzzy
-#~| msgid "Rechercher une clé"
-#~ msgid "Chercher un nom"
-#~ msgstr "Search for a key"
 
 #~ msgid "Publications HAL"
 #~ msgstr "HAL Publications"

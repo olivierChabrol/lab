@@ -8,7 +8,12 @@
  * @param fctArgs : function to call arguments
  * @param defaultValue : add an default <option> in the select, must be this form : ex. : array("value"=>0,"label"=>"None")
  */
-function lab_html_select($htmlId, $htmlName, $htmlClass, $fctCallback, $fctArgs = null, $defaultValue = null) {
+function lab_html_select($htmlId, $htmlName, $htmlClass, $fctCallback, $fctArgs = null, $defaultValue = null, $selectedValue = null) {
+    echo lab_html_select_str($htmlId, $htmlName, $htmlClass, $fctCallback, $fctArgs, $defaultValue);
+}
+
+
+function lab_html_select_str($htmlId, $htmlName, $htmlClass, $fctCallback, $fctArgs = null, $defaultValue = null, $selectedValue = null, $idValues = null) {
     $output ='<select id="'.$htmlId.'" name="'.$htmlName.'" class="'.$htmlClass.'">';
     $results = null;
     if ($fctArgs == null) {
@@ -16,13 +21,22 @@ function lab_html_select($htmlId, $htmlName, $htmlClass, $fctCallback, $fctArgs 
     } else {
         $results = $fctCallback($fctArgs);
     }
+    //$output .= "<option value =\"\">".$results."</option>";
+    //$output .= "</select>";
+    //return $output;
     if ($defaultValue != null) {
-        $output .= "<option value =".$defaultValue["value"].">".$defaultValue["label"]."</option>";
+        $output .= "<option value =\"".$defaultValue["value"]."\" ".(($selectedValue!=null && $selectedValue==$defaultValue["value"])?"selected":"").">".$defaultValue["label"]."</option>";
     }
-
-    foreach ( $results as $r ) {
-    $output .= "<option value =".$r->id.">".$r->value."</option>";
+    if ($idValues == null) {
+        foreach ( $results as $r ) {
+            $output .= "<option value=\"".$r->id."\"".(($selectedValue!=null && $selectedValue==$r->id)?"selected":"").">".$r->value."</option>";
+        }
+    }
+    else {
+        foreach ( $results as $r ) {
+            $output .= "<option value=\"".$r->{$idValues["id"]}."\"".(($selectedValue!=null && $selectedValue==$r->{$idValues["id"]})?"selected":"").">".$r->{$idValues["value"]}."</option>";
+        }
     }
     $output .= "</select>";
-    echo $output;
+    return $output;
 }

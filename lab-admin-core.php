@@ -102,7 +102,7 @@ function lab_admin_param_search_by_value($value) {
 
 function lab_admin_firstname_lastname2($name){
     global $wpdb;
-    $sql="SELECT DISTINCT um1.`user_id` AS id, um3.`meta_value` as first_name, um2.`meta_value` as last_name, um4.`meta_value` as slug
+    $sql="SELECT DISTINCT um1.`user_id` AS id, um3.`meta_value` AS first_name, um2.`meta_value` as last_name, um4.`meta_value` as slug
             FROM `".$wpdb->prefix."usermeta` AS um1 
             JOIN `".$wpdb->prefix."usermeta` AS um2 ON um1.`user_id` = um2.`user_id` 
             JOIN `".$wpdb->prefix."usermeta` AS um3 ON um1.`user_id` = um3.`user_id`
@@ -133,6 +133,7 @@ function lab_admin_initTable_usermeta()
 {
     lab_userMetaData_create_metaKeys("user_phone", "");
     lab_userMetaData_create_metaKeys("user_left", null);
+    lab_userMetaData_create_metaKeys("user_slug", null);
     lab_userMetaData_create_metaKeys("user_position", null);
     lab_userMetaData_create_metaKeys("hal_id", null);
     lab_userMetaData_create_metaKeys("hal_name", null);
@@ -240,6 +241,7 @@ function lab_admin_createGroupTable() {
         `chief_id` BIGINT UNSIGNED NOT NULL,
         `group_type` TINYINT NOT NULL,
         `parent_group_id` BIGINT UNSIGNED,
+        `url` varchar(255) NULL,
         PRIMARY KEY(`id`),
         FOREIGN KEY(`chief_id`) REFERENCES `".$wpdb->prefix."users`(`ID`),
         FOREIGN KEY(`parent_group_id`) REFERENCES `".$wpdb->prefix."lab_groups`(`id`)) ENGINE = INNODB;";
@@ -283,7 +285,7 @@ function lab_admin_group_create($name,$acronym,$chief_id,$parent,$type,$url) {
 
 function lab_admin_users_groups_check_and_add_user($userId, $groupId) {
     global $wpdb;
-    $results = $wpdb->get_results("SELECT * from ".$wpdb->prefix."lab_users_groups WHERE user_id=".$userId." AND group_id=".$groupId);
+    $results = $wpdb->get_results("SELECT * from `".$wpdb->prefix."lab_users_groups` WHERE user_id=".$userId." AND group_id=".$groupId);
     if (count($results) == 0) {
         return lab_admin_users_groups_add_user($userId, $groupId);
     }
@@ -307,25 +309,23 @@ function lab_admin_users_groups_add_user($userId, $groupId) {
     return $wpdb->insert($wpdb->prefix.'lab_users_groups', array("user_id"=>$userId, "group_id"=>$groupId));
 }
 
-function lab_admin_group_subs_add($id,$list) {
+function lab_admin_group_subs_add($groupId,$listUserId) {
     global $wpdb;
     $wpdb->hide_errors();
-    foreach ($list as $r) {
-        $sql = "INSERT INTO `".$wpdb->prefix."lab_group_substitutes` (`id`, `group_id`, `substitute_id`) VALUES (NULL, '".$id."', '".$r."'); ";
-        if (!$wpdb->insert(
-            $wpdb->prefix.'lab_group_substitutes',
-            array(
-                'group_id' => $id,
-                'substitute_id' => $r)) 
-            ) {
+    foreach ($listUserId as $userId) {
+        if (!$wpdb->insert($wpdb->prefix.'lab_group_substitutes', array('group_id' => $groupId, 'substitute_id' => $userId))) {
             return $wpdb -> last_error;
         } else {
-            lab_admin_users_groups_check_and_add_user($r, $id);
+            lab_admin_users_groups_check_and_add_user($userId, $groupId);
         }
     }
     return;
 }
-
+function lab_admin_get_groups_byChief($chief_id) {
+    global $wpdb;
+    $sql="SELECT * FROM `".$wpdb->prefix."lab_groups` WHERE `chief_id`=".$chief_id.";";
+    return $wpdb->get_results($sql);
+}
 
 /********************************************************************************************
  * KeyRing

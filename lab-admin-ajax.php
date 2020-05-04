@@ -743,7 +743,11 @@ function lab_invitations_new() {
     $invite[$champ]=$fields[$champ];
   }
   lab_invitations_createInvite($invite);
-  $html = "<p>".esc_html__("Votre demande d'invitation a bien été prise en compte le $timeStamp",'lab')."<br><a href='http://stage.fr/invite/".$token."'>Lien d'édition par l'invitant</a></p>";
+  $html = '<p>'.esc_html__("Votre demande a bien été prise en compte",'lab').'</p>';
+  $html .= "<hr><h5>e-mail envoyé à l'invité : </h5>";
+  $html .= lab_invitations_mail(1,$guest,$invite);
+  $html .= "<hr><h5>e-mail envoyé à l'invitant : </h5>";
+  $html .= lab_invitations_mail(5,$guest,$invite);
   wp_send_json_success($html);
 }
 function lab_invitations_edit() {
