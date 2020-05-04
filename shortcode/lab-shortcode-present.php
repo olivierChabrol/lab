@@ -13,7 +13,7 @@
 
      add this to CSS
 
-    .labSelectedLetter {
+    .labopenLetter {
         font-size: x-large;
     }
 ***/ 
@@ -76,4 +76,31 @@ function lab_present_select($param) {
     $str .= "</tbody></table>";
 
     return $str;
+}
+
+function lab_present_choice($param) {
+    $param = shortcode_atts(array(
+        ),
+        $param, 
+        "lab-present-choice"
+    );
+    $choiceStr = "<br/><hr>
+        <h3>Je serai présent(e)...</h1>
+        <form name='form' action='' method='post'>
+            <input id='userId' name='userId' type='hidden' value='" . get_current_user_id() . "' />
+
+            <label for='date-open'>Le</label>
+            <input type='date' name='date-open' id='date-open' />
+            <label for='hour-open'>à</label>
+            <input type='time' name='hour-open' id='hour-open' />
+            <br/>
+            <label for='date-close'>Jusqu'au</label>
+            <input type='date' name='date-close' id='date-close' />
+            <label for='hour-close'>à</label>
+            <input type='time' name='hour-close' id='hour-close' />
+            <br/>
+            <label for='site-selected'>Sur le site</label>
+            " . lab_html_select("userId", "userName", "class", lab_admin_list_site) . "
+        </form>";
+    return $choiceStr;
 }
