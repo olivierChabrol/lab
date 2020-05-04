@@ -1,0 +1,31 @@
+#invitationForm {
+  background: #F2F2F2;
+  padding: 1em;
+  text-align: justify;
+}
+#invitationForm .lab_invite_field {
+  display: flex;
+  flex-direction: column;
+  margin:1em;
+}
+#invitationForm .lab_invite_field input, #invitationForm .lab_invite_field select {
+  width: 100%;
+}
+#invitationForm .lab_invite_row input[type=checkbox] {
+  width: 1em;
+  margin-right: 1em;
+}
+#invitationForm .lab_invite_row {
+  display: flex;
+  justify-content: center;
+}
+#invitationForm select {
+  height: 2.5em;
+}
+#invitationForm .lab_invite_row .lab_invite_field {
+  width: 50%;
+}
+#invitationForm p {
+  font-size: 0.9em;
+  font-style: italic;
+}

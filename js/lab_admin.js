@@ -522,6 +522,12 @@ jQuery(function($){
   $("#lab_setting_social_create_button").click(function() {
     createAllSocial();
   });
+  $("#lab_invite_create_table_prefGroups").click(function() {
+    callAjax({"action":"invite_createTablePrefGroup"},__("Table PrefGroup créée avec succès",'lab'),null,__("Erreur lors de la création de la tables 'invitations' et 'guests'",'lab'),null);
+  });
+  $("#lab_invite_create_tables").click(function() {
+    callAjax({"action":"invite_createTables"},__("Tables invitations et guests créées avec succès",'lab'),null,__("Erreur lors de la création des tables 'invitations' et 'guests'",'lab'),null);
+  });
 });
 
 /*************************************************************************************************************************************************

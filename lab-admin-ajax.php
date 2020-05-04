@@ -714,3 +714,63 @@ function lab_admin_deleteSocial() {
   }
   wp_send_json_success();
 }
+
+/********************************************************************************************
+ * Lab_Invitations
+ ********************************************************************************************/
+function lab_invitations_new() {
+  $fields = $_POST['fields'];
+  $guest = array (
+    'first_name'=> $fields['guest_firstName'],
+    'last_name'=> $fields['guest_lastName'],
+    'email'=> $fields['guest_email'],
+    'phone'=> $fields['guest_phone'],
+    'country'=> $fields['guest_country']
+  );
+  do {//Génère un token jusqu'à ce qu'il soit unique (on sait jamais)
+    $token = bin2hex(random_bytes(10));
+  } while ( lab_invitations_getByToken($token)!=NULL );
+  date_default_timezone_set("Europe/Paris");
+  $timeStamp=date("Y-m-d H:i:s",time());
+  $invite = array (
+    'guest_id'=>lab_invitations_createGuest($guest),
+    'token'=>$token,
+    'needs_hostel'=>$fields['needs_hostel']=='true' ? 1 : 0,
+    'creation_time' => $timeStamp,
+    'status' => 1
+  );
+  foreach (['host_group_id','host_id','mission_objective','start_date','end_date','travel_mean_to','travel_mean_from','funding_source'] as $champ) {
+    $invite[$champ]=$fields[$champ];
+  }
+  lab_invitations_createInvite($invite);
+  $html = "<p>".esc_html__("Votre demande d'invitation a bien été prise en compte le $timeStamp",'lab')."<br><a href='http://stage.fr/invite/".$token."'>Lien d'édition par l'invitant</a></p>";
+  wp_send_json_success($html);
+}
+function lab_invitations_edit() {
+  $fields = $_POST['fields'];
+  if (get_current_user_id()==$fields['host_id']) {
+    $guest = array (
+      'first_name'=> $fields['guest_firstName'],
+      'last_name'=> $fields['guest_lastName'],
+      'email'=> $fields['guest_email'],
+      'phone'=> $fields['guest_phone'],
+      'country'=> $fields['guest_country']
+    );
+    lab_invitations_editGuest($fields['guest_id'],$guest);
+    date_default_timezone_set("Europe/Paris");
+    $timeStamp=date("Y-m-d H:i:s",time());
+    $invite = array (
+      'needs_hostel'=>$fields['needs_hostel']=='true' ? 1 : 0,
+      'completion_time' => $timeStamp,
+      'status' => 10,
+    );
+    foreach (['host_group_id','host_id','mission_objective','start_date','end_date','travel_mean_to','travel_mean_from','funding_source'] as $champ) {
+      $invite[$champ]=$fields[$champ];
+    }
+    lab_invitations_editInvitation($fields['token'],$invite);
+    $html = "<p>".esc_html__("Votre invitation a bien été complétée",'lab')."<br>à $timeStamp</p>";
+    wp_send_json_success($html);
+  } else {
+    wp_send_json_error('Vous n\'avez par la permission de modifier cette invitation');
+  }
+}
