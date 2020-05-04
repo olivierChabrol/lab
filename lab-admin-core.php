@@ -77,6 +77,25 @@ function lab_admin_initTable_param() {
 }
 
 /**
+ * Return all site defined
+ *
+ * @return [[id, value],...]
+ */
+function lab_admin_list_site()
+{
+    global $wpdb;
+    $sql = "SELECT id, value FROM `".$wpdb->prefix."lab_params` WHERE type_param = 4";
+    return $wpdb->get_results($sql);
+}
+
+function lab_admin_list_present_user($startDate, $endDate) {
+    global $wpdb;
+    $sql = "SELECT lp.id, lp.user_id, lp.hour_start, lp.hour_end, lp.site as site_id, p.value as site, um1.meta_value as first_name, um2.meta_value as last_name FROM `".$wpdb->prefix."lab_presence` AS lp JOIN ".$wpdb->prefix."lab_params as p ON p.id=lp.site JOIN ".$wpdb->prefix."usermeta AS um1 ON um1.user_id=lp.user_id JOIN ".$wpdb->prefix."usermeta AS um2 ON um2.user_id=lp.user_id WHERE (lp.`hour_start` BETWEEN '".date("Y-m-d", $startDate)." 00:00:00' AND '".date("Y-m-d", $endDate)." 23:59:59') AND um1.meta_key='first_name' AND um2.meta_key='last_name'";
+    return $wpdb->get_results($sql);
+    //return $sql;
+}
+
+/**
  * Delete param key, can't delete param with id < 5, because param system
  *
  * @param [int] $paramId : param identifier

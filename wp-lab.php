@@ -28,6 +28,7 @@ require_once("lab-admin-keyring.php");
 require_once("lab-actions.php");
 require_once("lab-hal-widget.php");
 require_once("lab-admin-invitations.php");
+require_once(LAB_DIR_PATH."shortcode/lab-shortcode-present.php");
 require_once(LAB_DIR_PATH."shortcode/lab-shortcode-directory.php");
 require_once(LAB_DIR_PATH."shortcode/lab-shortcode-profile.php");
 require_once(LAB_DIR_PATH."shortcode/lab-shortcode-hal.php");
@@ -81,6 +82,7 @@ add_action( 'plugins_loaded', 'myplugin_load_textdomain' );
 add_action('admin_enqueue_scripts', 'admin_enqueue');
 
 
+add_shortcode('lab-present'  , 'lab_present_select');
 add_shortcode('lab-directory', 'lab_directory');
 add_shortcode('lab-profile', 'lab_profile' );
 add_shortcode('lab_old-event', 'lab_old_event');
