@@ -28,6 +28,7 @@ function lab_invitations_createTables() {
       `travel_mean_from` varchar(50),
       `funding_source` varchar(200),
       `estimated_cost` float,
+      `maximum_cost` float,
       `real_cost` float,
       `status` tinyint,
       `creation_time` datetime,

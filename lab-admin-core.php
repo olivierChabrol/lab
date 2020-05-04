@@ -71,8 +71,17 @@ function lab_admin_initTable_param() {
             (3, 1, 'KEY TYPE'),
             (4, 1, 'SITE'),
             (5, 1, 'USER FUNCTION'),
-            (6, 2, 'Equipe'),
-            (7, 2, 'Groupe');";
+            (6, 1, 'MISSION'),
+            (7, 1, 'FUNDING'),
+            (8, 2, 'Equipe'),
+            (9, 2, 'Groupe'),
+            (10, 3, 'Clé'),
+            (11, 3, 'Badge'),
+            (12, 4, 'Luminy'),
+            (13, 4, 'I2M'),
+            (14, 6, 'Séminaire'),
+            (12, 7, 'CNRS'),
+            (12, 7, 'AMU');";
     $wpdb->get_results($sql);
 }
 
@@ -325,6 +334,12 @@ function lab_admin_get_groups_byChief($chief_id) {
     global $wpdb;
     $sql="SELECT * FROM `".$wpdb->prefix."lab_groups` WHERE `chief_id`=".$chief_id.";";
     return $wpdb->get_results($sql);
+}
+function lab_admin_get_chief_byGroup($group_id) {
+    global $wpdb;
+    $sql = "SELECT * FROM `".$wpdb->prefix."lab_groups` WHERE `id`=".$group_id.";";
+    $res = $wpdb->get_results($sql)[0];
+    return $res->chief_id;
 }
 
 /********************************************************************************************
