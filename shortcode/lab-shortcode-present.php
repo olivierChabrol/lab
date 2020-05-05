@@ -281,9 +281,9 @@ function lab_present_choice($param) {
     $increment = 0;
     foreach ($results as $r) {
         $choiceStr .= "<tr><th scope='row'>" . ++$increment . "</th>
-                        <td>". esc_html($r->hour_start) ."</td>
-                        <td>". esc_html($r->hour_end)   ."</td>
-                        <td>". esc_html($r->value)       ."</td></tr>";
+                        <td class='date-row'>". esc_html($r->hour_start) ."</td>
+                        <td class='date-row'>"  . esc_html($r->hour_end)   ."</td>
+                        <td class='clickable-row-site'>" . esc_html($r->value)      ."</td></tr>";
     }
 
     $choiceStr .= "</tbody></table></div>";
