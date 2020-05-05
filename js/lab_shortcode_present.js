@@ -1,17 +1,17 @@
 jQuery(function($){
         $(".date-row").click(function() {
-            var $this  = $(this);
+            var $td  = $(this);
+            var formatText = $td.text()
+            //console.log($td.text());
             var $input = $('<input>', {
-                value: $this.text(),
-                type: 'date time', // ??
-                placeholder: $this.text(this.value),
-                blur: function() {
-                   $this.text(this.value);
-                },
-                keyup: function(e) {
-                   if (e.which === 10) $input.blur();
+                value: $td.text(),
+                type: 'date',
+                focusout: function() {
+                    $td.text($(this).val());
+                    $(this).empty();
                 }
-            }).appendTo( $this.empty() ).focus();
+            });
+            $input.appendTo($td.empty()).focus();
         });
 
         $(".site-row").click(function() {

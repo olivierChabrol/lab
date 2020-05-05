@@ -46,6 +46,8 @@ if (is_admin()) {
     add_action( 'wp_ajax_add_users_groups' , 'lab_admin_add_users_groups');
     //Actions pour presence
     add_action( 'wp_ajax_lab_presence_create_table', 'lab_admin_createTable_presence');
+    add_action( 'wp_ajax_lab_presence_save', 'lab_admin_presence_save_ajax');
+    add_action( 'wp_ajax_lab_presence_delete', 'lab_admin_presence_delete_ajax');
 
     //Actions pour la gestion des params
     add_action( 'wp_ajax_param_create_table', 'lab_admin_param_create_table');
