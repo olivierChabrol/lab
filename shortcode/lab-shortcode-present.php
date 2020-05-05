@@ -103,7 +103,28 @@ function lab_present_select($param) {
         }   
     }
     //*/
+    $str .= "<style>
+    .presence-tooltip {
+      background-color: #333;
+      color: white;
+      padding: 5px 10px;
+      border-radius: 4px;
+      font-size: 13px;
+    }
+    .arrow,
+    .arrow::before {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    z-index: -1;
+    }
 
+    .arrow::before {
+    content: '';
+    transform: rotate(45deg);
+    background: #333;
+    }
+  </style>";
     $str .= "<a href=\"/presence/?date=".date("Y-m-d",$previousWeek)."\"><b>&lt;</b></a> Semaine du  : ".date("d-m-Y",$startDay)." au ".date("d-m-Y",$endDay)." <a href=\"/presence/?date=".date("Y-m-d",$nextWeek)."\"><b>&gt;</b></a><br>";
     $tootTip = "";
     $str .= "<table id=\"lab_presence_table\" class=\"table table-bordered table-striped\"><thead class=\"thead-dark\"><tr><th>&nbsp;</th><th colspan=\"2\">Lundi</th><th colspan=\"2\">Mardi</th><th colspan=\"2\">Mercredi</th><th colspan=\"2\">Jeudi</th><th colspan=\"2\">Vendredi</th></tr></thead><tbody>";
@@ -151,20 +172,20 @@ function lab_present_select($param) {
 
                     }
                     if ($nbAM>0) {
-                        $str .= "<td id=\"lab_presence_td_".$site->id.$i."AM\" num=\"$nbAM\">&nbsp;</td>";
+                        $str .= "<td id=\"lab_presence_td_".$site->id.$i."AM\" num=\"$nbAM\" title=\"$userPresentAM\">&nbsp;</td>";
                         
                     }
                     else {
                         $str .= "<td>&nbsp;</td>";
                     }
                     if ($nbPM>0) {
-                        $str .= "<td id=\"lab_presence_td_".$site->id.$i."PM\" num=\"$nbPM\">&nbsp;</td>";
+                        $str .= "<td id=\"lab_presence_td_".$site->id.$i."PM\" num=\"$nbPM\" title=\"$userPresentPM\">&nbsp;</td>";
                     }
                     else {
                         $str .= "<td>&nbsp;</td>";
                     }
                     if (!empty($userPresentAM)) {
-                        $tootTip .= "<div id=\"lab_presence_div_".$site->id.$i."AM\" role=\"tooltip\"/>".$userPresentAM."</div>";
+                        $tootTip .= "<div id=\"lab_presence_div_".$site->id.$i."AM\" role=\"tooltip\" class=\"presence-tooltip\"/>".$userPresentAM."<div class=\"arrow\" data-popper-arrow></div></div>";
                     }
                     if (!empty($userPresentPM)) {
                         $tootTip .= "<div id=\"lab_presence_div_".$site->id.$i."PM\" role=\"tooltip\"/>".$userPresentPM."</div>";

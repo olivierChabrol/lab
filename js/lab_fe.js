@@ -50,6 +50,7 @@ jQuery(function($){
 
   var tdColor = "";
   $("#lab_presence_table td[id^=lab_presence_td_]").mouseover(function() {
+    /*
     var id = $(this).attr("id");
     var pattern = "lab_presence_td_";
     var realId = id.substring(pattern.length, id.length);
@@ -57,34 +58,24 @@ jQuery(function($){
 //    console.log(realId);
     $("#"+realId).show();
     //Popper.createPopper($(this), $("#"+realId));
-    var popper = new Popper($(this),$("#"+realId),{
+    Popper.createPopper($(this),$("#"+realId), {
       placement: 'right',
-      onCreate: function(data){
-              //console.log(data);
-      },
-      modifiers: {
-              flip: {
-                      behavior: ['left', 'right', 'top','bottom']
-              },
-              offset: { 
-                      enabled: true,
-                      offset: '0,10'
-              }
-      }
-});
-
+    });
+//*/
     //Popper.createPopper($(this), tooltip);
     tdColor = $(this).css("background-color");
     $(this).css("background-color","yellow");
   });
 
   $("#lab_presence_table td[id^=lab_presence_td_]").mouseout(function() {
+    /*
     var id = $(this).attr("id");
     var pattern = "lab_presence_td_";
     var realId = id.substring(pattern.length, id.length);
     realId = "lab_presence_div_" + realId;
     //console.log(realId);
     $("#"+realId).hide();;
+    //*/
     $(this).css("background-color",tdColor);
   });
 
