@@ -1018,6 +1018,19 @@ function beginWith($string, $pattern) {
 }
 
 /**************************************************************************************************************************************
+ * PRESENCE
+ *************************************************************************************************************************************/
+function lab_admin_presence_save($userId, $dateOpen, $dateEnd, $siteId) {
+    global $wpdb;
+    return $wpdb->insert($wpdb->prefix."lab_presence", array("user_id"=>$userId, "hour_start"=>$dateOpen, "hour_end"=>$dateEnd, "site"=>$siteId));
+}
+
+function lab_admin_presence_delete($presenceId, $userId) {
+    global $wpdb;
+    return $wpdb->delete($wpdb->prefix."lab_presence", array("id"=>$presenceId,"user_id"=>$userId));
+}
+
+/**************************************************************************************************************************************
  * UTILS
  *************************************************************************************************************************************/
 

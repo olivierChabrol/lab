@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-30 10:25+0200\n"
-"PO-Revision-Date: 2020-04-30 10:26+0200\n"
+"POT-Creation-Date: 2020-05-05 14:17+0200\n"
+"PO-Revision-Date: 2020-05-05 14:18+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en\n"
@@ -25,6 +25,7 @@ msgstr ""
 "X-Poedit-SearchPath-7: admin/view/lab-admin-tab-params.php\n"
 "X-Poedit-SearchPath-8: lab-admin-core.php\n"
 "X-Poedit-SearchPath-9: shortcode/lab-shortcode-directory.php\n"
+"X-Poedit-SearchPath-10: shortcode/lab-shortcode-present.php\n"
 
 #: admin/view/lab-admin-tab-groups.php:9
 msgid "Nom du groupe  "
@@ -128,44 +129,56 @@ msgid "Créer la table Loans"
 msgstr "Créer la table Keys"
 
 #: admin/view/lab-admin-tab-settings.php:61
+msgid "Créer la table presence"
+msgstr "Créer la table Keys"
+
+#: admin/view/lab-admin-tab-settings.php:64
 msgid "Reset DB"
 msgstr "Reset DB"
 
-#: admin/view/lab-admin-tab-settings.php:63
+#: admin/view/lab-admin-tab-settings.php:66
 msgid "Reset LAB DB ?"
 msgstr "Reset LAB DB?"
 
-#: admin/view/lab-admin-tab-settings.php:65 lab-admin-keyring.php:36
+#: admin/view/lab-admin-tab-settings.php:68 lab-admin-keyring.php:36
 #: lab-admin-keyring.php:45 lab-admin-keyring.php:189
 msgid "Annuler"
 msgstr "Annuler"
 
-#: admin/view/lab-admin-tab-settings.php:66 lab-admin-keyring.php:37
+#: admin/view/lab-admin-tab-settings.php:69 lab-admin-keyring.php:37
 #: lab-admin-keyring.php:46 lab-admin-keyring.php:190
 msgid "Confirmer"
 msgstr "Confirmer"
 
-#: admin/view/lab-admin-tab-settings.php:71
+#: admin/view/lab-admin-tab-settings.php:74
+msgid "Créer la table Invitation"
+msgstr "Créer la table Invitation"
+
+#: admin/view/lab-admin-tab-settings.php:75
+msgid "Créer la table Prefered Groups"
+msgstr "Créer la table prefered groups"
+
+#: admin/view/lab-admin-tab-settings.php:78
 msgid "Corriger usermeta fields UM"
 msgstr "Corriger usermeta fields UM"
 
-#: admin/view/lab-admin-tab-settings.php:72
+#: admin/view/lab-admin-tab-settings.php:79
 msgid "Copier les champs phone"
 msgstr "Copier les champs phone"
 
-#: admin/view/lab-admin-tab-settings.php:75
+#: admin/view/lab-admin-tab-settings.php:82
 msgid "Fill HAL name"
 msgstr "Remplir metakey hal_name"
 
-#: admin/view/lab-admin-tab-settings.php:76
+#: admin/view/lab-admin-tab-settings.php:83
 msgid "Fill user slug"
 msgstr "Remplir metakey user slug"
 
-#: admin/view/lab-admin-tab-settings.php:78
+#: admin/view/lab-admin-tab-settings.php:85
 msgid "Empty HAL Table"
 msgstr "Vider la table HAL"
 
-#: admin/view/lab-admin-tab-settings.php:87
+#: admin/view/lab-admin-tab-settings.php:94
 msgid "Add Meta Key"
 msgstr "Ajouter une metakey"
 
@@ -567,27 +580,45 @@ msgstr "Prêter"
 msgid "Voir prêt"
 msgstr "Voir prêt"
 
-#: shortcode/lab-shortcode-directory.php:117
+#: shortcode/lab-shortcode-directory.php:125
 msgid "Chercher un nom"
 msgstr "Chercher un nom"
 
-#: shortcode/lab-shortcode-directory.php:121
+#: shortcode/lab-shortcode-directory.php:129
 msgid "Show only group"
 msgstr "Afficher les membres du groupe"
 
-#: shortcode/lab-shortcode-directory.php:138
+#: shortcode/lab-shortcode-directory.php:147
 msgid "Name"
 msgstr "Nom"
 
-#: shortcode/lab-shortcode-directory.php:138
+#: shortcode/lab-shortcode-directory.php:147
 msgid "User details"
 msgstr "Coordonnées"
 
-#: shortcode/lab-shortcode-directory.php:141
-#, fuzzy
-#| msgid "Groupes"
+#: shortcode/lab-shortcode-directory.php:150
 msgid "Group"
 msgstr "Groupes"
+
+#: shortcode/lab-shortcode-present.php:230
+msgid "I will be there"
+msgstr "Je serais présent·e"
+
+#: shortcode/lab-shortcode-present.php:233
+msgid "From"
+msgstr "Du"
+
+#: shortcode/lab-shortcode-present.php:237
+msgid "to"
+msgstr "à"
+
+#: shortcode/lab-shortcode-present.php:239
+msgid "on the site"
+msgstr "sur le site"
+
+#: shortcode/lab-shortcode-present.php:241
+msgid "Save"
+msgstr "Sauver"
 
 #~ msgid "Publications HAL"
 #~ msgstr "HAL Publications"

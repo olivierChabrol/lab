@@ -227,20 +227,21 @@ function lab_present_choice($param) {
         "lab-present-choice"
     );
     $choiceStr = "<br/><hr><div>
-        <h3>Je serai présent(e)...</h1>
-        <form name='form' method='post' action=''>
+        <h3>".esc_html__("I will be there", "lab")."</h3>
+            <div class=\"input-group mb-3\">
             <input id='userId' name='userId' type='hidden' value='" . get_current_user_id() . "' />
 
-            <label for='date-open'>Du</label>
+            <label for='date-open'>".esc_html__("From", "lab")."</label>
             <input type='date' name='date-open' id='date-open' />
             <label for='hour-open'></label>
             <input type='time' name='hour-open' id='hour-open' />
-            <label for='hour-close'>à</label>
+            <label for='hour-close'>".esc_html__("to", "lab")."</label>
             <input type='time' name='hour-close' id='hour-close' />
-            <label for='site-selected'>sur le site</label>
-            " . lab_html_select_str("siteId", "siteName", "class", lab_admin_list_site) . "<br/>
-            <input type='submit' name='envoi' value='Envoyer'>
-        </form></div>";
+            <label for='site-selected'>".esc_html__("on the site", "lab")."</label>
+            " . lab_html_select_str("siteId", "siteName", "custom-select", lab_admin_list_site) . "
+            <button class=\"btn btn-success\" id=\"lab_presence_button_save\">".esc_html__("Save", "lab")."</button>
+            </div>
+        </div>";
 
     if (isset($_POST['envoi'])) {
         $userId    = $_POST['userId'];
@@ -262,7 +263,7 @@ function lab_present_choice($param) {
     
     //requete pour connaitre les présences de l'utilisateur
     global $wpdb;
-    $sql = "SELECT * FROM `".$wpdb->prefix."lab_presence` AS pre
+    $sql = "SELECT pre.*, par.value FROM `".$wpdb->prefix."lab_presence` AS pre
             JOIN ".$wpdb->prefix."lab_params AS par
                 ON pre.site = par.id
             WHERE `user_id` = " . get_current_user_id();
@@ -273,6 +274,7 @@ function lab_present_choice($param) {
                                 <th scope='col'>Du</th>
                                 <th scope='col'>Jusqu'au</th>
                                 <th scope='col'>Sur</th>
+                                <th scope='col'>Action</th>
                             </tr>
                         </thead>
                         <tbody>";
@@ -283,7 +285,8 @@ function lab_present_choice($param) {
         $choiceStr .= "<tr><th scope='row'>" . ++$increment . "</th>
                         <td>". esc_html($r->hour_start) ."</td>
                         <td>". esc_html($r->hour_end)   ."</td>
-                        <td>". esc_html($r->value)       ."</td></tr>";
+                        <td>". esc_html($r->value)       ."</td>
+                        <td><a href=\"#\" id=\"delete_presence_".$r->id."\">delete</td></tr>";
     }
 
     $choiceStr .= "</tbody></table></div>";
