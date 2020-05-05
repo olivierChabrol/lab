@@ -944,6 +944,7 @@ function create_all_tables() {
     lab_keyring_createTable_keys();
     lab_keyring_createTable_loans();
     lab_admin_initTable_usermeta();
+    lab_admin_createTable_presence();
 }
 
 function delete_all_tables() {
@@ -957,6 +958,7 @@ function delete_all_tables() {
     drop_table("lab_hal");
     drop_table("lab_hal_users");
     drop_table("lab_groups");
+    drop_table("lab_presence");
 }
 
 /**
