@@ -28,6 +28,7 @@ require_once("lab-admin-keyring.php");
 require_once("lab-actions.php");
 require_once("lab-hal-widget.php");
 require_once("lab-admin-invitations.php");
+require_once(LAB_DIR_PATH."shortcode/lab-shortcode-present.php");
 require_once(LAB_DIR_PATH."shortcode/lab-shortcode-directory.php");
 require_once(LAB_DIR_PATH."shortcode/lab-shortcode-profile.php");
 require_once(LAB_DIR_PATH."shortcode/lab-shortcode-hal.php");
@@ -81,6 +82,8 @@ add_action( 'plugins_loaded', 'myplugin_load_textdomain' );
 add_action('admin_enqueue_scripts', 'admin_enqueue');
 
 
+add_shortcode('lab-present', 'lab_present_select');
+add_shortcode('lab-present-choice', 'lab_present_choice');
 add_shortcode('lab-directory', 'lab_directory');
 add_shortcode('lab-profile', 'lab_profile' );
 add_shortcode('lab_old-event', 'lab_old_event');
@@ -217,7 +220,9 @@ function admin_enqueue()
  */
 function wp_lab_fe_enqueues()
 {
-  wp_enqueue_script('lab-fe', plugins_url('js/lab_fe.js',__FILE__), array('jquery','wp-i18n'), version_id(), true);
+	wp_enqueue_script('jquery-3.5.1-js', plugins_url('lab/js/jquery-3.5.1.min.js'), array(), 'v3.5.1', true);
+  wp_enqueue_script('jquery-ui-1.12.1-js', plugins_url('lab/js/jquery-ui.min.js'), array('jquery-3.5.1-js'), 'v1.12.1', true);
+  wp_enqueue_script('lab-fe', plugins_url('js/lab_fe.js',__FILE__), array('jquery-3.5.1-js', 'jquery-ui-1.12.1-js', 'wp-i18n'), version_id(), true);
   wp_enqueue_style('profileCSS',plugins_url('css/lab-profile.css',__FILE__));
   wp_enqueue_script('SpectrumJS', plugins_url('js/spectrum.js',__FILE__), array('jquery','wp-i18n'), '1.8.0', true);
   wp_enqueue_style('SpectrumCSS',plugins_url('css/spectrum.css',__FILE__));

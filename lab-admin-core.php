@@ -57,8 +57,22 @@ function lab_admin_createTable_param() {
     $sql = "CREATE TABLE IF NOT EXISTS `".$wpdb->prefix."lab_params` (
         `id` bigint UNSIGNED NOT NULL,
         `type_param` bigint UNSIGNED NOT NULL,
-        `value` varchar(20) DEFAULT NULL
+        `value` varchar(20) DEFAULT NULL,
+        `color` varchar(8) DEFAULT NULL,
       ) ENGINE=InnoDB";
+    $wpdb->get_results($sql);
+}
+
+function lab_admin_createTable_presence() {
+    global $wpdb;
+    $sql = "CREATE TABLE `".$wpdb->prefix."lab_presence` (
+        `id` bigint NOT NULL AUTO_INCREMENT,
+        `user_id` bigint NOT NULL,
+        `hour_start` datetime NOT NULL,
+        `hour_end` datetime NOT NULL,
+        `site` int NOT NULL,
+        PRIMARY KEY (`id`)
+      ) ENGINE=InnoDB;";
     $wpdb->get_results($sql);
 }
 
@@ -83,6 +97,25 @@ function lab_admin_initTable_param() {
             (15, 7, 'CNRS'),
             (16, 7, 'AMU');";
     $wpdb->get_results($sql);
+}
+
+/**
+ * Return all site defined
+ *
+ * @return [[id, value],...]
+ */
+function lab_admin_list_site()
+{
+    global $wpdb;
+    $sql = "SELECT id, value, color FROM `".$wpdb->prefix."lab_params` WHERE type_param = 4";
+    return $wpdb->get_results($sql);
+}
+
+function lab_admin_list_present_user($startDate, $endDate) {
+    global $wpdb;
+    $sql = "SELECT lp.id, lp.user_id, lp.hour_start, lp.hour_end, lp.site as site_id, p.value as site, um1.meta_value as first_name, um2.meta_value as last_name FROM `".$wpdb->prefix."lab_presence` AS lp JOIN ".$wpdb->prefix."lab_params as p ON p.id=lp.site JOIN ".$wpdb->prefix."usermeta AS um1 ON um1.user_id=lp.user_id JOIN ".$wpdb->prefix."usermeta AS um2 ON um2.user_id=lp.user_id WHERE (lp.`hour_start` BETWEEN '".date("Y-m-d", $startDate)." 00:00:00' AND '".date("Y-m-d", $endDate)." 23:59:59') AND um1.meta_key='first_name' AND um2.meta_key='last_name' ORDER BY lp.user_id, lp.`hour_start`";
+    return $wpdb->get_results($sql);
+    //return $sql;
 }
 
 /**
@@ -927,6 +960,7 @@ function create_all_tables() {
     lab_keyring_createTable_keys();
     lab_keyring_createTable_loans();
     lab_admin_initTable_usermeta();
+    lab_admin_createTable_presence();
     lab_invitations_createTables();
 }
 
@@ -942,6 +976,7 @@ function delete_all_tables() {
     drop_table("lab_hal");
     drop_table("lab_hal_users");
     drop_table("lab_groups");
+    drop_table("lab_presence");
     drop_table("lab_invitations");
     drop_table("lab_guests");
 }

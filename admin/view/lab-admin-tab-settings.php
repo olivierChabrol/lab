@@ -57,6 +57,10 @@ function lab_admin_tab_settings() {
   <hr/>
   <button class="page-title-action" id="lab_keyring_create_table_keys"><?php echo esc_html__('Créer la table Keys','lab'); ?></button>
   <button class="page-title-action" id="lab_keyring_create_table_loans"><?php echo esc_html__('Créer la table Loans','lab'); ?></button><br><br>
+  <hr/>
+  <button class="page-title-action" id="lab_presence_create_table"><?php echo esc_html__('Créer la table presence','lab'); ?></button><br>
+  <hr/>
+
   <button class="page-title-action" id="lab_invite_create_tables"><?php echo esc_html__('Créer la table Invitation','lab'); ?></button>
   <hr/>
   <button class="page-title-action" id="lab_admin_reset_db"><?php echo esc_html__('Reset DB','lab'); ?></button>

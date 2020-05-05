@@ -51,6 +51,7 @@ jQuery(function($){
       $("#lab_directory_user_name").val(firstname + " " + lastname);
     }
   });
+
 });
 
 /******************************* ShortCode Profile *******************************/
