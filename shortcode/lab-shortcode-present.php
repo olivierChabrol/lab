@@ -271,8 +271,9 @@ function lab_present_choice($param) {
                         <thead>
                             <tr>
                                 <th scope='col'>#</th>
-                                <th scope='col'>Du</th>
-                                <th scope='col'>Jusqu'au</th>
+                                <th scope='col'>Le</th>
+                                <th scope='col'>De</th>
+                                <th scope='col'>Jusqu'à</th>
                                 <th scope='col'>Sur</th>
                                 <th scope='col'>Action</th>
                             </tr>
@@ -284,10 +285,10 @@ function lab_present_choice($param) {
     foreach ($results as $r) {
         $choiceStr .= "<tr><th scope='row'>" . ++$increment . "</th>
                         <td class='date-row'>". esc_html(date("Y-m-d", strtotime($r->hour_start))) ."</td>
-                        <td class='hour-row'>". esc_html(date("H:i", strtotime($r->hour_start))) ."</td>
-                        <td class='date-row'>"  . esc_html($r->hour_end)   ."</td>
+                        <td class='hour-row'>". esc_html(date("H:i",   strtotime($r->hour_start))) ."</td>
+                        <td class='date-row'>"  . esc_html(date("H:i", strtotime($r->hour_end)))  ."</td>
                         <td class='site-row'>" . esc_html($r->value)      ."</td>
-                        <td><a href=\"#\" id=\"delete_presence_".$r->id."\">delete</td></tr>";
+                        <td><a href=\"#\" id=\"delete_presence_".$r->id."\"><span class='ui-icon ui-icon-trash'></span></td></tr>";
     }
 
     $choiceStr .= "</tbody></table></div>";
