@@ -1,8 +1,8 @@
 <?php
 /*
  * File Name: lab-shortcode-present.php
- * Description: shortcode to display if your present
- * Authors: Olivier CHABROL
+ * Description: shortcode to display if you're present
+ * Authors: Olivier CHABROL, Astrid BEYER
  * Version: 1.0
 */
 
@@ -213,9 +213,9 @@ function lab_present_choice($param) {
         $param, 
         "lab-present-choice"
     );
-    $choiceStr = "<br/><hr>
+    $choiceStr = "<br/><hr><div class='container'><div class='pull-left' style='margin-right:3em'>
         <h3>Je serai présent(e)...</h1>
-        <form name='form' action='' method='post'>
+        <form name='form' method='post' action=''>
             <input id='userId' name='userId' type='hidden' value='" . get_current_user_id() . "' />
 
             <label for='date-open'>Le</label>
@@ -229,7 +229,46 @@ function lab_present_choice($param) {
             <input type='time' name='hour-close' id='hour-close' />
             <br/>
             <label for='site-selected'>Sur le site</label>
-            " . lab_html_select_str("userId", "userName", "class", lab_admin_list_site) . "
-        </form>";
+            " . lab_html_select_str("siteId", "siteName", "class", lab_admin_list_site) . "<br/>
+            <input type='submit' name='envoi' value='Envoyer'>
+        </form></div>";
+
+    if (isset($_POST['envoi'])) {
+        $userId    = $_POST['userId'];
+        $dateOpen  = $_POST['date-open'];
+        $hourOpen  = $_POST['hour-open'];
+        $dateClose = $_POST['date-close'];
+        $hourClose = $_POST['hour-close'];
+        $site      = $_POST['siteName'];
+        printf("Bonjour $userId vous avez choisis de $dateOpen à $hourOpen jusqu'à $dateClose à $hourClose sur le site $site");
+
+        //requete pour envoyer la présence sur la bd
+        global $wpdb;
+        $data = array('user_id' => $userId, 'hour_start' => $dateOpen . ' ' . $hourOpen,
+                'hour_end' => $dateClose . ' ' . $hourClose, 'site' => $site);
+        $format = array('%d','%s','%s','%d');
+        $wpdb->insert('wp_lab_presence', $data, $format);
+    }
+
+    $choiceStr .= "<div class='pull-right'><h3>Je souhaite modifier une de mes présences</h3>";
+    
+    //requete pour connaitre les présences de l'utilisateur
+    $sql = "SELECT * FROM `wp_lab_presence` WHERE user_id = '" . $userId . "';";
+    $choiceStr .= "<table id='userTable' class='table'>
+                        <thead>
+                            <tr>
+                                <th scope='col'>#</th>
+                                <th scope='col'>De</th>
+                                <th scope='col'>Jusqu'à</th>
+                                <th scope='col'>Sur</th>
+                            </tr>
+                        </thead> 
+                        <tbody>
+                            
+                        </tbody>
+                   </table>";
+
+    $choiceStr .= "</div></div>";
+
     return $choiceStr;
 }
