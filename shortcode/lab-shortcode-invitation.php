@@ -17,7 +17,7 @@ function lab_invitation($args) {
     $invitationStr ='';
     $url = $wp->request;
     if ( $param['hostpage'] ) {
-        if ( ! isset(explode("/",$url)[1])) {//Aucun token, donc l'invitant crée lui-même une nouvelle invitation
+        if ( ! isset(explode("/",$url)[1])) { //Aucun token, donc l'invitant crée lui-même une nouvelle invitation
             $token='0';
         } else {//Token fournit, récupère les informations existantes
             $token = explode("/",$url)[1];
