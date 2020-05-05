@@ -217,7 +217,7 @@ function lab_present_choice($param) {
         $param, 
         "lab-present-choice"
     );
-    $choiceStr = "<br/><hr><div class='container'><div>
+    $choiceStr = "<br/><hr><div>
         <h3>Je serai présent(e)...</h1>
         <form name='form' method='post' action=''>
             <input id='userId' name='userId' type='hidden' value='" . get_current_user_id() . "' />
@@ -249,11 +249,14 @@ function lab_present_choice($param) {
         $wpdb->insert('wp_lab_presence', $data, $format);
     }
 
-    $choiceStr .= "<div><h3>Je souhaite modifier une de mes présences</h3>";
+    $choiceStr .= "<div style='margin-top: 2em'><h3>Je souhaite modifier une de mes présences</h3>";
     
     //requete pour connaitre les présences de l'utilisateur
     global $wpdb;
-    $sql = "SELECT * FROM `".$wpdb->prefix."lab_presence` WHERE `user_id` = " . get_current_user_id();
+    $sql = "SELECT * FROM `".$wpdb->prefix."lab_presence` AS pre
+            JOIN ".$wpdb->prefix."lab_params AS par
+                ON pre.site = par.id
+            WHERE `user_id` = " . get_current_user_id();
     $choiceStr .= "<table id='userTable' class='table table-striped table-hover'>
                         <thead>
                             <tr>
@@ -262,7 +265,7 @@ function lab_present_choice($param) {
                                 <th scope='col'>Jusqu'au</th>
                                 <th scope='col'>Sur</th>
                             </tr>
-                        </thead> 
+                        </thead>
                         <tbody>";
 
     $results = $wpdb->get_results($sql);
@@ -271,10 +274,10 @@ function lab_present_choice($param) {
         $choiceStr .= "<tr><th scope='row'>" . ++$increment . "</th>
                         <td>". esc_html($r->hour_start) ."</td>
                         <td>". esc_html($r->hour_end)   ."</td>
-                        <td>". esc_html($r->site)       ."</td></tr>";
+                        <td>". esc_html($r->value)       ."</td></tr>";
     }
 
-    $choiceStr .= "</tbody></table></div></div>";
+    $choiceStr .= "</tbody></table></div>";
 
     return $choiceStr;
 }
