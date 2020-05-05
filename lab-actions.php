@@ -99,4 +99,7 @@ if (is_admin()) {
     add_action( 'wp_ajax_lab_invitations_new','lab_invitations_new' );
     add_action( 'wp_ajax_nopriv_lab_invitations_new','lab_invitations_new' );
     add_action( 'wp_ajax_lab_invitations_edit','lab_invitations_edit' );
+    add_action( 'wp_ajax_lab_invitations_complete','lab_invitations_complete' );
+    add_action( 'wp_ajax_lab_invitations_validate','lab_invitations_validate' );
+    add_action( 'wp_ajax_lab_invitation_newComment','lab_invitation_newComment' );
 }

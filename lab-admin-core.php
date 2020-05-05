@@ -85,8 +85,17 @@ function lab_admin_initTable_param() {
             (3, 1, 'KEY TYPE'),
             (4, 1, 'SITE'),
             (5, 1, 'USER FUNCTION'),
-            (6, 2, 'Equipe'),
-            (7, 2, 'Groupe');";
+            (6, 1, 'MISSION'),
+            (7, 1, 'FUNDING'),
+            (8, 2, 'Equipe'),
+            (9, 2, 'Groupe'),
+            (10, 3, 'Clé'),
+            (11, 3, 'Badge'),
+            (12, 4, 'Luminy'),
+            (13, 4, 'I2M'),
+            (14, 6, 'Séminaire'),
+            (15, 7, 'CNRS'),
+            (16, 7, 'AMU');";
     $wpdb->get_results($sql);
 }
 
@@ -260,7 +269,8 @@ function lab_admin_createUserGroupTable()
     $sql = "CREATE TABLE IF NOT EXISTS `".$wpdb->prefix."lab_users_groups` (
         `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
         `group_id` bigint UNSIGNED NOT NULL,
-        `user_id` bigint UNSIGNED NOT NULL
+        `user_id` bigint UNSIGNED NOT NULL,
+        PRIMARY KEY(`id`)
       ) ENGINE=InnoDB;";
     $wpdb->get_results($sql);
 }
@@ -358,6 +368,12 @@ function lab_admin_get_groups_byChief($chief_id) {
     global $wpdb;
     $sql="SELECT * FROM `".$wpdb->prefix."lab_groups` WHERE `chief_id`=".$chief_id.";";
     return $wpdb->get_results($sql);
+}
+function lab_admin_get_chief_byGroup($group_id) {
+    global $wpdb;
+    $sql = "SELECT * FROM `".$wpdb->prefix."lab_groups` WHERE `id`=".$group_id.";";
+    $res = $wpdb->get_results($sql)[0];
+    return $res->chief_id;
 }
 
 /********************************************************************************************
@@ -945,13 +961,15 @@ function create_all_tables() {
     lab_keyring_createTable_loans();
     lab_admin_initTable_usermeta();
     lab_admin_createTable_presence();
+    lab_invitations_createTables();
 }
 
 function delete_all_tables() {
     //lab_admin_delete_group(0);
     lab_admin_delete_all_group();
     drop_table("lab_group_substitutes");
-    drop_table("lab_group_users_groups");
+    drop_table("lab_prefered_groups");
+    drop_table("lab_users_groups");
     drop_table("lab_params");
     drop_table("lab_key_loans");
     drop_table("lab_keys");
@@ -959,6 +977,9 @@ function delete_all_tables() {
     drop_table("lab_hal_users");
     drop_table("lab_groups");
     drop_table("lab_presence");
+    drop_table("lab_invitations");
+    drop_table("lab_guests");
+    drop_table("lab_invite_comments");
 }
 
 /**

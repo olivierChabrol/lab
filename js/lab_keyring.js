@@ -625,13 +625,6 @@ function hideLoanManagement(loading) {
   //Vide les champs du formulaire
   clearFields("lab_keyring_loanform_",['user','end_date','start_date','commentary','referent']);
 }
-function getUrlVars() {
-  var vars = {};
-  var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
-      vars[key] = value;
-  });
-  return vars;
-}
 function getLoanForID(id, callback) {
   data={
     'action': 'keyring_find_loan_byID',
