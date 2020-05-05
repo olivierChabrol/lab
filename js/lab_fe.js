@@ -31,6 +31,21 @@ jQuery(function($){
   $("[id^=lab_presence_div_]").each(function() {
     $(this).hide();
   });
+  $("#lab_presence_table1 td").each(function() {
+
+    var clazz = $(this).attr("site");
+    if (clazz) {
+      if (clazz == "lab_34") {
+        $(this).css("background-color", "YELLOW");
+      }
+      if (clazz == "lab_36") {
+        $(this).css("background-color", "GREEN");
+      }
+      if (clazz == "lab_37") {
+        $(this).css("background-color", "LUMINY");
+      }
+    }
+  });
   $("#lab_presence_table td[id^=lab_presence_td_]").each(function() {
     num = $(this).attr("num");
     //console.log("id " + $(this).attr("id") + " " + num);
