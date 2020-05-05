@@ -283,9 +283,10 @@ function lab_present_choice($param) {
     $increment = 0;
     foreach ($results as $r) {
         $choiceStr .= "<tr><th scope='row'>" . ++$increment . "</th>
-                        <td class='date-row'>". esc_html($r->hour_start) ."</td>
+                        <td class='date-row'>". esc_html(date("Y-m-d", strtotime($r->hour_start))) ."</td>
+                        <td class='hour-row'>". esc_html(date("H:i", strtotime($r->hour_start))) ."</td>
                         <td class='date-row'>"  . esc_html($r->hour_end)   ."</td>
-                        <td class='clickable-row-site'>" . esc_html($r->value)      ."</td></tr>";
+                        <td class='site-row'>" . esc_html($r->value)      ."</td>
                         <td><a href=\"#\" id=\"delete_presence_".$r->id."\">delete</td></tr>";
     }
 
