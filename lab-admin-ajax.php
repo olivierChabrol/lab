@@ -398,7 +398,7 @@ function lab_admin_group_createReq() {
   wp_send_json_error($res);
 }
 function lab_admin_group_createRoot() { 
-  $res = lab_admin_group_create('root', 'root', '1', '0', '0');
+  $res = lab_admin_group_create('root', 'root', '1', '0', '0', '/');
   if (strlen($res)==0) {
     wp_send_json_success();
     return;
@@ -738,7 +738,7 @@ function lab_invitations_new() {
     'creation_time' => $timeStamp,
     'status' => 1
   );
-  foreach (['host_group_id','host_id','mission_objective','start_date','end_date','travel_mean_to','travel_mean_from','funding_source'] as $champ) {
+  foreach (['host_group_id','host_id', 'estimated_cost', 'mission_objective','start_date','end_date','travel_mean_to','travel_mean_from','funding_source'] as $champ) {
     $invite[$champ]=$fields[$champ];
   }
   lab_invitations_createInvite($invite);
@@ -751,7 +751,7 @@ function lab_invitations_new() {
 }
 function lab_invitations_edit() {
   $fields = $_POST['fields'];
-  if (get_current_user_id()==$fields['host_id']) {
+  if (get_current_user_id()==$fields['host_id'] || isset($fields['host_group_id']) && get_current_user_id()==(int)lab_admin_get_chief_byGroup($fields['host_group_id'])) {
     $guest = array (
       'first_name'=> $fields['guest_firstName'],
       'last_name'=> $fields['guest_lastName'],
@@ -766,7 +766,7 @@ function lab_invitations_edit() {
       'needs_hostel'=>$fields['needs_hostel']=='true' ? 1 : 0,
       'completion_time' => $timeStamp
     );
-    foreach (['host_group_id','host_id','mission_objective','start_date','end_date','travel_mean_to','travel_mean_from','funding_source'] as $champ) {
+    foreach (['host_group_id', 'estimated_cost', 'host_id','mission_objective','start_date','end_date','travel_mean_to','travel_mean_from','funding_source'] as $champ) {
       $invite[$champ]=$fields[$champ];
     }
     lab_invitations_editInvitation($fields['token'],$invite);
@@ -781,7 +781,9 @@ function lab_invitations_complete() {
   lab_invitations_editInvitation($token,array('status'=>10));
   $html = 'Un mail récapitulatif a été envoyé au responsable du groupe pour validation';
   $invite = lab_invitations_getByToken($token);
-  $html .= lab_invitations_mail(10,lab_invitations_getGuest($invite->guest_id),$invite);
+  $Iarray = json_decode(json_encode($invite), true);
+  $Garray = json_decode(json_encode(lab_invitations_getGuest($invite->guest_id)), true);
+  $html .= lab_invitations_mail(10,$Garray,$Iarray);
   wp_send_json_success($html);
 }
 function lab_invitations_validate() {

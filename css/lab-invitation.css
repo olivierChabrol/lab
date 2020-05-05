@@ -25,7 +25,7 @@
 #invitationForm .lab_invite_row .lab_invite_field {
   width: 50%;
 }
-#invitationForm p {
+#invitationForm .lab_invite_field p {
   font-size: 0.9em;
   font-style: italic;
 }

@@ -80,8 +80,8 @@ function lab_admin_initTable_param() {
             (12, 4, 'Luminy'),
             (13, 4, 'I2M'),
             (14, 6, 'Séminaire'),
-            (12, 7, 'CNRS'),
-            (12, 7, 'AMU');";
+            (15, 7, 'CNRS'),
+            (16, 7, 'AMU');";
     $wpdb->get_results($sql);
 }
 

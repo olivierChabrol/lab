@@ -203,6 +203,7 @@ function LABLoadInvitation() {
       iti.setNumber(iti.getNumber());
       $("#lab_phone").attr('phoneVal',iti.getNumber());
     });
+    //Affichage des champs autres lorsque l'option "autre" est sélectionnée
     $("#lab_mission").change(function(){
       if ($(this).val() == "other") {
         $("#lab_mission_other").show();
@@ -238,6 +239,7 @@ function LABLoadInvitation() {
         $("#lab_transport_from_other").hide();
       }
     });
+    //Autocomplete du nom de l'invitant
     $('#lab_hostname').autocomplete({
       minChars: 2,
       source: function(term, suggest){
@@ -255,10 +257,7 @@ function LABLoadInvitation() {
         $("#lab_hostname").attr('host_id', ui.item.user_id);
       }
     });
-    // $("input[type=submit]").click(function (e) {
-    //   e.preventDefault();
-    //   new_invitation_submit();
-    // });
+    //Si le formulaire contient déjà des informations, sélectionne les bonnes options
     if ($("#invitationForm").attr("newForm")==0) {
       if($('#lab_mission option[value="' + $("#lab_mission_other").val() + '"]').length > 0)
       {
@@ -303,6 +302,64 @@ function LABLoadInvitation() {
         iti.setNumber($('#lab_phone').attr('phoneval'));
       }
     }
+    else {
+      if ($("#lab_hostname").attr('host_id')=='' && $("#lab_hostname").val()!='') {
+        $("#lab_hostname").val('')
+      };
+    }
+    $("#lab_send_group_chief").click(function() {
+      if ($("#invitationForm").prop('submited')==null) {
+        invitation_submit(function () {
+          data = {
+            'action': 'lab_invitations_complete',
+            'token': $("#invitationForm").attr("token")
+          };
+          jQuery.post(LAB.ajaxurl, data, function(response) {
+            if (response.success) {
+              jQuery("#invitationForm").append("<br><h5>La demande a été complétée et transmise au responsable</h5>");
+              jQuery("#invitationForm").append(response.data);
+            }
+          });
+        });
+      }
+      data = {
+        'action': 'lab_invitations_complete',
+        'token': $("#invitationForm").attr("token")
+      };
+      jQuery.post(LAB.ajaxurl, data, function(response) {
+        if (response.success) {
+          jQuery("#invitationForm").append("<br><h5>La demande a été complétée et transmise au responsable</h5>");
+          jQuery("#invitationForm").append(response.data);
+        }
+      });
+    });
+    $("#lab_send_manager").click(function() {
+      if ($("#invitationForm").prop('submited')==null) {
+        invitation_submit(function() {
+          data = {
+            'action': 'lab_invitations_validate',
+            'token': $("#invitationForm").attr("token")
+          };
+          jQuery.post(LAB.ajaxurl, data, function(response) {
+            if (response.success) {
+              jQuery("#invitationForm").append("<br><h5>La demande a été validée et transmise au pôle budget</h5>");
+              jQuery("#invitationForm").append(response.data);
+            }
+          });  
+        });
+      } else {
+        data = {
+          'action': 'lab_invitations_validate',
+          'token': $("#invitationForm").attr("token")
+        };
+        jQuery.post(LAB.ajaxurl, data, function(response) {
+          if (response.success) {
+            jQuery("#invitationForm").append("<br><h5>La demande a été validée et transmise au pôle budget</h5>");
+            jQuery("#invitationForm").append(response.data);
+          }
+        });
+      }
+    });
   });
 }
 
@@ -311,10 +368,15 @@ jQuery(document).ready(function() {
     LABLoadInvitation();
   }
 });
-function invitation_submit() {
-  console.log("submitted");
+function formAction() {
+  invitation_submit(function() {
+    return;
+  });
+}
+function invitation_submit(callback) {
   document.querySelector("#primary-menu").scrollIntoView({behavior:"smooth"});
   jQuery(function($) {
+    $("#invitationForm").prop('submited',true);
     fields = { 
       'guest_firstName': $("#lab_firstname").val(),
       'guest_lastName': $("#lab_lastname").val(),
@@ -342,7 +404,8 @@ function invitation_submit() {
       };
       jQuery.post(LAB.ajaxurl, data, function(response) {
         if (response.success) {
-          $("#invitationForm")[0].outerHTML=response.data;
+          $("#invitationForm").html(response.data);
+          callback();
         }
       });
     } else { //On met à jour l'invitation existante
@@ -354,7 +417,8 @@ function invitation_submit() {
       };
       jQuery.post(LAB.ajaxurl, data, function(response) {
         if (response.success) {
-          jQuery("#invitationForm")[0].outerHTML=response.data;
+          jQuery("#invitationForm").html(response.data);
+          callback();
         }
       });
     }

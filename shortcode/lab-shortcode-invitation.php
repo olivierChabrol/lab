@@ -3,7 +3,7 @@
  * File Name: lab-shortcode-directory.php
  * Description: shortcode pour générer un annuaire
  * Authors: Ivan Ivanov, Lucas Urgenti
- * Version: 0.75
+ * Version: 0.8
 */
 
 function lab_invitation($args) { 
@@ -28,7 +28,7 @@ function lab_invitation($args) {
             $guest = lab_invitations_getGuest($invitation->guest_id);
             $host = new labUser($invitation->host_id);
             //Qui modifie, l'invitant ou le responsable ?
-            $isChief = get_current_user_id()==(int)lab_admin_get_chief_byGroup($invitation->host_group_id);
+            $isChief = isset($invitation->host_group_id) ? get_current_user_id()==(int)lab_admin_get_chief_byGroup($invitation->host_group_id): false;
             if ( $isChief ) {
                 $invitationStr .= '<p><i>Vous pouvez modifier cette invitation en tant que responsable de groupe</i></p>';
             } else if ( get_current_user_id()==$invitation->host_id ) { 
@@ -44,7 +44,7 @@ function lab_invitation($args) {
     $invitationStr = '<div id="invitationForm" hostForm='.$param['hostpage'].' token="'.(($param['hostpage'] && strlen($token)>1) ? $token : '').'" newForm='.$newForm.'>'.$invitationStr;
     $invitationStr .= '
         <h3>'.esc_html__("Informations personnelles","lab").'</h3>
-        <form action="javascript:invitation_submit()">
+        <form action="javascript:formAction()">
         <div class="lab_invite_row" id="lab_fullname">
             <div class="lab_invite_field">
                 <label for="lab_firstname">'.esc_html__("Prénom","lab").'</label>
@@ -71,14 +71,20 @@ function lab_invitation($args) {
         </div>
         <div class="lab_invite_field">
             <label for="lab_hostname">'.esc_html__("Nom de l'invitant","lab").'</label>
-            <input type="text" required id="lab_hostname" name="lab_hostname" host_id='.($host==0 ? '': $host->id).' value="'.($host==0 ? '' : $host->first_name.' '.$host->last_name).'">
+            <input type="text" required id="lab_hostname" name="lab_hostname" host_id="'.($host==0 ? '' : $host->id.'" value="'.$host->first_name.' '.$host->last_name).'">
         </div>
         <div class="lab_invite_field">
             <label for="lab_mission">'.esc_html__("Objectif de mission","lab").'</label>
             <select id="lab_mission" name="lab_mission">
-                <option value="">'.esc_html__("Choisissez une option","lab").'</option>
-                <option value="seminar">'.esc_html__("Séminaire","lab").'</option>
-                <option value="other">'.esc_html__("Autre","lab").'</option>
+                <option value="">'.esc_html__("Choisissez une option","lab").'</option>';
+
+    foreach(AdminParams::get_params_fromId(AdminParams::PARAMS_MISSION_ID) as $missionparam)
+    {
+        $invitationStr .= 
+                '<option value="'.$missionparam->id.'">'.esc_html__($missionparam->value,"lab").'</option>';
+    }
+    $invitationStr .= 
+                '<option value="other">'.esc_html__("Autre","lab").'</option>
             </select>
             <input hidden type="text" id="lab_mission_other" value="'.(!$newForm ? $invitation->mission_objective : '').'">
             <p style="display:none" id="lab_mission_other_desc">'.esc_html__("Précisez la nature de votre mission ici.","lab").'</p>
@@ -147,41 +153,51 @@ function lab_invitation($args) {
             $invitationStr .=
 
             '<h3>'.esc_html__("Champs pour l'invitant : ","lab").'</h3>
-            <div required class="lab_invite_field">
-                <label for="lab_group_name">'.esc_html__("Nom du groupe","lab").'</label>
-                <select id="lab_group_name" name="lab_group_name">';
-            foreach ($host->groups as $g)
-            {
-                $invitationStr .= '<option value="'.$g->id.'">'.$g->group_name.'</option>';
-            }
-
-            $invitationStr .=
-                '</select>
-            </div>
-            <div id="lab_inviting_fields" class="lab_invite_row">
+            <div class="lab_invite_row">
                 <div class="lab_invite_field">
-                    <label for="lab_estimated_cost">'.esc_html__("Coût estimé (en €)","lab").'</label>
-                    <input type="text" id="lab_estimated_cost" value="'.(!$newForm ? $invitation->estimated_cost : '').'">';
+                    <label for="lab_group_name">'.esc_html__("Nom du groupe","lab").'</label>
+                    <select required id="lab_group_name" name="lab_group_name">';
+                foreach ($host->groups as $g)
+                {
+                    $invitationStr .= '<option value="'.$g->id.'">'.$g->group_name.'</option>';
+                }
 
-                if ( get_current_user_id()==(int)lab_admin_get_chief_byGroup($invitation->host_group_id) ) {
-                    $invitationStr .= '<label for="lab_maximum_cost">'.esc_html__("Coût maximum (en €)","lab").'</label>
-                                       <input type="text" id="$" value="'.(!$newForm ? $invitation->maximum_cost : '').'">';
-                } 
                 $invitationStr .=
-                '</div>
+                    '</select>
+                </div>
                 <div class="lab_invite_field">
                     <label for="lab_credit">'.esc_html__("Origine des crédits","lab").'</label>
                     <select required id="lab_credit" name="lab_credit">
-                        <option value="">'.esc_html__("Choisissez une option","lab").'</option>
-                        <option value="cnrs">'.esc_html__("CNRS","lab").'</option>
-                        <option value="amu">'.esc_html__("AMU","lab").'</option>
-                        <option value="other">'.esc_html__("Autre","lab").'</option>
+                        <option value="">'.esc_html__("Choisissez une option","lab").'</option>';
+                    foreach(AdminParams::get_params_fromId(AdminParams::PARAMS_FUNDING_ID) as $creditparam)
+                    {
+                    $invitationStr .= 
+                        '<option value="'.$creditparam->id.'">'.esc_html__($creditparam->value,"lab").'</option>';
+                    }
+                    $invitationStr .=
+                        '<option value="other">'.esc_html__("Autre","lab").'</option>
                     </select>
                     <input hidden type="text" id="lab_credit_other" value="'.(!$newForm ? $invitation->funding_source : '').'">
                     <p style="display:none" id="lab_credit_other_desc">'.esc_html__("Précisez l'origine de crédit ici.","lab").'</p>
                 </div>
             </div>
             <div class="lab_invite_row">
+                <div class="lab_invite_field">
+                    <label for="lab_estimated_cost">'.esc_html__("Coût estimé (en €)","lab").'</label>
+                    <input type="text" id="lab_estimated_cost" value="'.(!$newForm ? $invitation->estimated_cost : '').'">
+                    <p>'.esc_html__("À remplir par l'invitant : coût estimé du défraiement ","lab").'</p>
+                </div>
+                <div class="lab_invite_field">
+                    <label for="lab_maximum_cost">'.esc_html__("Coût maximum (en €)","lab").'</label>
+                    <input type="text" id="$" value="'.(!$newForm ? $invitation->maximum_cost : '').'">
+                    <p>'.esc_html__("À remplir par le responsable : budget maximal allouable à cette invitation ","lab").'</p>
+                </div>
+            </div>';
+                // if ( isset($invitation->host_group_id) && get_current_user_id()==(int)lab_admin_get_chief_byGroup($invitation->host_group_id) ) {
+                //     $invitationStr .= '';
+                // } 
+                $invitationStr .=
+            '<div class="lab_invite_row">
                 <input type="submit" value="'.esc_html__("Enregistrer","lab").'">
             </div>
             </form></div>';
@@ -295,8 +311,8 @@ function lab_invitations_mail($type=1, $guest, $invite) {
             $content = "<p><i>".strftime('%A %d %B %G - %H:%M',$date->getTimestamp())."</i></p>";
             $content .= "<p>".esc_html__("Une demande d'invitation à l'I2M a été complétée.",'lab')."<br>"
             .esc_html__("Vous pouvez la consulter en suivant",'lab')." <a href='http://stage.fr/invite/".$invite['token']."'>".esc_html__('ce lien','lab')."</a><br>
-            et modifier les informations si besoin.</p>";
-            $content .= $content .= lab_InviteForm('host',$guest,$invite);
+            et modifier les informations si besoin. Vous pouvez ensuite la valider pour la transmettre au pôle budget.</p>";
+            $content .= lab_InviteForm('host',$guest,$invite);
             break;
         default:
             return 'unkown mail type';
@@ -307,7 +323,7 @@ function lab_invitations_mail($type=1, $guest, $invite) {
 }
 function lab_InviteForm($who,$guest,$invite) {
     $host = new LabUser($invite['host_id']);
-    $out = '<p>'.esc_html__("Récapitulatif de votre demande d'invitation",'lab').' : </p>
+    $out = '<p>'.esc_html__("Récapitulatif de la demande d'invitation",'lab').' : </p>
             <p>'.esc_html__("Informations personnelles de l'invité",'lab').' :</p>
                 <ul>
                 <li>'.esc_html__("Prénom",'lab').' : '.$guest['first_name'].'</li>
