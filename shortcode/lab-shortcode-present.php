@@ -208,7 +208,7 @@ function lab_present_choice($param) {
             <input type='time' name='hour-close' id='hour-close' />
             <br/>
             <label for='site-selected'>Sur le site</label>
-            " . lab_html_select("userId", "userName", "class", lab_admin_list_site) . "
+            " . lab_html_select_str("userId", "userName", "class", lab_admin_list_site) . "
         </form>";
     return $choiceStr;
 }
