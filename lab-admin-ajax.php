@@ -766,7 +766,7 @@ function lab_invitations_edit() {
       'needs_hostel'=>$fields['needs_hostel']=='true' ? 1 : 0,
       'completion_time' => $timeStamp
     );
-    foreach (['host_group_id', 'estimated_cost', 'host_id','mission_objective','start_date','end_date','travel_mean_to','travel_mean_from','funding_source'] as $champ) {
+    foreach (['host_group_id', 'estimated_cost', 'maximum_cost', 'host_id','mission_objective','start_date','end_date','travel_mean_to','travel_mean_from','funding_source'] as $champ) {
       $invite[$champ]=$fields[$champ];
     }
     lab_invitations_editInvitation($fields['token'],$invite);
@@ -790,4 +790,18 @@ function lab_invitations_validate() {
   $token = $_POST['token'];
   lab_invitations_editInvitation($token,array('status'=>20));
   wp_send_json_success('La demande a été transmise à l\'administration');
+}
+
+function lab_invitation_newComment() {
+  $id = lab_invitations_getByToken($_POST['token'])->id;
+  date_default_timezone_set("Europe/Paris");
+  $timeStamp=date("Y-m-d H:i:s",time());
+  lab_invitations_addComment(array(
+    'content'=> $_POST['content'],
+    'timestamp'=> $timeStamp,
+    'author'=>$_POST['author'],
+    'invite_id'=>$id
+  )); 
+  $html = lab_inviteComments($_POST['token']);
+  wp_send_json_success($html);
 }

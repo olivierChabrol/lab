@@ -49,3 +49,11 @@ function clearFields(prefix,list) { //Empties the values of all the fields in th
     jQuery('#'+prefix+i).val('');
   }
 }
+//Fonction permettant de récupérer les arguments de l'URL sous forme de liste
+function getUrlVars() {
+  var vars = {};
+  var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+      vars[key] = value;
+  });
+  return vars;
+}

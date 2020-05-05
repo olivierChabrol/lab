@@ -424,3 +424,18 @@ function invitation_submit(callback) {
     }
   });
 }
+function lab_submitComment() {
+  jQuery(function ($) {
+    data = {
+      'action': 'lab_invitation_newComment',
+      'token': $("#invitationForm").attr("token"),
+      'author' : $("#lab_comment_name").val(),
+      'content' : $("#lab_comment").val()
+    }
+    jQuery.post(LAB.ajaxurl, data, function(response) {
+      if (response.success) {
+        $("#lab_invitation_oldComments").html(response.data);
+      }
+    });
+  });
+}

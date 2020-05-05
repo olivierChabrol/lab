@@ -3,7 +3,7 @@
  * File Name: lab-shortcode-directory.php
  * Description: shortcode pour générer un annuaire
  * Authors: Ivan Ivanov, Lucas Urgenti
- * Version: 0.8
+ * Version: 0.85
 */
 
 function lab_invitation($args) { 
@@ -189,13 +189,10 @@ function lab_invitation($args) {
                 </div>
                 <div class="lab_invite_field">
                     <label for="lab_maximum_cost">'.esc_html__("Coût maximum (en €)","lab").'</label>
-                    <input type="text" id="$" value="'.(!$newForm ? $invitation->maximum_cost : '').'">
+                    <input type="text" id="lab_maximum_cost" value="'.(!$newForm ? $invitation->maximum_cost : '').'">
                     <p>'.esc_html__("À remplir par le responsable : budget maximal allouable à cette invitation ","lab").'</p>
                 </div>
             </div>';
-                // if ( isset($invitation->host_group_id) && get_current_user_id()==(int)lab_admin_get_chief_byGroup($invitation->host_group_id) ) {
-                //     $invitationStr .= '';
-                // } 
                 $invitationStr .=
             '<div class="lab_invite_row">
                 <input type="submit" value="'.esc_html__("Enregistrer","lab").'">
@@ -212,6 +209,23 @@ function lab_invitation($args) {
             <input type="submit" value="'.esc_html__("Valider","lab").'">
         </div>';
         }
+        $invitationStr .= '
+        <div id="lab_invitationComments">';
+        if (!$newForm) {
+            $invitationStr .= '
+            <h5>Commentaires</h5>
+            <div id="lab_invitation_oldComments">
+                '.lab_inviteComments($token).'
+            </div>
+            <div id="lab_invitation_newComment">
+                <form action="javascript:lab_submitComment()">
+                    <input type="text" id="lab_comment_name"/>
+                    <textarea row="1" id="lab_comment"></textarea>
+                    <input type="submit" value="'.esc_html__("Envoyer commentaire","lab").'">
+                </form>
+            </div>
+        </div>';
+            }
     return $invitationStr;
 }
 
@@ -244,7 +258,6 @@ function lab_invitations_interface($args) {
                 }
             $listInvitationStr .='</select>';
             $list = lab_invitations_getByGroup(lab_invitations_getPrefGroups(get_current_user_id())[0]);
-            var_dump($list);
             break;
     }
     $listInvitationStr .= '<table>
@@ -352,7 +365,14 @@ function lab_InviteForm($who,$guest,$invite) {
     $out .= '</ul>';
     return $out;
 }
-
+function lab_inviteComments($token) {
+    $out='<ul>';
+    foreach (lab_invitations_getComments(lab_invitations_getByToken($token)->id) as $comment) {
+        $out .= "<li class='lab_comment'><i>$comment->timestamp</i> - $comment->author <br> $comment->content</li>";
+    }
+    $out .='</ul>';
+    return $out;
+}
 ?>
 
 
