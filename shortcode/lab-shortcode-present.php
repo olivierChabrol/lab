@@ -227,7 +227,7 @@ function lab_present_choice($param) {
         "lab-present-choice"
     );
     $choiceStr = "<br/><hr><div>
-        <h3>Je serai présent(e)...</h1>
+        <h3>Je serai présent(e)...</h3>
         <form name='form' method='post' action=''>
             <input id='userId' name='userId' type='hidden' value='" . get_current_user_id() . "' />
 
@@ -259,7 +259,7 @@ function lab_present_choice($param) {
     }
 
     $choiceStr .= "<div style='margin-top: 2em'><h3>Je souhaite modifier une de mes présences</h3>";
-    
+
     //requete pour connaitre les présences de l'utilisateur
     global $wpdb;
     $sql = "SELECT * FROM `".$wpdb->prefix."lab_presence` AS pre
