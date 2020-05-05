@@ -248,7 +248,8 @@ function lab_present_choice($param) {
     $choiceStr .= "<div><h3>Je souhaite modifier une de mes présences</h3>";
     
     //requete pour connaitre les présences de l'utilisateur
-    $sql = "SELECT * FROM `wp_lab_presence` WHERE user_id = '" . $userId . "';";
+    global $wpdb;
+    $sql = "SELECT * FROM `".$wpdb->prefix."lab_presence` WHERE `user_id` = 1";
     $choiceStr .= "<table id='userTable' class='table'>
                         <thead>
                             <tr>
@@ -258,12 +259,18 @@ function lab_present_choice($param) {
                                 <th scope='col'>Sur</th>
                             </tr>
                         </thead> 
-                        <tbody>
-                            
-                        </tbody>
-                   </table>";
+                        <tbody>";
 
-    $choiceStr .= "</div></div>";
+    $results = $wpdb->get_results($sql);
+    $increment = 0;
+    foreach ($results as $r) {
+        $choiceStr .= "<tr><th scope='row'>" . ++$increment . "</th>
+                        <td>". esc_html($r->hour_start) ."</td>
+                        <td>". esc_html($r->hour_end)   ."</td>
+                        <td>". esc_html($r->site)       ."</td></tr>";
+    }
+
+    $choiceStr .= "</tbody></table></div></div>";
 
     return $choiceStr;
 }
