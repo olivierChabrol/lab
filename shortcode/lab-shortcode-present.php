@@ -67,7 +67,16 @@ function lab_present_select($param) {
         }
     }
     //var_dump($users);
-    $str .= "<a href=\"/presence/?date=".date("Y-m-d",$previousWeek)."\"><b>&lt;</b></a> Semaine du  : ".date("d-m-Y",$startDay)." au ".date("d-m-Y",$endDay)." <a href=\"/presence/?date=".date("Y-m-d",$nextWeek)."\"><b>&gt;</b></a><br>";
+    $str .= "<a href=\"/presence/?date=".date("Y-m-d",$previousWeek)."\"><b>&lt;</b></a> Semaine du  : ".date("d-m-Y",$startDay)." au ".date("d-m-Y",$endDay)." <a href=\"/presence/?date=".date("Y-m-d",$nextWeek)."\"><b>&gt;</b></a>";
+
+    $listSite = lab_admin_list_site();
+    $colors[] = array();
+    $str .= "<table><tr>";
+    foreach($listSite as $site) {
+        $str .= "<td style=\"background-color:#".$site->color.";\">".$site->value."</td>";
+        $colors[$site->id] = $site->color;
+    }
+    $str .= "</tr></table><br>";
 
     $str .= "<table id=\"lab_presence_table1\" class=\"table table-bordered table-striped\"><thead class=\"thead-dark\"><tr><th>&nbsp;</th><th colspan=\"2\">Lundi</th><th colspan=\"2\">Mardi</th><th colspan=\"2\">Mercredi</th><th colspan=\"2\">Jeudi</th><th colspan=\"2\">Vendredi</th></tr></thead><tbody>";
     foreach($users as $k=>$v) {
@@ -85,14 +94,14 @@ function lab_present_select($param) {
                     $notPresent = false;
                     if (date('H', $dateStart) < 13) {
                         if (date('H', $dateEnd) > 13) {
-                            $str .= "<td site=\"lab_".$hours->site_id."\">".date('H:i', $dateStart)."</td><td site=\"lab_".$hours->site_id."\">".date('H:i', $dateEnd)."</td>";
+                            $str .= "<td style=\"background-color:#".$colors[$hours->site_id].";\">".date('H:i', $dateStart)."</td><td style=\"background-color:#".$colors[$hours->site_id].";\">".date('H:i', $dateEnd)."</td>";
                         }
                         else {
-                            $str .= "<td site=\"lab_".$hours->site_id."\">".date('H:i', $dateStart)."-".date('H:i', $dateEnd)."</td><td>&nbsp;</td>";
+                            $str .= "<td style=\"background-color:#".$colors[$hours->site_id].";\">".date('H:i', $dateStart)."-".date('H:i', $dateEnd)."</td><td>&nbsp;</td>";
                         }
                     }
                     else {
-                        $str .= "<td>&nbsp;</td><td site=\"lab_".$hours->site_id."\">".date('H:i', $dateStart)."-".date('H:i', $dateEnd)."</td>";
+                        $str .= "<td>&nbsp;</td><td style=\"background-color:#".$colors[$hours->site_id].";\">".date('H:i', $dateStart)."-".date('H:i', $dateEnd)."</td>";
                     }
                 }
             }
