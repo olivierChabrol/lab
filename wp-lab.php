@@ -82,7 +82,8 @@ add_action( 'plugins_loaded', 'myplugin_load_textdomain' );
 add_action('admin_enqueue_scripts', 'admin_enqueue');
 
 
-add_shortcode('lab-present'  , 'lab_present_select');
+add_shortcode('lab-present', 'lab_present_select');
+add_shortcode('lab-present-choice', 'lab_present_choice');
 add_shortcode('lab-directory', 'lab_directory');
 add_shortcode('lab-profile', 'lab_profile' );
 add_shortcode('lab_old-event', 'lab_old_event');
