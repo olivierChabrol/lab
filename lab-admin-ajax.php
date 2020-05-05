@@ -702,7 +702,7 @@ function lab_profile_edit() {
 }
 
 function lab_admin_createSocial() {
-  foreach (['facebook','instagram','linkedin','pinterest','twitter','tumblr','youtube'] as $reseau) {
+  foreach (['facebook','instagram','linkedin','pinte1rest','twitter','tumblr','youtube'] as $reseau) {
     lab_userMetaData_create_metaKeys($reseau,'');
   }
   wp_send_json_success();

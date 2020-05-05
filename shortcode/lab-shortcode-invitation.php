@@ -7,6 +7,7 @@
 */
 
 function lab_invitation($args) { 
+    setlocale(LC_ALL,get_locale());
     $param = shortcode_atts(array(
         'hostpage' => 0 //0 pour invité, 1 pour invitant/responsable
         ),
@@ -41,10 +42,11 @@ function lab_invitation($args) {
         $host = isset(explode("/",$url)[1]) ? new labUser(lab_profile_getID(explode("/",$url)[1])) : 0 ;
     }
     $newForm = (!$param['hostpage'] || $token=='0') ? 1 : 0 ; //Le formulaire est-il nouveau ? Si non, remplit les champs avec les 
-    $invitationStr = '<div id="invitationForm" hostForm='.$param['hostpage'].' token="'.(($param['hostpage'] && strlen($token)>1) ? $token : '').'" newForm='.$newForm.'>'.$invitationStr;
+    $invitationStr = '<div id="invitationForm" hostForm='.$param['hostpage'].' token="'.(($param['hostpage'] && strlen($token)>1) ? $token : '').'" newForm='.$newForm.'>
+                      <h2>'.esc_html__("Formulaire","lab").'<i class="fas fa-arrow-up"></i></h2>'.$invitationStr;
     $invitationStr .= '
-        <h3>'.esc_html__("Informations personnelles","lab").'</h3>
         <form action="javascript:formAction()">
+        <h3>'.esc_html__("Informations personnelles","lab").'</h3>
         <div class="lab_invite_row" id="lab_fullname">
             <div class="lab_invite_field">
                 <label for="lab_firstname">'.esc_html__("Prénom","lab").'</label>
@@ -149,7 +151,7 @@ function lab_invitation($args) {
             </div>
         </div>
         <hr>';
-        if ( $newForm ) {
+        if ( $newForm ) {// Affiche le champ pour ajouter un commentaire lors de la création
             $invitationStr .= 
             '<div class="lab_invite_field">
                 <label for="lab_form_comment">'.esc_html__("Commentaire (facultatif)",'lab').'</label>
@@ -201,14 +203,14 @@ function lab_invitation($args) {
                 </div>
             </div>';
                 $invitationStr .=
-            '<div class="lab_invite_row">
+            '<div class="lab_invite_field">
                 <input type="submit" value="'.esc_html__("Enregistrer","lab").'">
             </div>
             </form></div>';
             if ($isChief) {
-                $invitationStr .= '<div><button id="lab_send_manager">'.esc_html__("Envoyer à l'administration",'lab').'</button></div>';
+                $invitationStr .= '<div class="lab_invite_row"><p class="lab_invite_field">Cliquez ici pour valider la demande et la transmettre au pôle budget :</p><button id="lab_send_manager">'.esc_html__("Envoyer à l'administration",'lab').'</button></div>';
             } else {
-                $invitationStr .= '<div><button id="lab_send_group_chief">'.esc_html__("Envoyer au responsable",'lab').'</button></div>';
+                $invitationStr .= '<div class="lab_invite_row"><p class="lab_invite_field">Cliquez ici pour compléter la demande et la transmettre au responsable du groupe :</p><button id="lab_send_group_chief">'.esc_html__("Envoyer au responsable",'lab').'</button></div>';
             }
         }
         else {
@@ -219,19 +221,21 @@ function lab_invitation($args) {
         $invitationStr .= '
         <div id="lab_invitationComments">';
         if (!$newForm) {
+            $currentUser = lab_admin_username_get(get_current_user_id());
             $invitationStr .= '
-            <h5>Commentaires</h5>
+            <h2>Commentaires <i class="fas fa-arrow-up"></i></h2>
             <div id="lab_invitation_oldComments">
                 '.lab_inviteComments($token).'
             </div>
             <div id="lab_invitation_newComment">
+                <h5>'.esc_html__("Nouveau commentaire",'lab').'</h5>
                 <form action="javascript:lab_submitComment()">
-                    <input type="text" id="lab_comment_name"/>
-                    <textarea row="1" id="lab_comment"></textarea>
+                    <label><i>'.esc_html__("Publier sous le nom de",'lab')."</i> : <span id='lab_comment_name'>".$currentUser['first_name'].' '.$currentUser['last_name'].'</span></label>
+                    <textarea row="1" id="lab_comment" placeholder="Contenu du commentaire..."></textarea>
                     <input type="submit" value="'.esc_html__("Envoyer commentaire","lab").'">
                 </form>
             </div>
-            </div>';
+        </div>';
         }
     return $invitationStr;
 }
@@ -373,11 +377,15 @@ function lab_InviteForm($who,$guest,$invite) {
     return $out;
 }
 function lab_inviteComments($token) {
-    $out='<ul>';
+    $loc= get_locale();
+    setlocale(LC_TIME,$loc);
     foreach (lab_invitations_getComments(lab_invitations_getByToken($token)->id) as $comment) {
-        $out .= "<li class='lab_comment'><i>$comment->timestamp</i> - $comment->author <br> $comment->content</li>";
+        $date = date_create_from_format("Y-m-d H:i:s", $comment->timestamp);
+        $out .= "<div class='lab_comment_box'>
+                    <p class='lab_comment_author'>$comment->author</p>
+                    <p class='lab_comment'><i>".strftime('%d %B %G - %H:%M',$date->getTimestamp())."</i><br> $comment->content</p>
+                </div>";
     }
-    $out .='</ul>';
     return $out;
 }
 ?>

@@ -1,7 +1,7 @@
 /* front end 21 04 2020 */
 const { __, _x, _n, sprintf } = wp.i18n;
 
-/*** DIRECTORY ***/
+/*** DIRECTORY ***/ 
 
 jQuery(function($){
 
@@ -308,6 +308,7 @@ function LABLoadInvitation() {
         $("#lab_hostname").val('')
       };
     }
+    //Boutons de validation
     $("#lab_send_group_chief").click(function() {
       if ($("#invitationForm").prop('submited')==null) {
         invitation_submit(function () {
@@ -376,6 +377,7 @@ function formAction() {
 }
 function invitation_submit(callback) {
   document.querySelector("#primary-menu").scrollIntoView({behavior:"smooth"});
+  regex=/\"/g;
   jQuery(function($) {
     $("#invitationForm").prop('submited',true);
     fields = { 
@@ -399,7 +401,7 @@ function invitation_submit(callback) {
       fields['maximum_cost'] = $("#lab_maximum_cost").val();
     }
     if ($("#invitationForm").attr("newForm")==1) {//On crée une nouvelle invitation
-      fields['comment'] = $("#lab_form_comment").val();
+      fields['comment'] = $("#lab_form_comment").replace(regex,"”").replace(/\'/g,"’");
       data = {
         'action': 'lab_invitations_new',
         'fields': fields
@@ -432,7 +434,7 @@ function lab_submitComment() {
     data = {
       'action': 'lab_invitation_newComment',
       'token': $("#invitationForm").attr("token"),
-      'author' : $("#lab_comment_name").val(),
+      'author' : $("#lab_comment_name").text(),
       'content' : $("#lab_comment").val().replace(regex,"”").replace(/\'/g,"’")
     }
     jQuery.post(LAB.ajaxurl, data, function(response) {

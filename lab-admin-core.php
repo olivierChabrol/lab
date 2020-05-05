@@ -979,6 +979,7 @@ function delete_all_tables() {
     drop_table("lab_presence");
     drop_table("lab_invitations");
     drop_table("lab_guests");
+    drop_table("lab_invite_comments");
 }
 
 /**
