@@ -236,7 +236,8 @@ function lab_admin_createUserGroupTable()
     $sql = "CREATE TABLE IF NOT EXISTS `".$wpdb->prefix."lab_users_groups` (
         `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
         `group_id` bigint UNSIGNED NOT NULL,
-        `user_id` bigint UNSIGNED NOT NULL
+        `user_id` bigint UNSIGNED NOT NULL,
+        PRIMARY KEY(`id`)
       ) ENGINE=InnoDB;";
     $wpdb->get_results($sql);
 }
@@ -926,19 +927,23 @@ function create_all_tables() {
     lab_keyring_createTable_keys();
     lab_keyring_createTable_loans();
     lab_admin_initTable_usermeta();
+    lab_invitations_createTables();
 }
 
 function delete_all_tables() {
     //lab_admin_delete_group(0);
     lab_admin_delete_all_group();
     drop_table("lab_group_substitutes");
-    drop_table("lab_group_users_groups");
+    drop_table("lab_prefered_groups");
+    drop_table("lab_users_groups");
     drop_table("lab_params");
     drop_table("lab_key_loans");
     drop_table("lab_keys");
     drop_table("lab_hal");
     drop_table("lab_hal_users");
     drop_table("lab_groups");
+    drop_table("lab_invitations");
+    drop_table("lab_guests");
 }
 
 /**

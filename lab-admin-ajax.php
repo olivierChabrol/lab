@@ -2,7 +2,6 @@
 
 include 'lab-admin-core.php';
 
-
 /**
  * Fonction qui répond à la requete ajax de recherche d'evenement
  **/
@@ -765,16 +764,28 @@ function lab_invitations_edit() {
     $timeStamp=date("Y-m-d H:i:s",time());
     $invite = array (
       'needs_hostel'=>$fields['needs_hostel']=='true' ? 1 : 0,
-      'completion_time' => $timeStamp,
-      'status' => 10,
+      'completion_time' => $timeStamp
     );
     foreach (['host_group_id','host_id','mission_objective','start_date','end_date','travel_mean_to','travel_mean_from','funding_source'] as $champ) {
       $invite[$champ]=$fields[$champ];
     }
     lab_invitations_editInvitation($fields['token'],$invite);
-    $html = "<p>".esc_html__("Votre invitation a bien été complétée",'lab')."<br>à $timeStamp</p>";
+    $html = "<p>".esc_html__("Votre invitation a bien été modifiée",'lab')."<br>à $timeStamp</p>";
     wp_send_json_success($html);
   } else {
     wp_send_json_error('Vous n\'avez par la permission de modifier cette invitation');
   }
+}
+function lab_invitations_complete() {
+  $token = $_POST['token'];
+  lab_invitations_editInvitation($token,array('status'=>10));
+  $html = 'Un mail récapitulatif a été envoyé au responsable du groupe pour validation';
+  $invite = lab_invitations_getByToken($token);
+  $html .= lab_invitations_mail(10,lab_invitations_getGuest($invite->guest_id),$invite);
+  wp_send_json_success($html);
+}
+function lab_invitations_validate() {
+  $token = $_POST['token'];
+  lab_invitations_editInvitation($token,array('status'=>20));
+  wp_send_json_success('La demande a été transmise à l\'administration');
 }

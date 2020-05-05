@@ -37,23 +37,24 @@ function lab_invitations_createTables() {
       FOREIGN KEY (`guest_id`) REFERENCES `".$wpdb->prefix."lab_guests` (`id`),
       FOREIGN KEY (`host_id`) REFERENCES `".$wpdb->prefix."users` (`ID`)
     );";
-  $wpdb->get_results($sql);
-  wp_send_json_success();
-}
-function lab_invitations_createPrefGroupTable() {
-  global $wpdb;
+  $res = $wpdb->get_results($sql);
+  if (!strlen($res)==0) {
+    wp_send_json_error();
+    return;
+  }
   $sql = "CREATE TABLE IF NOT EXISTS `".$wpdb->prefix."lab_prefered_groups` (
-      `id` int PRIMARY KEY AUTO_INCREMENT,
-      `group_id` bigint UNSIGNED,
-      `user_id` bigint UNSIGNED,
-      FOREIGN KEY (`group_id`) REFERENCES `".$wpdb->prefix."lab_groups` (`id`),
-      FOREIGN KEY (`user_id`) REFERENCES `".$wpdb->prefix."users` (`id`)
-    );";
+    `id` int PRIMARY KEY AUTO_INCREMENT,
+    `group_id` bigint UNSIGNED,
+    `user_id` bigint UNSIGNED,
+    FOREIGN KEY (`group_id`) REFERENCES `".$wpdb->prefix."lab_groups` (`id`),
+    FOREIGN KEY (`user_id`) REFERENCES `".$wpdb->prefix."users` (`id`)
+  );";
   if (strlen($wpdb->get_results($sql))==0) {
     wp_send_json_success();
     return;
+  } else {
+    wp_send_json_error();
   }
-  wp_send_json_error();
 }
 function lab_invitations_createGuest($params) {
   global $wpdb;
