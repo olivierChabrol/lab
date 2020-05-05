@@ -53,10 +53,57 @@ function lab_present_select($param) {
     $previousWeek = strtotime('-7 days', $startDay);
 
     $usersPresent = lab_admin_list_present_user($startDay, $endDay);
-    /*
-    var_dump($usersPresent);
-    echo "<br>";
-    //*/
+
+
+    $users = array();
+    $userId = 0;
+    foreach($usersPresent as $user) {
+        if ($userId == 0 || $userId != $user->user_id) {
+            $userId = $user->user_id;
+            $users[$user->first_name." ".$user->last_name][] = $user;
+        }
+        else if ($userId == $user->user_id) {
+            $users[$user->first_name." ".$user->last_name][] = $user;
+        }
+    }
+    //var_dump($users);
+    $str .= "<a href=\"/presence/?date=".date("Y-m-d",$previousWeek)."\"><b>&lt;</b></a> Semaine du  : ".date("d-m-Y",$startDay)." au ".date("d-m-Y",$endDay)." <a href=\"/presence/?date=".date("Y-m-d",$nextWeek)."\"><b>&gt;</b></a><br>";
+
+    $str .= "<table id=\"lab_presence_table1\" class=\"table table-bordered table-striped\"><thead class=\"thead-dark\"><tr><th>&nbsp;</th><th colspan=\"2\">Lundi</th><th colspan=\"2\">Mardi</th><th colspan=\"2\">Mercredi</th><th colspan=\"2\">Jeudi</th><th colspan=\"2\">Vendredi</th></tr></thead><tbody>";
+    foreach($users as $k=>$v) {
+        $str .="<tr><td>".$k."</td>";
+        for ($i = 0 ; $i < 5 ; $i++) {
+            $currentDay = strtotime('+'.$i.' days', $startDay);
+            $notPresent = true;
+            
+            foreach($v as $hours) {
+                $dateStart = strtotime($hours->hour_start);
+                $dateEnd   = strtotime($hours->hour_end);
+                $dayH = date('d', $dateStart);
+                $day  = date('d', $currentDay);
+                if ($day == $dayH) {
+                    $notPresent = false;
+                    if (date('H', $dateStart) < 13) {
+                        if (date('H', $dateEnd) > 13) {
+                            $str .= "<td site=\"lab_".$hours->site_id."\">".date('H:i', $dateStart)."</td><td site=\"lab_".$hours->site_id."\">".date('H:i', $dateEnd)."</td>";
+                        }
+                        else {
+                            $str .= "<td site=\"lab_".$hours->site_id."\">".date('H:i', $dateStart)."-".date('H:i', $dateEnd)."</td><td>&nbsp;</td>";
+                        }
+                    }
+                    else {
+                        $str .= "<td>&nbsp;</td><td site=\"lab_".$hours->site_id."\">".date('H:i', $dateStart)."-".date('H:i', $dateEnd)."</td>";
+                    }
+                }
+            }
+            if ($notPresent) {
+                $str .= "<td colspan=\"2\">&nbsp;</td>";
+            }
+        }
+        $str .= "</tr>";
+    }
+    $str .= "</tbody></table>";
+/*
     $sites = new StdClass();
     foreach($usersPresent as $user) {
         if (!isset($sites->{$user->site_id})) {
@@ -81,51 +128,8 @@ function lab_present_select($param) {
         //$user->hour_start
     }
     $listSite = lab_admin_list_site();
+  //*/
     /*
-    echo "<br>";
-    var_dump($sites);
-    echo "<br>";
-
-
-    //$sites = (array) $sites;
-    foreach ($listSite as $site) 
-    {
-        echo $site->id." ".$site->value."<br>";
-        if (isset($sites->{$site->id})) {
-            $days = $sites->{$site->id};
-            for ($i = 0 ; $i < 5 ; $i++) {
-                if (isset($days->{$i})) {
-                    echo "\$days[$i] : ".sizeof($days->{$i})."<br>";
-                }else {
-                    echo "\$days[$i] : NO ID<br>";
-                }
-            }
-        }   
-    }
-    //*/
-    $str .= "<style>
-    .presence-tooltip {
-      background-color: #333;
-      color: white;
-      padding: 5px 10px;
-      border-radius: 4px;
-      font-size: 13px;
-    }
-    .arrow,
-    .arrow::before {
-    position: absolute;
-    width: 8px;
-    height: 8px;
-    z-index: -1;
-    }
-
-    .arrow::before {
-    content: '';
-    transform: rotate(45deg);
-    background: #333;
-    }
-  </style>";
-    $str .= "<a href=\"/presence/?date=".date("Y-m-d",$previousWeek)."\"><b>&lt;</b></a> Semaine du  : ".date("d-m-Y",$startDay)." au ".date("d-m-Y",$endDay)." <a href=\"/presence/?date=".date("Y-m-d",$nextWeek)."\"><b>&gt;</b></a><br>";
     $tootTip = "";
     $str .= "<table id=\"lab_presence_table\" class=\"table table-bordered table-striped\"><thead class=\"thead-dark\"><tr><th>&nbsp;</th><th colspan=\"2\">Lundi</th><th colspan=\"2\">Mardi</th><th colspan=\"2\">Mercredi</th><th colspan=\"2\">Jeudi</th><th colspan=\"2\">Vendredi</th></tr></thead><tbody>";
     
@@ -203,7 +207,7 @@ function lab_present_select($param) {
     }
 
     $str .= "</tbody></table>".$tootTip;
-
+//*/
     return $str;
 }
 
