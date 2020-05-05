@@ -249,8 +249,8 @@ function lab_present_choice($param) {
     
     //requete pour connaitre les présences de l'utilisateur
     global $wpdb;
-    $sql = "SELECT * FROM `".$wpdb->prefix."lab_presence` WHERE `user_id` = 1";
-    $choiceStr .= "<table id='userTable' class='table'>
+    $sql = "SELECT * FROM `".$wpdb->prefix."lab_presence` WHERE `user_id` = " . get_current_user_id();
+    $choiceStr .= "<table id='userTable' class='table table-striped table-hover'>
                         <thead>
                             <tr>
                                 <th scope='col'>#</th>
