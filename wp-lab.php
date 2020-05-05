@@ -222,7 +222,7 @@ function wp_lab_fe_enqueues()
 {
 	wp_enqueue_script('jquery-3.5.1-js', plugins_url('lab/js/jquery-3.5.1.min.js'), array(), 'v3.5.1', true);
   wp_enqueue_script('jquery-ui-1.12.1-js', plugins_url('lab/js/jquery-ui.min.js'), array('jquery-3.5.1-js'), 'v1.12.1', true);
-  wp_enqueue_script('lab-fe', plugins_url('js/lab_fe.js',__FILE__), array('jquery-3.5.1-js', 'jquery-ui-1.12.1-js','wp-i18n'), version_id(), true);
+  wp_enqueue_script('lab-fe', plugins_url('js/lab_fe.js',__FILE__), array('jquery-3.5.1-js', 'jquery-ui-1.12.1-js', 'wp-i18n'), version_id(), true);
   wp_enqueue_style('profileCSS',plugins_url('css/lab-profile.css',__FILE__));
   wp_enqueue_script('SpectrumJS', plugins_url('js/spectrum.js',__FILE__), array('jquery','wp-i18n'), '1.8.0', true);
   wp_enqueue_style('SpectrumCSS',plugins_url('css/spectrum.css',__FILE__));
