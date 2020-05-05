@@ -74,6 +74,10 @@ jQuery(function($){
     $("#lab_admin_setting_delete_dialog").modal();
   });
 
+  $("#lab_presence_create_table").click(function() {
+    callAjax({action : 'lab_presence_create_table'}, "TABLE presence successfuly created", null, "Failed to create table presence", null);
+  });
+
   $("#lab_admin_setting_delete_dialog_confirm").click(function() {
     callAjax({action : 'reset_lab_db'}, "LAB DB successfuly reset", null, "Failed to reset LAB DB", null);
   });

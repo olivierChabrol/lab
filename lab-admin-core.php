@@ -57,8 +57,22 @@ function lab_admin_createTable_param() {
     $sql = "CREATE TABLE IF NOT EXISTS `".$wpdb->prefix."lab_params` (
         `id` bigint UNSIGNED NOT NULL,
         `type_param` bigint UNSIGNED NOT NULL,
-        `value` varchar(20) DEFAULT NULL
+        `value` varchar(20) DEFAULT NULL,
+        `color` varchar(8) DEFAULT NULL,
       ) ENGINE=InnoDB";
+    $wpdb->get_results($sql);
+}
+
+function lab_admin_createTable_presence() {
+    global $wpdb;
+    $sql = "CREATE TABLE `".$wpdb->prefix."lab_presence` (
+        `id` bigint NOT NULL AUTO_INCREMENT,
+        `user_id` bigint NOT NULL,
+        `hour_start` datetime NOT NULL,
+        `hour_end` datetime NOT NULL,
+        `site` int NOT NULL,
+        PRIMARY KEY (`id`)
+      ) ENGINE=InnoDB;";
     $wpdb->get_results($sql);
 }
 
@@ -84,7 +98,7 @@ function lab_admin_initTable_param() {
 function lab_admin_list_site()
 {
     global $wpdb;
-    $sql = "SELECT id, value FROM `".$wpdb->prefix."lab_params` WHERE type_param = 4";
+    $sql = "SELECT id, value, color FROM `".$wpdb->prefix."lab_params` WHERE type_param = 4";
     return $wpdb->get_results($sql);
 }
 
@@ -930,6 +944,7 @@ function create_all_tables() {
     lab_keyring_createTable_keys();
     lab_keyring_createTable_loans();
     lab_admin_initTable_usermeta();
+    lab_admin_createTable_presence();
 }
 
 function delete_all_tables() {
@@ -943,6 +958,7 @@ function delete_all_tables() {
     drop_table("lab_hal");
     drop_table("lab_hal_users");
     drop_table("lab_groups");
+    drop_table("lab_presence");
 }
 
 /**
