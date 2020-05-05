@@ -27,3 +27,7 @@ jQuery(function($){
              }).appendTo( $this.empty() ).focus();
         });
 });
+
+//change tous les fields automatiquement 
+//pouvoir totalement effacer toute la ligne et réecrire 
+//avec un bouton edit qui devient un vérif
