@@ -260,7 +260,7 @@ function lab_present_choice($param) {
     }
 
     $choiceStr .= "<div style='margin-top: 2em'><h3>Je souhaite modifier une de mes présences</h3>";
-    
+
     //requete pour connaitre les présences de l'utilisateur
     global $wpdb;
     $sql = "SELECT pre.*, par.value FROM `".$wpdb->prefix."lab_presence` AS pre
@@ -283,9 +283,9 @@ function lab_present_choice($param) {
     $increment = 0;
     foreach ($results as $r) {
         $choiceStr .= "<tr><th scope='row'>" . ++$increment . "</th>
-                        <td>". esc_html($r->hour_start) ."</td>
-                        <td>". esc_html($r->hour_end)   ."</td>
-                        <td>". esc_html($r->value)       ."</td>
+                        <td class='date-row'>". esc_html($r->hour_start) ."</td>
+                        <td class='date-row'>"  . esc_html($r->hour_end)   ."</td>
+                        <td class='clickable-row-site'>" . esc_html($r->value)      ."</td></tr>";
                         <td><a href=\"#\" id=\"delete_presence_".$r->id."\">delete</td></tr>";
     }
 
