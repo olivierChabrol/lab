@@ -94,14 +94,14 @@ function lab_present_select($param) {
                     $notPresent = false;
                     if (date('H', $dateStart) < 13) {
                         if (date('H', $dateEnd) > 13) {
-                            $str .= "<td style=\"background-color:#".$colors[$hours->site_id].";\">".date('H:i', $dateStart)."</td><td style=\"background-color:#".$colors[$hours->site_id].";\">".date('H:i', $dateEnd)."</td>";
+                            $str .= "<td style=\"background-color:#".$colors[$hours->site_id].";color:white;\"><b>".date('H:i', $dateStart)."</b></td><td style=\"background-color:#".$colors[$hours->site_id].";color:white;\"><b>".date('H:i', $dateEnd)."</b></td>";
                         }
                         else {
-                            $str .= "<td style=\"background-color:#".$colors[$hours->site_id].";\">".date('H:i', $dateStart)."-".date('H:i', $dateEnd)."</td><td>&nbsp;</td>";
+                            $str .= "<td style=\"background-color:#".$colors[$hours->site_id].";color:white;\"><b>".date('H:i', $dateStart)."-".date('H:i', $dateEnd)."</b></td><td>&nbsp;</td>";
                         }
                     }
                     else {
-                        $str .= "<td>&nbsp;</td><td style=\"background-color:#".$colors[$hours->site_id].";\">".date('H:i', $dateStart)."-".date('H:i', $dateEnd)."</td>";
+                        $str .= "<td>&nbsp;</td><td style=\"background-color:#".$colors[$hours->site_id].";color:white;\"><b>".date('H:i', $dateStart)."-".date('H:i', $dateEnd)."</b></td>";
                     }
                 }
             }
