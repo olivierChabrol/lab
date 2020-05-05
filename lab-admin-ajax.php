@@ -741,7 +741,15 @@ function lab_invitations_new() {
   foreach (['host_group_id','host_id', 'estimated_cost', 'mission_objective','start_date','end_date','travel_mean_to','travel_mean_from','funding_source'] as $champ) {
     $invite[$champ]=$fields[$champ];
   }
-  lab_invitations_createInvite($invite);
+  $invite_id = lab_invitations_createInvite($invite);
+  if (strlen($fields['comment'])>0) {
+    lab_invitations_addComment(array(
+      'content'=> $fields['comment'],
+      'timestamp'=> $timeStamp,
+      'author'=>$fields['guest_firstName'].' '.$fields['guest_lastName'],
+      'invite_id'=>$invite_id
+    )); 
+  }
   $html = '<p>'.esc_html__("Votre demande a bien été prise en compte",'lab').'</p>';
   $html .= "<hr><h5>e-mail envoyé à l'invité : </h5>";
   $html .= lab_invitations_mail(1,$guest,$invite);

@@ -88,7 +88,7 @@ function lab_invitations_createInvite($params) {
       $params
       )
   ) {
-      return;
+    return $wpdb->insert_id;
   } else {
       return $wpdb -> last_error;
   }

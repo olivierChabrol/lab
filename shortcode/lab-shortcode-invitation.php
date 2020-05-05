@@ -1,9 +1,9 @@
 <?php
 /*
- * File Name: lab-shortcode-directory.php
- * Description: shortcode pour générer un annuaire
+ * File Name: lab-shortcode-invitation.php
+ * Description: shortcode pour afficher un formulaire de création d'invitation
  * Authors: Ivan Ivanov, Lucas Urgenti
- * Version: 0.85
+ * Version: 0.86
 */
 
 function lab_invitation($args) { 
@@ -149,6 +149,13 @@ function lab_invitation($args) {
             </div>
         </div>
         <hr>';
+        if ( $newForm ) {
+            $invitationStr .= 
+            '<div class="lab_invite_field">
+                <label for="lab_form_comment">'.esc_html__("Commentaire (facultatif)",'lab').'</label>
+                <textarea row="1" id="lab_form_comment" name="lab_form_comment"></textarea>
+        </div>';
+        }
         if ( $param["hostpage"] ) {//Affiche les champs supplémentaires, pour les responsables/invitants.
             $invitationStr .=
 
@@ -224,8 +231,8 @@ function lab_invitation($args) {
                     <input type="submit" value="'.esc_html__("Envoyer commentaire","lab").'">
                 </form>
             </div>
-        </div>';
-            }
+            </div>';
+        }
     return $invitationStr;
 }
 

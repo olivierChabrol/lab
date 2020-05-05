@@ -398,6 +398,7 @@ function invitation_submit(callback) {
       fields['maximum_cost'] = $("#lab_maximum_cost").val();
     }
     if ($("#invitationForm").attr("newForm")==1) {//On crée une nouvelle invitation
+      fields['comment'] = $("#lab_form_comment").val();
       data = {
         'action': 'lab_invitations_new',
         'fields': fields
@@ -425,16 +426,18 @@ function invitation_submit(callback) {
   });
 }
 function lab_submitComment() {
+  regex=/\"/g;
   jQuery(function ($) {
     data = {
       'action': 'lab_invitation_newComment',
       'token': $("#invitationForm").attr("token"),
       'author' : $("#lab_comment_name").val(),
-      'content' : $("#lab_comment").val()
+      'content' : $("#lab_comment").val().replace(regex,"”").replace(/\'/g,"’")
     }
     jQuery.post(LAB.ajaxurl, data, function(response) {
       if (response.success) {
         $("#lab_invitation_oldComments").html(response.data);
+        $("#lab_comment").val('');
       }
     });
   });
