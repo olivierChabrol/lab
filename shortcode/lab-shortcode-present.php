@@ -213,44 +213,39 @@ function lab_present_choice($param) {
         $param, 
         "lab-present-choice"
     );
-    $choiceStr = "<br/><hr><div class='container'><div class='pull-left' style='margin-right:3em'>
+    $choiceStr = "<br/><hr><div class='container'><div>
         <h3>Je serai présent(e)...</h1>
         <form name='form' method='post' action=''>
             <input id='userId' name='userId' type='hidden' value='" . get_current_user_id() . "' />
 
-            <label for='date-open'>Le</label>
+            <label for='date-open'>Du</label>
             <input type='date' name='date-open' id='date-open' />
-            <label for='hour-open'>à</label>
+            <label for='hour-open'></label>
             <input type='time' name='hour-open' id='hour-open' />
-            <br/>
-            <label for='date-close'>Jusqu'au</label>
-            <input type='date' name='date-close' id='date-close' />
             <label for='hour-close'>à</label>
             <input type='time' name='hour-close' id='hour-close' />
-            <br/>
-            <label for='site-selected'>Sur le site</label>
+            <label for='site-selected'>sur le site</label>
             " . lab_html_select_str("siteId", "siteName", "class", lab_admin_list_site) . "<br/>
             <input type='submit' name='envoi' value='Envoyer'>
         </form></div>";
 
     if (isset($_POST['envoi'])) {
         $userId    = $_POST['userId'];
-        $dateOpen  = $_POST['date-open'];
+        $date      = $_POST['date-open'];
         $hourOpen  = $_POST['hour-open'];
-        $dateClose = $_POST['date-close'];
         $hourClose = $_POST['hour-close'];
         $site      = $_POST['siteName'];
-        printf("Bonjour $userId vous avez choisis de $dateOpen à $hourOpen jusqu'à $dateClose à $hourClose sur le site $site");
+        printf("Bonjour $userId vous avez choisis de $date à $hourOpen jusqu'à ce même jour à $hourClose sur le site $site");
 
         //requete pour envoyer la présence sur la bd
         global $wpdb;
-        $data = array('user_id' => $userId, 'hour_start' => $dateOpen . ' ' . $hourOpen,
-                'hour_end' => $dateClose . ' ' . $hourClose, 'site' => $site);
+        $data = array('user_id' => $userId, 'hour_start' => $date . ' ' . $hourOpen,
+                'hour_end' => $date . ' ' . $hourClose, 'site' => $site);
         $format = array('%d','%s','%s','%d');
         $wpdb->insert('wp_lab_presence', $data, $format);
     }
 
-    $choiceStr .= "<div class='pull-right'><h3>Je souhaite modifier une de mes présences</h3>";
+    $choiceStr .= "<div><h3>Je souhaite modifier une de mes présences</h3>";
     
     //requete pour connaitre les présences de l'utilisateur
     $sql = "SELECT * FROM `wp_lab_presence` WHERE user_id = '" . $userId . "';";
@@ -258,8 +253,8 @@ function lab_present_choice($param) {
                         <thead>
                             <tr>
                                 <th scope='col'>#</th>
-                                <th scope='col'>De</th>
-                                <th scope='col'>Jusqu'à</th>
+                                <th scope='col'>Du</th>
+                                <th scope='col'>Jusqu'au</th>
                                 <th scope='col'>Sur</th>
                             </tr>
                         </thead> 
