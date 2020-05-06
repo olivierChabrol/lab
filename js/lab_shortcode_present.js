@@ -1,28 +1,45 @@
 jQuery(function($){
-        $(".icon-edit").click(function() {
-            let editable = $(this).parents('tr').find('.edit');
-            
-            if( $(this).hasClass("ui-icon-pencil") ){
-                $.each(editable, function() {
-                    let content = $(this).text();
+    $(".icon-edit").click(function() {
+        let editable = $(this).parents('tr').find('.edit');
+        
+        if( $(this).hasClass("fa-pen") ){
+            $.each(editable, function() {
+                let content = $(this).text();
 
-                    if( $(this).hasClass("date-row") ){
-                        $(this).html(`<input type='date' value='${content}'/>`);
-                    } else if( $(this).hasClass("hour-row") ){
-                        $(this).html(`<input type='time' value='${content}'/>`);
-                    } else if( $(this).hasClass("site-row") ){
-                        let htmlSelect = $("#siteId")[0].outerHTML;
-                        $(this).html(htmlSelect);
-                        let selected = $(this).find(`option:contains("${content}")`);
-                        selected.prop('selected', true);
-                    }
-                });
-            } else {
-                
-                //Envoyer a la bdd en recuperant les values
+                if( $(this).hasClass("date-row") ){
+                    $(this).html(`<input type='date' value='${content}'/>`);
+                } else if( $(this).hasClass("hour-row") ){
+                    $(this).html(`<input type='time' value='${content}'/>`);
+                } else if( $(this).hasClass("site-row") ){
+                    let htmlSelect = $("#siteId")[0].outerHTML;
+                    $(this).html(htmlSelect);
+                    let selected = $(this).find(`option:contains("${content}")`);
+                    selected.prop('selected', true);
+                }
+            });
+        } else {
+            //let idPresence = $(this).parents('tr').find('#id-presence').val();
+            let idPresence = $(this).attr('editId');
+            let date       = $(this).parents('tr').find('.date-row').val();
+            let opening    = $(this).parents('tr').find('.open').val();
+            let closing    = $(this).parents('tr').find('.end').val();
+            let site       = $(this).parents('tr').find('select').val();
+            console.log("id présence : " + idPresence + ", date : " + date + ", ouverture :"
+             + opening + ", fermeture :" + closing + ", sur le site : " + site);
+            $.ajax({
+                type:'post',
+                url: '../shortcode/lab-shortcode-present.php',
+                data: {
+                    id:         idPresence,
+                    date:       date,
+                    hour_start: opening,
+                    hour_end:   closing,
+                    site:       site
+                }
+            });
 
-                $.each(editable, function() {
-                    let content = "";
+            $.each(editable, function() {
+                let content = "";
 
                     if( $(this).hasClass("site-row") ){
                         content = $(this).find(":selected").text();
