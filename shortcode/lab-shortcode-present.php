@@ -245,35 +245,14 @@ function lab_present_choice($param) {
                         <td class='hour-row end edit'>" . esc_html(date("H:i", strtotime($r->hour_end)))  ."</td>
                         <td class='site-row edit'>"     . esc_html($r->value) ."</td>
                         <td><a href=\"#\" id=\"delete_presence_".$r->id."\"><span class='fas fa-trash'></span></a>
-                            <span class='fas fa-pen icon-edit' style='cursor: pointer;' editId=" . $r->id . "></span>
+                            <span class='fas fa-pen icon-edit' style='cursor: pointer;' editId=" . $r->id . " userId=" . $r->user_id"></span>
                         </td></tr>";
     }
     $choiceStr .= "</tbody></table></div>";
 
-    // requête pour mettre à jour la bdd
-    if ($userId == NULL) {
-        $userId = get_current_user_id();// id user
-    }
-    $id         = $_POST['id'];         // id présence
-    $date       = $_POST['date'];       // date de présence
-    $hour_start = $_POST['hour_start']; // heure d'ouverture
-    $hour_end   = $_POST['hour_end'];   // heure de fermeture
-    $site       = $_POST['site'];       // lieu
     
-    $date_start = $date . ' ' . $hour_start;
-    $date_end   = $date . ' ' . $hour_end;
 
-    //wp_send_json_success( $_POST );
-   // print_r($_POST);
-    /*var_dump("identifiant : " . $id . " date debut : " . $date_start .
-    " date fin : " . $date_end . " site : " . $site);
-
-    var_dump($id);
-    var_dump($date_start);
-    var_dump($date_end);
-    var_dump($site);*/
-
-    global $wpdb;
+    /*global $wpdb;
     $wpdb->update(
         $wpdb->prefix.'lab_presence',
         array('hour_start'  => $date_start,
@@ -281,7 +260,7 @@ function lab_present_choice($param) {
               'site'        => $site),
         array('id'          => $id,
 		      'user_id'     => $userId)
-    );
+    );*/
 
     return $choiceStr;
 }

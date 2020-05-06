@@ -21,6 +21,7 @@ jQuery(function($){
             });
         } else {
             //let idPresence = $(this).parents('tr').find('#id-presence').val();
+            let userId       = $(this).attr('userId');
             let idPresence = $(this).attr('editId');
             let date       = $(this).parents('tr').find('.date')     .val();
             let opening    = $(this).parents('tr').find('.first')    .val();
@@ -28,28 +29,22 @@ jQuery(function($){
             let site       = $(this).parents('tr').find('select')    .val();
             console.log("id présence : " + idPresence + ", date : " + date + ", ouverture : "
              + opening + ", fermeture : " + closing + ", sur le site : " + site);
-            /*$.ajax({
-                type:'post',
-                url: '../shortcode/lab-shortcode-present.php',
-                data: {
-                    id:         idPresence,
-                    date:       date,
-                    hour_start: opening,
-                    hour_end:   closing,
-                    site:       site
-                }
-            });*/
 
-            $.post(LAB.ajaxurl,
-                {
-                    id:         idPresence,
-                    date:       date,
-                    hour_start: opening,
-                    hour_end:   closing,
-                    site:       site
+            var data = {
+                'action' : 'lab_presence_save',
+                    id :         idPresence,
+                    userId :     userId,    
+                    date :       date,
+                    hour_start : opening,
+                    hour_end :   closing,
+                    site :       site
+              };
+              $.post(LAB.ajaxurl, data, function(response) {
+                if (response.success) {
+                  window.location.href = "/presence/";
                 }
-            );
-
+              });
+              
             $.each(editable, function() {
                 let content = "";
 
