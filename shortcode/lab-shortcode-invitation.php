@@ -3,7 +3,7 @@
  * File Name: lab-shortcode-invitation.php
  * Description: shortcode pour afficher un formulaire de création d'invitation
  * Authors: Ivan Ivanov, Lucas Urgenti
- * Version: 0.86
+ * Version: 0.9
 */
 
 function lab_invitation($args) { 
@@ -20,6 +20,7 @@ function lab_invitation($args) {
     if ( $param['hostpage'] ) {
         if ( ! isset(explode("/",$url)[1])) { //Aucun token, donc l'invitant crée lui-même une nouvelle invitation
             $token='0';
+            $host = new labUser(get_current_user_id());
         } else {//Token fournit, récupère les informations existantes
             $token = explode("/",$url)[1];
             $invitation=lab_invitations_getByToken($token);
@@ -218,11 +219,10 @@ function lab_invitation($args) {
             <input type="submit" value="'.esc_html__("Valider","lab").'">
         </div>';
         }
-        $invitationStr .= '
-        <div id="lab_invitationComments">';
         if (!$newForm) {
             $currentUser = lab_admin_username_get(get_current_user_id());
             $invitationStr .= '
+        <div id="lab_invitationComments">
             <h2>Commentaires <i class="fas fa-arrow-up"></i></h2>
             <div id="lab_invitation_oldComments">
                 '.lab_inviteComments($token).'
@@ -231,7 +231,7 @@ function lab_invitation($args) {
                 <h5>'.esc_html__("Nouveau commentaire",'lab').'</h5>
                 <form action="javascript:lab_submitComment()">
                     <label><i>'.esc_html__("Publier sous le nom de",'lab')."</i> : <span id='lab_comment_name'>".$currentUser['first_name'].' '.$currentUser['last_name'].'</span></label>
-                    <textarea row="1" id="lab_comment" placeholder="Contenu du commentaire..."></textarea>
+                    <textarea row="1" cols="50" id="lab_comment" placeholder="Contenu du commentaire..."></textarea>
                     <input type="submit" value="'.esc_html__("Envoyer commentaire","lab").'">
                 </form>
             </div>

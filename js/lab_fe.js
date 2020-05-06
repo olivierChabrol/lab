@@ -229,6 +229,24 @@ function LABLoadInvitation() {
     initialCountry: "fr"
   }));
   jQuery(function($) {
+    $("#invitationForm h2").click(function() {
+      if ( $("#invitationForm").attr("wrapped")=="true" ) {
+        $("#invitationForm form").slideDown();
+        $("#invitationForm").attr("wrapped","false");
+      } else {
+        $("#invitationForm form").slideUp();
+        $("#invitationForm").attr("wrapped","true");
+      }
+    });
+    $("#lab_invitationComments h2").click(function() {
+      if ( $("#lab_invitationComments").attr("wrapped")=="true" ) {
+        $("#lab_invitationComments #lab_invitation_oldComments").slideDown();
+        $("#lab_invitationComments").attr("wrapped","false");
+      } else {
+        $("#lab_invitationComments #lab_invitation_oldComments").slideUp();
+        $("#lab_invitationComments").attr("wrapped","true");
+      }
+    });
     //Plug-in country selector : https://github.com/mrmarkfrench/country-select-js
     $("#lab_country").countrySelect({
       defaultCountry: "fr",
@@ -356,18 +374,23 @@ function LABLoadInvitation() {
     //Boutons de validation
     $("#lab_send_group_chief").click(function() {
       if ($("#invitationForm").prop('submited')==null) {
-        invitation_submit(function () {
-          data = {
-            'action': 'lab_invitations_complete',
-            'token': $("#invitationForm").attr("token")
-          };
-          jQuery.post(LAB.ajaxurl, data, function(response) {
-            if (response.success) {
-              jQuery("#invitationForm").append("<br><h5>La demande a été complétée et transmise au responsable</h5>");
-              jQuery("#invitationForm").append(response.data);
-            }
+        if (document.querySelector("#invitationForm form").checkValidity()) {
+          invitation_submit(function () {
+            data = {
+              'action': 'lab_invitations_complete',
+              'token': $("#invitationForm").attr("token")
+            };
+            jQuery.post(LAB.ajaxurl, data, function(response) {
+              if (response.success) {
+                jQuery("#invitationForm").append("<br><h5>La demande a été complétée et transmise au responsable</h5>");
+                jQuery("#invitationForm").append(response.data);
+              }
+            });
           });
-        });
+        }
+        else {
+          alert("Vous devez d'abord compléter le formulaire");
+        }
       }
       data = {
         'action': 'lab_invitations_complete',
@@ -409,12 +432,9 @@ function LABLoadInvitation() {
     });
   });
 }
-
-jQuery(document).ready(function() {
-  if ( jQuery( "#invitationForm" ).length ) {
+  if (document.querySelector("#invitationForm")!=null) {
     LABLoadInvitation();
   }
-});
 function formAction() {
   invitation_submit(function() {
     return;

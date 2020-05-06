@@ -4,7 +4,28 @@
 }
 #invitationForm h2, #lab_invitationComments h2 {
   display: flex;
+  border-bottom: 1px solid black;
+  align-items: center;
   justify-content: space-between;
+  margin-bottom: 0.5em;
+  cursor:pointer;
+}
+h2 .fa-arrow-up {
+  transform: rotateX(180deg);
+  transition: 0.4s ease-in-out;
+}
+div h2:hover .fa-arrow-up {
+  transform: rotateX(360deg);
+  transition: 0.4s ease-in-out;
+}
+div[wrapped=true] h2 .fa-arrow-up {
+  transform: rotate(270deg);
+  transition: 0.4s ease-in-out;
+}
+div[wrapped=true] h2:hover .fa-arrow-up {
+  transform: rotate(-180deg);
+  transform: rotateX(180deg);
+  transition: 0.4s ease-in-out;
 }
 .lab_invite_field {
   display: flex;
@@ -68,4 +89,13 @@
 	border-top: 0;
 	margin-top: -15px;
   margin-left: -30px;
+}
+#lab_invitation_newComment form {
+  display: flex;
+  flex-direction: column;
+  max-width: 40em;
+  align-items: flex-start;
+}
+#lab_invitation_newComment form input {
+  margin-top: 0.5em;
 }
