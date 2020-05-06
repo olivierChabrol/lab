@@ -288,8 +288,8 @@ function lab_present_choice($param) {
                         <td class='hour-row edit'>". esc_html(date("H:i",   strtotime($r->hour_start))) ."</td>
                         <td class='hour-row edit'>". esc_html(date("H:i", strtotime($r->hour_end)))  ."</td>
                         <td class='site-row edit'>". esc_html($r->value)      ."</td>
-                        <td><a href=\"#\" id=\"delete_presence_".$r->id."\"><span class='ui-icon ui-icon-trash'></span></a>
-                          <span class='ui-icon ui-icon-pencil icon-edit' style='cursor: pointer;'>".$r->id."</span></a>
+                        <td><a href=\"#\" id=\"delete_presence_".$r->id."\"><span class='fas fa-trash'></span></a>
+                            <span class='fas fa-pen icon-edit' style='cursor: pointer';'></span>
                         </td></tr>";
     }
 
