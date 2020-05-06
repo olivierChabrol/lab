@@ -245,7 +245,7 @@ function lab_present_choice($param) {
                         <td class='hour-row end edit'>" . esc_html(date("H:i", strtotime($r->hour_end)))  ."</td>
                         <td class='site-row edit'>"     . esc_html($r->value) ."</td>
                         <td><a href=\"#\" id=\"delete_presence_".$r->id."\"><span class='fas fa-trash'></span></a>
-                            <span class='fas fa-pen icon-edit' style='cursor: pointer;' editId=" . $r->id . " userId=" . $r->user_id"></span>
+                            <span class='fas fa-pen icon-edit' style='cursor: pointer;' editId=" . $r->id . " userId=" . $r->user_id . "></span>
                         </td></tr>";
     }
     $choiceStr .= "</tbody></table></div>";
