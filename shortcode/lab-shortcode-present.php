@@ -240,37 +240,27 @@ function lab_present_choice($param) {
     $increment = 0;
     foreach ($results as $r) {
         $choiceStr .= "<tr><th scope='row'>" . ++$increment . "</th>
-                        <td class='date-row edit'>". esc_html(date("Y-m-d", strtotime($r->hour_start))) ."</td>
+                        <td class='date-row edit'>"     . esc_html(date("Y-m-d", strtotime($r->hour_start))) ."</td>
                         <td class='hour-row open edit'>". esc_html(date("H:i",   strtotime($r->hour_start))) ."</td>
-                        <td class='hour-row end edit'>". esc_html(date("H:i", strtotime($r->hour_end)))  ."</td>
-                        <td class='site-row edit'>". esc_html($r->value)      ."</td>
+                        <td class='hour-row end edit'>" . esc_html(date("H:i", strtotime($r->hour_end)))  ."</td>
+                        <td class='site-row edit'>"     . esc_html($r->value) ."</td>
                         <td><a href=\"#\" id=\"delete_presence_".$r->id."\"><span class='fas fa-trash'></span></a>
-                            <span class='fas fa-pen icon-edit' style='cursor: pointer;' editId=" . $r->id . "></span>
+                            <span class='fas fa-pen icon-edit' style='cursor: pointer;' editId=" . $r->id . " userId=" . $r->user_id . "></span>
                         </td></tr>";
     }
     $choiceStr .= "</tbody></table></div>";
 
-    // requête pour mettre à jour la bdd
-    $userId     = get_current_user_id();// id user
-    $id         = $_POST['id'];         // id présence
-    $date       = $_POST['date'];       // date de présence
-    $hour_start = $_POST['hour_start']; // heure d'ouverture
-    $hour_end   = $_POST['hour_end'];   // heure de fermeture
-    $site       = $_POST['site'];       // lieu
     
-    $date_start = $date . ' ' . $hour_start;
-    $date_end   = $date . ' ' . $hour_end;
 
-    global $wpdb;
+    /*global $wpdb;
     $wpdb->update(
         $wpdb->prefix.'lab_presence',
         array('hour_start'  => $date_start,
               'hour_end'    => $date_end,
               'site'        => $site),
         array('id'          => $id,
-		      'user_id'     => $userId )
-    );
-    $wpdb->last_error;
+		      'user_id'     => $userId)
+    );*/
 
     return $choiceStr;
 }
