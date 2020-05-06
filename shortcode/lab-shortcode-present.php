@@ -205,7 +205,6 @@ function lab_present_choice($param) {
         $hourOpen  = $_POST['hour-open'];
         $hourClose = $_POST['hour-close'];
         $site      = $_POST['siteName'];
-        printf("Bonjour $userId vous avez choisis de $date à $hourOpen jusqu'à ce même jour à $hourClose sur le site $site");
 
         //requete pour envoyer la présence sur la bd
         global $wpdb;

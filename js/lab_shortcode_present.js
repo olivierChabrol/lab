@@ -1,4 +1,10 @@
 jQuery(function($){
+    var style = document.createElement('style');
+    style.innerHTML = `.fa-check {
+                        color: green;
+                      }`;
+    document.head.appendChild(style);
+  
     $(".icon-edit").click(function() {
         let editable = $(this).parents('tr').find('.edit');
 
@@ -48,6 +54,7 @@ jQuery(function($){
         }
         $(this).toggleClass("fa-pen fa-check");
     });
+
     $(".canDelete").mouseover(function () {
         el = $(this);
         $(".actions").css('display', 'block');
@@ -79,11 +86,9 @@ jQuery(function($){
         'comment' : $("#comment").val(),
         'siteId': $("#siteId").val(),
         };
-        //callAjax(data, "TABLE presence successfuly created", null, "Failed to create table presence", null);
 
-        jQuery.post(LAB.ajaxurl, data, function(response) {
+        $.post(LAB.ajaxurl, data, function(response) {
         if (response.success) {
-            //$("#invitationForm")[0].outerHTML=response.data;
             window.location.href = "/presence/";
         }
         });
