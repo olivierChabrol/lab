@@ -7,9 +7,11 @@ jQuery(function($){
                 let content = $(this).text();
 
                 if( $(this).hasClass("date-row") ){
-                    $(this).html(`<input type='date' value='${content}'/>`);
-                } else if( $(this).hasClass("hour-row") ){
-                    $(this).html(`<input type='time' value='${content}'/>`);
+                    $(this).html(`<input type='date' class='date' value='${content}'/>`);
+                } else if( $(this).hasClass("open") ){
+                    $(this).html(`<input type='time' class ='first' value='${content}'/>`);
+                } else if( $(this).hasClass("end") ){
+                    $(this).html(`<input type='time' class ='last' value='${content}'/>`);
                 } else if( $(this).hasClass("site-row") ){
                     let htmlSelect = $("#siteId")[0].outerHTML;
                     $(this).html(htmlSelect);
@@ -20,13 +22,13 @@ jQuery(function($){
         } else {
             //let idPresence = $(this).parents('tr').find('#id-presence').val();
             let idPresence = $(this).attr('editId');
-            let date       = $(this).parents('tr').find('.date-row').val();
-            let opening    = $(this).parents('tr').find('.open').val();
-            let closing    = $(this).parents('tr').find('.end').val();
-            let site       = $(this).parents('tr').find('select').val();
-            console.log("id présence : " + idPresence + ", date : " + date + ", ouverture :"
-             + opening + ", fermeture :" + closing + ", sur le site : " + site);
-            $.ajax({
+            let date       = $(this).parents('tr').find('.date')     .val();
+            let opening    = $(this).parents('tr').find('.first')    .val();
+            let closing    = $(this).parents('tr').find('.last')     .val();
+            let site       = $(this).parents('tr').find('select')    .val();
+            console.log("id présence : " + idPresence + ", date : " + date + ", ouverture : "
+             + opening + ", fermeture : " + closing + ", sur le site : " + site);
+            /*$.ajax({
                 type:'post',
                 url: '../shortcode/lab-shortcode-present.php',
                 data: {
@@ -36,7 +38,17 @@ jQuery(function($){
                     hour_end:   closing,
                     site:       site
                 }
-            });
+            });*/
+
+            $.post(LAB.ajaxurl,
+                {
+                    id:         idPresence,
+                    date:       date,
+                    hour_start: opening,
+                    hour_end:   closing,
+                    site:       site
+                }
+            );
 
             $.each(editable, function() {
                 let content = "";
