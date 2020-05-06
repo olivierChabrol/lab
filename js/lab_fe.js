@@ -67,7 +67,7 @@ jQuery(function($){
 
 /******************************* ShortCode Presence ******************************/
 
-$("#lab_presence_button_save").click(function() {
+jQuery("#lab_presence_button_save").click(function() {
   var data = {
     'action' : 'lab_presence_save',
     'userId' : $("#userId").val(),
