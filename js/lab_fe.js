@@ -391,32 +391,37 @@ function LABLoadInvitation() {
         else {
           alert("Vous devez d'abord compléter le formulaire");
         }
+      } else {
+        data = {
+          'action': 'lab_invitations_complete',
+          'token': $("#invitationForm").attr("token")
+        };
+        jQuery.post(LAB.ajaxurl, data, function(response) {
+          if (response.success) {
+            jQuery("#invitationForm").append("<br><h5>La demande a été complétée et transmise au responsable</h5>");
+            jQuery("#invitationForm").append(response.data);
+          }
+        });
       }
-      data = {
-        'action': 'lab_invitations_complete',
-        'token': $("#invitationForm").attr("token")
-      };
-      jQuery.post(LAB.ajaxurl, data, function(response) {
-        if (response.success) {
-          jQuery("#invitationForm").append("<br><h5>La demande a été complétée et transmise au responsable</h5>");
-          jQuery("#invitationForm").append(response.data);
-        }
-      });
     });
     $("#lab_send_manager").click(function() {
       if ($("#invitationForm").prop('submited')==null) {
-        invitation_submit(function() {
-          data = {
-            'action': 'lab_invitations_validate',
-            'token': $("#invitationForm").attr("token")
-          };
-          jQuery.post(LAB.ajaxurl, data, function(response) {
-            if (response.success) {
-              jQuery("#invitationForm").append("<br><h5>La demande a été validée et transmise au pôle budget</h5>");
-              jQuery("#invitationForm").append(response.data);
-            }
-          });  
-        });
+        if (document.querySelector("#invitationForm form").checkValidity()) {
+          invitation_submit(function() {
+            data = {
+              'action': 'lab_invitations_validate',
+              'token': $("#invitationForm").attr("token")
+            };
+            jQuery.post(LAB.ajaxurl, data, function(response) {
+              if (response.success) {
+                jQuery("#invitationForm").append("<br><h5>La demande a été validée et transmise au pôle budget</h5>");
+                jQuery("#invitationForm").append(response.data);
+              }
+            });  
+          });
+        } else {
+          alert("Vous devez d'abord compléter le formulaire");
+        }
       } else {
         data = {
           'action': 'lab_invitations_validate',
