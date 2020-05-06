@@ -1,33 +1,38 @@
 jQuery(function($){
-        $(".date-row").click(function() {
-            var $td  = $(this);
-            var formatText = $td.text()
-            //console.log($td.text());
-            var $input = $('<input>', {
-                value: $td.text(),
-                type: 'date',
-                focusout: function() {
-                    $td.text($(this).val());
-                    $(this).empty();
-                }
-            });
-            $input.appendTo($td.empty()).focus();
-        });
+        $(".icon-edit").click(function() {
+            let editable = $(this).parents('tr').find('.edit');
+            
+            if( $(this).hasClass("ui-icon-pencil") ){
+                $.each(editable, function() {
+                    let content = $(this).text();
 
-        $(".site-row").click(function() {
-            var $this  = $(this);
-            var $select = $('<select>', {
-                value: $this.text(),
-                blur: function() {
-                    $this.text(this.value);
-                 },
-                 keyup: function(e) {
-                    if (e.which === 10) $select.blur();
-                 }
-             }).appendTo( $this.empty() ).focus();
+                    if( $(this).hasClass("date-row") ){
+                        $(this).html(`<input type='date' value='${content}'/>`);
+                    } else if( $(this).hasClass("hour-row") ){
+                        $(this).html(`<input type='time' value='${content}'/>`);
+                    } else if( $(this).hasClass("site-row") ){
+                        let htmlSelect = $("#siteId")[0].outerHTML;
+                        $(this).html(htmlSelect);
+                        let selected = $(this).find(`option:contains("${content}")`);
+                        selected.prop('selected', true);
+                    }
+                });
+            } else {
+                
+                //Envoyer a la bdd en recuperant les values
+
+                $.each(editable, function() {
+                    let content = "";
+
+                    if( $(this).hasClass("site-row") ){
+                        content = $(this).find(":selected").text();
+                    } else {
+                        content = $(this).find("input").val();
+                    }
+                    $(this).text(`${content}`);
+                });
+            }
+            
+            $(this).toggleClass("ui-icon-pencil ui-icon-check")
         });
 });
-
-//change tous les fields automatiquement 
-//pouvoir totalement effacer toute la ligne et réecrire 
-//avec un bouton edit qui devient un vérif

@@ -284,11 +284,13 @@ function lab_present_choice($param) {
     $increment = 0;
     foreach ($results as $r) {
         $choiceStr .= "<tr><th scope='row'>" . ++$increment . "</th>
-                        <td class='date-row'>". esc_html(date("Y-m-d", strtotime($r->hour_start))) ."</td>
-                        <td class='hour-row'>". esc_html(date("H:i",   strtotime($r->hour_start))) ."</td>
-                        <td class='date-row'>"  . esc_html(date("H:i", strtotime($r->hour_end)))  ."</td>
-                        <td class='site-row'>" . esc_html($r->value)      ."</td>
-                        <td><a href=\"#\" id=\"delete_presence_".$r->id."\"><span class='ui-icon ui-icon-trash'></span></td></tr>";
+                        <td class='date-row edit'>". esc_html(date("Y-m-d", strtotime($r->hour_start))) ."</td>
+                        <td class='hour-row edit'>". esc_html(date("H:i",   strtotime($r->hour_start))) ."</td>
+                        <td class='hour-row edit'>". esc_html(date("H:i", strtotime($r->hour_end)))  ."</td>
+                        <td class='site-row edit'>". esc_html($r->value)      ."</td>
+                        <td><a href=\"#\" id=\"delete_presence_".$r->id."\"><span class='ui-icon ui-icon-trash'></span></a>
+                          <span class='ui-icon ui-icon-pencil icon-edit' style='cursor: pointer;'>".$r->id."</span></a>
+                        </td></tr>";
     }
 
     $choiceStr .= "</tbody></table></div>";
