@@ -24,6 +24,17 @@ jQuery(function($){
     window.location.href = href;
   });
 
+  $("[id^=delete_presence_]").each(function() {
+    $(this).click(function() {
+      //delete_presence_
+      var attrId = $(this).attr("id");
+      var pattern = "delete_presence_";
+      var id = attrId.substring(pattern.length, attrId.length);
+      //console.log(id);
+      deletePresence(id);
+    })
+  });
+
   $("#lab-table-directory tr").click(function() {
     window.location.href = "/user/" + $(this).attr('userId');
   });
@@ -53,6 +64,40 @@ jQuery(function($){
   });
 
 });
+
+/******************************* ShortCode Presence ******************************/
+
+$("#lab_presence_button_save").click(function() {
+  var data = {
+    'action' : 'lab_presence_save',
+    'userId' : $("#userId").val(),
+    'dateOpen' : $("#date-open").val(),
+    'hourOpen' : $("#hour-open").val(),
+    'hourClose' : $("#hour-close").val(),
+    'siteId': $("#siteId").val(),
+  };
+  //callAjax(data, "TABLE presence successfuly created", null, "Failed to create table presence", null);
+
+  jQuery.post(LAB.ajaxurl, data, function(response) {
+    if (response.success) {
+      //$("#invitationForm")[0].outerHTML=response.data;
+      window.location.href = "/presence/";
+    }
+  });
+});
+
+function deletePresence(presenceId) {
+  var data = {
+    'action' : 'lab_presence_delete',
+    'id' : presenceId,
+  }
+  jQuery.post(LAB.ajaxurl, data, function(response) {
+    if (response.success) {
+      //$("#invitationForm")[0].outerHTML=response.data;
+      window.location.href = "/presence/";
+    }
+  });
+}
 
 /******************************* ShortCode Profile *******************************/
 function LABloadProfile() {
