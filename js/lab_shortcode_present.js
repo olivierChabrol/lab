@@ -35,4 +35,31 @@ jQuery(function($){
             
             $(this).toggleClass("ui-icon-pencil ui-icon-check")
         });
+
+        $(".canDelete").mouseover(function () {
+            console.log($(this).attr("userId") + " " + $(this).attr("presentId"));
+            /*
+            var a = $('<a>' , {
+                text:"",
+                style: "display:block;position:absolute;top:0;right:0;width:30px;height:30px;background:red",
+            });
+            a.appendTo($(this));
+            //*/
+            //$(this).append("<div style=\"position: relative; top : 100; left: 0;\"><span class=\"ui-icon ui-icon-trash\"></span></div>");
+            $el = $(this);
+		    	var newDiv = $("<div />", {
+		    		"class": "innerWrapper",
+		    		"css"  : {
+		    			"height"  : "30px",
+		    			"width"   : "30px",
+                        "position": "absolute",
+                        "top" : $el.height,
+		    		}
+                });
+                newDiv.wrapInner("<span class=\"ui-icon ui-icon-trash\"></span>");
+		    	$el.append(newDiv);
+        });
+        $(".canDelete").mouseout(function () {
+            $(this).children("div").remove();
+        });
 });

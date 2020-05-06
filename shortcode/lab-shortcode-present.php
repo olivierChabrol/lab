@@ -78,9 +78,16 @@ function lab_present_select($param) {
     }
     $str .= "</tr></table><br>";
 
+    //$str .= "\n<style>\n";
+    //$str .= "\ta.delete { display:block;position:absolute;top:0;right:0;width:30px;height:30px;text-indent:-999px;background:red; }\n";
+    //$str .= "\t.canDelete:hover a.delete { display:block; }";
+    //$str .= "</style>\n";
+
+    $str .= "isAdmin : '".is_admin()."' get_currentuser_id() :'".get_current_user_id()."'<br>";
+
     $str .= "<table id=\"lab_presence_table1\" class=\"table table-bordered table-striped\"><thead class=\"thead-dark\"><tr><th>&nbsp;</th><th colspan=\"2\">Lundi</th><th colspan=\"2\">Mardi</th><th colspan=\"2\">Mercredi</th><th colspan=\"2\">Jeudi</th><th colspan=\"2\">Vendredi</th></tr></thead><tbody>";
     foreach($users as $k=>$v) {
-        $str .="<tr><td>".$k."</td>";
+        $str .="<tr>\n<td>".$k."</td>\n";
         for ($i = 0 ; $i < 5 ; $i++) {
             $currentDay = strtotime('+'.$i.' days', $startDay);
             $notPresent = true;
@@ -92,24 +99,30 @@ function lab_present_select($param) {
                 $day  = date('d', $currentDay);
                 if ($day == $dayH) {
                     $notPresent = false;
+                    $displayId = "";
+                    if (is_admin() || get_current_user_id() == $hours->user_id)
+                    {
+                        $displayId = "userId=\"".$hours->user_id."\" presentId=\"".$hours->id."\" class=\"canDelete\"";
+                    }
                     if (date('H', $dateStart) < 13) {
+                        $str .= "<td $displayId style=\"background-color:#".$colors[$hours->site_id].";color:white;\"><b>".date('H:i', $dateStart);
                         if (date('H', $dateEnd) > 13) {
-                            $str .= "<td style=\"background-color:#".$colors[$hours->site_id].";color:white;\"><b>".date('H:i', $dateStart)."</b></td><td style=\"background-color:#".$colors[$hours->site_id].";color:white;\"><b>".date('H:i', $dateEnd)."</b></td>";
+                            $str .= "</b></td><td $displayId style=\"background-color:#".$colors[$hours->site_id].";color:white;\"><b>".date('H:i', $dateEnd)."</b></td>\n";
                         }
                         else {
-                            $str .= "<td style=\"background-color:#".$colors[$hours->site_id].";color:white;\"><b>".date('H:i', $dateStart)."-".date('H:i', $dateEnd)."</b></td><td>&nbsp;</td>";
+                            $str .= "-".date('H:i', $dateEnd)."</b></td><td>&nbsp;</td>\n";
                         }
                     }
                     else {
-                        $str .= "<td>&nbsp;</td><td style=\"background-color:#".$colors[$hours->site_id].";color:white;\"><b>".date('H:i', $dateStart)."-".date('H:i', $dateEnd)."</b></td>";
+                        $str .= "<td>&nbsp;</td><td $displayId style=\"background-color:#".$colors[$hours->site_id].";color:white;\"><b>".date('H:i', $dateStart)."-".date('H:i', $dateEnd)."</b></td>\n";
                     }
                 }
             }
             if ($notPresent) {
-                $str .= "<td colspan=\"2\">&nbsp;</td>";
+                $str .= "<td colspan=\"2\">&nbsp;</td>\n";
             }
         }
-        $str .= "</tr>";
+        $str .= "</tr>\n";
     }
     $str .= "</tbody></table>";
 /*
