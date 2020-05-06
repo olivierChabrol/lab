@@ -416,7 +416,6 @@ function LABLoadInvitation() {
             };
             jQuery.post(LAB.ajaxurl, data, function(response) {
               if (response.success) {
-                jQuery("#invitationForm").append("<br><h5>La demande a été validée et transmise au pôle budget</h5>");
                 jQuery("#invitationForm").append(response.data);
                 jQuery(".lab_send_manager").hide();
               }
@@ -441,9 +440,9 @@ function LABLoadInvitation() {
     });
   });
 }
-  if (document.querySelector("#invitationForm")!=null) {
-    LABLoadInvitation();
-  }
+if (document.querySelector("#invitationForm")!=null) {
+  LABLoadInvitation();
+}
 function formAction() {
   invitation_submit(function() {
     return;
@@ -526,5 +525,40 @@ function LABLoadInviteList() {
     $("#lab_invite_groupSelect").change(function() {
       $("#lab_invite_groupSelect").val();
     });
+    jQuery.post(LAB.ajaxurl,{action : 'list_users_groups'},
+      function(response) {
+        for(var i = 0; i< response.data[1].length; ++i)
+        {
+          jQuery("#lab_prefGroupsSelect").append(jQuery('<option/>', 
+          {
+          value : response.data[1][i].group_id, 
+          text : response.data[1][i].group_name
+          }));
+        }
+      }
+    );
+    $("#lab_addPrefGroup").click( function() {
+      jQuery.post(LAB.ajaxurl,{
+        action : 'lab_prefGroups_add',
+        group_id: $("#lab_prefGroupsSelect").val()
+      },
+      function(response) {
+        console.log(response);
+      }
+    );
+    });
+    $(".lab_prefGroup_del").click( function() {
+      jQuery.post(LAB.ajaxurl,{
+          action : 'lab_prefGroups_remove',
+          group_id: $(this).attr('group_id')
+        },
+        function(response) {
+          console.log(response);
+        }
+      );
+   });
   });
+}
+if (document.querySelector("#lab_invite_list")!=null) {
+  LABLoadInviteList();
 }

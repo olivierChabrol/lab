@@ -69,6 +69,10 @@ div[wrapped=true] h2:hover .fa-arrow-up {
   padding: 0.2em 1em;
 }
 
+.lab_comment_author.auto {
+  background: #fa6464;
+}
+
 .lab_comment {
   padding: 0.2em 1em;
 	position: relative;
@@ -90,6 +94,14 @@ div[wrapped=true] h2:hover .fa-arrow-up {
 	border-top: 0;
 	margin-top: -15px;
   margin-left: -30px;
+}
+
+.lab_comment.auto{
+  background: #ff9d9d;
+}
+
+.lab_comment.auto:after {
+	border-right-color: #ff9d9d;
 }
 #lab_invitation_newComment form {
   display: flex;
@@ -118,3 +130,6 @@ div[wrapped=true] h2:hover .fa-arrow-up {
   background-color: lightgray;
 }
 
+.lab_infoBulle {
+  cursor: help;
+}

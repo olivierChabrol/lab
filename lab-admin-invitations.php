@@ -127,6 +127,17 @@ function lab_invitations_getByGroup($group_id,$params=array()) {
   $res = $wpdb->get_results($sql);
   return $res;
 }
+function lab_invitations_getByGroups($groups_ids,$params=array()) {
+  global $wpdb;
+  foreach ($groups_ids as $g) {
+    $str .= ' host_group_id='.$g." OR";
+  }
+  $str = substr($str,0, -3).";"; //Enlève le dernier OR 
+  $sql = "SELECT * FROM `".$wpdb->prefix."lab_invitations` WHERE".$str;
+  $res = $wpdb->get_results($sql);
+  echo $wpdb->last_query;
+  return $res;
+}
 function lab_invitations_getByHost($host_id,$params=array()) {
   global $wpdb;
   $sql = "SELECT * FROM `".$wpdb->prefix."lab_invitations` WHERE `host_id`=".$host_id.";";
@@ -135,7 +146,7 @@ function lab_invitations_getByHost($host_id,$params=array()) {
 }
 function lab_invitations_getPrefGroups($user_id,$params=array()) {
   global $wpdb;
-  $sql = "SELECT * FROM `".$wpdb->prefix."lab_groups`, `".$wpdb->prefix."ab_prefered_groups`
+  $sql = "SELECT * FROM `".$wpdb->prefix."lab_groups`, `".$wpdb->prefix."lab_prefered_groups`
   WHERE `".$wpdb->prefix."lab_groups`.`id`=`".$wpdb->prefix."lab_prefered_groups`.`group_id`
   AND `".$wpdb->prefix."lab_prefered_groups`.`user_id`=".$user_id.";";
 // $sql2 = "SELECT g1.* AS all
