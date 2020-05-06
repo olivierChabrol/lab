@@ -18,8 +18,25 @@ jQuery(function($){
                 }
             });
         } else {
-            
-            //Envoyer a la bdd en recuperant les values
+            //let idPresence = $(this).parents('tr').find('#id-presence').val();
+            let idPresence = $(this).attr('editId');
+            let date       = $(this).parents('tr').find('.date-row').val();
+            let opening    = $(this).parents('tr').find('.open').val();
+            let closing    = $(this).parents('tr').find('.end').val();
+            let site       = $(this).parents('tr').find('select').val();
+            console.log("id présence : " + idPresence + ", date : " + date + ", ouverture :"
+             + opening + ", fermeture :" + closing + ", sur le site : " + site);
+            $.ajax({
+                type:'post',
+                url: '../shortcode/lab-shortcode-present.php',
+                data: {
+                    id:         idPresence,
+                    date:       date,
+                    hour_start: opening,
+                    hour_end:   closing,
+                    site:       site
+                }
+            });
 
             $.each(editable, function() {
                 let content = "";
@@ -32,7 +49,6 @@ jQuery(function($){
                 $(this).text(`${content}`);
             });
         }
-        //<i class="fas fa-pen"></i>
         $(this).toggleClass("fa-pen fa-check")
     });
 });
