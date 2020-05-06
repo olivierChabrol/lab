@@ -1,8 +1,11 @@
 jQuery(function($){
     $(".icon-edit").click(function() {
         let editable = $(this).parents('tr').find('.edit');
-        
+        console.log("click edit");
+
+
         if( $(this).hasClass("fa-pen") ){
+            console.log("click edit fa-pen");
             $.each(editable, function() {
                 let content = $(this).text();
 
@@ -19,7 +22,10 @@ jQuery(function($){
                     selected.prop('selected', true);
                 }
             });
-        } else {
+        } 
+        else 
+        {
+            console.log("check");
             //let idPresence = $(this).parents('tr').find('#id-presence').val();
             let userId       = $(this).attr('userId');
             let idPresence = $(this).attr('editId');
@@ -32,19 +38,19 @@ jQuery(function($){
 
             var data = {
                 'action' : 'lab_presence_save',
-                    id :         idPresence,
-                    userId :     userId,    
-                    date :       date,
-                    hour_start : opening,
-                    hour_end :   closing,
-                    site :       site
-              };
-              $.post(LAB.ajaxurl, data, function(response) {
+                id :         idPresence,
+                userId :     userId,    
+                dateOpen :       date,
+                hourOpen : opening,
+                hourClose :   closing,
+                siteId :       site
+            };
+            $.post(LAB.ajaxurl, data, function(response) {
                 if (response.success) {
-                  window.location.href = "/presence/";
+                    //window.location.href = "/presence/";
                 }
-              });
-              
+            });
+            /*  
             $.each(editable, function() {
                 let content = "";
 
@@ -55,43 +61,42 @@ jQuery(function($){
                     }
                     $(this).text(`${content}`);
                 });
-            }
-            
-            $(this).toggleClass("ui-icon-pencil ui-icon-check")
-        });
+            //*/
+        }
+        $(this).toggleClass("fa-pen fa-check");
+    });
+    $(".canDelete").mouseover(function () {
+        el = $(this);
+        $(".actions").css('display', 'block');
+        if (el.attr("userId")) {
+            dPres = el.find("div.dPres");
+            dPres.attr("userId", el.attr("userId"));
+            dPres.attr("presenceId", el.attr("presenceId"));
+            dPres.click(function() {
+                deletePresence(dPres.attr("presenceId"), dPres.attr("userId"));
+            });
+        }
+    });
+    $(".canDelete").mouseout(function () {
+        //$(this).children("div").remove();
+        $(".actions").css('display', 'none');
+    });
+    $("#lab_presence_button_save").click(function() {
+        var data = {
+        'action' : 'lab_presence_save',
+        'userId' : $("#userId").val(),
+        'dateOpen' : $("#date-open").val(),
+        'hourOpen' : $("#hour-open").val(),
+        'hourClose' : $("#hour-close").val(),
+        'siteId': $("#siteId").val(),
+        };
+        //callAjax(data, "TABLE presence successfuly created", null, "Failed to create table presence", null);
 
-        $(".canDelete").mouseover(function () {
-            el = $(this);
-            $(".actions").css('display', 'block');
-            if (el.attr("userId")) {
-                dPres = el.find("div.dPres");
-                dPres.attr("userId", el.attr("userId"));
-                dPres.attr("presenceId", el.attr("presenceId"));
-                dPres.click(function() {
-                    deletePresence(dPres.attr("presenceId"), dPres.attr("userId"));
-                });
-            }
+        jQuery.post(LAB.ajaxurl, data, function(response) {
+        if (response.success) {
+            //$("#invitationForm")[0].outerHTML=response.data;
+            window.location.href = "/presence/";
+        }
         });
-        $(".canDelete").mouseout(function () {
-            //$(this).children("div").remove();
-            $(".actions").css('display', 'none');
-        });
-        $("#lab_presence_button_save").click(function() {
-          var data = {
-            'action' : 'lab_presence_save',
-            'userId' : $("#userId").val(),
-            'dateOpen' : $("#date-open").val(),
-            'hourOpen' : $("#hour-open").val(),
-            'hourClose' : $("#hour-close").val(),
-            'siteId': $("#siteId").val(),
-          };
-          //callAjax(data, "TABLE presence successfuly created", null, "Failed to create table presence", null);
-        
-          jQuery.post(LAB.ajaxurl, data, function(response) {
-            if (response.success) {
-              //$("#invitationForm")[0].outerHTML=response.data;
-              window.location.href = "/presence/";
-            }
-          });
-        });
+    });
 });
