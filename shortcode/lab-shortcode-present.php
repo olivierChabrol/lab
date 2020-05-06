@@ -269,7 +269,7 @@ function td($dateStart = null, $dateEnd = null, $empty = false, $site = null, $u
     if ($empty) {
         $str .= "<td>&nbsp;</td>";
     } else {
-        $canDelete = '';//'class="canDelete" userId="'.$userId.'" presenceId="'.$presenceId.'"';
+        $canDelete = '';
         
         if ($userId != null && $presenceId != null) {
             

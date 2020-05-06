@@ -805,6 +805,10 @@ function lab_admin_presence_save_ajax()
   $hourClose = $_POST['hourClose'];
   $siteId    = $_POST['siteId'];
 
+  $str = $presenceId." ".$userId." ".$dateOpen." ".$hourOpen." ".$hourClose." ".$siteId;
+  //wp_send_json_success($str);
+  //return;
+
   if($presenceId != null) {
     if (!current_user_can('administrator')) {
       wp_send_json_error();
