@@ -3,7 +3,7 @@
  * File Name: lab-shortcode-invitation.php
  * Description: shortcode pour afficher un formulaire de création d'invitation
  * Authors: Ivan Ivanov, Lucas Urgenti
- * Version: 0.9
+ * Version: 0.91
 */
 
 function lab_invitation($args) { 
@@ -209,9 +209,9 @@ function lab_invitation($args) {
             </div>
             </form></div>';
             if ($isChief) {
-                $invitationStr .= '<div class="lab_invite_row"><p class="lab_invite_field">Cliquez ici pour valider la demande et la transmettre au pôle budget :</p><button id="lab_send_manager">'.esc_html__("Envoyer à l'administration",'lab').'</button></div>';
+                $invitationStr .= '<div class="lab_invite_row lab_send_manager"><p class="lab_invite_field">Cliquez ici pour valider la demande et la transmettre au pôle budget :</p><button id="lab_send_manager">'.esc_html__("Envoyer à l'administration",'lab').'</button></div>';
             } else {
-                $invitationStr .= '<div class="lab_invite_row"><p class="lab_invite_field">Cliquez ici pour compléter la demande et la transmettre au responsable du groupe :</p><button id="lab_send_group_chief">'.esc_html__("Envoyer au responsable",'lab').'</button></div>';
+                $invitationStr .= '<div class="lab_invite_row lab_send_group_chief"><p class="lab_invite_field">Cliquez ici pour compléter la demande et la transmettre au responsable du groupe :</p><button id="lab_send_group_chief">'.esc_html__("Envoyer au responsable",'lab').'</button></div>';
             }
         }
         else {
@@ -258,7 +258,7 @@ function lab_invitations_interface($args) {
                 {
                     $listInvitationStr .= '<option value="'.$g->id.'">'.$g->group_name.'</option>';
                 }
-            $listInvitationStr .='</select>';
+            $listInvitationStr .='</select id="lab_invite_groupSelect">';
             $list = lab_invitations_getByGroup(lab_admin_get_groups_byChief(get_current_user_id())[0]->id);
             break;
         case 'admin':
@@ -271,7 +271,7 @@ function lab_invitations_interface($args) {
             $list = lab_invitations_getByGroup(lab_invitations_getPrefGroups(get_current_user_id())[0]);
             break;
     }
-    $listInvitationStr .= '<table>
+    $listInvitationStr .= '<table id="lab_invite_list">
                             <thead>
                                 <tr id="lab_list_header">
                                 <th>'.esc_html__("Nom de l'invité","lab").'</th>
@@ -296,12 +296,20 @@ function lab_invitations_interface_fromList($list,$view) {
     foreach ($list as $invitation) {
         $guest = lab_invitations_getGuest($invitation->guest_id);
         $host = new LabUser($invitation->host_id);
+        $date = date_create_from_format("Y-m-d H:i:s", $invitation->creation_time);
         $listStr .= '<tr>
                         <td><a href="mailto:'.$guest->email.'">'. $guest->first_name . ' ' . $guest->last_name .'</a></td>'
-                        .($view!='host' ? '<td><a href="mailto:'.$host->email.'">'. $host->first_name . ' ' . $host->last_name .'</a></td>':'').
-                        '<td>'. $invitation->mission_objective .'</td>
-                        <td>'. $invitation->creation_time .'</td>
-                        <td>'. $invitation->status .'</td>
+                        .($view!='host' ? '<td><a href="mailto:'.$host->email.'">'. $host->first_name . ' ' . $host->last_name .'</a></td>':'');
+        if(is_numeric($invitation->mission_objective))
+        {   
+            $listStr .='<td>'. AdminParams::get_param($invitation->mission_objective) .'</td>';
+        }
+        else
+        {
+            $listStr .='<td>'. $invitation->mission_objective .'</td>'; 
+        }
+        $listStr .=    '<td>'. strftime('%d %B %G - %H:%M',$date->getTimestamp()).'</td>
+                        <td>'. lab_invitations_getStatusName($invitation->status) .'</td>
                         <td><a href="/invite/'. $invitation->token.'">'.esc_html__("Lien de modification",'lab').'</a></td>
                     </tr>';
     }
@@ -388,6 +396,23 @@ function lab_inviteComments($token) {
     }
     return $out;
 }
+function lab_invitations_getStatusName($status) {
+    switch ($status) {
+        case 1:
+            return esc_html__("Créée","lab");
+        break;
+        case 10: 
+            return esc_html__("Complétée","lab");
+        break;
+        case 20:
+            return esc_html__("Validée","lab");
+        break; 
+        default:
+            # code...
+            break;
+    }
+}
+
 ?>
 
 

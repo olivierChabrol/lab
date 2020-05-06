@@ -384,6 +384,7 @@ function LABLoadInvitation() {
               if (response.success) {
                 jQuery("#invitationForm").append("<br><h5>La demande a été complétée et transmise au responsable</h5>");
                 jQuery("#invitationForm").append(response.data);
+                jQuery(".lab_send_group_chief").hide();
               }
             });
           });
@@ -400,6 +401,7 @@ function LABLoadInvitation() {
           if (response.success) {
             jQuery("#invitationForm").append("<br><h5>La demande a été complétée et transmise au responsable</h5>");
             jQuery("#invitationForm").append(response.data);
+            jQuery(".lab_send_group_chief").hide();
           }
         });
       }
@@ -416,6 +418,7 @@ function LABLoadInvitation() {
               if (response.success) {
                 jQuery("#invitationForm").append("<br><h5>La demande a été validée et transmise au pôle budget</h5>");
                 jQuery("#invitationForm").append(response.data);
+                jQuery(".lab_send_manager").hide();
               }
             });  
           });
@@ -431,6 +434,7 @@ function LABLoadInvitation() {
           if (response.success) {
             jQuery("#invitationForm").append("<br><h5>La demande a été validée et transmise au pôle budget</h5>");
             jQuery("#invitationForm").append(response.data);
+            jQuery(".lab_send_manager").hide();
           }
         });
       }
@@ -471,7 +475,7 @@ function invitation_submit(callback) {
       fields['maximum_cost'] = $("#lab_maximum_cost").val();
     }
     if ($("#invitationForm").attr("newForm")==1) {//On crée une nouvelle invitation
-      fields['comment'] = $("#lab_form_comment").replace(regex,"”").replace(/\'/g,"’");
+      fields['comment'] = $("#lab_form_comment").val().replace(regex,"”").replace(/\'/g,"’");
       data = {
         'action': 'lab_invitations_new',
         'fields': fields
@@ -512,6 +516,15 @@ function lab_submitComment() {
         $("#lab_invitation_oldComments").html(response.data);
         $("#lab_comment").val('');
       }
+    });
+  });
+}
+
+/************ Liste des invitation ***********************/ 
+function LABLoadInviteList() {
+  jQuery(function ($){
+    $("#lab_invite_groupSelect").change(function() {
+      $("#lab_invite_groupSelect").val();
     });
   });
 }

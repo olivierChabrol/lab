@@ -1,6 +1,7 @@
 #invitationForm, #lab_invitationComments {
   background: #F2F2F2;
-  padding: 1em;
+  padding: 0.5em 1em 1em 1em;
+  margin: 1em 0;
 }
 #invitationForm h2, #lab_invitationComments h2 {
   display: flex;
@@ -99,3 +100,21 @@ div[wrapped=true] h2:hover .fa-arrow-up {
 #lab_invitation_newComment form input {
   margin-top: 0.5em;
 }
+
+/***** Interface "Mes invitations" ****/
+
+#lab_invite_list {
+  font-size: 1.1em;
+  width: 100%;
+}
+#lab_invite_list th {
+  background-color: #007bff;
+  color: white;
+}
+#lab_invite_list td, #lab_invite_list th {
+  padding: 0.2em 1em;
+}
+#lab_invite_list tr:nth-of-type(even) {
+  background-color: lightgray;
+}
+
