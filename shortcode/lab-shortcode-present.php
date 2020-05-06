@@ -97,6 +97,14 @@ function lab_present_select($param) {
     //$currentUserId = get_current_user_id();
     //$str .= "isAdmin : '".$admin."' get_currentuser_id() :'".get_current_user_id()."'<br>\n";
 
+    $sum = array();
+
+    foreach($listSite as $site) {
+        $sum[$site->id] = array();
+        for ($i = 0 ; $i < 10 ; $i++) {
+            $sum[$site->id][$i] = 0;
+        }
+    }
     $str .= "<table id=\"lab_presence_table1\" class=\"table table-bordered table-striped\"><thead class=\"thead-dark\"><tr><th>&nbsp;</th><th colspan=\"2\">Lundi</th><th colspan=\"2\">Mardi</th><th colspan=\"2\">Mercredi</th><th colspan=\"2\">Jeudi</th><th colspan=\"2\">Vendredi</th></tr></thead><tbody>";
     foreach($users as $k=>$v) {
         $str .="<tr>\n<td>".$k."</td>\n";
@@ -110,22 +118,29 @@ function lab_present_select($param) {
                 // hours is ordoned
                 foreach($v[$currentDayDT] as $hours) {
                     if (date('H', $hours->hour_start) < 13) {
+                        // presence toute la journée
                         if (date('H', $hours->hour_end) >= 13) {
+                            $sum[$hours->site_id][$i*2] = $sum[$i*2] + 1;
+                            $sum[$hours->site_id][$i*2+1] = $sum[$i*2+1] + 1;
                             $str .= td($hours->hour_start,$hours->hour_end,false,"style=\"background-color:#".$colors[$hours->site_id].";color:white;\"", $hours->user_id, $hours->id, true);
                             //$str .= td($hours->hour_end,null,false,"style=\"background-color:#".$colors[$hours->site_id].";color:white;\"", $hours->user_id, $hours->id);
                             $nb = 2;
                         }
+                        // presence le matin
                         else {
-                            $str .= td($hours->hour_start, $hours->hour_end,false,"style=\"background-color:#".$colors[$hours->site_id].";color:white;\"", $hours->user_id, $hours->id);
+                            $str .= td($hours->hour_start, $hours->hour_end,false,"style=\"background-color:#".$colors[$hours->site_id].";color:white;\"", $hours->user_id, $hours->id,false);
+                            $sum[$hours->site_id][$i*2] += 1;
                             //$str .= td(null, null, true);
                         }
                     }
+                    // presence l'aprem
                     else {
                         if ($nb == 0) {
                             $str .= td(null, null, true);
                             $nb++;
                         }
-                        $str .= td($hours->hour_start, $hours->hour_end, null, "style=\"background-color:#".$colors[$hours->site_id].";color:white;\"", $hours->user_id, $hours->id);
+                        $str .= td($hours->hour_start, $hours->hour_end, null, "style=\"background-color:#".$colors[$hours->site_id].";color:white;\"", $hours->user_id, $hours->id,false);
+                        $sum[$hours->site_id][$i*2+1] += 1;
                     }
                     $nb++;
                 }
@@ -138,6 +153,18 @@ function lab_present_select($param) {
             }
         }
         $str .= "</tr>\n";
+    }
+    $str .= "<tr><td colspan=\"11\">Total</td></tr><tr>";
+
+    foreach($listSite as $site) {
+        $str .= "<tr><td style=\"background-color:#".$colors[$site->id].";color:white;\">".$site->value."</td>";
+
+        for ($i = 0 ; $i < 10 ; $i++) {
+            $str .= "<td style=\"background-color:#".$colors[$site->id].";color:white;\"><b>";
+            $str .= $sum[$site->id][$i];
+            $str .= "</b></td>";
+        }   
+        $str .= "<tr>";
     }
     $str .= "</tbody></table>";
     return $str;
@@ -248,7 +275,7 @@ function lab_present_choice($param) {
     return $choiceStr;
 }
 
-function td($dateStart = null, $dateEnd = null, $empty = false, $site = null, $userId = null, $presenceId=null, $allDay = false) {
+function td($dateStart = null, $dateEnd = null, $empty = false, $site = null, $userId = null, $presenceId=null, $allDay = false, $text= null) {
     if ($empty) {
         $str .= "<td>&nbsp;</td>";
     } else {
@@ -270,6 +297,18 @@ function td($dateStart = null, $dateEnd = null, $empty = false, $site = null, $u
         $str .= '<td '.$canDelete.' '.($site!=null?$site:'').$colSpan.'><div class="wrapper"><div class="actions"><div title="Update" class="ePres floatLeft iconset_16px"><i class="fas fa-pen fa-xs"></i></div><div title="delete" class="dPres floatLeft iconset_16px"><i class="fas fa-trash fa-xs"></i></div></div><div class="gal_name">'.date('H:i', $dateStart);
         if ($dateEnd != null) {
             $str .= " - ".date('H:i', $dateEnd);
+        }
+        if ($text != null) {
+            if (is_array($text)) {
+                for ($i = 0 ; $i < sizeof($text) ; $i++)
+                {
+                    $str .= $text[$i];
+                    if ($i + 1 < sizeof($text) ) {
+                        $str . ", ";
+                    }
+
+                }
+            }
         }
         $str .= '</div><div></td>';
     }
