@@ -47,7 +47,7 @@ jQuery(function($){
             };
             $.post(LAB.ajaxurl, data, function(response) {
                 if (response.success) {
-                    //window.location.href = "/presence/";
+                    window.location.href = "/presence/";
                 }
             });
             /*  
