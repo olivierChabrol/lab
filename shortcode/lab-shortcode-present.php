@@ -78,12 +78,19 @@ function lab_present_select($param) {
     }
     $str .= "</tr></table><br>";
 
-    //$str .= "\n<style>\n";
-    //$str .= "\ta.delete { display:block;position:absolute;top:0;right:0;width:30px;height:30px;text-indent:-999px;background:red; }\n";
-    //$str .= "\t.canDelete:hover a.delete { display:block; }";
-    //$str .= "</style>\n";
+    // .iconset_16px { height: 17px; width: 17px; background-color: #87ceeb; cursor: pointer; margin: 3px;}
+    $str .= "\n<style>\n";
+    $str .= ".wrapper { position: relative; }
+    .actions { display:none;position: absolute; top: -10px; right: -10px; }
+    .iconset_16px { height: 17px; width: 17px; cursor: pointer; margin: 3px;}
+    .floatLeft  { float:left!important; };
+    .gal_name { color:white; font-weight:bold;};";
+    $str .= "</style>\n";
 
-    $str .= "isAdmin : '".is_admin()."' get_currentuser_id() :'".get_current_user_id()."'<br>";
+    $str .= "isAdmin : '".is_admin()."' get_currentuser_id() :'".get_current_user_id()."'<br>\n";
+    $admin = current_user_can('administrator');
+    $currentUserId = get_current_user_id();
+    $str .= "isAdmin : '".$admin."' get_currentuser_id() :'".get_current_user_id()."'<br>\n";
 
     $str .= "<table id=\"lab_presence_table1\" class=\"table table-bordered table-striped\"><thead class=\"thead-dark\"><tr><th>&nbsp;</th><th colspan=\"2\">Lundi</th><th colspan=\"2\">Mardi</th><th colspan=\"2\">Mercredi</th><th colspan=\"2\">Jeudi</th><th colspan=\"2\">Vendredi</th></tr></thead><tbody>";
     foreach($users as $k=>$v) {
@@ -100,21 +107,19 @@ function lab_present_select($param) {
                 if ($day == $dayH) {
                     $notPresent = false;
                     $displayId = "";
-                    if (is_admin() || get_current_user_id() == $hours->user_id)
-                    {
-                        $displayId = "userId=\"".$hours->user_id."\" presentId=\"".$hours->id."\" class=\"canDelete\"";
-                    }
                     if (date('H', $dateStart) < 13) {
-                        $str .= "<td $displayId style=\"background-color:#".$colors[$hours->site_id].";color:white;\"><b>".date('H:i', $dateStart);
                         if (date('H', $dateEnd) > 13) {
-                            $str .= "</b></td><td $displayId style=\"background-color:#".$colors[$hours->site_id].";color:white;\"><b>".date('H:i', $dateEnd)."</b></td>\n";
+                            $str .= td($dateStart,null,false,"style=\"background-color:#".$colors[$hours->site_id].";color:white;\"", $hours->user_id, $hours->id);
+                            $str .= td($dateEnd,null,false,"style=\"background-color:#".$colors[$hours->site_id].";color:white;\"", $hours->user_id, $hours->id);
                         }
                         else {
-                            $str .= "-".date('H:i', $dateEnd)."</b></td><td>&nbsp;</td>\n";
+                            $str .= td($dateStart, $dateEnd,false,"style=\"background-color:#".$colors[$hours->site_id].";color:white;\"", $hours->user_id, $hours->id);
+                            $str .= td(null, null, true);
                         }
                     }
                     else {
-                        $str .= "<td>&nbsp;</td><td $displayId style=\"background-color:#".$colors[$hours->site_id].";color:white;\"><b>".date('H:i', $dateStart)."-".date('H:i', $dateEnd)."</b></td>\n";
+                        $str .= td(null, null, true);
+                        $str .= td($dateStart, $dateEnd, null, "style=\"background-color:#".$colors[$hours->site_id].";color:white;\"", $hours->user_id, $hours->id);
                     }
                 }
             }
@@ -309,4 +314,29 @@ function lab_present_choice($param) {
     $choiceStr .= "</tbody></table></div>";
 
     return $choiceStr;
+}
+
+function td($dateStart = null, $dateEnd = null, $empty = false, $site = null, $userId = null, $presenceId=null) {
+    if ($empty) {
+        $str .= "<td>&nbsp;</td>";
+    } else {
+        $canDelete = '';//'class="canDelete" userId="'.$userId.'" presenceId="'.$presenceId.'"';
+        
+        if ($userId != null && $presenceId != null) {
+            
+            $admin = current_user_can('administrator');
+            $currentUserId = get_current_user_id();
+
+            if ($admin || $userId == $currentUserId) {
+                $canDelete = 'class="canDelete" userId="'.$userId.'" presenceId="'.$presenceId.'"';
+            }
+        }
+        $str .= '<td '.$canDelete.' '.($site!=null?$site:'').'><div class="wrapper"><div class="actions"><div title="Update" class="ePres floatLeft iconset_16px"><i class="fas fa-pen fa-xs"></i></div><div title="delete" class="dPres floatLeft iconset_16px"><i class="fas fa-trash fa-xs"></i></div></div><div class="gal_name">'.date('H:i', $dateStart);
+        if ($dateEnd != null) {
+            $str .= " - ".date('H:i', $dateEnd);
+        }
+        $str .= '</div><div></td>';
+    }
+    $str .= "\n";
+    return $str;
 }

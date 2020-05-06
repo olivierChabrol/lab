@@ -86,10 +86,20 @@ $("#lab_presence_button_save").click(function() {
   });
 });
 
-function deletePresence(presenceId) {
-  var data = {
-    'action' : 'lab_presence_delete',
-    'id' : presenceId,
+function deletePresence(presenceId, userId = null) {
+  var data = null;
+  if (userId != null) {
+    data = {
+      'action' : 'lab_presence_delete',
+      'id' : presenceId,
+      'userId' : userId
+    }
+  }
+  else {
+    data = {
+      'action' : 'lab_presence_delete',
+      'id' : presenceId
+    }
   }
   jQuery.post(LAB.ajaxurl, data, function(response) {
     if (response.success) {

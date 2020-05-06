@@ -37,53 +37,19 @@ jQuery(function($){
         });
 
         $(".canDelete").mouseover(function () {
-            console.log($(this).attr("userId") + " " + $(this).attr("presentId"));
-            /*
-            var a = $('<a>' , {
-                text:"",
-                style: "display:block;position:absolute;top:0;right:0;width:30px;height:30px;background:red",
-            });
-            a.appendTo($(this));
-            //*/
-            //$(this).append("<div style=\"position: relative; top : 100; left: 0;\"><span class=\"ui-icon ui-icon-trash\"></span></div>");
-            $el = $(this);
-		    	var newDiv = $("<div />", {
-		    		"class": "innerWrapper",
-		    		"css"  : {
-		    			"height"  : "30px",
-		    			"width"   : "30px",
-                        "position": "absolute",
-                        "top" : $el.height,
-		    		}
+            el = $(this);
+            $(".actions").css('display', 'block');
+            if (el.attr("userId")) {
+                dPres = el.find("div.dPres");
+                dPres.attr("userId", el.attr("userId"));
+                dPres.attr("presenceId", el.attr("presenceId"));
+                dPres.click(function() {
+                    deletePresence(dPres.attr("presenceId"), dPres.attr("userId"));
                 });
-                newDiv.wrapInner("<span class=\"ui-icon ui-icon-trash\"></span>");
-		    	$el.append(newDiv);
-        });
-
-        $(".canDelete").mouseover(function () {
-            console.log($(this).attr("userId") + " " + $(this).attr("presentId"));
-            /*
-            var a = $('<a>' , {
-                text:"",
-                style: "display:block;position:absolute;top:0;right:0;width:30px;height:30px;background:red",
-            });
-            a.appendTo($(this));
-            //*/
-            //$(this).append("<div style=\"position: relative; top : 100; left: 0;\"><span class=\"ui-icon ui-icon-trash\"></span></div>");
-            $el = $(this);
-		    	var newDiv = $("<div />", {
-		    		"class": "innerWrapper",
-		    		"css"  : {
-		    			"height"  : "30px",
-		    			"width"   : "30px",
-                        "position": "absolute",
-                        "top" : $el.height,
-		    		}
-                });
-                newDiv.wrapInner("<span class=\"ui-icon ui-icon-trash\"></span>");
-		    	$el.append(newDiv);
+            }
         });
         $(".canDelete").mouseout(function () {
-            $(this).children("div").remove();
+            //$(this).children("div").remove();
+            $(".actions").css('display', 'none');
         });
 });
