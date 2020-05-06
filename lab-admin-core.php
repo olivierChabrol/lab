@@ -1048,9 +1048,14 @@ function beginWith($string, $pattern) {
 /**************************************************************************************************************************************
  * PRESENCE
  *************************************************************************************************************************************/
-function lab_admin_presence_save($userId, $dateOpen, $dateEnd, $siteId) {
+function lab_admin_presence_save($id, $userId, $dateOpen, $dateEnd, $siteId) {
     global $wpdb;
-    return $wpdb->insert($wpdb->prefix."lab_presence", array("user_id"=>$userId, "hour_start"=>$dateOpen, "hour_end"=>$dateEnd, "site"=>$siteId));
+    if ($id == null) {
+        return $wpdb->insert($wpdb->prefix."lab_presence", array("user_id"=>$userId, "hour_start"=>$dateOpen, "hour_end"=>$dateEnd, "site"=>$siteId));
+    }
+    else {
+        return $wpdb->update($wpdb->prefix."lab_presence", array("hour_start"=>$dateOpen, "hour_end"=>$dateEnd, "site"=>$siteId), array("id"=>$id));
+    }
 }
 
 function lab_admin_presence_delete($presenceId, $userId) {

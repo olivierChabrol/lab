@@ -790,17 +790,40 @@ function lab_invitations_edit() {
  **************************************************************************************************************/
 function lab_admin_presence_save_ajax()
 {
-  $userId=$_POST['userId'];
-  $dateOpen = $_POST['dateOpen'];
-  $hourOpen = $_POST['hourOpen'];
-  $hourClose = $_POST['hourClose'];
-  $siteId = $_POST['siteId'];
+  $presenceId  = null;
+  if(isset($_POST['id'])) {
+    $presenceId = $_POST['id'];
+  }
 
-  if (lab_admin_presence_save($userId, $dateOpen." ".$hourOpen, $dateOpen." ".$hourClose, $siteId)) {
+  $userId=$_POST['userId'];
+  if (!isset($userId)) {
+    $userId= get_current_user_id();
+  }
+
+  $dateOpen  = $_POST['dateOpen'];
+  $hourOpen  = $_POST['hourOpen'];
+  $hourClose = $_POST['hourClose'];
+  $siteId    = $_POST['siteId'];
+
+  if($presenceId != null) {
+    if (!current_user_can('administrator')) {
+      wp_send_json_error();
+      return;
+    }
+  }
+
+  if (lab_admin_presence_save($presenceId, $userId, $dateOpen." ".$hourOpen, $dateOpen." ".$hourClose, $siteId)) {
     wp_send_json_success();
   } else {
     wp_send_json_error();
   }
+
+}
+
+function lab_admin_presence_update_ajax() {
+  $presenceId = $_POST['id'];
+  $userId = get_current_user_id();
+  wp_send_json_success(lab_admin_presence_delete($presenceId, $userId));
 }
 
 function lab_admin_presence_delete_ajax() {
