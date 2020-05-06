@@ -804,10 +804,7 @@ function lab_admin_presence_save_ajax()
   $hourOpen  = $_POST['hourOpen'];
   $hourClose = $_POST['hourClose'];
   $siteId    = $_POST['siteId'];
-
-  $str = $presenceId." ".$userId." ".$dateOpen." ".$hourOpen." ".$hourClose." ".$siteId;
-  //wp_send_json_success($str);
-  //return;
+  $comment   = $_POST['comment'];
 
   if($presenceId != null) {
     if (!current_user_can('administrator')) {
@@ -816,7 +813,7 @@ function lab_admin_presence_save_ajax()
     }
   }
 
-  if (lab_admin_presence_save($presenceId, $userId, $dateOpen." ".$hourOpen, $dateOpen." ".$hourClose, $siteId)) {
+  if (lab_admin_presence_save($presenceId, $userId, $dateOpen." ".$hourOpen, $dateOpen." ".$hourClose, $siteId, $comment)) {
     wp_send_json_success();
   } else {
     wp_send_json_error();

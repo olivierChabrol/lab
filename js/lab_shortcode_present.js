@@ -64,12 +64,19 @@ jQuery(function($){
         $(".actions").css('display', 'none');
     });
     $("#lab_presence_button_save").click(function() {
+
+        if ($("#comment").val()=="") {
+            toast_error(__("Reason of your attendance is require", "lab"));
+            $("#comment").focus();
+            return;
+        }
         var data = {
         'action' : 'lab_presence_save',
         'userId' : $("#userId").val(),
         'dateOpen' : $("#date-open").val(),
         'hourOpen' : $("#hour-open").val(),
         'hourClose' : $("#hour-close").val(),
+        'comment' : $("#comment").val(),
         'siteId': $("#siteId").val(),
         };
         //callAjax(data, "TABLE presence successfuly created", null, "Failed to create table presence", null);
