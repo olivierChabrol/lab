@@ -1,4 +1,10 @@
 jQuery(function($){
+    var style = document.createElement('style');
+    style.innerHTML = `.fa-check {
+                        color: green;
+                      }`;
+    document.head.appendChild(style);
+  
     $(".icon-edit").click(function() {
         let editable = $(this).parents('tr').find('.edit');
         console.log("click edit");
@@ -50,21 +56,10 @@ jQuery(function($){
                     window.location.href = "/presence/";
                 }
             });
-            /*  
-            $.each(editable, function() {
-                let content = "";
-
-                    if( $(this).hasClass("site-row") ){
-                        content = $(this).find(":selected").text();
-                    } else {
-                        content = $(this).find("input").val();
-                    }
-                    $(this).text(`${content}`);
-                });
-            //*/
         }
         $(this).toggleClass("fa-pen fa-check");
     });
+
     $(".canDelete").mouseover(function () {
         el = $(this);
         $(".actions").css('display', 'block');
@@ -78,7 +73,6 @@ jQuery(function($){
         }
     });
     $(".canDelete").mouseout(function () {
-        //$(this).children("div").remove();
         $(".actions").css('display', 'none');
     });
     $("#lab_presence_button_save").click(function() {
@@ -90,11 +84,9 @@ jQuery(function($){
         'hourClose' : $("#hour-close").val(),
         'siteId': $("#siteId").val(),
         };
-        //callAjax(data, "TABLE presence successfuly created", null, "Failed to create table presence", null);
 
-        jQuery.post(LAB.ajaxurl, data, function(response) {
+        $.post(LAB.ajaxurl, data, function(response) {
         if (response.success) {
-            //$("#invitationForm")[0].outerHTML=response.data;
             window.location.href = "/presence/";
         }
         });

@@ -203,7 +203,6 @@ function lab_present_choice($param) {
         $hourOpen  = $_POST['hour-open'];
         $hourClose = $_POST['hour-close'];
         $site      = $_POST['siteName'];
-        printf("Bonjour $userId vous avez choisis de $date à $hourOpen jusqu'à ce même jour à $hourClose sur le site $site");
 
         //requete pour envoyer la présence sur la bd
         global $wpdb;
@@ -249,18 +248,6 @@ function lab_present_choice($param) {
                         </td></tr>";
     }
     $choiceStr .= "</tbody></table></div>";
-
-    
-
-    /*global $wpdb;
-    $wpdb->update(
-        $wpdb->prefix.'lab_presence',
-        array('hour_start'  => $date_start,
-              'hour_end'    => $date_end,
-              'site'        => $site),
-        array('id'          => $id,
-		      'user_id'     => $userId)
-    );*/
 
     return $choiceStr;
 }
