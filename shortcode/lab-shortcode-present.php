@@ -92,11 +92,6 @@ function lab_present_select($param) {
     .gal_name { color:white; font-weight:bold;};";
     $str .= "</style>\n";
 
-    //$str .= "isAdmin : '".is_admin()."' get_currentuser_id() :'".get_current_user_id()."'<br>\n";
-    //$admin = current_user_can('administrator');
-    //$currentUserId = get_current_user_id();
-    //$str .= "isAdmin : '".$admin."' get_currentuser_id() :'".get_current_user_id()."'<br>\n";
-
     $sum = array();
 
     foreach($listSite as $site) {
@@ -124,7 +119,7 @@ function lab_present_select($param) {
                             $sum[$hours->site_id][$i*2+1] = $sum[$i*2+1] + 1;
                             $str .= td($hours->hour_start,$hours->hour_end,false,"style=\"background-color:#".$colors[$hours->site_id].";color:white;\"", $hours->user_id, $hours->id, true);
                             //$str .= td($hours->hour_end,null,false,"style=\"background-color:#".$colors[$hours->site_id].";color:white;\"", $hours->user_id, $hours->id);
-                            $nb = 2;
+                            $nb = 2; 
                         }
                         // presence le matin
                         else {
@@ -276,8 +271,10 @@ function td($dateStart = null, $dateEnd = null, $empty = false, $site = null, $u
         $id = $userId."_".$presenceId;
         $tdId = " id=\"td_".$id."\" ";
         $actionId = " id=\"action_".$id."\" ";
+        $deleteId = " id=\"delete_".$id."\" ";
+        $editId   = " id=\"edit_".$id."\" ";
 
-        $str .= '<td '.$canDelete.' '.($site!=null?$site:'').$colSpan.$tdId.'><div class="wrapper"><div class="actions"'.$actionId.'><div title="Update" class="ePres floatLeft iconset_16px"><i class="fas fa-pen fa-xs"></i></div><div title="delete" class="dPres floatLeft iconset_16px"><i class="fas fa-trash fa-xs"></i></div></div><div class="gal_name">'.date('H:i', $dateStart);
+        $str .= '<td '.$canDelete.' '.($site!=null?$site:'').$colSpan.$tdId.'><div class="wrapper"><div class="actions"'.$actionId.'><div title="Update" '.$editId.' class="floatLeft iconset_16px"><i class="fas fa-pen fa-xs"></i></div><div title="delete" '.$deleteId.' class="floatLeft iconset_16px"><i class="fas fa-trash fa-xs"></i></div></div><div class="gal_name">'.date('H:i', $dateStart);
         if ($dateEnd != null) {
             $str .= " - ".date('H:i', $dateEnd);
         }
