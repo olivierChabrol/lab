@@ -979,6 +979,7 @@ function delete_all_tables() {
     drop_table("lab_presence");
     drop_table("lab_invitations");
     drop_table("lab_guests");
+    drop_table("lab_invite_comments");
 }
 
 /**
@@ -1035,6 +1036,19 @@ function lab_usermeta_copy_existing_phone() {
  */
 function beginWith($string, $pattern) {
     return substr($string, 0, strlen($pattern)) === $pattern;
+}
+
+/**************************************************************************************************************************************
+ * PRESENCE
+ *************************************************************************************************************************************/
+function lab_admin_presence_save($userId, $dateOpen, $dateEnd, $siteId) {
+    global $wpdb;
+    return $wpdb->insert($wpdb->prefix."lab_presence", array("user_id"=>$userId, "hour_start"=>$dateOpen, "hour_end"=>$dateEnd, "site"=>$siteId));
+}
+
+function lab_admin_presence_delete($presenceId, $userId) {
+    global $wpdb;
+    return $wpdb->delete($wpdb->prefix."lab_presence", array("id"=>$presenceId,"user_id"=>$userId));
 }
 
 /**************************************************************************************************************************************

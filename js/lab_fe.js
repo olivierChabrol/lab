@@ -1,7 +1,7 @@
 /* front end 21 04 2020 */
 const { __, _x, _n, sprintf } = wp.i18n;
 
-/*** DIRECTORY ***/
+/*** DIRECTORY ***/ 
 
 jQuery(function($){
 
@@ -22,6 +22,17 @@ jQuery(function($){
       href += "group="+group;
     }
     window.location.href = href;
+  });
+
+  $("[id^=delete_presence_]").each(function() {
+    $(this).click(function() {
+      //delete_presence_
+      var attrId = $(this).attr("id");
+      var pattern = "delete_presence_";
+      var id = attrId.substring(pattern.length, attrId.length);
+      //console.log(id);
+      deletePresence(id);
+    })
   });
 
   $("#lab-table-directory tr").click(function() {
@@ -53,6 +64,40 @@ jQuery(function($){
   });
 
 });
+
+/******************************* ShortCode Presence ******************************/
+
+jQuery("#lab_presence_button_save").click(function() {
+  var data = {
+    'action' : 'lab_presence_save',
+    'userId' : $("#userId").val(),
+    'dateOpen' : $("#date-open").val(),
+    'hourOpen' : $("#hour-open").val(),
+    'hourClose' : $("#hour-close").val(),
+    'siteId': $("#siteId").val(),
+  };
+  //callAjax(data, "TABLE presence successfuly created", null, "Failed to create table presence", null);
+
+  jQuery.post(LAB.ajaxurl, data, function(response) {
+    if (response.success) {
+      //$("#invitationForm")[0].outerHTML=response.data;
+      window.location.href = "/presence/";
+    }
+  });
+});
+
+function deletePresence(presenceId) {
+  var data = {
+    'action' : 'lab_presence_delete',
+    'id' : presenceId,
+  }
+  jQuery.post(LAB.ajaxurl, data, function(response) {
+    if (response.success) {
+      //$("#invitationForm")[0].outerHTML=response.data;
+      window.location.href = "/presence/";
+    }
+  });
+}
 
 /******************************* ShortCode Profile *******************************/
 function LABloadProfile() {
@@ -308,6 +353,7 @@ function LABLoadInvitation() {
         $("#lab_hostname").val('')
       };
     }
+    //Boutons de validation
     $("#lab_send_group_chief").click(function() {
       if ($("#invitationForm").prop('submited')==null) {
         invitation_submit(function () {
@@ -376,6 +422,7 @@ function formAction() {
 }
 function invitation_submit(callback) {
   document.querySelector("#primary-menu").scrollIntoView({behavior:"smooth"});
+  regex=/\"/g;
   jQuery(function($) {
     $("#invitationForm").prop('submited',true);
     fields = { 
@@ -399,7 +446,7 @@ function invitation_submit(callback) {
       fields['maximum_cost'] = $("#lab_maximum_cost").val();
     }
     if ($("#invitationForm").attr("newForm")==1) {//On crée une nouvelle invitation
-      fields['comment'] = $("#lab_form_comment").val();
+      fields['comment'] = $("#lab_form_comment").replace(regex,"”").replace(/\'/g,"’");
       data = {
         'action': 'lab_invitations_new',
         'fields': fields
@@ -432,7 +479,7 @@ function lab_submitComment() {
     data = {
       'action': 'lab_invitation_newComment',
       'token': $("#invitationForm").attr("token"),
-      'author' : $("#lab_comment_name").val(),
+      'author' : $("#lab_comment_name").text(),
       'content' : $("#lab_comment").val().replace(regex,"”").replace(/\'/g,"’")
     }
     jQuery.post(LAB.ajaxurl, data, function(response) {

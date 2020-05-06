@@ -702,7 +702,7 @@ function lab_profile_edit() {
 }
 
 function lab_admin_createSocial() {
-  foreach (['facebook','instagram','linkedin','pinterest','twitter','tumblr','youtube'] as $reseau) {
+  foreach (['facebook','instagram','linkedin','pinte1rest','twitter','tumblr','youtube'] as $reseau) {
     lab_userMetaData_create_metaKeys($reseau,'');
   }
   wp_send_json_success();
@@ -783,6 +783,30 @@ function lab_invitations_edit() {
   } else {
     wp_send_json_error('Vous n\'avez par la permission de modifier cette invitation');
   }
+}
+
+/**************************************************************************************************************
+ * PRESENCE
+ **************************************************************************************************************/
+function lab_admin_presence_save_ajax()
+{
+  $userId=$_POST['userId'];
+  $dateOpen = $_POST['dateOpen'];
+  $hourOpen = $_POST['hourOpen'];
+  $hourClose = $_POST['hourClose'];
+  $siteId = $_POST['siteId'];
+
+  if (lab_admin_presence_save($userId, $dateOpen." ".$hourOpen, $dateOpen." ".$hourClose, $siteId)) {
+    wp_send_json_success();
+  } else {
+    wp_send_json_error();
+  }
+}
+
+function lab_admin_presence_delete_ajax() {
+  $presenceId = $_POST['id'];
+  $userId = get_current_user_id();
+  wp_send_json_success(lab_admin_presence_delete($presenceId, $userId));
 }
 function lab_invitations_complete() {
   $token = $_POST['token'];
