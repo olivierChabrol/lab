@@ -54,19 +54,24 @@ function lab_present_select($param) {
 
     $usersPresent = lab_admin_list_present_user($startDay, $endDay);
 
-
+    /** struct of users : [firstName lastName][day][] */
     $users = array();
     $userId = 0;
     foreach($usersPresent as $user) {
+        // convert dateString to timeStamp obj
+        $user->hour_start = strtotime($user->hour_start);
+        $user->hour_end   = strtotime($user->hour_end);
+
         if ($userId == 0 || $userId != $user->user_id) {
             $userId = $user->user_id;
-            $users[$user->first_name." ".$user->last_name][] = $user;
+            $users[$user->first_name." ".$user->last_name][date('d', $user->hour_start)][] = $user;
         }
         else if ($userId == $user->user_id) {
-            $users[$user->first_name." ".$user->last_name][] = $user;
+            $users[$user->first_name." ".$user->last_name][date('d', $user->hour_start)][] = $user;
         }
     }
     //var_dump($users);
+
     $str .= "<a href=\"/presence/?date=".date("Y-m-d",$previousWeek)."\"><b>&lt;</b></a> Semaine du  : ".date("d-m-Y",$startDay)." au ".date("d-m-Y",$endDay)." <a href=\"/presence/?date=".date("Y-m-d",$nextWeek)."\"><b>&gt;</b></a>";
 
     $listSite = lab_admin_list_site();
@@ -95,15 +100,62 @@ function lab_present_select($param) {
     $str .= "<table id=\"lab_presence_table1\" class=\"table table-bordered table-striped\"><thead class=\"thead-dark\"><tr><th>&nbsp;</th><th colspan=\"2\">Lundi</th><th colspan=\"2\">Mardi</th><th colspan=\"2\">Mercredi</th><th colspan=\"2\">Jeudi</th><th colspan=\"2\">Vendredi</th></tr></thead><tbody>";
     foreach($users as $k=>$v) {
         $str .="<tr>\n<td>".$k."</td>\n";
+        
         for ($i = 0 ; $i < 5 ; $i++) {
-            $currentDay = strtotime('+'.$i.' days', $startDay);
+            $currentDay   = strtotime('+'.$i.' days', $startDay);
+            $currentDayDT = date('d', $currentDay);
+            if($v[$currentDayDT]) {
+
+                $nb = 0;
+                // hours is ordoned
+                foreach($v[$currentDayDT] as $hours) {
+                    if (date('H', $hours->hour_start) < 13) {
+                        if (date('H', $hours->hour_end) > 13) {
+                            $str .= td($hours->hour_start,$hours->hour_end,false,"style=\"background-color:#".$colors[$hours->site_id].";color:white;\"", $hours->user_id, $hours->id, true);
+                            //$str .= td($hours->hour_end,null,false,"style=\"background-color:#".$colors[$hours->site_id].";color:white;\"", $hours->user_id, $hours->id);
+                            $nb = 2;
+                        }
+                        else {
+                            $str .= td($hours->hour_start, $hours->hour_end,false,"style=\"background-color:#".$colors[$hours->site_id].";color:white;\"", $hours->user_id, $hours->id);
+                            //$str .= td(null, null, true);
+                        }
+                    }
+                    else {
+                        if ($nb == 0) {
+                            $str .= td(null, null, true);
+                            $nb++;
+                        }
+                        $str .= td($hours->hour_start, $hours->hour_end, null, "style=\"background-color:#".$colors[$hours->site_id].";color:white;\"", $hours->user_id, $hours->id);
+                    }
+                    $nb++;
+                }
+                if ($nb == 1) {
+                    $str .= td(null, null, true);
+                }
+            }
+            else {
+                $str .= "<td colspan=\"2\">&nbsp;</td>\n";
+            }
+            /*
             $notPresent = true;
+            $previousPresent = null;
             
             foreach($v as $hours) {
                 $dateStart = strtotime($hours->hour_start);
                 $dateEnd   = strtotime($hours->hour_end);
                 $dayH = date('d', $dateStart);
                 $day  = date('d', $currentDay);
+
+                if ($previousPresent == null) {
+                    $previousPresent = $hours;
+                } else if ($previousPresent != $dayH) {
+                    $previousDateEnd = strtotime($previousPresent->hour_end);
+                    // previous hour was before 13, add empty PM to previous Day
+                    if (date('H', $previousDateEnd) < 13) {
+                        $str .= td(null, null, true);
+                    }
+                }
+
                 if ($day == $dayH) {
                     $notPresent = false;
                     $displayId = "";
@@ -114,17 +166,20 @@ function lab_present_select($param) {
                         }
                         else {
                             $str .= td($dateStart, $dateEnd,false,"style=\"background-color:#".$colors[$hours->site_id].";color:white;\"", $hours->user_id, $hours->id);
-                            $str .= td(null, null, true);
+                            //$str .= td(null, null, true);
                         }
                     }
                     else {
-                        $str .= td(null, null, true);
+                        if ($previousPresent != $dayH) {
+                            $str .= td(null, null, true);
+                        }
                         $str .= td($dateStart, $dateEnd, null, "style=\"background-color:#".$colors[$hours->site_id].";color:white;\"", $hours->user_id, $hours->id);
                     }
                 }
+                $previousPresent = $hours;
             }
+            //*/
             if ($notPresent) {
-                $str .= "<td colspan=\"2\">&nbsp;</td>\n";
             }
         }
         $str .= "</tr>\n";
@@ -339,7 +394,7 @@ function lab_present_choice($param) {
     return $choiceStr;
 }
 
-function td($dateStart = null, $dateEnd = null, $empty = false, $site = null, $userId = null, $presenceId=null) {
+function td($dateStart = null, $dateEnd = null, $empty = false, $site = null, $userId = null, $presenceId=null, $allDay = false) {
     if ($empty) {
         $str .= "<td>&nbsp;</td>";
     } else {
@@ -349,12 +404,16 @@ function td($dateStart = null, $dateEnd = null, $empty = false, $site = null, $u
             
             $admin = current_user_can('administrator');
             $currentUserId = get_current_user_id();
+            $colSpan = "";
 
             if ($admin || $userId == $currentUserId) {
                 $canDelete = 'class="canDelete" userId="'.$userId.'" presenceId="'.$presenceId.'"';
             }
+            if ($allDay) {
+                $colSpan = "colspan=\"2\"";
+            }
         }
-        $str .= '<td '.$canDelete.' '.($site!=null?$site:'').'><div class="wrapper"><div class="actions"><div title="Update" class="ePres floatLeft iconset_16px"><i class="fas fa-pen fa-xs"></i></div><div title="delete" class="dPres floatLeft iconset_16px"><i class="fas fa-trash fa-xs"></i></div></div><div class="gal_name">'.date('H:i', $dateStart);
+        $str .= '<td '.$canDelete.' '.($site!=null?$site:'').$colSpan.'><div class="wrapper"><div class="actions"><div title="Update" class="ePres floatLeft iconset_16px"><i class="fas fa-pen fa-xs"></i></div><div title="delete" class="dPres floatLeft iconset_16px"><i class="fas fa-trash fa-xs"></i></div></div><div class="gal_name">'.date('H:i', $dateStart);
         if ($dateEnd != null) {
             $str .= " - ".date('H:i', $dateEnd);
         }
