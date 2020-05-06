@@ -7,11 +7,8 @@ jQuery(function($){
   
     $(".icon-edit").click(function() {
         let editable = $(this).parents('tr').find('.edit');
-        console.log("click edit");
-
 
         if( $(this).hasClass("fa-pen") ){
-            console.log("click edit fa-pen");
             $.each(editable, function() {
                 let content = $(this).text();
 
@@ -31,8 +28,6 @@ jQuery(function($){
         } 
         else 
         {
-            console.log("check");
-            //let idPresence = $(this).parents('tr').find('#id-presence').val();
             let userId       = $(this).attr('userId');
             let idPresence = $(this).attr('editId');
             let date       = $(this).parents('tr').find('.date')     .val();
