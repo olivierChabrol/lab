@@ -61,6 +61,8 @@ function lab_admin_tab_settings() {
   <button class="page-title-action" id="lab_presence_create_table"><?php echo esc_html__('Créer la table presence','lab'); ?></button><br>
   <hr/>
 
+  <button class="page-title-action" id="lab_invite_create_tables"><?php echo esc_html__('Créer la table Invitation','lab'); ?></button>
+  <hr/>
   <button class="page-title-action" id="lab_admin_reset_db"><?php echo esc_html__('Reset DB','lab'); ?></button>
   <div id="lab_admin_setting_delete_dialog" class="modal">
       <p><?php esc_html_e('Reset LAB DB ?','lab');?></p>
@@ -69,10 +71,6 @@ function lab_admin_tab_settings() {
         <a href="#" rel="modal:close" id="lab_admin_setting_delete_dialog_confirm" keyid=""><?php esc_html_e('Confirmer','lab'); ?></a>
       </div>
     </div>
-  <hr>
-  <h4>Invitations</h4>
-  <button class="page-title-action" id="lab_invite_create_tables"><?php echo esc_html__('Créer la table Invitation','lab'); ?></button>
-  <button class="page-title-action" id="lab_invite_create_table_prefGroups"><?php echo esc_html__('Créer la table Prefered Groups','lab'); ?></button>
   <hr>
     <h4>Correct DB :</h4>
   <button class="page-title-action" id="lab_settings_correct_um"><?php echo esc_html__('Corriger usermeta fields UM','lab'); ?></button>

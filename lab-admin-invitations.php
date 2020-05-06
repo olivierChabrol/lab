@@ -15,7 +15,7 @@ function lab_invitations_createTables() {
     return;
   }
   $sql = "CREATE TABLE IF NOT EXISTS `".$wpdb->prefix."lab_invitations` (
-      `id` bigint PRIMARY KEY AUTO_INCREMENT,
+      `id` bigint UNSIGNED PRIMARY KEY AUTO_INCREMENT,
       `guest_id` bigint UNSIGNED,
       `host_id` bigint UNSIGNED,
       `host_group_id` bigint,
@@ -28,6 +28,7 @@ function lab_invitations_createTables() {
       `travel_mean_from` varchar(50),
       `funding_source` varchar(200),
       `estimated_cost` float,
+      `maximum_cost` float,
       `real_cost` float,
       `status` tinyint,
       `creation_time` datetime,
@@ -36,23 +37,36 @@ function lab_invitations_createTables() {
       FOREIGN KEY (`guest_id`) REFERENCES `".$wpdb->prefix."lab_guests` (`id`),
       FOREIGN KEY (`host_id`) REFERENCES `".$wpdb->prefix."users` (`ID`)
     );";
-  $wpdb->get_results($sql);
-  wp_send_json_success();
-}
-function lab_invitations_createPrefGroupTable() {
-  global $wpdb;
+  $res = $wpdb->get_results($sql);
+  if (!strlen($res)==0) {
+    wp_send_json_error();
+    return;
+  }
+  $sql = "CREATE TABLE IF NOT EXISTS `".$wpdb->prefix."lab_invite_comments` (
+    `id` BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    `invite_id` BIGINT UNSIGNED,
+    `author` varchar(40),
+    `timestamp` datetime,
+    `content` text,
+    FOREIGN KEY (`invite_id`) REFERENCES `".$wpdb->prefix."lab_invitations`(`id`));";
+  $res = $wpdb->get_results($sql);
+  if (!strlen($res)==0) {
+    wp_send_json_error();
+    return;
+  }
   $sql = "CREATE TABLE IF NOT EXISTS `".$wpdb->prefix."lab_prefered_groups` (
-      `id` int PRIMARY KEY AUTO_INCREMENT,
-      `group_id` bigint UNSIGNED,
-      `user_id` bigint UNSIGNED,
-      FOREIGN KEY (`group_id`) REFERENCES `".$wpdb->prefix."lab_groups` (`id`),
-      FOREIGN KEY (`user_id`) REFERENCES `".$wpdb->prefix."users` (`id`)
-    );";
+    `id` int PRIMARY KEY AUTO_INCREMENT,
+    `group_id` bigint UNSIGNED,
+    `user_id` bigint UNSIGNED,
+    FOREIGN KEY (`group_id`) REFERENCES `".$wpdb->prefix."lab_groups` (`id`),
+    FOREIGN KEY (`user_id`) REFERENCES `".$wpdb->prefix."users` (`id`)
+  );";
   if (strlen($wpdb->get_results($sql))==0) {
     wp_send_json_success();
     return;
+  } else {
+    wp_send_json_error();
   }
-  wp_send_json_error();
 }
 function lab_invitations_createGuest($params) {
   global $wpdb;
@@ -74,7 +88,7 @@ function lab_invitations_createInvite($params) {
       $params
       )
   ) {
-      return;
+    return $wpdb->insert_id;
   } else {
       return $wpdb -> last_error;
   }
@@ -121,14 +135,25 @@ function lab_invitations_getByHost($host_id,$params=array()) {
 }
 function lab_invitations_getPrefGroups($user_id,$params=array()) {
   global $wpdb;
-  $sql = "SELECT * FROM `wp_lab_groups`, `wp_lab_prefered_groups`
-  WHERE `wp_lab_groups`.`id`=`wp_lab_prefered_groups`.`group_id`
-  AND `wp_lab_prefered_groups`.`user_id`=".$user_id.";";
+  $sql = "SELECT * FROM `".$wpdb->prefix."lab_groups`, `".$wpdb->prefix."ab_prefered_groups`
+  WHERE `".$wpdb->prefix."lab_groups`.`id`=`".$wpdb->prefix."lab_prefered_groups`.`group_id`
+  AND `".$wpdb->prefix."lab_prefered_groups`.`user_id`=".$user_id.";";
 // $sql2 = "SELECT g1.* AS all
 //     FROM `wp_lab_groups` AS g1 
 //     JOIN `wp_lab_prefered_groups` ON `wp_lab_groups`.`id`=`wp_lab_prefered_groups`.`group_id`
 //     WHERE `wp_lab_prefered_groups`.`user_id`=1;";
   $res = $wpdb->get_results($sql);
   return $res;
+}
+function lab_invitations_getComments($id) {
+  global $wpdb;
+  $sql = "SELECT * FROM `".$wpdb->prefix."lab_invite_comments` WHERE `invite_id`=".$id.";";
+  $res = $wpdb->get_results($sql);
+  return $res;
+}
+function lab_invitations_addComment($fields) {
+  global $wpdb;
+  return $wpdb->insert($wpdb->prefix."lab_invite_comments",
+  $fields);
 }
 ?>

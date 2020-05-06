@@ -53,14 +53,50 @@ jQuery(function($){
             $.each(editable, function() {
                 let content = "";
 
-                if( $(this).hasClass("site-row") ){
-                    content = $(this).find(":selected").text();
-                } else {
-                    content = $(this).find("input").val();
-                }
-                $(this).text(`${content}`);
-            });
-        }
-        $(this).toggleClass("fa-pen fa-check")
-    });
+                    if( $(this).hasClass("site-row") ){
+                        content = $(this).find(":selected").text();
+                    } else {
+                        content = $(this).find("input").val();
+                    }
+                    $(this).text(`${content}`);
+                });
+            }
+            
+            $(this).toggleClass("ui-icon-pencil ui-icon-check")
+        });
+
+        $(".canDelete").mouseover(function () {
+            el = $(this);
+            $(".actions").css('display', 'block');
+            if (el.attr("userId")) {
+                dPres = el.find("div.dPres");
+                dPres.attr("userId", el.attr("userId"));
+                dPres.attr("presenceId", el.attr("presenceId"));
+                dPres.click(function() {
+                    deletePresence(dPres.attr("presenceId"), dPres.attr("userId"));
+                });
+            }
+        });
+        $(".canDelete").mouseout(function () {
+            //$(this).children("div").remove();
+            $(".actions").css('display', 'none');
+        });
+        $("#lab_presence_button_save").click(function() {
+          var data = {
+            'action' : 'lab_presence_save',
+            'userId' : $("#userId").val(),
+            'dateOpen' : $("#date-open").val(),
+            'hourOpen' : $("#hour-open").val(),
+            'hourClose' : $("#hour-close").val(),
+            'siteId': $("#siteId").val(),
+          };
+          //callAjax(data, "TABLE presence successfuly created", null, "Failed to create table presence", null);
+        
+          jQuery.post(LAB.ajaxurl, data, function(response) {
+            if (response.success) {
+              //$("#invitationForm")[0].outerHTML=response.data;
+              window.location.href = "/presence/";
+            }
+          });
+        });
 });

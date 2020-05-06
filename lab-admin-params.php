@@ -4,6 +4,9 @@ class AdminParams {
     public const PARAMS_GROUPTYPE_ID = 2;
     public const PARAMS_KEYTYPE_ID = 3;
     public const PARAMS_SITE_ID = 4;
+    public const PARAMS_USER_FUNCTION_ID = 5;
+    public const PARAMS_MISSION_ID = 6;
+    public const PARAMS_FUNDING_ID = 7;
 
     public static function get_params_fromId($id) {
         $sql = "SELECT value,id FROM `wp_lab_params` WHERE type_param=".$id.";";

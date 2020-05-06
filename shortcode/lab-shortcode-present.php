@@ -54,19 +54,24 @@ function lab_present_select($param) {
 
     $usersPresent = lab_admin_list_present_user($startDay, $endDay);
 
-
+    /** struct of users : [firstName lastName][day][] */
     $users = array();
     $userId = 0;
     foreach($usersPresent as $user) {
+        // convert dateString to timeStamp obj
+        $user->hour_start = strtotime($user->hour_start);
+        $user->hour_end   = strtotime($user->hour_end);
+
         if ($userId == 0 || $userId != $user->user_id) {
             $userId = $user->user_id;
-            $users[$user->first_name." ".$user->last_name][] = $user;
+            $users[$user->first_name." ".$user->last_name][date('d', $user->hour_start)][] = $user;
         }
         else if ($userId == $user->user_id) {
-            $users[$user->first_name." ".$user->last_name][] = $user;
+            $users[$user->first_name." ".$user->last_name][date('d', $user->hour_start)][] = $user;
         }
     }
     //var_dump($users);
+
     $str .= "<a href=\"/presence/?date=".date("Y-m-d",$previousWeek)."\"><b>&lt;</b></a> Semaine du  : ".date("d-m-Y",$startDay)." au ".date("d-m-Y",$endDay)." <a href=\"/presence/?date=".date("Y-m-d",$nextWeek)."\"><b>&gt;</b></a>";
 
     $listSite = lab_admin_list_site();
@@ -78,149 +83,98 @@ function lab_present_select($param) {
     }
     $str .= "</tr></table><br>";
 
+    // .iconset_16px { height: 17px; width: 17px; background-color: #87ceeb; cursor: pointer; margin: 3px;}
+    $str .= "\n<style>\n";
+    $str .= ".wrapper { position: relative; }
+    .actions { display:none;position: absolute; top: -10px; right: -10px; }
+    .iconset_16px { height: 17px; width: 17px; cursor: pointer; margin: 3px;}
+    .floatLeft  { float:left!important; };
+    .gal_name { color:white; font-weight:bold;};";
+    $str .= "</style>\n";
+
+    //$str .= "isAdmin : '".is_admin()."' get_currentuser_id() :'".get_current_user_id()."'<br>\n";
+    //$admin = current_user_can('administrator');
+    //$currentUserId = get_current_user_id();
+    //$str .= "isAdmin : '".$admin."' get_currentuser_id() :'".get_current_user_id()."'<br>\n";
+
+    $sum = array();
+
+    foreach($listSite as $site) {
+        $sum[$site->id] = array();
+        for ($i = 0 ; $i < 10 ; $i++) {
+            $sum[$site->id][$i] = 0;
+        }
+    }
     $str .= "<table id=\"lab_presence_table1\" class=\"table table-bordered table-striped\"><thead class=\"thead-dark\"><tr><th>&nbsp;</th><th colspan=\"2\">Lundi</th><th colspan=\"2\">Mardi</th><th colspan=\"2\">Mercredi</th><th colspan=\"2\">Jeudi</th><th colspan=\"2\">Vendredi</th></tr></thead><tbody>";
     foreach($users as $k=>$v) {
-        $str .="<tr><td>".$k."</td>";
+        $str .="<tr>\n<td>".$k."</td>\n";
+        
         for ($i = 0 ; $i < 5 ; $i++) {
-            $currentDay = strtotime('+'.$i.' days', $startDay);
-            $notPresent = true;
-            
-            foreach($v as $hours) {
-                $dateStart = strtotime($hours->hour_start);
-                $dateEnd   = strtotime($hours->hour_end);
-                $dayH = date('d', $dateStart);
-                $day  = date('d', $currentDay);
-                if ($day == $dayH) {
-                    $notPresent = false;
-                    if (date('H', $dateStart) < 13) {
-                        if (date('H', $dateEnd) > 13) {
-                            $str .= "<td style=\"background-color:#".$colors[$hours->site_id].";color:white;\"><b>".date('H:i', $dateStart)."</b></td><td style=\"background-color:#".$colors[$hours->site_id].";color:white;\"><b>".date('H:i', $dateEnd)."</b></td>";
+            $currentDay   = strtotime('+'.$i.' days', $startDay);
+            $currentDayDT = date('d', $currentDay);
+            if($v[$currentDayDT]) {
+
+                $nb = 0;
+                // hours is ordoned
+                foreach($v[$currentDayDT] as $hours) {
+                    if (date('H', $hours->hour_start) < 13) {
+                        // presence toute la journée
+                        if (date('H', $hours->hour_end) >= 13) {
+                            $sum[$hours->site_id][$i*2] = $sum[$i*2] + 1;
+                            $sum[$hours->site_id][$i*2+1] = $sum[$i*2+1] + 1;
+                            $str .= td($hours->hour_start,$hours->hour_end,false,"style=\"background-color:#".$colors[$hours->site_id].";color:white;\"", $hours->user_id, $hours->id, true);
+                            //$str .= td($hours->hour_end,null,false,"style=\"background-color:#".$colors[$hours->site_id].";color:white;\"", $hours->user_id, $hours->id);
+                            $nb = 2;
                         }
+                        // presence le matin
                         else {
-                            $str .= "<td style=\"background-color:#".$colors[$hours->site_id].";color:white;\"><b>".date('H:i', $dateStart)."-".date('H:i', $dateEnd)."</b></td><td>&nbsp;</td>";
+                            $str .= td($hours->hour_start, $hours->hour_end,false,"style=\"background-color:#".$colors[$hours->site_id].";color:white;\"", $hours->user_id, $hours->id,false);
+                            $sum[$hours->site_id][$i*2] += 1;
+                            //$str .= td(null, null, true);
                         }
                     }
+                    // presence l'aprem
                     else {
-                        $str .= "<td>&nbsp;</td><td style=\"background-color:#".$colors[$hours->site_id].";color:white;\"><b>".date('H:i', $dateStart)."-".date('H:i', $dateEnd)."</b></td>";
+                        if ($nb == 0) {
+                            $str .= td(null, null, true);
+                            $nb++;
+                        }
+                        $str .= td($hours->hour_start, $hours->hour_end, null, "style=\"background-color:#".$colors[$hours->site_id].";color:white;\"", $hours->user_id, $hours->id,false);
+                        $sum[$hours->site_id][$i*2+1] += 1;
                     }
+                    $nb++;
+                }
+                if ($nb == 1) {
+                    $str .= td(null, null, true);
                 }
             }
-            if ($notPresent) {
-                $str .= "<td colspan=\"2\">&nbsp;</td>";
+            else {
+                $str .= "<td colspan=\"2\">&nbsp;</td>\n";
             }
         }
-        $str .= "</tr>";
+        $str .= "</tr>\n";
+    }
+    $str .= "<tr><td colspan=\"11\">Total</td></tr><tr>";
+
+    foreach($listSite as $site) {
+        $str .= "<tr><td style=\"background-color:#".$colors[$site->id].";color:white;\">".$site->value."</td>";
+
+        for ($i = 0 ; $i < 10 ; $i++) {
+            $str .= "<td style=\"background-color:#".$colors[$site->id].";color:white;\"><b>";
+            $str .= $sum[$site->id][$i];
+            $str .= "</b></td>";
+        }   
+        $str .= "<tr>";
     }
     $str .= "</tbody></table>";
-/*
-    $sites = new StdClass();
-    foreach($usersPresent as $user) {
-        if (!isset($sites->{$user->site_id})) {
-            $sites->{$user->site_id} = new StdClass();
-            //echo "add site ".$user->site_id."<br>";
-        }
-        $days = $sites->{$user->site_id};
-
-        $days_between = floor(abs(strtotime($user->hour_start) - $startDay) / 86400);
-        //echo "\$days_between ".$days_between."<br>";
-        //if (!array_key_exists($days_between, $sites[$user->site_id])) {
-        if (!isset($days->{$days_between})) {
-            $days->{$days_between} = array();
-            //echo "add days_between ".$days_between."<br>";
-        }
-       
-        //echo "sites[$user->site_id][$days_between]add user ".$user->last_name." -> ".sizeof($sites[$user->site_id.""][$days_between.""])."<br>";
-        $days->{$days_between}[] = $user;
-        //echo "sites[$user->site_id][$days_between.\"\"]add user ".$user->last_name." -> ".sizeof($days->{$days_between})."<br>";
-
-        //$sites[$user->site_id][] = $user;
-        //$user->hour_start
-    }
-    $listSite = lab_admin_list_site();
-  //*/
-    /*
-    $tootTip = "";
-    $str .= "<table id=\"lab_presence_table\" class=\"table table-bordered table-striped\"><thead class=\"thead-dark\"><tr><th>&nbsp;</th><th colspan=\"2\">Lundi</th><th colspan=\"2\">Mardi</th><th colspan=\"2\">Mercredi</th><th colspan=\"2\">Jeudi</th><th colspan=\"2\">Vendredi</th></tr></thead><tbody>";
-    
-    $divAM = "";
-    $divPM = "";
-    foreach ($listSite as $site) 
-    {
-        $str .= "<tr><td>".$site->value."</td>";
-        if (isset($sites->{$site->id})) {
-            $days = $sites->{$site->id};
-            for ($i = 0 ; $i < 5 ; $i++) {
-                if (isset($days->{$i})) {
-                    $userPresentAM = "";
-                    $userPresentPM = "";
-                    $nbAM = 0;
-                    $nbPM = 0;
-                    foreach($days->{$i} as $u) {
-                        $endHour = strtotime($u->hour_end);
-                        $startHour = strtotime($u->hour_start);
-                        if (date('H', $endHour) < 14) {
-                            $nbAM += 1;
-                            if (!empty($userPresentAM)) {
-                                $userPresentAM .= ", ";
-                            }
-                            $userPresentAM .= $u->first_name." ".$u->last_name;
-                        } else if (date('H', $startHour) > 12) {
-                            $nbPM += 1;
-                            if (!empty($userPresentPM)) {
-                                $userPresentPM .= ", ";
-                            }
-                            $userPresentPM .= $u->first_name." ".$u->last_name;
-                        } else {
-                            $nbAM += 1;
-                            $nbPM += 1;
-                            if (!empty($userPresentAM)) {
-                                $userPresentAM .= ", ";
-                            }
-                            $userPresentAM .= $u->first_name." ".$u->last_name;
-                            if (!empty($userPresentPM)) {
-                                $userPresentPM .= ", ";
-                            }
-                            $userPresentPM .= $u->first_name." ".$u->last_name;
-                        }
-
-                    }
-                    if ($nbAM>0) {
-                        $str .= "<td id=\"lab_presence_td_".$site->id.$i."AM\" num=\"$nbAM\" title=\"$userPresentAM\">&nbsp;</td>";
-                        
-                    }
-                    else {
-                        $str .= "<td>&nbsp;</td>";
-                    }
-                    if ($nbPM>0) {
-                        $str .= "<td id=\"lab_presence_td_".$site->id.$i."PM\" num=\"$nbPM\" title=\"$userPresentPM\">&nbsp;</td>";
-                    }
-                    else {
-                        $str .= "<td>&nbsp;</td>";
-                    }
-                    if (!empty($userPresentAM)) {
-                        $tootTip .= "<div id=\"lab_presence_div_".$site->id.$i."AM\" role=\"tooltip\" class=\"presence-tooltip\"/>".$userPresentAM."<div class=\"arrow\" data-popper-arrow></div></div>";
-                    }
-                    if (!empty($userPresentPM)) {
-                        $tootTip .= "<div id=\"lab_presence_div_".$site->id.$i."PM\" role=\"tooltip\"/>".$userPresentPM."</div>";
-                    }
-
-                }else {
-                    $str .= "<td colspan=\"2\">&nbsp;</td>";
-                }
-            }
-        }
-        else {
-            $str .="<td colspan=\"2\">&nbsp;</td><td colspan=\"2\">&nbsp;</td><td colspan=\"2\">&nbsp;</td><td colspan=\"2\">&nbsp;</td><td colspan=\"2\">&nbsp;</td>";
-        }
-        $str .= "</tr>";
-    }
-
-    $str .= "</tbody></table>".$tootTip;
-//*/
     return $str;
 }
 
 function lab_present_choice($param) {
+    if (!is_user_logged_in())
+    {
+        return "";
+    }
     $param = shortcode_atts(array(
         ),
         $param, 
@@ -330,4 +284,45 @@ function lab_present_choice($param) {
     );
 
     return $choiceStr;
+}
+
+function td($dateStart = null, $dateEnd = null, $empty = false, $site = null, $userId = null, $presenceId=null, $allDay = false, $text= null) {
+    if ($empty) {
+        $str .= "<td>&nbsp;</td>";
+    } else {
+        $canDelete = '';//'class="canDelete" userId="'.$userId.'" presenceId="'.$presenceId.'"';
+        
+        if ($userId != null && $presenceId != null) {
+            
+            $admin = current_user_can('administrator');
+            $currentUserId = get_current_user_id();
+            $colSpan = "";
+
+            if ($admin || $userId == $currentUserId) {
+                $canDelete = 'class="canDelete" userId="'.$userId.'" presenceId="'.$presenceId.'"';
+            }
+            if ($allDay) {
+                $colSpan = "colspan=\"2\"";
+            }
+        }
+        $str .= '<td '.$canDelete.' '.($site!=null?$site:'').$colSpan.'><div class="wrapper"><div class="actions"><div title="Update" class="ePres floatLeft iconset_16px"><i class="fas fa-pen fa-xs"></i></div><div title="delete" class="dPres floatLeft iconset_16px"><i class="fas fa-trash fa-xs"></i></div></div><div class="gal_name">'.date('H:i', $dateStart);
+        if ($dateEnd != null) {
+            $str .= " - ".date('H:i', $dateEnd);
+        }
+        if ($text != null) {
+            if (is_array($text)) {
+                for ($i = 0 ; $i < sizeof($text) ; $i++)
+                {
+                    $str .= $text[$i];
+                    if ($i + 1 < sizeof($text) ) {
+                        $str . ", ";
+                    }
+
+                }
+            }
+        }
+        $str .= '</div><div></td>';
+    }
+    $str .= "\n";
+    return $str;
 }

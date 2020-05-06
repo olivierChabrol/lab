@@ -2,7 +2,6 @@
 
 include 'lab-admin-core.php';
 
-
 /**
  * Fonction qui répond à la requete ajax de recherche d'evenement
  **/
@@ -399,7 +398,7 @@ function lab_admin_group_createReq() {
   wp_send_json_error($res);
 }
 function lab_admin_group_createRoot() { 
-  $res = lab_admin_group_create('root', 'root', '1', '0', '0');
+  $res = lab_admin_group_create('root', 'root', '1', '0', '0', '/');
   if (strlen($res)==0) {
     wp_send_json_success();
     return;
@@ -703,7 +702,7 @@ function lab_profile_edit() {
 }
 
 function lab_admin_createSocial() {
-  foreach (['facebook','instagram','linkedin','pinterest','twitter','tumblr','youtube'] as $reseau) {
+  foreach (['facebook','instagram','linkedin','pinte1rest','twitter','tumblr','youtube'] as $reseau) {
     lab_userMetaData_create_metaKeys($reseau,'');
   }
   wp_send_json_success();
@@ -739,10 +738,18 @@ function lab_invitations_new() {
     'creation_time' => $timeStamp,
     'status' => 1
   );
-  foreach (['host_group_id','host_id','mission_objective','start_date','end_date','travel_mean_to','travel_mean_from','funding_source'] as $champ) {
+  foreach (['host_group_id','host_id', 'estimated_cost', 'mission_objective','start_date','end_date','travel_mean_to','travel_mean_from','funding_source'] as $champ) {
     $invite[$champ]=$fields[$champ];
   }
-  lab_invitations_createInvite($invite);
+  $invite_id = lab_invitations_createInvite($invite);
+  if (strlen($fields['comment'])>0) {
+    lab_invitations_addComment(array(
+      'content'=> $fields['comment'],
+      'timestamp'=> $timeStamp,
+      'author'=>$fields['guest_firstName'].' '.$fields['guest_lastName'],
+      'invite_id'=>$invite_id
+    )); 
+  }
   $html = '<p>'.esc_html__("Votre demande a bien été prise en compte",'lab').'</p>';
   $html .= "<hr><h5>e-mail envoyé à l'invité : </h5>";
   $html .= lab_invitations_mail(1,$guest,$invite);
@@ -752,7 +759,7 @@ function lab_invitations_new() {
 }
 function lab_invitations_edit() {
   $fields = $_POST['fields'];
-  if (get_current_user_id()==$fields['host_id']) {
+  if (get_current_user_id()==$fields['host_id'] || isset($fields['host_group_id']) && get_current_user_id()==(int)lab_admin_get_chief_byGroup($fields['host_group_id'])) {
     $guest = array (
       'first_name'=> $fields['guest_firstName'],
       'last_name'=> $fields['guest_lastName'],
@@ -765,14 +772,13 @@ function lab_invitations_edit() {
     $timeStamp=date("Y-m-d H:i:s",time());
     $invite = array (
       'needs_hostel'=>$fields['needs_hostel']=='true' ? 1 : 0,
-      'completion_time' => $timeStamp,
-      'status' => 10,
+      'completion_time' => $timeStamp
     );
-    foreach (['host_group_id','host_id','mission_objective','start_date','end_date','travel_mean_to','travel_mean_from','funding_source'] as $champ) {
+    foreach (['host_group_id', 'estimated_cost', 'maximum_cost', 'host_id','mission_objective','start_date','end_date','travel_mean_to','travel_mean_from','funding_source'] as $champ) {
       $invite[$champ]=$fields[$champ];
     }
     lab_invitations_editInvitation($fields['token'],$invite);
-    $html = "<p>".esc_html__("Votre invitation a bien été complétée",'lab')."<br>à $timeStamp</p>";
+    $html = "<p>".esc_html__("Votre invitation a bien été modifiée",'lab')."<br>à $timeStamp</p>";
     wp_send_json_success($html);
   } else {
     wp_send_json_error('Vous n\'avez par la permission de modifier cette invitation');
@@ -784,21 +790,73 @@ function lab_invitations_edit() {
  **************************************************************************************************************/
 function lab_admin_presence_save_ajax()
 {
-  $userId=$_POST['userId'];
-  $dateOpen = $_POST['dateOpen'];
-  $hourOpen = $_POST['hourOpen'];
-  $hourClose = $_POST['hourClose'];
-  $siteId = $_POST['siteId'];
+  $presenceId  = null;
+  if(isset($_POST['id'])) {
+    $presenceId = $_POST['id'];
+  }
 
-  if (lab_admin_presence_save($userId, $dateOpen." ".$hourOpen, $dateOpen." ".$hourClose, $siteId)) {
+  $userId=$_POST['userId'];
+  if (!isset($userId)) {
+    $userId= get_current_user_id();
+  }
+
+  $dateOpen  = $_POST['dateOpen'];
+  $hourOpen  = $_POST['hourOpen'];
+  $hourClose = $_POST['hourClose'];
+  $siteId    = $_POST['siteId'];
+
+  if($presenceId != null) {
+    if (!current_user_can('administrator')) {
+      wp_send_json_error();
+      return;
+    }
+  }
+
+  if (lab_admin_presence_save($presenceId, $userId, $dateOpen." ".$hourOpen, $dateOpen." ".$hourClose, $siteId)) {
     wp_send_json_success();
   } else {
     wp_send_json_error();
   }
+
+}
+
+function lab_admin_presence_update_ajax() {
+  $presenceId = $_POST['id'];
+  $userId = get_current_user_id();
+  wp_send_json_success(lab_admin_presence_delete($presenceId, $userId));
 }
 
 function lab_admin_presence_delete_ajax() {
   $presenceId = $_POST['id'];
   $userId = get_current_user_id();
   wp_send_json_success(lab_admin_presence_delete($presenceId, $userId));
+}
+function lab_invitations_complete() {
+  $token = $_POST['token'];
+  lab_invitations_editInvitation($token,array('status'=>10));
+  $html = 'Un mail récapitulatif a été envoyé au responsable du groupe pour validation';
+  $invite = lab_invitations_getByToken($token);
+  $Iarray = json_decode(json_encode($invite), true);
+  $Garray = json_decode(json_encode(lab_invitations_getGuest($invite->guest_id)), true);
+  $html .= lab_invitations_mail(10,$Garray,$Iarray);
+  wp_send_json_success($html);
+}
+function lab_invitations_validate() {
+  $token = $_POST['token'];
+  lab_invitations_editInvitation($token,array('status'=>20));
+  wp_send_json_success('La demande a été transmise à l\'administration');
+}
+
+function lab_invitation_newComment() {
+  $id = lab_invitations_getByToken($_POST['token'])->id;
+  date_default_timezone_set("Europe/Paris");
+  $timeStamp=date("Y-m-d H:i:s",time());
+  lab_invitations_addComment(array(
+    'content'=> $_POST['content'],
+    'timestamp'=> $timeStamp,
+    'author'=>$_POST['author'],
+    'invite_id'=>$id
+  )); 
+  $html = lab_inviteComments($_POST['token']);
+  wp_send_json_success($html);
 }
