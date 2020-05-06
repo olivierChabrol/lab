@@ -57,13 +57,18 @@ jQuery(function($){
 
     $(".canDelete").mouseover(function () {
         el = $(this);
-        $(".actions").css('display', 'block');
+        let elId = el.attr("id");
+        let actionId = "#action"+elId.substr(2,elId.length);
+        console.log(actionId);
+        $(actionId).css('display', 'block');
         if (el.attr("userId")) {
-            dPres = el.find("div.dPres");
-            dPres.attr("userId", el.attr("userId"));
-            dPres.attr("presenceId", el.attr("presenceId"));
+            let dPres = el.find("div.dPres");
             dPres.click(function() {
-                deletePresence(dPres.attr("presenceId"), dPres.attr("userId"));
+                deletePresence(el.attr("presenceId"), el.attr("userId"));
+            });
+            let ePres = el.find("div.ePres");
+            ePres.click(function() {
+                editPresence(el.attr("presenceId"), el.attr("userId"));
             });
         }
     });
@@ -94,3 +99,32 @@ jQuery(function($){
         });
     });
 });
+
+/******************************* ShortCode Presence ******************************/
+
+function editPresence(presenceId, userId = null) {
+    toast_warn("Implement this Presence");
+}
+
+function deletePresence(presenceId, userId = null) {
+    var data = null;
+    if (userId != null) {
+      data = {
+        'action' : 'lab_presence_delete',
+        'id' : presenceId,
+        'userId' : userId
+      }
+    }
+    else {
+      data = {
+        'action' : 'lab_presence_delete',
+        'id' : presenceId
+      }
+    }
+    jQuery.post(LAB.ajaxurl, data, function(response) {
+      if (response.success) {
+        //$("#invitationForm")[0].outerHTML=response.data;
+        window.location.href = "/presence/";
+      }
+    });
+  }
