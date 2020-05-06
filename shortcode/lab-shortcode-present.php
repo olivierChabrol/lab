@@ -250,18 +250,6 @@ function lab_present_choice($param) {
     }
     $choiceStr .= "</tbody></table></div>";
 
-    
-
-    /*global $wpdb;
-    $wpdb->update(
-        $wpdb->prefix.'lab_presence',
-        array('hour_start'  => $date_start,
-              'hour_end'    => $date_end,
-              'site'        => $site),
-        array('id'          => $id,
-		      'user_id'     => $userId)
-    );*/
-
     return $choiceStr;
 }
 
@@ -278,13 +266,17 @@ function td($dateStart = null, $dateEnd = null, $empty = false, $site = null, $u
             $colSpan = "";
 
             if ($admin || $userId == $currentUserId) {
-                $canDelete = 'class="canDelete" userId="'.$userId.'" presenceId="'.$presenceId.'"';
+                $canDelete = ' class="canDelete" userId="'.$userId.'" presenceId="'.$presenceId.'" ';
             }
             if ($allDay) {
-                $colSpan = "colspan=\"2\"";
+                $colSpan = " colspan=\"2\" ";
             }
         }
-        $str .= '<td '.$canDelete.' '.($site!=null?$site:'').$colSpan.'><div class="wrapper"><div class="actions"><div title="Update" class="ePres floatLeft iconset_16px"><i class="fas fa-pen fa-xs"></i></div><div title="delete" class="dPres floatLeft iconset_16px"><i class="fas fa-trash fa-xs"></i></div></div><div class="gal_name">'.date('H:i', $dateStart);
+        $id = $userId."_".$presenceId;
+        $tdId = " id=\"td_".$id."\" ";
+        $actionId = " id=\"action_".$id."\" ";
+
+        $str .= '<td '.$canDelete.' '.($site!=null?$site:'').$colSpan.$tdId.'><div class="wrapper"><div class="actions"'.$actionId.'><div title="Update" class="ePres floatLeft iconset_16px"><i class="fas fa-pen fa-xs"></i></div><div title="delete" class="dPres floatLeft iconset_16px"><i class="fas fa-trash fa-xs"></i></div></div><div class="gal_name">'.date('H:i', $dateStart);
         if ($dateEnd != null) {
             $str .= " - ".date('H:i', $dateEnd);
         }
