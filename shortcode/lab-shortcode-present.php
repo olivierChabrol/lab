@@ -81,18 +81,27 @@ function lab_present_select($param) {
             $sum[$site->id][$i] = 0;
         }
     }
-
+    
     $dayInt = date('j', $startDay);
+    $dayInMonth = date('t', $startDay);
+    
+    function getDay(&$dayInt, $dayInMonth ) {
+        $dayInt = (++$dayInt) % $dayInMonth;
+        if ($dayInt == 0) {
+            $dayInt = $dayInMonth;
+        }
+        return $dayInt;
+    }
 
     $str .= "<table id=\"lab_presence_table1\" class=\"table table-bordered table-striped\">
                 <thead class=\"thead-dark\">
                     <tr>
                         <th style=\"width: 16.66%\">&nbsp;</th>
-                        <th colspan=\"2\" style=\"width: 16.66%\">" . esc_html__("Lundi", "lab")    . "Lundi "    . $dayInt   . "</th>
-                        <th colspan=\"2\" style=\"width: 16.66%\">" . esc_html__("Mardi", "lab")    . "Mardi "    . ++$dayInt . "</th>
-                        <th colspan=\"2\" style=\"width: 16.66%\">" . esc_html__("Mercredi", "lab") . "Mercredi " . ++$dayInt . "</th>
-                        <th colspan=\"2\" style=\"width: 16.66%\">" . esc_html__("Jeudi", "lab")    . "Jeudi "    . ++$dayInt . "</th>
-                        <th colspan=\"2\" style=\"width: 16.66%\">" . esc_html__("Vendredi", "lab") . "Vendredi " . ++$dayInt . "</th>
+                        <th colspan=\"2\" style=\"width: 16.66%\">" . esc_html__("Lundi", "lab")    . " " . $dayInt . "</th>
+                        <th colspan=\"2\" style=\"width: 16.66%\">" . esc_html__("Mardi", "lab")    . " " . getDay($dayInt, $dayInMonth ) . "</th>
+                        <th colspan=\"2\" style=\"width: 16.66%\">" . esc_html__("Mercredi", "lab") . " " . getDay($dayInt, $dayInMonth ) . "</th>
+                        <th colspan=\"2\" style=\"width: 16.66%\">" . esc_html__("Jeudi", "lab")    . " " . getDay($dayInt, $dayInMonth ) . "</th>
+                        <th colspan=\"2\" style=\"width: 16.66%\">" . esc_html__("Vendredi", "lab") . " " . getDay($dayInt, $dayInMonth ) . "</th>
                     </tr>
                 </thead>
                 <tbody>";
