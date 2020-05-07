@@ -37,6 +37,8 @@ jQuery(function($){
             console.log("id présence : " + idPresence + ", date : " + date + ", ouverture : "
              + opening + ", fermeture : " + closing + ", sur le site : " + site);
 
+            savePresence(idPresence, userId, date, opening, closing, site);
+            /*
             var data = {
                 'action' : 'lab_presence_save',
                 id :         idPresence,
@@ -51,6 +53,7 @@ jQuery(function($){
                     window.location.href = "/presence/";
                 }
             });
+            //*/
         }
         $(this).toggleClass("fa-pen fa-check");
     });
@@ -70,7 +73,7 @@ jQuery(function($){
             });
             //let ePres = el.find("div.ePres");
             $(editId).click(function() {
-                editPresence(el.attr("presenceId"), el.attr("userId"));
+                editPresence(el.attr("presenceId"), el.attr("userId"), el.attr("date"), el.attr("hourStart"), el.attr("hourStart"), el.attr("siteId"), el.attr("title"));
             });
         }
     });
@@ -103,15 +106,49 @@ jQuery(function($){
     $("#lab_presence_edit_dialog").modal("hide");
     $('#lab_presence_edit_dialog').on('shown.bs.modal', function () {
         $('#lab_presence_edit_date-open').trigger('focus');
-      })
+      });
+    $("#lab_presence_edit_save").click(function () {
+        let userId = $("#lab_presence_edit_userId").val();
+        let idPresence = $("#lab_presence_edit_presenceId").val();
+        let date = $("#lab_presence_edit_date-open").val();
+        let hourStart = $("#lab_presence_edit_hour-open").val();
+        let hourEnd = $("#lab_presence_edit_hour-close").val();
+        let comment = $("#lab_presence_edit_comment").val();
+        let site = $("#lab_presence_edit_siteId").val();
+        savePresence(idPresence, userId, date, hourStart, hourEnd, site, comment);
+    });
 });
 
 /******************************* ShortCode Presence ******************************/
 
-function editPresence(presenceId, userId = null) {
-    $("#lab_presence_edit_date-open").val();
+function savePresence(idPresence, userId, date, opening, closing, site, comment = "") {
+    var data = {
+        'action' : 'lab_presence_save',
+        id :         idPresence,
+        userId :     userId,    
+        dateOpen :       date,
+        hourOpen : opening,
+        hourClose :   closing,
+        hourClose :   closing,
+        siteId :       site,
+        comment: comment
+    };
+    $.post(LAB.ajaxurl, data, function(response) {
+        if (response.success) {
+            window.location.href = "/presence/";
+        }
+    });
+}
+
+function editPresence(presenceId, userId = null, date, hourStart, hourEnd,site,comment) {
+    $("#lab_presence_edit_userId").val(userId);
+    $("#lab_presence_edit_presenceId").val(presenceId);
+    $("#lab_presence_edit_date-open").val(date);
+    $("#lab_presence_edit_hour-open").val(hourStart);
+    $("#lab_presence_edit_hour-close").val(hourEnd);
+    $("#lab_presence_edit_comment").val(comment);
+    $("#lab_presence_edit_siteId").val(site);
     $("#lab_presence_edit_dialog").modal('show');
-    //toast_warn("Implement this Presence");
 }
 
 function deletePresence(presenceId, userId = null) {

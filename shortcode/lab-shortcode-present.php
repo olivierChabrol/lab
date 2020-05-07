@@ -35,6 +35,12 @@ function lab_present_select($param) {
 
     $usersPresent = lab_admin_list_present_user($startDay, $endDay);
 
+    $hs = $usersPresent[0]->hour_start;
+    echo($hs."<br>");
+    echo(strtotime($hs)."<br>");
+    echo(date('d-m-Y H:i', strtotime($hs)));
+    //var_dump(strtotime($hs));
+
     /** struct of users : [firstName lastName][day][] */
     $users = array();
     $userId = 0;
@@ -51,7 +57,23 @@ function lab_present_select($param) {
             $users[$user->first_name." ".$user->last_name][date('d', $user->hour_start)][] = $user;
         }
     }
-    //var_dump($users);
+    /*
+    var_dump($users);
+    if (true) {
+        $str .= "<h3>users</h3>";
+        foreach($users as $k=>$v) {
+            $str .= $k."&nbsp;".sizeof($v)."<br>";
+            $i = 0;
+            foreach($v as $d=>$a) {
+                foreach($a as $u) {
+                    $str .= "&nbsp;&nbsp;&nbsp; [".$i."]".$u->first_name." ".$u->last_name." *".$u->comment."* ".date("d-m-Y",$u->hour_start)."<br>";
+                    $i++;
+                }
+            }
+        }
+    }
+    //*/
+
 
     $str .= "<a href=\"/presence/?date=".date("Y-m-d",$previousWeek)."\"><b>&lt;</b></a> Semaine du  : ".date("d-m-Y",$startDay)." au ".date("d-m-Y",$endDay)." <a href=\"/presence/?date=".date("Y-m-d",$nextWeek)."\"><b>&gt;</b></a>";
 
@@ -121,13 +143,13 @@ function lab_present_select($param) {
                         if (date('H', $hours->hour_end) >= 13) {
                             $sum[$hours->site_id][$i*2] = $sum[$i*2] + 1;
                             $sum[$hours->site_id][$i*2+1] = $sum[$i*2+1] + 1;
-                            $str .= td($hours->hour_start,$hours->hour_end,false,"style=\"background-color:#".$colors[$hours->site_id].";color:white;\"", $hours->user_id, $hours->id, true, $hours->comment);
+                            $str .= td($hours->hour_start,$hours->hour_end,$hours->site_id, false,"style=\"background-color:#".$colors[$hours->site_id].";color:white;\"", $hours->user_id, $hours->id, true, $hours->comment);
                             //$str .= td($hours->hour_end,null,false,"style=\"background-color:#".$colors[$hours->site_id].";color:white;\"", $hours->user_id, $hours->id);
                             $nb = 2; 
                         }
                         // presence le matin
                         else {
-                            $str .= td($hours->hour_start, $hours->hour_end,false,"style=\"background-color:#".$colors[$hours->site_id].";color:white;\"", $hours->user_id, $hours->id,false, $hours->comment);
+                            $str .= td($hours->hour_start, $hours->hour_end,$hours->site_id, false,"style=\"background-color:#".$colors[$hours->site_id].";color:white;\"", $hours->user_id, $hours->id,false, $hours->comment);
                             $sum[$hours->site_id][$i*2] += 1;
                             //$str .= td(null, null, true);
                         }
@@ -135,16 +157,16 @@ function lab_present_select($param) {
                     // presence l'aprem
                     else {
                         if ($nb == 0) {
-                            $str .= td(null, null, true);
+                            $str .= td(null, null, null, true);
                             $nb++;
                         }
-                        $str .= td($hours->hour_start, $hours->hour_end, null, "style=\"background-color:#".$colors[$hours->site_id].";color:white;\"", $hours->user_id, $hours->id,false, $hours->comment);
+                        $str .= td($hours->hour_start, $hours->hour_end, $hours->site_id, false, "style=\"background-color:#".$colors[$hours->site_id].";color:white;\"", $hours->user_id, $hours->id,false, $hours->comment);
                         $sum[$hours->site_id][$i*2+1] += 1;
                     }
                     $nb++;
                 }
                 if ($nb == 1) {
-                    $str .= td(null, null, true);
+                    $str .= td(null, null, null, true);
                 }
             }
             else {
@@ -276,6 +298,7 @@ function editDiv()
                 </div>
                 <div class="modal-body">
                     <input id="lab_presence_edit_userId" name="userId" type="hidden"/>
+                    <input id="lab_presence_edit_presenceId" name="userId" type="hidden"/>
                     <label for="date-open">'.esc_html("From", "lab").'</label>
                     <input type="date" id="lab_presence_edit_date-open" />
                     <label for="hour-open"></label>
@@ -345,7 +368,7 @@ function getStartDate()
  * @param [type] $comment
  * @return void
  */
-function td($dateStart = null, $dateEnd = null, $empty = false, $site = null, $userId = null, $presenceId=null, $allDay = false, $comment= null) {
+function td($dateStart = null, $dateEnd = null, $siteId = null, $empty = false, $site = null, $userId = null, $presenceId=null, $allDay = false, $comment= null) {
     if ($empty) {
         $str .= "<td>&nbsp;</td>";
     } else {
@@ -370,9 +393,12 @@ function td($dateStart = null, $dateEnd = null, $empty = false, $site = null, $u
         $deleteId = " id=\"delete_".$id."\" ";
         $editId   = " id=\"edit_".$id."\" ";
         $title    = ($comment!=null?" title=\"".$comment."\"":"");
-        $date     = date("Y-m-d", strtotime($r->hour_start));
+        $date     = " date=\"".date("Y-m-d", $dateStart)."\"";
+        $siteId   = " siteId=\"".$siteId."\"";
+        $hourStart = " hourStart=\"".date("H:i", $dateStart)."\"";
+        $hourEnd   = " hourEnd=\"".date("H:i", $dateEnd)."\"";
 
-        $str .= '<td '.$canDelete.' '.($site!=null?$site:'').$colSpan.$tdId.$title.'><div class="wrapper"><div class="actions"'.$actionId.'><div title="Update" '.$editId.' class="floatLeft iconset_16px"><i class="fas fa-pen fa-xs"></i></div><div title="delete" '.$deleteId.' class="floatLeft iconset_16px"><i class="fas fa-trash fa-xs"></i></div></div><div class="gal_name">'.date('H:i', $dateStart);
+        $str .= '<td '.$canDelete.' '.($site!=null?$site:'').$colSpan.$tdId.$date.$title.$siteId.$hourStart.$hourEnd.'><div class="wrapper"><div class="actions"'.$actionId.'><div title="Update" '.$editId.' class="floatLeft iconset_16px"><i class="fas fa-pen fa-xs"></i></div><div title="delete" '.$deleteId.' class="floatLeft iconset_16px"><i class="fas fa-trash fa-xs"></i></div></div><div class="gal_name">'.date('H:i', $dateStart);
         if ($dateEnd != null) {
             $str .= " - ".date('H:i', $dateEnd);
         }
