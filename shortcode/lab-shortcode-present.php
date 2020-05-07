@@ -192,7 +192,9 @@ function lab_present_choice($param) {
             <label for='hour-close'>".esc_html__("to", "lab")."</label>
             <input type='time' name='hour-close' id='hour-close' />
             <label for='site-selected'>".esc_html__("on the site", "lab")."</label>
-            " . lab_html_select_str("siteId", "siteName", "custom-select", lab_admin_list_site) . "
+            " . lab_html_select_str("siteId", "siteName", "custom-select", lab_admin_list_site) . "<br>
+            <label for='comment'>".esc_html__("Comment", "lab")."</label>
+            <textarea id=\"comment\" rows=\"4\" cols=\"50\">
             <button class=\"btn btn-success\" id=\"lab_presence_button_save\">".esc_html__("Save", "lab")."</button>
             </div>
         </div>";

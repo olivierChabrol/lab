@@ -65,31 +65,6 @@ jQuery(function($){
 
 });
 
-/******************************* ShortCode Presence ******************************/
-
-
-function deletePresence(presenceId, userId = null) {
-  var data = null;
-  if (userId != null) {
-    data = {
-      'action' : 'lab_presence_delete',
-      'id' : presenceId,
-      'userId' : userId
-    }
-  }
-  else {
-    data = {
-      'action' : 'lab_presence_delete',
-      'id' : presenceId
-    }
-  }
-  jQuery.post(LAB.ajaxurl, data, function(response) {
-    if (response.success) {
-      //$("#invitationForm")[0].outerHTML=response.data;
-      window.location.href = "/presence/";
-    }
-  });
-}
 
 /******************************* ShortCode Profile *******************************/
 function LABloadProfile() {
