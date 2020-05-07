@@ -81,15 +81,18 @@ function lab_present_select($param) {
             $sum[$site->id][$i] = 0;
         }
     }
+
+    $dayInt = date('j', $startDay);
+
     $str .= "<table id=\"lab_presence_table1\" class=\"table table-bordered table-striped\">
                 <thead class=\"thead-dark\">
                     <tr>
-                        <th>&nbsp;</th>
-                        <th colspan=\"2\" style=\"width: 16.66%\">Lundi</th>
-                        <th colspan=\"2\" style=\"width: 16.66%\">Mardi</th>
-                        <th colspan=\"2\" style=\"width: 16.66%\">Mercredi</th>
-                        <th colspan=\"2\" style=\"width: 16.66%\">Jeudi</th>
-                        <th colspan=\"2\" style=\"width: 16.66%\">Vendredi</th>
+                        <th style=\"width: 16.66%\">&nbsp;</th>
+                        <th colspan=\"2\" style=\"width: 16.66%\">" . esc_html__("Lundi", "lab")    . "Lundi "    . $dayInt   . "</th>
+                        <th colspan=\"2\" style=\"width: 16.66%\">" . esc_html__("Mardi", "lab")    . "Mardi "    . ++$dayInt . "</th>
+                        <th colspan=\"2\" style=\"width: 16.66%\">" . esc_html__("Mercredi", "lab") . "Mercredi " . ++$dayInt . "</th>
+                        <th colspan=\"2\" style=\"width: 16.66%\">" . esc_html__("Jeudi", "lab")    . "Jeudi "    . ++$dayInt . "</th>
+                        <th colspan=\"2\" style=\"width: 16.66%\">" . esc_html__("Vendredi", "lab") . "Vendredi " . ++$dayInt . "</th>
                     </tr>
                 </thead>
                 <tbody>";
@@ -170,25 +173,25 @@ function lab_present_choice($param) {
     $startDay = getStartDate();
     
     $choiceStr = "<br/><hr><div>
-        <h3>".esc_html__("I will be there", "lab")."</h3>
+        <h3>".esc_html__("Je serai présent·e", "lab")."</h3>
             <div class=\"input-group mb-3\">
             <input id='userId' name='userId' type='hidden' value='" . get_current_user_id() . "' />
 
-            <label for='date-open'>".esc_html__("From", "lab")."</label>
+            <label for='date-open'>".esc_html__("Le", "lab")."</label>
             <input type='date' name='date-open' id='date-open' />
             <label for='hour-open'></label>
             <input type='time' name='hour-open' id='hour-open' />
-            <label for='hour-close'>".esc_html__("to", "lab")."</label>
+            <label for='hour-close'>".esc_html__("Jusqu'à", "lab")."</label>
             <input type='time' name='hour-close' id='hour-close' />
-            <label for='site-selected'>".esc_html__("on the site", "lab")."</label>
+            <label for='site-selected'>".esc_html__("sur le site", "lab")."</label>
             " . lab_html_select_str("siteId", "siteName", "custom-select", lab_admin_list_site) . "</div>
             <div class=\"input-group mb-3\">
             <div class=\"form-group\">
-                <label for='comment'>".esc_html__("Comment", "lab")."</label>
+                <label for='comment'>".esc_html__("Commentaire", "lab")."</label>
                 <textarea id=\"comment\" rows=\"4\" cols=\"50\" class=\"form-control rounded-0\"></textarea>
             </div>
             </div>
-            <button class=\"btn btn-success\" id=\"lab_presence_button_save\">".esc_html__("Save", "lab")."</button>
+            <button class=\"btn btn-success\" id=\"lab_presence_button_save\">".esc_html__("Sauvegarder", "lab")."</button>
         </div>";
 
     if (isset($_POST['envoi'])) {
@@ -206,7 +209,7 @@ function lab_present_choice($param) {
         $wpdb->insert('wp_lab_presence', $data, $format);
     }
 
-    $choiceStr .= "<div style='margin-top: 2em'><h3>Je souhaite modifier une de mes présences</h3>";
+    $choiceStr .= "<div style='margin-top: 2em'><h3>".esc_html__("Je souhaite modifier une de mes présences", "lab")."</h3>";
 
     //requete pour connaitre les présences de l'utilisateur
     global $wpdb;
@@ -221,11 +224,11 @@ function lab_present_choice($param) {
                         <thead>
                             <tr>
                                 <th scope='col'>#</th>
-                                <th scope='col'>Le</th>
-                                <th scope='col'>De</th>
-                                <th scope='col'>Jusqu'à</th>
-                                <th scope='col'>Sur</th>
-                                <th scope='col'>Action</th>
+                                <th scope='col'>".esc_html__("Le", "lab")."</th>
+                                <th scope='col'>".esc_html__("De","lab")."</th>
+                                <th scope='col'>".esc_html__("Jusqu'à","lab")."</th>
+                                <th scope='col'>".esc_html__("Sur","lab")."</th>
+                                <th scope='col'>".esc_html__("Action","lab")."</th>
                             </tr>
                         </thead>
                         <tbody>";

@@ -2,15 +2,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-06 22:27+0200\n"
-"PO-Revision-Date: 2020-05-06 22:27+0200\n"
+"POT-Creation-Date: 2020-05-07 10:04+0200\n"
+"PO-Revision-Date: 2020-05-07 10:05+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.2.4\n"
+"X-Generator: Poedit 2.3\n"
 "X-Poedit-Basepath: ..\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-KeywordsList: _e;esc_html_e;esc_html__;__\n"
@@ -251,7 +251,7 @@ msgstr "Settings"
 msgid "Paramètres globaux"
 msgstr "General settings"
 
-#: js/lab_fe.js:146
+#: js/lab_fe.js:121
 msgid "Votre biographie est trop longue (max 200 caractères)"
 msgstr "Your bio is too long (max 200 char)"
 
@@ -374,9 +374,9 @@ msgstr "And must be returned before"
 
 #: js/lab_keyring.js:538 lab-admin-keyring.php:81 lab-admin-keyring.php:131
 #: lab-admin-keyring.php:171 lab-admin-keyring.php:247
-#: lab-admin-keyring.php:308
+#: lab-admin-keyring.php:308 shortcode/lab-shortcode-present.php:190
 msgid "Commentaire"
-msgstr "Comments"
+msgstr "Comment"
 
 #: js/lab_keyring.js:539
 msgid "Signature"
@@ -386,7 +386,7 @@ msgstr "Signature"
 msgid "Imprimer"
 msgstr "Print"
 
-#: js/lab_shortcode_present.js:69
+#: js/lab_shortcode_present.js:83
 msgid "Reason of your attendance is require"
 msgstr "Reason of your attendance is required"
 
@@ -926,25 +926,63 @@ msgstr ""
 msgid "Origine du crédit"
 msgstr "Funding source"
 
-#: shortcode/lab-shortcode-present.php:184
-msgid "I will be there"
+#: shortcode/lab-shortcode-present.php:91
+msgid "Lundi"
+msgstr "Monday"
+
+#: shortcode/lab-shortcode-present.php:92
+msgid "Mardi"
+msgstr "Tuesday"
+
+#: shortcode/lab-shortcode-present.php:93
+msgid "Mercredi"
+msgstr "Wednesday"
+
+#: shortcode/lab-shortcode-present.php:94
+msgid "Jeudi"
+msgstr "Thursday"
+
+#: shortcode/lab-shortcode-present.php:95
+msgid "Vendredi"
+msgstr "Friday"
+
+#: shortcode/lab-shortcode-present.php:176
+msgid "Je serai présent·e"
 msgstr "I will be there"
 
-#: shortcode/lab-shortcode-present.php:188
-msgid "From"
+#: shortcode/lab-shortcode-present.php:180
+#: shortcode/lab-shortcode-present.php:227
+msgid "Le"
 msgstr "From"
 
-#: shortcode/lab-shortcode-present.php:192
-msgid "to"
+#: shortcode/lab-shortcode-present.php:184
+#: shortcode/lab-shortcode-present.php:229
+msgid "Jusqu'à"
 msgstr "to"
 
-#: shortcode/lab-shortcode-present.php:194
-msgid "on the site"
+#: shortcode/lab-shortcode-present.php:186
+msgid "sur le site"
 msgstr "on the site"
 
-#: shortcode/lab-shortcode-present.php:197
-msgid "Save"
+#: shortcode/lab-shortcode-present.php:194
+msgid "Sauvegarder"
 msgstr "Save"
+
+#: shortcode/lab-shortcode-present.php:212
+msgid "Je souhaite modifier une de mes présences"
+msgstr "I would like to change one of my presences"
+
+#: shortcode/lab-shortcode-present.php:228
+msgid "De"
+msgstr "From"
+
+#: shortcode/lab-shortcode-present.php:230
+msgid "Sur"
+msgstr "On"
+
+#: shortcode/lab-shortcode-present.php:231
+msgid "Action"
+msgstr "Actions"
 
 #: shortcode/lab-shortcode-profile.php:21
 msgid "Modifier la couleur d'arrière plan"
@@ -987,6 +1025,22 @@ msgstr "You haven't defined your HAL Name"
 msgid "Nom HAL"
 msgstr "HAL Name"
 
+#~ msgid "I will be there"
+#~ msgstr "I will be there"
+
+#~ msgid "From"
+#~ msgstr "From"
+
+#~ msgid "to"
+#~ msgstr "to"
+
+#, fuzzy
+#~ msgid "Comment"
+#~ msgstr "Comments"
+
+#~ msgid "Save"
+#~ msgstr "Save"
+
 #~ msgid "Créer la table Prefered Groups"
 #~ msgstr "Create the Prefered Groups table"
 
@@ -1021,10 +1075,6 @@ msgstr "HAL Name"
 #, fuzzy
 #~ msgid "Date and time"
 #~ msgstr "End date"
-
-#, fuzzy
-#~ msgid "Comment"
-#~ msgstr "Comments"
 
 #, fuzzy
 #~ msgid "Confirmed Spaces"
