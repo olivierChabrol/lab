@@ -785,6 +785,10 @@ function lab_invitations_edit() {
   }
 }
 
+function lab_invitations_chiefList_update() {
+  wp_send_json_success(lab_invitations_interface_fromList(lab_invitations_getByGroup($_POST['group_id']),'chief'));
+}
+
 /**************************************************************************************************************
  * PRESENCE
  **************************************************************************************************************/
@@ -870,4 +874,8 @@ function lab_prefGroups_removeReq() {
     global $wpdb;
     wp_send_json_success();
   }
+}
+function lab_prefGroups_update() {
+  $user = isset($_POST['user_id']) ? $_POST['user_id'] : get_current_user_id();
+  wp_send_json_success(lab_invite_prefGroupsList($user));
 }

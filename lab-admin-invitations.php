@@ -135,7 +135,6 @@ function lab_invitations_getByGroups($groups_ids,$params=array()) {
   $str = substr($str,0, -3).";"; //Enlève le dernier OR 
   $sql = "SELECT * FROM `".$wpdb->prefix."lab_invitations` WHERE".$str;
   $res = $wpdb->get_results($sql);
-  echo $wpdb->last_query;
   return $res;
 }
 function lab_invitations_getByHost($host_id,$params=array()) {

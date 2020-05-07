@@ -392,6 +392,10 @@ function lab_prefGroups_remove($user_id, $group_id) {
                         "user_id"=>$user_id
                     ));
 }
+function lab_group_getById($id) {
+    global $wpdb;
+    return $wpdb->get_results("SELECT * FROM ".$wpdb->prefix."lab_groups WHERE id=".$id.";")[0];
+}
 /********************************************************************************************
  * KeyRing
  ********************************************************************************************/

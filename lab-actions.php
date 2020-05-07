@@ -104,4 +104,6 @@ if (is_admin()) {
     add_action( 'wp_ajax_lab_invitation_newComment','lab_invitation_newComment' );
     add_action( 'wp_ajax_lab_prefGroups_add','lab_prefGroups_addReq' );
     add_action( 'wp_ajax_lab_prefGroups_remove','lab_prefGroups_removeReq' );
+    add_action( 'wp_ajax_lab_prefGroups_update','lab_prefGroups_update' );
+    add_action( 'wp_ajax_lab_invitations_chiefList_update','lab_invitations_chiefList_update' );
 }

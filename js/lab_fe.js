@@ -522,8 +522,14 @@ function lab_submitComment() {
 /************ Liste des invitation ***********************/ 
 function LABLoadInviteList() {
   jQuery(function ($){
-    $("#lab_invite_groupSelect").change(function() {
-      $("#lab_invite_groupSelect").val();
+    $("#lab_groupSelect").change(function() {
+      data = {
+        action: 'lab_invitations_chiefList_update',
+        group_id: $("#lab_groupSelect").val()
+      };
+      jQuery.post(LAB.ajaxurl,data, function(response) {
+        $("#lab_invitesListBody").html(response.data);
+      });
     });
     jQuery.post(LAB.ajaxurl,{action : 'list_users_groups'},
       function(response) {
@@ -544,6 +550,7 @@ function LABLoadInviteList() {
       },
       function(response) {
         console.log(response);
+        lab_updatePrefGroups();
       }
     );
     });
@@ -554,9 +561,15 @@ function LABLoadInviteList() {
         },
         function(response) {
           console.log(response);
+          lab_updatePrefGroups();
         }
       );
    });
+  });
+}
+function lab_updatePrefGroups() {
+  jQuery.post(LAB.ajaxurl,{action: 'lab_prefGroups_update'},function(response) {
+    jQuery("#lab_curr_prefGroups").html(response.data);
   });
 }
 if (document.querySelector("#lab_invite_list")!=null) {
