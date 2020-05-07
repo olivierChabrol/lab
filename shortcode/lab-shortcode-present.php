@@ -105,7 +105,18 @@ function lab_present_select($param) {
             $sum[$site->id][$i] = 0;
         }
     }
-    $str .= "<table id=\"lab_presence_table1\" class=\"table table-bordered table-striped\"><thead class=\"thead-dark\"><tr><th>&nbsp;</th><th colspan=\"2\">Lundi</th><th colspan=\"2\">Mardi</th><th colspan=\"2\">Mercredi</th><th colspan=\"2\">Jeudi</th><th colspan=\"2\">Vendredi</th></tr></thead><tbody>";
+    $str .= "<table id=\"lab_presence_table1\" class=\"table table-bordered table-striped\">
+                <thead class=\"thead-dark\">
+                    <tr>
+                        <th>&nbsp;</th>
+                        <th colspan=\"2\" style=\"width: 16.66%\">Lundi</th>
+                        <th colspan=\"2\" style=\"width: 16.66%\">Mardi</th>
+                        <th colspan=\"2\" style=\"width: 16.66%\">Mercredi</th>
+                        <th colspan=\"2\" style=\"width: 16.66%\">Jeudi</th>
+                        <th colspan=\"2\" style=\"width: 16.66%\">Vendredi</th>
+                    </tr>
+                </thead>
+                <tbody>";
     foreach($users as $k=>$v) {
         $str .="<tr>\n<td>".$k."</td>\n";
         
