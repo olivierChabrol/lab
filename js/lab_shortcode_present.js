@@ -18,24 +18,6 @@ jQuery(function($){
             let comment =$(this).parents('tr').attr("title");
             console.log(site);
             editPresence($(this).attr("editId"), $(this).attr("userId"), date, hOpen, hEnd_, site, comment);
-            /*
-            $.each(editable, function() {
-                let content = $(this).text();
-
-                if( $(this).hasClass("date-row") ){
-                    $(this).html(`<input type='date' class='date' value='${content}'/>`);
-                } else if( $(this).hasClass("open") ){
-                    $(this).html(`<input type='time' class ='first' value='${content}'/>`);
-                } else if( $(this).hasClass("end") ){
-                    $(this).html(`<input type='time' class ='last' value='${content}'/>`);
-                } else if( $(this).hasClass("site-row") ){
-                    let htmlSelect = $("#siteId")[0].outerHTML;
-                    $(this).html(htmlSelect);
-                    let selected = $(this).find(`option:contains("${content}")`);
-                    selected.prop('selected', true);
-                }
-            });
-            //*/
         } 
         else 
         {
@@ -49,22 +31,6 @@ jQuery(function($){
              + opening + ", fermeture : " + closing + ", sur le site : " + site);
 
             savePresence(idPresence, userId, date, opening, closing, site);
-            /*
-            var data = {
-                'action' : 'lab_presence_save',
-                id :         idPresence,
-                userId :     userId,    
-                dateOpen :       date,
-                hourOpen : opening,
-                hourClose :   closing,
-                siteId :       site
-            };
-            $.post(LAB.ajaxurl, data, function(response) {
-                if (response.success) {
-                    window.location.href = "/presence/";
-                }
-            });
-            //*/
         }
         $(this).toggleClass("fa-pen fa-check");
     });
@@ -132,13 +98,22 @@ jQuery(function($){
     $("#date-open").click(function() {
         document.getElementById('hour-open').value = "08:00";
     });
-    if ($('#hour-open').length > 0) {
+
+    $('#hour-open').focusout(function () {
         let timeElements = $('#hour-open').val().split(":");
         let theHour      = parseInt(timeElements[0]);
         let theMinute    = timeElements[1];
         let newHour      = theHour + 1;
-        $('#hour-close').val(newHour + ":" + theMinute);
-    }
+        if (newHour > 23) {
+            newHour = "00";
+        } else if (newHour < 10) {
+            newHour = "0"+newHour;
+        }
+
+        let val = newHour + ":" + theMinute;
+
+        $('#hour-close').val(val);
+    });
 
     /*
     if ($('#hour-open') == 'undefined') { // if ($('#hour-open').length > 0) {
