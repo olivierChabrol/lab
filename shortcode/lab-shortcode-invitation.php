@@ -259,7 +259,7 @@ function lab_invitations_interface($args) {
             $list = lab_invitations_getByHost(get_current_user_id());
             break;
         case 'chief':
-            $listInvitationStr .= '<h3>Groupes dont vous êtes le chef :</h3><select>';
+            $listInvitationStr .= '<h3>Groupes dont vous êtes le chef :</h3><select id="lab_groupSelect">';
             foreach (lab_admin_get_groups_byChief(get_current_user_id()) as $g)
                 {
                     $listInvitationStr .= '<option value="'.$g->id.'">'.$g->group_name.'</option>';
@@ -271,14 +271,11 @@ function lab_invitations_interface($args) {
             $listInvitationStr .= '<h3>Groupes Préférés :</h3>
             <div id="lab_prefGroupsForm">
                 <select id="lab_prefGroupsSelect"><option value="">Sélectionnez un groupe</option></select>
-                <button id="lab_addPrefGroup">Ajouter aux préférés</button>
-                </div>';
+                <button id="lab_addPrefGroup">Ajouter aux préférés</button>';
+            $listInvitationStr .= '<ul id="lab_curr_prefGroups">';
+            $listInvitationStr .= lab_invite_prefGroupsList(get_current_user_id());
+            $listInvitationStr .='</ul></div>';
             $prefGroups = lab_invitations_getPrefGroups(get_current_user_id());
-            $listInvitationStr .= '<ul>';
-            foreach ($prefGroups as $g){
-                $listInvitationStr .= "<li class='lab_prefGroup_element'>$g->group_name <i group_id='$g->group_id' class='fas fa-trash lab_prefGroup_del'></i></li>";
-            }
-            $listInvitationStr .='</ul>';
             if (count($prefGroups)>0) {
                 $groups_ids = array();
                 foreach ($prefGroups as $g) {
@@ -292,20 +289,20 @@ function lab_invitations_interface($args) {
     }
     $listInvitationStr .= '<table id="lab_invite_list">
                             <thead>
-                                <tr id="lab_list_header">
-
-                                    <th>'.esc_html__("Nom de l'invité","lab").'</th>
+                                <tr id="lab_list_header">'
+                                    .($param['view']=='admin' ? '<th>'.esc_html__('Groupe','lab').'</th>' : '').
+                                    '<th>'.esc_html__("Invité","lab").'</th>
                                     '.($param['view']!='host' ? '<th>'.esc_html__("Invitant","lab").'</th>' : '').
                                     '<th>'.esc_html__("Mission","lab").'</th>
                                     <th>'.esc_html__("Date d'arrivée","lab").'</th>
                                     <th>'.esc_html__("Date de départ","lab").'</th>
                                     <th>'.esc_html__("Statut","lab").'</th>
                                     <th>'.esc_html__("Budget estimé","lab").'</th>
-                                    <th>'.esc_html__("Budget maximum","lab").'</th>
+                                    <th>'.esc_html__("Budget max.","lab").'</th>
                                     <th>'.esc_html__("Actions","lab").'</th>
                                 </tr>
                             </thead>
-                            <tbody>';
+                            <tbody id="lab_invitesListBody">';
     
     $listInvitationStr .= lab_invitations_interface_fromList($list,$param['view']);
     $listInvitationStr .=   '</tbody>
@@ -320,9 +317,11 @@ function lab_invitations_interface_fromList($list,$view) {
         foreach ($list as $invitation) {
             $guest = lab_invitations_getGuest($invitation->guest_id);
             $host = new LabUser($invitation->host_id);
-            $date = date_create_from_format("Y-m-d H:i:s", $invitation->creation_time);
-            $listStr .= '<tr>
-                            <td><a href="mailto:'.$guest->email.'">'. $guest->first_name . ' ' . $guest->last_name .'</a></td>'
+            $date_arr = date_create_from_format("Y-m-d H:i:s", $invitation->start_date);
+            $date_dep = date_create_from_format("Y-m-d H:i:s", $invitation->end_date);
+            $listStr .= '<tr>'
+                            .($view=='admin' ? '<td>'.lab_group_getById($invitation->host_group_id)->group_name.'</td>' : '').
+                            '<td><a href="mailto:'.$guest->email.'">'. $guest->first_name . ' ' . $guest->last_name .'</a></td>'
                             .($view!='host' ? '<td><a href="mailto:'.$host->email.'">'. $host->first_name . ' ' . $host->last_name .'</a></td>':'');
             if(is_numeric($invitation->mission_objective))
             {   
@@ -332,9 +331,12 @@ function lab_invitations_interface_fromList($list,$view) {
             {
                 $listStr .='<td>'. $invitation->mission_objective .'</td>'; 
             }
-            $listStr .=    '<td>'. strftime('%d %B %G - %H:%M',$date->getTimestamp()).'</td>
+            $listStr .=    '<td>'. strftime('%d %B %G',$date_arr->getTimestamp()).'</td>
+                            <td>'. strftime('%d %B %G',$date_dep->getTimestamp()).'</td>
                             <td>'. lab_invitations_getStatusName($invitation->status) .'</td>
-                            <td><a href="/invite/'. $invitation->token.'">'.esc_html__("Lien de modification",'lab').'</a></td>
+                            <td>'. $invitation->estimated_cost.'</td>
+                            <td>'. $invitation->maximum_cost.'</td>
+                            <td><a href="/invite/'. $invitation->token.'">'.esc_html__("Modifier",'lab').'</a></td>
                         </tr>';
         }
     } else {
@@ -448,6 +450,17 @@ function lab_invitations_getStatusName($status) {
             # code...
             break;
     }
+}
+function lab_invite_prefGroupsList($user_id) {
+    $prefGroups = lab_invitations_getPrefGroups($user_id);
+    if (count($prefGroups)>0) {
+        foreach ($prefGroups as $g){
+            $out .= "<li class='lab_prefGroup_element'>$g->group_name <i group_id='$g->group_id' class='fas fa-trash lab_prefGroup_del'></i></li>";
+        }
+    } else {
+        $out = '<li>'.esc_html__("Aucun groupe préféré trouvé",'lab').'</li>';
+    }
+    return $out;
 }
 
 ?>
