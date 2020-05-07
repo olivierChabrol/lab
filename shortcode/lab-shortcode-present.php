@@ -84,7 +84,7 @@ function lab_present_select($param) {
     $str .= "<table id=\"lab_presence_table1\" class=\"table table-bordered table-striped\">
                 <thead class=\"thead-dark\">
                     <tr>
-                        <th>&nbsp;</th>
+                        <th style=\"width: 16.66%\">&nbsp;</th>
                         <th colspan=\"2\" style=\"width: 16.66%\">Lundi</th>
                         <th colspan=\"2\" style=\"width: 16.66%\">Mardi</th>
                         <th colspan=\"2\" style=\"width: 16.66%\">Mercredi</th>
@@ -168,7 +168,7 @@ function lab_present_choice($param) {
         "lab-present-choice"
     );
     $startDay = getStartDate();
-    
+
     $choiceStr = "<br/><hr><div>
         <h3>".esc_html__("I will be there", "lab")."</h3>
             <div class=\"input-group mb-3\">
@@ -242,8 +242,53 @@ function lab_present_choice($param) {
                         </td></tr>";
     }
     $choiceStr .= "</tbody></table></div>";
+    $choiceStr .= editDiv();
 
     return $choiceStr;
+}
+
+/**
+ * Generate div for edition
+ *
+ * @return void
+ */
+function editDiv()
+{
+    $str = 
+    '<div id="lab_presence_edit_dialog" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">'.esc_html("Edit", "lab").'</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <input id="lab_presence_edit_userId" name="userId" type="hidden"/>
+                    <label for="date-open">'.esc_html("From", "lab").'</label>
+                    <input type="date" id="lab_presence_edit_date-open" />
+                    <label for="hour-open"></label>
+                    <input type="time" id="lab_presence_edit_hour-open" />
+                    <label for="hour-close">'.esc_html("to", "lab").'</label>
+                    <input type="time" id="lab_presence_edit_hour-close" />
+                    <div class="input-group mb-3">
+                        <label for="site-selected">'.esc_html("on the site", "lab").'</label>'. lab_html_select_str("lab_presence_edit_siteId", "siteName", "custom-select", lab_admin_list_site).'
+                    </div>
+                    <div class="input-group mb-3">
+                        <div class="form-group">
+                            <label for="comment">'.esc_html__("Comment", "lab").'</label>
+                            <textarea id="lab_presence_edit_comment" rows="4" cols="50" class="form-control rounded-0"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="close" data-dismiss="modal">'.esc_html('Annuler','lab').'</button>
+                    <button type="button" class="close" data-dismiss="modal" id="lab_presence_edit_save" keyid="">'.esc_html('Save','lab').'</button>
+                </div>
+            </div>
+        </div>
+    </div>';
+    $str .= '<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#lab_presence_edit_dialog">Open Modal</button>';
+    return $str;
 }
 
 /**
@@ -275,6 +320,19 @@ function getStartDate()
     }
 }
 
+/**
+ * Generate a td for presence visualisation
+ *
+ * @param [type] $dateStart
+ * @param [type] $dateEnd
+ * @param boolean $empty
+ * @param [type] $site
+ * @param [type] $userId
+ * @param [type] $presenceId
+ * @param boolean $allDay
+ * @param [type] $text
+ * @return void
+ */
 function td($dateStart = null, $dateEnd = null, $empty = false, $site = null, $userId = null, $presenceId=null, $allDay = false, $text= null) {
     if ($empty) {
         $str .= "<td>&nbsp;</td>";

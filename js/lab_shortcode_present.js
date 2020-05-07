@@ -100,12 +100,17 @@ jQuery(function($){
         }
         });
     });
+    $("#lab_presence_edit_dialog").modal("hide");
+    $('#lab_presence_edit_dialog').on('shown.bs.modal', function () {
+        $('#lab_presence_edit_date-open').trigger('focus');
+      })
 });
 
 /******************************* ShortCode Presence ******************************/
 
 function editPresence(presenceId, userId = null) {
-    toast_warn("Implement this Presence");
+    $("#lab_presence_edit_dialog").modal('show');
+    //toast_warn("Implement this Presence");
 }
 
 function deletePresence(presenceId, userId = null) {
