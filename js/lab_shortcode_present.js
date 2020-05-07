@@ -59,15 +59,17 @@ jQuery(function($){
         el = $(this);
         let elId = el.attr("id");
         let actionId = "#action"+elId.substr(2,elId.length);
-        console.log(actionId);
+        let deleteId = "#delete"+elId.substr(2,elId.length);
+        let editId   = "#edit"+elId.substr(2,elId.length);
+        
         $(actionId).css('display', 'block');
         if (el.attr("userId")) {
-            let dPres = el.find("div.dPres");
-            dPres.click(function() {
+            //let dPres = $(deleteId);
+            $(deleteId).click(function() {
                 deletePresence(el.attr("presenceId"), el.attr("userId"));
             });
-            let ePres = el.find("div.ePres");
-            ePres.click(function() {
+            //let ePres = el.find("div.ePres");
+            $(editId).click(function() {
                 editPresence(el.attr("presenceId"), el.attr("userId"));
             });
         }

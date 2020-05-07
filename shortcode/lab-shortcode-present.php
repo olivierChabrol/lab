@@ -24,26 +24,7 @@ function lab_present_select($param) {
         $param, 
         "lab-present-select"
     );
-    $date = null;
-    if (isset( $_GET["date"] ) && !empty( $_GET["date"] ) ) {
-        $date = $_GET["date"];
-    }
-    $str = "";
-    $dateObj = strtotime("now");
-
-    if ($date != null) {
-        $dateObj = strtotime($date);
-    }
-    $dayofweek = date('w', $dateObj);
-    //echo $dayofweek."<br>";
-    // if sunday
-    if ($dayofweek < 1) {
-        $startDay = strtotime('-6 days', $dateObj);
-    }
-    else if ($dayofweek >= 1) {
-        $aStr = '-'.($dayofweek-1).' days';
-        $startDay = strtotime($aStr, $dateObj);
-    }
+    $startDay = getStartDate();
     
     //$dt_startDate->setTime(0, 0, 0);
     $endDay = strtotime('+5 days', $startDay);
@@ -92,11 +73,6 @@ function lab_present_select($param) {
     .gal_name { color:white; font-weight:bold;};";
     $str .= "</style>\n";
 
-    //$str .= "isAdmin : '".is_admin()."' get_currentuser_id() :'".get_current_user_id()."'<br>\n";
-    //$admin = current_user_can('administrator');
-    //$currentUserId = get_current_user_id();
-    //$str .= "isAdmin : '".$admin."' get_currentuser_id() :'".get_current_user_id()."'<br>\n";
-
     $sum = array();
 
     foreach($listSite as $site) {
@@ -135,7 +111,7 @@ function lab_present_select($param) {
                             $sum[$hours->site_id][$i*2+1] = $sum[$i*2+1] + 1;
                             $str .= td($hours->hour_start,$hours->hour_end,false,"style=\"background-color:#".$colors[$hours->site_id].";color:white;\"", $hours->user_id, $hours->id, true);
                             //$str .= td($hours->hour_end,null,false,"style=\"background-color:#".$colors[$hours->site_id].";color:white;\"", $hours->user_id, $hours->id);
-                            $nb = 2;
+                            $nb = 2; 
                         }
                         // presence le matin
                         else {
@@ -191,6 +167,8 @@ function lab_present_choice($param) {
         $param, 
         "lab-present-choice"
     );
+    $startDay = getStartDate();
+    
     $choiceStr = "<br/><hr><div>
         <h3>".esc_html__("I will be there", "lab")."</h3>
             <div class=\"input-group mb-3\">
@@ -203,11 +181,14 @@ function lab_present_choice($param) {
             <label for='hour-close'>".esc_html__("to", "lab")."</label>
             <input type='time' name='hour-close' id='hour-close' />
             <label for='site-selected'>".esc_html__("on the site", "lab")."</label>
-            " . lab_html_select_str("siteId", "siteName", "custom-select", lab_admin_list_site) . "<br>
-            <label for='comment'>".esc_html__("Comment", "lab")."</label>
-            <textarea id=\"comment\" rows=\"4\" cols=\"50\">
-            <button class=\"btn btn-success\" id=\"lab_presence_button_save\">".esc_html__("Save", "lab")."</button>
+            " . lab_html_select_str("siteId", "siteName", "custom-select", lab_admin_list_site) . "</div>
+            <div class=\"input-group mb-3\">
+            <div class=\"form-group\">
+                <label for='comment'>".esc_html__("Comment", "lab")."</label>
+                <textarea id=\"comment\" rows=\"4\" cols=\"50\" class=\"form-control rounded-0\"></textarea>
             </div>
+            </div>
+            <button class=\"btn btn-success\" id=\"lab_presence_button_save\">".esc_html__("Save", "lab")."</button>
         </div>";
 
     if (isset($_POST['envoi'])) {
@@ -265,6 +246,35 @@ function lab_present_choice($param) {
     return $choiceStr;
 }
 
+/**
+ * Return date of the first day of the week, when a date is put in the query
+ *
+ * @return void
+ */
+function getStartDate()
+{
+    $date = null;
+    if (isset( $_GET["date"] ) && !empty( $_GET["date"] ) ) {
+        $date = $_GET["date"];
+    }
+    $str = "";
+    $dateObj = strtotime("now");
+
+    if ($date != null) {
+        $dateObj = strtotime($date);
+    }
+    $dayofweek = date('w', $dateObj);
+    //echo $dayofweek."<br>";
+    // if sunday
+    if ($dayofweek < 1) {
+        return strtotime('-6 days', $dateObj);
+    }
+    else {
+        $aStr = '-'.($dayofweek-1).' days';
+        return strtotime($aStr, $dateObj);
+    }
+}
+
 function td($dateStart = null, $dateEnd = null, $empty = false, $site = null, $userId = null, $presenceId=null, $allDay = false, $text= null) {
     if ($empty) {
         $str .= "<td>&nbsp;</td>";
@@ -287,8 +297,10 @@ function td($dateStart = null, $dateEnd = null, $empty = false, $site = null, $u
         $id = $userId."_".$presenceId;
         $tdId = " id=\"td_".$id."\" ";
         $actionId = " id=\"action_".$id."\" ";
+        $deleteId = " id=\"delete_".$id."\" ";
+        $editId   = " id=\"edit_".$id."\" ";
 
-        $str .= '<td '.$canDelete.' '.($site!=null?$site:'').$colSpan.$tdId.'><div class="wrapper"><div class="actions"'.$actionId.'><div title="Update" class="ePres floatLeft iconset_16px"><i class="fas fa-pen fa-xs"></i></div><div title="delete" class="dPres floatLeft iconset_16px"><i class="fas fa-trash fa-xs"></i></div></div><div class="gal_name">'.date('H:i', $dateStart);
+        $str .= '<td '.$canDelete.' '.($site!=null?$site:'').$colSpan.$tdId.'><div class="wrapper"><div class="actions"'.$actionId.'><div title="Update" '.$editId.' class="floatLeft iconset_16px"><i class="fas fa-pen fa-xs"></i></div><div title="delete" '.$deleteId.' class="floatLeft iconset_16px"><i class="fas fa-trash fa-xs"></i></div></div><div class="gal_name">'.date('H:i', $dateStart);
         if ($dateEnd != null) {
             $str .= " - ".date('H:i', $dateEnd);
         }
