@@ -97,11 +97,11 @@ function lab_present_select($param) {
                 <thead class=\"thead-dark\">
                     <tr>
                         <th style=\"width: 16.66%\">&nbsp;</th>
-                        <th colspan=\"2\" style=\"width: 16.66%\">" . esc_html__("Lundi", "lab")    . " " . $dayInt . "</th>
-                        <th colspan=\"2\" style=\"width: 16.66%\">" . esc_html__("Mardi", "lab")    . " " . getDay($dayInt, $dayInMonth ) . "</th>
-                        <th colspan=\"2\" style=\"width: 16.66%\">" . esc_html__("Mercredi", "lab") . " " . getDay($dayInt, $dayInMonth ) . "</th>
-                        <th colspan=\"2\" style=\"width: 16.66%\">" . esc_html__("Jeudi", "lab")    . " " . getDay($dayInt, $dayInMonth ) . "</th>
-                        <th colspan=\"2\" style=\"width: 16.66%\">" . esc_html__("Vendredi", "lab") . " " . getDay($dayInt, $dayInMonth ) . "</th>
+                        <th colspan=\"2\" style=\"width: 16.66%; text-align: center;\">" . esc_html__("Lundi", "lab")    . " " . $dayInt . "</th>
+                        <th colspan=\"2\" style=\"width: 16.66%; text-align: center;\">" . esc_html__("Mardi", "lab")    . " " . getDay($dayInt, $dayInMonth ) . "</th>
+                        <th colspan=\"2\" style=\"width: 16.66%; text-align: center;\">" . esc_html__("Mercredi", "lab") . " " . getDay($dayInt, $dayInMonth ) . "</th>
+                        <th colspan=\"2\" style=\"width: 16.66%; text-align: center;\">" . esc_html__("Jeudi", "lab")    . " " . getDay($dayInt, $dayInMonth ) . "</th>
+                        <th colspan=\"2\" style=\"width: 16.66%; text-align: center;\">" . esc_html__("Vendredi", "lab") . " " . getDay($dayInt, $dayInMonth ) . "</th>
                     </tr>
                 </thead>
                 <tbody>";
