@@ -24,26 +24,7 @@ function lab_present_select($param) {
         $param, 
         "lab-present-select"
     );
-    $date = null;
-    if (isset( $_GET["date"] ) && !empty( $_GET["date"] ) ) {
-        $date = $_GET["date"];
-    }
-    $str = "";
-    $dateObj = strtotime("now");
-
-    if ($date != null) {
-        $dateObj = strtotime($date);
-    }
-    $dayofweek = date('w', $dateObj);
-    //echo $dayofweek."<br>";
-    // if sunday
-    if ($dayofweek < 1) {
-        $startDay = strtotime('-6 days', $dateObj);
-    }
-    else if ($dayofweek >= 1) {
-        $aStr = '-'.($dayofweek-1).' days';
-        $startDay = strtotime($aStr, $dateObj);
-    }
+    $startDay = getStartDate();
     
     //$dt_startDate->setTime(0, 0, 0);
     $endDay = strtotime('+5 days', $startDay);
@@ -175,6 +156,8 @@ function lab_present_choice($param) {
         $param, 
         "lab-present-choice"
     );
+    $startDay = getStartDate();
+    
     $choiceStr = "<br/><hr><div>
         <h3>".esc_html__("I will be there", "lab")."</h3>
             <div class=\"input-group mb-3\">
@@ -187,11 +170,14 @@ function lab_present_choice($param) {
             <label for='hour-close'>".esc_html__("to", "lab")."</label>
             <input type='time' name='hour-close' id='hour-close' />
             <label for='site-selected'>".esc_html__("on the site", "lab")."</label>
-            " . lab_html_select_str("siteId", "siteName", "custom-select", lab_admin_list_site) . "<br>
-            <label for='comment'>".esc_html__("Comment", "lab")."</label>
-            <textarea id=\"comment\" rows=\"4\" cols=\"50\">
-            <button class=\"btn btn-success\" id=\"lab_presence_button_save\">".esc_html__("Save", "lab")."</button>
+            " . lab_html_select_str("siteId", "siteName", "custom-select", lab_admin_list_site) . "</div>
+            <div class=\"input-group mb-3\">
+            <div class=\"form-group\">
+                <label for='comment'>".esc_html__("Comment", "lab")."</label>
+                <textarea id=\"comment\" rows=\"4\" cols=\"50\" class=\"form-control rounded-0\"></textarea>
             </div>
+            </div>
+            <button class=\"btn btn-success\" id=\"lab_presence_button_save\">".esc_html__("Save", "lab")."</button>
         </div>";
 
     if (isset($_POST['envoi'])) {
@@ -247,6 +233,35 @@ function lab_present_choice($param) {
     $choiceStr .= "</tbody></table></div>";
 
     return $choiceStr;
+}
+
+/**
+ * Return date of the first day of the week, when a date is put in the query
+ *
+ * @return void
+ */
+function getStartDate()
+{
+    $date = null;
+    if (isset( $_GET["date"] ) && !empty( $_GET["date"] ) ) {
+        $date = $_GET["date"];
+    }
+    $str = "";
+    $dateObj = strtotime("now");
+
+    if ($date != null) {
+        $dateObj = strtotime($date);
+    }
+    $dayofweek = date('w', $dateObj);
+    //echo $dayofweek."<br>";
+    // if sunday
+    if ($dayofweek < 1) {
+        return strtotime('-6 days', $dateObj);
+    }
+    else {
+        $aStr = '-'.($dayofweek-1).' days';
+        return strtotime($aStr, $dateObj);
+    }
 }
 
 function td($dateStart = null, $dateEnd = null, $empty = false, $site = null, $userId = null, $presenceId=null, $allDay = false, $text= null) {
