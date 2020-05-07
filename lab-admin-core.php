@@ -71,6 +71,8 @@ function lab_admin_createTable_presence() {
         `hour_start` datetime NOT NULL,
         `hour_end` datetime NOT NULL,
         `site` int NOT NULL,
+        `comment` VARCHAR(200) NOT NULL,
+        `external` tinyint(1) NOT NULL DEFAULT '0'
         PRIMARY KEY (`id`)
       ) ENGINE=InnoDB;";
     $wpdb->get_results($sql);
@@ -987,6 +989,7 @@ function delete_all_tables() {
     drop_table("lab_invitations");
     drop_table("lab_guests");
     drop_table("lab_invite_comments");
+    drop_table("lab_presence");
 }
 
 /**

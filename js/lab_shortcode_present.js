@@ -61,7 +61,7 @@ jQuery(function($){
         let actionId = "#action"+elId.substr(2,elId.length);
         let deleteId = "#delete"+elId.substr(2,elId.length);
         let editId   = "#edit"+elId.substr(2,elId.length);
-        console.log(actionId);
+        
         $(actionId).css('display', 'block');
         if (el.attr("userId")) {
             //let dPres = $(deleteId);
