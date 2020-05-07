@@ -376,6 +376,22 @@ function lab_admin_get_chief_byGroup($group_id) {
     return $res->chief_id;
 }
 
+function lab_prefGroups_add($user_id, $group_id) {
+    global $wpdb;
+    return $wpdb -> insert($wpdb->prefix."lab_prefered_groups",
+                    array(
+                        "group_id"=>$group_id,
+                        "user_id"=>$user_id
+                    ));
+}
+function lab_prefGroups_remove($user_id, $group_id) {
+    global $wpdb;
+    return $wpdb -> delete($wpdb->prefix."lab_prefered_groups",
+                    array(
+                        "group_id"=>$group_id,
+                        "user_id"=>$user_id
+                    ));
+}
 /********************************************************************************************
  * KeyRing
  ********************************************************************************************/

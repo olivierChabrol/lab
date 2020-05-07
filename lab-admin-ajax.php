@@ -816,10 +816,26 @@ function lab_invitations_complete() {
   $Iarray = json_decode(json_encode($invite), true);
   $Garray = json_decode(json_encode(lab_invitations_getGuest($invite->guest_id)), true);
   $html .= lab_invitations_mail(10,$Garray,$Iarray);
+  date_default_timezone_set("Europe/Paris");
+  $timeStamp=date("Y-m-d H:i:s",time());
+  lab_invitations_addComment(array(
+    'content'=> "¤Invitation complétée",
+    'timestamp'=> $timeStamp,
+    'author'=>'System',
+    'invite_id'=>$invite->id
+  )); 
   wp_send_json_success($html);
 }
 function lab_invitations_validate() {
   $token = $_POST['token'];
+  date_default_timezone_set("Europe/Paris");
+  $timeStamp=date("Y-m-d H:i:s",time());
+  lab_invitations_addComment(array(
+    'content'=> "¤Invitation validée",
+    'timestamp'=> $timeStamp,
+    'author'=>'System',
+    'invite_id'=>lab_invitations_getByToken($token)->id
+  )); 
   lab_invitations_editInvitation($token,array('status'=>20));
   wp_send_json_success('La demande a été transmise à l\'administration');
 }
@@ -836,4 +852,22 @@ function lab_invitation_newComment() {
   )); 
   $html = lab_inviteComments($_POST['token']);
   wp_send_json_success($html);
+}
+
+function lab_prefGroups_addReq() {
+  $user = isset($_POST['user_id']) ? $_POST['user_id'] : get_current_user_id();
+  if (lab_prefGroups_add($user,$_POST['group_id'])===false) {
+    wp_send_json_error();
+  } else {
+    wp_send_json_success();
+  }
+}
+function lab_prefGroups_removeReq() {
+  $user = isset($_POST['user_id']) ? $_POST['user_id'] : get_current_user_id();
+  if (lab_prefGroups_remove($user,$_POST['group_id'])===false) {
+    wp_send_json_error();
+  } else {
+    global $wpdb;
+    wp_send_json_success();
+  }
 }
