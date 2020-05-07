@@ -39,12 +39,12 @@ jQuery(function($){
         } 
         else 
         {
-            let userId       = $(this).attr('userId');
+            let userId     = $(this).attr('userId');
             let idPresence = $(this).attr('editId');
-            let date       = $(this).parents('tr').find('.date')     .val();
-            let opening    = $(this).parents('tr').find('.first')    .val();
-            let closing    = $(this).parents('tr').find('.last')     .val();
-            let site       = $(this).parents('tr').find('select')    .val();
+            let date       = $(this).parents('tr').find('.date') .val();
+            let opening    = $(this).parents('tr').find('.first').val();
+            let closing    = $(this).parents('tr').find('.last') .val();
+            let site       = $(this).parents('tr').find('select').val();
             console.log("id présence : " + idPresence + ", date : " + date + ", ouverture : "
              + opening + ", fermeture : " + closing + ", sur le site : " + site);
 
@@ -128,6 +128,36 @@ jQuery(function($){
         let site = $("#lab_presence_edit_siteId").val();
         savePresence(idPresence, userId, date, hourStart, hourEnd, site, comment);
     });
+
+    $("#date-open").click(function() {
+        document.getElementById('hour-open').value = "08:00";
+    });
+    if ($('#hour-open').length > 0) {
+        let timeElements = $('#hour-open').val().split(":");
+        let theHour      = parseInt(timeElements[0]);
+        let theMinute    = timeElements[1];
+        let newHour      = theHour + 1;
+        $('#hour-close').val(newHour + ":" + theMinute);
+    }
+
+    /*
+    if ($('#hour-open') == 'undefined') { // if ($('#hour-open').length > 0) {
+        let time = document.getElementById('hour-open');
+        let val = time.value;
+        time.stepUp(60);
+        let plusOneHour = time.value;
+
+        if (val == plusOneHour) {
+            time.stepDown(60*23)
+        }
+        document.getElementById('hour-close').value = plusOneHour;
+    };*/
+
+        /*let $plusOneHour = +$('#hour-open').val() + 1;
+        document.getElementById('hour-close').value = $('#hour-open').val($plusOneHour);*/
+
+        //document.getElementById('hour-close').value = "09:00";
+    
 });
 
 /******************************* ShortCode Presence ******************************/

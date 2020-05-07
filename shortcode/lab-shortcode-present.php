@@ -81,7 +81,7 @@ function lab_present_select($param) {
     $colors[] = array();
     $str .= "<table><tr>";
     foreach($listSite as $site) {
-        $str .= "<td style=\"background-color:#".$site->color.";\">".$site->value."</td>";
+        $str .= "<td style=\"background-color:#".$site->color."; color: white; font-weight:bold;\">&nbsp".$site->value."&nbsp</td>";
         $colors[$site->id] = $site->color;
     }
     $str .= "</tr></table><br>";
