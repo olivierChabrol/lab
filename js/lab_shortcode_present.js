@@ -9,6 +9,16 @@ jQuery(function($){
         let editable = $(this).parents('tr').find('.edit');
 
         if( $(this).hasClass("fa-pen") ){
+            let trId = $(this).attr("id");
+            let id   = $(this).attr("editId")+"_"+$(this).attr("userId");
+            let date = $("#date_"+id).text();
+            let hOpen = $("#hOpen_"+id).text();
+            let hEnd_ = $("#hEnd_"+id).text();
+            let site = $("#site_"+id).attr("siteId");
+            let comment =$(this).parents('tr').attr("title");
+            console.log(site);
+            editPresence($(this).attr("editId"), $(this).attr("userId"), date, hOpen, hEnd_, site, comment);
+            /*
             $.each(editable, function() {
                 let content = $(this).text();
 
@@ -25,6 +35,7 @@ jQuery(function($){
                     selected.prop('selected', true);
                 }
             });
+            //*/
         } 
         else 
         {

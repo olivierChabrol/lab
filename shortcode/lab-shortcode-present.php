@@ -266,11 +266,11 @@ function lab_present_choice($param) {
 
     $increment = 0;
     foreach ($results as $r) {
-        $choiceStr .= "<tr><th scope='row'>" . ++$increment . "</th>
-                        <td class='date-row edit'>"     . esc_html(date("Y-m-d", strtotime($r->hour_start))) ."</td>
-                        <td class='hour-row open edit'>". esc_html(date("H:i",   strtotime($r->hour_start))) ."</td>
-                        <td class='hour-row end edit'>" . esc_html(date("H:i", strtotime($r->hour_end)))  ."</td>
-                        <td class='site-row edit'>"     . esc_html($r->value) ."</td>
+        $choiceStr .= "<tr title=\"".$r->comment."\"><th scope='row'>" . ++$increment . "</th>
+                        <td class='date-row edit' id=\"date_".$r->id."_".$r->user_id."\">"     . esc_html(date("Y-m-d", strtotime($r->hour_start))) ."</td>
+                        <td class='hour-row open edit' id=\"hOpen_".$r->id."_".$r->user_id."\">". esc_html(date("H:i",   strtotime($r->hour_start))) ."</td>
+                        <td class='hour-row end edit' id=\"hEnd_".$r->id."_".$r->user_id."\">" . esc_html(date("H:i", strtotime($r->hour_end)))  ."</td>
+                        <td class='site-row edit' id=\"site_".$r->id."_".$r->user_id."\" siteId=\"".$r->site."\">"     . esc_html($r->value) ."</td>
                         <td><a href=\"#\" id=\"delete_presence_".$r->id."\"><span class='fas fa-trash'></span></a>
                             <span class='fas fa-pen icon-edit' style='cursor: pointer;' editId=" . $r->id . " userId=" . $r->user_id . "></span>
                         </td></tr>";
