@@ -119,11 +119,11 @@ function lab_present_select($param) {
                 <thead class=\"thead-dark\">
                     <tr>
                         <th style=\"width: 16.66%\">&nbsp;</th>
-                        <th colspan=\"2\" style=\"width: 16.66%\">" . esc_html__("Lundi", "lab")    . " " . $dayInt . "</th>
-                        <th colspan=\"2\" style=\"width: 16.66%\">" . esc_html__("Mardi", "lab")    . " " . getDay($dayInt, $dayInMonth ) . "</th>
-                        <th colspan=\"2\" style=\"width: 16.66%\">" . esc_html__("Mercredi", "lab") . " " . getDay($dayInt, $dayInMonth ) . "</th>
-                        <th colspan=\"2\" style=\"width: 16.66%\">" . esc_html__("Jeudi", "lab")    . " " . getDay($dayInt, $dayInMonth ) . "</th>
-                        <th colspan=\"2\" style=\"width: 16.66%\">" . esc_html__("Vendredi", "lab") . " " . getDay($dayInt, $dayInMonth ) . "</th>
+                        <th colspan=\"2\" style=\"width: 16.66%; text-align: center;\">" . esc_html__("Lundi", "lab")    . " " . $dayInt . "</th>
+                        <th colspan=\"2\" style=\"width: 16.66%; text-align: center;\">" . esc_html__("Mardi", "lab")    . " " . getDay($dayInt, $dayInMonth ) . "</th>
+                        <th colspan=\"2\" style=\"width: 16.66%; text-align: center;\">" . esc_html__("Mercredi", "lab") . " " . getDay($dayInt, $dayInMonth ) . "</th>
+                        <th colspan=\"2\" style=\"width: 16.66%; text-align: center;\">" . esc_html__("Jeudi", "lab")    . " " . getDay($dayInt, $dayInMonth ) . "</th>
+                        <th colspan=\"2\" style=\"width: 16.66%; text-align: center;\">" . esc_html__("Vendredi", "lab") . " " . getDay($dayInt, $dayInMonth ) . "</th>
                     </tr>
                 </thead>
                 <tbody>";
@@ -219,7 +219,7 @@ function lab_present_choice($param) {
             <div class=\"input-group mb-3\">
             <div class=\"form-group\">
                 <label for='comment'>".esc_html__("Commentaire", "lab")."</label>
-                <textarea id=\"comment\" rows=\"4\" cols=\"50\" class=\"form-control rounded-0\"></textarea>
+                <textarea id=\"comment\" rows=\"4\" cols=\"50\" class=\"form-control rounded-0\" maxlength=\"200\" placeholder=\"200 caractères maximum\"></textarea>
             </div>
             </div>
             <button class=\"btn btn-success\" id=\"lab_presence_button_save\">".esc_html__("Sauvegarder", "lab")."</button>
