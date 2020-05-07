@@ -109,6 +109,7 @@ jQuery(function($){
 /******************************* ShortCode Presence ******************************/
 
 function editPresence(presenceId, userId = null) {
+    $("#lab_presence_edit_date-open").val();
     $("#lab_presence_edit_dialog").modal('show');
     //toast_warn("Implement this Presence");
 }
