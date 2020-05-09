@@ -835,9 +835,7 @@ function lab_admin_presence_save_ajax()
   }
 
   $userId=$_POST['userId'];
-  if (!isset($userId)) {
-    $userId= get_current_user_id();
-  }
+  $currentUserId = get_current_user_id();
 
   $dateOpen  = $_POST['dateOpen'];
   $hourOpen  = $_POST['hourOpen'];
@@ -845,17 +843,103 @@ function lab_admin_presence_save_ajax()
   $siteId    = $_POST['siteId'];
   $comment   = $_POST['comment'];
 
-  if($presenceId != null) {
-    if (!current_user_can('administrator')) {
-      wp_send_json_error();
+  if (!isset($userId)) {
+    $userId= $currentUserId;
+  }
+
+  if (!current_user_can('administrator'))
+  {
+    // not admin and a user send
+    if ($userId != $currentUserId) {
+      wp_send_json_error(esc_html("Can only modify your own presency", "lab"));
+
+    }
+  }
+  
+  $newDateStart = strtotime($dateOpen." ".$hourOpen);
+  $newDateEnd   = strtotime($dateOpen." ".$hourClose);
+
+  if ($presenceId == null)
+  {
+    //wp_send_json_error("presenceId != null");
+    //return;
+    $sameDay = lab_admin_present_not_same_half_day($userId, $newDateStart, $newDateEnd, $presenceId);
+    //wp_send_json_error($sameDay);
+    //return;
+    if (!$sameDay["success"]) {
+      wp_send_json_error($sameDay["data"]);
+      return;
+    }
+
+    $r = lab_admin_present_check_overlap_presency($userId, $newDateStart, $newDateEnd, $presenceId);
+  
+
+    if (count($r) > 0)
+    {
+      $siteLabel = lab_admin_getSite($r[0]->site);
+      $errMsg = sprintf(__("Your are already present in %s the %s between %s and %s"), $siteLabel, date("Y-m-d", strtotime($r[0]->hour_start)), date("H:i", strtotime($r[0]->hour_start)), date("H:i", strtotime($r[0]->hour_end)));
+      wp_send_json_error($errMsg);
       return;
     }
   }
-
-  if (lab_admin_presence_save($presenceId, $userId, $dateOpen." ".$hourOpen, $dateOpen." ".$hourClose, $siteId, $comment)) {
+  // try to modify existing presency
+  else
+  {
+    $ps = lab_admin_present_get_same_day_presency($userId, $newDateStart, $newDateEnd, $presenceId);
+    
+    $newHourStart   = intval(date("G", $newDateStart));
+    $newHourEnd     = intval(date("G", $newDateEnd));
+    foreach($ps as $p)
+    {
+      $storeDateStart = strtotime($p->hour_start);
+      $storeDateEnd   = strtotime($p->hour_end);
+      $storeHourStart = intval(date("G", $storeDateStart));
+      $storeHourEnd   = intval(date("G", $storeDateStart));
+      // check overlap
+      if ($newHourStart > $storeHourStart )
+      {
+        if ($newHourStart < $storeHourEnd) {
+          $siteLabel = lab_admin_getSite($p->site);
+          $errMsg = sprintf(__("Your new schedules overlap to an existing one : %s the %s between %s and %s"), $siteLabel, date("Y-m-d", $storeDateStart), date("H:i", $storeDateStart), date("H:i", $storeDateEnd));
+          wp_send_json_error($errMsg);
+          return;
+        }
+      }
+      else
+      {
+        if ($newHourEnd > $storeHourStart) {
+          $siteLabel = lab_admin_getSite($p->site);
+          $errMsg = sprintf(__("Your new schedules overlap to an existing one : %s the %s between %s and %s"), $siteLabel, date("Y-m-d", $storeDateStart), date("H:i", $storeDateStart), date("H:i", $storeDateEnd));
+          wp_send_json_error($errMsg);
+          return;
+        }
+      }
+      // check same half day
+      // presency exist in the morning
+      if ($storeHourStart < 13)
+      {
+        if ($newHourStart < 13) {
+          $errMsg = sprintf(esc_html("(modify existing schedule) Apologize, we only manage a presency by half day, your already present in the morning of %s"), date("Y-m-d", strtotime($r[0]->hour_start)));
+          wp_send_json_error($errMsg);
+          return;
+        }
+      }
+      else
+      {
+        if ($storeHourEnd >= 13 && $newHourEnd >= 13) {
+          $errMsg = sprintf(esc_html("(modify existing schedule) Apologize, we only manage a presency by half day, your already present in the afternoon of %s"), date("Y-m-d", strtotime($r[0]->hour_start)));
+          wp_send_json_error($errMsg);
+          return;
+        }
+      }
+    }
+  }
+  $res = lab_admin_presence_save($presenceId, $userId, $dateOpen." ".$hourOpen, $dateOpen." ".$hourClose, $siteId, $comment);
+  //wp_send_json_error($res);
+  if ($res["success"]) {
     wp_send_json_success();
   } else {
-    wp_send_json_error();
+    wp_send_json_error($res["data"]);
   }
 
 }

@@ -42,8 +42,7 @@ function lab_incoming_event($param)
     $results       = $wpdb->get_results($sql);
     
     /***  DISPLAY ***/
-    $listEventStr  = "<h1>Événements à venir</h1>
-                      <br/><table>";
+    $listEventStr  = "<table>";
     $url           = esc_url(home_url('/'));
     foreach ($results as $r )
     {
