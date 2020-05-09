@@ -20,10 +20,15 @@
 
 function lab_present_select($param) {
     $param = shortcode_atts(array(
+        'allow-external' => get_option('lab-incoming-event')
         ),
         $param, 
         "lab-present-select"
     );
+    $externalUserAllowed = false;
+    if (isset($param['allow-external']) && $param['allow-external'] == "true") {
+        $externalUserAllowed = true;
+    }
     $startDay = getStartDate();
     
     //$dt_startDate->setTime(0, 0, 0);
@@ -35,10 +40,6 @@ function lab_present_select($param) {
 
     $usersPresent = lab_admin_list_present_user($startDay, $endDay);
 
-    $hs = $usersPresent[0]->hour_start;
-    echo($hs."<br>");
-    echo(strtotime($hs)."<br>");
-    echo(date('d-m-Y H:i', strtotime($hs)));
     //var_dump(strtotime($hs));
 
     /** struct of users : [firstName lastName][day][] */
@@ -76,7 +77,9 @@ function lab_present_select($param) {
 
 
     $str .= "<a href=\"/presence/?date=".date("Y-m-d",$previousWeek)."\"><b>&lt;</b></a> Semaine du  : ".date("d-m-Y",$startDay)." au ".date("d-m-Y",$endDay)." <a href=\"/presence/?date=".date("Y-m-d",$nextWeek)."\"><b>&gt;</b></a>";
-
+    if (!is_user_logged_in() && $externalUserAllowed) {
+        $str .=  "<div id=\"a_external_presency\" class=\"float-right\"><a href=\"#\" title=\"Add your presency\"><i class=\"fas fa-plus-circle fa-3x text-success\"></i></a></div>";
+    }
     $listSite = lab_admin_list_site();
     $colors[] = array();
     $str .= "<table><tr>";
@@ -188,6 +191,9 @@ function lab_present_select($param) {
         $str .= "<tr>";
     }
     $str .= "</tbody></table>";
+    if (!is_user_logged_in() && $externalUserAllowed) {
+        $str .=  newUserDiv();
+    }
     return $str;
 }
 
@@ -279,6 +285,59 @@ function lab_present_choice($param) {
     $choiceStr .= editDiv();
 
     return $choiceStr;
+}
+
+
+/**
+ * Generate div for edition
+ *
+ * @return void
+ */
+function newUserDiv()
+{
+    $str = 
+    '<div id="lab_presence_external_user_dialog" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">'.esc_html("Edit", "lab").'</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <h4 class="modal-title">'.esc_html("User information", "lab").'</h4>
+                    <label for="date-lab_presence_ext_new_user_firstname">'.esc_html("Firstname", "lab").'</label>
+                    <input id="lab_presence_ext_new_user_firstname" type="text"  placeholder="First name (mandatory)"/><br>
+                    <label for="date-lab_presence_ext_new_user_lastname">'.esc_html("Lastname", "lab").'</label>
+                    <input id="lab_presence_ext_new_user_lastname" type="text" placeholder="Last name (mandatory)"/><br>
+                    <label for="date-lab_presence_ext_new_user_email">'.esc_html("E-mail", "lab").'</label>
+                    <input type="email" class="form-control" id="lab_presence_ext_new_user_email" aria-describedby="emailHelp" placeholder="Enter email (mandatory)">
+                    <small id="emailHelp" class="form-text text-muted">We\'ll never share your email with anyone else.</small>
+                    <div class="h-divider"></div>
+                    <label for="date-open">'.esc_html("From", "lab").'</label>
+                    <input type="date" id="lab_presence_ext_new_date_open" />
+                    <label for="hour-open"></label>
+                    <input type="time" id="lab_presence_ext_new_hour_open" />
+                    <label for="hour-close">'.esc_html("to", "lab").'</label>
+                    <input type="time" id="lab_presence_ext_new_hour_close" />
+                    <div class="input-group mb-3">
+                        <label for="site-selected">'.esc_html("on the site", "lab").'</label>'. lab_html_select_str("lab_presence_ext_new_siteId", "siteName", "custom-select", lab_admin_list_site).'
+                    </div>
+                    <div class="input-group mb-3">
+                        <div class="form-group">
+                            <label for="comment">'.esc_html__("Comment", "lab").'</label>
+                            <textarea id="lab_presence_ext_new_comment" rows="4" cols="50" class="form-control rounded-0"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="close" data-dismiss="modal">'.esc_html('Annuler','lab').'</button>
+                    <button type="button" class="close" data-dismiss="modal" id="lab_presence_ext_new_save" keyid="">'.esc_html('Save','lab').'</button>
+                </div>
+            </div>
+        </div>
+    </div>';
+    //$str .= '<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#lab_presence_edit_dialog">Open Modal</button>';
+    return $str;
 }
 
 /**

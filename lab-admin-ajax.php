@@ -788,6 +788,45 @@ function lab_invitations_edit() {
 /**************************************************************************************************************
  * PRESENCE
  **************************************************************************************************************/
+
+function lab_admin_presence_save_ext_ajax()
+{
+  $firstName = $_POST['firstName'];
+  $lastName  = $_POST['lastName'];
+  $email     = $_POST['email'];
+  $date      = $_POST['date'];
+  $hourOpen  = $_POST['hourOpen'];
+  $hourClose = $_POST['hourClose'];
+  $siteId    = $_POST['siteId'];
+  $comment   = $_POST['comment'];
+
+  $str = $_POST;
+
+  $guestId = lab_invitations_guest_email_exist($email);
+  if (!$guestId) {
+    $guest = array (
+      'first_name'=> $firstName,
+      'last_name'=> $lastName,
+      'email'=> $email,
+      'phone'=> "",
+      'country'=> "FR"
+    );
+    $guestId = lab_invitations_createGuest($guest);
+  }
+  $str = "presenceId :".$presenceId."\n";
+  $str .= "guestId :".$guestId."\n";
+  $str .= "dateOpen :".$date." ".$hourOpen."\n";
+  $str .= "dateEnd  :".$date." ".$hourClose."\n"; 
+  $str .= "siteId  :".$siteId."\n"; 
+  $str .= "comment  :".$comment."\n"; 
+
+  if (lab_admin_presence_save(null, $guestId, $date." ".$hourOpen, $date." ".$hourClose, $siteId, $comment, 1)) {
+    wp_send_json_success($str);
+  } else {
+    wp_send_json_error($str);
+  }
+}
+
 function lab_admin_presence_save_ajax()
 {
   $presenceId  = null;

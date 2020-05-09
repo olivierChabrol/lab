@@ -1058,19 +1058,29 @@ function beginWith($string, $pattern) {
 /**************************************************************************************************************************************
  * PRESENCE
  *************************************************************************************************************************************/
-function lab_admin_presence_save($id, $userId, $dateOpen, $dateEnd, $siteId, $comment) {
+function checkAddPresency($userId, $dateOpen, $dateEnd)
+{
+    
+}
+
+function lab_admin_presence_save($id, $userId, $dateOpen, $dateEnd, $siteId, $comment, $external=0) {
     global $wpdb;
     if ($id == null) {
-        return $wpdb->insert($wpdb->prefix."lab_presence", array("user_id"=>$userId, "hour_start"=>$dateOpen, "hour_end"=>$dateEnd, "site"=>$siteId, "comment"=>$comment));
+        return $wpdb->insert($wpdb->prefix."lab_presence", array("user_id"=>$userId, "hour_start"=>$dateOpen, "hour_end"=>$dateEnd, "site"=>$siteId, "comment"=>$comment, "external"=>$external));
     }
     else {
-        return $wpdb->update($wpdb->prefix."lab_presence", array("hour_start"=>$dateOpen, "hour_end"=>$dateEnd, "site"=>$siteId, "comment"=>$comment), array("id"=>$id));
+        return $wpdb->update($wpdb->prefix."lab_presence", array("hour_start"=>$dateOpen, "hour_end"=>$dateEnd, "site"=>$siteId, "comment"=>$comment, "external"=>$external), array("id"=>$id));
     }
 }
 
 function lab_admin_presence_delete($presenceId, $userId) {
     global $wpdb;
-    return $wpdb->delete($wpdb->prefix."lab_presence", array("id"=>$presenceId,"user_id"=>$userId));
+    if (current_user_can('administrator')) {
+        return $wpdb->delete($wpdb->prefix."lab_presence", array("id"=>$presenceId));
+    } 
+    else {
+        return $wpdb->delete($wpdb->prefix."lab_presence", array("id"=>$presenceId,"user_id"=>$userId));
+    }
 }
 
 /**************************************************************************************************************************************

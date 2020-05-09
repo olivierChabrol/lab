@@ -115,6 +115,24 @@ function lab_invitations_getByToken($token) {
   $res = $wpdb->get_results($sql);
   return $res[0];
 }
+/**
+ * Check if guest user exist by his email
+ *
+ * @param [type] $email
+ * @return false, if this email not present in DB, guest id otherwise
+ */
+function lab_invitations_guest_email_exist($email) {
+  global $wpdb;
+  $sql = "SELECT * FROM `".$wpdb->prefix."lab_guests` WHERE email='".$email."';";
+  $res = $wpdb->get_results($sql);
+  if (count($res) == 0)
+  {
+    return false;
+  }
+  else {
+    return $res[0]->id;
+  }
+}
 function lab_invitations_getGuest($id) {
   global $wpdb;
   $sql = "SELECT * FROM `".$wpdb->prefix."lab_guests` WHERE id='".$id."';";

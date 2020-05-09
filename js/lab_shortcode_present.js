@@ -100,42 +100,70 @@ jQuery(function($){
     });
 
     $('#hour-open').focusout(function () {
-        let timeElements = $('#hour-open').val().split(":");
-        let theHour      = parseInt(timeElements[0]);
-        let theMinute    = timeElements[1];
-        let newHour      = theHour + 1;
-        if (newHour > 23) {
-            newHour = "00";
-        } else if (newHour < 10) {
-            newHour = "0"+newHour;
-        }
-
-        let val = newHour + ":" + theMinute;
-
-        $('#hour-close').val(val);
+        $('#hour-close').val(getEndDate($(this).val()));
+    });
+    $('#lab_presence_edit_hour-open').focusout(function () {        
+        $('#hour-close').val(getEndDate($(this).val()));
+    });
+    $('#lab_presence_ext_new_hour_open').focusout(function () {        
+        $('#lab_presence_ext_new_hour_close').val(getEndDate($(this).val()));
     });
 
-    /*
-    if ($('#hour-open') == 'undefined') { // if ($('#hour-open').length > 0) {
-        let time = document.getElementById('hour-open');
-        let val = time.value;
-        time.stepUp(60);
-        let plusOneHour = time.value;
+    $("#a_external_presency").click(function () {
+        externalUserPresency();
+    });
 
-        if (val == plusOneHour) {
-            time.stepDown(60*23)
-        }
-        document.getElementById('hour-close').value = plusOneHour;
-    };*/
-
-        /*let $plusOneHour = +$('#hour-open').val() + 1;
-        document.getElementById('hour-close').value = $('#hour-open').val($plusOneHour);*/
-
-        //document.getElementById('hour-close').value = "09:00";
-    
+    $("#lab_presence_ext_new_save").click(function () {
+        saveExternaluser();
+    });    
 });
 
+function getEndDate(startDate) {
+    let timeElements = startDate.split(":");
+    let theHour      = parseInt(timeElements[0]);
+    let theMinute    = timeElements[1];
+    let newHour      = theHour + 1;
+    if (newHour > 23) {
+        newHour = "00";
+    } else if (newHour < 10) {
+        newHour = "0"+newHour;
+    }
+
+    let val = newHour + ":" + theMinute;
+    return val;
+}
+
 /******************************* ShortCode Presence ******************************/
+
+function saveExternaluser() {
+    let firstName = $("#lab_presence_ext_new_user_firstname").val();
+    let lastName  = $("#lab_presence_ext_new_user_lastname").val();
+    let email     = $("#lab_presence_ext_new_user_email").val();
+    let date      = $("#lab_presence_ext_new_date_open").val();
+    let hOpen     = $("#lab_presence_ext_new_hour_open").val();
+    let hClose    = $("#lab_presence_ext_new_hour_close").val();
+    let comment   = $("#lab_presence_ext_new_comment").val();
+    let siteId    = $("#lab_presence_ext_new_siteId").val();
+    var data = {
+        'action' : 'lab_presence_save_ext',
+        firstName :         firstName,
+        lastName :     lastName,    
+        email :       email,
+        date : date,
+        hourOpen : hOpen,
+        hourClose :   hClose,
+        siteId :       siteId,
+        comment: comment
+    };
+    console.log(data);
+    $.post(LAB.ajaxurl, data, function(response) {
+        if (response.success) {
+            //window.location.href = "/presence/";
+            console.log("[saveExternaluser]" + response.data);
+            window.location.href = "/presence/";
+        }
+    });
+}
 
 function savePresence(idPresence, userId, date, opening, closing, site, comment = "") {
     var data = {
@@ -145,7 +173,6 @@ function savePresence(idPresence, userId, date, opening, closing, site, comment 
         dateOpen :       date,
         hourOpen : opening,
         hourClose :   closing,
-        hourClose :   closing,
         siteId :       site,
         comment: comment
     };
@@ -154,6 +181,10 @@ function savePresence(idPresence, userId, date, opening, closing, site, comment 
             window.location.href = "/presence/";
         }
     });
+}
+
+function externalUserPresency() {
+    $("#lab_presence_external_user_dialog").modal('show');
 }
 
 function editPresence(presenceId, userId = null, date, hourStart, hourEnd,site,comment) {

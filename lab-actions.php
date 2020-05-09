@@ -48,6 +48,7 @@ if (is_admin()) {
     add_action( 'wp_ajax_lab_presence_create_table', 'lab_admin_createTable_presence');
     add_action( 'wp_ajax_lab_presence_save', 'lab_admin_presence_save_ajax');
     add_action( 'wp_ajax_lab_presence_delete', 'lab_admin_presence_delete_ajax');
+    add_action( 'wp_ajax_nopriv_lab_presence_save_ext', 'lab_admin_presence_save_ext_ajax');
 
     //Actions pour la gestion des params
     add_action( 'wp_ajax_param_create_table', 'lab_admin_param_create_table');
@@ -102,4 +103,9 @@ if (is_admin()) {
     add_action( 'wp_ajax_lab_invitations_complete','lab_invitations_complete' );
     add_action( 'wp_ajax_lab_invitations_validate','lab_invitations_validate' );
     add_action( 'wp_ajax_lab_invitation_newComment','lab_invitation_newComment' );
+}
+// no admin
+else{
+
+    add_action( 'wp_ajax_nopriv_lab_presence_save_ext', 'lab_admin_presence_save_ext_ajax');
 }
