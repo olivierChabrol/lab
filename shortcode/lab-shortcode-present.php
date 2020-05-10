@@ -74,9 +74,11 @@ function lab_present_select($param) {
         }
     }
     //*/
+    global $wp;
+    // get current url with query string.
+    $current_url =  home_url( $wp->request ); 
 
-
-    $str .= "<a href=\"/presence/?date=".date("Y-m-d",$previousWeek)."\"><b>&lt;</b></a> Semaine du  : ".date("d-m-Y",$startDay)." au ".date("d-m-Y",$endDay)." <a href=\"/presence/?date=".date("Y-m-d",$nextWeek)."\"><b>&gt;</b></a>";
+    $str .= "<a href=\"".$current_url."/?date=".date("Y-m-d",$previousWeek)."\"><b>&lt;</b></a> Semaine du  : ".date("d-m-Y",$startDay)." au ".date("d-m-Y",$endDay)." <a href=\"".$current_url."/?date=".date("Y-m-d",$nextWeek)."\"><b>&gt;</b></a>";
     if (!is_user_logged_in() && $externalUserAllowed) {
         $str .=  "<div id=\"a_external_presency\" class=\"float-right\"><a href=\"#\" title=\"Add your presency\"><i class=\"fas fa-plus-circle fa-3x text-success\"></i></a></div>";
     }
