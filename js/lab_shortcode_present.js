@@ -77,7 +77,7 @@ jQuery(function($){
 
         $.post(LAB.ajaxurl, data, function(response) {
         if (response.success) {
-            window.location.href = "/presence/";
+            window.location.reload(false); 
         }
         });
         //*/
@@ -161,9 +161,9 @@ function saveExternaluser() {
     console.log(data);
     $.post(LAB.ajaxurl, data, function(response) {
         if (response.success) {
-            //window.location.href = "/presence/";
+            //window.location.reload(false); 
             console.log("[saveExternaluser]" + response.data);
-            window.location.href = "/presence/";
+            window.location.reload(false); 
         }
     });
 }
@@ -181,7 +181,7 @@ function savePresence(idPresence, userId, date, opening, closing, site, comment 
     };
     $.post(LAB.ajaxurl, data, function(response) {
         if (response.success) {
-            window.location.href = "/presence/";
+            window.location.reload(false); 
             //alert(response.data);
         }
         else {
@@ -223,7 +223,7 @@ function deletePresence(presenceId, userId = null) {
     jQuery.post(LAB.ajaxurl, data, function(response) {
       if (response.success) {
         //$("#invitationForm")[0].outerHTML=response.data;
-        window.location.href = "/presence/";
+        window.location.reload(false); 
       }
     });
   }
