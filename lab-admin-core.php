@@ -76,7 +76,7 @@ function lab_admin_createTable_presence() {
         `external` tinyint(1) NOT NULL DEFAULT '0',
         PRIMARY KEY (`id`)
       ) ENGINE=InnoDB;";
-    $wpdb->get_results($sql);
+    return $wpdb->get_results($sql);
 }
 
 function lab_admin_initTable_param() {
@@ -1087,6 +1087,8 @@ function create_all_tables() {
     lab_admin_initTable_usermeta();
     lab_admin_createTable_presence();
     lab_invitations_createTables();
+    lab_invitations_createTables();
+    lab_admin_createTable_presence();
 }
 
 function delete_all_tables() {
