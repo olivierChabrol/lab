@@ -493,6 +493,11 @@ function lab_admin_add_users_groups() {
 /********************************************************************************************
  * KeyRing
  ********************************************************************************************/
+function lab_keyring_add_role_ajax() {
+  lab_create_roles();
+  wp_send_json_success();
+}
+
 function lab_keyring_create_keyReq() {
   $res = lab_keyring_create_key($_POST['params']); 
   if (strlen($res)==0) {

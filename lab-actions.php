@@ -65,6 +65,7 @@ if (is_admin()) {
     add_action( 'wp_ajax_keyring_edit_key', 'lab_keyring_editKey_Req' );
     add_action( 'wp_ajax_keyring_delete_key', 'lab_keyring_deleteKey_Req' );
     add_action( 'wp_ajax_keyring_find_curr_loans', 'lab_keyring_search_current_loans_Req');
+    add_action( 'wp_ajax_keyring_add_role', 'lab_keyring_add_role_ajax');
 
     add_action('wp_ajax_edit_group', 'lab_group_editGroup');
     //Action for settings
