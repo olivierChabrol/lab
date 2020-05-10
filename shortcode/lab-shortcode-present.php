@@ -381,7 +381,7 @@ function editDiv()
             </div>
         </div>
     </div>';
-    $str .= '<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#lab_presence_edit_dialog">Open Modal</button>';
+    //$str .= '<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#lab_presence_edit_dialog">Open Modal</button>';
     return $str;
 }
 
