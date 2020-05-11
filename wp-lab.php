@@ -72,6 +72,23 @@ if (lab_locale == 'fr_FR') {
 } else {
   define('lab_lang', 'en');
 }
+
+function bootstrap_script() {
+  wp_enqueue_style('bootstrap4', 'https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css');
+  //wp_enqueue_script( 'boot1','https://code.jquery.com/jquery-3.3.1.slim.min.js', array( 'jquery' ),'',true );
+  //wp_enqueue_script( 'boot2','https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js', array( 'jquery' ),'',true );
+  //wp_enqueue_script( 'boot3','https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js', array( 'jquery' ),'',true );
+}
+add_action( 'wp_enqueue_scripts', 'replace_core_jquery_version' );
+
+function replace_core_jquery_version() {
+  wp_enqueue_style('bootstrap4', 'https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css');
+  wp_deregister_script( 'jquery-core' );
+  wp_enqueue_script('jquery-core', plugins_url('js/jquery-3.5.1.min.js',__FILE__), array(), version_id(), false);
+  wp_deregister_script( 'jquery-migrate' );
+  wp_register_script( 'jquery-migrate', plugins_url("js/jquery-migrate-3.3.0.min.js",__FILE__), array(), '3.3.0',false );
+}
+
 /**
  * Load plugin textdomain.
  *
@@ -192,15 +209,17 @@ function wp_lab_menu()
  **/
 function admin_enqueue()
 {
+  //wp_deregister_script('jquery');
+	//wp_enqueue_script('jquery', plugins_url('js/jquery-3.5.1.min.js',__FILE__), array(), version_id(), false);
   //wp_enqueue_script('lab', plugins_url('js/lab_global.js',__FILE__), array('jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog'), filemtime(dirname(plugin_basename("__FILE__"))."/js/lab_global.js"), false);
   //wp_register_script('wp-lab', plugins_url('js/lab_global.js',__FILE__), array('jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog'), "1.3");
   //Plugin permettant d'afficher les toasts :
   wp_enqueue_style('jqueryToastCSS',plugins_url('css/jquery.toast.css',__FILE__));
-  wp_enqueue_script('jqueryToastJS',plugins_url('js/jquery.toast.js',__FILE__),array('jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog'),"1.3.2",false);
+  wp_enqueue_script('jqueryToastJS',plugins_url('js/jquery.toast.js',__FILE__), array('jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog'),"1.3.2",false);
 
   wp_enqueue_script('lab-global', plugins_url('js/lab_global.js',__FILE__), array('jqueryToastJS', 'jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog'), version_id(), false);
   wp_enqueue_script('lab-admin', plugins_url('js/lab_admin.js',__FILE__), array('lab-global','jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog'), version_id(), false);
-  wp_enqueue_script('lab-keyring',plugins_url('js/lab_keyring.js',__FILE__), array('lab-global','jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog'), version_id(), false);
+  wp_enqueue_script('lab-keyring',plugins_url('js/lab_keyring.js',__FILE__), array('lab-global','jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog'), version_id(), true);
   
   //Feuille de style de l'onglet keyring :
   wp_enqueue_style('KeyRingCSS',plugins_url('css/keyring.css',__FILE__));
@@ -220,23 +239,31 @@ function admin_enqueue()
  */
 function wp_lab_fe_enqueues()
 {
-	wp_enqueue_script('jquery-3.5.1-js', plugins_url('js/jquery-3.5.1.min.js',__FILE__), array(), 'v3.5.1', false);
-  wp_enqueue_script('jquery-ui-1.12.1-js', plugins_url('js/jquery-ui.min.js',__FILE__), array('jquery-3.5.1-js'), 'v1.12.1', false);
-  wp_enqueue_script('CountrySelectJS',plugins_url('js/countrySelect.min.js',__FILE__),array('jquery-3.5.1-js', 'jquery-ui-1.12.1-js'), version_id(),false);
-  wp_enqueue_script('lab-fe', plugins_url('js/lab_fe.js',__FILE__), array('jquery-3.5.1-js', 'jquery-ui-1.12.1-js','CountrySelectJS', 'wp-i18n'), version_id(), true);
+  //wp_deregister_script('jquery');
+	//wp_enqueue_script('jquery', plugins_url('js/jquery-3.5.1.min.js',__FILE__), array(), version_id(), false);
+  wp_enqueue_style('jqueryToastCSS',plugins_url('css/jquery.toast.css',__FILE__), version_id(), false);
+  wp_enqueue_script('jqueryToastJS',plugins_url('js/jquery.toast.js',__FILE__), array('jquery'),version_id(),false);
+  wp_enqueue_script('jquery-ui-1.12.1-js', plugins_url('js/jquery-ui.min.js',__FILE__), array('jquery'), version_id(), false);
+  wp_enqueue_script('lab-fe', plugins_url('js/lab_fe.js',__FILE__), array('jquery', 'jquery-ui-1.12.1-js', 'wp-i18n'), version_id(), true);
   wp_enqueue_style('profileCSS',plugins_url('css/lab-profile.css',__FILE__));
   wp_enqueue_script('SpectrumJS', plugins_url('js/spectrum.js',__FILE__), array('jquery-3.5.1-js','wp-i18n'), '1.8.0', true);
   wp_enqueue_style('SpectrumCSS',plugins_url('css/spectrum.css',__FILE__));
+  
   localize_script('lab-fe');
   wp_set_script_translations( 'lab-fe', 'lab', dirname(__FILE__).'/lang' );
   wp_enqueue_script('fontAwesome',"https://kit.fontawesome.com/341f99cb81.js",array(),"3.2",true);
   wp_enqueue_style('InvitationCSS',plugins_url('css/lab-invitation.css',__FILE__));
   wp_enqueue_style('CountrySelectCSS',plugins_url('css/countrySelect.min.css',__FILE__));
+  wp_enqueue_script('CountrySelectJS',plugins_url('js/countrySelect.min.js',__FILE__),array('jquery', 'jquery-ui-1.12.1-js'),"3.5",false);
   wp_enqueue_style('TelInputCSS',plugins_url('css/intlTelInput.min.css',__FILE__));
   wp_enqueue_script('TelInputUtils',plugins_url('js/utils.js',__FILE__),array(),"3.4",false);
   wp_enqueue_script('TelInputJS',plugins_url('js/intlTelInput.min.js',__FILE__),array('TelInputUtils'),"3.4",false);
   
-  wp_enqueue_script('lab-shortcode-present',plugins_url('js/lab_shortcode_present.js',__FILE__), array('jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog'), version_id(), false);
+  wp_set_script_translations( 'lab-global' , 'lab', dirname(__FILE__).'/lang' );
+
+  wp_enqueue_script('lab-global', plugins_url('js/lab_global.js',__FILE__), array('jqueryToastJS', 'jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog'), version_id(), false);
+  wp_enqueue_script('lab-bootstrap', plugins_url('js/bootstrap.min.js',__FILE__), array('jquery'), version_id(), true);
+  wp_enqueue_script('lab-shortcode-present',plugins_url('js/lab_shortcode_present.js',__FILE__), array('jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog', 'lab-global', 'lab-bootstrap'), version_id(), false);
 }
 
 function localize_script($domain) {

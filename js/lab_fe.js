@@ -65,7 +65,6 @@ jQuery(function($){
 
 });
 
-/******************************* ShortCode Presence ******************************/
 
 jQuery("#lab_presence_button_save").click(function() {
   var data = {
@@ -245,15 +244,6 @@ function LABLoadInvitation() {
       } else {
         $("#lab_invitationComments #lab_invitation_oldComments").slideUp();
         $("#lab_invitationComments").attr("wrapped","true");
-      }
-    });
-    $("#lab_invite_detail_title").click(function(){
-      if($("#lab_invite_details").attr("wrapped")=="true"){
-        $("#lab_invite_details").slideDown();
-        $("#lab_invite_details").attr("wrapped","false");
-      } else {
-          $("#lab_invite_details").slideUp();
-          $("#lab_invite_details").attr("wrapped","true");
       }
     });
     //Plug-in country selector : https://github.com/mrmarkfrench/country-select-js
@@ -532,13 +522,7 @@ function lab_submitComment() {
 function LABLoadInviteList() {
   jQuery(function ($){
     $("#lab_groupSelect").change(function() {
-      data = {
-        action: 'lab_invitations_chiefList_update',
-        group_id: $("#lab_groupSelect").val()
-      };
-      jQuery.post(LAB.ajaxurl,data, function(response) {
-        $("#lab_invitesListBody").html(response.data);
-      });
+      lab_update_invitesList();
     });
     $("#lab_addPrefGroup").click(function() {
       group_ids = [];
@@ -554,10 +538,18 @@ function LABLoadInviteList() {
             group_id: $("#lab_prefGroupsSelect").val()
             },
           function(response) {
-            console.log(response);
             lab_updatePrefGroups();
           }
         );
+      }
+    });
+    $("#lab_invite_detail_title").click(function(){
+      if($("#lab_invite_details").attr("wrapped")=="true"){
+        $("#lab_invite_details").slideDown();
+        $("#lab_invite_details").attr("wrapped","false");
+      } else {
+          $("#lab_invite_details").slideUp();
+          $("#lab_invite_details").attr("wrapped","true");
       }
     });
     if ($("#lab_prefGroupsSelect").children().length<2) {
@@ -576,6 +568,16 @@ function LABLoadInviteList() {
       );
     }
   });
+  $(".lab_column_name").click(function(){
+    $(".lab_column_name").attr("sel","");
+    $(this).attr("sel","true");
+    if($(this).attr("order") == null || $(this).attr("order") == 'desc' ) {
+      $(this).attr("order","asc");
+    } else {
+      $(this).attr("order","desc");
+    }
+    lab_update_invitesList();
+  });
 }
 function lab_updatePrefGroups() {
   jQuery.post(LAB.ajaxurl,
@@ -589,7 +591,6 @@ function lab_updatePrefGroups() {
           group_id: $(this).attr('group_id')
         },
         function(response) {
-          console.log(response);
           lab_updatePrefGroups();
         }
       );
@@ -598,51 +599,102 @@ function lab_updatePrefGroups() {
   });
 }
 function lab_update_invitesList() {
-  group_ids = [];
   jQuery(function($) {
-    $(".lab_prefGroup_del").each(function() {
-      group_ids.push($(this).attr('group_id'));
-    });
-    data = {
-      action: 'lab_invitations_adminList_update',
-      'group_ids': group_ids
-    };
-    $.post(LAB.ajaxurl,data, function(response) {
-      $("#lab_invitesListBody").html(response.data);
-      $(".lab_invite_showDetail").click(function(){
-        $("#lab_invite_details").show();
-        //Descend jusqu'à la partie "details"
-        document.querySelector("#lab_invite_details").scrollIntoView({behavior:"smooth"});
-        //Récupère les commentaires
-        jQuery.post(LAB.ajaxurl,{
-          action : 'lab_invitations_comments',
-          token : $(this).attr('token')
-          },
-          function (response) {
-            $("#lab_invite_droite").html(response.data)
-          }
-        );
-        //Récupère le résumé
-        jQuery.post(LAB.ajaxurl,{
-          action : 'lab_invitations_summary',
-          token : $(this).attr('token')
-          },
-          function (response) {
-            $("#lab_invite_summary").html(response.data)
-          }
-        );
-        $("#lab_invite_budget").show();
+    switch ($("#lab_invite_list").attr('view')) {
+      case 'admin':
+        group_ids = [];
+        $(".lab_prefGroup_del").each(function() {
+          group_ids.push($(this).attr('group_id'));
+        });
+        data = {
+          action: 'lab_invitations_adminList_update',
+          sortBy: $(".lab_column_name[sel=true]").attr('name'),
+          order: $(".lab_column_name[sel=true]").attr('order'),
+          'group_ids': group_ids
+        };
+        $.post(LAB.ajaxurl,data, function(response) {
+          $("#lab_invitesListBody").html(response.data);
+          $(".lab_invite_showDetail").click(function(){
+            $("#lab_invite_realCost_input").attr('token',$(this).attr('token'));
+            $("#lab_invite_details").show();
+            //Descend jusqu'à la partie "details"
+            document.querySelector("#lab_invite_detail_title").scrollIntoView({behavior:"smooth"});
+            //Récupère les commentaires
+            $.post(LAB.ajaxurl,{
+              action : 'lab_invitations_comments',
+              token : $(this).attr('token')
+              },
+              function (response) {
+                $("#lab_invite_droite").html(response.data)
+              }
+            );
+            //Récupère le résumé
+            $.post(LAB.ajaxurl,{
+              action : 'lab_invitations_summary',
+              token : $(this).attr('token')
+              },
+              function (response) {
+                $("#lab_invite_summary").html(response.data)
+              }
+            );
+            $("#lab_invite_budget").show();
+            jQuery.post(LAB.ajaxurl,{
+              action : 'lab_invitations_realCost',
+              token : $(this).attr('token')
+              },
+              function (response) {
+                $("#lab_invite_realCost").html(response.data+"€");
+              }
+            );
+          });
+        });
+      break;
+      case 'chief':
+        data = {
+          action: 'lab_invitations_chiefList_update',
+          sortBy: $(".lab_column_name[sel=true]").attr('name'),
+          order: $(".lab_column_name[sel=true]").attr('order'),
+          group_id: $("#lab_groupSelect").val()
+        };
+        $.post(LAB.ajaxurl,data, function(response) {
+          $("#lab_invitesListBody").html(response.data);
+        });
+      break;
+      case 'host':
+        data = {
+          action: 'lab_invitations_hostList_update',
+          sortBy: $(".lab_column_name[sel=true]").attr('name'),
+          order: $(".lab_column_name[sel=true]").attr('order')
+        };
+        $.post(LAB.ajaxurl,data, function(response) {
+          $("#lab_invitesListBody").html(response.data);
+        });
+        break;
+    }
+  });
+}
+function lab_submitRealCost() {
+  data = {
+    'action':'lab_invitations_add_realCost',
+    'value' : $("#lab_invite_realCost_input").val(),
+    'token' : $("#lab_invite_realCost_input").attr("token")
+  }
+  jQuery.post(LAB.ajaxurl,data,
+    function(response)
+    {
+      if(response.success)
+      {
+        $("#lab_invite_realCost_input").val('');
         jQuery.post(LAB.ajaxurl,{
           action : 'lab_invitations_realCost',
-          token : $(this).attr('token')
+          token : $("#lab_invite_realCost_input").attr('token')
           },
           function (response) {
-            $("#lab_invite_realCost").val(response.data);
+            $("#lab_invite_realCost").html(response.data+"€");
           }
         );
-      });
-    });
-  });
+      }
+    })
 }
 if (document.querySelector("#lab_invite_list")!=null) {
   LABLoadInviteList();

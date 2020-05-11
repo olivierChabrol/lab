@@ -493,6 +493,11 @@ function lab_admin_add_users_groups() {
 /********************************************************************************************
  * KeyRing
  ********************************************************************************************/
+function lab_keyring_add_role_ajax() {
+  lab_create_roles();
+  wp_send_json_success();
+}
+
 function lab_keyring_create_keyReq() {
   $res = lab_keyring_create_key($_POST['params']); 
   if (strlen($res)==0) {
@@ -701,10 +706,8 @@ function lab_profile_edit() {
   wp_send_json_error();
 }
 
-function lab_admin_createSocial() {
-  foreach (['facebook','instagram','linkedin','pinte1rest','twitter','tumblr','youtube'] as $reseau) {
-    lab_userMetaData_create_metaKeys($reseau,'');
-  }
+function lab_admin_createSocial_Req() {
+  lab_admin_createSocial();
   wp_send_json_success();
 }
 function lab_admin_deleteSocial() {
@@ -717,6 +720,13 @@ function lab_admin_deleteSocial() {
 /********************************************************************************************
  * Lab_Invitations
  ********************************************************************************************/
+function lab_invitations_createTables_Req() {
+  $res = lab_invitations_createTables();
+  if (strlen($res)>0) {
+    return $res;
+  }
+  return;
+}
 function lab_invitations_new() {
   $fields = $_POST['fields'];
   $guest = array (
@@ -783,59 +793,6 @@ function lab_invitations_edit() {
   } else {
     wp_send_json_error('Vous n\'avez par la permission de modifier cette invitation');
   }
-}
-
-function lab_invitations_chiefList_update() {
-  wp_send_json_success(lab_invitations_interface_fromList(lab_invitations_getByGroup($_POST['group_id']),'chief'));
-}
-
-function lab_invitations_adminList_update() {
-  if (count($_POST['group_ids'])>0) {
-    wp_send_json_success(lab_invitations_interface_fromList(lab_invitations_getByGroups($_POST['group_ids']),'admin'));
-  } else {
-    wp_send_json_error("<tr><td colspan=42>".esc_html__("Aucune invitation",'lab')."</td></tr>");
-  }
-}
-function lab_invitations_summary() {
-  $token = $_POST['token'];
-  $invite = json_decode(json_encode(lab_invitations_getByToken($token)), true);
-  $guest = json_decode(json_encode(lab_invitations_getGuest($invite['guest_id'])), true);
-  wp_send_json_success(lab_InviteForm('admin',$guest,$invite));
-}
-
-function lab_invitations_comments(){
-  $token = $_POST['token'];
-  $string = lab_inviteComments($token);
-  $string .= lab_newComments(lab_admin_username_get(get_current_user_id()), $token);
-  wp_send_json_success($string);
-}
-
-function lab_invitations_realCost() {
-  wp_send_json_success( lab_invitations_getByToken($_POST['token'])->real_cost);
-}
-
-/**************************************************************************************************************
- * PRESENCE
- **************************************************************************************************************/
-function lab_admin_presence_save_ajax()
-{
-  $userId=$_POST['userId'];
-  $dateOpen = $_POST['dateOpen'];
-  $hourOpen = $_POST['hourOpen'];
-  $hourClose = $_POST['hourClose'];
-  $siteId = $_POST['siteId'];
-
-  if (lab_admin_presence_save($userId, $dateOpen." ".$hourOpen, $dateOpen." ".$hourClose, $siteId)) {
-    wp_send_json_success();
-  } else {
-    wp_send_json_error();
-  }
-}
-
-function lab_admin_presence_delete_ajax() {
-  $presenceId = $_POST['id'];
-  $userId = get_current_user_id();
-  wp_send_json_success(lab_admin_presence_delete($presenceId, $userId));
 }
 function lab_invitations_complete() {
   $token = $_POST['token'];
@@ -904,3 +861,232 @@ function lab_prefGroups_update() {
   $user = isset($_POST['user_id']) ? $_POST['user_id'] : get_current_user_id();
   wp_send_json_success(lab_invite_prefGroupsList($user));
 }
+function lab_invitations_chiefList_update() {
+  $sortBy = isset($_POST['sortBy']) ? $_POST['sortBy'] : 'start_date' ;
+  if ( ! in_array($sortBy, array("start_date","host_group_id","guest_id","host_id","mission_objective","end_date","estimated_cost","status","maximum_cost")) ) {
+    //On prévient les injections SQL en empêchant tout argument qui n'est pas un nom de colonne
+    $sortBy = 'start_date';
+  }
+  $order = (isset($_POST['order']) && $_POST['order'] == 'asc') ? 'ASC' : 'DESC';
+  $list = lab_invitations_getByGroup($_POST['group_id'],array('order'=>$order, 'sortBy'=>$sortBy));
+  wp_send_json_success(lab_invitations_interface_fromList($list,'chief'));
+}
+
+function lab_invitations_adminList_update() {
+  $sortBy = isset($_POST['sortBy']) ? $_POST['sortBy'] : 'start_date' ;
+  if ( ! in_array($sortBy, array("start_date","host_group_id","guest_id","host_id","mission_objective","end_date","estimated_cost","status","maximum_cost")) ) {
+    //On prévient les injections SQL en empêchant tout argument qui n'est pas un nom de colonne
+    $sortBy = 'start_date';
+  }
+  $order = (isset($_POST['order']) && $_POST['order'] == 'asc') ? 'ASC' : 'DESC';
+  if (count($_POST['group_ids'])>0) {
+    wp_send_json_success(lab_invitations_interface_fromList(lab_invitations_getByGroups($_POST['group_ids'],array('order'=>$order, 'sortBy'=>$sortBy)),'admin'));
+  } else {
+    wp_send_json_error("<tr><td colspan=42>".esc_html__("Aucune invitation",'lab')."</td></tr>");
+  }
+}
+function lab_invitations_hostList_update() {
+  $sortBy = isset($_POST['sortBy']) ? $_POST['sortBy'] : 'start_date' ;
+  if ( ! in_array($sortBy, array("start_date","host_group_id","guest_id","host_id","mission_objective","end_date","estimated_cost","status","maximum_cost")) ) {
+    //On prévient les injections SQL en empêchant tout argument qui n'est pas un nom de colonne
+    $sortBy = 'start_date';
+  }
+  $order = (isset($_POST['order']) && $_POST['order'] == 'asc') ? 'ASC' : 'DESC';
+  wp_send_json_success(lab_invitations_interface_fromList(lab_invitations_getByHost(get_current_user_id(),array('order'=>$order, 'sortBy'=>$sortBy)),"host"));
+}
+function lab_invitations_summary() {
+  $token = $_POST['token'];
+  $invite = json_decode(json_encode(lab_invitations_getByToken($token)), true);
+  $guest = json_decode(json_encode(lab_invitations_getGuest($invite['guest_id'])), true);
+  wp_send_json_success(lab_InviteForm('admin',$guest,$invite));
+}
+
+function lab_invitations_comments(){
+  $token = $_POST['token'];
+  $string = lab_inviteComments($token);
+  $string .= lab_newComments(lab_admin_username_get(get_current_user_id()), $token);
+  wp_send_json_success($string);
+}
+
+function lab_invitations_realCost() {
+  wp_send_json_success( lab_invitations_getByToken($_POST['token'])->real_cost!=null ? lab_invitations_getByToken($_POST['token'])->real_cost : "(".esc_html__("indéfini",'lab').")");
+}
+
+function lab_invitations_add_realCost() {
+  $token = $_POST['token'];
+  $param = $_POST['value'];
+  lab_invitations_editInvitation($token,array('real_cost'=>$param));
+  wp_send_json_success();
+}
+
+/**************************************************************************************************************
+ * PRESENCE
+ **************************************************************************************************************/
+
+function lab_admin_presence_save_ext_ajax()
+{
+  $firstName = $_POST['firstName'];
+  $lastName  = $_POST['lastName'];
+  $email     = $_POST['email'];
+  $date      = $_POST['date'];
+  $hourOpen  = $_POST['hourOpen'];
+  $hourClose = $_POST['hourClose'];
+  $siteId    = $_POST['siteId'];
+  $comment   = $_POST['comment'];
+
+  $str = $_POST;
+
+  $guestId = lab_invitations_guest_email_exist($email);
+  if (!$guestId) {
+    $guest = array (
+      'first_name'=> $firstName,
+      'last_name'=> $lastName,
+      'email'=> $email,
+      'phone'=> "",
+      'country'=> "FR"
+    );
+    $guestId = lab_invitations_createGuest($guest);
+  }
+  $str = "presenceId :".$presenceId."\n";
+  $str .= "guestId :".$guestId."\n";
+  $str .= "dateOpen :".$date." ".$hourOpen."\n";
+  $str .= "dateEnd  :".$date." ".$hourClose."\n"; 
+  $str .= "siteId  :".$siteId."\n"; 
+  $str .= "comment  :".$comment."\n"; 
+
+  if (lab_admin_presence_save(null, $guestId, $date." ".$hourOpen, $date." ".$hourClose, $siteId, $comment, 1)) {
+    wp_send_json_success($str);
+  } else {
+    wp_send_json_error($str);
+  }
+}
+
+function lab_admin_presence_save_ajax()
+{
+  $presenceId  = null;
+  if(isset($_POST['id'])) {
+    $presenceId = $_POST['id'];
+  }
+
+  $userId=$_POST['userId'];
+  $currentUserId = get_current_user_id();
+
+  $dateOpen  = $_POST['dateOpen'];
+  $hourOpen  = $_POST['hourOpen'];
+  $hourClose = $_POST['hourClose'];
+  $siteId    = $_POST['siteId'];
+  $comment   = $_POST['comment'];
+
+  if (!isset($userId)) {
+    $userId= $currentUserId;
+  }
+
+  if (!current_user_can('administrator'))
+  {
+    // not admin and a user send
+    if ($userId != $currentUserId) {
+      wp_send_json_error(esc_html("Can only modify your own presency", "lab"));
+
+    }
+  }
+  
+  $newDateStart = strtotime($dateOpen." ".$hourOpen);
+  $newDateEnd   = strtotime($dateOpen." ".$hourClose);
+
+  if ($presenceId == null)
+  {
+    //wp_send_json_error("presenceId != null");
+    //return;
+    $sameDay = lab_admin_present_not_same_half_day($userId, $newDateStart, $newDateEnd, $presenceId);
+    //wp_send_json_error($sameDay);
+    //return;
+    if (!$sameDay["success"]) {
+      wp_send_json_error($sameDay["data"]);
+      return;
+    }
+
+    $r = lab_admin_present_check_overlap_presency($userId, $newDateStart, $newDateEnd, $presenceId);
+  
+
+    if (count($r) > 0)
+    {
+      $siteLabel = lab_admin_getSite($r[0]->site);
+      $errMsg = sprintf(__("Your are already present in %s the %s between %s and %s"), $siteLabel, date("Y-m-d", strtotime($r[0]->hour_start)), date("H:i", strtotime($r[0]->hour_start)), date("H:i", strtotime($r[0]->hour_end)));
+      wp_send_json_error($errMsg);
+      return;
+    }
+  }
+  // try to modify existing presency
+  else
+  {
+    $ps = lab_admin_present_get_same_day_presency($userId, $newDateStart, $newDateEnd, $presenceId);
+    
+    $newHourStart   = intval(date("G", $newDateStart));
+    $newHourEnd     = intval(date("G", $newDateEnd));
+    foreach($ps as $p)
+    {
+      $storeDateStart = strtotime($p->hour_start);
+      $storeDateEnd   = strtotime($p->hour_end);
+      $storeHourStart = intval(date("G", $storeDateStart));
+      $storeHourEnd   = intval(date("G", $storeDateStart));
+      // check overlap
+      if ($newHourStart > $storeHourStart )
+      {
+        if ($newHourStart < $storeHourEnd) {
+          $siteLabel = lab_admin_getSite($p->site);
+          $errMsg = sprintf(__("Your new schedules overlap to an existing one : %s the %s between %s and %s"), $siteLabel, date("Y-m-d", $storeDateStart), date("H:i", $storeDateStart), date("H:i", $storeDateEnd));
+          wp_send_json_error($errMsg);
+          return;
+        }
+      }
+      else
+      {
+        if ($newHourEnd > $storeHourStart) {
+          $siteLabel = lab_admin_getSite($p->site);
+          $errMsg = sprintf(__("Your new schedules overlap to an existing one : %s the %s between %s and %s"), $siteLabel, date("Y-m-d", $storeDateStart), date("H:i", $storeDateStart), date("H:i", $storeDateEnd));
+          wp_send_json_error($errMsg);
+          return;
+        }
+      }
+      // check same half day
+      // presency exist in the morning
+      if ($storeHourStart < 13)
+      {
+        if ($newHourStart < 13) {
+          $errMsg = sprintf(esc_html("(modify existing schedule) Apologize, we only manage a presency by half day, your already present in the morning of %s"), date("Y-m-d", strtotime($r[0]->hour_start)));
+          wp_send_json_error($errMsg);
+          return;
+        }
+      }
+      else
+      {
+        if ($storeHourEnd >= 13 && $newHourEnd >= 13) {
+          $errMsg = sprintf(esc_html("(modify existing schedule) Apologize, we only manage a presency by half day, your already present in the afternoon of %s"), date("Y-m-d", strtotime($r[0]->hour_start)));
+          wp_send_json_error($errMsg);
+          return;
+        }
+      }
+    }
+  }
+  $res = lab_admin_presence_save($presenceId, $userId, $dateOpen." ".$hourOpen, $dateOpen." ".$hourClose, $siteId, $comment);
+  //wp_send_json_error($res);
+  if ($res["success"]) {
+    wp_send_json_success();
+  } else {
+    wp_send_json_error($res["data"]);
+  }
+
+}
+
+function lab_admin_presence_update_ajax() {
+  $presenceId = $_POST['id'];
+  $userId = get_current_user_id();
+  wp_send_json_success(lab_admin_presence_delete($presenceId, $userId));
+}
+
+function lab_admin_presence_delete_ajax() {
+  $presenceId = $_POST['id'];
+  $userId = get_current_user_id();
+  wp_send_json_success(lab_admin_presence_delete($presenceId, $userId));
+}
+

@@ -151,6 +151,20 @@ div[wrapped=true] h2:hover .fa-arrow-up {
   justify-content: end;
   flex-grow: 1;
 }
+.lab_column_name {
+  cursor: pointer;
+}
+.lab_column_name i {
+  display: none;
+  position: relative;
+  transform: translateX(10px);
+}
+.lab_column_name[sel=true] i {
+  display: inline-block;
+}
+.lab_column_name[order=desc] i {
+  transform: translateX(10px) rotateX(180deg);
+}
 #lab_prefGroupsForm ul li {
   margin-left: 0.5em;
   padding: 0.4em;
@@ -170,4 +184,14 @@ div[wrapped=true] h2:hover .fa-arrow-up {
 }
 #lab_invite_details>div {
   width: 50%;
+}
+#lab_invite_budget {
+  margin: auto;
+  padding-bottom: 1em;
+  margin-bottom: 1em;
+  width: 80%;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  border-bottom: 1px solid black;
 }

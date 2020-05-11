@@ -3,7 +3,7 @@
  * File Name: lab-shortcode-invitation.php
  * Description: shortcode pour afficher un formulaire de création d'invitation
  * Authors: Ivan Ivanov, Lucas Urgenti
- * Version: 0.93
+ * Version: 0.99
 */
 
 function lab_invitation($args) { 
@@ -274,24 +274,23 @@ function lab_invitations_interface($args) {
                 foreach ($prefGroups as $g) {
                     array_push($groups_ids, $g->group_id);
                 }
-                $list = lab_invitations_getByGroups($groups_ids);
             } else {
                 $list = array();
             }
             break;
     }
-    $listInvitationStr .= '<table id="lab_invite_list">
+    $listInvitationStr .= '<table view="'.$param['view'].'" id="lab_invite_list">
                             <thead>
                                 <tr id="lab_list_header">'
-                                    .($param['view']=='admin' ? '<th>'.esc_html__('Groupe','lab').'</th>' : '').
-                                    '<th>'.esc_html__("Invité","lab").'</th>
-                                    '.($param['view']!='host' ? '<th>'.esc_html__("Invitant","lab").'</th>' : '').
-                                    '<th>'.esc_html__("Mission","lab").'</th>
-                                    <th>'.esc_html__("Date d'arrivée","lab").'</th>
-                                    <th>'.esc_html__("Date de départ","lab").'</th>
-                                    <th>'.esc_html__("Statut","lab").'</th>
-                                    <th>'.esc_html__("Budget estimé","lab").'</th>
-                                    <th>'.esc_html__("Budget max.","lab").'</th>
+                                    .($param['view']=='admin' ? '<th class="lab_column_name" name="host_group_id">'.esc_html__('Groupe','lab').'<i class="fas fa-caret-up"></i></th>' : '').
+                                    '<th name="guest_id">'.esc_html__("Invité","lab").'</i></th>
+                                    '.($param['view']!='host' ? '<th class="lab_column_name" name="host_id">'.esc_html__("Invitant","lab").'<i class="fas fa-caret-up"></i></th>' : '').
+                                    '<th class="lab_column_name" name="mission_objective">'.esc_html__("Mission","lab").'<i class="fas fa-caret-up"></i></th>
+                                    <th class="lab_column_name" sel="true" name="start_date" order="asc">'.esc_html__("Date d'arrivée","lab").'<i class="fas fa-caret-up"></i></th>
+                                    <th class="lab_column_name" name="end_date">'.esc_html__("Date de départ","lab").'<i class="fas fa-caret-up"></i></th>
+                                    <th class="lab_column_name" name="status">'.esc_html__("Statut","lab").'<i class="fas fa-caret-up"></i></th>
+                                    <th class="lab_column_name" name="estimated_cost">'.esc_html__("Budget estimé","lab").'<i class="fas fa-caret-up"></i></th>
+                                    <th class="lab_column_name" name="maximum_cost">'.esc_html__("Budget max.","lab").'<i class="fas fa-caret-up"></i></th>
                                     <th>'.esc_html__("Actions","lab").'</th>
                                 </tr>
                             </thead>
@@ -302,17 +301,16 @@ function lab_invitations_interface($args) {
                           </table>';
     if ($param['view']=='admin') {
         $listInvitationStr .=
-        '<div id="lab_invite_budget">
-            <p>'.esc_html__("Budget réel",'lab').' : <input id="lab_invite_realCost" type="number" step="0.01" min=0/></p>
+        '<h2 id="lab_invite_detail_title">'.esc_html__("Détails de l'invitation",'lab').'<i class="fas fa-arrow-up"></i></h2>
+        <div id="lab_invite_budget" style="display:none">
+            <p>'.esc_html__("Budget réel",'lab').' : <b id="lab_invite_realCost"></b><form action="javascript:lab_submitRealCost()"><input token="" id="lab_invite_realCost_input" type="number" step="0.01" min=0/><input type="submit" value="Valider"><span id="lab_invite_realCost_message"></span></form></p>
         </div> 
-        <h2 id="lab_invite_detail_title">'.esc_html__("Détails de l'invitation",'lab').'<i class="fas fa-arrow-up"></i></h2>
         <div style="display:none" id="lab_invite_details">
             <div id="lab_invite_gauche">
                 <div id="lab_invite_summary">
                 </div>
             </div>
             <div id="lab_invite_droite">
-                insérer les commentaires
             </div>
         </div>';
     }
