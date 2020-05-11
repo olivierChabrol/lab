@@ -280,12 +280,13 @@ function lab_present_choice($param) {
                         <td class='hour-row open edit' id=\"hOpen_".$r->id."_".$r->user_id."\">". esc_html(date("H:i",   strtotime($r->hour_start))) ."</td>
                         <td class='hour-row end edit' id=\"hEnd_".$r->id."_".$r->user_id."\">" . esc_html(date("H:i", strtotime($r->hour_end)))  ."</td>
                         <td class='site-row edit' id=\"site_".$r->id."_".$r->user_id."\" siteId=\"".$r->site."\">"     . esc_html($r->value) ."</td>
-                        <td><a href=\"#\" id=\"delete_presence_".$r->id."\"><span class='fas fa-trash'></span></a>
+                        <td><a id=\"delete_presence_".$r->id."\"><span class='fas fa-trash'></span></a>
                             <span class='fas fa-pen icon-edit' style='cursor: pointer;' editId=" . $r->id . " userId=" . $r->user_id . "></span>
                         </td></tr>";
     }
     $choiceStr .= "</tbody></table></div>";
     $choiceStr .= editDiv();
+    $choiceStr .= deleteDiv();
 
     return $choiceStr;
 }
@@ -387,7 +388,32 @@ function editDiv()
     //$str .= '<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#lab_presence_edit_dialog">Open Modal</button>';
     return $str;
 }
-
+/**
+ * Generate modal div to delete
+ *
+ * @return void
+ */
+function deleteDiv() {
+    $str = 
+    '<div id="lab_presence_delete_dialog" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">'.esc_html("Supprimer", "lab").'</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    ' . esc_html("Êtes vous certain·e de vouloir supprimer cette présence ?", "lab") . '
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger">'   . esc_html("Oui", "lab")   .'</button>
+                    <button type="button" class="btn btn-secondary">'. esc_html("Annuler","lab").'</button>
+                </div>
+            </div>
+        </div>
+    </div>';
+    return $str;
+}
 /**
  * Return date of the first day of the week, when a date is put in the query
  *

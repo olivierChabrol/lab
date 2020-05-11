@@ -213,6 +213,8 @@ function editPresence(presenceId, userId = null, date, hourStart, hourEnd,site,c
 }
 
 function deletePresence(presenceId, userId = null) {
+    $("#lab_presence_delete_dialog").modal('show');
+    /*
     var data = null;
     if (userId != null) {
       data = {
@@ -232,5 +234,5 @@ function deletePresence(presenceId, userId = null) {
         //$("#invitationForm")[0].outerHTML=response.data;
         window.location.reload(false); 
       }
-    });
+    });*/
   }
