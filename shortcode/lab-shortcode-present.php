@@ -406,7 +406,7 @@ function deleteDiv() {
                     ' . esc_html__("Êtes vous certain·e de vouloir supprimer cette présence ?", "lab") . '
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger"    data-dismiss="modal">'. esc_html__("Oui", "lab")   .'</button>
+                    <button type="button" class="btn btn-danger delButton" data-dismiss="modal">'. esc_html__("Oui", "lab")   .'</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">'. esc_html__("Annuler","lab").'</button>
                 </div>
             </div>
