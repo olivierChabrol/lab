@@ -98,6 +98,12 @@ jQuery(function($){
         savePresence(idPresence, userId, date, hourStart, hourEnd, site, comment);
     });
 
+
+    $("#lab_presence_delete_dialog").modal("hide");
+    $("#lab_presence_delete_save").click(function () {
+        console.log("test");
+    });
+
     $("#date-open").click(function() {
         document.getElementById('hour-open').value = "08:00";
     });
@@ -184,7 +190,11 @@ function savePresence(idPresence, userId, date, opening, closing, site, comment 
     };
     $.post(LAB.ajaxurl, data, function(response) {
         if (response.success) {
-            window.location.reload(false); 
+            $('input[type="date"]').val('');
+            $('input[type="time"]').val('');
+            $('#siteId').val('');
+            $('#comment').val('');
+            window.location.reload(false);
             //alert(response.data);
         }
         else {
@@ -209,24 +219,27 @@ function editPresence(presenceId, userId = null, date, hourStart, hourEnd,site,c
 }
 
 function deletePresence(presenceId, userId = null) {
-    var data = null;
-    if (userId != null) {
-      data = {
-        'action' : 'lab_presence_delete',
-        'id' : presenceId,
-        'userId' : userId
-      }
-    }
-    else {
-      data = {
-        'action' : 'lab_presence_delete',
-        'id' : presenceId
-      }
-    }
-    jQuery.post(LAB.ajaxurl, data, function(response) {
-      if (response.success) {
-        //$("#invitationForm")[0].outerHTML=response.data;
-        window.location.reload(false); 
-      }
+    $("#lab_presence_delete_dialog").modal('show');
+    $(".delButton").click(function () {
+        var data = null;
+        if (userId != null) {
+          data = {
+            'action' : 'lab_presence_delete',
+            'id' : presenceId,
+            'userId' : userId
+          }
+        }
+        else {
+          data = {
+            'action' : 'lab_presence_delete',
+            'id' : presenceId
+          }
+        }
+        jQuery.post(LAB.ajaxurl, data, function(response) {
+          if (response.success) {
+            //$("#invitationForm")[0].outerHTML=response.data;
+            window.location.reload(false); 
+          }
+        });
     });
   }

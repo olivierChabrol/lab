@@ -2,15 +2,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-07 10:04+0200\n"
-"PO-Revision-Date: 2020-05-07 10:05+0200\n"
+"POT-Creation-Date: 2020-05-11 12:08+0200\n"
+"PO-Revision-Date: 2020-05-11 12:10+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.3\n"
+"X-Generator: Poedit 2.3.1\n"
 "X-Poedit-Basepath: ..\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-KeywordsList: _e;esc_html_e;esc_html__;__\n"
@@ -151,6 +151,7 @@ msgstr "Reset LAB DB ?"
 
 #: admin/view/lab-admin-tab-settings.php:70 lab-admin-keyring.php:36
 #: lab-admin-keyring.php:45 lab-admin-keyring.php:189
+#: shortcode/lab-shortcode-present.php:410
 msgid "Annuler"
 msgstr "Cancel"
 
@@ -159,27 +160,31 @@ msgstr "Cancel"
 msgid "Confirmer"
 msgstr "Confirm"
 
-#: admin/view/lab-admin-tab-settings.php:76
+#: admin/view/lab-admin-tab-settings.php:74
+msgid "Add role keyring"
+msgstr ""
+
+#: admin/view/lab-admin-tab-settings.php:77
 msgid "Corriger usermeta fields UM"
 msgstr "Correct usermeta fields UM"
 
-#: admin/view/lab-admin-tab-settings.php:77
+#: admin/view/lab-admin-tab-settings.php:78
 msgid "Copier les champs phone"
 msgstr "Copy usermeta phone fields"
 
-#: admin/view/lab-admin-tab-settings.php:80
+#: admin/view/lab-admin-tab-settings.php:81
 msgid "Fill HAL name"
 msgstr "Fill HAL name"
 
-#: admin/view/lab-admin-tab-settings.php:81
+#: admin/view/lab-admin-tab-settings.php:82
 msgid "Fill user slug"
 msgstr "Fill user slug"
 
-#: admin/view/lab-admin-tab-settings.php:83
+#: admin/view/lab-admin-tab-settings.php:84
 msgid "Empty HAL Table"
 msgstr "Empty HAL Table"
 
-#: admin/view/lab-admin-tab-settings.php:92
+#: admin/view/lab-admin-tab-settings.php:93
 msgid "Add Meta Key"
 msgstr "Add Meta Key"
 
@@ -267,7 +272,7 @@ msgstr "Failed to create table"
 msgid "Erreur lors de la création de la clé"
 msgstr "Failed to create key"
 
-#: js/lab_keyring.js:34 js/lab_keyring.js:160
+#: js/lab_keyring.js:34 js/lab_keyring.js:162
 msgid "Tous les champs requis doivent être remplis"
 msgstr "All required fields must be completed"
 
@@ -275,11 +280,11 @@ msgstr "All required fields must be completed"
 msgid "Impossible de trouver le prêt correspondant à cette clé"
 msgstr "Couldn't find this key's loan"
 
-#: js/lab_keyring.js:98 js/lab_keyring.js:394
+#: js/lab_keyring.js:98 js/lab_keyring.js:396
 msgid "Impossible de trouver les informations de cette clé"
 msgstr "Couldn't find details of this key"
 
-#: js/lab_keyring.js:112 js/lab_keyring.js:576
+#: js/lab_keyring.js:112 js/lab_keyring.js:578
 msgid "résultat(s)"
 msgstr "result(s)"
 
@@ -287,106 +292,106 @@ msgstr "result(s)"
 msgid "Aucune clé trouvée. Vous pouvez en créer une ci-dessous"
 msgstr "No key found. You can create one below"
 
-#: js/lab_keyring.js:160
+#: js/lab_keyring.js:162
 msgid "Erreur lors de la modification de la clé"
 msgstr "Error while editing key"
 
-#: js/lab_keyring.js:176
+#: js/lab_keyring.js:178
 msgid "Clé modifiée avec succès"
 msgstr "Key successfully modified"
 
-#: js/lab_keyring.js:182
+#: js/lab_keyring.js:184
 msgid "Échec de modification de la clé"
 msgstr "Error while editing key"
 
-#: js/lab_keyring.js:192
+#: js/lab_keyring.js:194
 msgid "Clé supprimée avec succès"
 msgstr "Key successfully deleted"
 
-#: js/lab_keyring.js:196
+#: js/lab_keyring.js:198
 msgid "La clé n'a pas pu être supprimée"
 msgstr "Key couldn't be deleted"
 
-#: js/lab_keyring.js:271
+#: js/lab_keyring.js:273
 msgid ""
 "Impossible de créer le prêt : le formulaire n'est pas rempli correctement"
 msgstr "Couldn't edit loan : the form isn't filled correctly"
 
-#: js/lab_keyring.js:398
+#: js/lab_keyring.js:400
 msgid "Impossible de trouver le prêt d'ID"
 msgstr "Couldn't find loan ID"
 
-#: js/lab_keyring.js:417
+#: js/lab_keyring.js:419
 msgid "Clé créée avec succès"
 msgstr "Key successfully created"
 
-#: js/lab_keyring.js:421
+#: js/lab_keyring.js:423
 msgid "Erreur de création de clé"
 msgstr "Error while creating key"
 
-#: js/lab_keyring.js:431
+#: js/lab_keyring.js:433
 msgid "Prêt créé avec succès"
 msgstr "Loan successfully created"
 
-#: js/lab_keyring.js:440
+#: js/lab_keyring.js:442
 msgid "Erreur de création du prêt"
 msgstr "Error while creating loan"
 
-#: js/lab_keyring.js:451
+#: js/lab_keyring.js:453
 msgid "Prêt modifié avec succès"
 msgstr "Loan successfully modified"
 
-#: js/lab_keyring.js:457
+#: js/lab_keyring.js:459
 msgid "Erreur de modification du prêt"
 msgstr "Error while editing loan"
 
-#: js/lab_keyring.js:469
+#: js/lab_keyring.js:471
 msgid "Prêt terminé avec succès"
 msgstr "Loan successfully ended"
 
-#: js/lab_keyring.js:479
+#: js/lab_keyring.js:481
 msgid "Erreur lors de la tentative de fin du prêt"
 msgstr "Error while trying to end loan"
 
-#: js/lab_keyring.js:523 js/lab_keyring.js:527
+#: js/lab_keyring.js:525 js/lab_keyring.js:529
 msgid "Reçu de prêt"
 msgstr "Loan Receipt"
 
-#: js/lab_keyring.js:530
+#: js/lab_keyring.js:532
 msgid "ID du prêt"
 msgstr "Loan ID"
 
-#: js/lab_keyring.js:531 lab-admin-keyring.php:243 lab-admin-keyring.php:314
+#: js/lab_keyring.js:533 lab-admin-keyring.php:243 lab-admin-keyring.php:314
 msgid "Référent"
 msgstr "Referent"
 
-#: js/lab_keyring.js:532
+#: js/lab_keyring.js:534
 msgid "La clé/badge numéro"
 msgstr "Key/Badge number"
 
-#: js/lab_keyring.js:533
+#: js/lab_keyring.js:535
 msgid "A été prêtée à"
 msgstr "Was loaned to"
 
-#: js/lab_keyring.js:537
+#: js/lab_keyring.js:539
 msgid "Et devra être rendue avant le"
 msgstr "And must be returned before"
 
-#: js/lab_keyring.js:538 lab-admin-keyring.php:81 lab-admin-keyring.php:131
+#: js/lab_keyring.js:540 lab-admin-keyring.php:81 lab-admin-keyring.php:131
 #: lab-admin-keyring.php:171 lab-admin-keyring.php:247
-#: lab-admin-keyring.php:308 shortcode/lab-shortcode-present.php:190
+#: lab-admin-keyring.php:308 shortcode/lab-shortcode-present.php:229
 msgid "Commentaire"
 msgstr "Comment"
 
-#: js/lab_keyring.js:539
+#: js/lab_keyring.js:541
 msgid "Signature"
 msgstr "Signature"
 
-#: js/lab_keyring.js:542
+#: js/lab_keyring.js:544
 msgid "Imprimer"
 msgstr "Print"
 
-#: js/lab_shortcode_present.js:83
+#: js/lab_shortcode_present.js:63
 msgid "Reason of your attendance is require"
 msgstr "Reason of your attendance is required"
 
@@ -926,63 +931,81 @@ msgstr ""
 msgid "Origine du crédit"
 msgstr "Funding source"
 
-#: shortcode/lab-shortcode-present.php:91
+#: shortcode/lab-shortcode-present.php:127
 msgid "Lundi"
 msgstr "Monday"
 
-#: shortcode/lab-shortcode-present.php:92
+#: shortcode/lab-shortcode-present.php:128
 msgid "Mardi"
 msgstr "Tuesday"
 
-#: shortcode/lab-shortcode-present.php:93
+#: shortcode/lab-shortcode-present.php:129
 msgid "Mercredi"
 msgstr "Wednesday"
 
-#: shortcode/lab-shortcode-present.php:94
+#: shortcode/lab-shortcode-present.php:130
 msgid "Jeudi"
 msgstr "Thursday"
 
-#: shortcode/lab-shortcode-present.php:95
+#: shortcode/lab-shortcode-present.php:131
 msgid "Vendredi"
 msgstr "Friday"
 
-#: shortcode/lab-shortcode-present.php:176
+#: shortcode/lab-shortcode-present.php:215
 msgid "Je serai présent·e"
 msgstr "I will be there"
 
-#: shortcode/lab-shortcode-present.php:180
-#: shortcode/lab-shortcode-present.php:227
+#: shortcode/lab-shortcode-present.php:219
+#: shortcode/lab-shortcode-present.php:267
 msgid "Le"
 msgstr "From"
 
-#: shortcode/lab-shortcode-present.php:184
-#: shortcode/lab-shortcode-present.php:229
+#: shortcode/lab-shortcode-present.php:223
+#: shortcode/lab-shortcode-present.php:269
 msgid "Jusqu'à"
 msgstr "to"
 
-#: shortcode/lab-shortcode-present.php:186
+#: shortcode/lab-shortcode-present.php:225
 msgid "sur le site"
 msgstr "on the site"
 
-#: shortcode/lab-shortcode-present.php:194
+#: shortcode/lab-shortcode-present.php:233
 msgid "Sauvegarder"
 msgstr "Save"
 
-#: shortcode/lab-shortcode-present.php:212
+#: shortcode/lab-shortcode-present.php:251
 msgid "Je souhaite modifier une de mes présences"
 msgstr "I would like to change one of my presences"
 
-#: shortcode/lab-shortcode-present.php:228
+#: shortcode/lab-shortcode-present.php:268
 msgid "De"
 msgstr "From"
 
-#: shortcode/lab-shortcode-present.php:230
+#: shortcode/lab-shortcode-present.php:270
 msgid "Sur"
 msgstr "On"
 
-#: shortcode/lab-shortcode-present.php:231
+#: shortcode/lab-shortcode-present.php:271
 msgid "Action"
 msgstr "Actions"
+
+#: shortcode/lab-shortcode-present.php:331
+#: shortcode/lab-shortcode-present.php:376
+#, fuzzy
+msgid "Comment"
+msgstr "Comments"
+
+#: shortcode/lab-shortcode-present.php:402
+msgid "Supprimer"
+msgstr "Delete"
+
+#: shortcode/lab-shortcode-present.php:406
+msgid "Êtes vous certain·e de vouloir supprimer cette présence ?"
+msgstr "Do you really want to remove this presence ?"
+
+#: shortcode/lab-shortcode-present.php:409
+msgid "Oui"
+msgstr "Yes"
 
 #: shortcode/lab-shortcode-profile.php:21
 msgid "Modifier la couleur d'arrière plan"
@@ -1033,10 +1056,6 @@ msgstr "HAL Name"
 
 #~ msgid "to"
 #~ msgstr "to"
-
-#, fuzzy
-#~ msgid "Comment"
-#~ msgstr "Comments"
 
 #~ msgid "Save"
 #~ msgstr "Save"
