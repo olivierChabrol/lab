@@ -82,6 +82,10 @@ jQuery(function($){
   $("#lab_admin_setting_delete_dialog_confirm").click(function() {
     callAjax({action : 'reset_lab_db'}, "LAB DB successfuly reset", null, "Failed to reset LAB DB", null);
   });
+
+  $("#lab_admin_role_add_keyring").click(function() {
+    callAjax({action : 'keyring_add_role'}, "Keyring role add", null, "Failed to add keyring role", null);
+  });
   
   $('#wp_lab_event_title').autocomplete({
     minChars: 2,

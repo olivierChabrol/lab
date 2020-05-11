@@ -65,7 +65,6 @@ jQuery(function($){
 
 });
 
-/******************************* ShortCode Presence ******************************/
 
 jQuery("#lab_presence_button_save").click(function() {
   var data = {

@@ -48,6 +48,7 @@ if (is_admin()) {
     add_action( 'wp_ajax_lab_presence_create_table', 'lab_admin_createTable_presence');
     add_action( 'wp_ajax_lab_presence_save', 'lab_admin_presence_save_ajax');
     add_action( 'wp_ajax_lab_presence_delete', 'lab_admin_presence_delete_ajax');
+    add_action( 'wp_ajax_nopriv_lab_presence_save_ext', 'lab_admin_presence_save_ext_ajax');
 
     //Actions pour la gestion des params
     add_action( 'wp_ajax_param_create_table', 'lab_admin_param_create_table');
@@ -64,6 +65,7 @@ if (is_admin()) {
     add_action( 'wp_ajax_keyring_edit_key', 'lab_keyring_editKey_Req' );
     add_action( 'wp_ajax_keyring_delete_key', 'lab_keyring_deleteKey_Req' );
     add_action( 'wp_ajax_keyring_find_curr_loans', 'lab_keyring_search_current_loans_Req');
+    add_action( 'wp_ajax_keyring_add_role', 'lab_keyring_add_role_ajax');
 
     add_action('wp_ajax_edit_group', 'lab_group_editGroup');
     //Action for settings
@@ -112,4 +114,9 @@ if (is_admin()) {
     add_action( 'wp_ajax_lab_invitations_comments','lab_invitations_comments' );
     add_action( 'wp_ajax_lab_invitations_realCost','lab_invitations_realCost' );
     add_action( 'wp_ajax_lab_invitations_add_realCost','lab_invitations_add_realCost' );
+}
+// no admin
+else{
+
+    add_action( 'wp_ajax_nopriv_lab_presence_save_ext', 'lab_admin_presence_save_ext_ajax');
 }
