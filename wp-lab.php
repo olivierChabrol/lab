@@ -82,6 +82,7 @@ function bootstrap_script() {
 add_action( 'wp_enqueue_scripts', 'replace_core_jquery_version' );
 
 function replace_core_jquery_version() {
+  wp_enqueue_style('bootstrap4', 'https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css');
   wp_deregister_script( 'jquery-core' );
   wp_enqueue_script('jquery-core', plugins_url('js/jquery-3.5.1.min.js',__FILE__), array(), version_id(), false);
   wp_deregister_script( 'jquery-migrate' );
