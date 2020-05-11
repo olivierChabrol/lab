@@ -403,10 +403,12 @@ function deleteDiv() {
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
                 <div class="modal-body">
+                    <input id="lab_presence_del_presenceId" name="userId" type="hidden"/>
+                    <input id="lab_presence_del_userId" name="userId" type="hidden"/>
                     ' . esc_html__("Êtes vous certain·e de vouloir supprimer cette présence ?", "lab") . '
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger delButton" data-dismiss="modal">'. esc_html__("Oui", "lab")   .'</button>
+                    <button type="button" id="lab_presence_del_button" class="btn btn-danger delButton" data-dismiss="modal">'. esc_html__("Oui", "lab")   .'</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">'. esc_html__("Annuler","lab").'</button>
                 </div>
             </div>

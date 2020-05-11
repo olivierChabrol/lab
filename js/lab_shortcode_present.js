@@ -125,9 +125,30 @@ jQuery(function($){
     $("#lab_presence_ext_new_save").click(function () {
         saveExternaluser();
     });
-    //$( document ).ready(function() {
-    //    $("#lab_presence_external_user_dialog").hide();
-    //}
+    $("#lab_presence_del_button").click(function () {
+        let presenceId = $("#lab_presence_del_presenceId").val();
+        let userId = $("#lab_presence_del_userId").val();
+        var data = null;
+        if (userId != null || userId == "") {
+          data = {
+            'action' : 'lab_presence_delete',
+            'id' : presenceId,
+            'userId' : userId
+          }
+        }
+        else {
+          data = {
+            'action' : 'lab_presence_delete',
+            'id' : presenceId
+          }
+        }
+        $.post(LAB.ajaxurl, data, function(response) {
+          if (response.success) {
+            //$("#invitationForm")[0].outerHTML=response.data;
+            window.location.reload(false); 
+          }
+        });
+    });
 });
 
 function getEndDate(startDate) {
@@ -219,27 +240,7 @@ function editPresence(presenceId, userId = null, date, hourStart, hourEnd,site,c
 }
 
 function deletePresence(presenceId, userId = null) {
+    $("#lab_presence_del_presenceId").val(presenceId);
+    $("#lab_presence_del_userId").val(userId);
     $("#lab_presence_delete_dialog").modal('show');
-    $(".delButton").click(function () {
-        var data = null;
-        if (userId != null) {
-          data = {
-            'action' : 'lab_presence_delete',
-            'id' : presenceId,
-            'userId' : userId
-          }
-        }
-        else {
-          data = {
-            'action' : 'lab_presence_delete',
-            'id' : presenceId
-          }
-        }
-        jQuery.post(LAB.ajaxurl, data, function(response) {
-          if (response.success) {
-            //$("#invitationForm")[0].outerHTML=response.data;
-            window.location.reload(false); 
-          }
-        });
-    });
   }
