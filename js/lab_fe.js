@@ -538,14 +538,12 @@ function LABLoadInviteList() {
             group_id: $("#lab_prefGroupsSelect").val()
             },
           function(response) {
-            console.log(response);
             lab_updatePrefGroups();
           }
         );
       }
     });
     $("#lab_invite_detail_title").click(function(){
-      console.log("clicked");
       if($("#lab_invite_details").attr("wrapped")=="true"){
         $("#lab_invite_details").slideDown();
         $("#lab_invite_details").attr("wrapped","false");
@@ -593,7 +591,6 @@ function lab_updatePrefGroups() {
           group_id: $(this).attr('group_id')
         },
         function(response) {
-          console.log(response);
           lab_updatePrefGroups();
         }
       );
