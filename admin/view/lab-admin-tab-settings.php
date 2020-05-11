@@ -71,6 +71,7 @@ function lab_admin_tab_settings() {
         <a href="#" rel="modal:close" id="lab_admin_setting_delete_dialog_confirm" keyid=""><?php esc_html_e('Confirmer','lab'); ?></a>
       </div>
     </div>
+  <button class="page-title-action" id="lab_admin_role_add_keyring"><?php echo esc_html__('Add role keyring','lab'); ?></button>
   <hr>
     <h4>Correct DB :</h4>
   <button class="page-title-action" id="lab_settings_correct_um"><?php echo esc_html__('Corriger usermeta fields UM','lab'); ?></button>

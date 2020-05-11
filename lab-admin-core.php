@@ -55,10 +55,11 @@ function lab_admin_param_exist($paramType, $paramName)
 function lab_admin_createTable_param() {
     global $wpdb;
     $sql = "CREATE TABLE IF NOT EXISTS `".$wpdb->prefix."lab_params` (
-        `id` bigint UNSIGNED NOT NULL,
+        `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
         `type_param` bigint UNSIGNED NOT NULL,
         `value` varchar(20) DEFAULT NULL,
         `color` varchar(8) DEFAULT NULL,
+        PRIMARY KEY (`id`)
       ) ENGINE=InnoDB";
     $wpdb->get_results($sql);
 }
@@ -66,16 +67,16 @@ function lab_admin_createTable_param() {
 function lab_admin_createTable_presence() {
     global $wpdb;
     $sql = "CREATE TABLE `".$wpdb->prefix."lab_presence` (
-        `id` bigint NOT NULL AUTO_INCREMENT,
+        `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
         `user_id` bigint NOT NULL,
         `hour_start` datetime NOT NULL,
         `hour_end` datetime NOT NULL,
         `site` int NOT NULL,
         `comment` VARCHAR(200) NOT NULL,
-        `external` tinyint(1) NOT NULL DEFAULT '0'
+        `external` tinyint(1) NOT NULL DEFAULT '0',
         PRIMARY KEY (`id`)
       ) ENGINE=InnoDB;";
-    $wpdb->get_results($sql);
+    return $wpdb->get_results($sql);
 }
 
 function lab_admin_initTable_param() {
@@ -109,8 +110,20 @@ function lab_admin_initTable_param() {
 function lab_admin_list_site()
 {
     global $wpdb;
-    $sql = "SELECT id, value, color FROM `".$wpdb->prefix."lab_params` WHERE type_param = 4";
+    $sql = "SELECT id, value, color FROM `".$wpdb->prefix."lab_params` WHERE type_param = 4 ORDER BY value";
     return $wpdb->get_results($sql);
+}
+
+/**
+ * Return label of a site
+ * @param $sideId : site ID
+ * @return label of a site
+ */
+function lab_admin_getSite($sideId)
+{
+    global $wpdb;
+    $sql = "SELECT id, value, color FROM `".$wpdb->prefix."lab_params` WHERE id = ".$sideId;
+    return $wpdb->get_results($sql)[0]->value;
 }
 
 /**
@@ -132,6 +145,102 @@ function lab_admin_list_present_user($startDate, $endDate) {
     }
     return $registredUser;
     //return $sql;
+}
+
+/**
+ * Return the presency save for the same day
+ *
+ * @param [type] $userId
+ * @param [type] $startDate
+ * @param [type] $endDate
+ * @param [type] $presenceId
+ * @return array of the presency for the same day, except the presencyId ones
+ */
+function lab_admin_present_get_same_day_presency($userId, $startDate, $endDate, $presenceId)
+{
+    global $wpdb;
+    $sql = "SELECT * FROM `".$wpdb->prefix."lab_presence` WHERE `user_id`=".$userId." AND `hour_start` BETWEEN '".date("Y-m-d", $startDate)." 00:00:00' AND '".date("Y-m-d", $endDate)." 23:59:59' AND id!=".$presenceId." ORDER BY `hour_start`";
+    //return $sql;
+    return $wpdb->get_results($sql);
+}
+
+function lab_admin_present_not_same_half_day($userId, $startDate, $endDate, $presenceId)
+{
+    global $wpdb;
+    $sql = "SELECT * FROM `".$wpdb->prefix."lab_presence` WHERE `user_id`=".$userId." AND `hour_start` BETWEEN '".date("Y-m-d", $startDate)." 00:00:00' AND '".date("Y-m-d", $endDate)." 23:59:59' ORDER BY `hour_start`";
+    
+    $r = $wpdb->get_results($sql);
+    
+    if (count($r) > 0) 
+    {
+        $hour = 0;
+        foreach($r as $presency)
+        {
+            $endHour   = intval(date("G", strtotime($presency->hour_end)));
+            $startHour = intval(date("G", strtotime($presency->hour_start)));
+            if ($endHour < 13) {
+                $hour += 1;
+            }
+            else
+            {
+                if ( $startHour < 13) {
+                    $hour += 5;
+                }
+                else {
+                    $hour += 3;
+                }
+            }
+        }
+        //return array("success"=>false, "data"=>"hour :" .$hour);
+        //return array("success"=>false, "data"=>"presency->hour_end:"+date("G", strtotime($presency->hour_end)));
+        $startHour = intval(date("G", $startDate));
+        $endHour   = intval(date("G", $endDate));
+
+
+        // if a presency exist in the morning
+        if ($hour < 3)
+        {
+            //return array("success"=>false, "data"=>"hour < 3 \$startHour : ". $startHour);
+            if ($startHour < 13) {
+                return array("success"=>false, "data"=>sprintf(esc_html("Apologize, we only manage a presency by half day, your already present in the morning of %s"), date("Y-m-d", strtotime($r[0]->hour_start))));
+                //sprintf(__("Your are already present in %s the %s between %s and %s"), $siteLabel, date("Y-m-d", strtotime($r[0]->hour_start)), date("H:i", strtotime($r[0]->hour_start)), date("H:i", strtotime($r[0]->hour_end)));
+            }
+        }
+        // all the day
+        else if ($hour == 5 || $hour >= 10)
+        {
+            return array("success"=>false, "data"=>sprintf(esc_html("Apologize, we only manage a presency by half day, your already present all the day %s"), date("Y-m-d", strtotime($r[0]->hour_start))));
+        }
+        // two resa : 1 morning, 1 afternoon
+        else if ($hour >= 3 && $hour < 5)
+        {
+            if ($hour == 3) {
+                if ($endHour > 13) {
+                    return array("success"=>false, "data"=>sprintf(esc_html("Apologize, we only manage a presency by half day, your already present in the afternoon of %s"), date("Y-m-d", strtotime($r[0]->hour_start))));
+                }
+            }
+            else {
+                return array("success"=>false, "data"=>sprintf(esc_html("Apologize, we only manage a presency by half day, your already present in the morning and the afternoon of %s"), date("Y-m-d", strtotime($r[0]->hour_start))));
+            }
+            
+        }
+    }
+    return array("success"=>true, "data"=>null);
+}
+
+function lab_admin_present_check_overlap_presency($userId, $startDate, $endDate, $presenceId) {
+    global $wpdb;
+    $presence = "";
+    if ($presenceId != null) {
+        $presence = " AND id != ".$presenceId;
+    }
+    $sql = "SELECT lp.* FROM `".$wpdb->prefix."lab_presence` AS lp WHERE lp.`user_id` = $userId AND (('".date("Y-m-d H:i:s", $startDate)."'  BETWEEN lp.`hour_start` AND lp.`hour_end` ) OR ('".date("Y-m-d H:i:s", $endDate)."' BETWEEN lp.`hour_start` AND lp.`hour_end`))".$presence;
+    
+    $r1 = $wpdb->get_results($sql);
+    $sql = "SELECT lp.* FROM `".$wpdb->prefix."lab_presence` AS lp WHERE lp.`user_id` = $userId AND ((lp.`hour_start` BETWEEN '".date("Y-m-d H:i:s", $startDate)."' AND '".date("Y-m-d H:i:s", $endDate)."') OR (lp.`hour_end` BETWEEN '".date("Y-m-d H:i:s", $startDate)."' AND '".date("Y-m-d H:i:s", $endDate)."'))".$presence;
+    $r2 = $wpdb->get_results($sql);
+    //return $sql;
+    return $r1+$r2;
 }
 
 /**
@@ -978,6 +1087,8 @@ function create_all_tables() {
     lab_admin_initTable_usermeta();
     lab_admin_createTable_presence();
     lab_invitations_createTables();
+    lab_invitations_createTables();
+    lab_admin_createTable_presence();
 }
 
 function delete_all_tables() {
@@ -1058,19 +1169,31 @@ function beginWith($string, $pattern) {
 /**************************************************************************************************************************************
  * PRESENCE
  *************************************************************************************************************************************/
-function lab_admin_presence_save($id, $userId, $dateOpen, $dateEnd, $siteId, $comment) {
+function checkAddPresency($userId, $dateOpen, $dateEnd)
+{
+
+}
+
+function lab_admin_presence_save($id, $userId, $dateOpen, $dateEnd, $siteId, $comment, $external=0) {
     global $wpdb;
     if ($id == null) {
-        return $wpdb->insert($wpdb->prefix."lab_presence", array("user_id"=>$userId, "hour_start"=>$dateOpen, "hour_end"=>$dateEnd, "site"=>$siteId, "comment"=>$comment));
+        $wpdb->insert($wpdb->prefix."lab_presence", array("user_id"=>$userId, "hour_start"=>$dateOpen, "hour_end"=>$dateEnd, "site"=>$siteId, "comment"=>$comment, "external"=>$external));
     }
     else {
-        return $wpdb->update($wpdb->prefix."lab_presence", array("hour_start"=>$dateOpen, "hour_end"=>$dateEnd, "site"=>$siteId, "comment"=>$comment), array("id"=>$id));
+        $wpdb->update($wpdb->prefix."lab_presence", array("hour_start"=>$dateOpen, "hour_end"=>$dateEnd, "site"=>$siteId, "comment"=>$comment, "external"=>$external), array("id"=>$id));
+        
     }
+    return array("success"=>true, "data"=>null);
 }
 
 function lab_admin_presence_delete($presenceId, $userId) {
     global $wpdb;
-    return $wpdb->delete($wpdb->prefix."lab_presence", array("id"=>$presenceId,"user_id"=>$userId));
+    if (current_user_can('administrator')) {
+        return $wpdb->delete($wpdb->prefix."lab_presence", array("id"=>$presenceId));
+    } 
+    else {
+        return $wpdb->delete($wpdb->prefix."lab_presence", array("id"=>$presenceId,"user_id"=>$userId));
+    }
 }
 
 /**************************************************************************************************************************************

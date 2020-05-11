@@ -151,7 +151,9 @@ jQuery(function($){
       }
     });
   });
-  $("#lab_keyring_keysList").load($("#lab_keyring_keySearch").keyup());
+  if ($("#lab_keyring_keySearch")) {
+    $("#lab_keyring_keysList").load($("#lab_keyring_keySearch").keyup());
+  }
   $("#lab_keyring_editForm_submit").click(function() {
       fields={};
       for (i of ['number','office']) {
