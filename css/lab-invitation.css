@@ -171,3 +171,13 @@ div[wrapped=true] h2:hover .fa-arrow-up {
 #lab_invite_details>div {
   width: 50%;
 }
+#lab_invite_budget {
+  margin: auto;
+  padding-bottom: 1em;
+  margin-bottom: 1em;
+  width: 80%;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  border-bottom: 1px solid black;
+}

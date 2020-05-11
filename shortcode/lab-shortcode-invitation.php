@@ -280,7 +280,7 @@ function lab_invitations_interface($args) {
             }
             break;
     }
-    $listInvitationStr .= '<table id="lab_invite_list">
+    $listInvitationStr .= '<table view="'.$param['view'].'" id="lab_invite_list">
                             <thead>
                                 <tr id="lab_list_header">'
                                     .($param['view']=='admin' ? '<th>'.esc_html__('Groupe','lab').'</th>' : '').
@@ -302,17 +302,16 @@ function lab_invitations_interface($args) {
                           </table>';
     if ($param['view']=='admin') {
         $listInvitationStr .=
-        '<div id="lab_invite_budget">
-            <p>'.esc_html__("Budget réel",'lab').' : <input id="lab_invite_realCost" type="number" step="0.01" min=0/></p>
+        '<h2 id="lab_invite_detail_title">'.esc_html__("Détails de l'invitation",'lab').'<i class="fas fa-arrow-up"></i></h2>
+        <div id="lab_invite_budget">
+            <p>'.esc_html__("Budget réel",'lab').' : <b id="lab_invite_realCost"></b><form action="javascript:lab_submitRealCost"><input id="lab_invite_realCost_input" type="number" step="0.01" min=0/><input type="submit" value="Valider"></form></p>
         </div> 
-        <h2 id="lab_invite_detail_title">'.esc_html__("Détails de l'invitation",'lab').'<i class="fas fa-arrow-up"></i></h2>
         <div style="display:none" id="lab_invite_details">
             <div id="lab_invite_gauche">
                 <div id="lab_invite_summary">
                 </div>
             </div>
             <div id="lab_invite_droite">
-                insérer les commentaires
             </div>
         </div>';
     }

@@ -46,7 +46,7 @@ jQuery(function($){
     hideLoanManagement(true);
     //Affiche l'historique des prêts pour cette clé :
     $("#lab_keyring_all_loans").attr('selector',$(this).attr('keyid'));
-    $("#lab_keyring_all_loans").load();
+    allLoansLoad();
     //Remplit les champs du prêt : 
     getKeyInfo($(this).attr('keyid'), function(response) {
       if (response.success) {
@@ -151,7 +151,9 @@ jQuery(function($){
       }
     });
   });
-  $("#lab_keyring_keysList").load($("#lab_keyring_keySearch").keyup());
+  if ( $("#lab_keyring_keysList").length ) {
+    $("#lab_keyring_keySearch").keyup();
+  }
   $("#lab_keyring_editForm_submit").click(function() {
       fields={};
       for (i of ['number','office']) {
@@ -307,16 +309,9 @@ jQuery(function($){
   $(".lab_keyring_loanContract").click(function() {
       loanContract($("#lab_keyring_loanform_key_id").text());
   });
-  $("#lab_keyring_all_loans").load(function() {
-    if (getUrlVars()['tab'].split("#")[0] == 'second') {
-      getUserNames_fromID($(this).attr('selector'),function(r) {
-        if (r.success) {
-          $("#lab_keyring_loans_title")[0].innerHTML=" <i>"+r.data['first_name']+" "+r.data['last_name']+"</i>";
-        }
-      });
-    }
-    oldLoans($(this).attr('selector'));
-  });
+  if ($("#lab_keyring_all_loans").length) {
+    allLoansLoad();
+  }
   /**********************  Second onglet :  ******************************/
   $("#lab_keyring_loanSearch").change(function() {
     if ($(this).val()=="") {
@@ -324,7 +319,9 @@ jQuery(function($){
     }
     loans_for_user($(this).attr('user_id'));
   });
-  $("#lab_keyring_loanSearch").load($("#lab_keyring_loanSearch").change());
+  if ( $("#lab_keyring_loanSearch").length ) {
+    $("#lab_keyring_loanSearch").change();
+  }
   $("#lab_keyring_loanSearch").autocomplete({
       minChars: 3,
       source: function(term, suggest){
@@ -341,7 +338,7 @@ jQuery(function($){
       $(this).attr("user_id",value);
       loans_for_user(value);
       $("#lab_keyring_all_loans").attr('selector',value);
-      $("#lab_keyring_all_loans").load();
+      allLoansLoad();
       $("#lab_keyring_all_loans").show();
       }
   });
@@ -401,7 +398,7 @@ jQuery(function($){
   });
   $("#lab_keyring_current_loans").on("click",".lab_keyring_loan_edit",function() {
     $("#lab_keyring_all_loans").attr('selector',$(this).attr('user_id'));
-    $("#lab_keyring_all_loans").load();
+    allLoansLoad();
   });
   if ($("#lab_keyring_keysPerPage").val()=='custom') {
     $("#lab_keyring_keysPerPage_otherValue").show();
@@ -431,7 +428,7 @@ function createLoan(params) {
       toast_success(__("Prêt créé avec succès",'lab'));
       jQuery(function($) {
         $("#lab_keyring_keySearch").keyup();
-        $("#lab_keyring_all_loans").load();
+        allLoansLoad();
         $("#lab_keyring_loanSearch").change();
       });
       hideLoanManagement(false);
@@ -449,7 +446,7 @@ function editLoan(id, params) {
   jQuery.post(ajaxurl, data, function(response) {
     if (response.success) {
       toast_success(__("Prêt modifié avec succès",'lab'));
-      jQuery("#lab_keyring_all_loans").load();
+      allLoansLoad();
       jQuery("#lab_keyring_loanSearch").change();
       hideLoanManagement(false);
       return;
@@ -470,7 +467,7 @@ function endLoan(loan_id, key_id, date) {
       hideLoanManagement(false);
       jQuery(function($){
         $("#lab_keyring_keySearch").keyup();
-        $("#lab_keyring_all_loans").load();
+        allLoansLoad();
         $("#lab_keyring_loanSearch").change();
       });
       hideLoanManagement(false);
@@ -631,4 +628,26 @@ function getLoanForID(id, callback) {
     'id': id
   }
   jQuery.post(ajaxurl,data,callback);
+}
+function getUrlVars() {
+  var vars = {};
+  var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+      vars[key] = value;
+  });
+  return vars;
+}
+function allLoansLoad() {
+  if (getUrlVars()['tab']!=null) {
+    if (getUrlVars()['tab'].split("#")[0] == 'second') {
+      getUserNames_fromID(jQuery("#lab_keyring_all_loans").attr('selector'),function(r) {
+        if (r.success) {
+          jQuery("#lab_keyring_loans_title")[0].innerHTML=" <i>"+r.data['first_name']+" "+r.data['last_name']+"</i>";
+        }
+      });
+    }
+  }
+  oldLoans(jQuery("#lab_keyring_all_loans").attr('selector'));
+}
+function defaultTodayDate(date) {
+  return date.length == 0 ? new Date().toISOString().split("T")[0] : date;
 }
