@@ -118,7 +118,10 @@ jQuery(function($){
 
     $("#lab_presence_ext_new_save").click(function () {
         saveExternaluser();
-    });    
+    });
+    //$( document ).ready(function() {
+    //    $("#lab_presence_external_user_dialog").hide();
+    //}
 });
 
 function getEndDate(startDate) {
