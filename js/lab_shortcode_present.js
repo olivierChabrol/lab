@@ -184,7 +184,11 @@ function savePresence(idPresence, userId, date, opening, closing, site, comment 
     };
     $.post(LAB.ajaxurl, data, function(response) {
         if (response.success) {
-            window.location.reload(false); 
+            $('input[type="date"]').val('');
+            $('input[type="time"]').val('');
+            $('#siteId').val('');
+            $('#comment').val('');
+            window.location.reload(false);
             //alert(response.data);
         }
         else {
