@@ -3,7 +3,7 @@
   padding: 0.5em 1em 1em 1em;
   margin: 1em 0;
 }
-#invitationForm h2, #lab_invitationComments h2 {
+#invitationForm h2, #lab_invitationComments h2, #lab_invite_detail_title {
   display: flex;
   border-bottom: 1px solid black;
   align-items: center;
@@ -56,7 +56,7 @@ div[wrapped=true] h2:hover .fa-arrow-up {
 }
 /*Bulle de discussion*/
 
-#lab_invitation_oldComments .lab_comment_box {
+.lab_comment_box {
   display: flex;
   flex-direction: row;
   align-items: flex-start;
@@ -162,4 +162,12 @@ div[wrapped=true] h2:hover .fa-arrow-up {
 }
 .lab_prefGroup_del:hover {
   color: darkred;
+}
+#lab_invite_details {
+  background: #EEE;
+  padding: 1em;
+  display:flex;
+}
+#lab_invite_details>div {
+  width: 50%;
 }

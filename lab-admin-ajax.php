@@ -789,6 +789,31 @@ function lab_invitations_chiefList_update() {
   wp_send_json_success(lab_invitations_interface_fromList(lab_invitations_getByGroup($_POST['group_id']),'chief'));
 }
 
+function lab_invitations_adminList_update() {
+  if (count($_POST['group_ids'])>0) {
+    wp_send_json_success(lab_invitations_interface_fromList(lab_invitations_getByGroups($_POST['group_ids']),'admin'));
+  } else {
+    wp_send_json_error("<tr><td colspan=42>".esc_html__("Aucune invitation",'lab')."</td></tr>");
+  }
+}
+function lab_invitations_summary() {
+  $token = $_POST['token'];
+  $invite = json_decode(json_encode(lab_invitations_getByToken($token)), true);
+  $guest = json_decode(json_encode(lab_invitations_getGuest($invite['guest_id'])), true);
+  wp_send_json_success(lab_InviteForm('admin',$guest,$invite));
+}
+
+function lab_invitations_comments(){
+  $token = $_POST['token'];
+  $string = lab_inviteComments($token);
+  $string .= lab_newComments(lab_admin_username_get(get_current_user_id()), $token);
+  wp_send_json_success($string);
+}
+
+function lab_invitations_realCost() {
+  wp_send_json_success( lab_invitations_getByToken($_POST['token'])->real_cost);
+}
+
 /**************************************************************************************************************
  * PRESENCE
  **************************************************************************************************************/
