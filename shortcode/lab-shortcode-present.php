@@ -80,7 +80,7 @@ function lab_present_select($param) {
 
     $str .= "<a href=\"".$current_url."/?date=".date("Y-m-d",$previousWeek)."\"><b>&lt;</b></a> Semaine du  : ".date("d-m-Y",$startDay)." au ".date("d-m-Y",$endDay)." <a href=\"".$current_url."/?date=".date("Y-m-d",$nextWeek)."\"><b>&gt;</b></a>";
     if (!is_user_logged_in() && $externalUserAllowed) {
-        $str .=  "<div id=\"a_external_presency\" class=\"float-right\"><a href=\"#\" title=\"Add your presency\"><i class=\"fas fa-plus-circle fa-3x text-success\"></i></a></div>";
+        $str .=  "<div id=\"a_external_presency\" class=\"float-right\"><a href=\"#\" title=\"Add your presency\">" . esc_html("Ajouter une présence en tant qu'invité", "lab") . "<i class=\"fas fa-plus-circle fa-3x text-success\"></i></a></div>";
     }
     $listSite = lab_admin_list_site();
     $colors[] = array();
@@ -253,9 +253,10 @@ function lab_present_choice($param) {
     //requete pour connaitre les présences de l'utilisateur
     global $wpdb;
     $sql = "SELECT pre.*, par.value FROM `".$wpdb->prefix."lab_presence` AS pre
-            JOIN ".$wpdb->prefix."lab_params AS par
+            JOIN `".$wpdb->prefix."lab_params` AS par
                 ON pre.site = par.id
             WHERE `user_id` = " . get_current_user_id() . "
+                AND pre.`hour_start` >= '" . date("Y-m-d", $startDay) . " 00:00:00'
             ORDER BY `hour_start`";
 
     $results = $wpdb->get_results($sql);
