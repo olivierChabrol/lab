@@ -58,14 +58,14 @@ function lab_admin_createTable_param() {
         `id` bigint UNSIGNED NOT NULL,
         `type_param` bigint UNSIGNED NOT NULL,
         `value` varchar(20) DEFAULT NULL,
-        `color` varchar(8) DEFAULT NULL,
+        `color` varchar(8) DEFAULT NULL
       ) ENGINE=InnoDB";
     $wpdb->get_results($sql);
 }
 
 function lab_admin_createTable_presence() {
     global $wpdb;
-    $sql = "CREATE TABLE `".$wpdb->prefix."lab_presence` (
+    $sql = "CREATE TABLE IF NOT EXISTS `".$wpdb->prefix."lab_presence` (
         `id` bigint NOT NULL AUTO_INCREMENT,
         `user_id` bigint NOT NULL,
         `hour_start` datetime NOT NULL,
@@ -698,6 +698,11 @@ function userMetaData_exist_metakey($metadataKey) {
     }
     return false;
 }
+function lab_admin_createSocial() {
+    foreach (['facebook','instagram','linkedin','pinterest','twitter','tumblr','youtube'] as $reseau) {
+        lab_userMetaData_create_metaKeys($reseau,'');
+    }
+}
 /**************************************************************************************************
  * HAL
  *************************************************************************************************/
@@ -715,7 +720,7 @@ function lab_hal_createTable_hal() {
         PRIMARY KEY(`id`)
       ) ENGINE=InnoDB";
     $wpdb->get_results($sql);
-    $sql = "CREATE TABLE `".$wpdb->prefix."lab_hal_users` (
+    $sql = "CREATE TABLE IF NOT EXISTS `".$wpdb->prefix."lab_hal_users` (
         `id` bigint UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
         `hal_id` bigint UNSIGNED NOT NULL,
         `user_id` bigint UNSIGNED NOT NULL

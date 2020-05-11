@@ -571,6 +571,16 @@ function LABLoadInviteList() {
       );
     }
   });
+  $(".lab_column_name").click(function(){
+    $(".lab_column_name").attr("sel","");
+    $(this).attr("sel","true");
+    if($(this).attr("order") == null || $(this).attr("order") == 'desc' ) {
+      $(this).attr("order","asc");
+    } else {
+      $(this).attr("order","desc");
+    }
+    lab_update_invitesList();
+  });
 }
 function lab_updatePrefGroups() {
   jQuery.post(LAB.ajaxurl,
@@ -602,11 +612,14 @@ function lab_update_invitesList() {
         });
         data = {
           action: 'lab_invitations_adminList_update',
+          sortBy: $(".lab_column_name[sel=true]").attr('name'),
+          order: $(".lab_column_name[sel=true]").attr('order'),
           'group_ids': group_ids
         };
         $.post(LAB.ajaxurl,data, function(response) {
           $("#lab_invitesListBody").html(response.data);
           $(".lab_invite_showDetail").click(function(){
+            $("#lab_invite_realCost_input").attr('token',$(this).attr('token'));
             $("#lab_invite_details").show();
             //Descend jusqu'à la partie "details"
             document.querySelector("#lab_invite_detail_title").scrollIntoView({behavior:"smooth"});
@@ -643,29 +656,47 @@ function lab_update_invitesList() {
       case 'chief':
         data = {
           action: 'lab_invitations_chiefList_update',
+          sortBy: $(".lab_column_name[sel=true]").attr('name'),
+          order: $(".lab_column_name[sel=true]").attr('order'),
           group_id: $("#lab_groupSelect").val()
         };
         $.post(LAB.ajaxurl,data, function(response) {
           $("#lab_invitesListBody").html(response.data);
         });
       break;
-      default:
+      case 'host':
+        data = {
+          action: 'lab_invitations_hostList_update',
+          sortBy: $(".lab_column_name[sel=true]").attr('name'),
+          order: $(".lab_column_name[sel=true]").attr('order')
+        };
+        $.post(LAB.ajaxurl,data, function(response) {
+          $("#lab_invitesListBody").html(response.data);
+        });
         break;
     }
   });
 }
 function lab_submitRealCost() {
   data = {
-    'action':'lab_add_realCost',
-    'value' : $("#lab_invite_realCost_input").val()
+    'action':'lab_invitations_add_realCost',
+    'value' : $("#lab_invite_realCost_input").val(),
+    'token' : $("#lab_invite_realCost_input").attr("token")
   }
   jQuery.post(LAB.ajaxurl,data,
     function(response)
     {
       if(response.success)
       {
-        $("#lab_invite_realCost_message").html()
-        $("#lab_invite_realCost_input").val('')
+        $("#lab_invite_realCost_input").val('');
+        jQuery.post(LAB.ajaxurl,{
+          action : 'lab_invitations_realCost',
+          token : $("#lab_invite_realCost_input").attr('token')
+          },
+          function (response) {
+            $("#lab_invite_realCost").html(response.data+"€");
+          }
+        );
       }
     })
 }

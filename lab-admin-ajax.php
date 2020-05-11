@@ -701,10 +701,8 @@ function lab_profile_edit() {
   wp_send_json_error();
 }
 
-function lab_admin_createSocial() {
-  foreach (['facebook','instagram','linkedin','pinte1rest','twitter','tumblr','youtube'] as $reseau) {
-    lab_userMetaData_create_metaKeys($reseau,'');
-  }
+function lab_admin_createSocial_Req() {
+  lab_admin_createSocial();
   wp_send_json_success();
 }
 function lab_admin_deleteSocial() {
@@ -717,6 +715,13 @@ function lab_admin_deleteSocial() {
 /********************************************************************************************
  * Lab_Invitations
  ********************************************************************************************/
+function lab_invitations_createTables_Req() {
+  $res = lab_invitations_createTables();
+  if (strlen($res)>0) {
+    return $res;
+  }
+  return;
+}
 function lab_invitations_new() {
   $fields = $_POST['fields'];
   $guest = array (
@@ -786,15 +791,37 @@ function lab_invitations_edit() {
 }
 
 function lab_invitations_chiefList_update() {
-  wp_send_json_success(lab_invitations_interface_fromList(lab_invitations_getByGroup($_POST['group_id']),'chief'));
+  $sortBy = isset($_POST['sortBy']) ? $_POST['sortBy'] : 'start_date' ;
+  if ( ! in_array($sortBy, array("start_date","host_group_id","guest_id","host_id","mission_objective","end_date","estimated_cost","status","maximum_cost")) ) {
+    //On prévient les injections SQL en empêchant tout argument qui n'est pas un nom de colonne
+    $sortBy = 'start_date';
+  }
+  $order = (isset($_POST['order']) && $_POST['order'] == 'asc') ? 'ASC' : 'DESC';
+  $list = lab_invitations_getByGroup($_POST['group_id'],array('order'=>$order, 'sortBy'=>$sortBy));
+  wp_send_json_success(lab_invitations_interface_fromList($list,'chief'));
 }
 
 function lab_invitations_adminList_update() {
+  $sortBy = isset($_POST['sortBy']) ? $_POST['sortBy'] : 'start_date' ;
+  if ( ! in_array($sortBy, array("start_date","host_group_id","guest_id","host_id","mission_objective","end_date","estimated_cost","status","maximum_cost")) ) {
+    //On prévient les injections SQL en empêchant tout argument qui n'est pas un nom de colonne
+    $sortBy = 'start_date';
+  }
+  $order = (isset($_POST['order']) && $_POST['order'] == 'asc') ? 'ASC' : 'DESC';
   if (count($_POST['group_ids'])>0) {
-    wp_send_json_success(lab_invitations_interface_fromList(lab_invitations_getByGroups($_POST['group_ids']),'admin'));
+    wp_send_json_success(lab_invitations_interface_fromList(lab_invitations_getByGroups($_POST['group_ids'],array('order'=>$order, 'sortBy'=>$sortBy)),'admin'));
   } else {
     wp_send_json_error("<tr><td colspan=42>".esc_html__("Aucune invitation",'lab')."</td></tr>");
   }
+}
+function lab_invitations_hostList_update() {
+  $sortBy = isset($_POST['sortBy']) ? $_POST['sortBy'] : 'start_date' ;
+  if ( ! in_array($sortBy, array("start_date","host_group_id","guest_id","host_id","mission_objective","end_date","estimated_cost","status","maximum_cost")) ) {
+    //On prévient les injections SQL en empêchant tout argument qui n'est pas un nom de colonne
+    $sortBy = 'start_date';
+  }
+  $order = (isset($_POST['order']) && $_POST['order'] == 'asc') ? 'ASC' : 'DESC';
+  wp_send_json_success(lab_invitations_interface_fromList(lab_invitations_getByHost(get_current_user_id(),array('order'=>$order, 'sortBy'=>$sortBy)),"host"));
 }
 function lab_invitations_summary() {
   $token = $_POST['token'];
@@ -811,7 +838,14 @@ function lab_invitations_comments(){
 }
 
 function lab_invitations_realCost() {
-  wp_send_json_success( lab_invitations_getByToken($_POST['token'])->real_cost);
+  wp_send_json_success( lab_invitations_getByToken($_POST['token'])->real_cost!=null ? lab_invitations_getByToken($_POST['token'])->real_cost : "(".esc_html__("indéfini",'lab').")");
+}
+
+function lab_invitations_add_realCost() {
+  $token = $_POST['token'];
+  $param = $_POST['value'];
+  lab_invitations_editInvitation($token,array('real_cost'=>$param));
+  wp_send_json_success();
 }
 
 /**************************************************************************************************************
