@@ -399,15 +399,15 @@ function deleteDiv() {
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">'.esc_html("Supprimer", "lab").'</h4>
+                    <h4 class="modal-title">'.esc_html__("Supprimer", "lab").'</h4>
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
                 <div class="modal-body">
-                    ' . esc_html("Êtes vous certain·e de vouloir supprimer cette présence ?", "lab") . '
+                    ' . esc_html__("Êtes vous certain·e de vouloir supprimer cette présence ?", "lab") . '
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger">'   . esc_html("Oui", "lab")   .'</button>
-                    <button type="button" class="btn btn-secondary">'. esc_html("Annuler","lab").'</button>
+                    <button type="button" class="btn btn-danger"    data-dismiss="modal">'. esc_html__("Oui", "lab")   .'</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">'. esc_html__("Annuler","lab").'</button>
                 </div>
             </div>
         </div>
