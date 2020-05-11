@@ -42,7 +42,7 @@ function lab_admin_tab_user() {
     
     <!-- CHOIX USER -->
 
-    <div style='float: left; maring-right:50px;'>
+    <div style='float: left; margin-right:50px;'>
                           <label for='users'><?php esc_html_e('Choisissez une ou plusieurs personne(s) à affecter :','lab') ?>
                           </label><br/><br/>
     <select id='list_users' name='users[]' multiple style='height:300px;'></select></div>

@@ -66,8 +66,8 @@ function lab_admin_createTable_param() {
 
 function lab_admin_createTable_presence() {
     global $wpdb;
-    $sql = "CREATE TABLE `".$wpdb->prefix."lab_presence` (
-        `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
+    $sql = "CREATE TABLE IF NOT EXISTS `".$wpdb->prefix."lab_presence` (
+        `id` bigint NOT NULL AUTO_INCREMENT,
         `user_id` bigint NOT NULL,
         `hour_start` datetime NOT NULL,
         `hour_end` datetime NOT NULL,
@@ -501,6 +501,26 @@ function lab_admin_get_chief_byGroup($group_id) {
     return $res->chief_id;
 }
 
+function lab_prefGroups_add($user_id, $group_id) {
+    global $wpdb;
+    return $wpdb -> insert($wpdb->prefix."lab_prefered_groups",
+                    array(
+                        "group_id"=>$group_id,
+                        "user_id"=>$user_id
+                    ));
+}
+function lab_prefGroups_remove($user_id, $group_id) {
+    global $wpdb;
+    return $wpdb -> delete($wpdb->prefix."lab_prefered_groups",
+                    array(
+                        "group_id"=>$group_id,
+                        "user_id"=>$user_id
+                    ));
+}
+function lab_group_getById($id) {
+    global $wpdb;
+    return $wpdb->get_results("SELECT * FROM ".$wpdb->prefix."lab_groups WHERE id=".$id.";")[0];
+}
 /********************************************************************************************
  * KeyRing
  ********************************************************************************************/
@@ -803,6 +823,11 @@ function userMetaData_exist_metakey($metadataKey) {
     }
     return false;
 }
+function lab_admin_createSocial() {
+    foreach (['facebook','instagram','linkedin','pinterest','twitter','tumblr','youtube'] as $reseau) {
+        lab_userMetaData_create_metaKeys($reseau,'');
+    }
+}
 /**************************************************************************************************
  * HAL
  *************************************************************************************************/
@@ -820,7 +845,7 @@ function lab_hal_createTable_hal() {
         PRIMARY KEY(`id`)
       ) ENGINE=InnoDB";
     $wpdb->get_results($sql);
-    $sql = "CREATE TABLE `".$wpdb->prefix."lab_hal_users` (
+    $sql = "CREATE TABLE IF NOT EXISTS `".$wpdb->prefix."lab_hal_users` (
         `id` bigint UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
         `hal_id` bigint UNSIGNED NOT NULL,
         `user_id` bigint UNSIGNED NOT NULL
