@@ -3,7 +3,7 @@
  * File Name: lab-shortcode-invitation.php
  * Description: shortcode pour afficher un formulaire de création d'invitation
  * Authors: Ivan Ivanov, Lucas Urgenti
- * Version: 0.86
+ * Version: 0.99
 */
 
 function lab_invitation($args) { 
@@ -20,6 +20,7 @@ function lab_invitation($args) {
     if ( $param['hostpage'] ) {
         if ( ! isset(explode("/",$url)[1])) { //Aucun token, donc l'invitant crée lui-même une nouvelle invitation
             $token='0';
+            $host = new labUser(get_current_user_id());
         } else {//Token fournit, récupère les informations existantes
             $token = explode("/",$url)[1];
             $invitation=lab_invitations_getByToken($token);
@@ -32,8 +33,11 @@ function lab_invitation($args) {
             $isChief = isset($invitation->host_group_id) ? get_current_user_id()==(int)lab_admin_get_chief_byGroup($invitation->host_group_id): false;
             if ( $isChief ) {
                 $invitationStr .= '<p><i>Vous pouvez modifier cette invitation en tant que responsable de groupe</i></p>';
+                $invitationStr .= '<p><i>Statut de l\'invitation : </i>'.lab_invitations_getStatusName($invitation->status).'</p>';
+                
             } else if ( get_current_user_id()==$invitation->host_id ) { 
                 $invitationStr .= '<p><i>Vous pouvez modifier cette invitation en tant qu\'invitant</i></p>';
+                $invitationStr .= '<p><i>Statut de l\'invitation : </i>'.lab_invitations_getStatusName($invitation->status).'</p>';
             } else {
                 die('Vous ne pouvez pas modifier cette invitation');
             }
@@ -202,38 +206,32 @@ function lab_invitation($args) {
                     <p>'.esc_html__("À remplir par le responsable : budget maximal allouable à cette invitation ","lab").'</p>
                 </div>
             </div>';
-                $invitationStr .=
-            '<div class="lab_invite_field">
-                <input type="submit" value="'.esc_html__("Enregistrer","lab").'">
-            </div>
-            </form></div>';
             if ($isChief) {
-                $invitationStr .= '<div class="lab_invite_row"><p class="lab_invite_field">Cliquez ici pour valider la demande et la transmettre au pôle budget :</p><button id="lab_send_manager">'.esc_html__("Envoyer à l'administration",'lab').'</button></div>';
+                $invitationStr .= '<div class="lab_invite_field">
+                <input '.($invitation->status>10 ? 'disabled' : '').' type="submit" value="'.esc_html__("Enregistrer","lab").'">
+                </div>'.($invitation->status>10 ? '<i>'.esc_html__("Cette invitation est déjà à l'étape suivante, pour la modifier, vous devez la renvoyer (via le bouton ci-dessous)",'lab').'</i>' : '').
+                '</form></div>
+                <div class="lab_invite_row lab_send_manager"><p class="lab_invite_field">Cliquez ici pour valider la demande et la transmettre au pôle budget :</p><button id="lab_send_manager">'.esc_html__("Envoyer à l'administration",'lab').'</button></div>';
             } else {
-                $invitationStr .= '<div class="lab_invite_row"><p class="lab_invite_field">Cliquez ici pour compléter la demande et la transmettre au responsable du groupe :</p><button id="lab_send_group_chief">'.esc_html__("Envoyer au responsable",'lab').'</button></div>';
+                $invitationStr .= '<div class="lab_invite_field">
+                <input '.($invitation->status>1 ? 'disabled' : '').' type="submit" value="'.esc_html__("Enregistrer","lab").'">
+                </div>'.($invitation->status>1 ? '<i>'.esc_html__("Cette invitation est déjà à l'étape suivante, pour la modifier, vous devez la renvoyer (via le bouton ci-dessous)",'lab').'</i>' : '').
+                '</form></div>
+                <div class="lab_invite_row lab_send_group_chief"><p class="lab_invite_field">Cliquez ici pour compléter la demande et la transmettre au responsable du groupe :</p><button id="lab_send_group_chief">'.esc_html__("Envoyer au responsable",'lab').'</button></div>';
             }
         }
         else {
-            $invitationStr .= '<div class="lab_invite_row">
+            $invitationStr .= '<div class="lab_invite_field">
             <input type="submit" value="'.esc_html__("Valider","lab").'">
         </div>';
         }
-        $invitationStr .= '
-        <div id="lab_invitationComments">';
         if (!$newForm) {
             $currentUser = lab_admin_username_get(get_current_user_id());
             $invitationStr .= '
+        <div id="lab_invitationComments">
             <h2>Commentaires <i class="fas fa-arrow-up"></i></h2>
-            <div id="lab_invitation_oldComments">
                 '.lab_inviteComments($token).'
-            </div>
-            <div id="lab_invitation_newComment">
-                <h5>'.esc_html__("Nouveau commentaire",'lab').'</h5>
-                <form action="javascript:lab_submitComment()">
-                    <label><i>'.esc_html__("Publier sous le nom de",'lab')."</i> : <span id='lab_comment_name'>".$currentUser['first_name'].' '.$currentUser['last_name'].'</span></label>
-                    <textarea row="1" id="lab_comment" placeholder="Contenu du commentaire..."></textarea>
-                    <input type="submit" value="'.esc_html__("Envoyer commentaire","lab").'">
-                </form>
+                '.lab_newComments($currentUser,$token).'
             </div>
         </div>';
         }
@@ -253,57 +251,103 @@ function lab_invitations_interface($args) {
             $list = lab_invitations_getByHost(get_current_user_id());
             break;
         case 'chief':
-            $listInvitationStr .= '<h3>Groupes dont vous êtes le chef :</h3><select>';
+            $listInvitationStr .= '<h3>Groupes dont vous êtes le chef :</h3><select id="lab_groupSelect">';
             foreach (lab_admin_get_groups_byChief(get_current_user_id()) as $g)
                 {
                     $listInvitationStr .= '<option value="'.$g->id.'">'.$g->group_name.'</option>';
                 }
-            $listInvitationStr .='</select>';
+            $listInvitationStr .='</select id="lab_invite_groupSelect">';
             $list = lab_invitations_getByGroup(lab_admin_get_groups_byChief(get_current_user_id())[0]->id);
             break;
         case 'admin':
-            $listInvitationStr .= '<h3>Groupes Préférés :</h3><select>';
-            foreach (lab_invitations_getPrefGroups(get_current_user_id()) as $g)
-                {
-                    $listInvitationStr .= '<option value="'.$g->id.'">'.$g->group_name.'</option>';
+            $listInvitationStr .= '<h3>Groupes Préférés :</h3>
+            <div id="lab_prefGroupsForm">
+                <select id="lab_prefGroupsSelect"><option value="">Sélectionnez un groupe</option></select>
+                <button id="lab_addPrefGroup">Ajouter aux préférés</button>
+                <p id="lab_group_add_warning"></p>';
+            $listInvitationStr .= '<ul id="lab_curr_prefGroups">';
+            $listInvitationStr .= lab_invite_prefGroupsList(get_current_user_id());
+            $listInvitationStr .='</ul></div>';
+            $prefGroups = lab_invitations_getPrefGroups(get_current_user_id());
+            if (count($prefGroups)>0) {
+                $groups_ids = array();
+                foreach ($prefGroups as $g) {
+                    array_push($groups_ids, $g->group_id);
                 }
-            $listInvitationStr .='</select>';
-            $list = lab_invitations_getByGroup(lab_invitations_getPrefGroups(get_current_user_id())[0]);
+            } else {
+                $list = array();
+            }
             break;
     }
-    $listInvitationStr .= '<table>
+    $listInvitationStr .= '<table view="'.$param['view'].'" id="lab_invite_list">
                             <thead>
-                                <tr id="lab_list_header">
-                                <th>'.esc_html__("Nom de l'invité","lab").'</th>
-                                '.($param['view']!='host' ? '<th>'.esc_html__("Invitant","lab").'</th>' : '').
-                                '<th>'.esc_html__("Mission","lab").'</th>
-                                <th>'.esc_html__("Date de création","lab").'</th>
-                                <th>'.esc_html__("Statut","lab").'</th>
-                                <th>'.esc_html__("Actions","lab").'</th>
+                                <tr id="lab_list_header">'
+                                    .($param['view']=='admin' ? '<th class="lab_column_name" name="host_group_id">'.esc_html__('Groupe','lab').'<i class="fas fa-caret-up"></i></th>' : '').
+                                    '<th name="guest_id">'.esc_html__("Invité","lab").'</i></th>
+                                    '.($param['view']!='host' ? '<th class="lab_column_name" name="host_id">'.esc_html__("Invitant","lab").'<i class="fas fa-caret-up"></i></th>' : '').
+                                    '<th class="lab_column_name" name="mission_objective">'.esc_html__("Mission","lab").'<i class="fas fa-caret-up"></i></th>
+                                    <th class="lab_column_name" sel="true" name="start_date" order="asc">'.esc_html__("Date d'arrivée","lab").'<i class="fas fa-caret-up"></i></th>
+                                    <th class="lab_column_name" name="end_date">'.esc_html__("Date de départ","lab").'<i class="fas fa-caret-up"></i></th>
+                                    <th class="lab_column_name" name="status">'.esc_html__("Statut","lab").'<i class="fas fa-caret-up"></i></th>
+                                    <th class="lab_column_name" name="estimated_cost">'.esc_html__("Budget estimé","lab").'<i class="fas fa-caret-up"></i></th>
+                                    <th class="lab_column_name" name="maximum_cost">'.esc_html__("Budget max.","lab").'<i class="fas fa-caret-up"></i></th>
+                                    <th>'.esc_html__("Actions","lab").'</th>
                                 </tr>
                             </thead>
-                            <tbody>';
+                            <tbody id="lab_invitesListBody">';
     
     $listInvitationStr .= lab_invitations_interface_fromList($list,$param['view']);
     $listInvitationStr .=   '</tbody>
                           </table>';
-    
+    if ($param['view']=='admin') {
+        $listInvitationStr .=
+        '<h2 id="lab_invite_detail_title">'.esc_html__("Détails de l'invitation",'lab').'<i class="fas fa-arrow-up"></i></h2>
+        <div id="lab_invite_budget" style="display:none">
+            <p>'.esc_html__("Budget réel",'lab').' : <b id="lab_invite_realCost"></b><form action="javascript:lab_submitRealCost()"><input token="" id="lab_invite_realCost_input" type="number" step="0.01" min=0/><input type="submit" value="Valider"><span id="lab_invite_realCost_message"></span></form></p>
+        </div> 
+        <div style="display:none" id="lab_invite_details">
+            <div id="lab_invite_gauche">
+                <div id="lab_invite_summary">
+                </div>
+            </div>
+            <div id="lab_invite_droite">
+            </div>
+        </div>';
+    }
     return $listInvitationStr;
 }
 
 function lab_invitations_interface_fromList($list,$view) {
     $listStr = '';
-    foreach ($list as $invitation) {
-        $guest = lab_invitations_getGuest($invitation->guest_id);
-        $host = new LabUser($invitation->host_id);
-        $listStr .= '<tr>
-                        <td><a href="mailto:'.$guest->email.'">'. $guest->first_name . ' ' . $guest->last_name .'</a></td>'
-                        .($view!='host' ? '<td><a href="mailto:'.$host->email.'">'. $host->first_name . ' ' . $host->last_name .'</a></td>':'').
-                        '<td>'. $invitation->mission_objective .'</td>
-                        <td>'. $invitation->creation_time .'</td>
-                        <td>'. $invitation->status .'</td>
-                        <td><a href="/invite/'. $invitation->token.'">'.esc_html__("Lien de modification",'lab').'</a></td>
-                    </tr>';
+    if (count($list)>0) {
+        foreach ($list as $invitation) {
+            $guest = lab_invitations_getGuest($invitation->guest_id);
+            $host = new LabUser($invitation->host_id);
+            $date_arr = date_create_from_format("Y-m-d H:i:s", $invitation->start_date);
+            $date_dep = date_create_from_format("Y-m-d H:i:s", $invitation->end_date);
+            $listStr .= '<tr>'
+                            .($view=='admin' ? '<td>'.lab_group_getById($invitation->host_group_id)->group_name.'</td>' : '').
+                            '<td><a href="mailto:'.$guest->email.'">'. $guest->first_name . ' ' . $guest->last_name .'</a></td>'
+                            .($view!='host' ? '<td><a href="mailto:'.$host->email.'">'. $host->first_name . ' ' . $host->last_name .'</a></td>':'');
+            if(is_numeric($invitation->mission_objective))
+            {   
+                $listStr .='<td>'. AdminParams::get_param($invitation->mission_objective) .'</td>';
+            }
+            else
+            {
+                $listStr .='<td>'. $invitation->mission_objective .'</td>'; 
+            }
+            $listStr .=    '<td>'. strftime('%d %B %G',$date_arr->getTimestamp()).'</td>
+                            <td>'. strftime('%d %B %G',$date_dep->getTimestamp()).'</td>
+                            <td>'. lab_invitations_getStatusName($invitation->status) .'</td>
+                            <td>'. $invitation->estimated_cost.'</td>
+                            <td>'. $invitation->maximum_cost.'</td>'
+                            .($view!='admin' ? '<td><a href="/invite/'. $invitation->token.'">'.esc_html__("Modifier",'lab').'</a></td>' 
+                            : '<td><button class="lab_invite_showDetail" token="'.$invitation->token.'">'.esc_html__("Détails","lab").'</button></td>').
+                        '</tr>';
+        }
+    } else {
+        $listStr = "<tr><td colspan=42>".esc_html__("Aucune invitation",'lab')."</td></tr>";
     }
     return $listStr;
 }
@@ -347,31 +391,32 @@ function lab_invitations_mail($type=1, $guest, $invite) {
 }
 function lab_InviteForm($who,$guest,$invite) {
     $host = new LabUser($invite['host_id']);
-    $out = '<p>'.esc_html__("Récapitulatif de la demande d'invitation",'lab').' : </p>
-            <p>'.esc_html__("Informations personnelles de l'invité",'lab').' :</p>
+    $out = '<p><b>'.esc_html__("Récapitulatif de la demande d'invitation",'lab').' : </b></p>
+            <p><u>'.esc_html__("Informations personnelles de l'invité",'lab').' :</u></p>
                 <ul>
-                <li>'.esc_html__("Prénom",'lab').' : '.$guest['first_name'].'</li>
-                <li>'.esc_html__("Nom",'lab').' : '.$guest['last_name'].'</li>
-                <li>'.esc_html__("Email",'lab').' : '.$guest['email'].'</li>
-                <li>'.esc_html__("Téléphone",'lab').' : '.$guest['phone'].'</li>
-                <li>'.esc_html__("Pays",'lab').' : '.$guest['country'].'</li>
+                <li><i>'.esc_html__("Prénom",'lab').' : </i>'.$guest['first_name'].'</li>
+                <li><i>'.esc_html__("Nom",'lab').' : </i>'.$guest['last_name'].'</li>
+                <li><i>'.esc_html__("Email",'lab').' : </i>'.$guest['email'].'</li>
+                <li><i>'.esc_html__("Téléphone",'lab').' : </i>'.$guest['phone'].'</li>
+                <li><i>'.esc_html__("Pays",'lab').' : </i>'.$guest['country'].'</li>
             </ul>
-            <p>Contexte de l\'invitation
+            <p><u>'.esc_html__("Contexte de l'invitation",'lab').'</u>
             <ul>
-                <li>'.esc_html__("Nom de l'invitant",'lab').' : '.$host->first_name.' '.$host->last_name.'</li>
-                <li>'.esc_html__("Objectif de mission",'lab').' : '.$invite['mission_objective'].'</li>
-                <li>'.esc_html__("Besoin d'un hotel",'lab').' : '.($invite['needs_hostel'] == 1 ? esc_html__('oui','lab') : esc_html__('non','lab')).'</li>
-                <li>'.esc_html__("Moyen de transport",'lab').' :   <ul>
-                                                <li>'.esc_html__("Vers l'I2M",'lab').' : '.$invite['travel_mean_to'].'</li>
-                                                <li>'.esc_html__("Depuis l'I2M",'lab').' : '.$invite['travel_mean_from'].'</li>
-                                            </ul></li>
-                <li>'.esc_html__("Date d'arrivée",'lab').' : '.$invite['start_date'].'</li>
-                <li>'.esc_html__("Date de départ",'lab').' : '.$invite['end_date'].'</li>';
+                <li><i>'.esc_html__("Nom de l'invitant",'lab').' : </i>'.$host->first_name.' '.$host->last_name.'</li>
+                <li><i>'.esc_html__("Objectif de mission",'lab').' : </i>'.(is_numeric($invite['mission_objective']) ? AdminParams::get_param($invite['mission_objective']) : $invite['mission_objective']).'</li>
+                <li><i>'.esc_html__("Besoin d'un hotel",'lab').' : </i>'.($invite['needs_hostel'] == 1 ? esc_html__('oui','lab') : esc_html__('non','lab')).'</li>
+                <li><i>'.esc_html__("Moyen de transport",'lab').' :  </i>
+                <ul>
+                    <li><i>'.esc_html__("Vers l'I2M",'lab').' : </i>'.$invite['travel_mean_to'].'</li>
+                    <li><i>'.esc_html__("Depuis l'I2M",'lab').' : </i>'.$invite['travel_mean_from'].'</li>
+                </ul></li>
+                <li><i>'.esc_html__("Date d'arrivée",'lab').' : </i>'.$invite['start_date'].'</li>
+                <li><i>'.esc_html__("Date de départ",'lab').' : </i>'.$invite['end_date'].'</li>';
                 
-    if($who=='host')
+    if($who=='host' || $who=='admin')
     {
-        $out .= '<li>'.esc_html__("Estimation du coût",'lab').' : '.$invite['estimated_cost'].'</li>
-                 <li>'.esc_html__("Origine du crédit",'lab').' : '.$invite[''].'</li>';
+        $out .= '<li><i>'.esc_html__("Estimation du coût",'lab').' : </i>'.$invite['estimated_cost'].'</li>
+                 <li><i>'.esc_html__("Origine du crédit",'lab').' : </i>'.(is_numeric($invite['funding_source']) ? AdminParams::get_param($invite['funding_source']) : $invite['funding_source']).'</li>';
     }
     $out .= '</ul>';
     return $out;
@@ -379,15 +424,67 @@ function lab_InviteForm($who,$guest,$invite) {
 function lab_inviteComments($token) {
     $loc= get_locale();
     setlocale(LC_TIME,$loc);
-    foreach (lab_invitations_getComments(lab_invitations_getByToken($token)->id) as $comment) {
-        $date = date_create_from_format("Y-m-d H:i:s", $comment->timestamp);
-        $out .= "<div class='lab_comment_box'>
-                    <p class='lab_comment_author'>$comment->author</p>
-                    <p class='lab_comment'><i>".strftime('%d %B %G - %H:%M',$date->getTimestamp())."</i><br> $comment->content</p>
-                </div>";
+    $comments= lab_invitations_getComments(lab_invitations_getByToken($token)->id);
+    $out = '<div id="lab_invitation_oldComments">';
+    if (count($comments)> 0) {
+        foreach ( $comments as $comment) {
+            $date = date_create_from_format("Y-m-d H:i:s", $comment->timestamp);
+            $out .= "<div class='lab_comment_box'>
+                        <p class='lab_comment_author".($comment->author=="System" ? ' auto' : '')."'>$comment->author</p>
+                        <p class='lab_comment".(substr($comment->content,0,2)=="¤" ? ' auto' : '' )."'><i>"
+                        .strftime('%d %B %G - %H:%M',$date->getTimestamp())."</i><br>"
+                        .(substr($comment->content,0,2)=="¤" ? substr($comment->content,2) : $comment->content )."</p>
+                    </div>";
+        }
+    } else {
+        $out .= '<p><i>Aucun commentaire pour cette invitation</i></p>';
+    }
+    $out.='</div>';
+    return $out;
+}
+function lab_newComments($currentUser, $token)
+{
+    $html =     '<div token="'.$token.'" id="lab_invitation_newComment">
+                    <h5>'.esc_html__("Nouveau commentaire",'lab').'</h5>
+                    <form action="javascript:lab_submitComment()">
+                        <label><i>'.esc_html__("Publier sous le nom de",'lab')."</i> : <span id='lab_comment_name'>".$currentUser['first_name'].' '.$currentUser['last_name'].'</span></label>
+                        <textarea row="1" cols="50" id="lab_comment" placeholder="Contenu du commentaire..."></textarea>
+                        <input type="submit" value="'.esc_html__("Envoyer commentaire","lab").'">
+                    </form>
+                </div>';
+    return $html;
+}
+function lab_invitations_getStatusName($status) {
+    switch ($status) {
+        case 1:
+            return "<span class='lab_infoBulle' title='".esc_html__("Cette invitation a été créée, vous pouvez maintenant en compléter toutes les informations et l'envoyer pour validation au responsable du groupe.","lab")."'>"
+            .esc_html__("Créée","lab")."</span>";
+        break;
+        case 10: 
+            return "<span class='lab_infoBulle' title='".esc_html__("Cette invitation a été complétée, le responsable peut maintenant la valider pour l'envoyer au pôle budget.","lab")."'>"
+            .esc_html__("Complétée","lab");
+        break;
+        case 20:
+            return "<span class='lab_infoBulle' title='".esc_html__("Cette invitation a été validée et envoyée au pôle budget.","lab")."'>"
+            .esc_html__("Validée","lab");
+        break; 
+        default:
+            # code...
+            break;
+    }
+}
+function lab_invite_prefGroupsList($user_id) {
+    $prefGroups = lab_invitations_getPrefGroups($user_id);
+    if (count($prefGroups)>0) {
+        foreach ($prefGroups as $g){
+            $out .= "<li class='lab_prefGroup_element'>$g->group_name <i group_id='$g->group_id' class='fas fa-trash lab_prefGroup_del'></i></li>";
+        }
+    } else {
+        $out = '<li>'.esc_html__("Aucun groupe préféré trouvé",'lab').'</li>';
     }
     return $out;
 }
+
 ?>
 
 

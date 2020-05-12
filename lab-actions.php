@@ -76,11 +76,11 @@ if (is_admin()) {
     add_action( 'wp_ajax_not_exist_metakey', 'lab_ajax_userMeta_key_not_exist');
     add_action( 'wp_ajax_um_correct', 'lab_usermeta_correct_um_fields');
     add_action( 'wp_ajax_copy_phone', 'lab_admin_usermeta_update_phone');
-    add_action( 'wp_ajax_create_social', 'lab_admin_createSocial' );
+    add_action( 'wp_ajax_create_social', 'lab_admin_createSocial_Req' );
     add_action( 'wp_ajax_delete_social', 'lab_admin_deleteSocial' );
     add_action( 'wp_ajax_reset_lab_db', 'lab_admin_setting_reset_tables');
     add_action( 'wp_ajax_invite_createTablePrefGroup', 'lab_invitations_createPrefGroupTable' );
-    add_action( 'wp_ajax_invite_createTables', 'lab_invitations_createTables' );
+    add_action( 'wp_ajax_invite_createTables', 'lab_invitations_createTables_Req' );
     //Action for hal
     add_action( 'wp_ajax_hal_create_table', 'lab_ajax_hal_create_table');
     add_action( 'wp_ajax_hal_fill_hal_name', 'lab_ajax_hal_fill_fields');
@@ -104,6 +104,16 @@ if (is_admin()) {
     add_action( 'wp_ajax_lab_invitations_complete','lab_invitations_complete' );
     add_action( 'wp_ajax_lab_invitations_validate','lab_invitations_validate' );
     add_action( 'wp_ajax_lab_invitation_newComment','lab_invitation_newComment' );
+    add_action( 'wp_ajax_lab_prefGroups_add','lab_prefGroups_addReq' );
+    add_action( 'wp_ajax_lab_prefGroups_remove','lab_prefGroups_removeReq' );
+    add_action( 'wp_ajax_lab_prefGroups_update','lab_prefGroups_update' );
+    add_action( 'wp_ajax_lab_invitations_chiefList_update','lab_invitations_chiefList_update' );
+    add_action( 'wp_ajax_lab_invitations_adminList_update','lab_invitations_adminList_update' );
+    add_action( 'wp_ajax_lab_invitations_hostList_update','lab_invitations_hostList_update' );
+    add_action( 'wp_ajax_lab_invitations_summary','lab_invitations_summary' );
+    add_action( 'wp_ajax_lab_invitations_comments','lab_invitations_comments' );
+    add_action( 'wp_ajax_lab_invitations_realCost','lab_invitations_realCost' );
+    add_action( 'wp_ajax_lab_invitations_add_realCost','lab_invitations_add_realCost' );
 }
 // no admin
 else{

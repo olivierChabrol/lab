@@ -11,8 +11,7 @@ function lab_invitations_createTables() {
     );";
   $res = $wpdb->get_results($sql);
   if (!strlen($res)==0) {
-    wp_send_json_error();
-    return;
+    return $res;
   }
   $sql = "CREATE TABLE IF NOT EXISTS `".$wpdb->prefix."lab_invitations` (
       `id` bigint UNSIGNED PRIMARY KEY AUTO_INCREMENT,
@@ -39,8 +38,7 @@ function lab_invitations_createTables() {
     );";
   $res = $wpdb->get_results($sql);
   if (!strlen($res)==0) {
-    wp_send_json_error();
-    return;
+    return $res;
   }
   $sql = "CREATE TABLE IF NOT EXISTS `".$wpdb->prefix."lab_invite_comments` (
     `id` BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
@@ -51,8 +49,7 @@ function lab_invitations_createTables() {
     FOREIGN KEY (`invite_id`) REFERENCES `".$wpdb->prefix."lab_invitations`(`id`));";
   $res = $wpdb->get_results($sql);
   if (!strlen($res)==0) {
-    wp_send_json_error();
-    return;
+    return $res;
   }
   $sql = "CREATE TABLE IF NOT EXISTS `".$wpdb->prefix."lab_prefered_groups` (
     `id` int PRIMARY KEY AUTO_INCREMENT,
@@ -62,10 +59,10 @@ function lab_invitations_createTables() {
     FOREIGN KEY (`user_id`) REFERENCES `".$wpdb->prefix."users` (`id`)
   );";
   if (strlen($wpdb->get_results($sql))==0) {
-    wp_send_json_success();
+    //wp_send_json_success();
     return;
   } else {
-    wp_send_json_error();
+    return $res;
   }
 }
 function lab_invitations_createGuest($params) {
@@ -139,21 +136,31 @@ function lab_invitations_getGuest($id) {
   $res = $wpdb->get_results($sql);
   return $res[0];
 }
-function lab_invitations_getByGroup($group_id,$params=array()) {
+function lab_invitations_getByGroup($group_id,$params=array("sortBy"=>"start_date","order"=>"DESC")) {
   global $wpdb;
-  $sql = "SELECT * FROM `".$wpdb->prefix."lab_invitations` WHERE `host_group_id`=".$group_id.";";
+  $sql = "SELECT * FROM `".$wpdb->prefix."lab_invitations` WHERE `host_group_id`=".$group_id." ORDER BY ".$params['sortBy'].' '.$params['order']." ;";
   $res = $wpdb->get_results($sql);
   return $res;
 }
-function lab_invitations_getByHost($host_id,$params=array()) {
+function lab_invitations_getByGroups($groups_ids,$params=array("sortBy"=>"start_date","order"=>"DESC")) {
   global $wpdb;
-  $sql = "SELECT * FROM `".$wpdb->prefix."lab_invitations` WHERE `host_id`=".$host_id.";";
+  foreach ($groups_ids as $g) {
+    $str .= ' host_group_id='.$g." OR";
+  }
+  $str = substr($str,0, -3); //Enlève le dernier OR 
+  $sql = "SELECT * FROM `".$wpdb->prefix."lab_invitations` WHERE".$str." ORDER BY ".$params['sortBy']." ".$params['order'].";";
+  $res = $wpdb->get_results($sql);
+  return $res;
+}
+function lab_invitations_getByHost($host_id,$params=array("sortBy"=>"start_date","order"=>"DESC")) {
+  global $wpdb;
+  $sql = "SELECT * FROM `".$wpdb->prefix."lab_invitations` WHERE `host_id`=".$host_id." ORDER BY ".$params['sortBy']." ".$params['order'].";";
   $res = $wpdb->get_results($sql);
   return $res;
 }
 function lab_invitations_getPrefGroups($user_id,$params=array()) {
   global $wpdb;
-  $sql = "SELECT * FROM `".$wpdb->prefix."lab_groups`, `".$wpdb->prefix."ab_prefered_groups`
+  $sql = "SELECT * FROM `".$wpdb->prefix."lab_groups`, `".$wpdb->prefix."lab_prefered_groups`
   WHERE `".$wpdb->prefix."lab_groups`.`id`=`".$wpdb->prefix."lab_prefered_groups`.`group_id`
   AND `".$wpdb->prefix."lab_prefered_groups`.`user_id`=".$user_id.";";
 // $sql2 = "SELECT g1.* AS all
