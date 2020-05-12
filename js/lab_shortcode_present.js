@@ -155,7 +155,7 @@ function saveExternaluser() {
     let date      = $("#lab_presence_ext_new_date_open").val();
     let hOpen     = $("#lab_presence_ext_new_hour_open").val();
     let hClose    = $("#lab_presence_ext_new_hour_close").val();
-    let comment   = $("#lab_presence_ext_new_comment").val().replace(regex,"”").replace(/\'/g,"’");
+    let comment   = $("#lab_presence_ext_new_comment").val().replace(/\"/g,"”").replace(/\'/g,"’");
     let siteId    = $("#lab_presence_ext_new_siteId").val();
     var data = {
         'action' : 'lab_presence_save_ext',
@@ -180,14 +180,14 @@ function saveExternaluser() {
 
 function savePresence(idPresence, userId, date, opening, closing, site, comment = "") {
     var data = {
-        'action' :  'lab_presence_save',
-        id :        idPresence,
-        userId :    userId,    
-        dateOpen :  date,
-        hourOpen :  opening,
-        hourClose : closing,
-        siteId :    site,
-        comment :   comment
+        'action' : 'lab_presence_save',
+        id :         idPresence,
+        userId :     userId,    
+        dateOpen :       date,
+        hourOpen : opening,
+        hourClose :   closing,
+        siteId :       site,
+        comment: comment.replace(/\"/g,"”").replace(/\'/g,"’")
     };
     $.post(LAB.ajaxurl, data, function(response) {
         if (response.success) {
