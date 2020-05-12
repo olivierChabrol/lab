@@ -78,7 +78,7 @@ function lab_present_select($param) {
     // get current url with query string.
     $current_url =  home_url( $wp->request ); 
 
-    $str .= "<a href=\"".$current_url."/?date=".date("Y-m-d",$previousWeek)."\"><b>&lt;</b></a> Semaine du  : ".date("d-m-Y",$startDay)." au ".date("d-m-Y",$endDay)." <a href=\"".$current_url."/?date=".date("Y-m-d",$nextWeek)."\"><b>&gt;</b></a>";
+    $str .= "<a href=\"".$current_url."/?date=".date("Y-m-d",$previousWeek)."\"><i class='fas fa-chevron-circle-left'></i></a> Semaine du  : ".date("d-m-Y",$startDay)." au ".date("d-m-Y",$endDay)." <a href=\"".$current_url."/?date=".date("Y-m-d",$nextWeek)."\"><i class='fas fa-chevron-circle-right'></i></a>";
     if (!is_user_logged_in() && $externalUserAllowed) {
         $str .=  "<div id=\"a_external_presency\" class=\"float-right\"><a href=\"#\" title=\"Add your presency\">" . esc_html("Ajouter une présence en tant qu'invité", "lab") . "<i class=\"fas fa-plus-circle fa-3x text-success\"></i></a></div>";
     }
@@ -239,12 +239,14 @@ function lab_present_choice($param) {
         $hourOpen  = $_POST['hour-open'];
         $hourClose = $_POST['hour-close'];
         $site      = $_POST['siteName'];
+        $comment   = $_POST['comment'];
 
         //requete pour envoyer la présence sur la bd
         global $wpdb;
+        $comment = preg_replace("\'", "’", $comment);
         $data = array('user_id' => $userId, 'hour_start' => $date . ' ' . $hourOpen,
-                'hour_end' => $date . ' ' . $hourClose, 'site' => $site);
-        $format = array('%d','%s','%s','%d');
+                'hour_end' => $date . ' ' . $hourClose, 'site' => $site, 'comment' => $comment);
+        $format = array('%d','%s','%s','%d','%s');
         $wpdb->insert('wp_lab_presence', $data, $format);
     }
 
