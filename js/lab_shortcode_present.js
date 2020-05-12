@@ -27,8 +27,6 @@ jQuery(function($){
             let opening    = $(this).parents('tr').find('.first').val();
             let closing    = $(this).parents('tr').find('.last') .val();
             let site       = $(this).parents('tr').find('select').val();
-            console.log("id présence : " + idPresence + ", date : " + date + ", ouverture : "
-             + opening + ", fermeture : " + closing + ", sur le site : " + site);
 
             savePresence(idPresence, userId, date, opening, closing, site);
         }
@@ -64,23 +62,6 @@ jQuery(function($){
             $("#comment").focus();
             return;
         }
-        /*
-        var data = {
-        'action' : 'lab_presence_save',
-        'userId' : $("#userId").val(),
-        'dateOpen' : $("#date-open").val(),
-        'hourOpen' : $("#hour-open").val(),
-        'hourClose' : $("#hour-close").val(),
-        'comment' : $("#comment").val(),
-        'siteId': $("#siteId").val(),
-        };
-
-        $.post(LAB.ajaxurl, data, function(response) {
-        if (response.success) {
-            window.location.reload(false); 
-        }
-        });
-        //*/
         savePresence(null, $("#userId").val(), $("#date-open").val(), $("#hour-open").val(), $("#hour-close").val(), $("#siteId").val(), $("#comment").val());
     });
     $("#lab_presence_edit_dialog").modal("hide");
@@ -88,21 +69,19 @@ jQuery(function($){
         $('#lab_presence_edit_date-open').trigger('focus');
       });
     $("#lab_presence_edit_save").click(function () {
+        regex=/\"/g;
         let userId = $("#lab_presence_edit_userId").val();
         let idPresence = $("#lab_presence_edit_presenceId").val();
         let date = $("#lab_presence_edit_date-open").val();
         let hourStart = $("#lab_presence_edit_hour-open").val();
         let hourEnd = $("#lab_presence_edit_hour-close").val();
-        let comment = $("#lab_presence_edit_comment").val();
+        let comment = $("#lab_presence_edit_comment").val().replace(regex,"”").replace(/\'/g,"’");
         let site = $("#lab_presence_edit_siteId").val();
         savePresence(idPresence, userId, date, hourStart, hourEnd, site, comment);
     });
 
 
     $("#lab_presence_delete_dialog").modal("hide");
-    $("#lab_presence_delete_save").click(function () {
-        console.log("test");
-    });
 
     $("#date-open").click(function() {
         document.getElementById('hour-open').value = "08:00";
@@ -169,13 +148,14 @@ function getEndDate(startDate) {
 /******************************* ShortCode Presence ******************************/
 
 function saveExternaluser() {
+    regex=/\"/g;
     let firstName = $("#lab_presence_ext_new_user_firstname").val();
     let lastName  = $("#lab_presence_ext_new_user_lastname").val();
     let email     = $("#lab_presence_ext_new_user_email").val();
     let date      = $("#lab_presence_ext_new_date_open").val();
     let hOpen     = $("#lab_presence_ext_new_hour_open").val();
     let hClose    = $("#lab_presence_ext_new_hour_close").val();
-    let comment   = $("#lab_presence_ext_new_comment").val();
+    let comment   = $("#lab_presence_ext_new_comment").val().replace(regex,"”").replace(/\'/g,"’");
     let siteId    = $("#lab_presence_ext_new_siteId").val();
     var data = {
         'action' : 'lab_presence_save_ext',
@@ -200,14 +180,14 @@ function saveExternaluser() {
 
 function savePresence(idPresence, userId, date, opening, closing, site, comment = "") {
     var data = {
-        'action' : 'lab_presence_save',
-        id :         idPresence,
-        userId :     userId,    
-        dateOpen :       date,
-        hourOpen : opening,
-        hourClose :   closing,
-        siteId :       site,
-        comment: comment
+        'action' :  'lab_presence_save',
+        id :        idPresence,
+        userId :    userId,    
+        dateOpen :  date,
+        hourOpen :  opening,
+        hourClose : closing,
+        siteId :    site,
+        comment :   comment
     };
     $.post(LAB.ajaxurl, data, function(response) {
         if (response.success) {
@@ -216,7 +196,6 @@ function savePresence(idPresence, userId, date, opening, closing, site, comment 
             $('#siteId').val('');
             $('#comment').val('');
             window.location.reload(false);
-            //alert(response.data);
         }
         else {
             toast_error(response.data);

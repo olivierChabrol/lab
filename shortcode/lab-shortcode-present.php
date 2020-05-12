@@ -239,12 +239,14 @@ function lab_present_choice($param) {
         $hourOpen  = $_POST['hour-open'];
         $hourClose = $_POST['hour-close'];
         $site      = $_POST['siteName'];
+        $comment   = $_POST['comment'];
 
         //requete pour envoyer la présence sur la bd
         global $wpdb;
+        $comment = preg_replace("\'", "’", $comment);
         $data = array('user_id' => $userId, 'hour_start' => $date . ' ' . $hourOpen,
-                'hour_end' => $date . ' ' . $hourClose, 'site' => $site);
-        $format = array('%d','%s','%s','%d');
+                'hour_end' => $date . ' ' . $hourClose, 'site' => $site, 'comment' => $comment);
+        $format = array('%d','%s','%s','%d','%s');
         $wpdb->insert('wp_lab_presence', $data, $format);
     }
 
