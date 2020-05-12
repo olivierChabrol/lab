@@ -38,7 +38,7 @@ function lab_admin_ajax_param_save() {
     
   $ok = lab_admin_param_save($type, $value);
   if ($ok) {
-    wp_send_json_success();
+    wp_send_json_success($ok);
   }
   else
   {

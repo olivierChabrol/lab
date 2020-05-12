@@ -38,8 +38,9 @@ function lab_admin_param_save($paramType, $paramName)
     if (lab_admin_param_exist($paramType, $paramName)) {
         return false;
     } else {
-        $sql = "INSERT INTO `".$wpdb->prefix."lab_params` (`id`, `type_param`, `value`) VALUES (NULL, '".$paramType."', '".$paramName."');";
-        $results = $wpdb->get_results($sql);
+        //$sql = "INSERT INTO `".$wpdb->prefix."lab_params` (`id`, `type_param`, `value`) VALUES (NULL, '".$paramType."', '".$paramName."')";
+        $wpdb->insert($wpdb->prefix.'lab_params', array("type_param"=>$paramType, "value"=>$paramName));
+        //$results = $wpdb->get_results($sql);
         return $wpdb->insert_id;
     }
 }
@@ -1112,8 +1113,6 @@ function create_all_tables() {
     lab_admin_initTable_usermeta();
     lab_admin_createTable_presence();
     lab_invitations_createTables();
-    lab_invitations_createTables();
-    lab_admin_createTable_presence();
 }
 
 function delete_all_tables() {
