@@ -448,7 +448,7 @@ function formAction() {
   });
 }
 function invitation_submit(callback) {
-  document.querySelector("#primary-menu").scrollIntoView({behavior:"smooth"});
+  //document.querySelector("#primary-menu").scrollIntoView({behavior:"smooth"});
   regex=/\"/g;
   jQuery(function($) {
     $("#invitationForm").prop('submited',true);
