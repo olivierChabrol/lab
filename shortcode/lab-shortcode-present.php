@@ -318,7 +318,7 @@ function newUserDiv()
                         <input type="text" class="form-control" id="lab_presence_ext_new_user_firstname" placeholder="First name (mandatory)">
                         </div>
                         <div class="col">
-                        <input type="text" class="form-control" id="lab_presence_ext_new_user_lastname" placeholder="Last name (mandatory)"/>>
+                        <input type="text" class="form-control" id="lab_presence_ext_new_user_lastname" placeholder="Last name (mandatory)"/>
                         </div>
                     </div>
                     <!--
