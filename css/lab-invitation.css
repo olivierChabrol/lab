@@ -236,7 +236,7 @@ div[wrapped=true] h2:hover .fa-arrow-up {
     font-weight:bold;
 }
  
-#pagination-digg .active
+#pagination-digg #active
 {
     background:#2e6ab1;
     color:#FFFFFF;

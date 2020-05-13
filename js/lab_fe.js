@@ -246,6 +246,23 @@ function LABLoadInvitation() {
         $("#lab_invitationComments").attr("wrapped","true");
       }
     });
+    $("#lab_email").change(function(){
+      data = {
+        'action': 'lab_invitations_guestInfo',
+        'email': $(this).val()
+      };
+      $.post(LAB.ajaxurl,data,function(response){
+        if (response.success) {
+          $(this).attr('guest_id',response.data['id']);
+          $("#lab_firstname").val(response.data['first_name']);
+          $("#lab_lastname").val(response.data['last_name']);
+          iti.setNumber(response.data["phone"]);
+          $("#lab_country").countrySelect("selectCountry",response.data['country']);
+        } else {
+          $(this).attr('guest_id','');
+        }
+      });
+    }); 
     //Plug-in country selector : https://github.com/mrmarkfrench/country-select-js
     $("#lab_country").countrySelect({
       defaultCountry: "fr",
@@ -452,25 +469,39 @@ function invitation_submit(callback) {
   regex=/\"/g;
   jQuery(function($) {
     $("#invitationForm").prop('submited',true);
-    fields = { 
+    charges = {
+      'travel_to': $("#lab_cost_to").val()=='' ? null : $("#lab_cost_to").val(),
+      'travel_from': $("#lab_cost_from").val()=='' ? null : $("#lab_cost_from").val(),
+      'hostel': $("#lab_cost_hostel").val()=='' ? null : $("#lab_cost_hostel").val(),
+      'meals': $("#lab_cost_meals").val()=='' ? null : $("#lab_cost_meals").val(),
+      'taxi': $("#lab_cost_taxi").val()=='' ? null : $("#lab_cost_taxi").val(),
+      'other': $("#lab_cost_other").val()=='' ? null : $("#lab_cost_other").val(),
+    }
+    fields = {
       'guest_firstName': $("#lab_firstname").val(),
       'guest_lastName': $("#lab_lastname").val(),
       'guest_email': $("#lab_email").val(),
       'guest_phone': $("#lab_phone").attr('phoneval'),
       'guest_country': $("#lab_country").countrySelect("getSelectedCountryData")['iso2'],
       'host_id': $("#lab_hostname").attr('host_id'),
-      'mission_objective': $("#lab_mission").val()=="other" ? $("#lab_mission_other").val() : $("#lab_mission").val(),
+      'mission_objective': $("#lab_mission").val()=="other" ? $("#lab_mission_other").val().replace(regex,"”").replace(/\'/g,"’") : $("#lab_mission").val(),
       'needs_hostel' : $("#lab_hostel").prop('checked'),
       'travel_mean_from':  $("#lab_transport_from").val()=="other" ? $("#lab_transport_from_other").val() : $("#lab_transport_from").val(),
       'travel_mean_to':  $("#lab_transport_to").val()=="other" ? $("#lab_transport_to_other").val() : $("#lab_transport_to").val(),
       'start_date': $("#lab_arrival").val()+" "+$("#lab_arrival_time").val(),
       'end_date': $("#lab_departure").val()+" "+$("#lab_departure_time").val(),
+      'charges': charges,
+      'research_contract': $("#lab_research_contrat").val().replace(regex,"”").replace(/\'/g,"’")
+    }
+    if ($("#lab_email").attr('guest_id').length) {
+      fields['guest_id'] = $("#lab_email").attr('guest_id');
     }
     if ($("#invitationForm").attr("hostForm")==1) {//La version invitant est affichée 
       fields['host_group_id'] = $("#lab_group_name").val();
       fields['funding_source'] = $("#lab_credit").val()=="other" ? $("#lab_credit_other").val() : $("#lab_credit").val();
       fields['estimated_cost'] = $("#lab_estimated_cost").val();
       fields['maximum_cost'] = $("#lab_maximum_cost").val();
+      fields['search_contract']= $("#lab_research_contrat").val().replace(regex,"”").replace(/\'/g,"’");
     }
     if ($("#invitationForm").attr("newForm")==1) {//On crée une nouvelle invitation
       fields['comment'] = $("#lab_form_comment").val().replace(regex,"”").replace(/\'/g,"’");
@@ -578,6 +609,9 @@ function LABLoadInviteList() {
     }
     lab_update_invitesList();
   });
+  $("#lab_results_number").change(function() {
+    lab_update_invitesList();
+  })
 }
 function lab_updatePrefGroups() {
   jQuery.post(LAB.ajaxurl,
@@ -610,10 +644,12 @@ function lab_update_invitesList() {
           action: 'lab_invitations_adminList_update',
           sortBy: $(".lab_column_name[sel=true]").attr('name'),
           order: $(".lab_column_name[sel=true]").attr('order'),
+          page: $("#paggination-dig #active").val(),
+          value: $("#lab_results_number").val(),
           'group_ids': group_ids
         };
         $.post(LAB.ajaxurl,data, function(response) {
-          $("#lab_invitesListBody").html(response.data);
+          $("#lab_invitesListBody").html(response.data[1]);
           $(".lab_invite_showDetail").click(function(){
             $("#lab_invite_realCost_input").attr('token',$(this).attr('token'));
             $("#lab_invite_details").show();
@@ -648,7 +684,14 @@ function lab_update_invitesList() {
             );
           });
           $(".lab_invite_takeCharge").click(function() {
-            //TODO
+            jQuery.post(LAB.ajaxurl,{
+              action : 'lab_invitations_assume',
+              token : $(this).attr('token')
+              },
+              function (response) {
+                lab_update_invitesList()
+              }
+            );
           });
         });
       break;
@@ -657,20 +700,24 @@ function lab_update_invitesList() {
           action: 'lab_invitations_chiefList_update',
           sortBy: $(".lab_column_name[sel=true]").attr('name'),
           order: $(".lab_column_name[sel=true]").attr('order'),
-          group_id: $("#lab_groupSelect").val()
+          group_id: $("#lab_groupSelect").val(),
+          page: $("#paggination-dig .activ").val(),
+          value: $("#lab_results_number").val()
         };
         $.post(LAB.ajaxurl,data, function(response) {
-          $("#lab_invitesListBody").html(response.data);
+          $("#lab_invitesListBody").html(response.data[1]);
         });
       break;
       case 'host':
         data = {
           action: 'lab_invitations_hostList_update',
           sortBy: $(".lab_column_name[sel=true]").attr('name'),
-          order: $(".lab_column_name[sel=true]").attr('order')
+          order: $(".lab_column_name[sel=true]").attr('order'),
+          page: $("#paggination-dig .activ").val(),
+          value: $("#lab_results_number").val()
         };
         $.post(LAB.ajaxurl,data, function(response) {
-          $("#lab_invitesListBody").html(response.data);
+          $("#lab_invitesListBody").html(response.data[1]);
         });
         break;
     }
