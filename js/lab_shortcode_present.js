@@ -65,7 +65,7 @@ jQuery(function($){
             return;
         }
         
-        if (checkPresenceInputs($("#date-open")) {
+        if (checkPresenceInputs($("#date-open"))) {
             savePresence(null, $("#userId").val(), $("#date-open").val(), $("#hour-open").val(), $("#hour-close").val(), $("#siteId").val(), $("#comment").val());
         }
     });
@@ -82,7 +82,7 @@ jQuery(function($){
         let hourEnd = $("#lab_presence_edit_hour-close").val();
         let comment = $("#lab_presence_edit_comment").val().replace(regex,"”").replace(/\'/g,"’");
         let site = $("#lab_presence_edit_siteId").val();
-        if (checkPresenceInputs($("#lab_presence_edit_date-open")) {
+        if (checkPresenceInputs($("#lab_presence_edit_date-open"))) {
             savePresence(idPresence, userId, date, hourStart, hourEnd, site, comment);
         }
     });

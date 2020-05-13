@@ -28,18 +28,22 @@ function lab_admin_username_get($userId) {
  * PARAM
  *******************************************************************************************************/
 
-function lab_admin_param_save($paramType, $paramName)
+function lab_admin_param_save($paramType, $paramName, $color = null)
 {
     global $wpdb;
     if ($type == -1) {
       $type = 0;
     }
-    return !lab_admin_param_exist($paramType, $paramName);
+    if (!isset($color) || empty($color))
+    {
+        $color = null;
+    }
+    //return !lab_admin_param_exist($paramType, $paramName);
     if (lab_admin_param_exist($paramType, $paramName)) {
         return false;
     } else {
         //$sql = "INSERT INTO `".$wpdb->prefix."lab_params` (`id`, `type_param`, `value`) VALUES (NULL, '".$paramType."', '".$paramName."')";
-        $wpdb->insert($wpdb->prefix.'lab_params', array("type_param"=>$paramType, "value"=>$paramName));
+        $wpdb->insert($wpdb->prefix.'lab_params', array("type_param"=>$paramType, "value"=>$paramName, "color"=>$color));
         //$results = $wpdb->get_results($sql);
         return $wpdb->insert_id;
     }

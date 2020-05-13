@@ -348,7 +348,7 @@ function newUserDiv()
                             <textarea id="lab_presence_ext_new_comment" rows="4" cols="50" class="form-control rounded-0"></textarea>
                         </div>
                     </div>
-                </div>
+                </div>css("background-color",jQuery("#lab_profile_card").attr("bg-color"));
                 <div class="modal-footer">
                     <button type="button" class="close" data-dismiss="modal">'.esc_html('Annuler','lab').'</button>
                     <button type="button" class="close" data-dismiss="modal" id="lab_presence_ext_new_save" keyid="">'.esc_html('Save','lab').'</button>
