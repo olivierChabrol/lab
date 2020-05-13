@@ -90,6 +90,11 @@ jQuery(function($){
 
     $("#lab_presence_delete_dialog").modal("hide");
 
+    $("#lab_presence_ext_new_date_open").click(function() {
+        $('#lab_presence_ext_new_hour_open').val("08:00");
+        $('#lab_presence_ext_new_hour_close').val(getEndDate($('#lab_presence_ext_new_hour_open').val()));
+    });
+
     $("#date-open").click(function() {
         $('#hour-open').val("08:00");
         $('#hour-close').val(getEndDate($('#hour-open').val()));
