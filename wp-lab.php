@@ -75,9 +75,6 @@ if (lab_locale == 'fr_FR') {
 
 function bootstrap_script() {
   wp_enqueue_style('bootstrap4', 'https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css');
-  //wp_enqueue_script( 'boot1','https://code.jquery.com/jquery-3.3.1.slim.min.js', array( 'jquery' ),'',true );
-  //wp_enqueue_script( 'boot2','https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js', array( 'jquery' ),'',true );
-  //wp_enqueue_script( 'boot3','https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js', array( 'jquery' ),'',true );
 }
 add_action( 'wp_enqueue_scripts', 'replace_core_jquery_version' );
 
@@ -87,7 +84,7 @@ function replace_core_jquery_version() {
   wp_enqueue_script('jquery-core', plugins_url('js/jquery-3.5.1.min.js',__FILE__), array(), version_id(), false);
   wp_deregister_script( 'jquery-migrate' );
   wp_register_script( 'jquery-migrate', plugins_url("js/jquery-migrate-3.3.0.min.js",__FILE__), array(), '3.3.0',false );
-}
+ }
 
 /**
  * Load plugin textdomain.
@@ -249,6 +246,14 @@ function wp_lab_fe_enqueues()
   wp_enqueue_script('SpectrumJS', plugins_url('js/spectrum.js',__FILE__), array('jquery-3.5.1-js','wp-i18n'), '1.8.0', true);
   wp_enqueue_style('SpectrumCSS',plugins_url('css/spectrum.css',__FILE__));
   
+  //QUEUE FOR BOOTSTRAP CALENDAR FORM
+  wp_register_script('moment', plugins_url("js/moment.min.js", __FILE__), array('jquery'),'3.25.2', false);
+  wp_enqueue_style('datetimepicker', plugins_url('css/datepicker.min.css',__FILE__), '4.17.47', false);
+  wp_register_script('datepicker', plugins_url("js/bootstrap-datepicker.min.js", __FILE__), array('jquery'), '4.17.47', false);
+  wp_register_script('datetimepicker', plugins_url("js/bootstrap-datetimepicker.min.js", __FILE__), array('jquery'), '4.17.47', false);
+  wp_register_script('fr-fr', plugins_url("js/fr-fr.js", __FILE__), array('jquery'), '1.0.0', false);
+
+
   localize_script('lab-fe');
   wp_set_script_translations( 'lab-fe', 'lab', dirname(__FILE__).'/lang' );
   wp_enqueue_script('fontAwesome',"https://kit.fontawesome.com/341f99cb81.js",array(),"3.2",true);

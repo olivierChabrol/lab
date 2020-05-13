@@ -60,22 +60,7 @@ function lab_present_select($param) {
             $users[$user->first_name." ".$user->last_name][date('d', $user->hour_start)][] = $user;
         }
     }
-    /*
-    var_dump($users);
-    if (true) {
-        $str .= "<h3>users</h3>";
-        foreach($users as $k=>$v) {
-            $str .= $k."&nbsp;".sizeof($v)."<br>";
-            $i = 0;
-            foreach($v as $d=>$a) {
-                foreach($a as $u) {
-                    $str .= "&nbsp;&nbsp;&nbsp; [".$i."]".$u->first_name." ".$u->last_name." *".$u->comment."* ".date("d-m-Y",$u->hour_start)."<br>";
-                    $i++;
-                }
-            }
-        }
-    }
-    //*/
+
     global $wp;
     // get current url with query string.
     $current_url =  home_url( $wp->request ); 
@@ -217,9 +202,24 @@ function lab_present_choice($param) {
         <h3>".esc_html__("Je serai présent·e", "lab")."</h3>
             <div class=\"input-group mb-3\">
             <input id='userId' name='userId' type='hidden' value='" . get_current_user_id() . "' />
-
+        
             <label for='date-open'>".esc_html__("Le", "lab")."</label>
-            <input type='date' name='date-open' id='date-open' />
+            <input type='date' name='date-open' id='date-open' class='form-control'/>
+            
+            <!-- <form id='meetingForm' class='form-horizontal'>
+            <div class='form-group'>
+                <label for'date-open' class='control-label'>".esc_html__("Le", "lab")."</label>
+                <div class='dateContainer'>
+                    <div class='input-group date' id='datetimePicker'>
+                        <input type='text' data-provide='datepicker' id='date-open' class='form-control' name='date-open' placeholder='MM/DD/YYYY' />
+                        <span class='input-group-addon'>
+                            <i class='fas fa-calendar-alt'></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            </form> -->
+
             <label for='hour-open'></label>
             <input type='time' name='hour-open' id='hour-open' />
             <label for='hour-close'>".esc_html__("Jusqu'à", "lab")."</label>
