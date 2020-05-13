@@ -91,7 +91,8 @@ jQuery(function($){
     $("#lab_presence_delete_dialog").modal("hide");
 
     $("#date-open").click(function() {
-        document.getElementById('hour-open').value = "08:00";
+        $('#hour-open').val("08:00");
+        $('#hour-close').val(getEndDate($('#hour-open').val()));
     });
 
     $('#hour-open').focusout(function () {
