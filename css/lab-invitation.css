@@ -54,6 +54,10 @@ div[wrapped=true] h2:hover .fa-arrow-up {
   font-size: 0.9em;
   font-style: italic;
 }
+.lab_form_required_star {
+  color: red;
+  font-weight: 600;
+}
 /*Bulle de discussion*/
 
 .lab_comment_box {

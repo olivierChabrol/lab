@@ -82,23 +82,25 @@ function lab_admin_createTable_presence() {
 function lab_admin_initTable_param() {
     global $wpdb;
     $wpdb->query("DELETE FROM ".$wpdb->prefix."lab_params WHERE ID < 7");
-    $sql = "INSERT INTO `".$wpdb->prefix."lab_params` (`id`, `type_param`, `value`) VALUES
-            (1, 1, 'PARAM'),
-            (2, 1, 'GROUP TYPE'),
-            (3, 1, 'KEY TYPE'),
-            (4, 1, 'SITE'),
-            (5, 1, 'USER FUNCTION'),
-            (6, 1, 'MISSION'),
-            (7, 1, 'FUNDING'),
-            (8, 2, 'Equipe'),
-            (9, 2, 'Groupe'),
-            (10, 3, 'Clé'),
-            (11, 3, 'Badge'),
-            (12, 4, 'Luminy'),
-            (13, 4, 'I2M'),
-            (14, 6, 'Séminaire'),
-            (15, 7, 'CNRS'),
-            (16, 7, 'AMU');";
+    $sql = "INSERT INTO `".$wpdb->prefix."lab_params` (`id`, `type_param`, `value`, `color`) VALUES
+            (1, 1, 'PARAM', NULL),
+            (2, 1, 'GROUP TYPE', NULL),
+            (3, 1, 'KEY TYPE', NULL),
+            (4, 1, 'SITE', NULL),
+            (5, 1, 'USER FUNCTION', NULL),
+            (6, 1, 'MISSION', NULL),
+            (7, 1, 'FUNDING', NULL),
+            (NULL, 2, 'Equipe', NULL),
+            (NULL, 2, 'Groupe', NULL),
+            (NULL, 3, 'Clé', NULL),
+            (NULL, 3, 'Badge', NULL),
+            (NULL, 4, 'Luminy', '067BC2'),
+            (NULL, 4, 'Saint-Charles', 'F75C03'),
+            (NULL, 4, 'CMI', '04A777'),
+            (NULL, 6, 'Séminaire', NULL),
+            (NULL, 7, 'CNRS', NULL),
+            (NULL, 7, 'AMU', NULL),
+            (NULL, 7, 'ECM', NULL);";
     $wpdb->get_results($sql);
 }
 
