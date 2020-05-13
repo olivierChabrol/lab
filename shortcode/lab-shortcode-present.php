@@ -29,6 +29,8 @@ function lab_present_select($param) {
     if (isset($param['allow-external']) && $param['allow-external'] == "true") {
         $externalUserAllowed = true;
     }
+    $str = "";
+    //$str.= "\$param['allow-external'] : ".$param['allow-external']." \ $externalUserAllowed : ". $externalUserAllowed."<br>";
     $startDay = getStartDate();
     
     //$dt_startDate->setTime(0, 0, 0);
@@ -311,12 +313,24 @@ function newUserDiv()
                 </div>
                 <div class="modal-body">
                     <h4 class="modal-title">'.esc_html("User information", "lab").'</h4>
+                    <div class="form-row">
+                        <div class="col">
+                        <input type="text" class="form-control" id="lab_presence_ext_new_user_firstname" placeholder="First name (mandatory)">
+                        </div>
+                        <div class="col">
+                        <input type="text" class="form-control" id="lab_presence_ext_new_user_lastname" placeholder="Last name (mandatory)"/>>
+                        </div>
+                    </div>
+                    <!--
                     <label for="date-lab_presence_ext_new_user_firstname">'.esc_html("Firstname", "lab").'</label>
                     <input id="lab_presence_ext_new_user_firstname" type="text"  placeholder="First name (mandatory)"/><br>
                     <label for="date-lab_presence_ext_new_user_lastname">'.esc_html("Lastname", "lab").'</label>
                     <input id="lab_presence_ext_new_user_lastname" type="text" placeholder="Last name (mandatory)"/><br>
-                    <label for="date-lab_presence_ext_new_user_email">'.esc_html("E-mail", "lab").'</label>
-                    <input type="email" class="form-control" id="lab_presence_ext_new_user_email" aria-describedby="emailHelp" placeholder="Enter email (mandatory)">
+                    -->
+                    <div class="form-row">
+                        <label for="date-lab_presence_ext_new_user_email">'.esc_html("E-mail", "lab").'</label>
+                        <input type="email" class="form-control" id="lab_presence_ext_new_user_email" aria-describedby="emailHelp" placeholder="Enter email (mandatory)">
+                    </div>
                     <small id="emailHelp" class="form-text text-muted">We\'ll never share your email with anyone else.</small>
                     <div class="h-divider"></div>
                     <label for="date-open">'.esc_html("From", "lab").'</label>

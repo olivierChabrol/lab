@@ -9,15 +9,15 @@ jQuery(function($){
         let editable = $(this).parents('tr').find('.edit');
 
         if( $(this).hasClass("fa-pen") ){
-            let trId = $(this).attr("id");
-            let id   = $(this).attr("editId")+"_"+$(this).attr("userId");
-            let date = $("#date_"+id).text();
-            let hOpen = $("#hOpen_"+id).text();
-            let hEnd_ = $("#hEnd_"+id).text();
-            let site = $("#site_"+id).attr("siteId");
+            let trId    = $(this).attr("id");
+            let id      = $(this).attr("editId")+"_"+$(this).attr("userId");
+            let date    = $("#date_"+id).text();
+            let hOpen   = $("#hOpen_"+id).text();
+            let hEnd    = $("#hEnd_"+id).text();
+            let site    = $("#site_"+id).attr("siteId");
             let comment =$(this).parents('tr').attr("title");
-            console.log(site);
-            editPresence($(this).attr("editId"), $(this).attr("userId"), date, hOpen, hEnd_, site, comment);
+
+            editPresence($(this).attr("editId"), $(this).attr("userId"), date, hOpen, hEnd, site, comment);
         } 
         else 
         {
@@ -28,7 +28,9 @@ jQuery(function($){
             let closing    = $(this).parents('tr').find('.last') .val();
             let site       = $(this).parents('tr').find('select').val();
 
-            savePresence(idPresence, userId, date, opening, closing, site);
+            if (checkPresenceInputs($(this).parents('tr').find('.date'))) {
+                savePresence(idPresence, userId, date, opening, closing, site);
+            }
         }
         $(this).toggleClass("fa-pen fa-check");
     });
@@ -62,7 +64,10 @@ jQuery(function($){
             $("#comment").focus();
             return;
         }
-        savePresence(null, $("#userId").val(), $("#date-open").val(), $("#hour-open").val(), $("#hour-close").val(), $("#siteId").val(), $("#comment").val());
+        
+        if (checkPresenceInputs($("#date-open")) {
+            savePresence(null, $("#userId").val(), $("#date-open").val(), $("#hour-open").val(), $("#hour-close").val(), $("#siteId").val(), $("#comment").val());
+        }
     });
     $("#lab_presence_edit_dialog").modal("hide");
     $('#lab_presence_edit_dialog').on('shown.bs.modal', function () {
@@ -77,7 +82,9 @@ jQuery(function($){
         let hourEnd = $("#lab_presence_edit_hour-close").val();
         let comment = $("#lab_presence_edit_comment").val().replace(regex,"”").replace(/\'/g,"’");
         let site = $("#lab_presence_edit_siteId").val();
-        savePresence(idPresence, userId, date, hourStart, hourEnd, site, comment);
+        if (checkPresenceInputs($("#lab_presence_edit_date-open")) {
+            savePresence(idPresence, userId, date, hourStart, hourEnd, site, comment);
+        }
     });
 
 
@@ -129,6 +136,11 @@ jQuery(function($){
         });
     });
 });
+
+function checkPresenceInputs(dateElm) {
+    
+    return true;
+}
 
 function getEndDate(startDate) {
     let timeElements = startDate.split(":");

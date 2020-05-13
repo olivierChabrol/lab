@@ -65,39 +65,6 @@ jQuery(function($){
 
 });
 
-
-jQuery("#lab_presence_button_save").click(function() {
-  var data = {
-    'action' : 'lab_presence_save',
-    'userId' : $("#userId").val(),
-    'dateOpen' : $("#date-open").val(),
-    'hourOpen' : $("#hour-open").val(),
-    'hourClose' : $("#hour-close").val(),
-    'siteId': $("#siteId").val(),
-  };
-  //callAjax(data, "TABLE presence successfuly created", null, "Failed to create table presence", null);
-
-  jQuery.post(LAB.ajaxurl, data, function(response) {
-    if (response.success) {
-      //$("#invitationForm")[0].outerHTML=response.data;
-      window.location.href = "/presence/";
-    }
-  });
-});
-
-function deletePresence(presenceId) {
-  var data = {
-    'action' : 'lab_presence_delete',
-    'id' : presenceId,
-  }
-  jQuery.post(LAB.ajaxurl, data, function(response) {
-    if (response.success) {
-      //$("#invitationForm")[0].outerHTML=response.data;
-      window.location.href = "/presence/";
-    }
-  });
-}
-
 /******************************* ShortCode Profile *******************************/
 function LABloadProfile() {
   socialURLS = {
