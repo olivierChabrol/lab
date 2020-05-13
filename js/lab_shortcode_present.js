@@ -29,7 +29,7 @@ jQuery(function($){
             let site       = $(this).parents('tr').find('select').val();
 
             if (checkPresenceInputs($(this).parents('tr').find('.date'))) {
-                //savePresence(idPresence, userId, date, opening, closing, site);
+                savePresence(idPresence, userId, date, opening, closing, site);
             }
         }
         $(this).toggleClass("fa-pen fa-check");
@@ -64,9 +64,36 @@ jQuery(function($){
             $("#comment").focus();
             return;
         }
-        
-        if (checkPresenceInputs($("#date-open"))) {
-            savePresence(null, $("#userId").val(), $("#date-open").val(), $("#hour-open").val(), $("#hour-close").val(), $("#siteId").val(), $("#comment").val());
+         /*
+        $('#datetimePicker').datetimepicker();
+        $('#meetingForm').bootstrapValidator({
+            feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+            },
+            fields: {
+                meeting: {
+                    validators: {
+                        date: {
+                            format: 'MM/DD/YYYY h:m A',
+                            message: 'The value is not a valid date'
+                        }
+                    }
+                }
+            }
+        });
+        $('#datetimePicker').on('dp.change dp.show', function(e) {
+            $('#meetingForm').bootstrapValidator('revalidateField', 'meeting');
+        });*/
+
+        if (checkPresenceInputs('date-open')) {
+            //console.log("je sauvegarde");
+            $('#date-open').addClass('is-valid');
+        } else {
+            //console.log("je sauvegarde pas");
+            $('#date-open').addClass('is-invalid');
+            $('#date-open').after('<div class="invalid-feedback">La date n\'est pas correcte</div>');
         }
 
     });
@@ -83,9 +110,6 @@ jQuery(function($){
         let hourEnd = $("#lab_presence_edit_hour-close").val();
         let comment = $("#lab_presence_edit_comment").val().replace(regex,"”").replace(/\'/g,"’");
         let site = $("#lab_presence_edit_siteId").val();
-        if (checkPresenceInputs($("#lab_presence_edit_date-open"))) {
-            savePresence(idPresence, userId, date, hourStart, hourEnd, site, comment);
-        }
     });
 
 

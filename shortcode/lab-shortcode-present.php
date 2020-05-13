@@ -219,7 +219,7 @@ function lab_present_choice($param) {
                 </div>
             </div>
             </form> -->
-
+            
             <label for='hour-open'></label>
             <input type='time' name='hour-open' id='hour-open' />
             <label for='hour-close'>".esc_html__("Jusqu'à", "lab")."</label>
