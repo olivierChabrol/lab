@@ -979,14 +979,17 @@ function lab_admin_presence_save_ajax()
   $hourClose = $_POST['hourClose'];
   $siteId    = $_POST['siteId'];
   $comment   = $_POST['comment'];
-  if (!isset($external) || $external == null || empty($external))
+  $external   = $_POST['external'];
+
+  if (!isset($external) || $external == null || $external== "")
   {
     $external = null;
   }
-
+ 
   if (!isset($userId)) {
     $userId= $currentUserId;
   }
+ 
 
   if (!current_user_can('administrator'))
   {
