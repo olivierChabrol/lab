@@ -33,10 +33,11 @@ function lab_admin_param_create_table() {
 }
 
 function lab_admin_ajax_param_save() {
-  $type   = $_POST['type'];
+  $type  = $_POST['type'];
   $value = $_POST['value'];
+  $color = $_POST['color'];
     
-  $ok = lab_admin_param_save($type, $value);
+  $ok = lab_admin_param_save($type, $value, $color);
   if ($ok) {
     wp_send_json_success($ok);
   }
@@ -933,6 +934,8 @@ function lab_admin_presence_save_ext_ajax()
   $hourClose = $_POST['hourClose'];
   $siteId    = $_POST['siteId'];
   $comment   = $_POST['comment'];
+  $external  = $_POST['external'];
+
 
   $str = $_POST;
 
@@ -976,6 +979,10 @@ function lab_admin_presence_save_ajax()
   $hourClose = $_POST['hourClose'];
   $siteId    = $_POST['siteId'];
   $comment   = $_POST['comment'];
+  if (!isset($external) || $external == null || empty($external))
+  {
+    $external = null;
+  }
 
   if (!isset($userId)) {
     $userId= $currentUserId;
@@ -1068,7 +1075,7 @@ function lab_admin_presence_save_ajax()
       }
     }
   }
-  $res = lab_admin_presence_save($presenceId, $userId, $dateOpen." ".$hourOpen, $dateOpen." ".$hourClose, $siteId, $comment);
+  $res = lab_admin_presence_save($presenceId, $userId, $dateOpen." ".$hourOpen, $dateOpen." ".$hourClose, $siteId, $comment, $external);
   //wp_send_json_error($res);
   if ($res["success"]) {
     wp_send_json_success();

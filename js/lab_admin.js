@@ -537,6 +537,18 @@ jQuery(function($){
   $("#lab_invite_create_tables").click(function() {
     callAjax({"action":"invite_createTables"},__("Tables invitations et guests créées avec succès",'lab'),null,__("Erreur lors de la création des tables 'invitations' et 'guests'",'lab'),null);
   });
+  $("#lab_admin_param_colorpicker").spectrum({
+    color: $("#lab_profile_card").attr('bg-color'),
+    move: function(tinycolor) {
+      //jQuery("#lab_profile_card").css('background-color',tinycolor);
+    },
+    change: function(tinycolor) {
+      jQuery("#wp_lab_param_color").val(tinycolor.toHexString());
+    },
+    hide: function() {
+      jQuery("#wp_lab_param_color").val(tinycolor.toHexString());
+    }
+  });
 });
 
 /*************************************************************************************************************************************************

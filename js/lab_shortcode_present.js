@@ -65,37 +65,8 @@ jQuery(function($){
             return;
         }
         
-        /*
-        $('#datetimePicker').datetimepicker();
-        $('#meetingForm').bootstrapValidator({
-            feedbackIcons: {
-                valid: 'glyphicon glyphicon-ok',
-                invalid: 'glyphicon glyphicon-remove',
-                validating: 'glyphicon glyphicon-refresh'
-            },
-            fields: {
-                meeting: {
-                    validators: {
-                        date: {
-                            format: 'MM/DD/YYYY h:m A',
-                            message: 'The value is not a valid date'
-                        }
-                    }
-                }
-            }
-        });
-
-        $('#datetimePicker').on('dp.change dp.show', function(e) {
-            $('#meetingForm').bootstrapValidator('revalidateField', 'meeting');
-        });*/
-
-        if (checkPresenceInputs('date-open')) {
-            //console.log("je sauvegarde");
-            $('#date-open').addClass('is-valid');
-        } else {
-            //console.log("je sauvegarde pas");
-            $('#date-open').addClass('is-invalid');
-            $('#date-open').after('<div class="invalid-feedback">La date n\'est pas correcte</div>');
+        if (checkPresenceInputs($("#date-open"))) {
+            savePresence(null, $("#userId").val(), $("#date-open").val(), $("#hour-open").val(), $("#hour-close").val(), $("#siteId").val(), $("#comment").val());
         }
 
     });
@@ -112,16 +83,22 @@ jQuery(function($){
         let hourEnd = $("#lab_presence_edit_hour-close").val();
         let comment = $("#lab_presence_edit_comment").val().replace(regex,"”").replace(/\'/g,"’");
         let site = $("#lab_presence_edit_siteId").val();
-        if (checkPresenceInputs(date)) {
-            //savePresence(idPresence, userId, date, hourStart, hourEnd, site, comment);
+        if (checkPresenceInputs($("#lab_presence_edit_date-open"))) {
+            savePresence(idPresence, userId, date, hourStart, hourEnd, site, comment);
         }
     });
 
 
     $("#lab_presence_delete_dialog").modal("hide");
 
+    $("#lab_presence_ext_new_date_open").click(function() {
+        $('#lab_presence_ext_new_hour_open').val("08:00");
+        $('#lab_presence_ext_new_hour_close').val(getEndDate($('#lab_presence_ext_new_hour_open').val()));
+    });
+
     $("#date-open").click(function() {
-        document.getElementById('hour-open').value = "08:00";
+        $('#hour-open').val("08:00");
+        $('#hour-close').val(getEndDate($('#hour-open').val()));
     });
 
     $('#hour-open').focusout(function () {
