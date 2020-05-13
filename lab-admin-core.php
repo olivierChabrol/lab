@@ -1202,13 +1202,31 @@ function checkAddPresency($userId, $dateOpen, $dateEnd)
 
 }
 
+/**
+ * Save or update presence, WARNING, if $external == null, no update $external field in DB
+ *
+ * @param [type] $id
+ * @param [type] $userId
+ * @param [type] $dateOpen
+ * @param [type] $dateEnd
+ * @param [type] $siteId
+ * @param [type] $comment
+ * @param integer $external
+ * @return array("success"=>true, "data"=>null);
+ */
 function lab_admin_presence_save($id, $userId, $dateOpen, $dateEnd, $siteId, $comment, $external=0) {
     global $wpdb;
     if ($id == null) {
         $wpdb->insert($wpdb->prefix."lab_presence", array("user_id"=>$userId, "hour_start"=>$dateOpen, "hour_end"=>$dateEnd, "site"=>$siteId, "comment"=>$comment, "external"=>$external));
     }
     else {
-        $wpdb->update($wpdb->prefix."lab_presence", array("hour_start"=>$dateOpen, "hour_end"=>$dateEnd, "site"=>$siteId, "comment"=>$comment, "external"=>$external), array("id"=>$id));
+        if ($external == null)
+        {
+            $wpdb->update($wpdb->prefix."lab_presence", array("hour_start"=>$dateOpen, "hour_end"=>$dateEnd, "site"=>$siteId, "comment"=>$comment), array("id"=>$id));
+        }
+        else{
+            $wpdb->update($wpdb->prefix."lab_presence", array("hour_start"=>$dateOpen, "hour_end"=>$dateEnd, "site"=>$siteId, "comment"=>$comment, "external"=>$external), array("id"=>$id));
+        }
         
     }
     return array("success"=>true, "data"=>null);
