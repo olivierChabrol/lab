@@ -749,15 +749,21 @@ function lab_invitations_new() {
   date_default_timezone_set("Europe/Paris");
   $timeStamp=date("Y-m-d H:i:s",time());
   $invite = array (
-    'guest_id'=>lab_invitations_createGuest($guest),
     'token'=>$token,
     'needs_hostel'=>$fields['needs_hostel']=='true' ? 1 : 0,
     'creation_time' => $timeStamp,
     'status' => 1
   );
-  foreach (['host_group_id','host_id', 'estimated_cost', 'mission_objective','start_date','end_date','travel_mean_to','travel_mean_from','funding_source'] as $champ) {
+  if (isset($fields['guest_id'])) {
+    lab_invitations_editGuest($fields['guest_id'],$guest);
+    $invite['guest_id']=$fields['guest_id'];
+  } else {
+    $invite['guest_id']=lab_invitations_createGuest($guest);
+  }
+  foreach (['host_group_id','host_id', 'estimated_cost', 'mission_objective','start_date','end_date','travel_mean_to','travel_mean_from','funding_source','research_contract'] as $champ) {
     $invite[$champ]=$fields[$champ];
   }
+  $invite["charges"]=json_encode($fields["charges"]);
   $invite_id = lab_invitations_createInvite($invite);
   if (strlen($fields['comment'])>0) {
     lab_invitations_addComment(array(
@@ -791,9 +797,10 @@ function lab_invitations_edit() {
       'needs_hostel'=>$fields['needs_hostel']=='true' ? 1 : 0,
       'completion_time' => $timeStamp
     );
-    foreach (['host_group_id', 'estimated_cost', 'maximum_cost', 'host_id','mission_objective','start_date','end_date','travel_mean_to','travel_mean_from','funding_source'] as $champ) {
+    foreach (['host_group_id', 'estimated_cost', 'maximum_cost', 'host_id','mission_objective','start_date','end_date','travel_mean_to','travel_mean_from','funding_source','research_contract'] as $champ) {
       $invite[$champ]=$fields[$champ];
     }
+    $invite["charges"]=json_encode($fields["charges"]);
     lab_invitations_editInvitation($fields['token'],$invite);
     $html = "<p>".esc_html__("Votre invitation a bien été modifiée",'lab')."<br>à $timeStamp</p>";
     wp_send_json_success($html);
@@ -831,6 +838,21 @@ function lab_invitations_validate() {
   )); 
   lab_invitations_editInvitation($token,array('status'=>20));
   wp_send_json_success('La demande a été transmise à l\'administration');
+}
+// Invitation prise en charge
+function lab_invitations_assume() {
+  $user = lab_admin_username_get(get_current_user_id());
+  $token = $_POST['token'];
+  date_default_timezone_set("Europe/Paris");
+  $timeStamp=date("Y-m-d H:i:s",time());
+  lab_invitations_addComment(array(
+    'content'=> "¤Invitation prise en charge par ".$user['first_name']." ".$user['last_name'],
+    'timestamp'=> $timeStamp,
+    'author'=>'System',
+    'invite_id'=>lab_invitations_getByToken($token)->id
+  )); 
+  lab_invitations_editInvitation($token,array('status'=>30));
+  wp_send_json_success();
 }
 
 function lab_invitation_newComment() {
@@ -870,36 +892,65 @@ function lab_prefGroups_update() {
 }
 function lab_invitations_chiefList_update() {
   $sortBy = isset($_POST['sortBy']) ? $_POST['sortBy'] : 'start_date' ;
+  $value = isset($_POST['value']) ? $_POST['value'] : '5' ;
+  $page = isset($_POST['page']) ? $_POST['page'] : '1' ;
+  $status = isset($_POST['status']) ? $_POST['status'] : [1,10,20,30] ;
+  $year = isset($_POST['year']) && strlen($_POST['year'])==4 ? $_POST['year'] : 'all' ;
+  $statusList = '(';
+  foreach ($status as $elem) {
+    $statusList .= $elem.',';
+  }
+  $statusList = substr($statusList, 0, -1).')';
   if ( ! in_array($sortBy, array("start_date","host_group_id","guest_id","host_id","mission_objective","end_date","estimated_cost","status","maximum_cost")) ) {
     //On prévient les injections SQL en empêchant tout argument qui n'est pas un nom de colonne
     $sortBy = 'start_date';
   }
   $order = (isset($_POST['order']) && $_POST['order'] == 'asc') ? 'ASC' : 'DESC';
-  $list = lab_invitations_getByGroup($_POST['group_id'],array('order'=>$order, 'sortBy'=>$sortBy));
-  wp_send_json_success(lab_invitations_interface_fromList($list,'chief'));
+  $list = lab_invitations_getByGroup($_POST['group_id'],array('order'=>$order, 'sortBy'=>$sortBy, 'page'=>$page, 'value'=>$value, 'status'=>$statusList, 'year'=>$year));
+  wp_send_json_success([$list[0],lab_invitations_interface_fromList($list[1],'chief')]);
 }
 
 function lab_invitations_adminList_update() {
   $sortBy = isset($_POST['sortBy']) ? $_POST['sortBy'] : 'start_date' ;
+  $value = isset($_POST['value']) ? $_POST['value'] : '5' ;
+  $page = isset($_POST['page']) ? $_POST['page'] : '1' ;
+  $status = isset($_POST['status']) ? $_POST['status'] : [1,10,20,30] ;
+  $year = isset($_POST['year']) && strlen($_POST['year'])==4 ? $_POST['year'] : 'all' ;
+  $statusList = '(';
+  foreach ($status as $elem) {
+    $statusList .= $elem.',';
+  }
+  $statusList = substr($statusList, 0, -1).')';
   if ( ! in_array($sortBy, array("start_date","host_group_id","guest_id","host_id","mission_objective","end_date","estimated_cost","status","maximum_cost")) ) {
     //On prévient les injections SQL en empêchant tout argument qui n'est pas un nom de colonne
     $sortBy = 'start_date';
   }
   $order = (isset($_POST['order']) && $_POST['order'] == 'asc') ? 'ASC' : 'DESC';
   if (count($_POST['group_ids'])>0) {
-    wp_send_json_success(lab_invitations_interface_fromList(lab_invitations_getByGroups($_POST['group_ids'],array('order'=>$order, 'sortBy'=>$sortBy)),'admin'));
+    $list = lab_invitations_getByGroups($_POST['group_ids'],array('order'=>$order, 'sortBy'=>$sortBy,'page'=>$page,'value'=>$value, 'status'=>$statusList, 'year'=>$year));
+    wp_send_json_success([$list[0],lab_invitations_interface_fromList($list[1],'admin')]);
   } else {
-    wp_send_json_error("<tr><td colspan=42>".esc_html__("Aucune invitation",'lab')."</td></tr>");
+    wp_send_json_error([0,"<tr><td colspan=42>".esc_html__("Aucune invitation",'lab')."</td></tr>"]);
   }
 }
 function lab_invitations_hostList_update() {
   $sortBy = isset($_POST['sortBy']) ? $_POST['sortBy'] : 'start_date' ;
+  $value = isset($_POST['value']) ? $_POST['value'] : '5' ;
+  $page = isset($_POST['page']) ? $_POST['page'] : '1' ;
+  $status = isset($_POST['status']) ? $_POST['status'] : [1,10,20,30] ;
+  $year = isset($_POST['year']) && strlen($_POST['year'])==4 ? $_POST['year'] : 'all' ;
+  $statusList = '(';
+  foreach ($status as $elem) {
+    $statusList .= $elem.',';
+  }
+  $statusList = substr($statusList, 0, -1).')';
   if ( ! in_array($sortBy, array("start_date","host_group_id","guest_id","host_id","mission_objective","end_date","estimated_cost","status","maximum_cost")) ) {
     //On prévient les injections SQL en empêchant tout argument qui n'est pas un nom de colonne
     $sortBy = 'start_date';
   }
   $order = (isset($_POST['order']) && $_POST['order'] == 'asc') ? 'ASC' : 'DESC';
-  wp_send_json_success(lab_invitations_interface_fromList(lab_invitations_getByHost(get_current_user_id(),array('order'=>$order, 'sortBy'=>$sortBy)),"host"));
+  $list = lab_invitations_getByHost(get_current_user_id(),array('order'=>$order, 'sortBy'=>$sortBy, 'page'=>$page, 'value'=>$value, 'status'=>$statusList, 'year'=>$year));
+  wp_send_json_success([$list[0],lab_invitations_interface_fromList($list[1],"host")]);
 }
 function lab_invitations_summary() {
   $token = $_POST['token'];
@@ -925,7 +976,17 @@ function lab_invitations_add_realCost() {
   lab_invitations_editInvitation($token,array('real_cost'=>$param));
   wp_send_json_success();
 }
-
+function lab_invitations_guestInfo() {
+  $guest = lab_invitations_guest_email_exist($_POST['email']);
+  if (!$guest) {
+    wp_send_json_error(); 
+  } else {
+    wp_send_json_success($guest);
+  }
+}
+function lab_invitations_pagination_Req() {
+  wp_send_json_success(lab_invitations_pagination($_POST['pages'],$_POST['currentPage']));
+}
 /**************************************************************************************************************
  * PRESENCE
  **************************************************************************************************************/
@@ -955,6 +1016,8 @@ function lab_admin_presence_save_ext_ajax()
       'country'=> "FR"
     );
     $guestId = lab_invitations_createGuest($guest);
+  } else {
+    $guestId = $guestId->id;
   }
   $str = "presenceId :".$presenceId."\n";
   $str .= "guestId :".$guestId."\n";
