@@ -12,9 +12,5 @@ function lab_ldap($args) {
     echo "<xmp>";
     var_dump(ldap_get_entries($ldap_link,$result)[0]);
     echo "</xmp>";
-
-    $param = shortcode_atts(array(
-        
-    ))
 }
 ?>
