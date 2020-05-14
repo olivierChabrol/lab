@@ -9,15 +9,15 @@ jQuery(function($){
         let editable = $(this).parents('tr').find('.edit');
 
         if( $(this).hasClass("fa-pen") ){
-            let trId = $(this).attr("id");
-            let id   = $(this).attr("editId")+"_"+$(this).attr("userId");
-            let date = $("#date_"+id).text();
-            let hOpen = $("#hOpen_"+id).text();
-            let hEnd_ = $("#hEnd_"+id).text();
-            let site = $("#site_"+id).attr("siteId");
+            let trId    = $(this).attr("id");
+            let id      = $(this).attr("editId")+"_"+$(this).attr("userId");
+            let date    = $("#date_"+id).text();
+            let hOpen   = $("#hOpen_"+id).text();
+            let hEnd    = $("#hEnd_"+id).text();
+            let site    = $("#site_"+id).attr("siteId");
             let comment =$(this).parents('tr').attr("title");
-            console.log(site);
-            editPresence($(this).attr("editId"), $(this).attr("userId"), date, hOpen, hEnd_, site, comment);
+
+            editPresence($(this).attr("editId"), $(this).attr("userId"), date, hOpen, hEnd, site, comment);
         } 
         else 
         {
@@ -27,10 +27,10 @@ jQuery(function($){
             let opening    = $(this).parents('tr').find('.first').val();
             let closing    = $(this).parents('tr').find('.last') .val();
             let site       = $(this).parents('tr').find('select').val();
-            console.log("id présence : " + idPresence + ", date : " + date + ", ouverture : "
-             + opening + ", fermeture : " + closing + ", sur le site : " + site);
 
-            savePresence(idPresence, userId, date, opening, closing, site);
+            if (checkPresenceInputs($(this).parents('tr').find('.date'))) {
+                savePresence(idPresence, userId, date, opening, closing, site, "");
+            }
         }
         $(this).toggleClass("fa-pen fa-check");
     });
@@ -64,48 +64,63 @@ jQuery(function($){
             $("#comment").focus();
             return;
         }
-        /*
-        var data = {
-        'action' : 'lab_presence_save',
-        'userId' : $("#userId").val(),
-        'dateOpen' : $("#date-open").val(),
-        'hourOpen' : $("#hour-open").val(),
-        'hourClose' : $("#hour-close").val(),
-        'comment' : $("#comment").val(),
-        'siteId': $("#siteId").val(),
-        };
-
-        $.post(LAB.ajaxurl, data, function(response) {
-        if (response.success) {
-            window.location.reload(false); 
-        }
+         /*
+        $('#datetimePicker').datetimepicker();
+        $('#meetingForm').bootstrapValidator({
+            feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+            },
+            fields: {
+                meeting: {
+                    validators: {
+                        date: {
+                            format: 'MM/DD/YYYY h:m A',
+                            message: 'The value is not a valid date'
+                        }
+                    }
+                }
+            }
         });
-        //*/
-        savePresence(null, $("#userId").val(), $("#date-open").val(), $("#hour-open").val(), $("#hour-close").val(), $("#siteId").val(), $("#comment").val());
+        $('#datetimePicker').on('dp.change dp.show', function(e) {
+            $('#meetingForm').bootstrapValidator('revalidateField', 'meeting');
+        });*/
+
+        if (checkPresenceInputs('date-open', 'hour-open', 'hour-close')) {
+            savePresence(null, $("#userId").val(), $("#date-open").val(), $("#hour-open").val(), $("#hour-close").val(), $("#siteId").val(), $("#comment").val(), 0);
+        }
     });
+
     $("#lab_presence_edit_dialog").modal("hide");
     $('#lab_presence_edit_dialog').on('shown.bs.modal', function () {
         $('#lab_presence_edit_date-open').trigger('focus');
       });
     $("#lab_presence_edit_save").click(function () {
+        regex=/\"/g;
         let userId = $("#lab_presence_edit_userId").val();
         let idPresence = $("#lab_presence_edit_presenceId").val();
         let date = $("#lab_presence_edit_date-open").val();
         let hourStart = $("#lab_presence_edit_hour-open").val();
         let hourEnd = $("#lab_presence_edit_hour-close").val();
-        let comment = $("#lab_presence_edit_comment").val();
+        let comment = $("#lab_presence_edit_comment").val().replace(regex,"”").replace(/\'/g,"’");
         let site = $("#lab_presence_edit_siteId").val();
-        savePresence(idPresence, userId, date, hourStart, hourEnd, site, comment);
+        if (checkPresenceInputs('lab_presence_edit_date-open'))) {
+            savePresence(idPresence, userId, date, hourStart, hourEnd, site, comment, "");
+        }
     });
 
 
     $("#lab_presence_delete_dialog").modal("hide");
-    $("#lab_presence_delete_save").click(function () {
-        console.log("test");
+
+    $("#lab_presence_ext_new_date_open").click(function() {
+        $('#lab_presence_ext_new_hour_open').val("08:00");
+        $('#lab_presence_ext_new_hour_close').val(getEndDate($('#lab_presence_ext_new_hour_open').val()));
     });
 
     $("#date-open").click(function() {
-        document.getElementById('hour-open').value = "08:00";
+        $('#hour-open').val("08:00");
+        $('#hour-close').val(getEndDate($('#hour-open').val()));
     });
 
     $('#hour-open').focusout(function () {
@@ -151,6 +166,58 @@ jQuery(function($){
     });
 });
 
+/**
+ * convertie un string de format hh:: en minutes hh*60+mm
+ * @param {string} str 
+ * @return {int} minutes
+ */
+function stringHourToMinutes(str)
+{
+    let temps = str.split(':');
+    return ((temps[0] * 60) + temps[1]);
+}
+
+function checkPresenceInputs(dateElm, openElm, closeElm) {
+
+    let valueDate       = $("#"+dateElm).val();
+    let valueHourOpen   = $("#"+openElm).val();
+    let valueHourClose  = $("#"+closeElm).val();
+
+    // verif hour not vide et not --:--
+    if (!valueHourOpen || !valueHourClose) {
+        $("#"+openElm).addClass('is-invalid');
+        $("#"+closeElm).addClass('is-invalid');
+        $('#messErr_'+closeElm).text("Veuillez remplir correctement les heures");
+        retour = false;
+    }
+
+    let debut = stringHourToMinutes(valueHourOpen);
+    let fin   = stringHourToMinutes(valueHourClose);
+
+    console.log("pour la date du " + valueDate + " commençant à " + valueHourOpen + " et finissant à " + valueHourClose);
+   
+    let checkDate = Date.parse(valueDate);
+    let checkHours = fin > debut;
+    let retour = true;
+
+    if (!checkDate)
+    {
+        $("#"+dateElm).addClass('is-invalid');
+        $('#messErr_'+dateElm).text("La date n'est pas correcte");
+        retour = false;
+    }
+
+    if (!checkHours)
+    {
+        $("#"+openElm).addClass('is-invalid');
+        $("#"+closeElm).addClass('is-invalid');
+        $('#messErr_'+closeElm).text("l'heure de fin est antérieure à l'heure de début");
+        retour = false;
+    }
+
+    return retour;
+}
+
 function getEndDate(startDate) {
     let timeElements = startDate.split(":");
     let theHour      = parseInt(timeElements[0]);
@@ -169,13 +236,14 @@ function getEndDate(startDate) {
 /******************************* ShortCode Presence ******************************/
 
 function saveExternaluser() {
+    regex=/\"/g;
     let firstName = $("#lab_presence_ext_new_user_firstname").val();
     let lastName  = $("#lab_presence_ext_new_user_lastname").val();
     let email     = $("#lab_presence_ext_new_user_email").val();
     let date      = $("#lab_presence_ext_new_date_open").val();
     let hOpen     = $("#lab_presence_ext_new_hour_open").val();
     let hClose    = $("#lab_presence_ext_new_hour_close").val();
-    let comment   = $("#lab_presence_ext_new_comment").val();
+    let comment   = $("#lab_presence_ext_new_comment").val().replace(/\"/g,"”").replace(/\'/g,"’");
     let siteId    = $("#lab_presence_ext_new_siteId").val();
     var data = {
         'action' : 'lab_presence_save_ext',
@@ -198,7 +266,16 @@ function saveExternaluser() {
     });
 }
 
-function savePresence(idPresence, userId, date, opening, closing, site, comment = "") {
+function savePresence(idPresence, userId, date, opening, closing, site, comment = "", external = "") {
+    /*
+    console.log("[savePresence] idPresence : '" + idPresence + "'");
+    console.log("[savePresence] userId : '" + userId + "'");
+    console.log("[savePresence] date : '" + date + "'");
+    console.log("[savePresence] opening : '" + opening + "'");
+    console.log("[savePresence] closing : '" + closing + "'");
+    console.log("[savePresence] site : '" + site + "'");
+    console.log("[savePresence] external : '" + external + "'");
+    //*/
     var data = {
         'action' : 'lab_presence_save',
         id :         idPresence,
@@ -207,7 +284,8 @@ function savePresence(idPresence, userId, date, opening, closing, site, comment 
         hourOpen : opening,
         hourClose :   closing,
         siteId :       site,
-        comment: comment
+        external :       external,
+        comment: comment.replace(/\"/g,"”").replace(/\'/g,"’")
     };
     $.post(LAB.ajaxurl, data, function(response) {
         if (response.success) {
@@ -216,7 +294,6 @@ function savePresence(idPresence, userId, date, opening, closing, site, comment 
             $('#siteId').val('');
             $('#comment').val('');
             window.location.reload(false);
-            //alert(response.data);
         }
         else {
             toast_error(response.data);

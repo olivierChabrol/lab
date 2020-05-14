@@ -2,15 +2,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-06 22:26+0200\n"
-"PO-Revision-Date: 2020-05-06 22:26+0200\n"
+"POT-Creation-Date: 2020-05-13 11:21+0200\n"
+"PO-Revision-Date: 2020-05-13 11:23+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.2.4\n"
+"X-Generator: Poedit 2.3\n"
 "X-Poedit-Basepath: ..\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-KeywordsList: _e;esc_html_e;esc_html__;__\n"
@@ -121,6 +121,44 @@ msgstr "+ Ajouter un suppléant"
 msgid "Créer le groupe"
 msgstr "Créer le groupe"
 
+#: admin/view/lab-admin-tab-params.php:9
+msgid "Manage Parameters"
+msgstr "Gérer les Paramètres"
+
+#: admin/view/lab-admin-tab-params.php:14
+msgid "New Parameters"
+msgstr "Nouveau Paramètre"
+
+#: admin/view/lab-admin-tab-params.php:15
+#: admin/view/lab-admin-tab-params.php:35
+msgid "Param type"
+msgstr "Type de paramètre"
+
+#: admin/view/lab-admin-tab-params.php:23
+msgid "Delete"
+msgstr "Effacer"
+
+#: admin/view/lab-admin-tab-params.php:25
+msgid "Param value"
+msgstr "Valeur du paramètre"
+
+#: admin/view/lab-admin-tab-params.php:27
+#: admin/view/lab-admin-tab-params.php:37
+msgid "Save param"
+msgstr "Sauver Paramètre"
+
+#: admin/view/lab-admin-tab-params.php:31
+msgid "Edit parameters"
+msgstr "Modifier Paramètre"
+
+#: admin/view/lab-admin-tab-params.php:32
+msgid "Param title"
+msgstr "Nom du paramètre"
+
+#: admin/view/lab-admin-tab-params.php:38
+msgid "Delete param"
+msgstr "Effacer Paramètre"
+
 #: admin/view/lab-admin-tab-settings.php:58 lab-admin-keyring.php:18
 msgid "Créer la table Keys"
 msgstr "Créer la table Keys"
@@ -147,6 +185,7 @@ msgstr "Reset LAB DB?"
 
 #: admin/view/lab-admin-tab-settings.php:70 lab-admin-keyring.php:36
 #: lab-admin-keyring.php:45 lab-admin-keyring.php:189
+#: shortcode/lab-shortcode-present.php:428
 msgid "Annuler"
 msgstr "Annuler"
 
@@ -155,27 +194,31 @@ msgstr "Annuler"
 msgid "Confirmer"
 msgstr "Confirmer"
 
-#: admin/view/lab-admin-tab-settings.php:76
+#: admin/view/lab-admin-tab-settings.php:74
+msgid "Add role keyring"
+msgstr ""
+
+#: admin/view/lab-admin-tab-settings.php:77
 msgid "Corriger usermeta fields UM"
 msgstr "Corriger usermeta fields UM"
 
-#: admin/view/lab-admin-tab-settings.php:77
+#: admin/view/lab-admin-tab-settings.php:78
 msgid "Copier les champs phone"
 msgstr "Copier les champs phone"
 
-#: admin/view/lab-admin-tab-settings.php:80
+#: admin/view/lab-admin-tab-settings.php:81
 msgid "Fill HAL name"
 msgstr "Remplir metakey hal_name"
 
-#: admin/view/lab-admin-tab-settings.php:81
+#: admin/view/lab-admin-tab-settings.php:82
 msgid "Fill user slug"
 msgstr "Remplir metakey user slug"
 
-#: admin/view/lab-admin-tab-settings.php:83
+#: admin/view/lab-admin-tab-settings.php:84
 msgid "Empty HAL Table"
 msgstr "Vider la table HAL"
 
-#: admin/view/lab-admin-tab-settings.php:92
+#: admin/view/lab-admin-tab-settings.php:93
 msgid "Add Meta Key"
 msgstr "Ajouter une metakey"
 
@@ -259,7 +302,7 @@ msgstr "Erreur lors de la création de la table"
 msgid "Erreur lors de la création de la clé"
 msgstr "Erreur lors de la création de la clé"
 
-#: js/lab_keyring.js:34 js/lab_keyring.js:160
+#: js/lab_keyring.js:34 js/lab_keyring.js:162
 msgid "Tous les champs requis doivent être remplis"
 msgstr "Tous les champs requis doivent être remplis"
 
@@ -267,11 +310,11 @@ msgstr "Tous les champs requis doivent être remplis"
 msgid "Impossible de trouver le prêt correspondant à cette clé"
 msgstr "Impossible de trouver le prêt correspondant à cette clé"
 
-#: js/lab_keyring.js:98 js/lab_keyring.js:394
+#: js/lab_keyring.js:98 js/lab_keyring.js:391
 msgid "Impossible de trouver les informations de cette clé"
 msgstr "Impossible de trouver les informations de cette clé"
 
-#: js/lab_keyring.js:112 js/lab_keyring.js:576
+#: js/lab_keyring.js:112 js/lab_keyring.js:573
 msgid "résultat(s)"
 msgstr "résultat(s)"
 
@@ -279,107 +322,107 @@ msgstr "résultat(s)"
 msgid "Aucune clé trouvée. Vous pouvez en créer une ci-dessous"
 msgstr "Aucune clé trouvée. Vous pouvez en créer une ci-dessous"
 
-#: js/lab_keyring.js:160
+#: js/lab_keyring.js:162
 msgid "Erreur lors de la modification de la clé"
 msgstr "Erreur lors de la modification de la clé"
 
-#: js/lab_keyring.js:176
+#: js/lab_keyring.js:178
 msgid "Clé modifiée avec succès"
 msgstr "Clé modifiée avec succès"
 
-#: js/lab_keyring.js:182
+#: js/lab_keyring.js:184
 msgid "Échec de modification de la clé"
 msgstr "Échec de modification de la clé"
 
-#: js/lab_keyring.js:192
+#: js/lab_keyring.js:194
 msgid "Clé supprimée avec succès"
 msgstr "Clé supprimée avec succès"
 
-#: js/lab_keyring.js:196
+#: js/lab_keyring.js:198
 msgid "La clé n'a pas pu être supprimée"
 msgstr "La clé n'a pas pu être supprimée"
 
-#: js/lab_keyring.js:271
+#: js/lab_keyring.js:273
 msgid ""
 "Impossible de créer le prêt : le formulaire n'est pas rempli correctement"
 msgstr ""
 "Impossible de créer le prêt : le formulaire n'est pas rempli correctement"
 
-#: js/lab_keyring.js:398
+#: js/lab_keyring.js:395
 msgid "Impossible de trouver le prêt d'ID"
 msgstr "Impossible de trouver le prêt d'ID"
 
-#: js/lab_keyring.js:417
+#: js/lab_keyring.js:414
 msgid "Clé créée avec succès"
 msgstr "Clé créée avec succès"
 
-#: js/lab_keyring.js:421
+#: js/lab_keyring.js:418
 msgid "Erreur de création de clé"
 msgstr "Erreur de création de clé"
 
-#: js/lab_keyring.js:431
+#: js/lab_keyring.js:428
 msgid "Prêt créé avec succès"
 msgstr "Prêt créé avec succès"
 
-#: js/lab_keyring.js:440
+#: js/lab_keyring.js:437
 msgid "Erreur de création du prêt"
 msgstr "Erreur de création du prêt"
 
-#: js/lab_keyring.js:451
+#: js/lab_keyring.js:448
 msgid "Prêt modifié avec succès"
 msgstr "Prêt modifié avec succès"
 
-#: js/lab_keyring.js:457
+#: js/lab_keyring.js:454
 msgid "Erreur de modification du prêt"
 msgstr "Erreur de modification du prêt"
 
-#: js/lab_keyring.js:469
+#: js/lab_keyring.js:466
 msgid "Prêt terminé avec succès"
 msgstr "Prêt terminé avec succès"
 
-#: js/lab_keyring.js:479
+#: js/lab_keyring.js:476
 msgid "Erreur lors de la tentative de fin du prêt"
 msgstr "Erreur lors de la tentative de fin du prêt"
 
-#: js/lab_keyring.js:523 js/lab_keyring.js:527
+#: js/lab_keyring.js:520 js/lab_keyring.js:524
 msgid "Reçu de prêt"
 msgstr "Reçu de prêt"
 
-#: js/lab_keyring.js:530
+#: js/lab_keyring.js:527
 msgid "ID du prêt"
 msgstr "ID du prêt"
 
-#: js/lab_keyring.js:531 lab-admin-keyring.php:243 lab-admin-keyring.php:314
+#: js/lab_keyring.js:528 lab-admin-keyring.php:243 lab-admin-keyring.php:314
 msgid "Référent"
 msgstr "Référent"
 
-#: js/lab_keyring.js:532
+#: js/lab_keyring.js:529
 msgid "La clé/badge numéro"
 msgstr "La clé/badge numéro"
 
-#: js/lab_keyring.js:533
+#: js/lab_keyring.js:530
 msgid "A été prêtée à"
 msgstr "loan to"
 
-#: js/lab_keyring.js:537
+#: js/lab_keyring.js:534
 msgid "Et devra être rendue avant le"
 msgstr "Et devra être rendue avant le"
 
-#: js/lab_keyring.js:538 lab-admin-keyring.php:81 lab-admin-keyring.php:131
+#: js/lab_keyring.js:535 lab-admin-keyring.php:81 lab-admin-keyring.php:131
 #: lab-admin-keyring.php:171 lab-admin-keyring.php:247
-#: lab-admin-keyring.php:308
+#: lab-admin-keyring.php:308 shortcode/lab-shortcode-present.php:231
 msgid "Commentaire"
 msgstr "Commentaire"
 
-#: js/lab_keyring.js:539
+#: js/lab_keyring.js:536
 msgid "Signature"
 msgstr "Signature"
 
-#: js/lab_keyring.js:542
+#: js/lab_keyring.js:539
 msgid "Imprimer"
 msgstr "Imprimer"
 
-#: js/lab_shortcode_present.js:69
+#: js/lab_shortcode_present.js:63
 msgid "Reason of your attendance is require"
 msgstr "La raison de votre présence est requise"
 
@@ -601,25 +644,101 @@ msgstr "Coordonnées"
 msgid "Group"
 msgstr "Groupes"
 
-#: shortcode/lab-shortcode-present.php:184
-msgid "I will be there"
-msgstr "Je serais présent·e"
+#: shortcode/lab-shortcode-present.php:129
+msgid "Lundi"
+msgstr ""
 
-#: shortcode/lab-shortcode-present.php:188
-msgid "From"
-msgstr "Du"
+#: shortcode/lab-shortcode-present.php:130
+msgid "Mardi"
+msgstr ""
 
-#: shortcode/lab-shortcode-present.php:192
-msgid "to"
-msgstr "à"
+#: shortcode/lab-shortcode-present.php:131
+msgid "Mercredi"
+msgstr ""
 
-#: shortcode/lab-shortcode-present.php:194
-msgid "on the site"
+#: shortcode/lab-shortcode-present.php:132
+msgid "Jeudi"
+msgstr ""
+
+#: shortcode/lab-shortcode-present.php:133
+msgid "Vendredi"
+msgstr ""
+
+#: shortcode/lab-shortcode-present.php:217
+msgid "Je serai présent·e"
+msgstr ""
+
+#: shortcode/lab-shortcode-present.php:221
+#: shortcode/lab-shortcode-present.php:271
+msgid "Le"
+msgstr ""
+
+#: shortcode/lab-shortcode-present.php:225
+#: shortcode/lab-shortcode-present.php:273
+msgid "Jusqu'à"
+msgstr ""
+
+#: shortcode/lab-shortcode-present.php:227
+#, fuzzy
+#| msgid "on the site"
+msgid "sur le site"
 msgstr "sur le site"
 
-#: shortcode/lab-shortcode-present.php:197
-msgid "Save"
-msgstr "Sauver"
+#: shortcode/lab-shortcode-present.php:235
+msgid "Sauvegarder"
+msgstr ""
+
+#: shortcode/lab-shortcode-present.php:255
+msgid "Je souhaite modifier une de mes présences"
+msgstr ""
+
+#: shortcode/lab-shortcode-present.php:272
+msgid "De"
+msgstr ""
+
+#: shortcode/lab-shortcode-present.php:274
+msgid "Sur"
+msgstr ""
+
+#: shortcode/lab-shortcode-present.php:275
+#, fuzzy
+#| msgid "Actions"
+msgid "Action"
+msgstr "Actions"
+
+#: shortcode/lab-shortcode-present.php:347
+#: shortcode/lab-shortcode-present.php:392
+#, fuzzy
+msgid "Comment"
+msgstr "Comments"
+
+#: shortcode/lab-shortcode-present.php:418
+#, fuzzy
+#| msgid "Imprimer"
+msgid "Supprimer"
+msgstr "Imprimer"
+
+#: shortcode/lab-shortcode-present.php:424
+#, fuzzy
+#| msgid "Voulez-vous vraiment supprimer cette clé ?"
+msgid "Êtes vous certain·e de vouloir supprimer cette présence ?"
+msgstr "Voulez-vous vraiment supprimer cette clé ?"
+
+#: shortcode/lab-shortcode-present.php:427
+msgid "Oui"
+msgstr ""
+
+#~ msgid "I will be there"
+#~ msgstr "Je serais présent·e"
+
+#~ msgid "From"
+#~ msgstr "Du"
+
+#~ msgid "to"
+#~ msgstr "à"
+
+#~ msgid "Save"
+#~ msgstr "Sauver"
 
 #~ msgid "Créer la table Prefered Groups"
 #~ msgstr "Créer la table prefered groups"
@@ -652,10 +771,6 @@ msgstr "Sauver"
 #, fuzzy
 #~ msgid "Date and time"
 #~ msgstr "End date"
-
-#, fuzzy
-#~ msgid "Comment"
-#~ msgstr "Comments"
 
 #, fuzzy
 #~ msgid "Confirmed Spaces"

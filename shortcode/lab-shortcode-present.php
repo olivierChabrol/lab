@@ -29,6 +29,8 @@ function lab_present_select($param) {
     if (isset($param['allow-external']) && $param['allow-external'] == "true") {
         $externalUserAllowed = true;
     }
+    $str = "";
+    //$str.= "\$param['allow-external'] : ".$param['allow-external']." \ $externalUserAllowed : ". $externalUserAllowed."<br>";
     $startDay = getStartDate();
     
     //$dt_startDate->setTime(0, 0, 0);
@@ -58,27 +60,12 @@ function lab_present_select($param) {
             $users[$user->first_name." ".$user->last_name][date('d', $user->hour_start)][] = $user;
         }
     }
-    /*
-    var_dump($users);
-    if (true) {
-        $str .= "<h3>users</h3>";
-        foreach($users as $k=>$v) {
-            $str .= $k."&nbsp;".sizeof($v)."<br>";
-            $i = 0;
-            foreach($v as $d=>$a) {
-                foreach($a as $u) {
-                    $str .= "&nbsp;&nbsp;&nbsp; [".$i."]".$u->first_name." ".$u->last_name." *".$u->comment."* ".date("d-m-Y",$u->hour_start)."<br>";
-                    $i++;
-                }
-            }
-        }
-    }
-    //*/
+
     global $wp;
     // get current url with query string.
     $current_url =  home_url( $wp->request ); 
 
-    $str .= "<a href=\"".$current_url."/?date=".date("Y-m-d",$previousWeek)."\"><b>&lt;</b></a> Semaine du  : ".date("d-m-Y",$startDay)." au ".date("d-m-Y",$endDay)." <a href=\"".$current_url."/?date=".date("Y-m-d",$nextWeek)."\"><b>&gt;</b></a>";
+    $str .= "<a href=\"".$current_url."/?date=".date("Y-m-d",$previousWeek)."\"><i class='fas fa-chevron-circle-left'></i></a> Semaine du  : ".date("d-m-Y",$startDay)." au ".date("d-m-Y",$endDay)." <a href=\"".$current_url."/?date=".date("Y-m-d",$nextWeek)."\"><i class='fas fa-chevron-circle-right'></i></a>";
     if (!is_user_logged_in() && $externalUserAllowed) {
         $str .=  "<div id=\"a_external_presency\" class=\"float-right\"><a href=\"#\" title=\"Add your presency\">" . esc_html("Ajouter une présence en tant qu'invité", "lab") . "<i class=\"fas fa-plus-circle fa-3x text-success\"></i></a></div>";
     }
@@ -215,13 +202,18 @@ function lab_present_choice($param) {
         <h3>".esc_html__("Je serai présent·e", "lab")."</h3>
             <div class=\"input-group mb-3\">
             <input id='userId' name='userId' type='hidden' value='" . get_current_user_id() . "' />
+            <input id=\"external\" type=\"hidden\"  val=\"0\"/>
 
             <label for='date-open'>".esc_html__("Le", "lab")."</label>
-            <input type='date' name='date-open' id='date-open' />
+            <input type='date' name='date-open' id='date-open' class='form-control'/>
+            <div id='messErr_date-open' class='invalid-feedback'></div>
+           
             <label for='hour-open'></label>
-            <input type='time' name='hour-open' id='hour-open' />
+            <input type='time' name='hour-open' id='hour-open' min='07:00' max='20:00' required class='form-control'/>
+            <div id='messErr_hour-open' class='invalid-feedback'></div>
             <label for='hour-close'>".esc_html__("Jusqu'à", "lab")."</label>
-            <input type='time' name='hour-close' id='hour-close' />
+            <input type='time' name='hour-close' id='hour-close' min='07:00' max='20:00' required class='form-control'/>
+            <div id='messErr_hour-close' class='invalid-feedback'></div>
             <label for='site-selected'>".esc_html__("sur le site", "lab")."</label>
             " . lab_html_select_str("siteId", "siteName", "custom-select", lab_admin_list_site) . "</div>
             <div class=\"input-group mb-3\">
@@ -239,12 +231,14 @@ function lab_present_choice($param) {
         $hourOpen  = $_POST['hour-open'];
         $hourClose = $_POST['hour-close'];
         $site      = $_POST['siteName'];
+        $comment   = $_POST['comment'];
 
         //requete pour envoyer la présence sur la bd
         global $wpdb;
+        $comment = preg_replace("\'", "’", $comment);
         $data = array('user_id' => $userId, 'hour_start' => $date . ' ' . $hourOpen,
-                'hour_end' => $date . ' ' . $hourClose, 'site' => $site);
-        $format = array('%d','%s','%s','%d');
+                'hour_end' => $date . ' ' . $hourClose, 'site' => $site, 'comment' => $comment);
+        $format = array('%d','%s','%s','%d','%s');
         $wpdb->insert('wp_lab_presence', $data, $format);
     }
 
@@ -309,12 +303,19 @@ function newUserDiv()
                 </div>
                 <div class="modal-body">
                     <h4 class="modal-title">'.esc_html("User information", "lab").'</h4>
-                    <label for="date-lab_presence_ext_new_user_firstname">'.esc_html("Firstname", "lab").'</label>
-                    <input id="lab_presence_ext_new_user_firstname" type="text"  placeholder="First name (mandatory)"/><br>
-                    <label for="date-lab_presence_ext_new_user_lastname">'.esc_html("Lastname", "lab").'</label>
-                    <input id="lab_presence_ext_new_user_lastname" type="text" placeholder="Last name (mandatory)"/><br>
-                    <label for="date-lab_presence_ext_new_user_email">'.esc_html("E-mail", "lab").'</label>
-                    <input type="email" class="form-control" id="lab_presence_ext_new_user_email" aria-describedby="emailHelp" placeholder="Enter email (mandatory)">
+                    <input id="lab_presence_ext_new_user_ext" type="hidden"  val="1"/>
+                    <div class="form-row">
+                        <div class="col">
+                        <input type="text" class="form-control" id="lab_presence_ext_new_user_firstname" placeholder="First name (mandatory)">
+                        </div>
+                        <div class="col">
+                        <input type="text" class="form-control" id="lab_presence_ext_new_user_lastname" placeholder="Last name (mandatory)"/>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <label for="date-lab_presence_ext_new_user_email">'.esc_html("E-mail", "lab").'</label>
+                        <input type="email" class="form-control" id="lab_presence_ext_new_user_email" aria-describedby="emailHelp" placeholder="Enter email (mandatory)">
+                    </div>
                     <small id="emailHelp" class="form-text text-muted">We\'ll never share your email with anyone else.</small>
                     <div class="h-divider"></div>
                     <label for="date-open">'.esc_html("From", "lab").'</label>
@@ -362,12 +363,13 @@ function editDiv()
                 <div class="modal-body">
                     <input id="lab_presence_edit_userId" name="userId" type="hidden"/>
                     <input id="lab_presence_edit_presenceId" name="userId" type="hidden"/>
-                    <label for="date-open">'.esc_html("From", "lab").'</label>
+                    <label for="lab_presence_edit_date-open">'.esc_html("From", "lab").'</label>
                     <input type="date" id="lab_presence_edit_date-open" />
+                    <div id="messErr_lab_presence_edit_date" class="invalid-feedback"></div>
                     <label for="hour-open"></label>
-                    <input type="time" id="lab_presence_edit_hour-open" />
+                    <input type="time" id="lab_presence_edit_hour-open" min="07:00"  max="20:00" required />
                     <label for="hour-close">'.esc_html("to", "lab").'</label>
-                    <input type="time" id="lab_presence_edit_hour-close" />
+                    <input type="time" id="lab_presence_edit_hour-close" min="07:00" max="20:00"/>
                     <div class="input-group mb-3">
                         <label for="site-selected">'.esc_html("on the site", "lab").'</label>'. lab_html_select_str("lab_presence_edit_siteId", "siteName", "custom-select", lab_admin_list_site).'
                     </div>

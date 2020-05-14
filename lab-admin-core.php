@@ -28,20 +28,39 @@ function lab_admin_username_get($userId) {
  * PARAM
  *******************************************************************************************************/
 
-function lab_admin_param_save($paramType, $paramName)
+function lab_admin_param_save($paramType, $paramName, $color = null, $paramId = null)
 {
     global $wpdb;
     if ($type == -1) {
       $type = 0;
     }
-    return !lab_admin_param_exist($paramType, $paramName);
-    if (lab_admin_param_exist($paramType, $paramName)) {
-        return false;
-    } else {
-        $sql = "INSERT INTO `".$wpdb->prefix."lab_params` (`id`, `type_param`, `value`) VALUES (NULL, '".$paramType."', '".$paramName."');";
-        $results = $wpdb->get_results($sql);
-        return $wpdb->insert_id;
+    if (!isset($color) || empty($color))
+    {
+        $color = null;
     }
+
+    if (startsWith($color, "#"))
+    {
+        $color = substr($color, 1, strlen($color));
+    }
+
+    if ($paramId == null)
+    {
+        //return !lab_admin_param_exist($paramType, $paramName);
+        if (lab_admin_param_exist($paramType, $paramName)) {
+            return false;
+        } else {
+            //$sql = "INSERT INTO `".$wpdb->prefix."lab_params` (`id`, `type_param`, `value`) VALUES (NULL, '".$paramType."', '".$paramName."')";
+            $wpdb->insert($wpdb->prefix.'lab_params', array("type_param"=>$paramType, "value"=>$paramName, "color"=>$color));
+            //$results = $wpdb->get_results($sql);
+            
+        }
+    }
+    else
+    {
+        $wpdb->update($wpdb->prefix.'lab_params', array("type_param"=>$paramType, "value"=>$paramName, "color"=>$color), array("id"=>$paramId));
+    }
+    return $wpdb->insert_id;
 }
 
 function lab_admin_param_exist($paramType, $paramName)
@@ -254,7 +273,7 @@ function lab_admin_present_check_overlap_presency($userId, $startDate, $endDate,
 function lab_admin_param_delete_by_id($paramId) {
     global $wpdb;
     // can't delete param Id 1, because it is the default parameter
-    if ($paramId < 6 ) {
+    if ($paramId > 8 ) {
         $wpdb->delete($wpdb->prefix.'lab_params', array('id' => $paramId));
         return true;
     }
@@ -1114,8 +1133,6 @@ function create_all_tables() {
     lab_admin_initTable_usermeta();
     lab_admin_createTable_presence();
     lab_invitations_createTables();
-    lab_invitations_createTables();
-    lab_admin_createTable_presence();
 }
 
 function delete_all_tables() {
@@ -1201,13 +1218,32 @@ function checkAddPresency($userId, $dateOpen, $dateEnd)
 
 }
 
+/**
+ * Save or update presence, WARNING, if $external == null, no update $external field in DB
+ *
+ * @param [type] $id
+ * @param [type] $userId
+ * @param [type] $dateOpen
+ * @param [type] $dateEnd
+ * @param [type] $siteId
+ * @param [type] $comment
+ * @param integer $external
+ * @return array("success"=>true, "data"=>null);
+ */
 function lab_admin_presence_save($id, $userId, $dateOpen, $dateEnd, $siteId, $comment, $external=0) {
+    //return array("success"=>false, "data"=>"\$external : " + $external);
     global $wpdb;
     if ($id == null) {
         $wpdb->insert($wpdb->prefix."lab_presence", array("user_id"=>$userId, "hour_start"=>$dateOpen, "hour_end"=>$dateEnd, "site"=>$siteId, "comment"=>$comment, "external"=>$external));
     }
     else {
-        $wpdb->update($wpdb->prefix."lab_presence", array("hour_start"=>$dateOpen, "hour_end"=>$dateEnd, "site"=>$siteId, "comment"=>$comment, "external"=>$external), array("id"=>$id));
+        if ($external == null)
+        {
+            $wpdb->update($wpdb->prefix."lab_presence", array("hour_start"=>$dateOpen, "hour_end"=>$dateEnd, "site"=>$siteId, "comment"=>$comment), array("id"=>$id));
+        }
+        else{
+            $wpdb->update($wpdb->prefix."lab_presence", array("hour_start"=>$dateOpen, "hour_end"=>$dateEnd, "site"=>$siteId, "comment"=>$comment, "external"=>$external), array("id"=>$id));
+        }
         
     }
     return array("success"=>true, "data"=>null);
@@ -1239,3 +1275,8 @@ function correctNumber($currentNumber) { // currentNumber = esc_html($r->phone)
     $currentNumber = chunk_split($currentNumber, 2, ' ');
     return $currentNumber;
 }
+function startsWith ($string, $startString) 
+{ 
+    $len = strlen($startString); 
+    return (substr($string, 0, $len) === $startString); 
+} 
