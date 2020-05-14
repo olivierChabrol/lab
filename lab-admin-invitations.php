@@ -188,8 +188,8 @@ function lab_invitations_getByHost($host_id,$params=array("sortBy"=>"start_date"
           ORDER BY ".$params['sortBy']." ".$params['order']." LIMIT ".$page_nb.", ".$params['value']." ;";
   $count = "SELECT COUNT(*) FROM `".$wpdb->prefix."lab_invitations` 
             WHERE `host_id`=".$host_id." 
-          AND `status` in ".$params['status']
-          .($params['year']=="all" ? ' ' : " AND `start_date` BETWEEN '".$params['year']."-01-01' AND '".$params['year']."-12-31' ").";";
+            AND `status` in ".$params['status']
+            .($params['year']=="all" ? ' ' : " AND `start_date` BETWEEN '".$params['year']."-01-01' AND '".$params['year']."-12-31' ").";";
   $res_sql = $wpdb->get_results($sql);
   $res_count = $wpdb->get_var($count);
   $result = array($res_count, $res_sql);
