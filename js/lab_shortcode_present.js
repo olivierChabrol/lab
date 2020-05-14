@@ -29,7 +29,7 @@ jQuery(function($){
             let site       = $(this).parents('tr').find('select').val();
 
             if (checkPresenceInputs($(this).parents('tr').find('.date'))) {
-                savePresence(idPresence, userId, date, opening, closing, site);
+                savePresence(idPresence, userId, date, opening, closing, site, "");
             }
         }
         $(this).toggleClass("fa-pen fa-check");
@@ -90,6 +90,7 @@ jQuery(function($){
         if (checkPresenceInputs('date-open')) {
             //console.log("je sauvegarde");
             $('#date-open').addClass('is-valid');
+            savePresence(null, $("#userId").val(), $("#date-open").val(), $("#hour-open").val(), $("#hour-close").val(), $("#siteId").val(), $("#comment").val(), 0);
         } else {
             //console.log("je sauvegarde pas");
             $('#date-open').addClass('is-invalid');
@@ -110,6 +111,9 @@ jQuery(function($){
         let hourEnd = $("#lab_presence_edit_hour-close").val();
         let comment = $("#lab_presence_edit_comment").val().replace(regex,"”").replace(/\'/g,"’");
         let site = $("#lab_presence_edit_siteId").val();
+        if (checkPresenceInputs($("#lab_presence_edit_date-open"))) {
+            savePresence(idPresence, userId, date, hourStart, hourEnd, site, comment, "");
+        }
     });
 
 
@@ -226,7 +230,16 @@ function saveExternaluser() {
     });
 }
 
-function savePresence(idPresence, userId, date, opening, closing, site, comment = "") {
+function savePresence(idPresence, userId, date, opening, closing, site, comment = "", external = "") {
+    /*
+    console.log("[savePresence] idPresence : '" + idPresence + "'");
+    console.log("[savePresence] userId : '" + userId + "'");
+    console.log("[savePresence] date : '" + date + "'");
+    console.log("[savePresence] opening : '" + opening + "'");
+    console.log("[savePresence] closing : '" + closing + "'");
+    console.log("[savePresence] site : '" + site + "'");
+    console.log("[savePresence] external : '" + external + "'");
+    //*/
     var data = {
         'action' : 'lab_presence_save',
         id :         idPresence,
@@ -235,6 +248,7 @@ function savePresence(idPresence, userId, date, opening, closing, site, comment 
         hourOpen : opening,
         hourClose :   closing,
         siteId :       site,
+        external :       external,
         comment: comment.replace(/\"/g,"”").replace(/\'/g,"’")
     };
     $.post(LAB.ajaxurl, data, function(response) {

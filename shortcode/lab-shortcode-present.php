@@ -202,7 +202,8 @@ function lab_present_choice($param) {
         <h3>".esc_html__("Je serai présent·e", "lab")."</h3>
             <div class=\"input-group mb-3\">
             <input id='userId' name='userId' type='hidden' value='" . get_current_user_id() . "' />
-        
+            <input id=\"external\" type=\"hidden\"  val=\"0\"/>
+
             <label for='date-open'>".esc_html__("Le", "lab")."</label>
             <input type='date' name='date-open' id='date-open' class='form-control'/>
             
@@ -313,6 +314,7 @@ function newUserDiv()
                 </div>
                 <div class="modal-body">
                     <h4 class="modal-title">'.esc_html("User information", "lab").'</h4>
+                    <input id="lab_presence_ext_new_user_ext" type="hidden"  val="1"/>
                     <div class="form-row">
                         <div class="col">
                         <input type="text" class="form-control" id="lab_presence_ext_new_user_firstname" placeholder="First name (mandatory)">

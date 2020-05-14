@@ -1215,6 +1215,7 @@ function checkAddPresency($userId, $dateOpen, $dateEnd)
  * @return array("success"=>true, "data"=>null);
  */
 function lab_admin_presence_save($id, $userId, $dateOpen, $dateEnd, $siteId, $comment, $external=0) {
+    //return array("success"=>false, "data"=>"\$external : " + $external);
     global $wpdb;
     if ($id == null) {
         $wpdb->insert($wpdb->prefix."lab_presence", array("user_id"=>$userId, "hour_start"=>$dateOpen, "hour_end"=>$dateEnd, "site"=>$siteId, "comment"=>$comment, "external"=>$external));
