@@ -1,0 +1,230 @@
+{
+  "0": {
+    "0": "amumail",
+    "1": "gidnumber",
+    "2": "supannaliaslogin",
+    "3": "uid",
+    "4": "objectclass",
+    "5": "sambaacctflags",
+    "6": "sambasid",
+    "7": "uidnumber",
+    "8": "homedirectory",
+    "9": "amutoip",
+    "10": "amutoipimpbud",
+    "11": "amutoipinterne",
+    "12": "coabonnement",
+    "13": "amudatevalidation",
+    "14": "amuoldmail",
+    "15": "mail",
+    "16": "telephonenumber",
+    "17": "mailhost",
+    "18": "userpassword",
+    "19": "sambantpassword",
+    "20": "sambapwdlastset",
+    "21": "supannlisterouge",
+    "22": "amuphoto",
+    "23": "postaladdress",
+    "24": "edupersonaffiliation",
+    "25": "supanncivilite",
+    "26": "edupersonprimaryaffiliation",
+    "27": "amusite",
+    "28": "supannentiteaffectationprincipale",
+    "29": "sn",
+    "30": "givenname",
+    "31": "amubap",
+    "32": "amucomposante",
+    "33": "cn",
+    "34": "amucampus",
+    "35": "displayname",
+    "36": "supannentiteaffectation",
+    "37": "amuaffectationlib",
+    "38": "supannetablissement",
+    "39": "supannactivite",
+    "40": "amustatut",
+    "41": "supannempcorps",
+    "amumail": {
+      "0": "olivier.chabrol@univ-amu.fr",
+      "count": 1
+    },
+    "gidnumber": {
+      "0": "1040",
+      "count": 1
+    },
+    "supannaliaslogin": {
+      "0": "u1.chabrol",
+      "count": 1
+    },
+    "uid": {
+      "0": "chabrol",
+      "count": 1
+    },
+    "objectclass": {
+      "0": "top",
+      "1": "person",
+      "2": "organizationalPerson",
+      "3": "inetOrgPerson",
+      "4": "eduPerson",
+      "5": "supannPerson",
+      "6": "sambaSamAccount",
+      "7": "inetLocalMailRecipient",
+      "8": "posixAccount",
+      "9": "AMUPerson",
+      "count": 10
+    },
+    "sambaacctflags": {
+      "0": "[U          ]",
+      "count": 1
+    },
+    "sambasid": {
+      "0": "S-1-5-21-1215416653-1714734632-2183914285-104610",
+      "count": 1
+    },
+    "uidnumber": {
+      "0": "104610",
+      "count": 1
+    },
+    "homedirectory": {
+      "0": "/home/employee/chabrol",
+      "count": 1
+    },
+    "amutoip": {
+      "0": "TRUE",
+      "count": 1
+    },
+    "amutoipimpbud": {
+      "0": "9801U138",
+      "count": 1
+    },
+    "amutoipinterne": {
+      "0": "551119",
+      "count": 1
+    },
+    "coabonnement": {
+      "0": "XXL",
+      "count": 1
+    },
+    "amudatevalidation": {
+      "0": "20071218000000Z",
+      "count": 1
+    },
+    "amuoldmail": {
+      "0": "olivier.chabrol@univ-provence.fr",
+      "count": 1
+    },
+    "mail": {
+      "0": "olivier.chabrol@univ-amu.fr",
+      "count": 1
+    },
+    "telephonenumber": {
+      "0": "0413551119",
+      "count": 1
+    },
+    "mailhost": {
+      "0": "mail.univ-amu.fr",
+      "count": 1
+    },
+    "userpassword": {
+      "0": "{CRYPT}$1$xTkCaub1$MDeXFKsVz0A4oOf/s4hDr0",
+      "count": 1
+    },
+    "sambantpassword": {
+      "0": "8BCD552EB8D833AA4E8DA65C98763FD8",
+      "count": 1
+    },
+    "sambapwdlastset": {
+      "0": "1449474217",
+      "count": 1
+    },
+    "supannlisterouge": {
+      "0": "FALSE",
+      "count": 1
+    },
+    "amuphoto": {
+      "0": "#1",
+      "count": 1
+    },
+    "postaladdress": {
+      "0": "CSCIE$$Ingénieur de recherche$RI2M$$Ingénieur de recherche$RECH$$$",
+      "count": 1
+    },
+    "edupersonaffiliation": {
+      "0": "member",
+      "1": "employee",
+      "count": 2
+    },
+    "supanncivilite": {
+      "0": "M.",
+      "count": 1
+    },
+    "edupersonprimaryaffiliation": {
+      "0": "employee",
+      "count": 1
+    },
+    "amusite": {
+      "0": "M103_01",
+      "count": 1
+    },
+    "supannentiteaffectationprincipale": {
+      "0": "5:U807N1300I|4:U807N1000A|3:U807N00000|2:U800000000",
+      "count": 1
+    },
+    "sn": {
+      "0": "CHABROL",
+      "count": 1
+    },
+    "givenname": {
+      "0": "Olivier",
+      "count": 1
+    },
+    "amubap": {
+      "0": "E",
+      "count": 1
+    },
+    "amucomposante": {
+      "0": "recherche",
+      "count": 1
+    },
+    "cn": {
+      "0": "CHABROL Olivier",
+      "count": 1
+    },
+    "amucampus": {
+      "0": "E",
+      "count": 1
+    },
+    "displayname": {
+      "0": "Olivier CHABROL",
+      "count": 1
+    },
+    "supannentiteaffectation": {
+      "0": "5:U807N1300I",
+      "1": "4:U807N1000A",
+      "2": "3:U807N00000",
+      "3": "2:U800000000",
+      "count": 4
+    },
+    "amuaffectationlib": {
+      "0": "RECHERCHE > I2M > I2M-Administration > I2M-Pole informatique",
+      "count": 1
+    },
+    "supannetablissement": {
+      "0": "{UAI}0134009M",
+      "count": 1
+    },
+    "supannactivite": {
+      "0": "{BAP}E",
+      "count": 1
+    },
+    "amustatut": {
+      "0": "T",
+      "count": 1
+    },
+    "supannempcorps": {
+      "0": "{NCORPS}836",
+      "count": 1
+    },
+    "count": 42,
+    "dn": "uid=chabrol,ou=People,dc=univ-amu,dc=fr"
+  },
+  "count": 1
+}
