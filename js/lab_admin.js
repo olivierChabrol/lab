@@ -548,17 +548,33 @@ jQuery(function($){
     callAjax({"action":"invite_createTables"},__("Tables invitations et guests créées avec succès",'lab'),null,__("Erreur lors de la création des tables 'invitations' et 'guests'",'lab'),null);
   });
   $("#lab_admin_param_colorpicker").spectrum({
-    color: $("#lab_profile_card").attr('bg-color'),
-    move: function(tinycolor) {
-      //jQuery("#lab_profile_card").css('background-color',tinycolor);
-    },
-    change: function(tinycolor) {
-      jQuery("#wp_lab_param_color").val(tinycolor.toHexString());
-    },
-    hide: function() {
-      jQuery("#wp_lab_param_color").val(tinycolor.toHexString());
-    }
-  });
+      color: $("#wp_lab_param_color").val(),
+      move: function(tinycolor) {
+          $("#wp_lab_param_color").css('background-color',tinycolor);
+          $("#wp_lab_param_color").val(tinycolor.toHexString());
+        //jQuery("#lab_profile_card").css('background-color',tinycolor);
+      },
+      change: function(tinycolor) {
+        $("#wp_lab_param_color").css('background-color',tinycolor);
+        $("#wp_lab_param_color").val(tinycolor.toHexString());
+      },
+      hide: function() {
+      }
+    });
+    $("#lab_admin_param_colorpicker_edit").spectrum({
+        color: $("#wp_lab_param_color_edit").val(),
+        move: function(tinycolor) {
+            $("#wp_lab_param_color_edit").css('background-color',tinycolor);
+            $("#wp_lab_param_color_edit").val(tinycolor.toHexString());
+          //jQuery("#lab_profile_card").css('background-color',tinycolor);
+        },
+        change: function(tinycolor) {
+          $("#wp_lab_param_color_edit").css('background-color',tinycolor);
+          $("#wp_lab_param_color_edit").val(tinycolor.toHexString());
+        },
+        hide: function() {
+        }
+      });
 });
 
 /*************************************************************************************************************************************************
@@ -701,6 +717,7 @@ function createGroup(params) {
 function load_params_type_after_new_param() {
   jQuery("#wp_lab_param_value").val("");
   jQuery("#wp_lab_param_color").val("");
+  jQuery("#wp_lab_param_color").css("background-color","#FFFFFF");
   load_params_type('#wp_lab_param_type');
 }
 

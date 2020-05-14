@@ -28,7 +28,7 @@ function lab_admin_username_get($userId) {
  * PARAM
  *******************************************************************************************************/
 
-function lab_admin_param_save($paramType, $paramName, $color = null)
+function lab_admin_param_save($paramType, $paramName, $color = null, $paramId = null)
 {
     global $wpdb;
     if ($type == -1) {
@@ -44,15 +44,23 @@ function lab_admin_param_save($paramType, $paramName, $color = null)
         $color = substr($color, 1, strlen($color));
     }
 
-    //return !lab_admin_param_exist($paramType, $paramName);
-    if (lab_admin_param_exist($paramType, $paramName)) {
-        return false;
-    } else {
-        //$sql = "INSERT INTO `".$wpdb->prefix."lab_params` (`id`, `type_param`, `value`) VALUES (NULL, '".$paramType."', '".$paramName."')";
-        $wpdb->insert($wpdb->prefix.'lab_params', array("type_param"=>$paramType, "value"=>$paramName, "color"=>$color));
-        //$results = $wpdb->get_results($sql);
-        return $wpdb->insert_id;
+    if ($paramId != null)
+    {
+        //return !lab_admin_param_exist($paramType, $paramName);
+        if (lab_admin_param_exist($paramType, $paramName)) {
+            return false;
+        } else {
+            //$sql = "INSERT INTO `".$wpdb->prefix."lab_params` (`id`, `type_param`, `value`) VALUES (NULL, '".$paramType."', '".$paramName."')";
+            $wpdb->insert($wpdb->prefix.'lab_params', array("type_param"=>$paramType, "value"=>$paramName, "color"=>$color));
+            //$results = $wpdb->get_results($sql);
+            
+        }
     }
+    else
+    {
+        $wpdb->update($wpdb->prefix.'lab_params', array("type_param"=>$paramType, "value"=>$paramName, "color"=>$color), array("id"=>$paramId));
+    }
+    return $wpdb->insert_id;
 }
 
 function lab_admin_param_exist($paramType, $paramName)

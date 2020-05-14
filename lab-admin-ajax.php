@@ -33,11 +33,17 @@ function lab_admin_param_create_table() {
 }
 
 function lab_admin_ajax_param_save() {
+  $paramId = $_POST['id'];
   $type  = $_POST['type'];
   $value = $_POST['value'];
   $color = $_POST['color'];
+  if (!isset($paramId) || $paramId == "")
+  {
+    $paramId = null;
+  }
+  
     
-  $ok = lab_admin_param_save($type, $value, $color);
+  $ok = lab_admin_param_save($type, $value, $color, $paramId);
   if ($ok) {
     wp_send_json_success($ok);
   }

@@ -82,7 +82,7 @@ function LABloadProfile() {
     //Attribue la couleur de l'utilisateur à l'arrière plan
     $("#lab_profile_card").css('background-color',$("#lab_profile_card").attr('bg-color'));
     $("#lab_profile_colorpicker").spectrum({
-      color: $("#lab_profile_card").attr('bg-color'),
+      color: $("#wp_lab_param_color").val(),
       move: function(tinycolor) {
         jQuery("#lab_profile_card").css('background-color',tinycolor);
       },
