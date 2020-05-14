@@ -30,7 +30,12 @@ function lab_admin_tab_params() {
     </tr>
     <tr>
       <td><label for="wp_lab_param_color"><?php esc_html_e("Param color", "lab") ?></label></td>
-      <td><input type="text" id="wp_lab_param_color"></td><td>&nbsp;</td>
+      <td><input type="text" id="wp_lab_param_color"></td>
+      <td>
+        <div id="lab_profile_icons" class="lab_profile_edit">
+					<i title="<?php esc_html_e("Affect color to param","lab") ?>" id="lab_admin_param_colorpicker" class="fas fa-fill-drip"></i>
+				</div>
+      </td>
     </tr>
     <tr><td colspan="3">&nbsp;</td></tr>
     <tr><td colspan="3"><a href="#" class="page-title-action" id="lab_tab_param_save"><?php esc_html_e("Save param", "lab") ?></a></td></tr>
@@ -42,15 +47,20 @@ function lab_admin_tab_params() {
         <table>
           <tr>
             <td><label for="lab_param_param_title"><?php esc_html_e("Param title", "lab") ?></label></td>
-            <td><input type="text" id="lab_param_value_search" placeholder="type param first letter"></td>
+            <td colpsan="2"><input type="text" id="lab_param_value_search" placeholder="type param first letter"></td>
           </tr>
           <tr>
             <td><input type="hidden" id="wp_lab_param_id"><label for="wp_lab_param_type_edit"><?php esc_html_e("Param type", "lab") ?></label></td>
-            <td><select id="wp_lab_param_type_edit"></select></td>
+            <td colpsan="2"><select id="wp_lab_param_type_edit"></select></td>
           </tr>
           <tr>
             <td><label for="wp_lab_param_color_edit"><?php esc_html_e("Param color", "lab") ?></label></td>
             <td><input type="text" id="wp_lab_param_color_edit"></td>
+            <td>
+              <div id="lab_profile_icons_edit" class="lab_profile_edit">
+                <i title="<?php esc_html_e("Affect color to param","lab") ?>" id="lab_admin_param_colorpicker_edit" class="fas fa-fill-drip"></i>
+              </div>
+            </td>
           </tr>
           <tr><td colspan="3">&nbsp;</td></tr>
           <tr>

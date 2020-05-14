@@ -207,22 +207,7 @@ function lab_present_choice($param) {
             <label for='date-open'>".esc_html__("Le", "lab")."</label>
             <input type='date' name='date-open' id='date-open' class='form-control'/>
             <div id='messErr_date-open' class='invalid-feedback'></div>
-
-
-            <!-- <form id='meetingForm' class='form-horizontal'>
-            <div class='form-group'>
-                <label for'date-open' class='control-label'>".esc_html__("Le", "lab")."</label>
-                <div class='dateContainer'>
-                    <div class='input-group date' id='datetimePicker'>
-                        <input type='text' data-provide='datepicker' id='date-open' class='form-control' name='date-open' placeholder='MM/DD/YYYY' />
-                        <span class='input-group-addon'>
-                            <i class='fas fa-calendar-alt'></i>
-                        </span>
-                    </div>
-                </div>
-            </div>
-            </form> -->
-            
+           
             <label for='hour-open'></label>
             <input type='time' name='hour-open' id='hour-open' min='07:00' max='20:00' required class='form-control'/>
             <div id='messErr_hour-open' class='invalid-feedback'></div>
@@ -327,12 +312,6 @@ function newUserDiv()
                         <input type="text" class="form-control" id="lab_presence_ext_new_user_lastname" placeholder="Last name (mandatory)"/>
                         </div>
                     </div>
-                    <!--
-                    <label for="date-lab_presence_ext_new_user_firstname">'.esc_html("Firstname", "lab").'</label>
-                    <input id="lab_presence_ext_new_user_firstname" type="text"  placeholder="First name (mandatory)"/><br>
-                    <label for="date-lab_presence_ext_new_user_lastname">'.esc_html("Lastname", "lab").'</label>
-                    <input id="lab_presence_ext_new_user_lastname" type="text" placeholder="Last name (mandatory)"/><br>
-                    -->
                     <div class="form-row">
                         <label for="date-lab_presence_ext_new_user_email">'.esc_html("E-mail", "lab").'</label>
                         <input type="email" class="form-control" id="lab_presence_ext_new_user_email" aria-describedby="emailHelp" placeholder="Enter email (mandatory)">
@@ -384,8 +363,9 @@ function editDiv()
                 <div class="modal-body">
                     <input id="lab_presence_edit_userId" name="userId" type="hidden"/>
                     <input id="lab_presence_edit_presenceId" name="userId" type="hidden"/>
-                    <label for="date-open">'.esc_html("From", "lab").'</label>
+                    <label for="lab_presence_edit_date-open">'.esc_html("From", "lab").'</label>
                     <input type="date" id="lab_presence_edit_date-open" />
+                    <div id="messErr_lab_presence_edit_date" class="invalid-feedback"></div>
                     <label for="hour-open"></label>
                     <input type="time" id="lab_presence_edit_hour-open" min="07:00"  max="20:00" required />
                     <label for="hour-close">'.esc_html("to", "lab").'</label>

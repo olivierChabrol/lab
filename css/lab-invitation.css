@@ -54,6 +54,10 @@ div[wrapped=true] h2:hover .fa-arrow-up {
   font-size: 0.9em;
   font-style: italic;
 }
+.lab_form_required_star {
+  color: red;
+  font-weight: 600;
+}
 /*Bulle de discussion*/
 
 .lab_comment_box {
@@ -114,7 +118,24 @@ div[wrapped=true] h2:hover .fa-arrow-up {
 }
 
 /***** Interface "Mes invitations" ****/
-
+#lab_status_filter {
+  display: flex;
+  height: 2em;
+  align-items: center;
+}
+#lab_status_filter label {
+  margin: 0;
+  margin-right: 1em;
+  margin-left: 0.2em;
+  line-height: 2em;
+}
+#lab_status_filter u {
+  margin-right: 1em;
+}
+#lab_select_filters {
+  display: flex;
+  justify-content: space-between;
+}
 #lab_invite_list {
   width: 100%;
 }
@@ -194,4 +215,46 @@ div[wrapped=true] h2:hover .fa-arrow-up {
   justify-content: space-around;
   align-items: center;
   border-bottom: 1px solid black;
+}
+
+/*Pagination*/
+
+#pagination-digg {
+  padding:0;
+  margin-bottom:2em;
+  display:flex;
+}
+ 
+#pagination-digg li {
+  font-size:0.75em;
+  border:solid 1px #9aafe5;
+  margin-right:2px;
+  color:#0e509e;
+  cursor: pointer;
+  display:block;
+  padding:3px 6px;
+}
+#pagination-digg #active {
+  background:#2e6ab1;
+  color:#FFFFFF;
+  font-weight:bold;
+  display:block;
+  float:left;
+  cursor: default;
+  padding:4px 6px;
+}
+#pagination-digg #active:hover {
+  border:solid 1px #9aafe5;
+}
+#pagination-digg .gris {
+  cursor: default;
+  color: gray;
+  border:solid 1px gray;
+}
+#pagination-digg .gris:hover {
+  border:solid 1px gray;
+}
+#pagination-digg li:hover
+{
+  border:solid 1px #0e509e;
 }
