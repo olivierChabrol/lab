@@ -44,7 +44,7 @@ function lab_admin_param_save($paramType, $paramName, $color = null, $paramId = 
         $color = substr($color, 1, strlen($color));
     }
 
-    if ($paramId != null)
+    if ($paramId == null)
     {
         //return !lab_admin_param_exist($paramType, $paramName);
         if (lab_admin_param_exist($paramType, $paramName)) {
