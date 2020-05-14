@@ -184,6 +184,12 @@ function checkPresenceInputs(dateElm, openElm, closeElm) {
     let valueHourClose  = $("#"+closeElm).val();
 
     // verif hour not vide et not --:--
+    if (!valueHourOpen || !valueHourClose) {
+        $("#"+openElm).addClass('is-invalid');
+        $("#"+closeElm).addClass('is-invalid');
+        $('#messErr_'+closeElm).text("Veuillez remplir correctement les heures");
+        retour = false;
+    }
 
     let debut = stringHourToMinutes(valueHourOpen);
     let fin   = stringHourToMinutes(valueHourClose);
