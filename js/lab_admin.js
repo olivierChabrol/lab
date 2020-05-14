@@ -270,7 +270,13 @@ jQuery(function($){
       $("#wp_lab_param_id").val(value);
 
       $("#lab_param_value_search").val(label);
-      $("#wp_lab_param_color_edit").val(ui.item.color);
+      let color = ui.item.color;
+      if (!color.startsWith("#"))
+      {
+        color = "#" + color;
+      }
+      $("#wp_lab_param_color_edit").val(color);
+      $("#wp_lab_param_color_edit").css("background-color", color);
       loadEditParam(value, ui.item.type, value);
       return false;
     }

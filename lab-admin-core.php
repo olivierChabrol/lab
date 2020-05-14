@@ -53,14 +53,15 @@ function lab_admin_param_save($paramType, $paramName, $color = null, $paramId = 
             //$sql = "INSERT INTO `".$wpdb->prefix."lab_params` (`id`, `type_param`, `value`) VALUES (NULL, '".$paramType."', '".$paramName."')";
             $wpdb->insert($wpdb->prefix.'lab_params', array("type_param"=>$paramType, "value"=>$paramName, "color"=>$color));
             //$results = $wpdb->get_results($sql);
+            return $wpdb->insert_id;
             
         }
     }
     else
     {
         $wpdb->update($wpdb->prefix.'lab_params', array("type_param"=>$paramType, "value"=>$paramName, "color"=>$color), array("id"=>$paramId));
+        return $paramId;
     }
-    return $wpdb->insert_id;
 }
 
 function lab_admin_param_exist($paramType, $paramName)
