@@ -764,6 +764,7 @@ function resetParamEditFields() {
   jQuery("#wp_lab_param_id").val("");
   jQuery("#lab_param_value_search").val("");
   jQuery("#wp_lab_param_color_edit").val("");
+  jQuery("#wp_lab_param_color_edit").css("background-color","#FFFFFF");
 }
 
 function load_params_type(select, selectedId = null) {
