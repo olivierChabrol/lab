@@ -224,10 +224,10 @@ function lab_present_choice($param) {
             </form> -->
             
             <label for='hour-open'></label>
-            <input type='time' name='hour-open' id='hour-open' min='07:00' max='20:00' required />
+            <input type='time' name='hour-open' id='hour-open' min='07:00' max='20:00' required class='form-control'/>
             <div id='messErr_hour-open' class='invalid-feedback'></div>
             <label for='hour-close'>".esc_html__("Jusqu'à", "lab")."</label>
-            <input type='time' name='hour-close' id='hour-close' min='07:00' max='20:00' required/>
+            <input type='time' name='hour-close' id='hour-close' min='07:00' max='20:00' required class='form-control'/>
             <div id='messErr_hour-close' class='invalid-feedback'></div>
             <label for='site-selected'>".esc_html__("sur le site", "lab")."</label>
             " . lab_html_select_str("siteId", "siteName", "custom-select", lab_admin_list_site) . "</div>

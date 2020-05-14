@@ -173,7 +173,8 @@ jQuery(function($){
  */
 function stringHourToMinutes(str)
 {
-    return 60;
+    let temps = str.split(':');
+    return ((temps[0] * 60) + temps[1]);
 }
 
 function checkPresenceInputs(dateElm, openElm, closeElm) {
@@ -183,14 +184,20 @@ function checkPresenceInputs(dateElm, openElm, closeElm) {
     let valueHourClose  = $("#"+closeElm).val();
 
     // verif hour not vide et not --:--
+    if (!valueHourOpen || !valueHourClose) {
+        $("#"+openElm).addClass('is-invalid');
+        $("#"+closeElm).addClass('is-invalid');
+        $('#messErr_'+closeElm).text("Veuillez remplir correctement les heures");
+        retour = false;
+    }
 
     let debut = stringHourToMinutes(valueHourOpen);
-    let fin = stringHourToMinutes(valueHourClose);
+    let fin   = stringHourToMinutes(valueHourClose);
 
     console.log("pour la date du " + valueDate + " commençant à " + valueHourOpen + " et finissant à " + valueHourClose);
    
     let checkDate = Date.parse(valueDate);
-    let checkHours = fin < debut;
+    let checkHours = fin > debut;
     let retour = true;
 
     if (!checkDate)
@@ -204,7 +211,7 @@ function checkPresenceInputs(dateElm, openElm, closeElm) {
     {
         $("#"+openElm).addClass('is-invalid');
         $("#"+closeElm).addClass('is-invalid');
-        $('#messErr_'+closeElm).text("l'heure fin est antérieure à l'heure de début");
+        $('#messErr_'+closeElm).text("l'heure de fin est antérieure à l'heure de début");
         retour = false;
     }
 
