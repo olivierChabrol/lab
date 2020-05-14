@@ -23,13 +23,13 @@ function lab_profile($id=0) {
 					<i style="display:none" class="fas fa-user-check" title="'.esc_html__('Valider les changements','lab').'" id="lab_confirm_change" user_id="'.$user->id.'"></i>
 				</div>';
 	$SocialIcons = '<div id="lab_profile_social">
-						<a style="display:none" class="lab_profile_social" title="Facebook" href="'.$user->social['facebook'].'" social="facebook" target="_blank"><i class="fab fa-facebook-square"></i></a>
-						<a style="display:none" class="lab_profile_social" title="Pinterest" href="'.$user->social['pinterest'].'" social="pinterest" target="_blank"><i class="fab fa-pinterest-square"></i></a>
-						<a style="display:none" class="lab_profile_social" title="Instagram" href="'.$user->social['instagram'].'" social="instagram" target="_blank"><i class="fab fa-instagram-square"></i></a>
-						<a style="display:none" class="lab_profile_social" title="Twitter" href="'.$user->social['twitter'].'" social="twitter" target="_blank"><i class="fab fa-twitter-square"></i></a>
-						<a style="display:none" class="lab_profile_social" title="Linkedin" href="'.$user->social['linkedin'].'" social="linkedin" target="_blank"><i class="fab fa-linkedin"></i></a>
-						<a style="display:none" class="lab_profile_social" title="Tumblr" href="'.$user->social['tumblr'].'" social="tumblr" target="_blank"><i class="fab fa-tumblr-square"></i></a>
-						<a style="display:none" class="lab_profile_social" title="Youtube" href="'.$user->social['youtube'].'" social="youtube" target="_blank"><i class="fab fa-youtube-square"></i></a>
+						<a style="display:none" class="lab_profile_social no-link-icon" title="Facebook" href="'.$user->social['facebook'].'" social="facebook" target="_blank"><i class="fab fa-facebook-square"></i></a>
+						<a style="display:none" class="lab_profile_social no-link-icon" title="Pinterest" href="'.$user->social['pinterest'].'" social="pinterest" target="_blank"><i class="fab fa-pinterest-square"></i></a>
+						<a style="display:none" class="lab_profile_social no-link-icon" title="Instagram" href="'.$user->social['instagram'].'" social="instagram" target="_blank"><i class="fab fa-instagram-square"></i></a>
+						<a style="display:none" class="lab_profile_social no-link-icon" title="Twitter" href="'.$user->social['twitter'].'" social="twitter" target="_blank"><i class="fab fa-twitter-square"></i></a>
+						<a style="display:none" class="lab_profile_social no-link-icon" title="Linkedin" href="'.$user->social['linkedin'].'" social="linkedin" target="_blank"><i class="fab fa-linkedin"></i></a>
+						<a style="display:none" class="lab_profile_social no-link-icon" title="Tumblr" href="'.$user->social['tumblr'].'" social="tumblr" target="_blank"><i class="fab fa-tumblr-square"></i></a>
+						<a style="display:none" class="lab_profile_social no-link-icon" title="Youtube" href="'.$user->social['youtube'].'" social="youtube" target="_blank"><i class="fab fa-youtube-square"></i></a>
 					</div>';
 	$editSocial ='<p><input style="display:none;" type="text" class="lab_profile_edit" id="lab_profile_edit_social" placeholder="'.esc_html__("Cliquez sur l'icône d'un réseau social pour le modifier","lab").'"/></p>';
 	$halFields = '<p id="lab_profile_halID">
