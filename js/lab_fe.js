@@ -84,10 +84,12 @@ function LABloadProfile() {
     $("#lab_profile_colorpicker").spectrum({
       color: $("#wp_lab_param_color").val(),
       move: function(tinycolor) {
-        jQuery("#lab_profile_card").css('background-color',tinycolor);
+        jQuery("#lab_profile_card").css('background-color',tinycolor.toHexString());
       },
       change: function(tinycolor) {
-        jQuery("#lab_profile_card").attr('bg-color',tinycolor.toHexString());
+        if (tinycolor != null) {
+          jQuery("#lab_profile_card").attr('bg-color',tinycolor.toHexString());
+        }
       },
       hide: function() {
         jQuery("#lab_profile_card").css('background-color',jQuery("#lab_profile_card").attr('bg-color'));
