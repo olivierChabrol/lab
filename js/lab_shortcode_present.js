@@ -205,7 +205,7 @@ function checkPresenceInputs(dateElm, openElm, closeElm) {
     {
         $("#"+openElm).addClass('is-invalid');
         $("#"+closeElm).addClass('is-invalid');
-        $('#messErr_'+closeElm).text("l'heure fin est antérieure à l'heure de début");
+        $('#messErr_'+closeElm).text("l'heure de fin est antérieure à l'heure de début");
         retour = false;
     }
 
