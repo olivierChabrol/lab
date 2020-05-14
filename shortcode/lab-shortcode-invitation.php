@@ -3,7 +3,7 @@
  * File Name: lab-shortcode-invitation.php
  * Description: shortcode pour afficher un formulaire de création d'invitation
  * Authors: Ivan Ivanov, Lucas Urgenti
- * Version: 1.01
+ * Version: 1.02
  */
 
 function lab_invitation($args) { 
@@ -24,6 +24,7 @@ function lab_invitation($args) {
         } else {//Token fournit, récupère les informations existantes
             $token = explode("/",$url)[1];
             $invitation=lab_invitations_getByToken($token);
+            $charges = json_decode($invitation->charges);
             if (!isset($invitation)) {
                 return esc_html__("Token d'invitation invalide",'lab');
             }
@@ -45,12 +46,16 @@ function lab_invitation($args) {
     } else {
         $host = isset(explode("/",$url)[1]) ? new labUser(lab_profile_getID(explode("/",$url)[1])) : 0 ;
     }
-    $newForm = (!$param['hostpage'] || $token=='0') ? 1 : 0 ; //Le formulaire est-il nouveau ? Si non, remplit les champs avec les 
+    $newForm = (!$param['hostpage'] || $token=='0') ? 1 : 0 ; //Le formulaire est-il nouveau ? Si non, remplit les champs avec les infos existantes
     $invitationStr = '<div id="invitationForm" hostForm='.$param['hostpage'].' token="'.(($param['hostpage'] && strlen($token)>1) ? $token : '').'" newForm='.$newForm.'>
                       <h2>'.esc_html__("Formulaire","lab").'<i class="fas fa-arrow-up"></i></h2>'.$invitationStr;
     $invitationStr .= '
         <form action="javascript:formAction()">
         <h3>'.esc_html__("Informations personnelles","lab").'</h3>
+        <div class="lab_invite_field">
+            <label for="lab_email">'.esc_html__("Email","lab").'<span class="lab_form_required_star"> *</span></label>
+            <input type="email" required id="lab_email" guest_id="" name="lab_email"value="'.(!$newForm ? $guest->email : '').'">
+        </div>
         <div class="lab_invite_row" id="lab_fullname">
             <div class="lab_invite_field">
                 <label for="lab_firstname">'.esc_html__("Prénom","lab").'<span class="lab_form_required_star"> *</span></label>
@@ -60,10 +65,6 @@ function lab_invitation($args) {
                 <label for="lab_lastname">'.esc_html__("Nom","lab").'<span class="lab_form_required_star"> *</span></label>
                 <input type="text" required id="lab_lastname" name="lab_lastname" value="'.(!$newForm ? $guest->last_name : '').'">
             </div>
-        </div>
-        <div class="lab_invite_field">
-            <label for="lab_email">'.esc_html__("Email","lab").'<span class="lab_form_required_star"> *</span></label>
-            <input type="email" required id="lab_email" name="lab_email"value="'.(!$newForm ? $guest->email : '').'">
         </div>
         <div id="lab_phone_country">
             <div class="lab_invite_field">
@@ -92,7 +93,7 @@ function lab_invitation($args) {
     $invitationStr .= 
                 '<option value="other">'.esc_html__("Autre","lab").'</option>
             </select>
-            <input hidden type="text" id="lab_mission_other" value="'.(!$newForm ? $invitation->mission_objective : '').'">
+            <input style="display:none" type="text" id="lab_mission_other" value="'.(!$newForm ? $invitation->mission_objective : '').'">
             <p style="display:none" id="lab_mission_other_desc">'.esc_html__("Précisez la nature de votre mission ici.","lab").'</p>
         </div>
         <hr>
@@ -125,7 +126,7 @@ function lab_invitation($args) {
                 <input hidden type="text" id="lab_transport_to_other" value="'.(!$newForm ? $invitation->travel_mean_to : '').'">
                 <p>'.esc_html__("Moyen de transport depuis votre domicile vers notre laboratoire","lab").'</p>
                 <label for="lab_cost_to">'.esc_html__("Coût estimé du trajet","lab").' :</label>
-                <input type="number" min=0 step="0.1" id="lab_cost_to" name="lab_cost_to" placeholder="'.esc_html__("en €",'lab').'"/>
+                <input type="number" min=0 step="0.1" id="lab_cost_to" '.(!$newForm ? 'value="'.$charges->travel_to.'"' : '').' name="lab_cost_to" placeholder="'.esc_html__("en €",'lab').'"/>
             </div>
             <div class="lab_invite_field">
                 <label for="lab_transport_from">'.esc_html__("Depuis l'I2M","lab").'</label>
@@ -141,7 +142,7 @@ function lab_invitation($args) {
                 <input hidden type="text" id="lab_transport_from_other" value="'.(!$newForm ? $invitation->travel_mean_from : '').'">
                 <p>'.esc_html__("Moyen de transport depuis notre laboratoire vers votre domicile","lab").'</p>
                 <label for="lab_cost_from">'.esc_html__("Coût estimé du trajet","lab").' :</label>
-                <input type="number" min=0 step="0.1" id="lab_cost_from" name="lab_cost_from" placeholder="'.esc_html__("en €",'lab').'"/>
+                <input type="number" min=0 step="0.1" id="lab_cost_from" '.(!$newForm ? 'value="'.$charges->travel_from.'"' : '').' name="lab_cost_from" placeholder="'.esc_html__("en €",'lab').'"/>
             </div>
         </div> 
         <div id="lab_date" class="lab_invite_row">
@@ -162,15 +163,15 @@ function lab_invitation($args) {
         <div class="lab_invite_row">
             <div class="lab_invite_field">
             <label for="lab_cost_hostel">'.esc_html__("Hôtel","lab").' :</label>
-                <input type="number" min=0 step="0.1" id="lab_cost_hostel" name="lab_cost_hostel" placeholder="'.esc_html__("en €",'lab').'"/>
+                <input type="number" min=0 step="0.1" id="lab_cost_hostel" '.(!$newForm ? 'value="'.$charges->hostel.'"' : '').' name="lab_cost_hostel" placeholder="'.esc_html__("en €",'lab').'"/>
                 <label for="lab_cost_meals">'.esc_html__("Repas","lab").' :</label>
-                <input type="number" min=0 step="0.1" id="lab_cost_meals" name="lab_cost_meals" placeholder="'.esc_html__("en €",'lab').'"/>
+                <input type="number" min=0 step="0.1" id="lab_cost_meals" name="lab_cost_meals" '.(!$newForm ? 'value="'.$charges->meals.'"' : '').' placeholder="'.esc_html__("en €",'lab').'"/>
             </div>
             <div class="lab_invite_field">
                 <label for="lab_cost_taxi">'.esc_html__("Taxi","lab").' :</label>
-                <input type="number" min=0 step="0.1" id="lab_cost_taxi" name="lab_cost_taxi" placeholder="'.esc_html__("en €",'lab').'"/>
+                <input type="number" min=0 step="0.1" id="lab_cost_taxi" name="lab_cost_taxi" '.(!$newForm ? 'value="'.$charges->taxi.'"' : '').' placeholder="'.esc_html__("en €",'lab').'"/>
                 <label for="lab_cost_other">'.esc_html__("Autre","lab").' :</label>
-                <input type="number" min=0 step="0.1" id="lab_cost_other" name="lab_cost_other" placeholder="'.esc_html__("en €",'lab').'"/>
+                <input type="number" min=0 step="0.1" id="lab_cost_other" name="lab_cost_other" '.(!$newForm ? 'value="'.$charges->other.'"' : '').' placeholder="'.esc_html__("en €",'lab').'"/>
             </div>
         </div>
         <hr>';
@@ -215,7 +216,7 @@ function lab_invitation($args) {
             </div>
             <div class="lab_invite_field">
                     <label for="lab_research_contrat">'.esc_html__("Contrats de recherche","lab").'<span class="lab_form_required_star"> *</span></label>
-                    <input type="text" id="lab_research_contrat" name="lab_research_contrat">
+                    <input type="text" id="lab_research_contrat" name="lab_research_contrat" value="'.(!$newForm ? $invitation->research_contract : '').'">
             </div>
             <div class="lab_invite_row">
                 <div class="lab_invite_field">
@@ -260,7 +261,40 @@ function lab_invitation($args) {
         }
     return $invitationStr;
 }
-
+function lab_invitations_filters() {
+    $out = '<div id="lab_filter">
+            <h5>'.esc_html__("Filtres",'lab').'</h5>
+            <form id="lab_status_filter"><u>'.esc_html__("Statuts",'lab').' :</u> ';
+    foreach ([1,10,20,30] as $status) {
+        $out .= "<input type='checkbox' id='lab_filter_status_$status' value='$status'><label for='lab_filter_status_$status'>".lab_invitations_getStatusName($status)."</label><br/>";
+    }
+    $nextYear = date('Y')+1;
+    $years = '';
+    while (2020 <= $nextYear) {
+        $years .= "<option value=$nextYear>$nextYear</option>";
+        $nextYear--;
+    }
+    $out .= '</form>
+    <form id="lab_select_filters">
+        <div>
+            &nbsp<label for="lab_results_number">'.esc_html__("Année","lab").' : </label>
+            <select id="lab_filter_year">
+                <option selected value="all">'.esc_html__("Toutes",'lab')."</option>".$years.'
+            </select>
+        </div>
+        <div>    
+            &nbsp<label for="lab_results_number">'.esc_html__("Nombre de résultats par page","lab").' : </label>
+            <select id="lab_results_number">
+                <option selected value="5">5</option>
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="50">50</option>
+            </select>
+        </div>
+    </form>'; 
+    $out .= '</div>';
+    return $out;
+}
 function lab_invitations_interface($args) {
     $param = shortcode_atts(array(
         'view' => 'host' //host, chief or admin 
@@ -271,19 +305,19 @@ function lab_invitations_interface($args) {
     $listInvitationStr = '';
     switch ($param['view']) {
         case 'host':
-            $list = lab_invitations_getByHost(get_current_user_id());
+            $list = lab_invitations_getByHost(get_current_user_id())[1];
             break;
         case 'chief':
-            $listInvitationStr .= '<h3>Groupes dont vous êtes le chef :</h3><select id="lab_groupSelect">';
+            $listInvitationStr .= '<h5>Groupes dont vous êtes le chef :</h5><select id="lab_groupSelect">';
             foreach (lab_admin_get_groups_byChief(get_current_user_id()) as $g)
                 {
                     $listInvitationStr .= '<option value="'.$g->id.'">'.$g->group_name.'</option>';
                 }
             $listInvitationStr .='</select id="lab_invite_groupSelect">';
-            $list = lab_invitations_getByGroup(lab_admin_get_groups_byChief(get_current_user_id())[0]->id);
+            $list = lab_invitations_getByGroup(lab_admin_get_groups_byChief(get_current_user_id())[0]->id)[1];
             break;
         case 'admin':
-            $listInvitationStr .= '<h3>Groupes Préférés :</h3>
+            $listInvitationStr .= '<h5>'.esc_html__("Groupes Préférés",'lab').' :</h5>
             <div id="lab_prefGroupsForm">
                 <select id="lab_prefGroupsSelect"><option value="">Sélectionnez un groupe</option></select>
                 <button id="lab_addPrefGroup">Ajouter aux préférés</button>
@@ -302,6 +336,7 @@ function lab_invitations_interface($args) {
             }
             break;
     }
+    $listInvitationStr .= lab_invitations_filters();
     $listInvitationStr .= '<table view="'.$param['view'].'" id="lab_invite_list">
                             <thead>
                                 <tr id="lab_list_header">'
@@ -319,20 +354,10 @@ function lab_invitations_interface($args) {
                             </thead>
                             <tbody id="lab_invitesListBody">';
     
-    $listInvitationStr .= lab_invitations_interface_fromList($list,$param['view']);
+    //$listInvitationStr .= lab_invitations_interface_fromList($list,$param['view']);
     $listInvitationStr .=   '</tbody>
                           </table>';
-    $listInvitationStr .=   '<ul id="pagination-digg">
-                                <li class="previous-off">« Précédent</li>
-                                <li class="active">1</li>
-                                <li><a href="/?page=2">2</a></li>
-                                <li><a href="/?page=3">3</a></li>
-                                <li><a href="/?page=4">4</a></li>
-                                <li><a href="/?page=5">5</a></li>
-                                <li><a href="/?page=6">6</a></li>
-                                <li><a href="/?page=7">7</a></li>
-                                <li class="next"><a href="/?page=2">Suivant »</a></li>
-                            </ul><br>';
+    $listInvitationStr .=  '<div id="lab_pages">'.lab_invitations_pagination(1,1).'</div><br/><br/>';
     if ($param['view']=='admin') {
         $listInvitationStr .=
         '<h2 id="lab_invite_detail_title">'.esc_html__("Détails de l'invitation",'lab').'<i class="fas fa-arrow-up"></i></h2>
@@ -350,7 +375,16 @@ function lab_invitations_interface($args) {
     }
     return $listInvitationStr;
 }
-
+function lab_invitations_pagination($pages, $currentPage) {
+    $out = '<ul id="pagination-digg">';
+    $out .= '<li class="page_previous'.($currentPage>1 ? '">' : ' gris">').'« Précédent</li>';
+    for ($i=1; $i<=$pages; $i++) {
+        $out .= '<li page='.$i.' class="page_number"'.($currentPage!=$i ? ">$i" : " id='active'>$i").'</li>';
+    }
+    $out .= '<li class="page_next'.($pages>1 && $currentPage<$pages ? '">' : ' gris">').'Suivant »</li>';
+    $out .= '</ul>';
+    return $out;
+}
 function lab_invitations_interface_fromList($list,$view) {
     $listStr = '';
     if (count($list)>0) {
@@ -379,7 +413,7 @@ function lab_invitations_interface_fromList($list,$view) {
                             .($view!='admin' ? '<td><a href="/invite/'. $invitation->token.'">'.esc_html__("Modifier",'lab').'</a>' 
                             : '<td><button class="lab_invite_showDetail" token="'.$invitation->token.'">'.esc_html__("Détails","lab").'</button>').
                             ($view=='admin'&& $invitation->status==20 ?
-                            '<button title="'.esc_html("Cliquez pour prendre en charge l'invitation","lab").'" class="lab_invite_takeCharge">Gérer</button></td>' : '</td>').
+                            '<button title="'.esc_html("Cliquez pour prendre en charge l'invitation","lab").'" token="'.$invitation->token.'" class="lab_invite_takeCharge">Gérer</button></td>' : '</td>').
                         '</tr>';
         }
     } else {
@@ -427,6 +461,12 @@ function lab_invitations_mail($type=1, $guest, $invite) {
 }
 function lab_InviteForm($who,$guest,$invite) {
     $host = new LabUser($invite['host_id']);
+    $chargesList = '<ul>';
+    $charges = json_decode($invite['charges']);
+    foreach ($charges as $el => $value) {
+        $chargesList .= "<li><i>$el : </i>$value €</li>";
+    }
+    $chargesList .= '</ul>';
     $out = '<p><b>'.esc_html__("Récapitulatif de la demande d'invitation",'lab').' : </b></p>
             <p><u>'.esc_html__("Informations personnelles de l'invité",'lab').' :</u></p>
                 <ul>
@@ -447,12 +487,13 @@ function lab_InviteForm($who,$guest,$invite) {
                     <li><i>'.esc_html__("Depuis l'I2M",'lab').' : </i>'.$invite['travel_mean_from'].'</li>
                 </ul></li>
                 <li><i>'.esc_html__("Date d'arrivée",'lab').' : </i>'.$invite['start_date'].'</li>
-                <li><i>'.esc_html__("Date de départ",'lab').' : </i>'.$invite['end_date'].'</li>';
-                
+                <li><i>'.esc_html__("Date de départ",'lab').' : </i>'.$invite['end_date'].'</li>
+                <li><u>Frais : </u>'.$chargesList.'</li>';
     if($who=='host' || $who=='admin')
     {
         $out .= '<li><i>'.esc_html__("Estimation du coût",'lab').' : </i>'.$invite['estimated_cost'].'</li>
-                 <li><i>'.esc_html__("Origine du crédit",'lab').' : </i>'.(is_numeric($invite['funding_source']) ? AdminParams::get_param($invite['funding_source']) : $invite['funding_source']).'</li>';
+                 <li><i>'.esc_html__("Origine du crédit",'lab').' : </i>'.(is_numeric($invite['funding_source']) ? AdminParams::get_param($invite['funding_source']) : $invite['funding_source']).'</li>
+                 <li><i>'.esc_html__("Contrat de recherche",'lab').' : </i>'.$invite['research_contract'].'</li>';
     }
     $out .= '</ul>';
     return $out;
@@ -498,15 +539,15 @@ function lab_invitations_getStatusName($status) {
         break;
         case 10: 
             return "<span style='color:#00c49f' class='lab_infoBulle' title='".esc_html__("Cette invitation a été complétée, le responsable peut maintenant la valider pour l'envoyer au pôle budget.","lab")."'>"
-            .esc_html__("Complétée","lab");
+            .esc_html__("Complétée","lab")."</span>";
         break;
         case 20:
             return "<span style='color:#c00900' class='lab_infoBulle' title='".esc_html__("Cette invitation a été validée et envoyée au pôle budget.","lab")."'>"
-            .esc_html__("Validée","lab");
+            .esc_html__("Validée","lab")."</span>";
         break; 
         case 30:
             return "<span style='color:#289600' class='lab_infoBulle' title='".esc_html__("Cette invitation a été prise en charge par un administratif du pôle budget.","lab")."'>"
-            .esc_html__("Prise en charge","lab");
+            .esc_html__("Prise en charge","lab")."</span>";
         break; 
         default:
             # code...
@@ -526,5 +567,3 @@ function lab_invite_prefGroupsList($user_id) {
 }
 
 ?>
-
-
