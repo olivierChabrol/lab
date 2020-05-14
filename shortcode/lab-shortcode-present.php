@@ -206,7 +206,9 @@ function lab_present_choice($param) {
 
             <label for='date-open'>".esc_html__("Le", "lab")."</label>
             <input type='date' name='date-open' id='date-open' class='form-control'/>
-            
+            <div id='messErrDate'class='invalid-feedback'></div>
+
+
             <!-- <form id='meetingForm' class='form-horizontal'>
             <div class='form-group'>
                 <label for'date-open' class='control-label'>".esc_html__("Le", "lab")."</label>
