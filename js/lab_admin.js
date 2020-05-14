@@ -270,7 +270,8 @@ jQuery(function($){
       $("#wp_lab_param_id").val(value);
 
       $("#lab_param_value_search").val(label);
-      loadEditParam(value, ui.item.type, value)
+      $("#wp_lab_param_color_edit").val(ui.item.color);
+      loadEditParam(value, ui.item.type, value);
       return false;
     }
   });
@@ -285,20 +286,29 @@ jQuery(function($){
   });
 
   $('#lab_tab_param_delete').click(function(){
-    paramDelete($("#wp_lab_param_type").val());
+    $("#lab_admin_param_modal_param_id").val($("#wp_lab_param_type").val());
+    $("#lab_admin_param_delete").modal();
+    //paramDelete($("#wp_lab_param_type").val());
   });
 
   $("#lab_tab_param_save").click(function(){
-    saveParam(null, jQuery("#wp_lab_param_type").val(), jQuery("#wp_lab_param_value").val(), load_params_type_after_new_param);
+    saveParam(null, jQuery("#wp_lab_param_type").val(), jQuery("#wp_lab_param_value").val(), jQuery("#wp_lab_param_color").val(), load_params_type_after_new_param);
   });
 
   $("#lab_tab_param_save_edit").click(function(){
-    saveParam(jQuery("#wp_lab_param_id").val(), jQuery("#wp_lab_param_type_edit").val(), jQuery("#lab_param_value_search").val(), resetParamEditFields);
+    saveParam(jQuery("#wp_lab_param_id").val(), jQuery("#wp_lab_param_type_edit").val(), jQuery("#lab_param_value_search").val(), jQuery("#wp_lab_param_color_edit").val(), resetParamEditFields);
   });
 
   $("#lab_tab_param_delete_edit").click(function(){
-    paramDelete($("#wp_lab_param_id").val());
+    $("#lab_admin_param_modal_param_name").val($("#lab_param_value_search").val());
+    $("#lab_admin_param_modal_param_id").val($("#wp_lab_param_id").val());
+    $("#lab_admin_param_delete").modal();
+    //paramDelete($("#wp_lab_param_id").val());
     resetParamEditFields();
+  });
+
+  $("#lab_admin_param_delete_confirm").click(function (){
+    paramDelete($("#lab_admin_param_modal_param_id").val());
   });
 
   $('#lab_createGroup_createRoot').click(function(){
@@ -690,14 +700,16 @@ function createGroup(params) {
 
 function load_params_type_after_new_param() {
   jQuery("#wp_lab_param_value").val("");
+  jQuery("#wp_lab_param_color").val("");
   load_params_type('#wp_lab_param_type');
 }
 
-function saveParam(paramId, paramType, paramValue, callAfterComplete) {
+function saveParam(paramId, paramType, paramValue, paramColor, callAfterComplete) {
   var data = {
     'action' : 'save_param',
     'type' : paramType,
     'value' : paramValue,
+    'color' : paramColor,
   };
   if (paramId != null) {
     data = {
@@ -705,6 +717,7 @@ function saveParam(paramId, paramType, paramValue, callAfterComplete) {
       'id' : paramId,
       'type' : paramType,
       'value' : paramValue,
+      'color' : paramColor,
     };
   }
   callAjax(data, "Param " + paramValue + " successfully created", callAfterComplete, null, null);
@@ -722,15 +735,18 @@ function paramDelete(paramId) {
   jQuery.post(LAB.ajaxurl, data, function(response) {
     if(response.success) {
       load_params_type('#wp_lab_param_type', null);
+      toast_success("Param deleted succesfully");
+    }
+    else {
+      toast_error(response.data);
     }
   });
 }
 
 function resetParamEditFields() {
-  jQuery("#lab_param_value_search").val("");
   jQuery("#wp_lab_param_id").val("");
   jQuery("#lab_param_value_search").val("");
-  jQuery("#lab_param_value_search").val("");
+  jQuery("#wp_lab_param_color_edit").val("");
 }
 
 function load_params_type(select, selectedId = null) {

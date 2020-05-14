@@ -1,7 +1,7 @@
 
 // Notifications "toast" affichant une erreur ou un succès lors de la requête de création de groupe.
 function toast_error(message) {
-  $.toast({
+  jQuery.toast({
     text: message,
     heading: 'Error',
     icon: 'error',

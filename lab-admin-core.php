@@ -38,6 +38,12 @@ function lab_admin_param_save($paramType, $paramName, $color = null)
     {
         $color = null;
     }
+
+    if (startsWith($color, "#"))
+    {
+        $color = substr($color, 1, strlen($color));
+    }
+
     //return !lab_admin_param_exist($paramType, $paramName);
     if (lab_admin_param_exist($paramType, $paramName)) {
         return false;
@@ -257,7 +263,7 @@ function lab_admin_present_check_overlap_presency($userId, $startDate, $endDate,
 function lab_admin_param_delete_by_id($paramId) {
     global $wpdb;
     // can't delete param Id 1, because it is the default parameter
-    if ($paramId < 6 ) {
+    if ($paramId > 8 ) {
         $wpdb->delete($wpdb->prefix.'lab_params', array('id' => $paramId));
         return true;
     }
@@ -1259,3 +1265,8 @@ function correctNumber($currentNumber) { // currentNumber = esc_html($r->phone)
     $currentNumber = chunk_split($currentNumber, 2, ' ');
     return $currentNumber;
 }
+function startsWith ($string, $startString) 
+{ 
+    $len = strlen($startString); 
+    return (substr($string, 0, $len) === $startString); 
+} 

@@ -82,7 +82,7 @@ function lab_admin_param_search_value() {
     $items = array();
   
     foreach ($results as $r) {
-      $items[] = array(label => $r->value, value => $r->id, type=>$r->type_param);
+      $items[] = array("label" => $r->value, "value" => $r->id, "type"=>$r->type_param, "color"=>$r->color);
     }
     wp_send_json_success($items);
   }
