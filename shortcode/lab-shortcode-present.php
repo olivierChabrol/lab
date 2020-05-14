@@ -7,15 +7,11 @@
 */
 
 /*** 
- * Shortcode use : [lab-directory {as-left} {group}]
-     as-left="yes" OR as-left="no"
-     group="AA" or whatever group's acronym
+  * Shortcode use : [lab-present {allow-external}]
+     allow-external=true OR allow-external=false
 
-     add this to CSS
-
-    .labopenLetter {
-        font-size: x-large;
-    }
+  * Shortcode use : [lab-present-choice]
+     no parameters
 ***/ 
 
 function lab_present_select($param) {

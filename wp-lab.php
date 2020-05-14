@@ -247,14 +247,6 @@ function wp_lab_fe_enqueues()
   wp_enqueue_script('SpectrumJS', plugins_url('js/spectrum.js',__FILE__), array('jquery','wp-i18n'), '1.8.0', true);
   wp_enqueue_style('SpectrumCSS',plugins_url('css/spectrum.css',__FILE__));
   
-  //QUEUE FOR BOOTSTRAP CALENDAR FORM
-  wp_register_script('moment', plugins_url("js/moment.min.js", __FILE__), array('jquery'),'3.25.2', false);
-  wp_enqueue_style('datetimepicker', plugins_url('css/datepicker.min.css',__FILE__), '4.17.47', false);
-  wp_register_script('datepicker', plugins_url("js/bootstrap-datepicker.min.js", __FILE__), array('jquery'), '4.17.47', false);
-  wp_register_script('datetimepicker', plugins_url("js/bootstrap-datetimepicker.min.js", __FILE__), array('jquery'), '4.17.47', false);
-  wp_register_script('fr-fr', plugins_url("js/fr-fr.js", __FILE__), array('jquery'), '1.0.0', false);
-
-
   localize_script('lab-fe');
   wp_set_script_translations( 'lab-fe', 'lab', dirname(__FILE__).'/lang' );
   wp_enqueue_script('fontAwesome',"https://kit.fontawesome.com/341f99cb81.js",array(),"3.2",true);
