@@ -206,7 +206,7 @@ function lab_present_choice($param) {
 
             <label for='date-open'>".esc_html__("Le", "lab")."</label>
             <input type='date' name='date-open' id='date-open' class='form-control'/>
-            <div id='messErrDate'class='invalid-feedback'></div>
+            <div id='messErr_date-open' class='invalid-feedback'></div>
 
 
             <!-- <form id='meetingForm' class='form-horizontal'>
@@ -225,8 +225,10 @@ function lab_present_choice($param) {
             
             <label for='hour-open'></label>
             <input type='time' name='hour-open' id='hour-open' min='07:00' max='20:00' required />
+            <div id='messErr_hour-open' class='invalid-feedback'></div>
             <label for='hour-close'>".esc_html__("Jusqu'à", "lab")."</label>
             <input type='time' name='hour-close' id='hour-close' min='07:00' max='20:00' required/>
+            <div id='messErr_hour-close' class='invalid-feedback'></div>
             <label for='site-selected'>".esc_html__("sur le site", "lab")."</label>
             " . lab_html_select_str("siteId", "siteName", "custom-select", lab_admin_list_site) . "</div>
             <div class=\"input-group mb-3\">

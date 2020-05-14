@@ -88,14 +88,7 @@ jQuery(function($){
         });*/
 
         if (checkPresenceInputs('date-open', 'hour-open', 'hour-close')) {
-            //console.log("je sauvegarde");
-            $('#date-open').addClass('is-valid');
             savePresence(null, $("#userId").val(), $("#date-open").val(), $("#hour-open").val(), $("#hour-close").val(), $("#siteId").val(), $("#comment").val(), 0);
-        } else {
-            //console.log("je sauvegarde pas");
-            $('#date-open').addClass('is-invalid');
-            $('#messErrDate').text("La date n'est pas correcte");
-            //$('#date-open').after('<div id="messErrDate" class="invalid-feedback">La date n\'est pas correcte</div>');
         }
     });
 
@@ -173,41 +166,49 @@ jQuery(function($){
     });
 });
 
+/**
+ * convertie un string de format hh:: en minutes hh*60+mm
+ * @param {string} str 
+ * @return {int} minutes
+ */
+function stringHourToMinutes(str)
+{
+    return 60;
+}
+
 function checkPresenceInputs(dateElm, openElm, closeElm) {
 
-    /*var errDate = document.getElementById("#messErrDate");
-    if(errDate) {
-        var errDate = document.getElementById("#messErrDate").innerHTML("");
-    }*/
-    let valueDate       = document.getElementById(dateElm).value;
-    let valueHourOpen   = document.getElementById(openElm).value;
-    let valueHourClose  = document.getElementById(closeElm).value;
+    let valueDate       = $("#"+dateElm).val();
+    let valueHourOpen   = $("#"+openElm).val();
+    let valueHourClose  = $("#"+closeElm).val();
 
-    console.log("pour la date du " + valueDate + " commençant à " + openElm + " et finissant à " + closeElm);
-    /*
-    if (Date.parse(valueDate)) {
-        return true;
-    } else {
-        $(dateElm).addClass('form-control is-invalid');
-    }*/
+    // verif hour not vide et not --:--
 
+    let debut = stringHourToMinutes(valueHourOpen);
+    let fin = stringHourToMinutes(valueHourClose);
+
+    console.log("pour la date du " + valueDate + " commençant à " + valueHourOpen + " et finissant à " + valueHourClose);
+   
     let checkDate = Date.parse(valueDate);
-    let checkHours = valueHourOpen < valueHourClose;
-    if (checkDate && checkHours) {
-        console.log("tout est bon!!!");
-        return true;
-    } else if (!checkDate && checkHours){ //si uniquement les heures sont ok
-        //$(dateElm).addClass('is-invalid');
-        console.log("heures bonnes");
-    } else if (checkDate && !checkHours){ //si uniquement la date est ok
-        //$(openElm).addClass('is-invalid');
-        console.log("date bonne");
-    } else { // si les deux sont pas bons
-        //$(dateElm).addClass('is-invalid');
-        //$(openElm).addClass('is-invalid');
-        console.log("rien n'est bon");
+    let checkHours = fin < debut;
+    let retour = true;
+
+    if (!checkDate)
+    {
+        $("#"+dateElm).addClass('is-invalid');
+        $('#messErr_'+dateElm).text("La date n'est pas correcte");
+        retour = false;
     }
 
+    if (!checkHours)
+    {
+        $("#"+openElm).addClass('is-invalid');
+        $("#"+closeElm).addClass('is-invalid');
+        $('#messErr_'+closeElm).text("l'heure fin est antérieure à l'heure de début");
+        retour = false;
+    }
+
+    return retour;
 }
 
 function getEndDate(startDate) {
