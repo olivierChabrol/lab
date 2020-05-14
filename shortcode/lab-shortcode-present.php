@@ -60,22 +60,7 @@ function lab_present_select($param) {
             $users[$user->first_name." ".$user->last_name][date('d', $user->hour_start)][] = $user;
         }
     }
-    /*
-    var_dump($users);
-    if (true) {
-        $str .= "<h3>users</h3>";
-        foreach($users as $k=>$v) {
-            $str .= $k."&nbsp;".sizeof($v)."<br>";
-            $i = 0;
-            foreach($v as $d=>$a) {
-                foreach($a as $u) {
-                    $str .= "&nbsp;&nbsp;&nbsp; [".$i."]".$u->first_name." ".$u->last_name." *".$u->comment."* ".date("d-m-Y",$u->hour_start)."<br>";
-                    $i++;
-                }
-            }
-        }
-    }
-    //*/
+
     global $wp;
     // get current url with query string.
     $current_url =  home_url( $wp->request ); 
@@ -220,11 +205,28 @@ function lab_present_choice($param) {
             <input id=\"external\" type=\"hidden\"  val=\"0\"/>
 
             <label for='date-open'>".esc_html__("Le", "lab")."</label>
-            <input type='date' name='date-open' id='date-open' />
+            <input type='date' name='date-open' id='date-open' class='form-control'/>
+            <div id='messErrDate'class='invalid-feedback'></div>
+
+
+            <!-- <form id='meetingForm' class='form-horizontal'>
+            <div class='form-group'>
+                <label for'date-open' class='control-label'>".esc_html__("Le", "lab")."</label>
+                <div class='dateContainer'>
+                    <div class='input-group date' id='datetimePicker'>
+                        <input type='text' data-provide='datepicker' id='date-open' class='form-control' name='date-open' placeholder='MM/DD/YYYY' />
+                        <span class='input-group-addon'>
+                            <i class='fas fa-calendar-alt'></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            </form> -->
+            
             <label for='hour-open'></label>
-            <input type='time' name='hour-open' id='hour-open' />
+            <input type='time' name='hour-open' id='hour-open' min='07:00' max='20:00' required />
             <label for='hour-close'>".esc_html__("Jusqu'à", "lab")."</label>
-            <input type='time' name='hour-close' id='hour-close' />
+            <input type='time' name='hour-close' id='hour-close' min='07:00' max='20:00' required/>
             <label for='site-selected'>".esc_html__("sur le site", "lab")."</label>
             " . lab_html_select_str("siteId", "siteName", "custom-select", lab_admin_list_site) . "</div>
             <div class=\"input-group mb-3\">
@@ -383,9 +385,9 @@ function editDiv()
                     <label for="date-open">'.esc_html("From", "lab").'</label>
                     <input type="date" id="lab_presence_edit_date-open" />
                     <label for="hour-open"></label>
-                    <input type="time" id="lab_presence_edit_hour-open" />
+                    <input type="time" id="lab_presence_edit_hour-open" min="07:00"  max="20:00" required />
                     <label for="hour-close">'.esc_html("to", "lab").'</label>
-                    <input type="time" id="lab_presence_edit_hour-close" />
+                    <input type="time" id="lab_presence_edit_hour-close" min="07:00" max="20:00"/>
                     <div class="input-group mb-3">
                         <label for="site-selected">'.esc_html("on the site", "lab").'</label>'. lab_html_select_str("lab_presence_edit_siteId", "siteName", "custom-select", lab_admin_list_site).'
                     </div>

@@ -64,13 +64,41 @@ jQuery(function($){
             $("#comment").focus();
             return;
         }
+         /*
+        $('#datetimePicker').datetimepicker();
+        $('#meetingForm').bootstrapValidator({
+            feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+            },
+            fields: {
+                meeting: {
+                    validators: {
+                        date: {
+                            format: 'MM/DD/YYYY h:m A',
+                            message: 'The value is not a valid date'
+                        }
+                    }
+                }
+            }
+        });
+        $('#datetimePicker').on('dp.change dp.show', function(e) {
+            $('#meetingForm').bootstrapValidator('revalidateField', 'meeting');
+        });*/
 
-        console.log("external : " + $("#external").val());
-        
-        if (checkPresenceInputs($("#date-open"))) {
+        if (checkPresenceInputs('date-open', 'hour-open', 'hour-close')) {
+            //console.log("je sauvegarde");
+            $('#date-open').addClass('is-valid');
             savePresence(null, $("#userId").val(), $("#date-open").val(), $("#hour-open").val(), $("#hour-close").val(), $("#siteId").val(), $("#comment").val(), 0);
+        } else {
+            //console.log("je sauvegarde pas");
+            $('#date-open').addClass('is-invalid');
+            $('#messErrDate').text("La date n'est pas correcte");
+            //$('#date-open').after('<div id="messErrDate" class="invalid-feedback">La date n\'est pas correcte</div>');
         }
     });
+
     $("#lab_presence_edit_dialog").modal("hide");
     $('#lab_presence_edit_dialog').on('shown.bs.modal', function () {
         $('#lab_presence_edit_date-open').trigger('focus');
@@ -145,9 +173,41 @@ jQuery(function($){
     });
 });
 
-function checkPresenceInputs(dateElm) {
-    
-    return true;
+function checkPresenceInputs(dateElm, openElm, closeElm) {
+
+    /*var errDate = document.getElementById("#messErrDate");
+    if(errDate) {
+        var errDate = document.getElementById("#messErrDate").innerHTML("");
+    }*/
+    let valueDate       = document.getElementById(dateElm).value;
+    let valueHourOpen   = document.getElementById(openElm).value;
+    let valueHourClose  = document.getElementById(closeElm).value;
+
+    console.log("pour la date du " + valueDate + " commençant à " + openElm + " et finissant à " + closeElm);
+    /*
+    if (Date.parse(valueDate)) {
+        return true;
+    } else {
+        $(dateElm).addClass('form-control is-invalid');
+    }*/
+
+    let checkDate = Date.parse(valueDate);
+    let checkHours = valueHourOpen < valueHourClose;
+    if (checkDate && checkHours) {
+        console.log("tout est bon!!!");
+        return true;
+    } else if (!checkDate && checkHours){ //si uniquement les heures sont ok
+        //$(dateElm).addClass('is-invalid');
+        console.log("heures bonnes");
+    } else if (checkDate && !checkHours){ //si uniquement la date est ok
+        //$(openElm).addClass('is-invalid');
+        console.log("date bonne");
+    } else { // si les deux sont pas bons
+        //$(dateElm).addClass('is-invalid');
+        //$(openElm).addClass('is-invalid');
+        console.log("rien n'est bon");
+    }
+
 }
 
 function getEndDate(startDate) {
