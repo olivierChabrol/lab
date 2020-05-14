@@ -887,12 +887,19 @@ function lab_invitations_chiefList_update() {
   $sortBy = isset($_POST['sortBy']) ? $_POST['sortBy'] : 'start_date' ;
   $value = isset($_POST['value']) ? $_POST['value'] : '5' ;
   $page = isset($_POST['page']) ? $_POST['page'] : '1' ;
+  $status = isset($_POST['status']) ? $_POST['status'] : [1,10,20,30] ;
+  $year = isset($_POST['year']) && strlen($_POST['year'])==4 ? $_POST['year'] : 'all' ;
+  $statusList = '(';
+  foreach ($status as $elem) {
+    $statusList .= $elem.',';
+  }
+  $statusList = substr($statusList, 0, -1).')';
   if ( ! in_array($sortBy, array("start_date","host_group_id","guest_id","host_id","mission_objective","end_date","estimated_cost","status","maximum_cost")) ) {
     //On prévient les injections SQL en empêchant tout argument qui n'est pas un nom de colonne
     $sortBy = 'start_date';
   }
   $order = (isset($_POST['order']) && $_POST['order'] == 'asc') ? 'ASC' : 'DESC';
-  $list = lab_invitations_getByGroup($_POST['group_id'],array('order'=>$order, 'sortBy'=>$sortBy, 'page'=>$page, 'value'=>$value));
+  $list = lab_invitations_getByGroup($_POST['group_id'],array('order'=>$order, 'sortBy'=>$sortBy, 'page'=>$page, 'value'=>$value, 'status'=>$statusList, 'year'=>$year));
   wp_send_json_success([$list[0],lab_invitations_interface_fromList($list[1],'chief')]);
 }
 
@@ -900,13 +907,20 @@ function lab_invitations_adminList_update() {
   $sortBy = isset($_POST['sortBy']) ? $_POST['sortBy'] : 'start_date' ;
   $value = isset($_POST['value']) ? $_POST['value'] : '5' ;
   $page = isset($_POST['page']) ? $_POST['page'] : '1' ;
+  $status = isset($_POST['status']) ? $_POST['status'] : [1,10,20,30] ;
+  $year = isset($_POST['year']) && strlen($_POST['year'])==4 ? $_POST['year'] : 'all' ;
+  $statusList = '(';
+  foreach ($status as $elem) {
+    $statusList .= $elem.',';
+  }
+  $statusList = substr($statusList, 0, -1).')';
   if ( ! in_array($sortBy, array("start_date","host_group_id","guest_id","host_id","mission_objective","end_date","estimated_cost","status","maximum_cost")) ) {
     //On prévient les injections SQL en empêchant tout argument qui n'est pas un nom de colonne
     $sortBy = 'start_date';
   }
   $order = (isset($_POST['order']) && $_POST['order'] == 'asc') ? 'ASC' : 'DESC';
   if (count($_POST['group_ids'])>0) {
-    $list = lab_invitations_getByGroups($_POST['group_ids'],array('order'=>$order, 'sortBy'=>$sortBy,'page'=>$page,'value'=>$value));
+    $list = lab_invitations_getByGroups($_POST['group_ids'],array('order'=>$order, 'sortBy'=>$sortBy,'page'=>$page,'value'=>$value, 'status'=>$statusList, 'year'=>$year));
     wp_send_json_success([$list[0],lab_invitations_interface_fromList($list[1],'admin')]);
   } else {
     wp_send_json_error([0,"<tr><td colspan=42>".esc_html__("Aucune invitation",'lab')."</td></tr>"]);
@@ -916,12 +930,19 @@ function lab_invitations_hostList_update() {
   $sortBy = isset($_POST['sortBy']) ? $_POST['sortBy'] : 'start_date' ;
   $value = isset($_POST['value']) ? $_POST['value'] : '5' ;
   $page = isset($_POST['page']) ? $_POST['page'] : '1' ;
+  $status = isset($_POST['status']) ? $_POST['status'] : [1,10,20,30] ;
+  $year = isset($_POST['year']) && strlen($_POST['year'])==4 ? $_POST['year'] : 'all' ;
+  $statusList = '(';
+  foreach ($status as $elem) {
+    $statusList .= $elem.',';
+  }
+  $statusList = substr($statusList, 0, -1).')';
   if ( ! in_array($sortBy, array("start_date","host_group_id","guest_id","host_id","mission_objective","end_date","estimated_cost","status","maximum_cost")) ) {
     //On prévient les injections SQL en empêchant tout argument qui n'est pas un nom de colonne
     $sortBy = 'start_date';
   }
   $order = (isset($_POST['order']) && $_POST['order'] == 'asc') ? 'ASC' : 'DESC';
-  $list = lab_invitations_getByHost(get_current_user_id(),array('order'=>$order, 'sortBy'=>$sortBy, 'page'=>$page, 'value'=>$value));
+  $list = lab_invitations_getByHost(get_current_user_id(),array('order'=>$order, 'sortBy'=>$sortBy, 'page'=>$page, 'value'=>$value, 'status'=>$statusList, 'year'=>$year));
   wp_send_json_success([$list[0],lab_invitations_interface_fromList($list[1],"host")]);
 }
 function lab_invitations_summary() {
@@ -956,7 +977,9 @@ function lab_invitations_guestInfo() {
     wp_send_json_success($guest);
   }
 }
-
+function lab_invitations_pagination_Req() {
+  wp_send_json_success(lab_invitations_pagination($_POST['pages'],$_POST['currentPage']));
+}
 /**************************************************************************************************************
  * PRESENCE
  **************************************************************************************************************/

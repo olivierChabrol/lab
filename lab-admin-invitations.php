@@ -138,35 +138,58 @@ function lab_invitations_getGuest($id) {
   $res = $wpdb->get_results($sql);
   return $res[0];
 }
-function lab_invitations_getByGroup($group_id,$params=array("sortBy"=>"start_date","order"=>"DESC","page"=>"1","value"=>"5")) {
+function lab_invitations_getByGroup($group_id,$params=array("sortBy"=>"start_date","order"=>"DESC","page"=>"1","value"=>"5","status"=>"(1,10,20,30)","year"=>"all")) {
   $page_nb = ($params['page'] - 1) * $params['value'];
   global $wpdb;
-  $sql = "SELECT * FROM `".$wpdb->prefix."lab_invitations` WHERE `host_group_id`=".$group_id." ORDER BY ".$params['sortBy'].' '.$params['order']." LIMIT ".$page_nb.", ".$params['value']." ;";
-  $count = "SELECT COUNT(*) FROM `".$wpdb->prefix."lab_invitations` WHERE `host_group_id`=".$group_id.";";
+  $sql = "SELECT * FROM `".$wpdb->prefix."lab_invitations` 
+          WHERE `host_group_id`=".$group_id." 
+          AND `status` in ".$params['status']
+          .($params['year']=="all" ? ' ' : " AND `start_date` BETWEEN '".$params['year']."-01-01' AND '".$params['year']."-12-31' ")."
+          ORDER BY ".$params['sortBy'].' '.$params['order']." 
+          LIMIT ".$page_nb.", ".$params['value']." ;";
+  $count = "SELECT COUNT(*) FROM `".$wpdb->prefix."lab_invitations` 
+            WHERE `host_group_id`=".$group_id." 
+            AND `status` in ".$params['status']
+            .($params['year']=="all" ? ' ' : " AND `start_date` BETWEEN '".$params['year']."-01-01' AND '".$params['year']."-12-31' ").";";
   $res_sql = $wpdb->get_results($sql);
   $res_count = $wpdb->get_var($count);
   $result = array($res_count, $res_sql);
   return $result;
 }
-function lab_invitations_getByGroups($groups_ids,$params=array("sortBy"=>"start_date","order"=>"DESC","page"=>"1","value"=>"5")) {
+function lab_invitations_getByGroups($groups_ids,$params=array("sortBy"=>"start_date","order"=>"DESC","page"=>"1","value"=>"5","status"=>"(1,10,20,30)","year"=>"all")) {
   $page_nb = ($params['page'] - 1) * $params['value'];
   global $wpdb;
   foreach ($groups_ids as $g) {
     $str .= ' host_group_id='.$g." OR";
   }
-  $str = substr($str,0, -3); //Enlève le dernier OR 
-  $sql = "SELECT * FROM `".$wpdb->prefix."lab_invitations` WHERE".$str." ORDER BY ".$params['sortBy']." ".$params['order']." LIMIT ".$page_nb.", ".$params['value']." ;";
-  $count = "SELECT COUNT(*) FROM `".$wpdb->prefix."lab_invitations` WHERE".$str.";";
+  $str = '('.substr($str,0, -3).')'; //Enlève le dernier OR, rajoute des parenthèses
+  $sql = "SELECT * FROM `".$wpdb->prefix."lab_invitations` 
+          WHERE".$str." 
+          AND `status` in ".$params['status']
+          .($params['year']=="all" ? ' ' : " AND `start_date` BETWEEN '".$params['year']."-01-01' AND '".$params['year']."-12-31' ")."
+          ORDER BY ".$params['sortBy']." ".$params['order']." 
+          LIMIT ".$page_nb.", ".$params['value']." ;";
+  $count = "SELECT COUNT(*) FROM `".$wpdb->prefix."lab_invitations` 
+            WHERE".$str." 
+            AND `status` in ".$params['status']
+            .($params['year']=="all" ? ' ' : " AND `start_date` BETWEEN '".$params['year']."-01-01' AND '".$params['year']."-12-31' ").";";
   $res_sql = $wpdb->get_results($sql);
   $res_count = $wpdb->get_var($count);
   $result = array($res_count, $res_sql);
   return $result;
 }
-function lab_invitations_getByHost($host_id,$params=array("sortBy"=>"start_date","order"=>"DESC","page"=>"1","value"=>"5")) {
+function lab_invitations_getByHost($host_id,$params=array("sortBy"=>"start_date","order"=>"DESC","page"=>"1","value"=>"5","status"=>"(1,10,20,30)","year"=>"all")) {
   $page_nb = ($params['page'] - 1) * $params['value'];
   global $wpdb;
-  $sql = "SELECT * FROM `".$wpdb->prefix."lab_invitations` WHERE `host_id`=".$host_id." ORDER BY ".$params['sortBy']." ".$params['order']." LIMIT ".$page_nb.", ".$params['value']." ;";
-  $count = "SELECT COUNT(*) FROM `".$wpdb->prefix."lab_invitations` WHERE `host_id`=".$host_id.";";
+  $sql = "SELECT * FROM `".$wpdb->prefix."lab_invitations` 
+          WHERE `host_id`=".$host_id." 
+          AND `status` in ".$params['status']
+          .($params['year']=="all" ? ' ' : " AND `start_date` BETWEEN '".$params['year']."-01-01' AND '".$params['year']."-12-31' ")."
+          ORDER BY ".$params['sortBy']." ".$params['order']." LIMIT ".$page_nb.", ".$params['value']." ;";
+  $count = "SELECT COUNT(*) FROM `".$wpdb->prefix."lab_invitations` 
+            WHERE `host_id`=".$host_id." 
+            AND `status` in ".$params['status']
+            .($params['year']=="all" ? ' ' : " AND `start_date` BETWEEN '".$params['year']."-01-01' AND '".$params['year']."-12-31' ").";";
   $res_sql = $wpdb->get_results($sql);
   $res_count = $wpdb->get_var($count);
   $result = array($res_count, $res_sql);

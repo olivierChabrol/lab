@@ -3,7 +3,7 @@
  * File Name: lab-shortcode-invitation.php
  * Description: shortcode pour afficher un formulaire de création d'invitation
  * Authors: Ivan Ivanov, Lucas Urgenti
- * Version: 1.01
+ * Version: 1.1
  */
 
 function lab_invitation($args) { 
@@ -261,7 +261,40 @@ function lab_invitation($args) {
         }
     return $invitationStr;
 }
-
+function lab_invitations_filters() {
+    $out = '<div id="lab_filter">
+            <h5>'.esc_html__("Filtres",'lab').'</h5>
+            <form id="lab_status_filter"><u>'.esc_html__("Statuts",'lab').' :</u> ';
+    foreach ([1,10,20,30] as $status) {
+        $out .= "<input type='checkbox' id='lab_filter_status_$status' value='$status'><label for='lab_filter_status_$status'>".lab_invitations_getStatusName($status)."</label><br/>";
+    }
+    $nextYear = date('Y')+1;
+    $years = '';
+    while (2020 <= $nextYear) {
+        $years .= "<option value=$nextYear>$nextYear</option>";
+        $nextYear--;
+    }
+    $out .= '</form>
+    <form id="lab_select_filters">
+        <div>
+            &nbsp<label for="lab_results_number">'.esc_html__("Année","lab").' : </label>
+            <select id="lab_filter_year">
+                <option selected value="all">'.esc_html__("Toutes",'lab')."</option>".$years.'
+            </select>
+        </div>
+        <div>    
+            &nbsp<label for="lab_results_number">'.esc_html__("Nombre de résultats par page","lab").' : </label>
+            <select id="lab_results_number">
+                <option selected value="5">5</option>
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="50">50</option>
+            </select>
+        </div>
+    </form>'; 
+    $out .= '</div>';
+    return $out;
+}
 function lab_invitations_interface($args) {
     $param = shortcode_atts(array(
         'view' => 'host' //host, chief or admin 
@@ -275,7 +308,7 @@ function lab_invitations_interface($args) {
             $list = lab_invitations_getByHost(get_current_user_id())[1];
             break;
         case 'chief':
-            $listInvitationStr .= '<h3>Groupes dont vous êtes le chef :</h3><select id="lab_groupSelect">';
+            $listInvitationStr .= '<h5>Groupes dont vous êtes le chef :</h5><select id="lab_groupSelect">';
             foreach (lab_admin_get_groups_byChief(get_current_user_id()) as $g)
                 {
                     $listInvitationStr .= '<option value="'.$g->id.'">'.$g->group_name.'</option>';
@@ -284,7 +317,7 @@ function lab_invitations_interface($args) {
             $list = lab_invitations_getByGroup(lab_admin_get_groups_byChief(get_current_user_id())[0]->id)[1];
             break;
         case 'admin':
-            $listInvitationStr .= '<h3>Groupes Préférés :</h3>
+            $listInvitationStr .= '<h5>'.esc_html__("Groupes Préférés",'lab').' :</h5>
             <div id="lab_prefGroupsForm">
                 <select id="lab_prefGroupsSelect"><option value="">Sélectionnez un groupe</option></select>
                 <button id="lab_addPrefGroup">Ajouter aux préférés</button>
@@ -303,13 +336,7 @@ function lab_invitations_interface($args) {
             }
             break;
     }
-    $listInvitationStr .= '&nbsp<label for="lab_results_number">'.esc_html__("Nombre de résultats : ","lab").'</label>
-                            <select id="lab_results_number">
-                                <option selected value="5">5</option>
-                                <option value="10">10</option>
-                                <option value="20">20</option>
-                                <option value="50">50</option>
-                            </select>';
+    $listInvitationStr .= lab_invitations_filters();
     $listInvitationStr .= '<table view="'.$param['view'].'" id="lab_invite_list">
                             <thead>
                                 <tr id="lab_list_header">'
@@ -330,7 +357,7 @@ function lab_invitations_interface($args) {
     //$listInvitationStr .= lab_invitations_interface_fromList($list,$param['view']);
     $listInvitationStr .=   '</tbody>
                           </table>';
-    $listInvitationStr .=   lab_invitations_pagination(10,2).'<br>';
+    $listInvitationStr .=  '<div id="lab_pages">'.lab_invitations_pagination(1,1).'</div><br/><br/>';
     if ($param['view']=='admin') {
         $listInvitationStr .=
         '<h2 id="lab_invite_detail_title">'.esc_html__("Détails de l'invitation",'lab').'<i class="fas fa-arrow-up"></i></h2>
@@ -350,11 +377,11 @@ function lab_invitations_interface($args) {
 }
 function lab_invitations_pagination($pages, $currentPage) {
     $out = '<ul id="pagination-digg">';
-    $out .= '<li class="page_previous">'.($currentPage>1 ? '<a href="#">« Précédent</a>' : '« Précédent').'</li>';
+    $out .= '<li class="page_previous'.($currentPage>1 ? '">' : ' gris">').'« Précédent</li>';
     for ($i=1; $i<=$pages; $i++) {
-        $out .= '<li class="page_number"'.($currentPage!=$i ? "><a href='#'>$i</a>" : " id='active'>$i").'</li>';
+        $out .= '<li page='.$i.' class="page_number"'.($currentPage!=$i ? ">$i" : " id='active'>$i").'</li>';
     }
-    $out .= '<li class="page_next">'.($pages>1 && $currentPage<$pages ? '<a href="#">Suivant »</a>' : 'Suivant »').'</li>';
+    $out .= '<li class="page_next'.($pages>1 && $currentPage<$pages ? '">' : ' gris">').'Suivant »</li>';
     $out .= '</ul>';
     return $out;
 }
@@ -512,15 +539,15 @@ function lab_invitations_getStatusName($status) {
         break;
         case 10: 
             return "<span style='color:#00c49f' class='lab_infoBulle' title='".esc_html__("Cette invitation a été complétée, le responsable peut maintenant la valider pour l'envoyer au pôle budget.","lab")."'>"
-            .esc_html__("Complétée","lab");
+            .esc_html__("Complétée","lab")."</span>";
         break;
         case 20:
             return "<span style='color:#c00900' class='lab_infoBulle' title='".esc_html__("Cette invitation a été validée et envoyée au pôle budget.","lab")."'>"
-            .esc_html__("Validée","lab");
+            .esc_html__("Validée","lab")."</span>";
         break; 
         case 30:
             return "<span style='color:#289600' class='lab_infoBulle' title='".esc_html__("Cette invitation a été prise en charge par un administratif du pôle budget.","lab")."'>"
-            .esc_html__("Prise en charge","lab");
+            .esc_html__("Prise en charge","lab")."</span>";
         break; 
         default:
             # code...
@@ -540,5 +567,3 @@ function lab_invite_prefGroupsList($user_id) {
 }
 
 ?>
-
-

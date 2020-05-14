@@ -490,13 +490,13 @@ function invitation_submit(callback) {
       'travel_mean_to':  $("#lab_transport_to").val()=="other" ? $("#lab_transport_to_other").val() : $("#lab_transport_to").val(),
       'start_date': $("#lab_arrival").val()+" "+$("#lab_arrival_time").val(),
       'end_date': $("#lab_departure").val()+" "+$("#lab_departure_time").val(),
-      'charges': charges,
-      'research_contract': $("#lab_research_contrat").val().replace(regex,"”").replace(/\'/g,"’")
+      'charges': charges
     }
     if ($("#lab_email").attr('guest_id').length) {
       fields['guest_id'] = $("#lab_email").attr('guest_id');
     }
     if ($("#invitationForm").attr("hostForm")==1) {//La version invitant est affichée 
+      fields['research_contract']= $("#lab_research_contrat").val().replace(regex,"”").replace(/\'/g,"’");
       fields['host_group_id'] = $("#lab_group_name").val();
       fields['funding_source'] = $("#lab_credit").val()=="other" ? $("#lab_credit_other").val() : $("#lab_credit").val();
       fields['estimated_cost'] = $("#lab_estimated_cost").val();
@@ -574,6 +574,12 @@ function LABLoadInviteList() {
         );
       }
     });
+    $("#lab_filter input").change(function(){
+      lab_update_invitesList();
+    });
+    $("#lab_filter select").change(function(){
+      lab_update_invitesList();
+    });
     $("#lab_invite_detail_title").click(function(){
       if($("#lab_invite_details").attr("wrapped")=="true"){
         $("#lab_invite_details").slideDown();
@@ -609,9 +615,6 @@ function LABLoadInviteList() {
     }
     lab_update_invitesList();
   });
-  $("#lab_results_number").change(function() {
-    lab_update_invitesList();
-  })
 }
 function lab_updatePrefGroups() {
   jQuery.post(LAB.ajaxurl,
@@ -634,22 +637,36 @@ function lab_updatePrefGroups() {
 }
 function lab_update_invitesList() {
   jQuery(function($) {
+    statuses =[];
+    $("#lab_status_filter input[type=checkbox]").each(function(){
+      if ($(this).prop('checked')) {
+        statuses.push($(this).val());
+      }
+    });
+    data = {
+      sortBy: $(".lab_column_name[sel=true]").attr('name'),
+      order: $(".lab_column_name[sel=true]").attr('order'),
+      page: $("#active").attr("page"),
+      value: $("#lab_results_number").val(),
+      status: statuses,
+      year: $("#lab_filter_year").val(),
+    };
     switch ($("#lab_invite_list").attr('view')) {
       case 'admin':
         group_ids = [];
         $(".lab_prefGroup_del").each(function() {
           group_ids.push($(this).attr('group_id'));
         });
-        data = {
-          action: 'lab_invitations_adminList_update',
-          sortBy: $(".lab_column_name[sel=true]").attr('name'),
-          order: $(".lab_column_name[sel=true]").attr('order'),
-          page: $("#paggination-dig #active").val(),
-          value: $("#lab_results_number").val(),
-          'group_ids': group_ids
-        };
+        data['action']='lab_invitations_adminList_update';
+        data['group_ids']= group_ids;
+        //Demande la liste mise à jour
         $.post(LAB.ajaxurl,data, function(response) {
+          //Remplit le tableau avec la liste
           $("#lab_invitesListBody").html(response.data[1]);
+          pages = Math.ceil(response.data[0]/data['value']);
+          currentPage = data['page']<=pages ? data['page'] : pages;
+          lab_pagination(pages,currentPage);
+          //Affecte les fonctions aux actions
           $(".lab_invite_showDetail").click(function(){
             $("#lab_invite_realCost_input").attr('token',$(this).attr('token'));
             $("#lab_invite_details").show();
@@ -696,28 +713,22 @@ function lab_update_invitesList() {
         });
       break;
       case 'chief':
-        data = {
-          action: 'lab_invitations_chiefList_update',
-          sortBy: $(".lab_column_name[sel=true]").attr('name'),
-          order: $(".lab_column_name[sel=true]").attr('order'),
-          group_id: $("#lab_groupSelect").val(),
-          page: $("#paggination-dig .activ").val(),
-          value: $("#lab_results_number").val()
-        };
+        data['action'] = 'lab_invitations_chiefList_update';
+        data['group_id']= $("#lab_groupSelect").val();
         $.post(LAB.ajaxurl,data, function(response) {
           $("#lab_invitesListBody").html(response.data[1]);
+          pages = Math.ceil(response.data[0]/data['value']);
+          currentPage = data['page']<=pages ? data['page'] : pages;
+          lab_pagination(pages,currentPage);
         });
       break;
       case 'host':
-        data = {
-          action: 'lab_invitations_hostList_update',
-          sortBy: $(".lab_column_name[sel=true]").attr('name'),
-          order: $(".lab_column_name[sel=true]").attr('order'),
-          page: $("#paggination-dig .activ").val(),
-          value: $("#lab_results_number").val()
-        };
+        data['action'] = 'lab_invitations_hostList_update';
         $.post(LAB.ajaxurl,data, function(response) {
           $("#lab_invitesListBody").html(response.data[1]);
+          pages = Math.ceil(response.data[0]/data['value']);
+          currentPage = data['page']<=pages ? data['page'] : pages;
+          lab_pagination(pages,currentPage);
         });
         break;
     }
@@ -748,4 +759,33 @@ function lab_submitRealCost() {
 }
 if (document.querySelector("#lab_invite_list")!=null) {
   LABLoadInviteList();
+}
+function lab_pagination(pages, currentPage) {
+  data = {
+    'action': 'lab_invitations_pagination',
+    'pages': pages,
+    'currentPage': currentPage
+  };
+  jQuery.post(LAB.ajaxurl,data,function(response){
+    if (response.success) {
+      jQuery("#pagination-digg")[0].outerHTML=response.data;
+      $(".page_previous:not(.gris)").click(function() {
+        currentPage = parseInt($("#active").attr("page"));
+        $("#active").attr("id","");
+        $(".page_number[page=" + (currentPage - 1) + "]").attr("id","active");
+        lab_update_invitesList();
+      });
+      $(".page_next:not(.gris)").click(function() {
+        currentPage = parseInt($("#active").attr("page"));
+        $("#active").attr("id","");
+        $(".page_number[page=" + (currentPage + 1) + "]").attr("id","active");
+        lab_update_invitesList();
+      });
+      $(".page_number").click(function() {
+        $("#active").attr("id","");
+        $(this).attr("id","active");
+        lab_update_invitesList();
+      });
+    }
+  });
 }
