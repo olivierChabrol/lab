@@ -173,7 +173,8 @@ jQuery(function($){
  */
 function stringHourToMinutes(str)
 {
-    return 60;
+    let temps = str.split(':');
+    return ((temps[0] * 60) + temps[1]);
 }
 
 function checkPresenceInputs(dateElm, openElm, closeElm) {
@@ -185,7 +186,7 @@ function checkPresenceInputs(dateElm, openElm, closeElm) {
     // verif hour not vide et not --:--
 
     let debut = stringHourToMinutes(valueHourOpen);
-    let fin = stringHourToMinutes(valueHourClose);
+    let fin   = stringHourToMinutes(valueHourClose);
 
     console.log("pour la date du " + valueDate + " commençant à " + valueHourOpen + " et finissant à " + valueHourClose);
    
