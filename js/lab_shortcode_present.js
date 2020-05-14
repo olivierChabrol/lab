@@ -191,7 +191,7 @@ function checkPresenceInputs(dateElm, openElm, closeElm) {
     console.log("pour la date du " + valueDate + " commençant à " + valueHourOpen + " et finissant à " + valueHourClose);
    
     let checkDate = Date.parse(valueDate);
-    let checkHours = fin < debut;
+    let checkHours = fin > debut;
     let retour = true;
 
     if (!checkDate)
