@@ -97,8 +97,8 @@ jQuery(function($){
             $('#messErrDate').text("La date n'est pas correcte");
             //$('#date-open').after('<div id="messErrDate" class="invalid-feedback">La date n\'est pas correcte</div>');
         }
-
     });
+
     $("#lab_presence_edit_dialog").modal("hide");
     $('#lab_presence_edit_dialog').on('shown.bs.modal', function () {
         $('#lab_presence_edit_date-open').trigger('focus');
@@ -180,8 +180,8 @@ function checkPresenceInputs(dateElm, openElm, closeElm) {
         var errDate = document.getElementById("#messErrDate").innerHTML("");
     }*/
     let valueDate       = document.getElementById(dateElm).value;
-    let valueHourOpen   = document.getElementById(openElm);
-    let valueHourClose  = document.getElementById(closeElm);
+    let valueHourOpen   = document.getElementById(openElm).value;
+    let valueHourClose  = document.getElementById(closeElm).value;
 
     console.log("pour la date du " + valueDate + " commençant à " + openElm + " et finissant à " + closeElm);
     /*

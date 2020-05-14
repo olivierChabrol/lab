@@ -224,9 +224,9 @@ function lab_present_choice($param) {
             </form> -->
             
             <label for='hour-open'></label>
-            <input type='time' name='hour-open' id='hour-open' />
+            <input type='time' name='hour-open' id='hour-open' min='07:00' max='20:00' required />
             <label for='hour-close'>".esc_html__("Jusqu'à", "lab")."</label>
-            <input type='time' name='hour-close' id='hour-close' />
+            <input type='time' name='hour-close' id='hour-close' min='07:00' max='20:00' required/>
             <label for='site-selected'>".esc_html__("sur le site", "lab")."</label>
             " . lab_html_select_str("siteId", "siteName", "custom-select", lab_admin_list_site) . "</div>
             <div class=\"input-group mb-3\">
@@ -385,9 +385,9 @@ function editDiv()
                     <label for="date-open">'.esc_html("From", "lab").'</label>
                     <input type="date" id="lab_presence_edit_date-open" />
                     <label for="hour-open"></label>
-                    <input type="time" id="lab_presence_edit_hour-open" />
+                    <input type="time" id="lab_presence_edit_hour-open" min="07:00"  max="20:00" required />
                     <label for="hour-close">'.esc_html("to", "lab").'</label>
-                    <input type="time" id="lab_presence_edit_hour-close" />
+                    <input type="time" id="lab_presence_edit_hour-close" min="07:00" max="20:00"/>
                     <div class="input-group mb-3">
                         <label for="site-selected">'.esc_html("on the site", "lab").'</label>'. lab_html_select_str("lab_presence_edit_siteId", "siteName", "custom-select", lab_admin_list_site).'
                     </div>
