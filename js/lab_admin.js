@@ -191,7 +191,7 @@ jQuery(function($){
   });
 
   $("#lab_user_button_save_left").click(function() {
-    saveUserLeft($("#lab_user_search_id").val(), $("#lab_user_left_date").val(), $("#lab_user_left").is(":checked"));
+    saveUserLeft($("#lab_user_left_date").val(), $("#lab_user_left").is(":checked"), $("#lab_user_location").val(), $("#lab_user_function").val());
   });
 
   $("#lab_settings_correct_um").click(function() {
@@ -817,12 +817,27 @@ function updateUserMetaDb() {
   });
 }
 
-function saveUserLeft(userId, date, isChecked) {
+function saveUserMetaData(userId, date, isChecked, location, userFunction) {
   var c = isChecked?date:null;
   var data = {
                'action' : 'update_user_metadata',
-               'userMetaId' : jQuery("#lab_usermeta_id").val(),
+               'userId' : userId,
                'dateLeft' : c,
+               'location' :location,
+               'function' : userFunction,
+  };
+  callAjax(data, "User saved", resetUserTabFields, "Failed to save user", null);
+
+}
+
+function saveUserLeft(date, isChecked, location, userFunction) {
+  var c = isChecked?date:null;
+  var data = {
+               'action' : 'update_user_metadata',
+               'userId' : jQuery("#lab_user_search_id").val(),
+               'dateLeft' : c,
+               'location' :location,
+               'function' : userFunction,
   };
   callAjax(data, "User saved", resetUserTabFields, "Failed to save user", null);
 }
@@ -832,6 +847,8 @@ function resetUserTabFields()
   jQuery("#lab_user_search_id").val("");
   jQuery("#lab_user_left").prop("checked", false);
   jQuery("#lab_user_left_date").val("");
+  jQuery("#lab_user_location").val("");
+  jQuery("#lab_user_function").val("");
   jQuery("#lab_usermeta_id").val("");
 }
 
@@ -877,6 +894,13 @@ function loadUserMetaData(response) {
 	    jQuery("#lab_user_left").prop("checked", false);
       jQuery("#lab_user_left_date").prop("disabled", true);
       jQuery("#lab_user_left_date").val("");
+    }
+
+    if (response.data["user_function"] != null) {
+      jQuery("#lab_user_function").val(response.data["user_function"]);
+    }
+    if (response.data["user_location"] != null) {
+      jQuery("#lab_user_location").val(response.data["user_location"]);
     }
   }
   else

@@ -20,6 +20,22 @@ function lab_admin_tab_user() {
     </tr>
     <tr>
       <td>
+        <label for="lab_user_left"><?php esc_html_e('User function','lab') ?></label>
+      </td>
+      <td>
+        <?php lab_html_select("lab_user_function", "lab_user_function", "", lab_admin_get_params_userFunction, null, array("value"=>"","label"=>"None"), ""); ?>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <label for="lab_user_left"><?php esc_html_e('User Location','lab') ?></label>
+      </td>
+      <td>
+        <?php lab_html_select("lab_user_location", "lab_user_location", "", lab_admin_get_params_userLocation, null, array("value"=>"","label"=>"None"), ""); ?>
+      </td>
+    </tr>
+    <tr>
+      <td>
         <label for="lab_user_left"><?php esc_html_e('Parti','lab') ?></label>
       </td>
       <td>

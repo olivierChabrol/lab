@@ -18,6 +18,14 @@ class AdminParams {
     {
         return AdminParams::get_params_fromId(AdminParams::PARAMS_GROUPTYPE_ID);
     }
+    public static function lab_admin_get_params_userLocation()
+    {
+        return AdminParams::get_params_fromId(AdminParams::PARAMS_SITE_ID);
+    }
+    public static function lab_admin_get_params_UserFunctions()
+    {
+        return AdminParams::get_params_fromId(AdminParams::PARAMS_USER_FUNCTION_ID);
+    }
     public function get_param($id) {
         $sql = "SELECT value FROM `wp_lab_params` WHERE id=".$id.";";
         global $wpdb;
@@ -36,6 +44,13 @@ class AdminParams {
 
 function lab_admin_get_params_groupTypes() {
     return AdminParams::lab_admin_get_params_groupTypes();
+}
+
+function lab_admin_get_params_userFunction() {
+    return AdminParams::lab_admin_get_params_UserFunctions();
+}
+function lab_admin_get_params_userLocation() {
+    return AdminParams::lab_admin_get_params_userLocation();
 }
 
 ?>
