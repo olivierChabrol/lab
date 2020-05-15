@@ -3,11 +3,17 @@
  * File Name: lab-shortcode-invitation.php
  * Description: shortcode pour afficher un formulaire de création d'invitation
  * Authors: Ivan Ivanov, Lucas Urgenti
- * Version: 1.1
+ * Version: 1.2
  */
-
-function lab_invitation($args) { 
-    setlocale(LC_ALL,get_locale());
+function lab_invitation($args) {
+    // global $currLocale;
+    // $currLocale = get_locale();
+    // echo "Etape 1 : ".get_locale()." - ";
+    // echo esc_html__('Clés','lab');
+    // unload_textdomain("lab");
+    // echo switch_to_locale( 'en_GB' );
+    // myplugin_load_textdomain();
+    // echo "<br> Etape 2 : ".get_locale()." - ".esc_html__('Clés','lab')."<br>";
     $param = shortcode_atts(array(
         'hostpage' => 0 //0 pour invité, 1 pour invitant/responsable
         ),
@@ -68,8 +74,8 @@ function lab_invitation($args) {
         </div>
         <div id="lab_phone_country">
             <div class="lab_invite_field">
-                <label for="lab_phone">'.esc_html__("Numéro de téléphone","lab").'<span class="lab_form_required_star"> *</span></label>
-                <input type="tel" required id="lab_phone" phoneval="'.(!$newForm ? $guest->phone : '').'">
+                <label for="lab_phone">'.esc_html__("Numéro de téléphone","lab").'</label>
+                <input type="tel" id="lab_phone" phoneval="'.(!$newForm ? $guest->phone : '').'">
             </div>
             <div class="lab_invite_field">
                 <label for="lab_country">'.esc_html__("Pays","lab").'<span class="lab_form_required_star"> *</span></label>
@@ -127,6 +133,7 @@ function lab_invitation($args) {
                 <p>'.esc_html__("Moyen de transport depuis votre domicile vers notre laboratoire","lab").'</p>
                 <label for="lab_cost_to">'.esc_html__("Coût estimé du trajet","lab").' :</label>
                 <input type="number" min=0 step="0.1" id="lab_cost_to" '.(!$newForm ? 'value="'.$charges->travel_to.'"' : '').' name="lab_cost_to" placeholder="'.esc_html__("en €",'lab').'"/>
+                <p>'.esc_html__("À ne remplir que si l'I2M devra vous défrayer ce trajet.",'lab').'</p>
             </div>
             <div class="lab_invite_field">
                 <label for="lab_transport_from">'.esc_html__("Depuis l'I2M","lab").'</label>
@@ -143,6 +150,7 @@ function lab_invitation($args) {
                 <p>'.esc_html__("Moyen de transport depuis notre laboratoire vers votre domicile","lab").'</p>
                 <label for="lab_cost_from">'.esc_html__("Coût estimé du trajet","lab").' :</label>
                 <input type="number" min=0 step="0.1" id="lab_cost_from" '.(!$newForm ? 'value="'.$charges->travel_from.'"' : '').' name="lab_cost_from" placeholder="'.esc_html__("en €",'lab').'"/>
+                <p>'.esc_html__("À ne remplir que si l'I2M devra vous défrayer ce trajet.",'lab').'</p>
             </div>
         </div> 
         <div id="lab_date" class="lab_invite_row">
@@ -160,6 +168,7 @@ function lab_invitation($args) {
             </div>
         </div>
         <h3>'.esc_html__("Autres frais","lab").'</h3>
+        <p>'.esc_html__("Précisez les frais qui devront être pris en charge par l'I2M.",'lab').'</p>
         <div class="lab_invite_row">
             <div class="lab_invite_field">
             <label for="lab_cost_hostel">'.esc_html__("Hôtel","lab").' :</label>
@@ -180,6 +189,7 @@ function lab_invitation($args) {
             '<div class="lab_invite_field">
                 <label for="lab_form_comment">'.esc_html__("Commentaire",'lab').'</label>
                 <textarea row="1" id="lab_form_comment" name="lab_form_comment"></textarea>
+                <p>'.esc_html__("(par exemple vos numéros de carte de fidélité à utiliser lors de la réservation de vos voyages)",'lab').'</p>
         </div>';
         }
         if ( $param["hostpage"] ) {//Affiche les champs supplémentaires, pour les responsables/invitants.
@@ -215,7 +225,7 @@ function lab_invitation($args) {
                 </div>
             </div>
             <div class="lab_invite_field">
-                    <label for="lab_research_contrat">'.esc_html__("Contrats de recherche","lab").'<span class="lab_form_required_star"> *</span></label>
+                    <label for="lab_research_contrat">'.esc_html__("Contrats de recherche","lab").'</label>
                     <input type="text" id="lab_research_contrat" name="lab_research_contrat" value="'.(!$newForm ? $invitation->research_contract : '').'">
             </div>
             <div class="lab_invite_row">
@@ -296,6 +306,7 @@ function lab_invitations_filters() {
     return $out;
 }
 function lab_invitations_interface($args) {
+    var_dump(setlocale(LC_ALL,'fr_FR'));
     $param = shortcode_atts(array(
         'view' => 'host' //host, chief or admin 
         ),
@@ -385,6 +396,17 @@ function lab_invitations_pagination($pages, $currentPage) {
     $out .= '</ul>';
     return $out;
 }
+function lab_invitations_switchLocale($oldLocale) {
+    global $currLocale;
+    //echo "<br> From :$currLocale";
+    if ($currLocale == 'fr_FR') {
+        $currLocale = 'en_GB';
+    } else {
+        $currLocale = 'fr_FR';
+    }
+    //echo " to $currLocale";
+    return $currLocale;
+}
 function lab_invitations_interface_fromList($list,$view) {
     $listStr = '';
     if (count($list)>0) {
@@ -428,8 +450,16 @@ function lab_invitations_mail($type=1, $guest, $invite) {
             $subj = esc_html__("Votre demande d'invitation à l'I2M",'lab');
             $date = date_create_from_format("Y-m-d H:i:s", $invite["creation_time"]);
             $content = "<p><i>".strftime('%A %d %B %G - %H:%M',$date->getTimestamp())."</i></p>";
+            $content .= "<p>".get_locale().__("Clés","lab")."</p>";
             $content .= "<p>".esc_html__("Votre demande d'invitation a bien été prise en compte",'lab').".<br>".esc_html__("Elle a été transmise à votre invitant",'lab').".</p>";
             $content .= lab_InviteForm('',$guest,$invite);
+            // unload_textdomain("lab");
+            // switch_to_locale( 'en_GB' );
+            // myplugin_load_textdomain();
+            // $content .= "<h5>Translated version :</h5>";
+            // $content .= "<p>".get_locale().esc_html__("Clés",'lab')."</p>";
+            // $content .= "<p>".esc_html__("Votre demande d'invitation a bien été prise en compte",'lab').".<br>".esc_html__("Elle a été transmise à votre invitant",'lab').".</p>";
+            // $content .= lab_InviteForm('',$guest,$invite);
             break;
         case 5: //Envoi de mail récapitulatif à l'invitant lorsque l'invité a créé une invitation
             $host = new LabUser($invite['host_id']);
@@ -456,6 +486,7 @@ function lab_invitations_mail($type=1, $guest, $invite) {
             return 'unkown mail type';
             break;
     }
+    apply_filters( 'wp_mail_content_type', "text/html" );
     wp_mail($dest,$subj,$content);
     return $content;
 }
@@ -488,7 +519,7 @@ function lab_InviteForm($who,$guest,$invite) {
                 </ul></li>
                 <li><i>'.esc_html__("Date d'arrivée",'lab').' : </i>'.$invite['start_date'].'</li>
                 <li><i>'.esc_html__("Date de départ",'lab').' : </i>'.$invite['end_date'].'</li>
-                <li><u>Frais : </u>'.$chargesList.'</li>';
+                <li><u>'.esc_html__('Frais','lab').' : </u>'.$chargesList.'</li>';
     if($who=='host' || $who=='admin')
     {
         $out .= '<li><i>'.esc_html__("Estimation du coût",'lab').' : </i>'.$invite['estimated_cost'].'</li>
@@ -499,8 +530,6 @@ function lab_InviteForm($who,$guest,$invite) {
     return $out;
 }
 function lab_inviteComments($token) {
-    $loc= get_locale();
-    setlocale(LC_TIME,$loc);
     $comments= lab_invitations_getComments(lab_invitations_getByToken($token)->id);
     $out = '<div id="lab_invitation_oldComments">';
     if (count($comments)> 0) {

@@ -194,8 +194,8 @@ function wp_lab_menu()
 {
   add_menu_page('Options', 'LAB', 'edit_plugins', 'wp-lab.php', 'wp_lab_option', '', 21);
   add_menu_page("KeyRing","KeyRing",'keyring','lab_keyring','lab_keyring','dashicons-admin-network',22);
+  add_menu_page("LDAP Admin","LDAP Admin",'edit_plugins','lab_ldap','lab_ldap','dashicons-id-alt',23);
   if ( ! current_user_can('edit_plugins') ) {
-    remove_menu_page('ultimatemember');
     remove_menu_page('wpfastestcacheoptions');
     remove_menu_page('options-general.php');
   }
@@ -248,6 +248,7 @@ function wp_lab_fe_enqueues()
   wp_enqueue_style('profileCSS',plugins_url('css/lab-profile.css',__FILE__));
   wp_enqueue_script('SpectrumJS', plugins_url('js/spectrum.js',__FILE__), array('jquery','wp-i18n'), '1.8.0', true);
   wp_enqueue_style('SpectrumCSS',plugins_url('css/spectrum.css',__FILE__));
+  wp_enqueue_script('lab-ldap', plugins_url('js/lab_ldap.js',__FILE__), array('jquery', 'wp-i18n'), version_id(), true);
   
   //QUEUE FOR BOOTSTRAP CALENDAR FORM
   wp_register_script('moment', plugins_url("js/moment.min.js", __FILE__), array('jquery'),'3.25.2', false);
