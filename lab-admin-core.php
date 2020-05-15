@@ -326,6 +326,8 @@ function lab_admin_firstname_lastname2($name){
  */
 function lab_admin_initTable_usermeta()
 {
+    lab_userMetaData_create_metaKeys("user_function", "");
+    lab_userMetaData_create_metaKeys("user_location", "");
     lab_userMetaData_create_metaKeys("user_phone", "");
     lab_userMetaData_create_metaKeys("user_left", null);
     lab_userMetaData_create_metaKeys("user_slug", null);
