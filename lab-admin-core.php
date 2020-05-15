@@ -4,7 +4,7 @@
 
 function lab_admin_username_get($userId) {
     global $wpdb;
-    $results = $wpdb->get_results( "SELECT * FROM `".$wpdb->prefix."usermeta` WHERE (meta_key = 'first_name' or meta_key='last_name' or meta_key='lab_user_left' or meta_key='lab_user_function' or meta_key='lab_user_location') and user_id=".$userId  );
+    $results = $wpdb->get_results( "SELECT * FROM `".$wpdb->prefix."usermeta` WHERE (meta_key = 'first_name' or meta_key='last_name' or meta_key LIKE 'lab_%') and user_id=".$userId  );
     $items = array();
     $items["id"] = $userId;
 
@@ -24,6 +24,12 @@ function lab_admin_username_get($userId) {
         }
         if ($r->meta_key == 'lab_user_location') {
             $items['user_location'] = $r->meta_value;
+        }
+        if ($r->meta_key == 'lab_user_office_number') {
+            $items['user_office_number'] = $r->meta_value;
+        }
+        if ($r->meta_key == 'lab_user_office_floor') {
+            $items['user_office_floor'] = $r->meta_value;
         }
     }
     
@@ -328,6 +334,8 @@ function lab_admin_initTable_usermeta()
 {
     lab_userMetaData_create_metaKeys("user_function", "");
     lab_userMetaData_create_metaKeys("user_location", "");
+    lab_userMetaData_create_metaKeys("user_office_number", "");
+    lab_userMetaData_create_metaKeys("user_office_floor", "");
     lab_userMetaData_create_metaKeys("user_phone", "");
     lab_userMetaData_create_metaKeys("user_left", null);
     lab_userMetaData_create_metaKeys("user_slug", null);
