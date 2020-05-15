@@ -292,11 +292,17 @@ function lab_usermeta_lab_left_key_exist($userId)
 /********************************************************************************************
  * TEST
  ********************************************************************************************/
-
+function lab_changeLocale($locale) {
+  return 'fr_FR';
+}
 function lab_admin_test()
 { 
-  global $wp_rewrite;
-  wp_send_json_error($wp_rewrite);
+  //global $wp_rewrite;
+  $test = __("Clés","lab")."- locale :".get_locale();
+  unload_textdomain("lab");
+  add_filter('locale','lab_changeLocale',10);
+  myplugin_load_textdomain();
+  wp_send_json_error("then : $test, now : ".__("Clés","lab")."- locale:".get_locale());
 }
 
 
