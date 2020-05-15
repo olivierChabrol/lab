@@ -162,6 +162,7 @@ class LabRewriteRules {
  */
 function custom_user_profile_fields( $profileuser ) {
   ?>
+    <!--
     <table class="form-table">
       <tr>
         <th>
@@ -182,6 +183,7 @@ function custom_user_profile_fields( $profileuser ) {
         </td>
       </tr>
     </table>
+    -->
   <?php
   }
 
