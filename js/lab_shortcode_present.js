@@ -105,7 +105,7 @@ jQuery(function($){
         let hourEnd = $("#lab_presence_edit_hour-close").val();
         let comment = $("#lab_presence_edit_comment").val().replace(regex,"”").replace(/\'/g,"’");
         let site = $("#lab_presence_edit_siteId").val();
-        if (checkPresenceInputs('lab_presence_edit_date-open'))) {
+        if (checkPresenceInputs('lab_presence_edit_date-open')) {
             savePresence(idPresence, userId, date, hourStart, hourEnd, site, comment, "");
         }
     });

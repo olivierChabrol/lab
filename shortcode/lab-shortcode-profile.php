@@ -2,7 +2,7 @@
 /*
  * File Name: lab-shortcode-profile.php
  * Description: shortcode pour générer le profil d\'une personne
- * Authors: Astrid BEYER, Ivan Ivanov, Lucas URGENTI
+ * Authors: Astrid BEYER, Ivan Ivanov, Lucas URGENTI, Olivier CHABROL
  * Version: 0.62
 */
 function lab_profile($id=0) {
@@ -23,13 +23,13 @@ function lab_profile($id=0) {
 					<i style="display:none" class="fas fa-user-check" title="'.esc_html__('Valider les changements','lab').'" id="lab_confirm_change" user_id="'.$user->id.'"></i>
 				</div>';
 	$SocialIcons = '<div id="lab_profile_social">
-						<a style="display:none" class="lab_profile_social" title="Facebook" href="'.$user->social['facebook'].'" social="facebook" target="_blank"><i class="fab fa-facebook-square"></i></a>
-						<a style="display:none" class="lab_profile_social" title="Pinterest" href="'.$user->social['pinterest'].'" social="pinterest" target="_blank"><i class="fab fa-pinterest-square"></i></a>
-						<a style="display:none" class="lab_profile_social" title="Instagram" href="'.$user->social['instagram'].'" social="instagram" target="_blank"><i class="fab fa-instagram-square"></i></a>
-						<a style="display:none" class="lab_profile_social" title="Twitter" href="'.$user->social['twitter'].'" social="twitter" target="_blank"><i class="fab fa-twitter-square"></i></a>
-						<a style="display:none" class="lab_profile_social" title="Linkedin" href="'.$user->social['linkedin'].'" social="linkedin" target="_blank"><i class="fab fa-linkedin"></i></a>
-						<a style="display:none" class="lab_profile_social" title="Tumblr" href="'.$user->social['tumblr'].'" social="tumblr" target="_blank"><i class="fab fa-tumblr-square"></i></a>
-						<a style="display:none" class="lab_profile_social" title="Youtube" href="'.$user->social['youtube'].'" social="youtube" target="_blank"><i class="fab fa-youtube-square"></i></a>
+						<a style="display:none" class="lab_profile_social no-link-icon" title="Facebook" href="'.$user->social['facebook'].'" social="facebook" target="_blank"><i class="fab fa-facebook-square"></i></a>
+						<a style="display:none" class="lab_profile_social no-link-icon" title="Pinterest" href="'.$user->social['pinterest'].'" social="pinterest" target="_blank"><i class="fab fa-pinterest-square"></i></a>
+						<a style="display:none" class="lab_profile_social no-link-icon" title="Instagram" href="'.$user->social['instagram'].'" social="instagram" target="_blank"><i class="fab fa-instagram-square"></i></a>
+						<a style="display:none" class="lab_profile_social no-link-icon" title="Twitter" href="'.$user->social['twitter'].'" social="twitter" target="_blank"><i class="fab fa-twitter-square"></i></a>
+						<a style="display:none" class="lab_profile_social no-link-icon" title="Linkedin" href="'.$user->social['linkedin'].'" social="linkedin" target="_blank"><i class="fab fa-linkedin"></i></a>
+						<a style="display:none" class="lab_profile_social no-link-icon" title="Tumblr" href="'.$user->social['tumblr'].'" social="tumblr" target="_blank"><i class="fab fa-tumblr-square"></i></a>
+						<a style="display:none" class="lab_profile_social no-link-icon" title="Youtube" href="'.$user->social['youtube'].'" social="youtube" target="_blank"><i class="fab fa-youtube-square"></i></a>
 					</div>';
 	$editSocial ='<p><input style="display:none;" type="text" class="lab_profile_edit" id="lab_profile_edit_social" placeholder="'.esc_html__("Cliquez sur l'icône d'un réseau social pour le modifier","lab").'"/></p>';
 	$halFields = '<p id="lab_profile_halID">
@@ -52,6 +52,7 @@ function lab_profile($id=0) {
 				<div id="lab_profile_name"><span id="lab_profile_name_span">'.$user->first_name.' • '.$user->last_name.'</span>'
 					.($is_current_user || current_user_can('edit_users') ? $editIcons : ' ').
 				'</div>
+				<div id="lab_profile_function">'.$user->function.' • '.esc_html__('site','lab').' : '.$user->location.'</div>
 				<div id="lab_profile_links">
 					<p><i class="fas fa-at"></i>'.$user->print_mail().'</p>
 					<p id="lab_profile_url">
@@ -86,6 +87,8 @@ class labUser {
 	public $first_name;
 	public $last_name;
 	public $email;
+	public $location;
+	public $function;
 	public $phone;
 	public $description;
 	public $url;
@@ -100,6 +103,8 @@ class labUser {
 		$this -> id = $id;
 		$this -> first_name = lab_profile_get_metaKey($id,'first_name');
 		$this -> last_name = lab_profile_get_metaKey($id,'last_name');
+		$this -> location = lab_profile_get_param_metaKey($id,'lab_user_location', AdminParams::PARAMS_SITE_ID);
+		$this -> function = lab_profile_get_param_metaKey($id,'lab_user_function', AdminParams::PARAMS_USER_FUNCTION_ID);
 		$temp = lab_profile_get_Info($id);
 		$this -> email = $temp[0]->user_email;
 		$this -> url = $temp[0]->user_url;
@@ -167,6 +172,12 @@ function lab_profile_get_Groups($id) {
 function lab_profile_get_metaKey($id,$key) {
 	global $wpdb;
 	$sql = "SELECT `meta_value` FROM `".$wpdb->prefix."usermeta` WHERE `meta_key`='".$key."' AND `user_id`=".$id.";";
+	$res = $wpdb->get_var($sql);
+	return $res;
+}
+function lab_profile_get_param_metaKey($id,$key, $paramType) {
+	global $wpdb;
+	$sql = "SELECT lp.value AS 'meta_value' FROM `".$wpdb->prefix."usermeta` JOIN `".$wpdb->prefix."lab_params` AS lp ON lp.id=meta_value WHERE `meta_key`='".$key."' AND `user_id`=".$id." AND lp.type_param=".$paramType.";";
 	$res = $wpdb->get_var($sql);
 	return $res;
 }

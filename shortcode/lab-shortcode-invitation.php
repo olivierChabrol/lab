@@ -337,7 +337,7 @@ function lab_invitations_interface($args) {
             break;
     }
     $listInvitationStr .= lab_invitations_filters();
-    $listInvitationStr .= '<table view="'.$param['view'].'" id="lab_invite_list">
+    $listInvitationStr .= '<table view="'.$param['view'].'" id="lab_invite_list" class="table">
                             <thead>
                                 <tr id="lab_list_header">'
                                     .($param['view']=='admin' ? '<th class="lab_column_name" name="host_group_id">'.esc_html__('Groupe','lab').'<i class="fas fa-caret-up"></i></th>' : '').

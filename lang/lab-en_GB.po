@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-05-13 11:15+0200\n"
-"PO-Revision-Date: 2020-05-13 11:20+0200\n"
+"PO-Revision-Date: 2020-05-15 09:32+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en\n"
@@ -794,7 +794,7 @@ msgstr "Comments (optional)"
 
 #: shortcode/lab-shortcode-invitation.php:168
 msgid "Champs pour l'invitant : "
-msgstr "Fields for host"
+msgstr "Fields for host "
 
 #: shortcode/lab-shortcode-invitation.php:182
 msgid "Origine des crédits"
@@ -820,7 +820,7 @@ msgstr "Estimated cost (in €)"
 msgid ""
 "À remplir par le responsable : budget maximal allouable à cette invitation "
 msgstr ""
-"À remplir par le responsable : budget maximal allouable à cette invitation"
+"À remplir par le responsable : budget maximal allouable à cette invitation "
 
 #: shortcode/lab-shortcode-invitation.php:211
 #: shortcode/lab-shortcode-invitation.php:217
@@ -874,7 +874,7 @@ msgstr "Estimate budget"
 
 #: shortcode/lab-shortcode-invitation.php:293
 msgid "Budget max."
-msgstr "Max. Budget"
+msgstr "Max. Budget "
 
 #: shortcode/lab-shortcode-invitation.php:304
 msgid "Détails de l'invitation"
@@ -886,7 +886,7 @@ msgstr "Real budget"
 
 #: shortcode/lab-shortcode-invitation.php:346
 msgid "Détails"
-msgstr "details"
+msgstr "details "
 
 #: shortcode/lab-shortcode-invitation.php:350
 msgid "Aucune invitation"
@@ -912,7 +912,7 @@ msgstr "Your invitation request to the I2M"
 
 #: shortcode/lab-shortcode-invitation.php:370
 msgid "Une demande d'invitation à l'I2M vous a été transmise."
-msgstr "An invitation request to the I2M has been sent to you"
+msgstr "An invitation request to the I2M has been sent to you "
 
 #: shortcode/lab-shortcode-invitation.php:371
 msgid "Vous pouvez la modifier en suivant"
@@ -997,7 +997,7 @@ msgstr "Comments"
 
 #: shortcode/lab-shortcode-invitation.php:450
 msgid "Publier sous le nom de"
-msgstr "Publish under name of "
+msgstr "Publish under name of"
 
 #: shortcode/lab-shortcode-invitation.php:452
 msgid "Envoyer commentaire"
@@ -1069,7 +1069,7 @@ msgstr "From"
 #: shortcode/lab-shortcode-present.php:225
 #: shortcode/lab-shortcode-present.php:273
 msgid "Jusqu'à"
-msgstr "to"
+msgstr "to N"
 
 #: shortcode/lab-shortcode-present.php:227
 msgid "sur le site"
