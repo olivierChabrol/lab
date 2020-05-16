@@ -62,3 +62,17 @@ function nonWorkingDay($timestamp)
     // samedis et dimanches comme fériés.
     return $EstFerie;
 }
+
+function getFirstMondayOfTheWeek($dateObj)
+{
+    $dayofweek = date('w', $dateObj);
+    //echo $dayofweek."<br>";
+    // if sunday
+    if ($dayofweek < 1) {
+        return strtotime('-6 days', $dateObj);
+    }
+    else {
+        $aStr = '-'.($dayofweek-1).' days';
+        return strtotime($aStr, $dateObj);
+    }
+}

@@ -1,6 +1,10 @@
 <?php
 
 include 'lab-admin-core.php';
+include 'lib/vendor/autoload.php';
+
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 /**
  * Fonction qui répond à la requete ajax de recherche d'evenement
@@ -318,12 +322,29 @@ function lab_changeLocale($locale) {
 }
 function lab_admin_test()
 { 
-  //global $wp_rewrite;
-  $test = __("Clés","lab")."- locale :".get_locale();
-  unload_textdomain("lab");
-  add_filter('locale','lab_changeLocale',10);
-  myplugin_load_textdomain();
-  wp_send_json_error("then : $test, now : ".__("Clés","lab")."- locale:".get_locale());
+  /*
+  $spreadsheet = new Spreadsheet();
+  $sheet = $spreadsheet->getActiveSheet();
+  $sheet->setCellValue('A1', 'Hello World !');
+
+  $writer = new Xlsx($spreadsheet);
+  //$writer->save('hello world.xlsx');
+  $filename = 'hello world.xlsx';
+  //wp_send_json_error("then : $test, now : ".__("Clés","lab")."- locale:".get_locale());
+  ob_clean();
+  header( 'Pragma: public' );
+  header( 'Expires: 0' );
+  header( 'Cache-Control: must-revalidate, post-check=0, pre-check=0' );
+  header( 'Cache-Control: private', false );
+  header( 'Content-Type: application/vnd.ms-excel' );
+  header( 'Content-Disposition: attachment;filename=' . $filename );
+  $spreadsheet = new Spreadsheet();
+  $sheet = $spreadsheet->getActiveSheet();
+  $sheet->setCellValue('A1', 'Hello World !');
+  $writer = new Xlsx($spreadsheet);
+  $writer->save('php://output');
+  ob_flush();
+  //*/
 }
 
 

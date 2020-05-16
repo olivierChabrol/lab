@@ -65,6 +65,8 @@ function lab_present_select($param) {
     if (!is_user_logged_in() && $externalUserAllowed) {
         $str .=  "<div id=\"a_external_presency\" class=\"float-right\"><a href=\"#\" title=\"Add your presency\">" . esc_html("Ajouter une présence en tant qu'invité", "lab") . "<i class=\"fas fa-plus-circle fa-3x text-success\"></i></a></div>";
     }
+    $str .= "&nbsp;<a title=\"export as Excel file\" target=\"_blank\" href=\"/wp-content/plugins/lab/lab_export.php?filename=week".date("d-m-Y",$startDay).".xlsx&do=presentOfTheWeek&param=".date("d-m-Y",$startDay)."\"><i class=\"fa fa-table\" aria-hidden=\"true\"></i></a>";
+
     $listSite = lab_admin_list_site();
     $colors[] = array();
     $str .= "<table><tr>";

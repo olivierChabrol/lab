@@ -277,12 +277,17 @@ function localize_script($domain) {
 function lab_admin_tab_general_user()
 {
 ?>
+  <p>
+    <a class="button button-primary button-large" href="?page=lab-export.php&post_type=epl_event&type=all">
+        Export All
+    </a>
+  </p>
   <br>
-  <a href="#" class="page-title-action" id="lab_user_button_update_db">ajouter lab_left_user à tous les utilisateurs</a>
   <br>
   <a href="#" class="page-title-action" id="lab_user_button_test">test</a>
 <?php
 }
+
 
 
 function lab_admin_tab_seminaire()
