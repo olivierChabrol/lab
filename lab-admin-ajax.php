@@ -1,6 +1,10 @@
 <?php
 
 include 'lab-admin-core.php';
+include 'lib/vendor/autoload.php';
+
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 /**
  * Fonction qui répond à la requete ajax de recherche d'evenement
@@ -238,11 +242,13 @@ function lab_admin_update_user_metadata()
   $dateLeft     = $_POST["dateLeft"];
   $userFunction = $_POST["function"];
   $userLocation = $_POST["location"];
-  lab_usermeta_update($userId, $dateLeft, $userFunction, $userLocation);
+  $officeNumber = $_POST["officeNumber"];
+  $officeFloor = $_POST["officeFloor"];
+  lab_usermeta_update($userId, $dateLeft, $userFunction, $userLocation, $officeNumber, $officeFloor);
   wp_send_json_success("");
 }
 
-function lab_usermeta_update($userId, $left, $userFunction, $userLocation)
+function lab_usermeta_update($userId, $left, $userFunction, $userLocation, $officeNumber, $officeFloor)
 {
   global $wpdb;
   $sql = "";
@@ -255,6 +261,8 @@ function lab_usermeta_update($userId, $left, $userFunction, $userLocation)
   $wpdb->query($sql);
   $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$userFunction),array("user_id"=>$userId, "meta_key"=>"lab_user_function"));
   $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$userLocation),array("user_id"=>$userId, "meta_key"=>"lab_user_location"));
+  $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$officeNumber),array("user_id"=>$userId, "meta_key"=>"lab_user_office_number"));
+  $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$officeFloor),array("user_id"=>$userId, "meta_key"=>"lab_user_office_floor"));
 }
 
 function lab_usermeta_update_lab_left_key($usermetaId, $left)
@@ -314,12 +322,60 @@ function lab_changeLocale($locale) {
 }
 function lab_admin_test()
 { 
-  //global $wp_rewrite;
-  $test = __("Clés","lab")."- locale :".get_locale();
-  unload_textdomain("lab");
-  add_filter('locale','lab_changeLocale',10);
-  myplugin_load_textdomain();
-  wp_send_json_error("then : $test, now : ".__("Clés","lab")."- locale:".get_locale());
+  $timestamp = strtotime("2020-05-21");
+  wp_send_json_success("NonWorkingDay : ".nonWorkingDay($timestamp));
+  return;
+}
+
+
+function nonWorkingDay1($timestamp)
+{
+    $jour = date("d", $timestamp);
+    $mois = date("m", $timestamp);
+    $annee = date("Y", $timestamp);
+    $EstFerie = false;
+    // dates fériées fixes
+    if($jour == 1 && $mois == 1) $EstFerie = true; // 1er janvier
+    if($jour == 1 && $mois == 5) $EstFerie = true; // 1er mai
+    if($jour == 8 && $mois == 5) $EstFerie = true; // 8 mai
+    if($jour == 14 && $mois == 7) $EstFerie = true; // 14 juillet
+    if($jour == 15 && $mois == 8) $EstFerie = true; // 15 aout
+    if($jour == 1 && $mois == 11) $EstFerie = true; // 1 novembre
+    if($jour == 11 && $mois == 11) $EstFerie = true; // 11 novembre
+    if($jour == 25 && $mois == 12) $EstFerie = true; // 25 décembre
+    // fetes religieuses mobiles
+    $pak = easter_date($annee);
+    $jp = date("d", $pak);
+    $mp = date("m", $pak);
+    if (date("L", $pak))
+    {
+        $pak = strtotime("+1 days", $pak);
+    }
+    if($jp == $jour && $mp == $mois){ $EstFerie = true;} // Pâques
+    $lpk = mktime(date("H", $pak), date("i", $pak), date("s", $pak), date("m", $pak) , date("d", $pak) +1, date("Y", $pak) );
+    $jp = date("d", $lpk);
+    $mp = date("m", $lpk);
+
+    if($jp == $jour && $mp == $mois){ $EstFerie = true; }// Lundi de Pâques
+    $asc = mktime(date("H", $pak), date("i", $pak), date("s", $pak), date("m", $pak), date("d", $pak) + 39, date("Y", $pak) );
+    $jp = date("d", $asc);
+    $mp = date("m", $asc);
+    $dates[] = date("d/m/Y", $asc);
+    if($jp == $jour && $mp == $mois){ $EstFerie = true;}//ascension
+    $pe = mktime(date("H", $pak), date("i", $pak), date("s", $pak), date("m", $pak),
+    date("d", $pak) + 49, date("Y", $pak) );
+    $jp = date("d", $pe);
+    $mp = date("m", $pe);
+    if($jp == $jour && $mp == $mois) {$EstFerie = true;}// Pentecôte
+    $lp = mktime(date("H", $asc), date("i", $pak), date("s", $pak), date("m", $pak),
+    date("d", $pak) + 50, date("Y", $pak) );
+    $jp = date("d", $lp);
+    $mp = date("m", $lp);
+    if($jp == $jour && $mp == $mois) {$EstFerie = true;}// lundi Pentecôte
+    // Samedis et dimanches
+    $jour_sem = jddayofweek(unixtojd($timestamp), 0);
+    if($jour_sem == 0 || $jour_sem == 6) $EstFerie = true;
+    return $EstFerie;
 }
 
 
@@ -1094,6 +1150,12 @@ function lab_admin_presence_save_ajax()
   
   $newDateStart = strtotime($dateOpen." ".$hourOpen);
   $newDateEnd   = strtotime($dateOpen." ".$hourClose);
+
+  if (nonWorkingDay($newDateStart))
+  {
+    wp_send_json_error(sprintf(esc_html__("%s is a non wordking day", "lab"), $dateOpen));
+    return;
+  }
 
   if ($presenceId == null)
   {

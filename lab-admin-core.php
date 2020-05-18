@@ -4,7 +4,7 @@
 
 function lab_admin_username_get($userId) {
     global $wpdb;
-    $results = $wpdb->get_results( "SELECT * FROM `".$wpdb->prefix."usermeta` WHERE (meta_key = 'first_name' or meta_key='last_name' or meta_key='lab_user_left' or meta_key='lab_user_function' or meta_key='lab_user_location') and user_id=".$userId  );
+    $results = $wpdb->get_results( "SELECT * FROM `".$wpdb->prefix."usermeta` WHERE (meta_key = 'first_name' or meta_key='last_name' or meta_key LIKE 'lab_%') and user_id=".$userId  );
     $items = array();
     $items["id"] = $userId;
 
@@ -24,6 +24,12 @@ function lab_admin_username_get($userId) {
         }
         if ($r->meta_key == 'lab_user_location') {
             $items['user_location'] = $r->meta_value;
+        }
+        if ($r->meta_key == 'lab_user_office_number') {
+            $items['user_office_number'] = $r->meta_value;
+        }
+        if ($r->meta_key == 'lab_user_office_floor') {
+            $items['user_office_floor'] = $r->meta_value;
         }
     }
     
@@ -163,7 +169,7 @@ function lab_admin_getSite($sideId)
  */
 function lab_admin_list_present_user($startDate, $endDate) {
     global $wpdb;
-    $sql = "SELECT lp.id, lp.user_id, lp.hour_start, lp.hour_end, lp.site as site_id, lp.comment as comment, p.value as site, um1.meta_value as first_name, um2.meta_value as last_name FROM `".$wpdb->prefix."lab_presence` AS lp JOIN ".$wpdb->prefix."lab_params as p ON p.id=lp.site JOIN ".$wpdb->prefix."usermeta AS um1 ON um1.user_id=lp.user_id JOIN ".$wpdb->prefix."usermeta AS um2 ON um2.user_id=lp.user_id WHERE lp.external=0 AND (lp.`hour_start` BETWEEN '".date("Y-m-d", $startDate)." 00:00:00' AND '".date("Y-m-d", $endDate)." 23:59:59') AND um1.meta_key='first_name' AND um2.meta_key='last_name' ORDER BY lp.user_id, lp.`hour_start`";
+    $sql = "SELECT lp.id, lp.user_id, lp.hour_start, lp.hour_end, lp.site as site_id, lp.comment as comment, p.value as site, um1.meta_value as first_name, um2.meta_value as last_name, um4.meta_value as office, um5.meta_value as floor FROM `".$wpdb->prefix."lab_presence` AS lp JOIN ".$wpdb->prefix."lab_params as p ON p.id=lp.site JOIN ".$wpdb->prefix."usermeta AS um1 ON um1.user_id=lp.user_id JOIN ".$wpdb->prefix."usermeta AS um2 ON um2.user_id=lp.user_id JOIN ".$wpdb->prefix."usermeta AS um3 ON um3.user_id=lp.user_id JOIN ".$wpdb->prefix."usermeta AS um4 ON um4.user_id=lp.user_id JOIN ".$wpdb->prefix."usermeta AS um5 ON um5.user_id=lp.user_id WHERE lp.external=0 AND (lp.`hour_start` BETWEEN '".date("Y-m-d", $startDate)." 00:00:00' AND '".date("Y-m-d", $endDate)." 23:59:59') AND um1.meta_key='first_name' AND um2.meta_key='last_name' AND um3.meta_key='lab_user_location' AND um4.meta_key='lab_user_office_number' AND um5.meta_key='lab_user_office_floor' ORDER BY lp.user_id, lp.`hour_start`";
     $registredUser = $wpdb->get_results($sql);
     $sql = "SELECT lp.id, lp.user_id, lp.hour_start, lp.hour_end, lp.site as site_id, lp.comment as comment, p.value as site, lug.first_name as first_name, lug.last_name as last_name FROM `".$wpdb->prefix."lab_presence` AS lp JOIN ".$wpdb->prefix."lab_params as p ON p.id=lp.site JOIN ".$wpdb->prefix."lab_guests AS lug ON lug.id=lp.user_id WHERE lp.external=1 AND (lp.`hour_start` BETWEEN '".date("Y-m-d", $startDate)." 00:00:00' AND '".date("Y-m-d", $endDate)." 23:59:59') ORDER BY lp.user_id, lp.`hour_start`";
     //return $wpdb->get_results($sql);
@@ -326,6 +332,10 @@ function lab_admin_firstname_lastname2($name){
  */
 function lab_admin_initTable_usermeta()
 {
+    lab_userMetaData_create_metaKeys("user_function", "");
+    lab_userMetaData_create_metaKeys("user_location", "");
+    lab_userMetaData_create_metaKeys("user_office_number", "");
+    lab_userMetaData_create_metaKeys("user_office_floor", "");
     lab_userMetaData_create_metaKeys("user_phone", "");
     lab_userMetaData_create_metaKeys("user_left", null);
     lab_userMetaData_create_metaKeys("user_slug", null);
@@ -336,6 +346,25 @@ function lab_admin_initTable_usermeta()
     lab_admin_usermeta_fill_hal_name();
     lab_admin_usermeta_fill_user_slug();
     lab_admin_createSocial();
+}
+
+function lab_admin_add_new_user_metadata($userId)
+{
+    lab_userMetaData_save_key($userId, "user_function", "");
+    lab_userMetaData_save_key($userId, "user_location", "");
+    lab_userMetaData_save_key($userId, "user_office_number", "");
+    lab_userMetaData_save_key($userId, "user_office_floor", "");
+    lab_userMetaData_save_key($userId, "user_phone", "");
+    lab_userMetaData_save_key($userId, "user_left", null);
+    lab_userMetaData_save_key($userId, "user_left", null);
+    lab_userMetaData_save_key($userId, "user_slug", null);
+    lab_userMetaData_save_key($userId, "user_position", null);
+    lab_userMetaData_save_key($userId, "hal_id", null);
+    lab_userMetaData_save_key($userId, "hal_name", null);
+    lab_userMetaData_save_key($userId, "profile_bg_color", "#F2F2F2");
+    lab_admin_usermeta_fill_hal_name($userId);
+    lab_admin_usermeta_fill_user_slug($userId);
+    lab_admin_createSocial($userId);
 }
 
 function lab_admin_firstname_lastname($param, $name){
@@ -739,10 +768,13 @@ function userMetaData_get_userId_with_no_key($metadataKey) {
     }
     return $items;
 }
-function lab_admin_usermeta_fill_user_slug()
+function lab_admin_usermeta_fill_user_slug($userId = null)
 {
     global $wpdb;
     $sql = "SELECT u.id as user_id, um1.meta_value as first_name, um2.meta_value as last_name, um3.umeta_id as id FROM `".$wpdb->prefix."users` AS u JOIN `".$wpdb->prefix."usermeta` as um1 ON um1.user_id=u.ID JOIN `".$wpdb->prefix."usermeta` AS um2 ON um2.user_id=u.ID JOIN `".$wpdb->prefix."usermeta` AS um3 ON um3.user_id=u.ID WHERE um1.meta_key='first_name' AND um2.meta_key='last_name' AND um3.meta_key='lab_user_slug'";
+    if ($userId != null) {
+        $sql .= " AND u.id=".$userId;
+    }
     $results = $wpdb->get_results($sql);
     $retour = array();
     foreach($results as $r) {
@@ -851,9 +883,9 @@ function userMetaData_exist_metakey($metadataKey) {
     }
     return false;
 }
-function lab_admin_createSocial() {
+function lab_admin_createSocial($userId = null) {
     foreach (['facebook','instagram','linkedin','pinterest','twitter','tumblr','youtube'] as $reseau) {
-        lab_userMetaData_create_metaKeys($reseau,'');
+        lab_userMetaData_create_metaKeys($reseau,'', $userId);
     }
 }
 /**************************************************************************************************
@@ -942,9 +974,12 @@ function hal_format_name($name) {
     }
 }
 
-function lab_admin_usermeta_fill_hal_name() {
+function lab_admin_usermeta_fill_hal_name($userId = null) {
     global $wpdb;
     $sql = "SELECT u.id as user_id, um1.meta_value as first_name, um2.meta_value as last_name, um3.umeta_id as id FROM `".$wpdb->prefix."users` AS u JOIN `".$wpdb->prefix."usermeta` as um1 ON um1.user_id=u.ID JOIN `".$wpdb->prefix."usermeta` AS um2 ON um2.user_id=u.ID JOIN `".$wpdb->prefix."usermeta` AS um3 ON um3.user_id=u.ID WHERE um1.meta_key='first_name' AND um2.meta_key='last_name' AND um3.meta_key='lab_hal_name'";
+    if ($userId != null) {
+        $sql .= " AND u.id=".$userId;
+    }
     $results = $wpdb->get_results($sql);
     $retour = array();
     foreach($results as $r) {
