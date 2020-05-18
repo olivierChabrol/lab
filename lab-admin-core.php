@@ -356,7 +356,6 @@ function lab_admin_add_new_user_metadata($userId)
     lab_userMetaData_save_key($userId, "user_office_floor", "");
     lab_userMetaData_save_key($userId, "user_phone", "");
     lab_userMetaData_save_key($userId, "user_left", null);
-    lab_userMetaData_save_key($userId, "user_left", null);
     lab_userMetaData_save_key($userId, "user_slug", null);
     lab_userMetaData_save_key($userId, "user_position", null);
     lab_userMetaData_save_key($userId, "hal_id", null);

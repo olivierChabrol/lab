@@ -5,6 +5,60 @@
  * Authors: Ivan Ivanov, Lucas Urgenti
  * Version: 0.1
  */
+class LAB_LDAP {
+    /**
+    * @var LAB_LDAP
+    * @access private
+    * @static
+    */
+    private static $_instance = null;
+    private static $ldap_link;
+    private static $ldap_admin_password = "aze";
+    private static $ldap_url = "localhost";
+    public const LDAP_BASE = "dc=i2m,dc=univ-amu,dc=fr";
+
+    /**
+     * Constructeur de la classe
+    *
+    * @param void
+    * @return void
+    */
+    private function __construct() {
+        $this->ldap_url;
+        self::$ldap_link = ldap_connect(self::$ldap_url)
+            or die ("URL du serveur LDAP incorrecte.");
+        ldap_set_option(self::$ldap_link, LDAP_OPT_PROTOCOL_VERSION, 3);
+    }
+    /**
+     * Méthode qui crée l'unique instance de la classe
+    * si elle n'existe pas encore puis la retourne.
+    *
+    * @param void
+    * @return Singleton
+    */
+    public static function getInstance() {
+        if(is_null(self::$_instance)) {
+            self::$_instance = new LAB_LDAP();  
+        }
+    return self::$_instance;
+    }
+    public static function bindAdmin() {
+        ldap_bind(self::$ldap_link,"cn=admin,".self::LDAP_BASE,self::$ldap_admin_password);
+    }
+    public static function getLink() {
+        return self::$ldap_link;
+    }
+    public static function setURL($url) {
+        self::$ldap_url=$url;
+    }
+    public static function setPassword($password) {
+        self::$ldap_admin_password=$password;
+    }
+    public static function countAccountEntries() {
+        $result = ldap_search(self::$ldap_link,'ou=accounts,'.self::LDAP_BASE,"uid=*");
+        return ldap_count_entries(self::$ldap_link,$result);
+    }
+}
 function lab_ldap($args) {
     $active_tab = 'new';
     if (isset($_GET['tab'])) {
@@ -33,14 +87,12 @@ function lab_ldap($args) {
     </table>
     </div>
     <?php
-    $BASE = "dc=i2m,dc=univ-amu,dc=fr";
-    $ldap_link = ldap_connect("localhost");
-    $ldap_bind = ldap_bind($ldap_link, 'cn=admin,'.$BASE,'aze');
-    // var_dump($ldap_bind);
-    // $result = ldap_search($ldap_link,'ou=accounts,'.$BASE,"uid=chabrol");
-    // echo "<xmp>";
-    // var_dump(ldap_get_entries($ldap_link,$result)[0]);
-    // echo "</xmp>";
+    echo lab_ldap_addUser("JEAN EUDE", "Michel-Pierre","jemp@univ-amu.fr",'$P$B0v6kIJqQ.AN.VF.QxLmRyqAhvLOEt1',"i12345678",random_int(10000,11000),"TestOrg");
+}
+function lab_ldap_countEntries($ldap_link) {
+    global $LDAP_BASE;
+    $result = ldap_search($ldap_link,'ou=accounts,'.$LDAP_BASE,"uid=*");
+    return ldap_count_entries($ldap_link,$result);
 }
 
 function lab_ldap_getName($cn) {
@@ -58,52 +110,51 @@ function lab_ldap_getName($cn) {
 }
 
 function lab_ldap_new_WPUser($name,$email,$password,$uid) {
+    $names = lab_ldap_getName($name);
     global $wpdb;
-    $wpdb->insert($wpdb->prefix."users",
-    array(
+    $userData = array(
         'user_login'=>$uid,
         'user_pass'=>$password,
-        'user_nicename'=>$uid,
         'user_email'=>$email,
         'user_registered'=>date("Y-m-d H:i:s",time()),
-        'user_status'=>0,
-        'display_name'=>$name
-    ));
-    $user_id = $wpdb->insert_id;
-    $names = lab_ldap_getName($name);
+        'first_name'=>$names['first_name'],
+        'last_name'=>$names['last_name'],
+        'display_name'=>$name,
+        'role'=>'subscriber');
+    $user_id = wp_insert_user($userData);
     $sql = "INSERT INTO ".$wpdb->prefix."usermeta 
-        ('user_id', 'meta_key', 'meta_value') VALUES
-        ($user_id, 'first_name', '".$names['first_name']."'),
-        ($user_id, 'last_name', '".$names['last_name']."'),
-        ($user_id, 'nickname', '".$names['first_name']."'),
-        ($user_id, 'mo_ldap_user_dn', 'uid=$uid,ou=accounts,dc=i2m,dc=univ-amu,dc=fr'),
-        ($user_id, 'wp_user_level', '0'),
-        ($user_id, 'wp_capabilities', 'a:1:{s:10:\"subscriber\";b:1;}'),
-        ($user_id, 'use_ssl', '0'),
-        ($user_id, 'admin_color', 'fresh'),
-        ($user_id, 'comment_shortcuts', 'false'),
-        ($user_id, 'syntax_highlighting', 'true'),
-        ($user_id, 'rich_editing', 'true'),
-        ($user_id, 'show_admin_bar_front', 'true'),
-        ($user_id, 'description', ''),
-        ($user_id, 'locale', ''),
-        ($user_id, 'dismissed_wp_pointers', ''),
-        ($user_id, 'dbem_phone', ''),
-        ($user_id, 'lab_profile_bg_color', '#67afe6'),
-        ($user_id, 'lab_hal_name', '".hal_format_name($name)."'),
-        ($user_id, 'lab_facebook', ''),
-        ($user_id, 'lab_linkedin', ''),
-        ($user_id, 'lab_pinterest', ''),
-        ($user_id, 'lab_tumblr', ''),
-        ($user_id, 'lab_twitter', ''),
-        ($user_id, 'lab_instagram', ''),
-        ($user_id, 'lab_youtube', ''),
-        ($user_id, 'lab_user_left', NULL),
-        ($user_id, 'lab_user_phone', ''),
-        ($user_id, 'lab_user_office_floor', ''),
-        ($user_id, 'lab_user_office_number', ''),
-        ($user_id, 'lab_user_position', ''),
-        ($user_id, 'lab_user_slug', '".usermeta_format_name_to_slug($names['first_name'], $names['last_name'])."')";
+        (`user_id`, `meta_key`, `meta_value`) VALUES
+        ($user_id, 'mo_ldap_user_dn', 'uid=$uid,ou=accounts,dc=i2m,dc=univ-amu,dc=fr');";
     $wpdb->query($sql);
+    //lab_admin_add_new_user_metadata($user_id);
+}
+
+function lab_ldap_addUser($first_name, $last_name,$email,$password,$uid,$organization) {
+    $ldap_obj = LAB_LDAP::getInstance();
+    $info["objectclass"][0] = "top";
+    $info["objectclass"][1] = "person";
+    $info["objectclass"][2] = "inetOrgPerson";
+    $info["objectclass"][3] = "posixAccount";
+    $info["objectclass"][4] = "shadowAccount";
+    $info["objectclass"][5] = "organizationalPerson";
+    $info["objectclass"][6] = "labeledURIObject";
+    $info["cn"] = "$first_name $last_name";
+    $info["loginshell"]="/bin/bash";
+    $info["uid"]=$uid;
+    $info["displayname"] = "$first_name $last_name";
+    $info["sn"] = $last_name;
+    $info["mail"]=$email;
+    $info["uidnumber"]=3000+$ldap_obj::countAccountEntries();
+    $info["userpassword"]=$password;
+    $info["homedirectory"] = "/home/$uid";
+    $info["gidnumber"] = "5000";
+    $info["o"] = $organization;
+    $ldap_obj::bindAdmin();
+    ldap_add($ldap_obj::getLink(),"uid=$uid,ou=accounts,".$ldap_obj::LDAP_BASE,$info);
+    if (ldap_errno($ldap_obj::getLink())==0) {
+        return;
+    } else {
+        return ldap_errno($ldap_obj::getLink());
+    }
 }
 ?>

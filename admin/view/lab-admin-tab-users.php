@@ -88,5 +88,56 @@ function lab_admin_tab_user() {
   
   </div>
   <button style='margin-top:10px;' id='lab_add_users_groups'><?php esc_html_e('envoyer','lab') ?></button>
+  <hr/>
+  <h3><?php esc_html_e('Ajouter un utilisateur dans l\'annuaire','lab') ?></h3>
+  <table class="form-table" role="presentation">
+    <form id="lab_ldap_newUser">
+    <tr class="user-rich-editing-wrap">
+      <th scope="row">
+        <label for="lab_ldap_newUser_lastName"><?php esc_html_e('Nom','lab') ?></label>
+      </th>
+      <td>
+        <input required type="text" id="lab_ldap_newUser_lastName"/>
+      </td>
+    </tr>
+    <tr class="user-rich-editing-wrap">
+      <th scope="row">
+        <label for="lab_ldap_newUser_firstName"><?php esc_html_e('Prénom','lab') ?></label>
+      </th>
+      <td>
+        <input required type="text" id="lab_ldap_newUser_firstName"/>
+      </td>
+    </tr>
+    <tr class="user-rich-editing-wrap">
+      <th scope="row">
+        <label for="lab_ldap_newUser_email"><?php esc_html_e('E-Mail','lab') ?></label>
+      </th>
+      <td>
+        <input required type="email" id="lab_ldap_newUser_email"/>
+      </td>
+    </tr>
+    <tr class="user-rich-editing-wrap">
+      <th scope="row">
+        <label for="lab_ldap_newUser_uid"><?php esc_html_e('Login (uid)','lab') ?></label>
+      </th>
+      <td>
+        <input required type="text" id="lab_ldap_newUser_uid"/>
+      </td>
+    </tr>
+    <tr class="user-rich-editing-wrap">
+      <th scope="row">
+        <label for="lab_ldap_newUser_uid"><?php esc_html_e('Organisation','lab') ?></label>
+        
+        <?php 
+        global $LDAP_BASE;
+        $ldap_link = ldap_connect("ldap.stage.fr")
+            or die ("Impossible de se connecter au serveur LDAP.");
+        var_dump(lab_ldap_countEntries($ldap_link));
+        ?>
+      </th>
+      <td>
+        <input required type="text" id="lab_ldap_newUser_uid"/>
+      </td>
+    </tr>
   <?php
 }
