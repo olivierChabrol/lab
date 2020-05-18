@@ -119,6 +119,7 @@ if (is_admin()) {
     add_action( 'wp_ajax_lab_invitations_pagination','lab_invitations_pagination_Req' );
     //Actions pour le LDAP
     add_action( 'wp_ajax_lab_ldap_add_user','lab_ldap_add_user' );
+    add_action( 'wp_ajax_lab_invitations_pagination','lab_ldap_pagination_Req' );
 }
 // no admin
 else{
