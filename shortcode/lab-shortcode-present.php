@@ -77,10 +77,20 @@ function lab_present_select($param) {
     // .iconset_16px { height: 17px; width: 17px; background-color: #87ceeb; cursor: pointer; margin: 3px;}
     $str .= "\n<style>\n";
     $str .= ".wrapper { position: relative; }
+    .planningHeader {width: 16.66%; text-align: center;}
     .actions { display:none;position: absolute; top: -10px; right: -10px; }
     .iconset_16px { height: 17px; width: 17px; cursor: pointer; margin: 3px;}
     .floatLeft  { float:left!important; };
+	.striped {
+        background: repeating-linear-gradient(
+          45deg,
+          #FFFFFF,
+          #FFFFFF 10px,
+          #DDDDDD 10px,
+          #DDDDDD 20px
+      )};
     .gal_name { color:white; font-weight:bold;};";
+    
     $str .= "</style>\n";
 
     $sum = array();
@@ -94,24 +104,24 @@ function lab_present_select($param) {
     
     $dayInt = date('j', $startDay);
     $dayInMonth = date('t', $startDay);
-    
-    function getDay(&$dayInt, $dayInMonth ) {
-        $dayInt = (++$dayInt) % $dayInMonth;
-        if ($dayInt == 0) {
-            $dayInt = $dayInMonth;
-        }
-        return $dayInt;
+
+    $datesOfTheWeek = array();
+    $datesOfTheWeek[] = $startDay;
+    for ($i = 1 ; $i < 5 ; $i++)
+    {
+        $datesOfTheWeek[] = strtotime("+1 days", $datesOfTheWeek[$i -1]);
     }
+    
 
     $str .= "<table id=\"lab_presence_table1\" class=\"table table-bordered table-striped\">
                 <thead class=\"thead-dark\">
                     <tr>
                         <th style=\"width: 16.66%\">&nbsp;</th>
-                        <th colspan=\"2\" style=\"width: 16.66%; text-align: center;\">" . esc_html__("Lundi", "lab")    . " " . $dayInt . "</th>
-                        <th colspan=\"2\" style=\"width: 16.66%; text-align: center;\">" . esc_html__("Mardi", "lab")    . " " . getDay($dayInt, $dayInMonth ) . "</th>
-                        <th colspan=\"2\" style=\"width: 16.66%; text-align: center;\">" . esc_html__("Mercredi", "lab") . " " . getDay($dayInt, $dayInMonth ) . "</th>
-                        <th colspan=\"2\" style=\"width: 16.66%; text-align: center;\">" . esc_html__("Jeudi", "lab")    . " " . getDay($dayInt, $dayInMonth ) . "</th>
-                        <th colspan=\"2\" style=\"width: 16.66%; text-align: center;\">" . esc_html__("Vendredi", "lab") . " " . getDay($dayInt, $dayInMonth ) . "</th>
+                        <th colspan=\"2\" class=\"planningHeader\">" . esc_html__("Lundi", "lab")    . " " . date("d", $datesOfTheWeek[0]) . "</th>
+                        <th colspan=\"2\" class=\"planningHeader\">" . esc_html__("Mardi", "lab")    . " " . date("d", $datesOfTheWeek[1]) . "</th>
+                        <th colspan=\"2\" class=\"planningHeader\">" . esc_html__("Mercredi", "lab") . " " . date("d", $datesOfTheWeek[2]) . "</th>
+                        <th colspan=\"2\" class=\"planningHeader\">" . esc_html__("Jeudi", "lab")    . " " . date("d", $datesOfTheWeek[3]) . "</th>
+                        <th colspan=\"2\" class=\"planningHeader\">" . esc_html__("Vendredi", "lab") . " " . date("d", $datesOfTheWeek[4]) . "</th>
                     </tr>
                 </thead>
                 <tbody>";
@@ -119,6 +129,9 @@ function lab_present_select($param) {
         $str .="<tr>\n<td>".$k."</td>\n";
         
         for ($i = 0 ; $i < 5 ; $i++) {
+            $isNonWorkingDay = nonWorkingDay($datesOfTheWeek[$i]);
+            $nwdClass = $isNonWorkingDay?" class=\"striped\"":"";
+            $nwdTitle = $isNonWorkingDay?" title=\"".esc_html__("Non working day","lab")."\"":"";
             $currentDay   = strtotime('+'.$i.' days', $startDay);
             $currentDayDT = date('d', $currentDay);
             if($v[$currentDayDT]) {
@@ -158,7 +171,7 @@ function lab_present_select($param) {
                 }
             }
             else {
-                $str .= "<td colspan=\"2\">&nbsp;</td>\n";
+                $str .= "<td colspan=\"2\" $nwdClass $nwdTitle>&nbsp;</td>\n";
             }
         }
         $str .= "</tr>\n";
@@ -180,6 +193,14 @@ function lab_present_select($param) {
         $str .=  newUserDiv();
     }
     return $str;
+}
+
+function getDay($dayInt, $dayInMonth, $year = 0) {
+    $dayInt = ($dayInt) % $dayInMonth;
+    if ($dayInt == 0) {
+        $dayInt = $dayInMonth;
+    }
+    return $dayInt;
 }
 
 function lab_present_choice($param) {
@@ -458,7 +479,7 @@ function getStartDate()
  */
 function td($dateStart = null, $dateEnd = null, $siteId = null, $empty = false, $site = null, $userId = null, $presenceId=null, $allDay = false, $comment= null) {
     if ($empty) {
-        $str .= "<td>&nbsp;</td>";
+        $str .= "<td >&nbsp;</td>";
     } else {
         $canDelete = '';
         
