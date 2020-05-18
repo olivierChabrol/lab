@@ -26,39 +26,44 @@ function lab_ldap($args) {
     // [do not erase if you want to test] */
 
     $ldapStr = '
-    <div>    
-        <label for="lab_results_number">'.esc_html__("Nombre de résultats par page","lab").' : </label>
-        <select id="lab_results_number">
-            <option selected value="5">5</option>
-            <option value="10">10</option>
-            <option value="20">20</option>
-            <option value="50">50</option>
-        </select>
-    </div>
-    <div class="table-responsive">
-        <table id="lab-table-directory" class="table table-striped">
-            <thead class="thead-dark">
-                <tr>
-                    <th>'.esc_html__("Nom", "lab").'</th>
-                    <th>'.esc_html__("Action", "lab").'</th>
-                <tr>
-            </thead>
-        <tbody>';
+    <div class="d-flex justify-content-between bd-highlight mb-3">
+        <div class="p-2">
+            <h3>Parcourir l\'annuaire LDAP</h3>
+            <div>    
+                <label for="lab_results_number">'.esc_html__("Nombre de résultats par page","lab").' : </label>
+                <select id="lab_results_number">
+                    <option selected value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="50">50</option>
+                </select>
+            </div>
+            <div class="table-responsive">
+                <table id="lab-table-directory" class="table table-striped">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>'.esc_html__("Nom", "lab").'</th>
+                            <th>'.esc_html__("Action", "lab").'</th>
+                        <tr>
+                    </thead>
+                <tbody>';
     
     $ldapStr .= lab_ldap_list_update($lc,$BASE);
 
     $ldapStr .= '           
-        </tbody>
-    </table>
-    </div>';
+                </tbody>
+                </table>
+            </div>';
 
-    $ldapStr .= '<div id="lab_pages">'.lab_ldap_pagination(1,1).'</div><br/><br/>';
-    
+    $ldapStr .= '<div id="lab_pages">'.lab_ldap_pagination(1,1).'</div></div>
+    <div class="p-2"> <br/><br/></div>';
     ldap_close($lc);
+    
+    $ldapStr .= '<div class="p-2"><h3>Chercher une personne dans LDAP</h3>
+    <label for="">Précisez le mail : </label><br/>
+    <input type="mail"></input></div>';
     return $ldapStr;
 }
-
-getLdapDataFromMail("asaf1985@hotmail.com");
 
 function lab_ldap_pagination($pages, $currentPage) {
     $out = '<ul id="pagination-digg">';
@@ -70,4 +75,7 @@ function lab_ldap_pagination($pages, $currentPage) {
     $out .= '</ul>';
     return $out;
 }
+
+//get_ldap_data_from_mail("asaf1985@hotmail.com");
+
 ?>
