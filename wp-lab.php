@@ -41,6 +41,7 @@ require_once(LAB_DIR_PATH."admin/view/lab-admin-tab-params.php");
 require_once(LAB_DIR_PATH."admin/view/lab-admin-tab-users.php");
 require_once(LAB_DIR_PATH."admin/view/lab-admin-tab-settings.php");
 require_once("lab-html-helper.php");
+require_once("lab-utils.php");
 
 global $wpdb;
 $dbTablePrefix = $wpdb->prefix;
@@ -122,6 +123,12 @@ register_uninstall_hook(__FILE__, 'lab_uninstall_hook');
 add_action('widgets_init', 'wplab_init');
 function myplugin_load_textdomain() {
   load_plugin_textdomain( 'lab', false, '/lab/lang' ); 
+}
+
+add_action( 'user_register', 'addLabUserMetaData', 10, 1 );
+
+function myplugin_registration_save( $user_id ) {
+  lab_admin_add_new_user_metadata($user_id);
 }
 
 /**
@@ -277,12 +284,17 @@ function localize_script($domain) {
 function lab_admin_tab_general_user()
 {
 ?>
+  <p>
+    <a class="button button-primary button-large" href="?page=lab-export.php&post_type=epl_event&type=all">
+        Export All
+    </a>
+  </p>
   <br>
-  <a href="#" class="page-title-action" id="lab_user_button_update_db">ajouter lab_left_user à tous les utilisateurs</a>
   <br>
   <a href="#" class="page-title-action" id="lab_user_button_test">test</a>
 <?php
 }
+
 
 
 function lab_admin_tab_seminaire()

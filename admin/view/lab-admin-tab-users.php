@@ -20,7 +20,7 @@ function lab_admin_tab_user() {
     </tr>
     <tr>
       <td>
-        <label for="lab_user_left"><?php esc_html_e('User function','lab') ?></label>
+        <label for="lab_user_function"><?php esc_html_e('User function','lab') ?></label>
       </td>
       <td>
         <?php lab_html_select("lab_user_function", "lab_user_function", "", lab_admin_get_params_userFunction, null, array("value"=>"","label"=>"None"), ""); ?>
@@ -28,10 +28,26 @@ function lab_admin_tab_user() {
     </tr>
     <tr>
       <td>
-        <label for="lab_user_left"><?php esc_html_e('User Location','lab') ?></label>
+        <label for="lab_user_location"><?php esc_html_e('User Location','lab') ?></label>
       </td>
       <td>
         <?php lab_html_select("lab_user_location", "lab_user_location", "", lab_admin_get_params_userLocation, null, array("value"=>"","label"=>"None"), ""); ?>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <label for="lab_user_office_number"><?php esc_html_e('User office number','lab') ?></label>
+      </td>
+      <td>
+        <input type="text"   id="lab_user_office_number"/>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <label for="lab_user_office_floor"><?php esc_html_e('User office floor','lab') ?></label>
+      </td>
+      <td>
+        <input type="text" id="lab_user_office_floor"/>
       </td>
     </tr>
     <tr>

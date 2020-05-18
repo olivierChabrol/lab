@@ -191,7 +191,7 @@ jQuery(function($){
   });
 
   $("#lab_user_button_save_left").click(function() {
-    saveUserLeft($("#lab_user_left_date").val(), $("#lab_user_left").is(":checked"), $("#lab_user_location").val(), $("#lab_user_function").val());
+    saveUserLeft($("#lab_user_left_date").val(), $("#lab_user_left").is(":checked"), $("#lab_user_location").val(), $("#lab_user_function").val(), $("#lab_user_office_number").val(), $("#lab_user_office_floor").val());
   });
 
   $("#lab_settings_correct_um").click(function() {
@@ -830,7 +830,7 @@ function saveUserMetaData(userId, date, isChecked, location, userFunction) {
 
 }
 
-function saveUserLeft(date, isChecked, location, userFunction) {
+function saveUserLeft(date, isChecked, location, userFunction, userOfficeNumber, userOfficeFloor) {
   var c = isChecked?date:null;
   var data = {
                'action' : 'update_user_metadata',
@@ -838,6 +838,8 @@ function saveUserLeft(date, isChecked, location, userFunction) {
                'dateLeft' : c,
                'location' :location,
                'function' : userFunction,
+               'officeNumber' : userOfficeNumber,
+               'officeFloor' : userOfficeFloor,
   };
   callAjax(data, "User saved", resetUserTabFields, "Failed to save user", null);
 }
@@ -849,7 +851,8 @@ function resetUserTabFields()
   jQuery("#lab_user_left_date").val("");
   jQuery("#lab_user_location").val("");
   jQuery("#lab_user_function").val("");
-  jQuery("#lab_usermeta_id").val("");
+  jQuery("#lab_user_office_number").val("");
+  jQuery("#lab_user_office_floor").val("");
 }
 
 function load_usermeta_dateLeft() {
@@ -901,6 +904,12 @@ function loadUserMetaData(response) {
     }
     if (response.data["user_location"] != null) {
       jQuery("#lab_user_location").val(response.data["user_location"]);
+    }
+    if (response.data["user_office_floor"] != null) {
+      jQuery("#lab_user_office_floor").val(response.data["user_office_floor"]);
+    }
+    if (response.data["user_office_number"] != null) {
+      jQuery("#lab_user_office_number").val(response.data["user_office_number"]);
     }
   }
   else
