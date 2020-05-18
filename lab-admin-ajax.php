@@ -1086,6 +1086,27 @@ function lab_ldap_list_update($lc,$BASE) {
   }
   return($ldapResult);
 }
+function getLdapDataFromMail($mail) {
+  /*
+   * TODO : à partir d'un e-mail donné -> ramener les champs suivants pour la fonction d'Ivan : 
+   *  nom, prénom, mail, login (uid)
+   * */
+  $lc        = ldap_connect("localhost","389");
+  $base      = "ou=accounts,dc=i2m,dc=univ-amu,dc=fr";
+  $filter    = "(mail=" . $mail . ")";
+  $attrRead  = array("givenName", "sn", "mail", "uid");
+  //$lr        = ldap_read($lc, $base, $filter, $attrRead) or die ("Erreur Query");
+  $result    = ldap_search($lc, $base, $filter, $attrRead) 
+      or die ("Error in query");
+  $entry     = ldap_get_entries($lc,$result);
+
+  echo $entry[0]["sn"][0] . " est le nom de famille recherché via mail.</br>" .
+       $entry[0]["givenName"][0] . " est le prénom recherché via mail.</br>" .
+       $entry[0]["uid"][0] . " est le login recherché via mail.";
+  ldap_close($lc);
+}
+
+
 /**************************************************************************************************************
  * PRESENCE
  **************************************************************************************************************/

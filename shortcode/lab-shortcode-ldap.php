@@ -25,7 +25,6 @@ function lab_ldap($args) {
     }
     // [do not erase if you want to test] */
 
-    //TODO : pagination, bouton détail (récupère attributs LDAP)
     $ldapStr = '
     <div>    
         <label for="lab_results_number">'.esc_html__("Nombre de résultats par page","lab").' : </label>
@@ -54,10 +53,13 @@ function lab_ldap($args) {
     </div>';
 
     $ldapStr .= '<div id="lab_pages">'.lab_ldap_pagination(1,1).'</div><br/><br/>';
-        
+    
+    ldap_close($lc);
     return $ldapStr;
-
 }
+
+getLdapDataFromMail("asaf1985@hotmail.com");
+
 function lab_ldap_pagination($pages, $currentPage) {
     $out = '<ul id="pagination-digg">';
     $out .= '<li class="page_previous'.($currentPage>1 ? '">' : ' gris">').'« Précédent</li>';
@@ -68,28 +70,4 @@ function lab_ldap_pagination($pages, $currentPage) {
     $out .= '</ul>';
     return $out;
 }
-function getLdapDataFromMail($mail) {
-    /*
-     * TODO : à partir d'un e-mail donné -> ramener les champs suivants pour la fonction d'Ivan : 
-     *  nom, prénom, mail, login (uid)
-     * */
-
-    $ds = ldap_connect("localhost","389");
-    $dn = "cn=admin,dc=i2m,dc=univ-amu,dc=fr";
-    $filter = "(objectclass=" . $mail . ")";
-    $justThese = array("givenName", "sn", "mail", "uid");
-    $sr = ldap_read($ds, $dn, $filter, $justThese);
-    $entry = ldap_get_entries($ds,$sr);
-
-    /*
-    $search   = array("givenName","sn","mail","uid"); // what we are looking for
-    $attrRead = ldap_read("localhost", "cn=admin,dc=i2m,dc=univ-amu,dc=fr", 
-                "(objectclass=" . $mail .  ")", $search);
-    $entry    = ldap_get_entries("localhost","cn=admin,dc=i2m,dc=univ-amu,dc=fr");
-    */
-    echo $entry[0]["sn"][0] . " est le nom de famille recherché via mail";
-}
-
-
-getLdapDataFromMail("macclavio@gmail.com");
 ?>
