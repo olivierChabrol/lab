@@ -17,8 +17,7 @@ function lab_ldap_list_update($lc,$BASE) {
   $pageVar = $page - 1;
   $result = ldap_search($lc,'ou=accounts,'.$BASE,"uid=*");
   ldap_sort($lc,$result,'cn');
-  for($i = $pageVar; $i < $value; ++$i)
-  {
+  for($i = $pageVar; $i < $value; ++$i) {
     $ldapResult .= '<tr><td>'. ldap_get_entries($lc,$result)[$i]["cn"][0].'</td>
                     <td>*</td>
                 </tr>';
@@ -26,16 +25,18 @@ function lab_ldap_list_update($lc,$BASE) {
   return($ldapResult);
 }
 function get_ldap_data_from_mail($mail) {
-  $lc        = ldap_connect("localhost","389");
-  $base      = "ou=accounts,dc=i2m,dc=univ-amu,dc=fr";
-  $filter    = "(mail=" . $mail . ")";
-  $attrRead  = array("givenname", "sn", "mail", "uid");
-  $result    = ldap_search($lc, $base, $filter, $attrRead) 
-      or die ("Error in query");
-  $entry     = ldap_get_entries($lc,$result);
+    $lc        = ldap_connect("localhost","389");
+    $base      = "ou=accounts,dc=i2m,dc=univ-amu,dc=fr";
+    $filter    = "(mail=" . $mail . ")";
+    $attrRead  = array("givenname", "sn", "mail", "uid");
+    $result    = ldap_search($lc, $base, $filter, $attrRead) 
+        or die ("Error in query");
+    $entry     = ldap_get_entries($lc,$result);
 
-  echo $entry[0]["sn"][0]        . " est le nom de famille recherché via mail.</br>" .
-       $entry[0]["givenname"][0] . " est le prénom recherché via mail.</br>" .
-       $entry[0]["uid"][0]       . " est le login recherché via mail.";
-  ldap_close($lc);
+    $surname = $entry[0]["sn"][0];
+    $name    = $entry[0]["givenname"][0];
+    $login   = $entry[0]["uid"][0];
+
+    ldap_close($lc);
+    print($surname);
 }

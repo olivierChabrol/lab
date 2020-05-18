@@ -28,7 +28,7 @@ function lab_ldap($args) {
     $ldapStr = '
     <div class="d-flex justify-content-between bd-highlight mb-3">
         <div class="p-2">
-            <h3>Parcourir l\'annuaire LDAP</h3>
+            <h3>' . esc_html("Parcourir l'annuaire LDAP", "lab") . '</h3>
             <div>    
                 <label for="lab_results_number">'.esc_html__("Nombre de résultats par page","lab").' : </label>
                 <select id="lab_results_number">
@@ -59,9 +59,17 @@ function lab_ldap($args) {
     <div class="p-2"> <br/><br/></div>';
     ldap_close($lc);
     
-    $ldapStr .= '<div class="p-2"><h3>Chercher une personne dans LDAP</h3>
-    <label for="">Précisez le mail : </label><br/>
-    <input type="mail"></input></div>';
+    $ldapStr .= '<div class="p-2"><h3>' . esc_html("Chercher une personne dans LDAP", "lab") .'</h3>
+        <form action="" method="post">
+            <label for="mailLdap">' . esc_html("Précisez le mail : ", "lab") . '</label><br/>
+            <input type="mail" id="mailLdap" name="mailLdap" placeholder="mail@exemple.com"></input>
+        
+            <input type="submit" value="Envoyer">
+        </form></div>';
+    
+    $mail = $_POST['mailLdap'];
+    get_ldap_data_from_mail($mail);
+    
     return $ldapStr;
 }
 
@@ -75,7 +83,3 @@ function lab_ldap_pagination($pages, $currentPage) {
     $out .= '</ul>';
     return $out;
 }
-
-//get_ldap_data_from_mail("asaf1985@hotmail.com");
-
-?>
