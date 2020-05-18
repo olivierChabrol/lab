@@ -87,14 +87,8 @@ function lab_ldap($args) {
     </table>
     </div>
     <?php
-    echo lab_ldap_addUser("JEAN EUDE", "Michel-Pierre","jemp@univ-amu.fr",'$P$B0v6kIJqQ.AN.VF.QxLmRyqAhvLOEt1',"i12345678",random_int(10000,11000),"TestOrg");
+    //echo lab_ldap_addUser("JEAN EUDE", "Michel-Pierre","jemp@univ-amu.fr",'$P$B0v6kIJqQ.AN.VF.QxLmRyqAhvLOEt1',"i12345678",random_int(10000,11000),"TestOrg");
 }
-function lab_ldap_countEntries($ldap_link) {
-    global $LDAP_BASE;
-    $result = ldap_search($ldap_link,'ou=accounts,'.$LDAP_BASE,"uid=*");
-    return ldap_count_entries($ldap_link,$result);
-}
-
 function lab_ldap_getName($cn) {
     $list = explode(" ",$cn);
     $i = 0;
@@ -129,7 +123,7 @@ function lab_ldap_new_WPUser($name,$email,$password,$uid) {
     //lab_admin_add_new_user_metadata($user_id);
 }
 
-function lab_ldap_addUser($first_name, $last_name,$email,$password,$uid,$organization) {
+function lab_ldap_addUser($first_name, $last_name,$email,$password,$uid,$organization="I2M") {
     $ldap_obj = LAB_LDAP::getInstance();
     $info["objectclass"][0] = "top";
     $info["objectclass"][1] = "person";
@@ -145,7 +139,7 @@ function lab_ldap_addUser($first_name, $last_name,$email,$password,$uid,$organiz
     $info["sn"] = $last_name;
     $info["mail"]=$email;
     $info["uidnumber"]=3000+$ldap_obj::countAccountEntries();
-    $info["userpassword"]=$password;
+    $info["userpassword"]="{CRYPT}".crypt($password,'$6$rounds=4000$NajlL3dRidV8SxW2$');
     $info["homedirectory"] = "/home/$uid";
     $info["gidnumber"] = "5000";
     $info["o"] = $organization;

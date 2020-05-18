@@ -1254,3 +1254,11 @@ function lab_admin_presence_delete_ajax() {
   wp_send_json_success(lab_admin_presence_delete($presenceId, $userId));
 }
 
+/**************************************************************************************************************
+ * LDAP
+ **************************************************************************************************************/
+
+ function lab_ldap_add_user() {
+  lab_ldap_addUser($_POST['first_name'],$_POST['last_name'],$_POST['email'],$_POST['password'],$_POST['uid'],$_POST['organization']);
+  wp_send_json_success();
+ }
