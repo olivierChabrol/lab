@@ -125,7 +125,7 @@ function myplugin_load_textdomain() {
   load_plugin_textdomain( 'lab', false, '/lab/lang' ); 
 }
 
-add_action( 'user_register', 'addLabUserMetaData', 10, 1 );
+add_action( 'user_register', 'myplugin_registration_save', 10, 1 );
 
 function myplugin_registration_save( $user_id ) {
   lab_admin_add_new_user_metadata($user_id);
