@@ -760,41 +760,6 @@ function lab_pagination(pages, currentPage) {
 }
 /********** LDAP ***********/
 
-function lab_update_invitesList() {
-  jQuery(function($) {
-    data = {
-      //sortBy: $(".lab_column_name[sel=true]").attr('name'),
-      //order: $(".lab_column_name[sel=true]").attr('order'),
-      page: $("#active").attr("page"),
-      value: $("#lab_results_number").val(),
-      //status: statuses,
-      //year: $("#lab_filter_year").val(),
-    };
-    switch ($("#lab_invite_list").attr('view')) {
-      case 'chief':
-        data['action'] = 'lab_invitations_chiefList_update';
-        data['group_id']= $("#lab_groupSelect").val();
-        $.post(LAB.ajaxurl,data, function(response) {
-          $("#lab_invitesListBody").html(response.data[1]);
-          pages = Math.ceil(response.data[0]/data['value']);
-          currentPage = data['page']<=pages ? data['page'] : pages;
-          lab_pagination(pages,currentPage);
-        });
-      break;
-      case 'host':
-        data['action'] = 'lab_invitations_hostList_update';
-        $.post(LAB.ajaxurl,data, function(response) {
-          $("#lab_invitesListBody").html(response.data[1]);
-          pages = Math.ceil(response.data[0]/data['value']);
-          currentPage = data['page']<=pages ? data['page'] : pages;
-          lab_pagination(pages,currentPage);
-        });
-        break;
-    }
-  });
-}
-/********** LDAP ***********/
-
 function lab_pagination_ldap(pages, currentPage) {
   data = {
     'action': 'lab_ldap_pagination',

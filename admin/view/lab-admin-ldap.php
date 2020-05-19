@@ -8,23 +8,6 @@
  *  a requested person from LDAP. It needs the mail of the person to work.
  * 
  **************************************************************************************************************/
-function lab_ldap_list_update($lc,$BASE) {
-  $value    = isset($_POST['value']) ? $_POST['value'] : '5' ;
-  $page     = isset($_POST['page'])  ? $_POST['page']  : '1' ;
-  $pageVar  = $page - 1;
-  $result   = ldap_search($lc,'ou=accounts,'.$BASE,"uid=*");
-  ldap_sort($lc,$result,'cn');
-  for($i = $pageVar; $i < $value; ++$i) {
-    $ldapResult .= '<tr><td>'. ldap_get_entries($lc,$result)[$i]["cn"][0].'</td>
-                    <td>
-                      <span id="eraseLdap" class="fas fa-trash-alt" style="cursor: pointer;"></span>
-                      <span id="editLdap"  class="fas fa-pen-alt" style="cursor: pointer;"></span>
-                    </td>
-                </tr>';
-  }
-  return($ldapResult);
-}
-
 function get_ldap_data_from_mail($mail) {
     $lc        = ldap_connect("localhost","389");
     $base      = "ou=accounts,dc=i2m,dc=univ-amu,dc=fr";
@@ -63,8 +46,8 @@ class LAB_LDAP {
     * @static
     */
     private $ldap_admin_password;
-    private $ldap_url         = "localhost";
-    private $base             = "dc=i2m,dc=univ-amu,dc=fr";
+    private $ldap_url;
+    private $base;
     private static $_instance = null;
     private $ldap_link;
 
@@ -75,13 +58,30 @@ class LAB_LDAP {
     * @return void
     */
     private function __construct($base, $password) {
-        $this->ldap_url;
+        $this->base = $base;
         $this->ldap_admin_password = $password;
+        $this->ldap_url = AdminParams::get_param(AdminParams::PARAMS_LDAP_URL);
+        $this->ldap_link = ldap_connect($this->ldap_url)
+            or die ("URL du serveur LDAP incorrecte : ".$this->ldap_url);
+        ldap_set_option($this->ldap_link, LDAP_OPT_PROTOCOL_VERSION, 3);
+    }
+
+    public function reconnect()
+    {
+        $this->close();
+        $this->ldap_url = AdminParams::get_param(AdminParams::PARAMS_LDAP_URL);
         $this->ldap_link = ldap_connect($this->ldap_url)
             or die ("URL du serveur LDAP incorrecte.");
         ldap_set_option($this->ldap_link, LDAP_OPT_PROTOCOL_VERSION, 3);
-        $this->ldap_url = AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_URL);
     }
+
+    public function close()
+    {
+        if ($this->ldap_link) {
+            ldap_close($this->ldap_link);
+        }
+    }
+
     /**
      * Méthode qui crée l'unique instance de la classe
      * si elle n'existe pas encore puis la retourne.
@@ -89,10 +89,9 @@ class LAB_LDAP {
     * @param void
     * @return Singleton
     */
-    public static function getInstance($base = null, $password=null) {
+    public static function getInstance($host = null, $base = null, $password=null) {
         if(is_null(self::$_instance)) {
-            self::$_instance = new LAB_LDAP($base, $password);
-            
+            self::$_instance = new LAB_LDAP($host, $base, $password);
         }
     return self::$_instance;
     }
@@ -105,11 +104,20 @@ class LAB_LDAP {
     public function getBase() {
         return $this->base;
     }
+    public function setBase($base) {
+        $this->base = $base;
+    }
     public function setPassword($password) {
         $this->password = $password;
     }
     public function getPassword() {
         return $this->password;
+    }
+    public function setHost($host) {
+        $this->host = $host;
+    }
+    public function getHost() {
+        return $this->host;
     }
     public function setURL($url) {
         $this->ldap_url=$url;
@@ -128,8 +136,11 @@ class LAB_LDAP {
         ldap_sort($this->ldap_link,$result,'cn');
         return $result;
     }
-}
 
+    public function getEntries($result, $i, $field) {
+        return ldap_get_entries($this->ldap_link,$result)[$i][$field][0];
+    }
+}
 function lab_ldap_new_WPUser($name,$email,$password,$uid) {
   $names = lab_ldap_getName($name);
   global $wpdb;

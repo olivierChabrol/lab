@@ -1261,28 +1261,24 @@ function lab_admin_presence_delete_ajax() {
 function lab_ldap_pagination_Req() {
   wp_send_json_success(lab_ldap_pagination($_POST['pages'],$_POST['currentPage']));
 }
+
 function lab_ldap_list_update() {
   $itemPerPage = isset($_POST['value']) ? $_POST['value'] : '5' ;
   $page = isset($_POST['page']) ? $_POST['page'] : '1' ;
 
   $ldap_obj = LAB_LDAP::getInstance();
-  $lc    = $ldap_obj->getLink();
-  $BASE  = $ldap_obj->getBase();
-  $result = $ldap_obj->searchAccounts();
-  $count = $ldap_obj->countResults($result);
+  $result   = $ldap_obj->searchAccounts();
+  $count    = $ldap_obj->countResults($result);
   if($page > ceil($count/$itemPerPage)) {
     $page = ceil($count/$itemPerPage);
   }
   $pageVar = ($page - 1) * $itemPerPage;
-  ldap_sort($lc,$result,'cn');
   for($i = $pageVar; $i < ($itemPerPage+$pageVar) && $i < $count; $i++)
   {
-    //if(ldap_get_entries($lc,$result)[$i]["cn"][0] != "")
-    {
-      $ldapResult .= '<tr><td>'. ldap_get_entries($lc,$result)[$i]["cn"][0].'</td>
-                    <td><button class="">Détails</button</td>
+      $ldapResult .= '<tr><td>'. $ldap_obj->getEntries($result,$i, 'cn').'</td>
+                    <td><button class="">Détails</button><span id="eraseLdap" class="fas fa-trash-alt" style="cursor: pointer;"></span>
+                    <span id="editLdap"  class="fas fa-pen-alt" style="cursor: pointer;"></span></td>
                 </tr>';
-    }
   }
 
   wp_send_json_success(array($count,$ldapResult,$page));
@@ -1306,6 +1302,16 @@ function lab_ldap_add_user() {
 }
 function lab_ldap_amu_lookup() {
   $url = "https://ldap.i2m.univ-amu.fr/getAMUUser.php?token=".AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_TOKEN)."&query=".$_POST['query'];
-  $res = json_decode(file_get_contents($url));
+  // create curl resource
+  $ch = curl_init();
+  // set url
+  curl_setopt($ch, CURLOPT_URL, $url);
+  //return the transfer as a string
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+  // $output contains the output string
+  $output = curl_exec($ch);
+  // close curl resource to free up system resources
+  curl_close($ch);      
+  $res = json_decode($output);
   var_dump($res);
 }
