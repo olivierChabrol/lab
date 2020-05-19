@@ -911,6 +911,9 @@ function loadUserMetaData(response) {
     if (response.data["user_office_number"] != null) {
       jQuery("#lab_user_office_number").val(response.data["user_office_number"]);
     }
+    if (response.data["user_phone"] != null) {
+      jQuery("#lab_user_phone").val(response.data["user_phone"]);
+    }
   }
   else
   {

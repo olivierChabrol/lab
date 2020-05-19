@@ -25,6 +25,9 @@ function lab_admin_username_get($userId) {
         if ($r->meta_key == 'lab_user_employer') {
             $items['user_employer'] = $r->meta_value;
         }
+        if ($r->meta_key == 'lab_user_phone') {
+            $items['user_phone'] = $r->meta_value;
+        }
         if ($r->meta_key == 'lab_user_location') {
             $items['user_location'] = $r->meta_value;
         }
@@ -1002,10 +1005,11 @@ function get_hal_url($userId) {
         $hal_id   = $results[0]->lab_hal_id;
         $hal_name = $results[0]->lab_hal_name;
         if ($hal_id != null) {
-            return "https://api.archives-ouvertes.fr/search/?authIdHal_s:(".$hal_id.")&fl=docid,citationFull_s,producedDate_tdate,uri_s,title_s,journalTitle_s&sort=producedDate_tdate+desc&wt=json&json.nl=arrarr";
+            //return "https://api.archives-ouvertes.fr/search/?q=*:*&fq=authIdHal_s:(".$hal_id.")&fl=docid,citationFull_s,producedDate_tdate,uri_s,title_s,journalTitle_s&sort=producedDate_tdate+desc&wt=json&json.nl=arrarr";
+            return "https://api.archives-ouvertes.fr/search/?q=*:*&fq=authIdHal_s:(".$hal_id.")&group=true&group.field=docType_s&group.limit=1000&&fl=docid,citationFull_s,producedDate_tdate,uri_s,title_s,journalTitle_s&facet.field=fr_domainAllCodeLabel_fs&facet.field=keyword_s&facet.field=journalIdTitle_fs&facet.field=producedDateY_i&facet.field=authIdLastNameFirstName_fs&facet.field=instStructIdName_fs&facet.field=labStructIdName_fs&facet.field=deptStructIdName_fs&facet.field=rteamStructIdName_fs&facet.mincount=1&facet=true&wt=json&json.nl=arrarr";
         }
         else {
-            return "https://api.archives-ouvertes.fr/search/?q=authLastNameFirstName_s:%22".$hal_name."%22&fl=docid,citationFull_s,producedDate_tdate,uri_s,title_s,journalTitle_s&sort=producedDate_tdate+desc&wt=json&json.nl=arrarr";
+            return "https://api.archives-ouvertes.fr/search/?q=authLastNameFirstName_s:%22".$hal_name."%22&group=true&group.field=docType_s&group.limit=1000&&fl=docid,citationFull_s,producedDate_tdate,uri_s,title_s,journalTitle_s&facet.field=fr_domainAllCodeLabel_fs&facet.field=keyword_s&facet.field=journalIdTitle_fs&facet.field=producedDateY_i&facet.field=authIdLastNameFirstName_fs&facet.field=instStructIdName_fs&facet.field=labStructIdName_fs&facet.field=deptStructIdName_fs&facet.field=rteamStructIdName_fs&facet.mincount=1&facet=true&wt=json&json.nl=arrarr";
         }
     }
 }
@@ -1054,7 +1058,7 @@ function hal_download($userId, &$docIds) {
 
 
     $json = lab_do_common_curl_call($url);
-    $c =count($json->response->docs);
+    $c =count($json->grouped->docType_s);
     $display = false;
     for ($i = 0; $i < $c; $i++) {
         $keep = false;
@@ -1094,6 +1098,11 @@ function hal_download($userId, &$docIds) {
 
         //$content .= '<li>' . $json->response->docs[$i]->citationFull_s . '</li>';
     }
+    $c =count($json->response->docs);
+    for ($i = 0; $i < $c; $i++) {
+
+    }
+
     return $url;
 }
 

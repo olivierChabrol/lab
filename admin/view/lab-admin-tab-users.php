@@ -60,6 +60,14 @@ function lab_admin_tab_user() {
     </tr>
     <tr>
       <td>
+        <label for="lab_user_phone"><?php esc_html_e('Phone','lab') ?></label>
+      </td>
+      <td>
+        <input type="text" id="lab_user_phone"/>
+      </td>
+    </tr>
+    <tr>
+      <td>
         <label for="lab_user_left"><?php esc_html_e('Parti','lab') ?></label>
       </td>
       <td>
