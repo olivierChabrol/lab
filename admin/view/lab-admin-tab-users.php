@@ -88,5 +88,78 @@ function lab_admin_tab_user() {
   
   </div>
   <button style='margin-top:10px;' id='lab_add_users_groups'><?php esc_html_e('envoyer','lab') ?></button>
+  <hr/>
+  <h3><?php esc_html_e('Ajouter un utilisateur dans l\'annuaire','lab') ?></h3>
+  <table class="form-table" role="presentation">
+    <tr class="user-rich-editing-wrap">
+      <th scope="row">
+        <label for="lab_ldap_queryAmu"><?php esc_html_e('E-Mail d\'utilisateur AMU :','lab') ?></label>
+      </th>
+      <td>
+        <input type="email" id="lab_ldap_queryAmu"/>
+      </td>
+    </tr>
+    <form id="lab_ldap_newUser" action="javascript:lab_ldap_addUser()">
+    <tr class="user-rich-editing-wrap">
+      <th scope="row">
+        <label for="lab_ldap_newUser_lastName"><?php esc_html_e('Nom','lab') ?><span class="lab_form_required_star"> *</span></label>
+      </th>
+      <td>
+        <input required type="text" id="lab_ldap_newUser_lastName"/>
+      </td>
+    </tr>
+    <tr class="user-rich-editing-wrap">
+      <th scope="row">
+        <label for="lab_ldap_newUser_firstName"><?php esc_html_e('Prénom','lab') ?><span class="lab_form_required_star"> *</span></label>
+      </th>
+      <td>
+        <input required type="text" id="lab_ldap_newUser_firstName"/>
+      </td>
+    </tr>
+    <tr class="user-rich-editing-wrap">
+      <th scope="row">
+        <label for="lab_ldap_newUser_email"><?php esc_html_e('E-Mail','lab') ?><span class="lab_form_required_star"> *</span></label>
+      </th>
+      <td>
+        <input required type="email" id="lab_ldap_newUser_email"/>
+      </td>
+    </tr>
+    <tr class="user-rich-editing-wrap">
+      <th scope="row">
+        <label for="lab_ldap_newUser_uid"><?php esc_html_e('Login (uid)','lab') ?><span class="lab_form_required_star"> *</span></label>
+      </th>
+      <td>
+        <input required type="text" id="lab_ldap_newUser_uid"/>
+      </td>
+    </tr>
+    <tr class="user-rich-editing-wrap">
+      <th scope="row">
+        <label for="lab_ldap_newUser_pass"><?php esc_html_e('Mot de passe','lab') ?></label>
+      </th>
+      <td>
+        <input required type="text" id="lab_ldap_newUser_pass"/>
+      </td>
+    </tr>
+    <tr class="user-rich-editing-wrap">
+      <th scope="row">
+        <label for="lab_ldap_newUser_org"><?php esc_html_e('Organisation','lab') ?></label>
+      </th>
+      <td>
+        <input type="text" id="lab_ldap_newUser_org"/>
+      </td>
+    </tr>
+    <tr class="user-rich-editing-wrap">
+      <th scope="row">
+        <label for="lab_ldap_newUser_addToWP"><?php esc_html_e('Ajouter l\'utilisateur à WordPress','lab') ?></label>
+      </th>
+      <td>
+        <input type="checkbox" id="lab_ldap_newUser_addToWP"/>
+      </td>
+    </tr>
+    <tr class="user-rich-editing-wrap">
+      <td scope="row" colspan="2">
+        <input type="submit" value="Valider"/>
+      </td>
+    </tr>
   <?php
 }

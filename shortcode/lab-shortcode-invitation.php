@@ -6,14 +6,6 @@
  * Version: 1.2
  */
 function lab_invitation($args) {
-    // global $currLocale;
-    // $currLocale = get_locale();
-    // echo "Etape 1 : ".get_locale()." - ";
-    // echo esc_html__('Clés','lab');
-    // unload_textdomain("lab");
-    // echo switch_to_locale( 'en_GB' );
-    // myplugin_load_textdomain();
-    // echo "<br> Etape 2 : ".get_locale()." - ".esc_html__('Clés','lab')."<br>";
     $param = shortcode_atts(array(
         'hostpage' => 0 //0 pour invité, 1 pour invitant/responsable
         ),
@@ -398,13 +390,11 @@ function lab_invitations_pagination($pages, $currentPage) {
 }
 function lab_invitations_switchLocale($oldLocale) {
     global $currLocale;
-    //echo "<br> From :$currLocale";
     if ($currLocale == 'fr_FR') {
         $currLocale = 'en_GB';
     } else {
         $currLocale = 'fr_FR';
     }
-    //echo " to $currLocale";
     return $currLocale;
 }
 function lab_invitations_interface_fromList($list,$view) {
@@ -446,20 +436,25 @@ function lab_invitations_interface_fromList($list,$view) {
 function lab_invitations_mail($type=1, $guest, $invite) {
     switch ($type) {
         case 1: //Envoi de mail récapitulatif à l'invité lorsqu'il crée sa demande d'invitation
+            global $currLocale;
+            $currLocale = get_locale();
             $dest = $guest["email"];
             $subj = esc_html__("Votre demande d'invitation à l'I2M",'lab');
             $date = date_create_from_format("Y-m-d H:i:s", $invite["creation_time"]);
             $content = "<p><i>".strftime('%A %d %B %G - %H:%M',$date->getTimestamp())."</i></p>";
-            $content .= "<p>".get_locale().__("Clés","lab")."</p>";
+            $content .= "<p>".get_locale()."</p>";
             $content .= "<p>".esc_html__("Votre demande d'invitation a bien été prise en compte",'lab').".<br>".esc_html__("Elle a été transmise à votre invitant",'lab').".</p>";
             $content .= lab_InviteForm('',$guest,$invite);
-            // unload_textdomain("lab");
-            // switch_to_locale( 'en_GB' );
-            // myplugin_load_textdomain();
-            // $content .= "<h5>Translated version :</h5>";
-            // $content .= "<p>".get_locale().esc_html__("Clés",'lab')."</p>";
-            // $content .= "<p>".esc_html__("Votre demande d'invitation a bien été prise en compte",'lab').".<br>".esc_html__("Elle a été transmise à votre invitant",'lab').".</p>";
-            // $content .= lab_InviteForm('',$guest,$invite);
+            unload_textdomain("lab");
+            add_filter('locale','lab_invitations_switchLocale',10);
+            myplugin_load_textdomain();
+            $content .= "<h5>Translated version :</h5>";
+            $content .= "<p>".get_locale()."</p>";
+            $content .= "<p>".esc_html__("Votre demande d'invitation a bien été prise en compte",'lab').".<br>".esc_html__("Elle a été transmise à votre invitant",'lab').".</p>";
+            $content .= lab_InviteForm('',$guest,$invite);
+            unload_textdomain("lab");
+            add_filter('locale','lab_invitations_switchLocale',10);
+            myplugin_load_textdomain();
             break;
         case 5: //Envoi de mail récapitulatif à l'invitant lorsque l'invité a créé une invitation
             $host = new LabUser($invite['host_id']);

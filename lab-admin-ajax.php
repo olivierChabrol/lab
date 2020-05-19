@@ -1066,6 +1066,7 @@ function lab_invitations_guestInfo() {
 function lab_invitations_pagination_Req() {
   wp_send_json_success(lab_invitations_pagination($_POST['pages'],$_POST['currentPage']));
 }
+
 /**************************************************************************************************************
  * PRESENCE
  **************************************************************************************************************/
@@ -1254,3 +1255,63 @@ function lab_admin_presence_delete_ajax() {
   wp_send_json_success(lab_admin_presence_delete($presenceId, $userId));
 }
 
+/**************************************************************************************************************
+ * LDAP
+ **************************************************************************************************************/
+function lab_ldap_pagination_Req() {
+  wp_send_json_success(lab_ldap_pagination($_POST['pages'],$_POST['currentPage']));
+}
+
+function lab_ldap_list_update() {
+  $itemPerPage = isset($_POST['value']) ? $_POST['value'] : '5' ;
+  $page = isset($_POST['page']) ? $_POST['page'] : '1' ;
+
+  $ldap_obj = LAB_LDAP::getInstance();
+  $result   = $ldap_obj->searchAccounts();
+  $count    = $ldap_obj->countResults($result);
+  if($page > ceil($count/$itemPerPage)) {
+    $page = ceil($count/$itemPerPage);
+  }
+  $pageVar = ($page - 1) * $itemPerPage;
+  for($i = $pageVar; $i < ($itemPerPage+$pageVar) && $i < $count; $i++)
+  {
+      $ldapResult .= '<tr><td>'. $ldap_obj->getEntries($result,$i, 'cn').'</td>
+                    <td><button class="">Détails</button><span id="eraseLdap" class="fas fa-trash-alt" style="cursor: pointer;"></span>
+                    <span id="editLdap"  class="fas fa-pen-alt" style="cursor: pointer;"></span></td>
+                </tr>';
+  }
+
+  wp_send_json_success(array($count,$ldapResult,$page));
+}
+function lab_ldap_add_user() {
+  $ldapRes = lab_ldap_addUser($_POST['first_name'],$_POST['last_name'],$_POST['email'],$_POST['password'],$_POST['uid'],$_POST['organization']);
+  if ($ldapRes == 0 ) {
+    if ($_POST['addToWP'] == 'true') {
+      $wpRes = lab_ldap_new_WPUser(strtoupper($_POST['last_name'])." ".$_POST['first_name'],$_POST['email'],$_POST['password'],$_POST['uid']);
+      if ($wpRes==true) {
+        wp_send_json_success();
+      } else {
+        wp_send_json_error($wpRes);
+      }
+    } else {
+      wp_send_json_success();
+    }
+  } else {
+    wp_send_json_error(ldap_err2str($ldapRes));
+  }
+}
+function lab_ldap_amu_lookup() {
+  $url = "https://ldap.i2m.univ-amu.fr/getAMUUser.php?token=".AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_TOKEN)."&query=".$_POST['query'];
+  // create curl resource
+  $ch = curl_init();
+  // set url
+  curl_setopt($ch, CURLOPT_URL, $url);
+  //return the transfer as a string
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+  // $output contains the output string
+  $output = curl_exec($ch);
+  // close curl resource to free up system resources
+  curl_close($ch);      
+  $res = json_decode($output);
+  var_dump($res);
+}

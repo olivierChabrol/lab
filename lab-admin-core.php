@@ -89,7 +89,7 @@ function lab_admin_createTable_param() {
     $sql = "CREATE TABLE IF NOT EXISTS `".$wpdb->prefix."lab_params` (
         `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
         `type_param` bigint UNSIGNED NOT NULL,
-        `value` varchar(20) DEFAULT NULL,
+        `value` varchar(45) DEFAULT NULL,
         `color` varchar(8) DEFAULT NULL,
         PRIMARY KEY (`id`)
       ) ENGINE=InnoDB";
@@ -122,6 +122,8 @@ function lab_admin_initTable_param() {
             (5, 1, 'USER FUNCTION', NULL),
             (6, 1, 'MISSION', NULL),
             (7, 1, 'FUNDING', NULL),
+            (8, 1, 'INSERT LDAP TOKEN HERE', NULL),
+            (9, 1, 'localhost', NULL),
             (NULL, 2, 'Equipe', NULL),
             (NULL, 2, 'Groupe', NULL),
             (NULL, 3, 'Clé', NULL),
@@ -355,7 +357,6 @@ function lab_admin_add_new_user_metadata($userId)
     lab_userMetaData_save_key($userId, "user_office_number", "");
     lab_userMetaData_save_key($userId, "user_office_floor", "");
     lab_userMetaData_save_key($userId, "user_phone", "");
-    lab_userMetaData_save_key($userId, "user_left", null);
     lab_userMetaData_save_key($userId, "user_left", null);
     lab_userMetaData_save_key($userId, "user_slug", null);
     lab_userMetaData_save_key($userId, "user_position", null);

@@ -6,8 +6,8 @@
  * Version: 0.5
  * 
  */
+
 function lab_ldap($args) {
-    /* Connexion to LDAP (change password if needed) */
     $BASE = "dc=i2m,dc=univ-amu,dc=fr";
     $lc = ldap_connect("localhost","389")
         or die ("Impossible de se connecter au serveur LDAP.");
@@ -22,8 +22,9 @@ function lab_ldap($args) {
         $errno   = ldap_errno($lc);
         echo "Problème à la connexion : " . $errno . " - " . $errname . "</br>";
     }
-    // [do not erase if you want to test] */
+    */
 
+    //TODO : pagination, bouton détail (récupère attributs LDAP)
     $ldapStr = '
     <div class="d-flex justify-content-between bd-highlight mb-3">
         <div class="p-2">
@@ -47,13 +48,14 @@ function lab_ldap($args) {
                     </thead>
                 <tbody>';
     
-    $ldapStr .= lab_ldap_list_update($lc,$BASE);
+    //$ldapStr .= lab_ldap_list_update($lc,$BASE);
 
     $ldapStr .= '           
-                </tbody>
-                </table>
-            </div>';
+        </tbody>
+    </table>
+    </div>';
 
+    $ldapStr .= '<div id="lab_pages">'.lab_ldap_pagination(1,1).'</div><br/><br/>';
     $ldapStr .= '<div id="lab_pages">'.lab_ldap_pagination(1,1).'</div></div>
     <div class="p-2"> <br/><br/></div>';
     ldap_close($lc);
@@ -77,15 +79,36 @@ function lab_ldap($args) {
     }
 
     return $ldapStr;
-}
 
+}
 function lab_ldap_pagination($pages, $currentPage) {
     $out = '<ul id="pagination-digg">';
     $out .= '<li class="page_previous'.($currentPage>1 ? '">' : ' gris">').'« Précédent</li>';
-    for ($i=1; $i<=$pages; $i++) {
-        $out .= '<li page='.$i.' class="page_number"'.($currentPage!=$i ? ">$i" : " id='active'>$i").'</li>';
+    if($pages <= 10)
+    {
+        for ($i=1; $i<=$pages; $i++) {
+            $out .= '<li page='.$i.' class="page_number"'.($currentPage!=$i ? ">$i" : " id='active'>$i").'</li>';
+        }
+    }
+    else
+    {
+        for ($i=1; $i<=$pages; $i++) {
+            if($i == $currentPage -2 || $i == $currentPage -1 || $i == $currentPage || $i == $currentPage +1 || $i == $currentPage +2){
+                $out .= '<li page='.$i.' class="page_number"'.($currentPage!=$i ? ">$i" : " id='active'>$i").'</li>';
+            }
+            else{
+                if($i % 10 == 0 || $i == 1 || $i == $pages) {
+                    $out .= '<li page='.$i.' class="page_number"'.($currentPage!=$i ? ">$i" : " id='active'>$i").'</li>';
+                }
+
+            }
+        }
     }
     $out .= '<li class="page_next'.($pages>1 && $currentPage<$pages ? '">' : ' gris">').'Suivant »</li>';
     $out .= '</ul>';
     return $out;
 }
+
+//get_ldap_data_from_mail("asaf1985@hotmail.com");
+
+?>

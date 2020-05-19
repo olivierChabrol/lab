@@ -7,6 +7,8 @@ class AdminParams {
     public const PARAMS_USER_FUNCTION_ID = 5;
     public const PARAMS_MISSION_ID = 6;
     public const PARAMS_FUNDING_ID = 7;
+    public const PARAMS_LDAP_TOKEN = 8;
+    public const PARAMS_LDAP_URL = 9;
 
     public static function get_params_fromId($id) {
         $sql = "SELECT value,id FROM `wp_lab_params` WHERE type_param=".$id.";";
@@ -26,7 +28,7 @@ class AdminParams {
     {
         return AdminParams::get_params_fromId(AdminParams::PARAMS_USER_FUNCTION_ID);
     }
-    public function get_param($id) {
+    public static function get_param($id) {
         $sql = "SELECT value FROM `wp_lab_params` WHERE id=".$id.";";
         global $wpdb;
         $results = $wpdb->get_results($sql);
