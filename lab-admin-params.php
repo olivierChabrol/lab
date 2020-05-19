@@ -7,6 +7,7 @@ class AdminParams {
     public const PARAMS_USER_FUNCTION_ID = 5;
     public const PARAMS_MISSION_ID = 6;
     public const PARAMS_FUNDING_ID = 7;
+    public const PARAMS_EMPLOYER = 8;
 
     public static function get_params_fromId($id) {
         $sql = "SELECT value,id FROM `wp_lab_params` WHERE type_param=".$id.";";
@@ -25,6 +26,10 @@ class AdminParams {
     public static function lab_admin_get_params_UserFunctions()
     {
         return AdminParams::get_params_fromId(AdminParams::PARAMS_USER_FUNCTION_ID);
+    }
+    public static function lab_admin_get_params_userEmployer()
+    {
+        return AdminParams::get_params_fromId(AdminParams::PARAMS_EMPLOYER);
     }
     public function get_param($id) {
         $sql = "SELECT value FROM `wp_lab_params` WHERE id=".$id.";";
@@ -51,6 +56,9 @@ function lab_admin_get_params_userFunction() {
 }
 function lab_admin_get_params_userLocation() {
     return AdminParams::lab_admin_get_params_userLocation();
+}
+function lab_admin_get_params_userEmployer() {
+    return AdminParams::lab_admin_get_params_userEmployer();
 }
 
 ?>

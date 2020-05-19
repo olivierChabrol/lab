@@ -22,6 +22,9 @@ function lab_admin_username_get($userId) {
         if ($r->meta_key == 'lab_user_function') {
             $items['user_function'] = $r->meta_value;
         }
+        if ($r->meta_key == 'lab_user_employer') {
+            $items['user_employer'] = $r->meta_value;
+        }
         if ($r->meta_key == 'lab_user_location') {
             $items['user_location'] = $r->meta_value;
         }
@@ -122,6 +125,7 @@ function lab_admin_initTable_param() {
             (5, 1, 'USER FUNCTION', NULL),
             (6, 1, 'MISSION', NULL),
             (7, 1, 'FUNDING', NULL),
+            (8, 1, 'EMPLOYER', NULL),
             (NULL, 2, 'Equipe', NULL),
             (NULL, 2, 'Groupe', NULL),
             (NULL, 3, 'Clé', NULL),

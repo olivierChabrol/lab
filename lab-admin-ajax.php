@@ -241,14 +241,15 @@ function lab_admin_update_user_metadata()
   $userId       =  $_POST["userId"];
   $dateLeft     = $_POST["dateLeft"];
   $userFunction = $_POST["function"];
+  $userEmployer = $_POST["employer"];
   $userLocation = $_POST["location"];
   $officeNumber = $_POST["officeNumber"];
   $officeFloor = $_POST["officeFloor"];
-  lab_usermeta_update($userId, $dateLeft, $userFunction, $userLocation, $officeNumber, $officeFloor);
+  lab_usermeta_update($userId, $dateLeft, $userFunction, $userLocation, $officeNumber, $officeFloor, $userEmployer);
   wp_send_json_success("");
 }
 
-function lab_usermeta_update($userId, $left, $userFunction, $userLocation, $officeNumber, $officeFloor)
+function lab_usermeta_update($userId, $left, $userFunction, $userLocation, $officeNumber, $officeFloor, $userEmployer)
 {
   global $wpdb;
   $sql = "";
@@ -263,6 +264,7 @@ function lab_usermeta_update($userId, $left, $userFunction, $userLocation, $offi
   $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$userLocation),array("user_id"=>$userId, "meta_key"=>"lab_user_location"));
   $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$officeNumber),array("user_id"=>$userId, "meta_key"=>"lab_user_office_number"));
   $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$officeFloor),array("user_id"=>$userId, "meta_key"=>"lab_user_office_floor"));
+  $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$userEmployer),array("user_id"=>$userId, "meta_key"=>"lab_user_employer"));
 }
 
 function lab_usermeta_update_lab_left_key($usermetaId, $left)
