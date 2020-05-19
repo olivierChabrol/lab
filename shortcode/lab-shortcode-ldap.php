@@ -3,28 +3,11 @@
  * File Name: lab-shortcode-ldap.php
  * Description: shortcode pour afficher une page de gestion des utilisateurs dans le LDAP
  * Authors: Ivan Ivanov, Lucas Urgenti, Astrid Beyer
- * Version: 0.5
+ * Version: 0.7
  * 
  */
 
 function lab_ldap($args) {
-    $BASE = "dc=i2m,dc=univ-amu,dc=fr";
-    $lc = ldap_connect("localhost","389")
-        or die ("Impossible de se connecter au serveur LDAP.");
-    ldap_set_option($lc, LDAP_OPT_PROTOCOL_VERSION,3);
-    $lb = ldap_bind($lc, 'cn=admin,'.$BASE,'root');
-
-    /* **** CONNEXION TEST - SUCCESS! [do not erase if you want to test] ****
-    if($lb) {
-        echo("Connecté avec succès ! ");
-    } else {
-        $errname = ldap_error($lc);
-        $errno   = ldap_errno($lc);
-        echo "Problème à la connexion : " . $errno . " - " . $errname . "</br>";
-    }
-    */
-
-    //TODO : pagination, bouton détail (récupère attributs LDAP)
     $ldapStr = '
     <div class="d-flex justify-content-between bd-highlight mb-3">
         <div class="p-2">
@@ -47,15 +30,12 @@ function lab_ldap($args) {
                         <tr>
                     </thead>
                 <tbody id="lab_ldapListBody">';
-    
-    //$ldapStr .= lab_ldap_list_update($lc,$BASE);
 
     $ldapStr .= '           
         </tbody>
     </table>
     </div>';
 
-    //$ldapStr .= '<div id="lab_pages">'.lab_ldap_pagination(1,1).'</div><br/><br/>';
     $ldapStr .= '<div id="lab_pages">'.lab_ldap_pagination(1,1).'</div></div>
     <div class="p-2"> <br/><br/></div>';
     ldap_close($lc);
@@ -79,8 +59,8 @@ function lab_ldap($args) {
     }
 
     return $ldapStr;
-
 }
+
 function lab_ldap_pagination($pages, $currentPage) {
     $out = '<ul id="pagination-digg">';
     $out .= '<li class="page_previous'.($currentPage>1 ? '">' : ' gris">').'« Précédent</li>';
@@ -109,6 +89,15 @@ function lab_ldap_pagination($pages, $currentPage) {
     return $out;
 }
 
-//get_ldap_data_from_mail("asaf1985@hotmail.com");
-
-?>
+/**
+ * Generate modal to edit
+ *
+ * @return void
+ */
+function editModal()
+{
+    $str = '<div id="lab_admin_ldap_edit" class="modal">
+                allo?
+            </div>';
+    return $str;
+}

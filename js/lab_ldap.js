@@ -7,6 +7,8 @@ jQuery(function($) {
             console.log('responded');
         });
     });
+
+
 });
 function lab_ldap_addUser() {
     jQuery(function($){ 

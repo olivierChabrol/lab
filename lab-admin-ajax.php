@@ -1277,8 +1277,10 @@ function lab_ldap_list_update() {
   for($i = $pageVar; $i < ($itemPerPage+$pageVar) && $i < $count; $i++)
   {
       $ldapResult .= '<tr><td>'. $ldap_obj->getEntries($result,$i, 'cn').'</td>
-                    <td><button class="">Détails</button><span id="eraseLdap" class="fas fa-trash-alt" style="cursor: pointer;"></span>
-                    <span id="editLdap"  class="fas fa-pen-alt" style="cursor: pointer;"></span></td>
+                    <td><button class="">Détails</button>
+                        <span id="eraseLdap" class="fas fa-trash-alt" style="cursor: pointer;"></span>
+                        <span id="editLdap"  class="fas fa-pen-alt" style="cursor: pointer;"></span>
+                    </td>
                 </tr>';
   }
 

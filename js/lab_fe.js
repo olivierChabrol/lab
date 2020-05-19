@@ -4,7 +4,6 @@ const { __, _x, _n, sprintf } = wp.i18n;
 /*** DIRECTORY ***/ 
 
 jQuery(function($){
-
   $("#lab-directory-group-id").on('change', function() {
     $("#groupSearch").val($(this).val());
     letter = $("#letterSearch").val();
@@ -785,6 +784,10 @@ function lab_pagination_ldap(pages, currentPage) {
         $("#active").attr("id","");
         $(this).attr("id","active");
         lab_update_ldap_list();
+      });
+
+      $(".fa-pen-alt").click(function() {
+        $("#lab_admin_ldap_edit").modal("show");
       });
     }
   });
