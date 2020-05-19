@@ -8,7 +8,7 @@ jQuery(function($){
     $(".icon-edit").click(function() {
         let editable = $(this).parents('tr').find('.edit');
 
-        if( $(this).hasClass("fa-pen") ){
+        if( $(this).hasClass("icon-edit") ){
             let trId    = $(this).attr("id");
             let id      = $(this).attr("editId")+"_"+$(this).attr("userId");
             let date    = $("#date_"+id).text();
@@ -32,7 +32,7 @@ jQuery(function($){
                 savePresence(idPresence, userId, date, opening, closing, site, "");
             }
         }
-        $(this).toggleClass("fa-pen fa-check");
+        $(this).toggleClass("icon-edit fa-check");
     });
 
     $(".canDelete").mouseover(function () {

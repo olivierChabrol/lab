@@ -3,15 +3,11 @@
  * File Name: lab-shortcode-ldap.php
  * Description: shortcode pour afficher une page de gestion des utilisateurs dans le LDAP
  * Authors: Ivan Ivanov, Lucas Urgenti, Astrid Beyer
- * Version: 0.1
+ * Version: 0.5
+ * 
  */
 
 function lab_ldap($args) {
-?>
-    </table>
-    </div>
-    <?php
-    //echo lab_ldap_addUser("JEAN EUDE", "Michel-Pierre","jemp@univ-amu.fr",'$P$B0v6kIJqQ.AN.VF.QxLmRyqAhvLOEt1',"i12345678",random_int(10000,11000),"TestOrg");
     $BASE = "dc=i2m,dc=univ-amu,dc=fr";
     $lc = ldap_connect("localhost","389")
         or die ("Impossible de se connecter au serveur LDAP.");
@@ -30,24 +26,27 @@ function lab_ldap($args) {
 
     //TODO : pagination, bouton détail (récupère attributs LDAP)
     $ldapStr = '
-    <div>    
-        <label for="lab_results_number">'.esc_html__("Nombre de résultats par page","lab").' : </label>
-        <select id="lab_results_number">
-            <option selected value="5">5</option>
-            <option value="10">10</option>
-            <option value="20">20</option>
-            <option value="50">50</option>
-        </select>
-    </div>
-    <div class="table-responsive">
-        <table id="lab-table-directory" class="table table-striped">
-            <thead class="thead-dark">
-                <tr>
-                    <th>'.esc_html__("Nom", "lab").'</th>
-                    <th>'.esc_html__("Action", "lab").'</th>
-                <tr>
-            </thead>
-        <tbody id="lab_ldapListBody">';
+    <div class="d-flex justify-content-between bd-highlight mb-3">
+        <div class="p-2">
+            <h3>' . esc_html("Parcourir l'annuaire LDAP", "lab") . '</h3>
+            <div>    
+                <label for="lab_results_number">'.esc_html__("Nombre de résultats par page","lab").' : </label>
+                <select id="lab_results_number">
+                    <option selected value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="50">50</option>
+                </select>
+            </div>
+            <div class="table-responsive">
+                <table id="lab-table-ldap" class="table table-striped">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>'.esc_html__("Nom", "lab").'</th>
+                            <th>'.esc_html__("Action", "lab").'</th>
+                        <tr>
+                    </thead>
+                <tbody>';
     
     //$ldapStr .= lab_ldap_list_update($lc,$BASE);
 
@@ -78,7 +77,7 @@ function lab_ldap($args) {
                         <li><b>'.esc_html("Login","lab").'</b> : '    . (get_ldap_data_from_mail($mail)[2]) . '</li>
                     </ul></div>';
     }
-        
+
     return $ldapStr;
 
 }
@@ -109,5 +108,7 @@ function lab_ldap_pagination($pages, $currentPage) {
     $out .= '</ul>';
     return $out;
 }
+
+//get_ldap_data_from_mail("asaf1985@hotmail.com");
 
 ?>
