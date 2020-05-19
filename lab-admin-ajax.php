@@ -1067,6 +1067,37 @@ function lab_invitations_pagination_Req() {
   wp_send_json_success(lab_invitations_pagination($_POST['pages'],$_POST['currentPage']));
 }
 /**************************************************************************************************************
+ * LDAP
+ **************************************************************************************************************/
+function lab_ldap_pagination_Req() {
+  wp_send_json_success(lab_ldap_pagination($_POST['pages'],$_POST['currentPage']));
+}
+function lab_ldap_list_update() {
+  $ldap_obj = LAB_LDAP::getInstance();
+  $lc = isset($lc) ? $lc : $ldap_obj::getLink();
+  $BASE = isset($BASE) ? $BASE : $ldap_obj::LDAP_BASE;
+  $count = $ldap_obj::countAccountEntries();
+  $itemPerPage = isset($_POST['value']) ? $_POST['value'] : '5' ;
+  $page = isset($_POST['page']) ? $_POST['page'] : '1' ;
+  if($page > ceil($count/$itemPerPage)) {
+    $page = ceil($count/$itemPerPage);
+  }
+  $pageVar = ($page - 1) * $itemPerPage;
+  $result = ldap_search($lc,'ou=accounts,'.$BASE,"uid=*");
+  ldap_sort($lc,$result,'cn');
+  for($i = $pageVar; $i < ($itemPerPage+$pageVar) && $i < $count; $i++)
+  {
+    //if(ldap_get_entries($lc,$result)[$i]["cn"][0] != "")
+    {
+      $ldapResult .= '<tr><td>'. ldap_get_entries($lc,$result)[$i]["cn"][0].'</td>
+                    <td><button class="">Détails</button</td>
+                </tr>';
+    }
+  }
+
+  wp_send_json_success(array($count,$ldapResult,$page));
+}
+/**************************************************************************************************************
  * PRESENCE
  **************************************************************************************************************/
 
