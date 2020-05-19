@@ -1267,6 +1267,7 @@ function lab_ldap_list_update() {
   $page = isset($_POST['page']) ? $_POST['page'] : '1' ;
 
   $ldap_obj = LAB_LDAP::getInstance();
+
   $result   = $ldap_obj->searchAccounts();
   $count    = $ldap_obj->countResults($result);
   if($page > ceil($count/$itemPerPage)) {

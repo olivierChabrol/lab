@@ -46,7 +46,7 @@ function lab_ldap($args) {
                             <th>'.esc_html__("Action", "lab").'</th>
                         <tr>
                     </thead>
-                <tbody>';
+                <tbody id="lab_ldapListBody">';
     
     //$ldapStr .= lab_ldap_list_update($lc,$BASE);
 
@@ -55,7 +55,7 @@ function lab_ldap($args) {
     </table>
     </div>';
 
-    $ldapStr .= '<div id="lab_pages">'.lab_ldap_pagination(1,1).'</div><br/><br/>';
+    //$ldapStr .= '<div id="lab_pages">'.lab_ldap_pagination(1,1).'</div><br/><br/>';
     $ldapStr .= '<div id="lab_pages">'.lab_ldap_pagination(1,1).'</div></div>
     <div class="p-2"> <br/><br/></div>';
     ldap_close($lc);

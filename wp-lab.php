@@ -118,13 +118,14 @@ add_action('admin_enqueue_scripts', 'admin_enqueue');
 register_activation_hook( __FILE__, 'lab_activation_hook' );
 register_uninstall_hook(__FILE__, 'lab_uninstall_hook');
   
-/**
+/*
  * Ajoute le widget wphal à l'initialisation des widgets
  */
 add_action('widgets_init', 'wplab_init');
 function myplugin_load_textdomain() {
-  LAB_LDAP::getInstance("dc=i2m,dc=univ-amu,dc=fr", "aze");
-  load_plugin_textdomain( 'lab', false, '/lab/lang' ); 
+  $ldap = LAB_LDAP::getInstance("dc=i2m,dc=univ-amu,dc=fr", "root");
+  $ldap->reconnect();
+  load_plugin_textdomain( 'lab', false, '/lab/lang' );
 }
 
 add_action( 'user_register', 'myplugin_registration_save', 10, 1 );
