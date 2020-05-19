@@ -40,7 +40,7 @@ require_once(LAB_DIR_PATH."admin/view/lab-admin-tab-groups.php");
 require_once(LAB_DIR_PATH."admin/view/lab-admin-tab-params.php");
 require_once(LAB_DIR_PATH."admin/view/lab-admin-tab-users.php");
 require_once(LAB_DIR_PATH."admin/view/lab-admin-tab-settings.php");
-require_once(LAB_DIR_PATH."admin/view/lab-admin-ldap.php");
+require_once(LAB_DIR_PATH."lab-admin-ldap.php");
 require_once("lab-html-helper.php");
 require_once("lab-utils.php");
 
