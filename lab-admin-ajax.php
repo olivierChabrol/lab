@@ -1077,19 +1077,25 @@ function lab_ldap_list_update() {
   $lc = isset($lc) ? $lc : $ldap_obj::getLink();
   $BASE = isset($BASE) ? $BASE : $ldap_obj::LDAP_BASE;
   $count = $ldap_obj::countAccountEntries();
-  $value = isset($_POST['value']) ? $_POST['value'] : '5' ;
+  $itemPerPage = isset($_POST['value']) ? $_POST['value'] : '5' ;
   $page = isset($_POST['page']) ? $_POST['page'] : '1' ;
-  $pageVar = ($page - 1) * $value;
+  if($page > ceil($count/$itemPerPage)) {
+    $page = ceil($count/$itemPerPage);
+  }
+  $pageVar = ($page - 1) * $itemPerPage;
   $result = ldap_search($lc,'ou=accounts,'.$BASE,"uid=*");
   ldap_sort($lc,$result,'cn');
-  for($i = $pageVar; $i < ($value+$pageVar); $i++)
+  for($i = $pageVar; $i < ($itemPerPage+$pageVar) && $i < $count; $i++)
   {
-    $ldapResult .= '<tr><td>'. ldap_get_entries($lc,$result)[$i]["cn"][0].'</td>
-                    <td>*</td>
+    //if(ldap_get_entries($lc,$result)[$i]["cn"][0] != "")
+    {
+      $ldapResult .= '<tr><td>'. ldap_get_entries($lc,$result)[$i]["cn"][0].'</td>
+                    <td><button class="">Détails</button</td>
                 </tr>';
+    }
   }
 
-  wp_send_json_success(array($count,$ldapResult));
+  wp_send_json_success(array($count,$ldapResult,$page));
 }
 /**************************************************************************************************************
  * PRESENCE

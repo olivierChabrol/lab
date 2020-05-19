@@ -69,7 +69,7 @@ function lab_ldap($args) {
     }
     ?>
     <div class="wrap">
-        <h1 class="wp-heading-inline">LDAP</h1>
+        <!--<h1 class="wp-heading-inline">LDAP</h1>-->
         <hr class="wp-header-end">
         <h2 class="nav-tab-wrapper">
         <a id="lab_default_tab_pointer" style="position: relative" class="nav-tab <?php echo $active_tab == 'new' ? 'nav-tab-active' : ''; ?>" href="<?php echo add_query_arg(array('tab' => 'new'), $_SERVER['REQUEST_URI']); ?>"><?php esc_html_e('Nouvel utilisateur','lab'); ?></a>
