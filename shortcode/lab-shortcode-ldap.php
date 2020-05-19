@@ -38,7 +38,7 @@ function lab_ldap($args) {
                 </select>
             </div>
             <div class="table-responsive">
-                <table id="lab-table-directory" class="table table-striped">
+                <table id="lab-table-ldap" class="table table-striped">
                     <thead class="thead-dark">
                         <tr>
                             <th>'.esc_html__("Nom", "lab").'</th>
@@ -75,7 +75,7 @@ function lab_ldap($args) {
                         <li><b>'.esc_html("Login","lab").'</b> : '    . (get_ldap_data_from_mail($mail)[2]) . '</li>
                     </ul></div>';
     }
-    
+
     return $ldapStr;
 }
 
