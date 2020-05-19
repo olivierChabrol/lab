@@ -120,6 +120,9 @@ if (is_admin()) {
     //Actions pour le LDAP
     add_action( 'wp_ajax_lab_ldap_pagination','lab_ldap_pagination_Req' );
     add_action( 'wp_ajax_lab_ldap_list_update','lab_ldap_list_update' );
+    add_action( 'wp_ajax_lab_ldap_add_user','lab_ldap_add_user' );
+    add_action( 'wp_ajax_lab_invitations_pagination','lab_ldap_pagination_Req' );
+    add_action( 'wp_ajax_lab_ldap_amu_lookup','lab_ldap_amu_lookup' );
 }
 // no admin
 else{
