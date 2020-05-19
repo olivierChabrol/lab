@@ -4,7 +4,7 @@
  * 
  * lab_ldap_list_update($lc,$BASE) => function which displays all the "cn"s from LDAP.
  * 
- * get_ldap_data_from_mail($mail) => function which return name, surname, login and mail of
+ * get_ldap_data_from_mail($mail) => function which return in an array the surname, name, login and mail of
  *  a requested person from LDAP. It needs the mail of the person to work.
  * 
  **************************************************************************************************************/
@@ -38,5 +38,5 @@ function get_ldap_data_from_mail($mail) {
     $login   = $entry[0]["uid"][0];
 
     ldap_close($lc);
-    print($surname);
+    return array($surname, $name, $login);
 }

@@ -65,10 +65,17 @@ function lab_ldap($args) {
             <input type="mail" id="mailLdap" name="mailLdap" placeholder="mail@exemple.com"></input>
         
             <input type="submit" value="Envoyer">
-        </form></div>';
+        </form></br>';
     
     $mail = $_POST['mailLdap'];
-    get_ldap_data_from_mail($mail);
+    if (isset($mail)) {
+        $ldapStr .= '<h5>Résultat de la recherche pour ' . $mail . '</h5>
+                    <ul>
+                        <li><b>Nom</b> : ' . (get_ldap_data_from_mail($mail)[0]) . '</li>
+                        <li><b>Prénom</b> : ' . (get_ldap_data_from_mail($mail)[1]) . '</li>
+                        <li><b>Login</b> : ' . (get_ldap_data_from_mail($mail)[2]) . '</li>
+                    </ul></div>';
+    }
     
     return $ldapStr;
 }
