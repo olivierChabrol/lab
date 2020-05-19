@@ -91,6 +91,14 @@ function lab_admin_tab_user() {
   <hr/>
   <h3><?php esc_html_e('Ajouter un utilisateur dans l\'annuaire','lab') ?></h3>
   <table class="form-table" role="presentation">
+    <tr class="user-rich-editing-wrap">
+      <th scope="row">
+        <label for="lab_ldap_queryAmu"><?php esc_html_e('E-Mail d\'utilisateur AMU :','lab') ?></label>
+      </th>
+      <td>
+        <input type="email" id="lab_ldap_queryAmu"/>
+      </td>
+    </tr>
     <form id="lab_ldap_newUser" action="javascript:lab_ldap_addUser()">
     <tr class="user-rich-editing-wrap">
       <th scope="row">
@@ -138,6 +146,14 @@ function lab_admin_tab_user() {
       </th>
       <td>
         <input type="text" id="lab_ldap_newUser_org"/>
+      </td>
+    </tr>
+    <tr class="user-rich-editing-wrap">
+      <th scope="row">
+        <label for="lab_ldap_newUser_addToWP"><?php esc_html_e('Ajouter l\'utilisateur à WordPress','lab') ?></label>
+      </th>
+      <td>
+        <input type="checkbox" id="lab_ldap_newUser_addToWP"/>
       </td>
     </tr>
     <tr class="user-rich-editing-wrap">

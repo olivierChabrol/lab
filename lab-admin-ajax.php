@@ -1258,7 +1258,25 @@ function lab_admin_presence_delete_ajax() {
  * LDAP
  **************************************************************************************************************/
 
- function lab_ldap_add_user() {
-  lab_ldap_addUser($_POST['first_name'],$_POST['last_name'],$_POST['email'],$_POST['password'],$_POST['uid'],$_POST['organization']);
-  wp_send_json_success();
- }
+function lab_ldap_add_user() {
+  $ldapRes = lab_ldap_addUser($_POST['first_name'],$_POST['last_name'],$_POST['email'],$_POST['password'],$_POST['uid'],$_POST['organization']);
+  if ($ldapRes == 0 ) {
+    if ($_POST['addToWP'] == 'true') {
+      $wpRes = lab_ldap_new_WPUser(strtoupper($_POST['last_name'])." ".$_POST['first_name'],$_POST['email'],$_POST['password'],$_POST['uid']);
+      if ($wpRes==true) {
+        wp_send_json_success();
+      } else {
+        wp_send_json_error($wpRes);
+      }
+    } else {
+      wp_send_json_success();
+    }
+  } else {
+    wp_send_json_error(ldap_err2str($ldapRes));
+  }
+}
+function lab_ldap_amu_lookup() {
+  $url = "https://ldap.i2m.univ-amu.fr/getAMUUser.php?token=".AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_TOKEN)."&query=".$_POST['query'];
+  $res = json_decode(file_get_contents($url));
+  var_dump($res);
+}
