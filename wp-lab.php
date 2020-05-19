@@ -123,6 +123,7 @@ register_uninstall_hook(__FILE__, 'lab_uninstall_hook');
  */
 add_action('widgets_init', 'wplab_init');
 function myplugin_load_textdomain() {
+  LAB_LDAP::getInstance("dc=i2m,dc=univ-amu,dc=fr", "aze");
   load_plugin_textdomain( 'lab', false, '/lab/lang' ); 
 }
 
