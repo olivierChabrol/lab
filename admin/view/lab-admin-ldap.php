@@ -19,7 +19,10 @@ function lab_ldap_list_update($lc,$BASE) {
   ldap_sort($lc,$result,'cn');
   for($i = $pageVar; $i < $value; ++$i) {
     $ldapResult .= '<tr><td>'. ldap_get_entries($lc,$result)[$i]["cn"][0].'</td>
-                    <td>*</td>
+                    <td>
+                      <span class="fas fa-trash-alt"></span>
+                      <span class="fas fa-pen-alt" style="cursor: pointer;"></span>
+                    </td>
                 </tr>';
   }
   return($ldapResult);

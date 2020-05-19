@@ -3,12 +3,11 @@
  * File Name: lab-shortcode-ldap.php
  * Description: shortcode pour afficher une page de gestion des utilisateurs dans le LDAP
  * Authors: Ivan Ivanov, Lucas Urgenti, Astrid Beyer
- * Version: 0.1
+ * Version: 0.5
  * 
- * TODO : à partir d'un e-mail donné -> ramener les champs suivants pour la fonction d'Ivan : 
- *  nom, prénom, mail, login (uid)
  */
 function lab_ldap($args) {
+    /* Connexion to LDAP (change password if needed) */
     $BASE = "dc=i2m,dc=univ-amu,dc=fr";
     $lc = ldap_connect("localhost","389")
         or die ("Impossible de se connecter au serveur LDAP.");
@@ -61,7 +60,7 @@ function lab_ldap($args) {
     
     $ldapStr .= '<div class="p-2"><h3>' . esc_html("Chercher une personne dans LDAP", "lab") .'</h3>
         <form action="" method="post">
-            <label for="mailLdap">' . esc_html("Précisez le mail : ", "lab") . '</label><br/>
+            <label for="mailLdap">'     . esc_html("Précisez le mail : ", "lab") . '</label><br/>
             <input type="mail" id="mailLdap" name="mailLdap" placeholder="mail@exemple.com"></input>
         
             <input type="submit" value="Envoyer">
@@ -71,9 +70,9 @@ function lab_ldap($args) {
     if (isset($mail)) {
         $ldapStr .= '<h5>Résultat de la recherche pour ' . $mail . '</h5>
                     <ul>
-                        <li><b>Nom</b> : ' . (get_ldap_data_from_mail($mail)[0]) . '</li>
-                        <li><b>Prénom</b> : ' . (get_ldap_data_from_mail($mail)[1]) . '</li>
-                        <li><b>Login</b> : ' . (get_ldap_data_from_mail($mail)[2]) . '</li>
+                        <li><b>'.esc_html("Nom","lab").'</b> : '      . (get_ldap_data_from_mail($mail)[0]) . '</li>
+                        <li><b>'.esc_html("Prénom","lab").'</b> : '   . (get_ldap_data_from_mail($mail)[1]) . '</li>
+                        <li><b>'.esc_html("Login","lab").'</b> : '    . (get_ldap_data_from_mail($mail)[2]) . '</li>
                     </ul></div>';
     }
     
