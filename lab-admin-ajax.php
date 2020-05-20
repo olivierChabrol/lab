@@ -326,7 +326,7 @@ function lab_changeLocale($locale) {
 }
 function lab_admin_test()
 { 
-  wp_send_json_success(wp_delete_user(356,353));
+  wp_send_json_success("oui");
   return;
 }
 

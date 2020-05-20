@@ -92,7 +92,12 @@ class LAB_LDAP {
     */
     public static function getInstance($url = null, $base = null, $login=null, $password=null) {
         if(is_null(self::$_instance)) {
-            self::$_instance = new LAB_LDAP($url, $base, $login, $password);
+            if ($url == null || $base == null || $login == null || $password== null) {
+                echo "Please Fill all LDAP params";
+                return;
+            } else {
+                self::$_instance = new LAB_LDAP($url, $base, $login, $password);
+            }
         }
     return self::$_instance;
     }
