@@ -134,7 +134,7 @@ function lab_admin_tab_user() {
     </tr>
     <tr class="user-rich-editing-wrap">
       <th scope="row">
-        <label for="lab_ldap_newUser_pass"><?php esc_html_e('Mot de passe','lab') ?></label>
+        <label for="lab_ldap_newUser_pass"><?php esc_html_e('Mot de passe','lab') ?><span class="lab_form_required_star"> *</span></label>
       </th>
       <td>
         <input required type="text" id="lab_ldap_newUser_pass"/>

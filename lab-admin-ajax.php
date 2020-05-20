@@ -1280,7 +1280,6 @@ function lab_ldap_list_update() {
                     <span id="editLdap"  class="fas fa-pen-alt" style="cursor: pointer;"></span></td>
                 </tr>';
   }
-
   wp_send_json_success(array($count,$ldapResult,$page));
 }
 function lab_ldap_add_user() {
@@ -1291,21 +1290,19 @@ function lab_ldap_add_user() {
       if ($wpRes==true) {
         wp_send_json_success();
       } else {
-        wp_send_json_error($wpRes);
+        wp_send_json_error("WordPress : ".$wpRes);
       }
     } else {
       wp_send_json_success();
     }
   } else {
-    wp_send_json_error(ldap_err2str($ldapRes));
+    wp_send_json_error("LDAP : ".ldap_err2str($ldapRes));
   }
 }
 function lab_ldap_amu_lookup() {
   $url = "http://ldap.i2m.univ-amu.fr/getAMUUser.php?token=".AdminParams::get_param(AdminParams::PARAMS_LDAP_TOKEN)."&query=".$_POST['query'];
   // create curl resource
   $ch = curl_init();
-  echo($url.'<br>\n');
-  var_dump($ch);
   // set url
   curl_setopt($ch, CURLOPT_URL, $url);
   //return the transfer as a string
@@ -1313,11 +1310,18 @@ function lab_ldap_amu_lookup() {
   // $output contains the output string
   $output = curl_exec($ch);
   // close curl resource to free up system resources
-  curl_close($ch);      
+  curl_close($ch);
   $res = json_decode($output);
-  if ($res['count']==0) {
+  if ($res->count==0) {
     wp_send_json_error();
-  } else {
-    wp_send_json_success($res);
+  } else { 
+    $entry = 0;
+    wp_send_json_success(array(
+      'mail'=>$res->$entry->mail->$entry,
+      'uid'=>$res->$entry->uid->$entry,
+      'password'=>$res->$entry->userpassword->$entry,
+      'first_name'=>$res->$entry->givenname->$entry,
+      'last_name'=>$res->$entry->sn->$entry
+    ));
   }
 }

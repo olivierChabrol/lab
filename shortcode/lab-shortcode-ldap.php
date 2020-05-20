@@ -76,7 +76,7 @@ function lab_ldap($args) {
                         <li><b>'.esc_html("Login","lab").'</b> : '    . (get_ldap_data_from_mail($mail)[2]) . '</li>
                     </ul></div>';
     }
-
+    $ldapStr .= '</div>';
     return $ldapStr;
 
 }
