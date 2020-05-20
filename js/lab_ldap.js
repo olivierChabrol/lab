@@ -14,6 +14,41 @@ jQuery(function($) {
             }
         });
     });
+    $("#lab_ldap_delete_search").autocomplete({
+        minChars: 2,
+        source: function(term, suggest){
+          try { searchRequest.abort(); } catch(e){}
+          searchRequest = $.post(LAB.ajaxurl, { action: 'search_username2',search: term, },
+          function(res) {
+            suggest(res.data);
+          });
+        },
+        select: function( event, ui ) {
+          var firstname  = ui.item.firstname; // first name
+          var lastname = ui.item.lastname; // last name
+          $.post(LAB.ajaxurl,{action:'lab_admin_get_userLogin','user_id':ui.item.user_id},function (response) {
+            if (response.success) {
+                $("#lab_ldap_delete_res").html("ID "+ui.item.user_id + " - Login : " + response.data);
+                $("#lab_ldap_delete_search").attr('user_id', ui.item.user_id);
+                $("#lab_ldap_delete_button").prop("disabled",false);
+            }
+          });
+        }
+    });
+    $("#lab_ldap_delete_button").prop("disabled",true);
+    $("#lab_ldap_delete_button").click(function (){
+        data = {
+            'action': 'lab_ldap_delete_user',
+            'user_id': $("#lab_ldap_delete_search").attr('user_id')
+        };
+        $.post(LAB.ajaxurl,data,function (response){
+            if (response.success) {
+                toast_success(__("Utilisateur supprimé avec succès",'lab'));
+                return;
+            }
+            toast_error(__("Erreur lors de la suppression",'lab')+ "<br>"+response.data);
+        });
+    });
 });
 function lab_ldap_addUser() {
     jQuery(function($){ 

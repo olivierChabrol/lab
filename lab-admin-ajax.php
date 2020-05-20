@@ -322,8 +322,7 @@ function lab_changeLocale($locale) {
 }
 function lab_admin_test()
 { 
-  $timestamp = strtotime("2020-05-21");
-  wp_send_json_success("NonWorkingDay : ".nonWorkingDay($timestamp));
+  wp_send_json_success(wp_delete_user(356,353));
   return;
 }
 
@@ -1323,5 +1322,23 @@ function lab_ldap_amu_lookup() {
       'first_name'=>$res->$entry->givenname->$entry,
       'last_name'=>$res->$entry->sn->$entry
     ));
+  }
+}
+function lab_admin_get_userLogin_Req() {
+  $res = lab_admin_get_userLogin($_POST['user_id']);
+  if ($res==null) {
+    wp_send_json_error();
+  } else {
+    wp_send_json_success($res);
+  }
+}
+function lab_ldap_delete_userReq() {
+  $uid = lab_admin_get_userLogin($_POST['user_id']);
+  wp_delete_user($_POST['user_id'],1);
+  $res = ldap_delete_user($uid);
+  if ($res==0) {
+    wp_send_json_success();
+  } else {
+    wp_send_json_error("LDAP : ".ldap_err2str($res));
   }
 }

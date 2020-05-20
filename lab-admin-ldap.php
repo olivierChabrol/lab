@@ -136,7 +136,9 @@ class LAB_LDAP {
         ldap_sort($this->ldap_link,$result,'cn');
         return $result;
     }
-
+    public function search($dn,$filter) {
+        return ldap_search($this->ldap_link,"$dn,".$this->base,$filter);
+    }
     public function getEntries($result, $i, $field) {
         return ldap_get_entries($this->ldap_link,$result)[$i][$field][0];
     }
@@ -144,6 +146,11 @@ class LAB_LDAP {
     public function addEntry($path,$fields) {
         $this->bindAdmin();
         ldap_add($this->ldap_link,"$path,".$this->base,$fields);
+        return ldap_errno($this->ldap_link);
+    }
+    public function deleteEntry($path) {
+        $this->bindAdmin();
+        ldap_delete($this->ldap_link,"$path,".$this->base);
         return ldap_errno($this->ldap_link);
     }
 }
@@ -208,4 +215,21 @@ function lab_ldap_addUser($first_name, $last_name,$email,$password,$uid,$organiz
         return $ldap_obj->addEntry("cn=".usermeta_format_name_to_slug($first_name,$last_name).",ou=auto.home",$info2);
     }
     return $res1;
+}
+
+function ldap_delete_user($uid) {
+    $ldap_obj=LAB_LDAP::getInstance();
+    $home = explode("/",$ldap_obj->getEntries($ldap_obj->search("ou=accounts","uid=$uid"), 0, "homedirectory"))[2];
+    $homeEntry = (ldap_get_entries($ldap_obj->getLink(),$ldap_obj->search("ou=auto.home","cn=$home")));
+    $errorNo = 0;
+    if ($homeEntry['count']>0) {
+        //echo "found home entry, deleting...";
+        $ldap_obj->deleteEntry("cn=$home,ou=auto.home");
+        $errorNo = ldap_errno($ldap_obj->getLink());
+    }
+    if ($errorNo == 0) {
+        $ldap_obj->deleteEntry("uid=$uid,ou=accounts");
+        $errorNo = ldap_errno($ldap_obj->getLink());
+    }
+    return $errorNo;
 }

@@ -35,7 +35,11 @@ function lab_admin_username_get($userId) {
     
     return $items;
 }
-
+function lab_admin_get_userLogin($user_id) {
+    global $wpdb;
+    $sql = "SELECT `user_login` FROM `".$wpdb->prefix."users` WHERE ID=$user_id";
+    return $wpdb->get_var($sql);
+}
 /*******************************************************************************************************
  * PARAM
  *******************************************************************************************************/
