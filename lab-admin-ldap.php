@@ -60,7 +60,7 @@ class LAB_LDAP {
     private function __construct($base, $password) {
         $this->base = $base;
         $this->ldap_admin_password = $password;
-        $this->ldap_url = AdminParams::get_param(AdminParams::PARAMS_LDAP_URL);
+        $this->ldap_url = AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_URL)[0]->value;
         $this->ldap_link = ldap_connect($this->ldap_url)
             or die ("URL du serveur LDAP incorrecte : ".$this->ldap_url);
         ldap_set_option($this->ldap_link, LDAP_OPT_PROTOCOL_VERSION, 3);
@@ -69,7 +69,7 @@ class LAB_LDAP {
     public function reconnect()
     {
         $this->close();
-        $this->ldap_url = AdminParams::get_param(AdminParams::PARAMS_LDAP_URL);
+        $this->ldap_url = AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_URL)[0]->value;
         $this->ldap_link = ldap_connect($this->ldap_url)
             or die ("URL du serveur LDAP incorrecte.");
         ldap_set_option($this->ldap_link, LDAP_OPT_PROTOCOL_VERSION, 3);
