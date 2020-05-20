@@ -109,7 +109,6 @@ class LAB_LDAP {
         return ldap_count_entries($this->ldap_link,$result);
     }
 
-
     public function get_ldap_data_from_mail($mail) {
         $filter    = "(mail=" . $mail . ")";
         $attrRead  = array("givenname", "sn", "mail", "uid");
@@ -122,6 +121,17 @@ class LAB_LDAP {
         $login   = $entry[0]["uid"][0];
 
         return array($surname, $name, $login);
+    }
+
+    function editUser($uid, $givenName, $sn, $uidNumber, $homeDirectory, $mail) {
+        $info                  = array();
+        $info["uid"]           = $uid;
+        $info["givenname"]     = $givenName;
+        $info["sn"]            = $sn;
+        $info["uidnumber"]     = $uidNumber;
+        $info["homedirectory"] = $homeDirectory;
+        $info["mail"]          = $mail;
+        $res = ldap_mod_replace($this->ldap_link,"uid=$uid,ou=accounts,".$this->base,$info);
     }
 
     public function get_ldap_data_from_uid($uid) {
@@ -206,9 +216,4 @@ function lab_ldap_addUser($first_name, $last_name,$email,$password,$uid,$organiz
         return ldap_errno($ldap_obj->getLink());
     }
     return ldap_errno($ldap_obj->getLink());
-}
-
-function lab_ldap_editUser($uid) {
-    $ldap_obj = LAB_LDAP::get_info_from_uid($uid);
-    //var_dump($ldap_obj);
 }
