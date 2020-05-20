@@ -125,9 +125,9 @@ jQuery(function($){
       var value = ui.item.value;
       event.preventDefault();
       $("#lab_user_search").val(label);
-
       $("#lab_user_search_id").val(value);
       callbUser(value, loadUserMetaData);
+      loadUserHistory();
       return false;
     }
   });
@@ -566,21 +566,37 @@ jQuery(function($){
       },
       hide: function() {
       }
-    });
-    $("#lab_admin_param_colorpicker_edit").spectrum({
-        color: $("#wp_lab_param_color_edit").val(),
-        move: function(tinycolor) {
-            $("#wp_lab_param_color_edit").css('background-color',tinycolor);
-            $("#wp_lab_param_color_edit").val(tinycolor.toHexString());
-          //jQuery("#lab_profile_card").css('background-color',tinycolor);
-        },
-        change: function(tinycolor) {
+  });
+  $("#lab_admin_param_colorpicker_edit").spectrum({
+      color: $("#wp_lab_param_color_edit").val(),
+      move: function(tinycolor) {
           $("#wp_lab_param_color_edit").css('background-color',tinycolor);
           $("#wp_lab_param_color_edit").val(tinycolor.toHexString());
-        },
-        hide: function() {
-        }
+        //jQuery("#lab_profile_card").css('background-color',tinycolor);
+      },
+      change: function(tinycolor) {
+        $("#wp_lab_param_color_edit").css('background-color',tinycolor);
+        $("#wp_lab_param_color_edit").val(tinycolor.toHexString());
+      },
+      hide: function() {
+      }
+  });
+  $("#lab_historic_host").autocomplete({
+    minChars: 3,
+    source: function(term, suggest){
+      try { searchRequest.abort(); } catch(e){}
+      searchRequest = $.post(LAB.ajaxurl, { action: 'search_username',search: term, }, function(res) {
+        suggest(res.data);
       });
+      },
+    select: function( event, ui ) {
+      var label = ui.item.label;
+      var value = ui.item.value;
+      event.preventDefault();
+      $("#lab_historic_host").val(label);
+      $("#lab_historic_host").attr('host_id',value);
+    }
+  });
 });
 
 /*************************************************************************************************************************************************
@@ -1125,4 +1141,22 @@ function createAllSocial() {
     'action': 'create_social'
   }
   callAjax(data, "All social metakeys created", null, "Failed to create social metakeys in DB", null); 
+}
+
+function loadUserHistory() {
+  data = {
+    'action':'lab_admin_loadUserHistory',
+    'user_id':jQuery("#lab_user_search_id").val()
+  }
+  jQuery(function($){
+    $.post(LAB.ajaxurl,data,function (response){
+      if (response.success) {
+        $("#lab_history_list").html(response.data);
+        $("#lab_history_edit").click(function (event){
+          event.preventDefault();
+
+        });
+      }
+    });
+  });
 }
