@@ -8,8 +8,8 @@ class AdminParams {
     public const PARAMS_MISSION_ID = 6;
     public const PARAMS_FUNDING_ID = 7;
     public const PARAMS_EMPLOYER = 8;
-    public const PARAMS_LDAP_TOKEN = 8;
-    public const PARAMS_LDAP_URL = 9;
+    public const PARAMS_LDAP_TOKEN = 9;
+    public const PARAMS_LDAP_URL = 10;
 
     public static function get_params_fromId($id) {
         $sql = "SELECT value,id FROM `wp_lab_params` WHERE type_param=".$id.";";

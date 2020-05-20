@@ -162,7 +162,7 @@ function lab_admin_createTable_users_historic() {
         `begin` datetime NOT NULL,
         `end` datetime NOT NULL,
         `host_id` bigint UNSIGNED NOT NULL COMMENT 'link with a user',
-        `function` bigint UNSIGNED NOT NULL COMMENT 'link with parameter lab_user_function',,
+        `function` bigint UNSIGNED NOT NULL COMMENT 'link with parameter lab_user_function',
         PRIMARY KEY (`id`)
       ) ENGINE=InnoDB";
     $wpdb->get_results($sql);
@@ -207,9 +207,9 @@ function lab_admin_initTable_param() {
             (5, 1, 'USER FUNCTION', NULL),
             (6, 1, 'MISSION', NULL),
             (7, 1, 'FUNDING', NULL),
-            (8, 1, 'EMPLOYER', NULL),
-            (8, 1, 'INSERT LDAP TOKEN HERE', NULL),
-            (9, 1, 'localhost', NULL),
+            (8, 1, 'EMPLOYER', NULL),            
+            (9, 1, 'LDAP TOKEN', NULL),
+            (10, 1, 'LDAP HOST', NULL),
             (NULL, 2, 'Equipe', NULL),
             (NULL, 2, 'Groupe', NULL),
             (NULL, 3, 'Clé', NULL),
