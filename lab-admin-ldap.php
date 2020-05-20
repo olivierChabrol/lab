@@ -131,14 +131,30 @@ class LAB_LDAP {
      *
      * @return ldapresult
      */
-    public function searchAccounts() {
-        $result = ldap_search($this->ldap_link,'ou=accounts,'.$this->base,"uid=*");
+    public function searchAccounts($uid) {
+        $result = ldap_search($this->ldap_link,'ou=accounts,'.$this->base,"uid=".$uid);
         ldap_sort($this->ldap_link,$result,'cn');
         return $result;
     }
 
     public function getEntries($result, $i, $field) {
         return ldap_get_entries($this->ldap_link,$result)[$i][$field][0];
+    }
+
+    public function get_info_from_uid($uid) {
+        $filter    = "(uid=" . $uid . ")";
+        $attrRead  = array("givenname", "sn", "mail", "uid", "uidnumber", "homedirectory");
+        $result    = ldap_search($this->ldap_link, $this->base, $filter, $attrRead) 
+            or die ("Error in query");
+        $entry     = ldap_get_entries($this->ldap_link,$result);
+    
+        $surname = $entry[0]["sn"][0];
+        $name    = $entry[0]["givenname"][0];
+        $email   = $entry[0]["mail"][0];
+        $uidNumber = $entry[0]["uidnumber"][0];
+        $homeDirectory = $entry[0]["homedirectory"][0];
+    
+        return array($name, $surname, $email, $uidNumber, $homeDirectory);
     }
 }
 function lab_ldap_new_WPUser($name,$email,$password,$uid) {
@@ -195,3 +211,4 @@ function lab_ldap_addUser($first_name, $last_name,$email,$password,$uid,$organiz
     }
     return ldap_errno($ldap_obj->getLink());
 }
+

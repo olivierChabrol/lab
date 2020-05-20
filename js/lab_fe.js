@@ -793,12 +793,8 @@ function lab_pagination_ldap(pages, currentPage) {
 function lab_update_ldap_list() {
   jQuery(function($) {
     data = {
-      //sortBy: $(".lab_column_name[sel=true]").attr('name'),
-      //order: $(".lab_column_name[sel=true]").attr('order'),
       page: $("#active").attr("page"),
       value: $("#lab_results_number").val(),
-      //status: statuses,
-      //year: $("#lab_filter_year").val(),
     };
    
     data['action'] = 'lab_ldap_list_update';
@@ -807,7 +803,26 @@ function lab_update_ldap_list() {
       pages = Math.ceil(response.data[0]/data['value']);
       currentPage = data['page']<=pages ? data['page'] : pages;
       lab_pagination_ldap(pages,currentPage);
+
+      $("[id^=lab_ldap_detail_button_]").click(function() {
+        data = {
+          uid : $(this).attr("id").substring(23)
+        }
+        data['action'] = 'lab_ldap_user_details';
+        $.post(LAB.ajaxurl, data, function(response) {
+          $("#lab_ldap_name").html(response.data[0]);
+          $("#lab_ldap_surname").html(response.data[1]);
+          $("#lab_ldap_email").html(response.data[2]);
+          $("#lab_ldap_uidNumber").html(response.data[3]);
+          $("#lab_ldap_homeDirectory").html(response.data[4]);
+          $("#lab_ldap_detail_title").show();
+          $("#lab_ldap_details").slideDown();
+          $("#lab_ldap_details_container").attr("wrapped","false");
+        });
+      });
     });
+
+    
   });
 };
 
@@ -817,6 +832,16 @@ function LABLoadLDAPList()
   jQuery(function($) {
     $("#lab_results_number").change(function() {
       lab_update_ldap_list();
+    });
+    
+    $("#lab_ldap_detail_title").click(function(){
+      if($("#lab_ldap_details_container").attr("wrapped")=="true"){
+        $("#lab_ldap_details").slideDown();
+        $("#lab_ldap_details_container").attr("wrapped","false");
+      } else {
+          $("#lab_ldap_details").slideUp();
+          $("#lab_ldap_details_container").attr("wrapped","true");
+      }
     });
   });
 };

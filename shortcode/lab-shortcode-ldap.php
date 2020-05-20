@@ -12,7 +12,7 @@ function lab_ldap($args) {
     $lc = ldap_connect("localhost","389")
         or die ("Impossible de se connecter au serveur LDAP.");
     ldap_set_option($lc, LDAP_OPT_PROTOCOL_VERSION,3);
-    $lb = ldap_bind($lc, 'cn=admin,'.$BASE,'root');
+    $lb = ldap_bind($lc, 'cn=admin,'.$BASE,'password');
 
     /* **** CONNEXION TEST - SUCCESS! [do not erase if you want to test] ****
     if($lb) {
@@ -27,7 +27,7 @@ function lab_ldap($args) {
     //TODO : pagination, bouton détail (récupère attributs LDAP)
     $ldapStr = '
     <div class="d-flex justify-content-between bd-highlight mb-3">
-        <div class="p-2">
+        <div class="p-2" id="p-2-list">
             <h3>' . esc_html("Parcourir l'annuaire LDAP", "lab") . '</h3>
             <div>    
                 <label for="lab_results_number">'.esc_html__("Nombre de résultats par page","lab").' : </label>
@@ -76,7 +76,38 @@ function lab_ldap($args) {
                         <li><b>'.esc_html("Login","lab").'</b> : '    . (get_ldap_data_from_mail($mail)[2]) . '</li>
                     </ul></div>';
     }
-
+    //////////////////////////////A Vérifier div ////////////////////////////
+    $ldapStr .= '   </div>
+                </div>
+                <div id="lab_ldap_details_container" wrapped="true">
+                    <h2 id="lab_ldap_detail_title" style="cursor:pointer; display:none;">Détails de l\'utilisateur <i class="fas fa-arrow-up"></i></h2>
+                    <div id="lab_ldap_details" style="display:none" class="table-responsive">
+                        <table class="table table-striped">
+                            <tbody>
+                                <tr>
+                                    <th>Nom</th>
+                                    <td id="lab_ldap_name"></td>
+                                </tr>
+                                <tr>
+                                    <th>Prénom</th>
+                                    <td id="lab_ldap_surname"></td>
+                                </tr>
+                                <tr>
+                                    <th>Email</th>
+                                    <td id="lab_ldap_email"></td>
+                                </tr>
+                                <tr>
+                                    <th>Numéro uid</th>
+                                    <td id="lab_ldap_uidNumber"></td>
+                                </tr>
+                                <tr>
+                                    <th>Répertoire personnel</th>
+                                    <td id="lab_ldap_homeDirectory"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>';
     return $ldapStr;
 
 }

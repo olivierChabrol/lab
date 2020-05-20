@@ -1267,7 +1267,7 @@ function lab_ldap_list_update() {
   $page = isset($_POST['page']) ? $_POST['page'] : '1' ;
 
   $ldap_obj = LAB_LDAP::getInstance();
-  $result   = $ldap_obj->searchAccounts();
+  $result   = $ldap_obj->searchAccounts("*");
   $count    = $ldap_obj->countResults($result);
   if($page > ceil($count/$itemPerPage)) {
     $page = ceil($count/$itemPerPage);
@@ -1275,12 +1275,11 @@ function lab_ldap_list_update() {
   $pageVar = ($page - 1) * $itemPerPage;
   for($i = $pageVar; $i < ($itemPerPage+$pageVar) && $i < $count; $i++)
   {
-      $ldapResult .= '<tr><td>'. $ldap_obj->getEntries($result,$i, 'cn').'</td>
-                    <td><button class="">Détails</button><span id="eraseLdap" class="fas fa-trash-alt" style="cursor: pointer;"></span>
+      $ldapResult .= '<tr><td id="lab_ldap_cn">'. $ldap_obj->getEntries($result,$i, 'cn').'</td>
+                    <td><button id="lab_ldap_detail_button_'.$ldap_obj->getEntries($result,$i, 'uid').'" style="cursor: pointer;">Détails</button>&nbsp<span id="eraseLdap" class="fas fa-trash-alt" style="cursor: pointer;">&nbsp</span>
                     <span id="editLdap"  class="fas fa-pen-alt" style="cursor: pointer;"></span></td>
                 </tr>';
   }
-
   wp_send_json_success(array($count,$ldapResult,$page));
 }
 function lab_ldap_add_user() {
@@ -1320,4 +1319,10 @@ function lab_ldap_amu_lookup() {
   } else {
     wp_send_json_success($res);
   }
+}
+function lab_ldap_user_details() {
+  $uid = $_POST['uid'];
+  $ldap_obj = LAB_LDAP::getInstance();
+  $result   = $ldap_obj->get_info_from_uid($uid);
+  wp_send_json_success($result);
 }
