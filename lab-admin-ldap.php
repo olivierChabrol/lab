@@ -284,10 +284,5 @@ function ldap_delete_user($uid) {
         $ldap_obj->deleteEntry("uid=$uid,ou=accounts");
         $errorNo = ldap_errno($ldap_obj->getLink());
     }
-<<<<<<< HEAD:lab-admin-ldap.php
     return $errorNo;
 }
-=======
-    return ldap_errno($ldap_obj->getLink());
-}
->>>>>>> Astrid:admin/view/lab-admin-ldap.php
