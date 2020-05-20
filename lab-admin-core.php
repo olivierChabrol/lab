@@ -149,6 +149,21 @@ function lab_admin_createTable_hal_keywords_user() {
     $wpdb->get_results($sql);
     
 }
+function lab_admin_createTable_users_historic() {
+    global $wpdb;
+    $sql = "CREATE TABLE IF NOT EXISTS `".$wpdb->prefix."lab_users_historic` (
+        `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
+        `user_id` bigint UNSIGNED NOT NULL,
+        `ext` tinyint NOT NULL COMMENT '0 if insite wp_users, 1 if in lab_guests',
+        `begin` datetime NOT NULL,
+        `end` datetime NOT NULL,
+        `host_id` bigint UNSIGNED NOT NULL COMMENT 'link with a user',
+        `function` bigint UNSIGNED NOT NULL COMMENT 'link with parameter lab_user_function',,
+        PRIMARY KEY (`id`)
+      ) ENGINE=InnoDB";
+    $wpdb->get_results($sql);
+    
+}
 
 function lab_admin_createTable_param() {
     global $wpdb;
@@ -1272,6 +1287,7 @@ function create_all_tables() {
     lab_admin_initTable_usermeta();
     lab_admin_createTable_presence();
     lab_invitations_createTables();
+    lab_admin_createTable_users_historic();
 }
 
 function delete_all_tables() {
