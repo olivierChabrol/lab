@@ -1,0 +1,8 @@
+.p-2 {
+    display: flex;
+    flex-direction: column;
+}
+
+#p-2-list {
+    min-width: 475px; 
+}

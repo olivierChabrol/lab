@@ -266,6 +266,7 @@ function wp_lab_fe_enqueues()
   wp_set_script_translations( 'lab-fe', 'lab', dirname(__FILE__).'/lang' );
   wp_enqueue_script('fontAwesome',"https://kit.fontawesome.com/341f99cb81.js",array(),"3.2",true);
   wp_enqueue_style('InvitationCSS',plugins_url('css/lab-invitation.css',__FILE__));
+  wp_enqueue_style('LdapCSS',plugins_url('css/lab-ldap.css',__FILE__));
   wp_enqueue_style('CountrySelectCSS',plugins_url('css/countrySelect.min.css',__FILE__));
   wp_enqueue_script('CountrySelectJS',plugins_url('js/countrySelect.min.js',__FILE__),array('jquery'),"3.5",false);
   wp_enqueue_style('TelInputCSS',plugins_url('css/intlTelInput.min.css',__FILE__));

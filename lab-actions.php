@@ -124,6 +124,7 @@ if (is_admin()) {
     add_action( 'wp_ajax_lab_ldap_add_user','lab_ldap_add_user' );
     add_action( 'wp_ajax_lab_invitations_pagination','lab_ldap_pagination_Req' );
     add_action( 'wp_ajax_lab_ldap_amu_lookup','lab_ldap_amu_lookup' );
+    add_action( 'wp_ajax_lab_ldap_user_details','lab_ldap_user_details');
     add_action( 'wp_ajax_lab_ldap_delete_user','lab_ldap_delete_userReq' );
 }
 // no admin
