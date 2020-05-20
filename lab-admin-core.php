@@ -41,7 +41,11 @@ function lab_admin_username_get($userId) {
     
     return $items;
 }
-
+function lab_admin_get_userLogin($user_id) {
+    global $wpdb;
+    $sql = "SELECT `user_login` FROM `".$wpdb->prefix."users` WHERE ID=$user_id";
+    return $wpdb->get_var($sql);
+}
 /*******************************************************************************************************
  * PARAM
  *******************************************************************************************************/
@@ -170,7 +174,7 @@ function lab_admin_createTable_param() {
     $sql = "CREATE TABLE IF NOT EXISTS `".$wpdb->prefix."lab_params` (
         `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
         `type_param` bigint UNSIGNED NOT NULL,
-        `value` varchar(20) DEFAULT NULL,
+        `value` varchar(45) DEFAULT NULL,
         `color` varchar(8) DEFAULT NULL,
         PRIMARY KEY (`id`)
       ) ENGINE=InnoDB";
@@ -204,6 +208,8 @@ function lab_admin_initTable_param() {
             (6, 1, 'MISSION', NULL),
             (7, 1, 'FUNDING', NULL),
             (8, 1, 'EMPLOYER', NULL),
+            (8, 1, 'INSERT LDAP TOKEN HERE', NULL),
+            (9, 1, 'localhost', NULL),
             (NULL, 2, 'Equipe', NULL),
             (NULL, 2, 'Groupe', NULL),
             (NULL, 3, 'Clé', NULL),

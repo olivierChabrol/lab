@@ -27,6 +27,7 @@ if (is_admin()) {
     add_action( 'wp_ajax_save_event_category', 'lab_admin_save_event_category');
     add_action( 'wp_ajax_search_group', 'lab_admin_group_search');
     add_action( 'wp_ajax_test', 'lab_admin_test');
+    add_action( 'wp_ajax_lab_admin_get_userLogin','lab_admin_get_userLogin_Req' );
     //Actions pour la gestion des groupes
     add_action( 'wp_ajax_group_search_ac', 'lab_admin_group_availableAc' );
     add_action( 'wp_ajax_group_create', 'lab_admin_group_createReq' );
@@ -117,6 +118,13 @@ if (is_admin()) {
     add_action( 'wp_ajax_lab_invitations_add_realCost','lab_invitations_add_realCost' );
     add_action( 'wp_ajax_lab_invitations_guestInfo','lab_invitations_guestInfo' );
     add_action( 'wp_ajax_lab_invitations_pagination','lab_invitations_pagination_Req' );
+    //Actions pour le LDAP
+    add_action( 'wp_ajax_lab_ldap_pagination','lab_ldap_pagination_Req' );
+    add_action( 'wp_ajax_lab_ldap_list_update','lab_ldap_list_update' );
+    add_action( 'wp_ajax_lab_ldap_add_user','lab_ldap_add_user' );
+    add_action( 'wp_ajax_lab_invitations_pagination','lab_ldap_pagination_Req' );
+    add_action( 'wp_ajax_lab_ldap_amu_lookup','lab_ldap_amu_lookup' );
+    add_action( 'wp_ajax_lab_ldap_delete_user','lab_ldap_delete_userReq' );
 }
 // no admin
 else{

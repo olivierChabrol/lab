@@ -326,9 +326,7 @@ function lab_changeLocale($locale) {
 }
 function lab_admin_test()
 { 
-  $timestamp = strtotime("2020-05-20");
-  //wp_send_json_success("NonWorkingDay : ".nonWorkingDay($timestamp));
-  wp_send_json_success(nonWorkingDay($timestamp));
+  wp_send_json_success(wp_delete_user(356,353));
   return;
 }
 
@@ -1019,6 +1017,7 @@ function lab_invitations_guestInfo() {
 function lab_invitations_pagination_Req() {
   wp_send_json_success(lab_invitations_pagination($_POST['pages'],$_POST['currentPage']));
 }
+
 /**************************************************************************************************************
  * PRESENCE
  **************************************************************************************************************/
@@ -1207,3 +1206,91 @@ function lab_admin_presence_delete_ajax() {
   wp_send_json_success(lab_admin_presence_delete($presenceId, $userId));
 }
 
+/**************************************************************************************************************
+ * LDAP
+ **************************************************************************************************************/
+function lab_ldap_pagination_Req() {
+  wp_send_json_success(lab_ldap_pagination($_POST['pages'],$_POST['currentPage']));
+}
+
+function lab_ldap_list_update() {
+  $itemPerPage = isset($_POST['value']) ? $_POST['value'] : '5' ;
+  $page = isset($_POST['page']) ? $_POST['page'] : '1' ;
+
+  $ldap_obj = LAB_LDAP::getInstance();
+  $result   = $ldap_obj->searchAccounts();
+  $count    = $ldap_obj->countResults($result);
+  if($page > ceil($count/$itemPerPage)) {
+    $page = ceil($count/$itemPerPage);
+  }
+  $pageVar = ($page - 1) * $itemPerPage;
+  for($i = $pageVar; $i < ($itemPerPage+$pageVar) && $i < $count; $i++)
+  {
+      $ldapResult .= '<tr><td>'. $ldap_obj->getEntries($result,$i, 'cn').'</td>
+                    <td><button class="">Détails</button><span id="eraseLdap" class="fas fa-trash-alt" style="cursor: pointer;"></span>
+                    <span id="editLdap"  class="fas fa-pen-alt" style="cursor: pointer;"></span></td>
+                </tr>';
+  }
+  wp_send_json_success(array($count,$ldapResult,$page));
+}
+function lab_ldap_add_user() {
+  $ldapRes = lab_ldap_addUser($_POST['first_name'],$_POST['last_name'],$_POST['email'],$_POST['password'],$_POST['uid'],$_POST['organization']);
+  if ($ldapRes == 0 ) {
+    if ($_POST['addToWP'] == 'true') {
+      $wpRes = lab_ldap_new_WPUser(strtoupper($_POST['last_name'])." ".$_POST['first_name'],$_POST['email'],$_POST['password'],$_POST['uid']);
+      if ($wpRes==true) {
+        wp_send_json_success();
+      } else {
+        wp_send_json_error("WordPress : ".$wpRes);
+      }
+    } else {
+      wp_send_json_success();
+    }
+  } else {
+    wp_send_json_error("LDAP : ".ldap_err2str($ldapRes));
+  }
+}
+function lab_ldap_amu_lookup() {
+  $url = "http://ldap.i2m.univ-amu.fr/getAMUUser.php?token=".AdminParams::get_param(AdminParams::PARAMS_LDAP_TOKEN)."&query=".$_POST['query'];
+  // create curl resource
+  $ch = curl_init();
+  // set url
+  curl_setopt($ch, CURLOPT_URL, $url);
+  //return the transfer as a string
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+  // $output contains the output string
+  $output = curl_exec($ch);
+  // close curl resource to free up system resources
+  curl_close($ch);
+  $res = json_decode($output);
+  if ($res->count==0) {
+    wp_send_json_error();
+  } else { 
+    $entry = 0;
+    wp_send_json_success(array(
+      'mail'=>$res->$entry->mail->$entry,
+      'uid'=>$res->$entry->uid->$entry,
+      'password'=>$res->$entry->userpassword->$entry,
+      'first_name'=>$res->$entry->givenname->$entry,
+      'last_name'=>$res->$entry->sn->$entry
+    ));
+  }
+}
+function lab_admin_get_userLogin_Req() {
+  $res = lab_admin_get_userLogin($_POST['user_id']);
+  if ($res==null) {
+    wp_send_json_error();
+  } else {
+    wp_send_json_success($res);
+  }
+}
+function lab_ldap_delete_userReq() {
+  $uid = lab_admin_get_userLogin($_POST['user_id']);
+  wp_delete_user($_POST['user_id'],1);
+  $res = ldap_delete_user($uid);
+  if ($res==0) {
+    wp_send_json_success();
+  } else {
+    wp_send_json_error("LDAP : ".ldap_err2str($res));
+  }
+}
