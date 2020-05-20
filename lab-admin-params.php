@@ -7,8 +7,12 @@ class AdminParams {
     public const PARAMS_USER_FUNCTION_ID = 5;
     public const PARAMS_MISSION_ID = 6;
     public const PARAMS_FUNDING_ID = 7;
-    public const PARAMS_LDAP_TOKEN = 8;
-    public const PARAMS_LDAP_URL = 9;
+    public const PARAMS_EMPLOYER = 8;
+    public const PARAMS_LDAP_TOKEN = 9;
+    public const PARAMS_LDAP_URL = 10;
+    public const PARAMS_LDAP_BASE = 11;
+    public const PARAMS_LDAP_LOGIN = 12;
+    public const PARAMS_LDAP_PASSWORD = 13;
 
     public static function get_params_fromId($id) {
         $sql = "SELECT value,id FROM `wp_lab_params` WHERE type_param=".$id.";";
@@ -28,7 +32,11 @@ class AdminParams {
     {
         return AdminParams::get_params_fromId(AdminParams::PARAMS_USER_FUNCTION_ID);
     }
-    public static function get_param($id) {
+    public static function lab_admin_get_params_userEmployer()
+    {
+        return AdminParams::get_params_fromId(AdminParams::PARAMS_EMPLOYER);
+    }
+    public function get_param($id) {
         $sql = "SELECT value FROM `wp_lab_params` WHERE id=".$id.";";
         global $wpdb;
         $results = $wpdb->get_results($sql);
@@ -53,6 +61,9 @@ function lab_admin_get_params_userFunction() {
 }
 function lab_admin_get_params_userLocation() {
     return AdminParams::lab_admin_get_params_userLocation();
+}
+function lab_admin_get_params_userEmployer() {
+    return AdminParams::lab_admin_get_params_userEmployer();
 }
 
 ?>

@@ -191,7 +191,7 @@ jQuery(function($){
   });
 
   $("#lab_user_button_save_left").click(function() {
-    saveUserLeft($("#lab_user_left_date").val(), $("#lab_user_left").is(":checked"), $("#lab_user_location").val(), $("#lab_user_function").val(), $("#lab_user_office_number").val(), $("#lab_user_office_floor").val());
+    saveUserLeft($("#lab_user_left_date").val(), $("#lab_user_left").is(":checked"), $("#lab_user_location").val(), $("#lab_user_function").val(), $("#lab_user_office_number").val(), $("#lab_user_office_floor").val(), $("#lab_user_employer").val());
   });
 
   $("#lab_settings_correct_um").click(function() {
@@ -830,7 +830,7 @@ function saveUserMetaData(userId, date, isChecked, location, userFunction) {
 
 }
 
-function saveUserLeft(date, isChecked, location, userFunction, userOfficeNumber, userOfficeFloor) {
+function saveUserLeft(date, isChecked, location, userFunction, userOfficeNumber, userOfficeFloor, employer) {
   var c = isChecked?date:null;
   var data = {
                'action' : 'update_user_metadata',
@@ -838,6 +838,7 @@ function saveUserLeft(date, isChecked, location, userFunction, userOfficeNumber,
                'dateLeft' : c,
                'location' :location,
                'function' : userFunction,
+               'employer' : employer,
                'officeNumber' : userOfficeNumber,
                'officeFloor' : userOfficeFloor,
   };
@@ -877,10 +878,6 @@ function loadUserName(response) {
   if(response.data) {
     jQuery("#wp_lab_group_chief_edit").val(response.data["first_name"] + " " + response.data["last_name"]);
   }
-  else
-  {
-
-  }
 }
 
 function loadUserMetaData(response) {
@@ -902,6 +899,9 @@ function loadUserMetaData(response) {
     if (response.data["user_function"] != null) {
       jQuery("#lab_user_function").val(response.data["user_function"]);
     }
+    if (response.data["user_employer"] != null) {
+      jQuery("#lab_user_employer").val(response.data["user_employer"]);
+    }
     if (response.data["user_location"] != null) {
       jQuery("#lab_user_location").val(response.data["user_location"]);
     }
@@ -910,6 +910,9 @@ function loadUserMetaData(response) {
     }
     if (response.data["user_office_number"] != null) {
       jQuery("#lab_user_office_number").val(response.data["user_office_number"]);
+    }
+    if (response.data["user_phone"] != null) {
+      jQuery("#lab_user_phone").val(response.data["user_phone"]);
     }
   }
   else

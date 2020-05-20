@@ -1,5 +1,11 @@
 <?php
+function get_easter_datetime($year) {
+    $base = new DateTime("$year-03-21");
+    $days = easter_days($year);
 
+    $base->add(new DateInterval("P{$days}D"));
+    return $base->getTimestamp ();
+}
 /**
  * Titre : Détermine rapidement si un jour est férié (fetes mobiles incluses)                                         
  *                                                                                                                          
@@ -30,13 +36,10 @@ function nonWorkingDay($timestamp)
     if($jour == 11 && $mois == 11) $EstFerie = true; // 11 novembre
     if($jour == 25 && $mois == 12) $EstFerie = true; // 25 décembre
     // fetes religieuses mobiles
-    $pak = easter_date($annee);
+    $pak = get_easter_datetime($annee);
     $jp = date("d", $pak);
     $mp = date("m", $pak);
-    if (date("L", $pak))
-    {
-        $pak = strtotime("+1 days", $pak);
-    }
+    
     if($jp == $jour && $mp == $mois){ $EstFerie = true;} // Pâques
     $lpk = mktime(date("H", $pak), date("i", $pak), date("s", $pak), date("m", $pak) , date("d", $pak) +1, date("Y", $pak) );
     $jp = date("d", $lpk);
