@@ -8,76 +8,133 @@
 
 function lab_admin_tab_user() {
 ?>
-
-  <table class="form-table" role="presentation">
-    <tr class="user-rich-editing-wrap">
-      <th scope="row">
-        <label for="lab_user_name"><?php esc_html_e('Nom de l\'utilisateur','lab') ?></label>
-      </th>
-      <td>
-        <input type="text"   id="lab_user_search"    value="" size="80" /><br>
-        <input type="hidden" id="lab_user_search_id" value="" /><br>
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <label for="lab_user_function"><?php esc_html_e('User function','lab') ?></label>
-      </td>
-      <td>
-        <?php lab_html_select("lab_user_function", "lab_user_function", "", lab_admin_get_params_userFunction, null, array("value"=>"","label"=>"None"), ""); ?>
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <label for="lab_user_employer"><?php esc_html_e('Employer','lab') ?></label>
-      </td>
-      <td>
-        <?php lab_html_select("lab_user_employer", "lab_user_employer", "", lab_admin_get_params_userEmployer, null, array("value"=>"","label"=>"None"), ""); ?>
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <label for="lab_user_location"><?php esc_html_e('User Location','lab') ?></label>
-      </td>
-      <td>
-        <?php lab_html_select("lab_user_location", "lab_user_location", "", lab_admin_get_params_userLocation, null, array("value"=>"","label"=>"None"), ""); ?>
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <label for="lab_user_office_number"><?php esc_html_e('User office number','lab') ?></label>
-      </td>
-      <td>
-        <input type="text"   id="lab_user_office_number"/>
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <label for="lab_user_office_floor"><?php esc_html_e('User office floor','lab') ?></label>
-      </td>
-      <td>
-        <input type="text" id="lab_user_office_floor"/>
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <label for="lab_user_phone"><?php esc_html_e('Phone','lab') ?></label>
-      </td>
-      <td>
-        <input type="text" id="lab_user_phone"/>
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <label for="lab_user_left"><?php esc_html_e('Parti','lab') ?></label>
-      </td>
-      <td>
-        <input type="checkbox" id="lab_user_left"> <label for="lab_user_left_date"><?php esc_html_e('Date de départ','lab') ?></label><input type="text" id="lab_user_left_date">
-        <input type="hidden" id="lab_usermeta_id">
-      </td>
-    </tr>
-  </table>
-  <a href="#" class="page-title-action" id="lab_user_button_save_left"><?php esc_html_e('Modifier le statut de l\'utilisateur','lab') ?></a>
+  <div style="display:flex; flex-wrap:wrap;">
+  <form>
+    <table class="form-table" role="presentation">
+      <tr class="user-rich-editing-wrap">
+        <th scope="row">
+          <label for="lab_user_name"><?php esc_html_e('Nom de l\'utilisateur','lab') ?></label>
+        </th>
+        <td>
+          <input type="text"   id="lab_user_search"    value="" /><br>
+          <input type="hidden" id="lab_user_search_id" value="" /><br>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label for="lab_user_function"><?php esc_html_e('User function','lab') ?></label>
+        </td>
+        <td>
+          <?php lab_html_select("lab_user_function", "lab_user_function", "", lab_admin_get_params_userFunction, null, array("value"=>"","label"=>"None"), ""); ?>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label for="lab_user_employer"><?php esc_html_e('Employer','lab') ?></label>
+        </td>
+        <td>
+          <?php lab_html_select("lab_user_employer", "lab_user_employer", "", lab_admin_get_params_userEmployer, null, array("value"=>"","label"=>"None"), ""); ?>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label for="lab_user_location"><?php esc_html_e('User Location','lab') ?></label>
+        </td>
+        <td>
+          <?php lab_html_select("lab_user_location", "lab_user_location", "", lab_admin_get_params_userLocation, null, array("value"=>"","label"=>"None"), ""); ?>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label for="lab_user_office_number"><?php esc_html_e('User office number','lab') ?></label>
+        </td>
+        <td>
+          <input type="text"   id="lab_user_office_number"/>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label for="lab_user_office_floor"><?php esc_html_e('User office floor','lab') ?></label>
+        </td>
+        <td>
+          <input type="text" id="lab_user_office_floor"/>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label for="lab_user_phone"><?php esc_html_e('Phone','lab') ?></label>
+        </td>
+        <td>
+          <input type="text" id="lab_user_phone"/>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label for="lab_user_left"><?php esc_html_e('Parti','lab') ?></label>
+        </td>
+        <td>
+          <input type="checkbox" id="lab_user_left"> <label for="lab_user_left_date"><?php esc_html_e('Date de départ','lab') ?></label><input type="text" id="lab_user_left_date">
+          <input type="hidden" id="lab_usermeta_id">
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2">
+          <a href="#" class="page-title-action" id="lab_user_button_save_left"><?php esc_html_e('Modifier le statut de l\'utilisateur','lab') ?></a>
+        </td>
+      </tr>
+    </table>
+  </form>
+  <form style="flex-grow:1;">
+    <h3><?php esc_html_e('Historique de l\'utilisateur','lab') ?></h3>
+    <div>
+        <ul>
+          <!-- <li style="display:flex; background: #DDDDFF; padding: 0.2em 0.5em; border-radius: 0.5em; width:90%; justify-content: space-between;">
+            <div style="display:flex; flex-direction:column; justify-content:space-between; min-height: 4em; padding:0.5em 0;"><div>12/05/2020</div><div>31/12/2020</div></div>
+            <div style="flex-grow:1; margin-left: 1em; line-height: 4em;">ROLE</div>
+          </li>
+          <li style="display:flex; background: #DDDDFF; padding: 0.2em 0.5em; border-radius: 0.5em; width:90%; justify-content: space-between;">
+            <div style="display:flex; flex-direction:column; justify-content:space-between; min-height: 4em; padding:0.5em 0;"><div>12/05/2020</div><div>31/12/2020</div></div>
+            <div style="flex-grow:1; margin-left: 1em; line-height: 4em;">ROLE</div>
+          </li>
+          <li style="display:flex; background: #DDDDFF; padding: 0.2em 0.5em; border-radius: 0.5em; width:90%; justify-content: space-between;">
+            <div style="display:flex; flex-direction:column; justify-content:space-between; min-height: 4em; padding:0.5em 0;"><div>12/05/2020</div><div>31/12/2020</div></div>
+            <div style="flex-grow:1; margin-left: 1em; line-height: 4em;">ROLE</div>
+          </li>
+          <li style="display:flex; background: #DDDDFF; padding: 0.2em 0.5em; border-radius: 0.5em; width:90%; justify-content: space-between;">
+            <div style="display:flex; flex-direction:column; justify-content:space-between; min-height: 4em; padding:0.5em 0;"><div>12/05/2020</div><div>31/12/2020</div></div>
+            <div style="flex-grow:1; margin-left: 1em; line-height: 4em;">ROLE</div>
+          </li>
+          <li style="display:flex; background: #DDDDFF; padding: 0.2em 0.5em; border-radius: 0.5em; width:90%; justify-content: space-between;">
+            <div style="display:flex; flex-direction:column; justify-content:space-between; min-height: 4em; padding:0.5em 0;"><div>12/05/2020</div><div>31/12/2020</div></div>
+            <div style="flex-grow:1; margin-left: 1em; line-height: 4em;">ROLE</div>
+          </li>
+          <li style="display:flex; background: #DDDDFF; padding: 0.2em 0.5em; border-radius: 0.5em; width:90%; justify-content: space-between;">
+            <div style="display:flex; flex-direction:column; justify-content:space-between; min-height: 4em; padding:0.5em 0;"><div>12/05/2020</div><div>31/12/2020</div></div>
+            <div style="flex-grow:1; margin-left: 1em; line-height: 4em;">ROLE</div>
+          </li>
+          <li style="display:flex; background: #DDDDFF; padding: 0.2em 0.5em; border-radius: 0.5em; width:90%; justify-content: space-between;">
+            <div style="display:flex; flex-direction:column; justify-content:space-between; min-height: 4em; padding:0.5em 0;"><div>12/05/2020</div><div>31/12/2020</div></div>
+            <div style="flex-grow:1; margin-left: 1em; line-height: 4em;">ROLE</div>
+          </li> -->
+        </ul>
+    </div>
+    <h4><?php esc_html_e('Ajouter une période','lab') ?></h4>
+    <table class="form-table" role="presentation">
+      <tr>
+        <th scope="row">
+          <label for="lab_historic_start"><?php esc_html_e('Date de début','lab') ?> : </label>
+        </th>
+        <td>
+          <input type="date" id="lab_historic_start"/>
+        </td>
+      </tr>
+      <tr>
+        <th>Fin</th>
+        <td><input type="date"></td>
+      </tr>
+    </table>
+  </form>
+  </div>
   <br/><br/>
   <h3><?php esc_html_e('Affecter des utilisateurs à des groupes','lab') ?></h3>
   
