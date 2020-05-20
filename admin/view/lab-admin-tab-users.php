@@ -8,6 +8,7 @@
 
 function lab_admin_tab_user() {
 ?>
+
   <table class="form-table" role="presentation">
     <tr class="user-rich-editing-wrap">
       <th scope="row">
@@ -105,8 +106,8 @@ function lab_admin_tab_user() {
   </div>
   <button style='margin-top:10px;' id='lab_add_users_groups'><?php esc_html_e('envoyer','lab') ?></button>
   <hr/>
-  <div id="ldap_menu_flex" style="display:flex;">
-    <form style="width:50%" id="lab_ldap_newUser" action="javascript:lab_ldap_addUser()">
+  <div id="ldap_menu_flex" style="display:flex; flex-wrap:wrap;">
+    <form style="margin-right: 2em" id="lab_ldap_newUser" action="javascript:lab_ldap_addUser()">
       <h3><?php esc_html_e('Ajouter un utilisateur dans l\'annuaire','lab') ?></h3>
       <table class="form-table" role="presentation">
         <tr class="user-rich-editing-wrap">

@@ -45,9 +45,10 @@ class LAB_LDAP {
     * @access private
     * @static
     */
-    private $ldap_admin_password;
     private $ldap_url;
     private $base;
+    private $ldap_admin_login;
+    private $ldap_admin_password;
     private static $_instance = null;
     private $ldap_link;
 
@@ -57,10 +58,11 @@ class LAB_LDAP {
     * @param void
     * @return void
     */
-    private function __construct($base, $password) {
+    private function __construct($url, $base, $login, $password) {
+        $this->ldap_url = $url;
         $this->base = $base;
+        $this->ldap_admin_login = $login;
         $this->ldap_admin_password = $password;
-        $this->ldap_url = AdminParams::get_param(AdminParams::PARAMS_LDAP_URL);
         $this->ldap_link = ldap_connect($this->ldap_url)
             or die ("URL du serveur LDAP incorrecte : ".$this->ldap_url);
         ldap_set_option($this->ldap_link, LDAP_OPT_PROTOCOL_VERSION, 3);
@@ -69,7 +71,6 @@ class LAB_LDAP {
     public function reconnect()
     {
         $this->close();
-        $this->ldap_url = AdminParams::get_param(AdminParams::PARAMS_LDAP_URL);
         $this->ldap_link = ldap_connect($this->ldap_url)
             or die ("URL du serveur LDAP incorrecte.");
         ldap_set_option($this->ldap_link, LDAP_OPT_PROTOCOL_VERSION, 3);
@@ -87,16 +88,16 @@ class LAB_LDAP {
      * si elle n'existe pas encore puis la retourne.
     *
     * @param void
-    * @return Singleton
+    * @return LAB_LDAP
     */
-    public static function getInstance($base = null, $password=null) {
+    public static function getInstance($url = null, $base = null, $login=null, $password=null) {
         if(is_null(self::$_instance)) {
-            self::$_instance = new LAB_LDAP($base, $password);
+            self::$_instance = new LAB_LDAP($url, $base, $login, $password);
         }
     return self::$_instance;
     }
     public function bindAdmin() {
-        ldap_bind($this->ldap_link,"cn=admin,".$this->base,$this->ldap_admin_password);
+        ldap_bind($this->ldap_link,$this->ldap_admin_login.",".$this->base,$this->ldap_admin_password);
     }
     public function getLink() {
         return $this->ldap_link;
@@ -107,20 +108,29 @@ class LAB_LDAP {
     public function setBase($base) {
         $this->base = $base;
     }
-    public function setPassword($password) {
-        $this->password = $password;
-    }
     public function getPassword() {
         return $this->password;
     }
-    public function setHost($host) {
-        $this->host = $host;
+    public function setPassword($password) {
+        $this->password = $password;
     }
     public function getHost() {
         return $this->host;
     }
+    public function setHost($host) {
+        $this->host = $host;
+    }
+    public function getURL() {
+        return $this->ldap_url;
+    }
     public function setURL($url) {
         $this->ldap_url=$url;
+    }
+    public function getLogin() {
+        return $this->ldap_admin_login;
+    }
+    public function setLogin($login) {
+        $this->ldap_admin_login=$login;
     }
     public function countResults($result) {
         return ldap_count_entries($this->ldap_link,$result);
