@@ -195,3 +195,8 @@ function lab_ldap_addUser($first_name, $last_name,$email,$password,$uid,$organiz
     }
     return ldap_errno($ldap_obj->getLink());
 }
+
+function lab_ldap_editUser() {
+    $ldap_obj = LAB_LDAP::getInstance();
+    var_dump($ldap_obj);
+}

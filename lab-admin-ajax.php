@@ -1318,3 +1318,9 @@ function lab_ldap_amu_lookup() {
   $res = json_decode($output);
   var_dump($res);
 }
+
+function lab_ldap_edit_user() {
+  $ldapRes = lab_ldap_editUser($_POST['uid']);
+  var_dump($ldapRes);
+  /*...*/
+}

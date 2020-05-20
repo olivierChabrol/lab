@@ -29,12 +29,10 @@ function lab_ldap($args) {
                             <th>'.esc_html__("Action", "lab").'</th>
                         <tr>
                     </thead>
-                <tbody id="lab_ldapListBody">';
-
-    $ldapStr .= '           
-        </tbody>
-    </table>
-    </div>';
+                    <tbody id="lab_ldapListBody">
+                    </tbody>
+                </table>
+            </div>';
 
     $ldapStr .= '<div id="lab_pages">'.lab_ldap_pagination(1,1).'</div></div>
     <div class="p-2"> <br/><br/></div>';
@@ -96,23 +94,43 @@ function lab_ldap_pagination($pages, $currentPage) {
  */
 function editModal()
 {
-    $str = '<div class="modal" tabindex="-1" role="dialog">
+    $str = '<div class="modal" id="lab_admin_ldap_edit" tabindex="-1" role="dialog">
             <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                <h5 class="modal-title">Modal title</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+
+            <form action="javascript:lab_ldap_editUser()">
+                <div class="modal-content">
+                    <div class="modal-header">
+                    <h5 class="modal-title">' . esc_html("Modifier une entrée LDAP","lab") . '</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            <input id="lab_ldap_edit_uid" name="uid" type="hidden"/>
+
+                            <label for="lab_ldap_edit_givenName"><b>'.esc_html("Prénom","lab").'</b> (givenName) :</label>
+                            <input type="text" id="lab_ldap_edit_givenName" name="givenName"/></br>
+
+                            <label for="lab_ldap_edit_sn"><b>'.esc_html("Nom","lab").'</b> (sn) :</label>
+                            <input type="text" id="lab_ldap_edit_sn" name="sn"/></br>
+
+                            <label for="lab_ldap_edit_uidNumber"><b>'.esc_html("Numéro","lab").'</b> (uidNumber) :</label>
+                            <input type="text" id="lab_ldap_edit_uidNumber" name="uidNumber"/></br>
+
+                            <label for="lab_ldap_edit_homeDirectory"><b>Autohome</b> (homeDirectory) :</label>
+                            <input type="text" id="lab_ldap_edit_homeDirectory" name="homeDirectory"/></br>
+
+                            <label for="lab_ldap_edit_mail"><b>Mail</b> (mail) :</label>
+                            <input type="text" id="lab_ldap_edit_mail" name="mail"/></br>
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                    <button type="button submit" class="btn btn-primary" id="saveEditLdapUser" data-dismiss="modal">'.esc_html("Sauvegarder","lab").'</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">'.esc_html("Fermer","lab").'</button>
+                    </div>
                 </div>
-                <div class="modal-body">
-                <p>Modal body text goes here.</p>
-                </div>
-                <div class="modal-footer">
-                <button type="button" class="btn btn-primary">Save changes</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                </div>
-            </div>
+            </form>
             </div>
         </div>';
     return $str;
