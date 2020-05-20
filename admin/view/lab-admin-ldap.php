@@ -8,23 +8,6 @@
  *  a requested person from LDAP. It needs the mail of the person to work.
  * 
  **************************************************************************************************************/
-function get_ldap_data_from_mail($mail) {
-    $lc        = ldap_connect("localhost","389");
-    $base      = "ou=accounts,dc=i2m,dc=univ-amu,dc=fr";
-    $filter    = "(mail=" . $mail . ")";
-    $attrRead  = array("givenname", "sn", "mail", "uid");
-    $result    = ldap_search($lc, $base, $filter, $attrRead) 
-        or die ("Error in query");
-    $entry     = ldap_get_entries($lc,$result);
-
-    $surname = $entry[0]["sn"][0];
-    $name    = $entry[0]["givenname"][0];
-    $login   = $entry[0]["uid"][0];
-
-    ldap_close($lc);
-    return array($surname, $name, $login);
-}
-
 function lab_ldap_getName($cn) {
   $list = explode(" ",$cn);
   $i = 0;
@@ -126,6 +109,35 @@ class LAB_LDAP {
         return ldap_count_entries($this->ldap_link,$result);
     }
 
+
+    public function get_ldap_data_from_mail($mail) {
+        $filter    = "(mail=" . $mail . ")";
+        $attrRead  = array("givenname", "sn", "mail", "uid");
+        $result    = ldap_search($this->ldap_link, $this->base, $filter, $attrRead) 
+            or die ("Error in query");
+        $entry     = ldap_get_entries($lc,$result);
+    
+        $surname = $entry[0]["sn"][0];
+        $name    = $entry[0]["givenname"][0];
+        $login   = $entry[0]["uid"][0];
+
+        return array($surname, $name, $login);
+    }
+
+    public function get_ldap_data_from_uid($uid) {
+        $filter    = "(uid=" . $uid . ")";
+        $attrRead  = array("givenname", "sn", "mail", "uid");
+        $result    = ldap_search($this->ldap_link, $this->base, $filter, $attrRead) 
+            or die ("Error in query");
+        $entry     = ldap_get_entries($this->ldap_link,$result);
+    
+        $surname = $entry[0]["sn"][0];
+        $name    = $entry[0]["givenname"][0];
+        $login   = $entry[0]["uid"][0];
+
+        return array($surname, $name, $login);
+    }
+
     /**
      * Search and sort over all uids
      *
@@ -196,7 +208,7 @@ function lab_ldap_addUser($first_name, $last_name,$email,$password,$uid,$organiz
     return ldap_errno($ldap_obj->getLink());
 }
 
-function lab_ldap_editUser() {
-    $ldap_obj = LAB_LDAP::getInstance();
-    var_dump($ldap_obj);
+function lab_ldap_editUser($uid) {
+    $ldap_obj = LAB_LDAP::get_info_from_uid($uid);
+    //var_dump($ldap_obj);
 }

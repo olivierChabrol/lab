@@ -785,30 +785,6 @@ function lab_pagination_ldap(pages, currentPage) {
         $(this).attr("id","active");
         lab_update_ldap_list();
       });
-      
-      $(".fa-pen-alt").click(function(uid, givenName, sn, uidNumber, homeDirectory, mail) {
-        $("#lab_ldap_edit_uid").val(uid);
-        $("#lab_ldap_edit_givenName").val(givenName);
-        $("#lab_ldap_edit_sn").val(sn);
-        $("#lab_ldap_edit_uidNumber").val(uidNumber);
-        $("#lab_ldap_edit_homeDirectory").val(homeDirectory);
-        $("#lab_ldap_edit_mail").val(mail);
-        
-        $("#lab_admin_ldap_edit").modal("show");
-      });
-
-      $("#saveEditLdapUser").click(function() {
-        let uid           = $("#lab_ldap_edit_uid").val();
-        let givenName     = $("#lab_ldap_edit_givenName").val();
-        let sn            = $("#lab_ldap_edit_sn").val();
-        let uidNumber     = $("lab_ldap_edit_uidNumber").val();
-        let homeDirectory = $("lab_ldap_edit_homeDirectory").val();
-        let mail          = $("lab_ldap_edit_mail").val();
-        //sauvegarder avec les let
-        console.log("Ce que je sauvegarde : uid : " + uid + " | givenName : " + givenName + " | sn : "
-                    + sn + " | uidNumber : " + uidNumber + " | homeDirectory : " + homeDirectory
-                    + " | mail : " + mail);
-      });
     }
   });
 }
@@ -830,6 +806,38 @@ function lab_update_ldap_list() {
       pages = Math.ceil(response.data[0]/data['value']);
       currentPage = data['page']<=pages ? data['page'] : pages;
       lab_pagination_ldap(pages,currentPage);
+
+      $(".fa-pen-alt").click(function(uid, givenName, sn, uidNumber, homeDirectory, mail) {
+        //console.log($("#currentUid").text());*
+        $.ajax({
+          data: {uid}
+        })
+        .done(function(data) {
+          $("#lab_admin_ldap_edit").modal("show");
+        });
+        /*
+        uid = $("#currentUid");
+        $("#lab_ldap_edit_uid").val(uid.text());
+        $("#lab_ldap_edit_givenName").val(givenName);
+        $("#lab_ldap_edit_sn").val(sn);
+        $("#lab_ldap_edit_uidNumber").val(uidNumber);
+        $("#lab_ldap_edit_homeDirectory").val(homeDirectory);
+        $("#lab_ldap_edit_mail").val(mail);*/
+        
+      });
+
+      $("#saveEditLdapUser").click(function() {
+        let uid           = $("#lab_ldap_edit_uid").val();
+        let givenName     = $("#lab_ldap_edit_givenName").val();
+        let sn            = $("#lab_ldap_edit_sn").val();
+        let uidNumber     = $("lab_ldap_edit_uidNumber").val();
+        let homeDirectory = $("lab_ldap_edit_homeDirectory").val();
+        let mail          = $("lab_ldap_edit_mail").val();
+        //sauvegarder avec les let
+        console.log("Ce que je sauvegarde : uid : " + uid + " | givenName : " + givenName + " | sn : "
+                    + sn + " | uidNumber : " + uidNumber + " | homeDirectory : " + homeDirectory
+                    + " | mail : " + mail);
+      });
     });
   });
 };
@@ -846,14 +854,4 @@ function LABLoadLDAPList()
 
 if (document.querySelector("#lab_ldapListBody")!=null) {
   LABLoadLDAPList();
-}
-
-function lab_ldap_editUser() {
-  jQuery(function($){ 
-      data = {
-          'action': 'lab_ldap_edit_user',
-          'uid'   : $("#lab_ldap_edit_uid").val()
-      };
-      callAjax(data,"succès",clearLdapFields,"erreur",null);
-  });
 }
