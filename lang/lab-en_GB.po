@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-19 13:53+0200\n"
-"PO-Revision-Date: 2020-05-19 13:53+0200\n"
+"POT-Creation-Date: 2020-05-20 11:32+0200\n"
+"PO-Revision-Date: 2020-05-20 11:35+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en\n"
@@ -31,6 +31,7 @@ msgstr ""
 "X-Poedit-SearchPath-13: shortcode/lab-shortcode-present.php\n"
 "X-Poedit-SearchPath-14: js/lab_shortcode_present.js\n"
 "X-Poedit-SearchPath-15: lab-admin-ajax.php\n"
+"X-Poedit-SearchPath-16: shortcode/lab-shortcode-profile.php\n"
 
 #: admin/view/lab-admin-tab-groups.php:9
 msgid "Nom du groupe  "
@@ -268,43 +269,47 @@ msgid "User office floor"
 msgstr "User office floor"
 
 #: admin/view/lab-admin-tab-users.php:63
+msgid "Phone"
+msgstr "Phone"
+
+#: admin/view/lab-admin-tab-users.php:71
 msgid "Parti"
 msgstr "Left"
 
-#: admin/view/lab-admin-tab-users.php:66
+#: admin/view/lab-admin-tab-users.php:74
 #: shortcode/lab-shortcode-invitation.php:164
 #: shortcode/lab-shortcode-invitation.php:359
 #: shortcode/lab-shortcode-invitation.php:521
 msgid "Date de départ"
 msgstr "Departure date"
 
-#: admin/view/lab-admin-tab-users.php:71
+#: admin/view/lab-admin-tab-users.php:79
 msgid "Modifier le statut de l'utilisateur"
 msgstr "Modify user's status"
 
-#: admin/view/lab-admin-tab-users.php:73
+#: admin/view/lab-admin-tab-users.php:81
 msgid "Affecter des utilisateurs à des groupes"
 msgstr "Assign users to groups"
 
-#: admin/view/lab-admin-tab-users.php:75
+#: admin/view/lab-admin-tab-users.php:83
 msgid "Afficher aussi les personnes qui ont déjà un groupe"
 msgstr "Show also people who already have a group"
 
-#: admin/view/lab-admin-tab-users.php:77
+#: admin/view/lab-admin-tab-users.php:85
 msgid "Afficher aussi les utilisateurs qui ont quitté l'Institut"
 msgstr "Show also users who have left the Institute"
 
-#: admin/view/lab-admin-tab-users.php:86
+#: admin/view/lab-admin-tab-users.php:94
 msgid "Choisissez une ou plusieurs personne(s) à affecter :"
 msgstr "Choose one or more people to assign :"
 
-#: admin/view/lab-admin-tab-users.php:93
+#: admin/view/lab-admin-tab-users.php:101
 msgid ""
 "Choisissez le ou les groupe(s) au(x)quel(s) vous allez affecter des "
 "personnes :"
 msgstr "Choose which group or groups you're going to assign people to :"
 
-#: admin/view/lab-admin-tab-users.php:98
+#: admin/view/lab-admin-tab-users.php:106
 msgid "envoyer"
 msgstr "submit"
 
@@ -481,41 +486,38 @@ msgstr "A param key with '%1s' already exist in db"
 msgid "Cant delete system param"
 msgstr "Can't delete system param"
 
-#: lab-admin-ajax.php:806
-#, fuzzy
-#| msgid "Votre demande d'invitation a bien été prise en compte"
+#: lab-admin-ajax.php:808
 msgid "Votre demande a bien été prise en compte"
 msgstr "Your invitation request has been take into account"
 
-#: lab-admin-ajax.php:835
-#, fuzzy
-#| msgid "Votre demande d'invitation a bien été prise en compte"
+#: lab-admin-ajax.php:837
 msgid "Votre invitation a bien été modifiée"
 msgstr "Your invitation request has been take into account"
 
-#: lab-admin-ajax.php:963 shortcode/lab-shortcode-invitation.php:442
+#: lab-admin-ajax.php:965 shortcode/lab-shortcode-invitation.php:442
 msgid "Aucune invitation"
 msgstr "No invitation"
 
-#: lab-admin-ajax.php:1000
+#: lab-admin-ajax.php:1002
 msgid "indéfini"
-msgstr ""
+msgstr "undefined"
 
-#: lab-admin-ajax.php:1107
+#: lab-admin-ajax.php:1109
 #, php-format
 msgid "%s is a non wordking day"
 msgstr "%s is a non wordking day"
 
-#: lab-admin-ajax.php:1129
+#: lab-admin-ajax.php:1131
 #, php-format
 msgid "Your are already present in %s the %s between %s and %s"
-msgstr ""
+msgstr "Your are already present in %s the %s between %s and %s"
 
-#: lab-admin-ajax.php:1152 lab-admin-ajax.php:1161
+#: lab-admin-ajax.php:1154 lab-admin-ajax.php:1163
 #, php-format
 msgid ""
 "Your new schedules overlap to an existing one : %s the %s between %s and %s"
 msgstr ""
+"Your new schedules overlap to an existing one : %s the %s between %s and %s"
 
 #: lab-admin-keyring.php:9
 msgid "Gestion des clés"
@@ -845,8 +847,6 @@ msgstr "Mean of travel from your home to our laboratory"
 
 #: shortcode/lab-shortcode-invitation.php:134
 #: shortcode/lab-shortcode-invitation.php:151
-#, fuzzy
-#| msgid "Coût estimé (en €)"
 msgid "Coût estimé du trajet"
 msgstr "Estimated cost (in €)"
 
@@ -862,7 +862,7 @@ msgstr "in €"
 #: shortcode/lab-shortcode-invitation.php:136
 #: shortcode/lab-shortcode-invitation.php:153
 msgid "À ne remplir que si l'I2M devra vous défrayer ce trajet."
-msgstr ""
+msgstr "Fill it only, if I2M take in charge"
 
 #: shortcode/lab-shortcode-invitation.php:139
 #: shortcode/lab-shortcode-invitation.php:518
@@ -900,7 +900,7 @@ msgstr "Other cost"
 
 #: shortcode/lab-shortcode-invitation.php:171
 msgid "Précisez les frais qui devront être pris en charge par l'I2M."
-msgstr ""
+msgstr "Other cost"
 
 #: shortcode/lab-shortcode-invitation.php:174
 msgid "Hôtel"
@@ -908,7 +908,7 @@ msgstr "Hostel"
 
 #: shortcode/lab-shortcode-invitation.php:176
 msgid "Repas"
-msgstr ""
+msgstr "Meal"
 
 #: shortcode/lab-shortcode-invitation.php:180
 msgid "Taxi"
@@ -918,7 +918,7 @@ msgstr "Taxi"
 msgid ""
 "(par exemple vos numéros de carte de fidélité à utiliser lors de la "
 "réservation de vos voyages)"
-msgstr ""
+msgstr "(ex. : fidelity card)"
 
 #: shortcode/lab-shortcode-invitation.php:198
 msgid "Champs pour l'invitant : "
@@ -934,7 +934,7 @@ msgstr "Specify the funding source here."
 
 #: shortcode/lab-shortcode-invitation.php:228
 msgid "Contrats de recherche"
-msgstr ""
+msgstr "Research contract"
 
 #: shortcode/lab-shortcode-invitation.php:233
 msgid "Coût estimé (en €)"
@@ -985,8 +985,6 @@ msgid "Filtres"
 msgstr "Filter"
 
 #: shortcode/lab-shortcode-invitation.php:277
-#, fuzzy
-#| msgid "Statut"
 msgid "Statuts"
 msgstr "Status"
 
@@ -1174,11 +1172,11 @@ msgstr "Confirmed"
 #: shortcode/lab-shortcode-invitation.php:578
 msgid ""
 "Cette invitation a été prise en charge par un administratif du pôle budget."
-msgstr ""
+msgstr "This invitation has been take by an dministrator"
 
 #: shortcode/lab-shortcode-invitation.php:579
 msgid "Prise en charge"
-msgstr ""
+msgstr "Take in charge"
 
 #: shortcode/lab-shortcode-invitation.php:593
 msgid "Aucun groupe préféré trouvé"
@@ -1207,10 +1205,8 @@ msgid "Vendredi"
 msgstr "Friday"
 
 #: shortcode/lab-shortcode-present.php:134
-#, fuzzy
-#| msgid "%s is a non wordking day"
 msgid "Non working day"
-msgstr "%s is a non wordking day"
+msgstr "Non working day"
 
 #: shortcode/lab-shortcode-present.php:219
 msgid "Je serai présent·e"
@@ -1311,6 +1307,10 @@ msgstr "HAL Name"
 #: shortcode/lab-shortcode-profile.php:55
 msgid "site"
 msgstr "location"
+
+#: shortcode/lab-shortcode-profile.php:75
+msgid "User group(s) : "
+msgstr "User group(s) : "
 
 #~ msgid "Commentaire (facultatif)"
 #~ msgstr "Comments (optional)"

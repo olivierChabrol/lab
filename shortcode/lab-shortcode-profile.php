@@ -72,13 +72,7 @@ function lab_profile($id=0) {
 			<div id="lab_profile_bio">'
 				.($is_current_user || current_user_can('edit_users') ? '<textarea style="display:none;" rows="4" cols="50" class="lab_profile_edit" id="lab_profile_edit_bio" placeholder="Biographie (200 caractères max)">'.$user->description.'</textarea>' : '').
 				'<span style="display:block; max-width:700px;" class="lab_current">'.(isset($user->description) ? $user->description :  '...' ).'</span>
-			</div>
-		<hr/>
-		Groupes de l\'utilisateur : 
-				<ul id="lab_profile_groups">'
-					.$user->print_groups().
-				'</ul>
-	</div>';
+			</div><hr/>'.esc_html__("User group(s) : ", "lab").'<ul id="lab_profile_groups">'.$user->print_groups().'</ul></div>';
     return $profileStr;
 }
 /*** CLASS LABUSER ***/
