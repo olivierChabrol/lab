@@ -1,13 +1,13 @@
 <?php
 /**
  * Generate HTML <select> field
- * @param htmlId : id of the select
- * @param htmlName : name of the select
- * @param htmlClass : css class of the select
- * @param fctCallback : function to call to perform the select must return an array([id:0,value:"your value"])
- * @param fctArgs : function to call arguments
- * @param defaultValue : add an default <option> in the select, must be this form : ex. : array("value"=>0,"label"=>"None")
- * @param selectedValue $selectedValue
+ * @param String $htmlId : id of the select
+ * @param String $htmlName : name of the select
+ * @param String $htmlClass : css class of the select
+ * @param String $fctCallback : function to call to perform the select must return an array([id:0,value:"your value"])
+ * @param String $fctArgs : function to call arguments
+ * @param String $defaultValue : add an default <option> in the select, must be this form : ex. : array("value"=>0,"label"=>"None")
+ * @param String $selectedValue $selectedValue
  */
 function lab_html_select($htmlId, $htmlName, $htmlClass, $fctCallback, $fctArgs = null, $defaultValue = null, $selectedValue = null) {
     echo lab_html_select_str($htmlId, $htmlName, $htmlClass, $fctCallback, $fctArgs, $defaultValue, $selectedValue);

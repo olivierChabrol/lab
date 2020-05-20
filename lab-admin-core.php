@@ -46,6 +46,16 @@ function lab_admin_get_userLogin($user_id) {
     $sql = "SELECT `user_login` FROM `".$wpdb->prefix."users` WHERE ID=$user_id";
     return $wpdb->get_var($sql);
 }
+function lab_admin_loadUserHistory($user_id) {
+    global $wpdb;
+    $sql = "SELECT * from `".$wpdb->prefix."lab_users_historic` WHERE `user_id`=$user_id;";
+    $res = $wpdb->get_results($sql);
+    if ($res==null) {
+        return "<li>No history</li>";
+    } else {
+        return lab_admin_history($res);
+    }
+}
 /*******************************************************************************************************
  * PARAM
  *******************************************************************************************************/

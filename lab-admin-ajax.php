@@ -527,6 +527,9 @@ function lab_admin_add_users_groups() {
     wp_send_json_error();
   }
 }
+function lab_admin_loadUserHistory_Req() {
+  wp_send_json_success(lab_admin_loadUserHistory($_POST['user_id']));
+}
 /********************************************************************************************
  * KeyRing
  ********************************************************************************************/

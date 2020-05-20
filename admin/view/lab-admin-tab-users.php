@@ -87,35 +87,8 @@ function lab_admin_tab_user() {
   <form style="flex-grow:1;">
     <h3><?php esc_html_e('Historique de l\'utilisateur','lab') ?></h3>
     <div>
-        <ul>
-          <!-- <li style="display:flex; background: #DDDDFF; padding: 0.2em 0.5em; border-radius: 0.5em; width:90%; justify-content: space-between;">
-            <div style="display:flex; flex-direction:column; justify-content:space-between; min-height: 4em; padding:0.5em 0;"><div>12/05/2020</div><div>31/12/2020</div></div>
-            <div style="flex-grow:1; margin-left: 1em; line-height: 4em;">ROLE</div>
-          </li>
-          <li style="display:flex; background: #DDDDFF; padding: 0.2em 0.5em; border-radius: 0.5em; width:90%; justify-content: space-between;">
-            <div style="display:flex; flex-direction:column; justify-content:space-between; min-height: 4em; padding:0.5em 0;"><div>12/05/2020</div><div>31/12/2020</div></div>
-            <div style="flex-grow:1; margin-left: 1em; line-height: 4em;">ROLE</div>
-          </li>
-          <li style="display:flex; background: #DDDDFF; padding: 0.2em 0.5em; border-radius: 0.5em; width:90%; justify-content: space-between;">
-            <div style="display:flex; flex-direction:column; justify-content:space-between; min-height: 4em; padding:0.5em 0;"><div>12/05/2020</div><div>31/12/2020</div></div>
-            <div style="flex-grow:1; margin-left: 1em; line-height: 4em;">ROLE</div>
-          </li>
-          <li style="display:flex; background: #DDDDFF; padding: 0.2em 0.5em; border-radius: 0.5em; width:90%; justify-content: space-between;">
-            <div style="display:flex; flex-direction:column; justify-content:space-between; min-height: 4em; padding:0.5em 0;"><div>12/05/2020</div><div>31/12/2020</div></div>
-            <div style="flex-grow:1; margin-left: 1em; line-height: 4em;">ROLE</div>
-          </li>
-          <li style="display:flex; background: #DDDDFF; padding: 0.2em 0.5em; border-radius: 0.5em; width:90%; justify-content: space-between;">
-            <div style="display:flex; flex-direction:column; justify-content:space-between; min-height: 4em; padding:0.5em 0;"><div>12/05/2020</div><div>31/12/2020</div></div>
-            <div style="flex-grow:1; margin-left: 1em; line-height: 4em;">ROLE</div>
-          </li>
-          <li style="display:flex; background: #DDDDFF; padding: 0.2em 0.5em; border-radius: 0.5em; width:90%; justify-content: space-between;">
-            <div style="display:flex; flex-direction:column; justify-content:space-between; min-height: 4em; padding:0.5em 0;"><div>12/05/2020</div><div>31/12/2020</div></div>
-            <div style="flex-grow:1; margin-left: 1em; line-height: 4em;">ROLE</div>
-          </li>
-          <li style="display:flex; background: #DDDDFF; padding: 0.2em 0.5em; border-radius: 0.5em; width:90%; justify-content: space-between;">
-            <div style="display:flex; flex-direction:column; justify-content:space-between; min-height: 4em; padding:0.5em 0;"><div>12/05/2020</div><div>31/12/2020</div></div>
-            <div style="flex-grow:1; margin-left: 1em; line-height: 4em;">ROLE</div>
-          </li> -->
+        <ul id="lab_history_list">
+          
         </ul>
     </div>
     <h4><?php esc_html_e('Ajouter une période','lab') ?></h4>
@@ -129,8 +102,33 @@ function lab_admin_tab_user() {
         </td>
       </tr>
       <tr>
-        <th>Fin</th>
-        <td><input type="date"></td>
+        <th>
+          <label for="lab_historic_end"><?php esc_html_e('Date de fin','lab') ?> : </label>
+        </th>
+        <td>
+          <input type="date" id="lab_historic_end"/>
+        </td>
+      </tr>
+      <tr>
+        <th>
+          <label for="lab_historic_function"><?php esc_html_e('Fonction','lab') ?> : </label>
+        </th>
+        <td>
+          <?php lab_html_select("lab_history_function",
+                                "lab_history_function",
+                                '',
+                                'lab_admin_get_params_userFunction',
+                                AdminParams::PARAMS_USER_FUNCTION_ID,
+                                array("value"=>0,"label"=>"Sélectionnez une fonction"),0); ?>
+        </td>
+      </tr>
+      <tr>
+        <th>
+          <label for="lab_historic_host"><?php esc_html_e('Hôte','lab') ?> : </label>
+        </th>
+        <td>
+          <input type="text" id="lab_historic_host"/>
+        </td>
       </tr>
     </table>
   </form>
@@ -262,4 +260,23 @@ function lab_admin_tab_user() {
       </table>
     </form>
   <?php
+}
+
+/**
+ * @param array $list : id, ext, begin, end, host_id, function
+ * @return string HTML results
+ */
+function lab_admin_history($list) {
+  $out = '';
+  foreach ($list as $elem) {
+    $date_begin = date_create_from_format("Y-m-d H:i:s", $elem->begin);
+    $date_end = date_create_from_format("Y-m-d H:i:s", $elem->end);
+    $host = new LabUser($elem->host_id);
+    $out .= "<li class='lab_history_li'>
+      <div class='lab_history_dates'><div>".strftime('%d %B %G',$date_begin->getTimestamp())."</div><div>".strftime('%d %B %G',$date_end->getTimestamp())."</div></div>
+      <div class='lab_history_desc'>".AdminParams::get_param($elem->function)." host : ".$host->first_name . ' ' . $host->last_name."</div>
+      <div class='lab_history_actions'><a id='lab_history_edit' entry_id=$elem->id href='#'>🖊</a><a id='lab_history_edit_delete' entry_id=$elem->id href='#'>❌</a></div>
+    </li>";
+  }
+  return $out;
 }

@@ -1,0 +1,29 @@
+.lab_history_li {
+    display:flex;
+    background: #DDDDFF;
+    padding: 0.2em 0.5em;
+    border-radius: 0.5em;
+    width:90%;
+    justify-content: space-between;
+}
+.lab_history_dates {
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    min-height: 4em;
+    padding:0.5em 0;
+}
+.lab_history_desc {
+    flex-grow:1;
+    margin-left: 1em;
+    line-height: 4em;
+}
+.lab_history_actions {
+    display:flex;
+    flex-direction: column;
+    font-size:1.2em;
+    justify-content:space-around;
+}
+.lab_history_actions a {
+    text-decoration: none;
+}
