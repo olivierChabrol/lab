@@ -49,6 +49,8 @@ jQuery(function($) {
             toast_error(__("Erreur lors de la suppression",'lab')+ "<br>"+response.data);
         });
     });
+
+
 });
 function lab_ldap_addUser() {
     jQuery(function($){ 

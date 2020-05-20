@@ -1018,6 +1018,7 @@ function lab_invitations_pagination_Req() {
   wp_send_json_success(lab_invitations_pagination($_POST['pages'],$_POST['currentPage']));
 }
 
+
 /**************************************************************************************************************
  * PRESENCE
  **************************************************************************************************************/
@@ -1226,10 +1227,19 @@ function lab_ldap_list_update() {
   $pageVar = ($page - 1) * $itemPerPage;
   for($i = $pageVar; $i < ($itemPerPage+$pageVar) && $i < $count; $i++)
   {
-      $ldapResult .= '<tr><td id="lab_ldap_cn">'. $ldap_obj->getEntries($result,$i, 'cn').'</td>
-                    <td><button id="lab_ldap_detail_button_'.$ldap_obj->getEntries($result,$i, 'uid').'" style="cursor: pointer;">Détails</button>&nbsp<span id="eraseLdap" class="fas fa-trash-alt" style="cursor: pointer;">&nbsp</span>
-                    <span id="editLdap"  class="fas fa-pen-alt" style="cursor: pointer;"></span></td>
-                </tr>';
+    $ldapResult .= '<tr><td>'. $ldap_obj->getEntries($result,$i, 'cn').'</td>
+                        <td><button class="">Détails</button>
+                            <span id="eraseLdap" class="fas fa-trash-alt" style="cursor: pointer;"></span>
+                            <span id="editLdap" 
+                              uid="'.$ldap_obj->getEntries($result,$i,'uid').'"
+                              givenName="'.$ldap_obj->getEntries($result,$i,'givenname').'"
+                              sn="'.$ldap_obj->getEntries($result,$i,'sn').'"
+                              uidNumber="'.$ldap_obj->getEntries($result,$i,'uidnumber').'"
+                              homeDirectory="'.$ldap_obj->getEntries($result,$i,'homedirectory').'"
+                              mail="'.$ldap_obj->getEntries($result,$i,'mail').'"
+                              class="fas fa-pen-alt" style="cursor: pointer;"></span>
+                        </td>
+                    </tr>';
   }
   wp_send_json_success(array($count,$ldapResult,$page));
 }
@@ -1275,6 +1285,17 @@ function lab_ldap_amu_lookup() {
       'last_name'=>$res->$entry->sn->$entry
     ));
   }
+}
+
+function lab_ldap_edit_user() {
+  $uid = $_POST['uid'];
+  if (!isset($uid) || $uid == "")
+  {
+    wp_send_json_error("No UID");
+  }
+  $ldap_obj = LAB_LDAP::getInstance();
+  $ldapRes = $ldap_obj->editUser($_POST['uid'], $_POST['givenname'], $_POST['sn'], $_POST['uidnumber'], $_POST['homeDirectory'], $_POST['mail']);
+  wp_send_json_success();
 }
 function lab_admin_get_userLogin_Req() {
   $res = lab_admin_get_userLogin($_POST['user_id']);

@@ -4,7 +4,6 @@ const { __, _x, _n, sprintf } = wp.i18n;
 /*** DIRECTORY ***/ 
 
 jQuery(function($){
-
   $("#lab-directory-group-id").on('change', function() {
     $("#groupSearch").val($(this).val());
     letter = $("#letterSearch").val();
@@ -820,6 +819,39 @@ function lab_update_ldap_list() {
           $("#lab_ldap_details_container").attr("wrapped","false");
         });
       });
+
+      $(".fa-pen-alt").click(function() {
+        $("#lab_ldap_edit_uid").val($(this).attr("uid"));
+        $("#lab_ldap_edit_givenName").val($(this).attr("givenName"));
+        $("#lab_ldap_edit_sn").val($(this).attr("sn"));
+        $("#lab_ldap_edit_uidNumber").val($(this).attr("uidNumber"));
+        $("#lab_ldap_edit_homeDirectory").val($(this).attr("homeDirectory"));
+        $("#lab_ldap_edit_mail").val($(this).attr("mail"));
+        
+        $("#lab_admin_ldap_edit").modal("show");        
+      });
+
+      $("#saveEditLdapUser").click(function() {
+        // $_POST['uid'], $_POST['givenname'], $_POST['sn'], $_POST['uidnumber'], $_POST['homeDirectory'], $_POST['mail']
+        data = {
+          action: "lab_ldap_edit_user",
+          uid: $("#lab_ldap_edit_uid").val(),
+          givenname: $("#lab_ldap_edit_givenName").val(),
+          sn: $("#lab_ldap_edit_sn").val(),
+          uidnumber: $("#lab_ldap_edit_uidNumber").val(),
+          homedirectory: $("#lab_ldap_edit_homeDirectory").val(),
+          mail: $("#lab_ldap_edit_mail").val(),
+        };
+        $.post(LAB.ajaxurl, data, function(response) {
+          if (response.success) {
+            toast_success("User modified in LDAP");
+          }
+          else {
+            toast_error(response.data);
+          }
+        });
+      });
+
     });
 
     
