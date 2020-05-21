@@ -278,7 +278,7 @@ jQuery(function($){
 
       $("#lab_param_value_search").val(label);
       let color = ui.item.color;
-      if (!color.startsWith("#"))
+      if (color != null && !color.startsWith("#"))
       {
         color = "#" + color;
       }
