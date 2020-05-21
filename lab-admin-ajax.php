@@ -1264,7 +1264,7 @@ function lab_ldap_add_user() {
   }
 }
 function lab_ldap_amu_lookup() {
-  $url = "http://ldap.i2m.univ-amu.fr/getAMUUser.php?token=".AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_TOKEN)[0]->value."&query=".$_POST['query'];
+  $url = "http://".AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_HOST)[0]->value."/getAMUUser.php?token=".AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_TOKEN)[0]->value."&query=".$_POST['query'];
   // create curl resource
   $ch = curl_init();
   // set url
