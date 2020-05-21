@@ -7,8 +7,13 @@
  * 
  */
 
-function lab_ldap($args) {
+ function lab_ldap_test() {
+    echo(lab_ldap());
+ }
+
+function lab_ldap($args=null) {
     $ldapStr = '
+    <button type="button" class="btn btn-warning" id="lab_ldap_button_reconnect">'.esc_html('Reconnect LDAP','lab').'</button>
     <div class="d-flex justify-content-between bd-highlight mb-3">
         <div class="p-2" id="p-2-list">
             <h3>' . esc_html("Parcourir l'annuaire LDAP", "lab") . '</h3>

@@ -206,7 +206,8 @@ function wp_lab_menu()
 {
   add_menu_page('Options', 'LAB', 'edit_plugins', 'wp-lab.php', 'wp_lab_option', '', 21);
   add_menu_page("KeyRing","KeyRing",'keyring','lab_keyring','lab_keyring','dashicons-admin-network',22);
-  add_menu_page("LDAP Admin","LDAP Admin",'edit_plugins','lab_ldap','lab_ldap','dashicons-id-alt',23);
+  //add_menu_page("LDAP Admin","LDAP Admin",'edit_plugins','lab_ldap','lab_ldap','dashicons-id-alt',23);
+  add_submenu_page( 'wp-lab.php', "LDAP Admin", "LDAP Admin",'edit_plugins', 'lab_ldap', 'lab_ldap_test', 24 );
   if ( ! current_user_can('edit_plugins') ) {
     remove_menu_page('wpfastestcacheoptions');
     remove_menu_page('options-general.php');
@@ -225,6 +226,7 @@ function admin_enqueue()
   wp_enqueue_script('fontAwesome',"https://kit.fontawesome.com/341f99cb81.js",array(),"3.2",true);
   wp_enqueue_script('SpectrumJS', plugins_url('js/spectrum.js',__FILE__), array('jquery','wp-i18n'), '1.8.0', true);
   wp_enqueue_style('SpectrumCSS',plugins_url('css/spectrum.css',__FILE__));
+  wp_enqueue_style('bootstrap',plugins_url('css/bootstrap.css',__FILE__));
   //Plugin permettant d'afficher les toasts :
   wp_enqueue_style('jqueryToastCSS',plugins_url('css/jquery.toast.css',__FILE__));
   wp_enqueue_script('jqueryToastJS',plugins_url('js/jquery.toast.js',__FILE__), array('jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog'),"1.3.2",false);

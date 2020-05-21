@@ -49,6 +49,8 @@ class LAB_LDAP {
         $this->ldap_link = ldap_connect($this->ldap_url)
             or die ("URL du serveur LDAP incorrecte : ".$this->ldap_url);
         ldap_set_option($this->ldap_link, LDAP_OPT_PROTOCOL_VERSION, 3);
+        ldap_set_option($this->ldap_link, LDAP_OPT_REFERRALS, 0);
+        ldap_start_tls($this->ldap_link);
     }
 
     public function reconnect()
@@ -73,8 +75,12 @@ class LAB_LDAP {
     * @param void
     * @return LAB_LDAP
     */
-    public static function getInstance($url = null, $base = null, $login=null, $password=null) {
-        if(is_null(self::$_instance)) {
+    public static function getInstance($url = null, $base = null, $login=null, $password=null, $forceReload = false) {
+        if(is_null(self::$_instance) || $forceReload) {
+            if ($forceReload) {
+                self::$_instance->close();
+            }
+
             if ($url == null || $base == null || $login == null || $password== null) {
                 echo "Please Fill all LDAP params";
                 return;
@@ -85,7 +91,7 @@ class LAB_LDAP {
     return self::$_instance;
     }
     public function bindAdmin() {
-        ldap_bind($this->ldap_link,$this->ldap_admin_login.",".$this->base,$this->ldap_admin_password);
+        return ldap_bind($this->ldap_link,$this->ldap_admin_login.",".$this->base,$this->ldap_admin_password);
     }
     public function getLink() {
         return $this->ldap_link;
@@ -97,10 +103,10 @@ class LAB_LDAP {
         $this->base = $base;
     }
     public function getPassword() {
-        return $this->password;
+        return $this->ldap_admin_password;
     }
     public function setPassword($password) {
-        $this->password = $password;
+        $this->ldap_admin_password = $password;
     }
     public function getHost() {
         return $this->host;
@@ -214,6 +220,7 @@ function lab_ldap_new_WPUser($name,$email,$password,$uid) {
     if ($wpdb->get_var($sql)>0) {
         return "WP User already exists";
     }
+    $ldap = LAB_LDAP::getInstance();
     $userData = array(
       'user_login'=>$uid,
       'user_pass'=>substr($password,0,7)=='{CRYPT}' ? 'hahaha' : substr($password,0,7),
@@ -226,7 +233,7 @@ function lab_ldap_new_WPUser($name,$email,$password,$uid) {
     $user_id = wp_insert_user($userData);
     $sql = "INSERT INTO ".$wpdb->prefix."usermeta 
         (`user_id`, `meta_key`, `meta_value`) VALUES
-        ($user_id, 'mo_ldap_user_dn', 'uid=$uid,ou=accounts,dc=i2m,dc=univ-amu,dc=fr');";
+        ($user_id, 'mo_ldap_user_dn', 'uid=$uid,ou=accounts,'".$ldap->getBase().");";
     if ($wpdb->query($sql)===false) {
         return $wpdb->last_error;
     }

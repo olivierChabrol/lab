@@ -4,6 +4,13 @@ const { __, _x, _n, sprintf } = wp.i18n;
 jQuery(function($){
   var searchRequest;
   loadExistingKeys();
+
+
+  if ($("#lab_ldapListBody")!=null) {
+    console.log("DANS lab_ldapListBody");
+    LABLoadLDAPList();
+  }
+
   if(!$("#lab_user_left").is(':checked')) {
     $("#lab_user_left_date").prop("disabled", true);
   }
@@ -1160,3 +1167,127 @@ function loadUserHistory() {
     });
   });
 }
+
+
+/********** LDAP ***********/
+
+function lab_pagination_ldap(pages, currentPage) {
+  data = {
+    'action': 'lab_ldap_pagination',
+    'pages': pages,
+    'currentPage': currentPage
+  };
+  jQuery.post(LAB.ajaxurl,data,function(response){
+    if (response.success) {
+      jQuery("#pagination-digg")[0].outerHTML=response.data;
+      jQuery(".page_previous:not(.gris)").click(function() {
+        currentPage = parseInt(jQuery("#active").attr("page"));
+        jQuery("#active").attr("id","");
+        jQuery(".page_number[page=" + (currentPage - 1) + "]").attr("id","active");
+        lab_update_ldap_list();
+      });
+      jQuery(".page_next:not(.gris)").click(function() {
+        currentPage = parseInt(jQuery("#active").attr("page"));
+        jQuery("#active").attr("id","");
+        jQuery(".page_number[page=" + (currentPage + 1) + "]").attr("id","active");
+        lab_update_ldap_list();
+      });
+      jQuery(".page_number").click(function() {
+        jQuery("#active").attr("id","");
+        jQuery(this).attr("id","active");
+        lab_update_ldap_list();
+      });
+    }
+  });
+}
+
+function lab_update_ldap_list() {
+  jQuery(function($) {
+    data = {
+      action: 'lab_ldap_list_update',
+      page: $("#active").attr("page"),
+      value: $("#lab_results_number").val(),
+    };
+   
+    console.log(data);
+    $.post(LAB.ajaxurl,data, function(response) {
+      console.log(response);
+      $("#lab_ldapListBody").html(response.data[1]);
+      pages = Math.ceil(response.data[0]/data['value']);
+      currentPage = data['page']<=pages ? data['page'] : pages;
+      lab_pagination_ldap(pages,currentPage);
+
+      $("[id^=lab_ldap_detail_button_]").click(function() {
+        data = {
+          uid : $(this).attr("id").substring(23)
+        }
+        data['action'] = 'lab_ldap_user_details';
+        $.post(LAB.ajaxurl, data, function(response) {
+          $("#lab_ldap_name").html(response.data[0]);
+          $("#lab_ldap_surname").html(response.data[1]);
+          $("#lab_ldap_email").html(response.data[2]);
+          $("#lab_ldap_uidNumber").html(response.data[3]);
+          $("#lab_ldap_homeDirectory").html(response.data[4]);
+          $("#lab_ldap_detail_title").show();
+          $("#lab_ldap_details").slideDown();
+          $("#lab_ldap_details_container").attr("wrapped","false");
+        });
+      });
+
+      $(".fa-pen-alt").click(function() {
+        $("#lab_ldap_edit_uid").val($(this).attr("uid"));
+        $("#lab_ldap_edit_givenName").val($(this).attr("givenName"));
+        $("#lab_ldap_edit_sn").val($(this).attr("sn"));
+        $("#lab_ldap_edit_uidNumber").val($(this).attr("uidNumber"));
+        $("#lab_ldap_edit_homeDirectory").val($(this).attr("homeDirectory"));
+        $("#lab_ldap_edit_mail").val($(this).attr("mail"));
+        
+        $("#lab_admin_ldap_edit").modal("show");        
+      });
+
+      $("#saveEditLdapUser").click(function() {
+        // $_POST['uid'], $_POST['givenname'], $_POST['sn'], $_POST['uidnumber'], $_POST['homeDirectory'], $_POST['mail']
+        data = {
+          action: "lab_ldap_edit_user",
+          uid: $("#lab_ldap_edit_uid").val(),
+          givenname: $("#lab_ldap_edit_givenName").val(),
+          sn: $("#lab_ldap_edit_sn").val(),
+          uidnumber: $("#lab_ldap_edit_uidNumber").val(),
+          homedirectory: $("#lab_ldap_edit_homeDirectory").val(),
+          mail: $("#lab_ldap_edit_mail").val(),
+        };
+        $.post(LAB.ajaxurl, data, function(response) {
+          if (response.success) {
+            toast_success("User modified in LDAP");
+          }
+          else {
+            toast_error(response.data);
+          }
+        });
+      });
+
+    });
+
+    
+  });
+};
+
+function LABLoadLDAPList()
+{
+  lab_update_ldap_list();
+  jQuery(function($) {
+    $("#lab_results_number").change(function() {
+      lab_update_ldap_list();
+    });
+    
+    $("#lab_ldap_detail_title").click(function(){
+      if($("#lab_ldap_details_container").attr("wrapped")=="true"){
+        $("#lab_ldap_details").slideDown();
+        $("#lab_ldap_details_container").attr("wrapped","false");
+      } else {
+          $("#lab_ldap_details").slideUp();
+          $("#lab_ldap_details_container").attr("wrapped","true");
+      }
+    });
+  });
+};

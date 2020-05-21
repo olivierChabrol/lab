@@ -1324,3 +1324,23 @@ function lab_ldap_delete_userReq() {
     wp_send_json_error("LDAP : ".ldap_err2str($res));
   }
 }
+
+function lab_ldap_reconnect() {
+  $ldap = LAB_LDAP::getInstance(AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_URL)[0]->value,
+                        AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_BASE)[0]->value,
+                        AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_LOGIN)[0]->value,
+                        AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_PASSWORD)[0]->value,
+                      true);
+  $str = "URL : ".$ldap->getURL()." <br> ";
+  $str .= "Base : ".$ldap->getBase()." <br> ";
+  $str .= "Login : ".$ldap->getLogin()." <br> ";
+  $str .= "Passwd : ".$ldap->getPassword()." <br> ";
+  if($ldap->bindAdmin())
+  {
+    wp_send_json_success("Connection to LDAP server successfull");
+  }
+  else {
+    wp_send_json_error("Failed to connect to LDAP server :<br>" .$str);
+  }
+  //*/
+}

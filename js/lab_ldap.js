@@ -1,4 +1,10 @@
 jQuery(function($) {
+    $("#lab_ldap_button_reconnect").click(function () {
+        data = {action:"lab_ldap_reconnect"};
+        
+        callAjax(data, "LDAP Reconnected", null, null, null);
+        //$('#lab_ldap_newUser_uid').val( $("#lab_ldap_newUser_lastName").val().toLowerCase() + '.' + $(this).val().toLowerCase().charAt(0));
+    });
     $("#lab_ldap_newUser_firstName").change(function () {
         $('#lab_ldap_newUser_uid').val( $("#lab_ldap_newUser_lastName").val().toLowerCase() + '.' + $(this).val().toLowerCase().charAt(0));
     });
