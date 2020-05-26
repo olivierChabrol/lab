@@ -6,7 +6,7 @@ jQuery(function($){
   loadExistingKeys();
 
 
-  if ($("#lab_ldapListBody")!=null) {
+  if ($("#lab_ldapListBody")!=null && $("#lab_ldapListBody").length) {
     console.log("DANS lab_ldapListBody");
     LABLoadLDAPList();
   }
