@@ -1337,7 +1337,12 @@ function lab_ldap_user_details() {
 function lab_ldap_delete_userReq() {
   $uid = lab_admin_get_userLogin($_POST['user_id']);
   wp_delete_user($_POST['user_id'],1);
-  $res = ldap_delete_user($uid);
+  $ldap = LAB_LDAP::getInstance(AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_URL)[0]->value,
+                        AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_BASE)[0]->value,
+                        AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_LOGIN)[0]->value,
+                        AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_PASSWORD)[0]->value,
+                      true);
+  $res = ldap_delete_user($ldap, $uid);
   if ($res==0) {
     wp_send_json_success();
   } else {

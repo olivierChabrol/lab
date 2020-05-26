@@ -250,7 +250,7 @@ function lab_ldap_new_WPUser($name,$email,$password,$uid) {
     $user_id = wp_insert_user($userData);
     $sql = "INSERT INTO ".$wpdb->prefix."usermeta 
         (`user_id`, `meta_key`, `meta_value`) VALUES
-        ($user_id, 'mo_ldap_user_dn', 'uid=$uid,ou=accounts,'".$ldap->getBase().");";
+        ($user_id, 'mo_ldap_user_dn', 'uid=$uid,ou=accounts,'".$ldap->getBase()."');";
     if ($wpdb->query($sql)===false) {
         return $wpdb->last_error;
     }
@@ -294,8 +294,8 @@ function lab_ldap_addUser($ldap_obj, $first_name, $last_name,$email,$password,$u
     return $res1;
 }
 
-function ldap_delete_user($uid) {
-    $ldap_obj=LAB_LDAP::getInstance();
+function ldap_delete_user($ldap_obj,$uid) {
+    //$ldap_obj=LAB_LDAP::getInstance();
     $home = explode("/",$ldap_obj->getEntries($ldap_obj->search("ou=accounts","uid=$uid"), 0, "homedirectory"))[2];
     $homeEntry = (ldap_get_entries($ldap_obj->getLink(),$ldap_obj->search("ou=auto.home","cn=$home")));
     $errorNo = 0;
