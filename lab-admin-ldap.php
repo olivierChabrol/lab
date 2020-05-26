@@ -186,7 +186,7 @@ class LAB_LDAP {
      *
      * @return ldapresult
      */
-    public function searchAccounts($uid) {
+    public function searchAccounts($uid = "*") {
         $result = ldap_search($this->ldap_link,'ou=accounts,'.$this->base,"uid=".$uid);
         ldap_sort($this->ldap_link,$result,'cn');
         return $result;
