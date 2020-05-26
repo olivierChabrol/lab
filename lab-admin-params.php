@@ -16,7 +16,7 @@ class AdminParams {
     public const PARAMS_LDAP_TLS = 14;
 
     public static function get_params_fromId($id) {
-        $sql = "SELECT value,id FROM `wp_lab_params` WHERE type_param=".$id.";";
+        $sql = "SELECT value,id FROM `wp_lab_params` WHERE type_param=".$id." ORDER BY value;";
         global $wpdb;
         return $results = $wpdb->get_results($sql);
     }
@@ -42,7 +42,7 @@ class AdminParams {
         return AdminParams::get_params_fromId(AdminParams::PARAMS_FUNDING_ID);
     }
     public function get_param($id) {
-        $sql = "SELECT value FROM `wp_lab_params` WHERE id=".$id.";";
+        $sql = "SELECT value FROM `wp_lab_params` WHERE id=".$id." ORDER BY value;";
         global $wpdb;
         $results = $wpdb->get_results($sql);
         return $results[0]->value;
