@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-20 11:30+0200\n"
-"PO-Revision-Date: 2020-05-20 11:31+0200\n"
+"POT-Creation-Date: 2020-05-26 16:27+0200\n"
+"PO-Revision-Date: 2020-05-26 16:28+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en\n"
@@ -240,63 +240,96 @@ msgstr "Vider la table HAL"
 msgid "Add Meta Key"
 msgstr "Ajouter une metakey"
 
-#: admin/view/lab-admin-tab-users.php:14
+#: admin/view/lab-admin-tab-users.php:20
 msgid "Nom de l'utilisateur"
 msgstr "Nom de l'utilisateur"
 
-#: admin/view/lab-admin-tab-users.php:23
+#: admin/view/lab-admin-tab-users.php:29
 msgid "User function"
 msgstr "Fonction"
 
-#: admin/view/lab-admin-tab-users.php:31
+#: admin/view/lab-admin-tab-users.php:37
 msgid "Employer"
 msgstr "Employeur"
 
-#: admin/view/lab-admin-tab-users.php:39
+#: admin/view/lab-admin-tab-users.php:45
+msgid "Funding"
+msgstr "Soutien financier"
+
+#: admin/view/lab-admin-tab-users.php:53
 msgid "User Location"
 msgstr "Site"
 
-#: admin/view/lab-admin-tab-users.php:47
+#: admin/view/lab-admin-tab-users.php:61
 msgid "User office number"
 msgstr "Numéro de bureau"
 
-#: admin/view/lab-admin-tab-users.php:55
+#: admin/view/lab-admin-tab-users.php:69
 msgid "User office floor"
 msgstr "Etage du bureau"
 
-#: admin/view/lab-admin-tab-users.php:63
+#: admin/view/lab-admin-tab-users.php:77
 msgid "Phone"
 msgstr "Téléphone"
 
-#: admin/view/lab-admin-tab-users.php:71
+#: admin/view/lab-admin-tab-users.php:85
 msgid "Parti"
 msgstr "Parti"
 
-#: admin/view/lab-admin-tab-users.php:74
+#: admin/view/lab-admin-tab-users.php:88
 msgid "Date de départ"
 msgstr "Date de départ"
 
-#: admin/view/lab-admin-tab-users.php:79
+#: admin/view/lab-admin-tab-users.php:94
 msgid "Modifier le statut de l'utilisateur"
 msgstr "Modifier le statut de l'utilisateur"
 
-#: admin/view/lab-admin-tab-users.php:81
+#: admin/view/lab-admin-tab-users.php:100
+#, fuzzy
+#| msgid "Historique des prêts de l'utilisateur"
+msgid "Historique de l'utilisateur"
+msgstr "Historique des prêts de l'utilisateur"
+
+#: admin/view/lab-admin-tab-users.php:106
+#, fuzzy
+#| msgid "+ Ajouter un suppléant"
+msgid "Ajouter une période"
+msgstr "+ Ajouter un suppléant"
+
+#: admin/view/lab-admin-tab-users.php:110 lab-admin-keyring.php:320
+msgid "Date de début"
+msgstr "Date de début"
+
+#: admin/view/lab-admin-tab-users.php:118 lab-admin-keyring.php:322
+msgid "Date de fin"
+msgstr "Date de fin"
+
+#: admin/view/lab-admin-tab-users.php:126
+#, fuzzy
+msgid "Fonction"
+msgstr "Actions"
+
+#: admin/view/lab-admin-tab-users.php:139
+msgid "Hôte"
+msgstr ""
+
+#: admin/view/lab-admin-tab-users.php:149
 msgid "Affecter des utilisateurs à des groupes"
 msgstr "Affecter des utilisateurs à des groupes"
 
-#: admin/view/lab-admin-tab-users.php:83
+#: admin/view/lab-admin-tab-users.php:151
 msgid "Afficher aussi les personnes qui ont déjà un groupe"
 msgstr "Afficher aussi les personnes qui ont déjà un groupe"
 
-#: admin/view/lab-admin-tab-users.php:85
+#: admin/view/lab-admin-tab-users.php:153
 msgid "Afficher aussi les utilisateurs qui ont quitté l'Institut"
 msgstr "Afficher aussi les utilisateurs qui ont quitté l'Institut"
 
-#: admin/view/lab-admin-tab-users.php:94
+#: admin/view/lab-admin-tab-users.php:162
 msgid "Choisissez une ou plusieurs personne(s) à affecter :"
 msgstr "Choisissez une ou plusieurs personne(s) à affecter :"
 
-#: admin/view/lab-admin-tab-users.php:101
+#: admin/view/lab-admin-tab-users.php:169
 msgid ""
 "Choisissez le ou les groupe(s) au(x)quel(s) vous allez affecter des "
 "personnes :"
@@ -304,9 +337,61 @@ msgstr ""
 "Choisissez le ou les groupe(s) au(x)quel(s) vous allez affecter des "
 "personnes :"
 
-#: admin/view/lab-admin-tab-users.php:106
+#: admin/view/lab-admin-tab-users.php:174
 msgid "envoyer"
 msgstr "envoyer"
+
+#: admin/view/lab-admin-tab-users.php:178
+msgid "Ajouter un utilisateur dans l'annuaire"
+msgstr ""
+
+#: admin/view/lab-admin-tab-users.php:182
+#, fuzzy
+#| msgid "Nom de l'utilisateur"
+msgid "E-Mail d'utilisateur AMU :"
+msgstr "Nom de l'utilisateur"
+
+#: admin/view/lab-admin-tab-users.php:190
+#, fuzzy
+#| msgid "Nom HAL"
+msgid "Nom"
+msgstr "Nom HAL"
+
+#: admin/view/lab-admin-tab-users.php:198
+msgid "Prénom"
+msgstr ""
+
+#: admin/view/lab-admin-tab-users.php:206
+msgid "E-Mail"
+msgstr ""
+
+#: admin/view/lab-admin-tab-users.php:214
+msgid "Login (uid)"
+msgstr ""
+
+#: admin/view/lab-admin-tab-users.php:222
+msgid "Mot de passe"
+msgstr ""
+
+#: admin/view/lab-admin-tab-users.php:230
+msgid "Organisation"
+msgstr ""
+
+#: admin/view/lab-admin-tab-users.php:238
+#, fuzzy
+#| msgid "Affecter des utilisateurs à des groupes"
+msgid "Ajouter l'utilisateur à WordPress"
+msgstr "Affecter des utilisateurs à des groupes"
+
+#: admin/view/lab-admin-tab-users.php:252
+#, fuzzy
+#| msgid "Rechercher un utilisateur"
+msgid "Supprimer un utilisateur"
+msgstr "Rechercher un utilisateur"
+
+#: admin/view/lab-admin-tab-users.php:256
+msgid "Nom - Prénom - mail :"
+msgstr ""
 
 #: admin/view/lab-admin-tabs.php:23
 msgid "Séminaire"
@@ -468,42 +553,42 @@ msgstr "Imprimer"
 msgid "Reason of your attendance is require"
 msgstr "La raison de votre présence est requise"
 
-#: lab-admin-ajax.php:56
+#: lab-admin-ajax.php:59
 #, php-format
 msgid "A param key with '%1s' already exist in db"
 msgstr "Un paramètre avec la clef '%1s' existe déjà en BDD"
 
-#: lab-admin-ajax.php:79
+#: lab-admin-ajax.php:82
 msgid "Cant delete system param"
 msgstr "Impossible d'effacer un paramètre sytème"
 
-#: lab-admin-ajax.php:808
+#: lab-admin-ajax.php:814
 msgid "Votre demande a bien été prise en compte"
 msgstr "Votre demande a bien été prise en compte"
 
-#: lab-admin-ajax.php:837
+#: lab-admin-ajax.php:843
 msgid "Votre invitation a bien été modifiée"
 msgstr "Votre invitation a bien été modifiée"
 
-#: lab-admin-ajax.php:965
+#: lab-admin-ajax.php:971
 msgid "Aucune invitation"
 msgstr "Aucune invitation"
 
-#: lab-admin-ajax.php:1002
+#: lab-admin-ajax.php:1008
 msgid "indéfini"
 msgstr "indéfini"
 
-#: lab-admin-ajax.php:1109
+#: lab-admin-ajax.php:1117
 #, php-format
 msgid "%s is a non wordking day"
 msgstr "%s est férié"
 
-#: lab-admin-ajax.php:1131
+#: lab-admin-ajax.php:1139
 #, php-format
 msgid "Your are already present in %s the %s between %s and %s"
 msgstr "Vous êtes déjà présent au/à %s le %s entre %s et %s"
 
-#: lab-admin-ajax.php:1154 lab-admin-ajax.php:1163
+#: lab-admin-ajax.php:1162 lab-admin-ajax.php:1171
 #, php-format
 msgid ""
 "Your new schedules overlap to an existing one : %s the %s between %s and %s"
@@ -668,14 +753,6 @@ msgstr "Afficher Reçu"
 #: lab-admin-keyring.php:316
 msgid "Usager"
 msgstr "Usager"
-
-#: lab-admin-keyring.php:320
-msgid "Date de début"
-msgstr "Date de début"
-
-#: lab-admin-keyring.php:322
-msgid "Date de fin"
-msgstr "Date de fin"
 
 #: lab-admin-keyring.php:326
 msgid "Commentaire faculatif"
@@ -919,10 +996,6 @@ msgstr "Groupe(s) scientifiques(s) de l'utilisateur"
 
 #, fuzzy
 #~ msgid "Location Name:"
-#~ msgstr "Actions"
-
-#, fuzzy
-#~ msgid "location"
 #~ msgstr "Actions"
 
 #, fuzzy

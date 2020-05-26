@@ -37,6 +37,9 @@ function lab_admin_username_get($userId) {
         if ($r->meta_key == 'lab_user_office_floor') {
             $items['user_office_floor'] = $r->meta_value;
         }
+        if ($r->meta_key == 'lab_user_funding') {
+            $items['user_funding'] = $r->meta_value;
+        }
     }
     
     return $items;
@@ -439,6 +442,7 @@ function lab_admin_initTable_usermeta()
     lab_userMetaData_create_metaKeys("user_office_number", "");
     lab_userMetaData_create_metaKeys("user_office_floor", "");
     lab_userMetaData_create_metaKeys("user_phone", "");
+    lab_userMetaData_create_metaKeys("user_funding", "");
     lab_userMetaData_create_metaKeys("user_left", null);
     lab_userMetaData_create_metaKeys("user_slug", null);
     lab_userMetaData_create_metaKeys("user_position", null);

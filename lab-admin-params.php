@@ -37,6 +37,10 @@ class AdminParams {
     {
         return AdminParams::get_params_fromId(AdminParams::PARAMS_EMPLOYER);
     }
+    public static function lab_admin_get_params_userFunding()
+    {
+        return AdminParams::get_params_fromId(AdminParams::PARAMS_FUNDING_ID);
+    }
     public function get_param($id) {
         $sql = "SELECT value FROM `wp_lab_params` WHERE id=".$id.";";
         global $wpdb;
@@ -65,6 +69,10 @@ function lab_admin_get_params_userLocation() {
 }
 function lab_admin_get_params_userEmployer() {
     return AdminParams::lab_admin_get_params_userEmployer();
+}
+
+function lab_admin_get_params_userFunding() {
+    return AdminParams::lab_admin_get_params_userFunding();
 }
 
 ?>
