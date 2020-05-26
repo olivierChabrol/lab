@@ -216,7 +216,12 @@ class LAB_LDAP {
 
     public function addEntry($path,$fields) {
         $this->bindAdmin();
-        ldap_add($this->ldap_link,"$path,".$this->base,$fields);
+        error_log("[addEntry] base : ".$this->base);
+        error_log("[addEntry] bind : ".print_r( $b, true ));
+        ldap_add($this->ldap_link,$path.",".$this->base,$fields);
+        error_log("[addEntry] ldap_add".$path.",".$this->base." / ".print_r( $fields, true ));
+
+//        ldap_add($this->ldap_link,"$path,".$this->base,$fields);
         return ldap_errno($this->ldap_link);
     }
     public function deleteEntry($path) {
@@ -253,8 +258,8 @@ function lab_ldap_new_WPUser($name,$email,$password,$uid) {
     //lab_admin_add_new_user_metadata($user_id);
 }
 
-function lab_ldap_addUser($first_name, $last_name,$email,$password,$uid,$organization="I2M") {
-    $ldap_obj = LAB_LDAP::getInstance();
+function lab_ldap_addUser($ldap_obj, $first_name, $last_name,$email,$password,$uid,$organization="I2M") {
+    //$ldap_obj = LAB_LDAP::getInstance();
     $info["objectclass"][0] = "top";
     $info["objectclass"][1] = "person";
     $info["objectclass"][2] = "inetOrgPerson";

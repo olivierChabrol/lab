@@ -1229,7 +1229,7 @@ function lab_ldap_list_update() {
                         AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_LOGIN)[0]->value,
                         AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_PASSWORD)[0]->value,
                       true);
-  $result   = $ldap_obj->searchAccounts("*");
+  $result   = $ldap_obj->searchAccounts();
   $count    = $ldap_obj->countResults($result);
   if($page > ceil($count/$itemPerPage)) {
     $page = ceil($count/$itemPerPage);
@@ -1254,7 +1254,7 @@ function lab_ldap_list_update() {
   wp_send_json_success(array($count,$ldapResult,$page));
 }
 function lab_ldap_add_user() {
-  $ldapRes = lab_ldap_addUser($_POST['first_name'],$_POST['last_name'],$_POST['email'],$_POST['password'],$_POST['uid'],$_POST['organization']);
+  $ldapRes = lab_ldap_addUser($ldap_obj, $_POST['first_name'],$_POST['last_name'],$_POST['email'],$_POST['password'],$_POST['uid'],$_POST['organization']);
   if ($ldapRes == 0 ) {
     if ($_POST['addToWP'] == 'true') {
       $wpRes = lab_ldap_new_WPUser(strtoupper($_POST['last_name'])." ".$_POST['first_name'],$_POST['email'],$_POST['password'],$_POST['uid']);
