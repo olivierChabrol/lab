@@ -1224,7 +1224,7 @@ function lab_ldap_list_update() {
   $itemPerPage = isset($_POST['value']) ? $_POST['value'] : '5' ;
   $page = isset($_POST['page']) ? $_POST['page'] : '1' ;
 
-  $ldap = LAB_LDAP::getInstance(AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_URL)[0]->value,
+  $ldap_obj = LAB_LDAP::getInstance(AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_URL)[0]->value,
                         AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_BASE)[0]->value,
                         AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_LOGIN)[0]->value,
                         AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_PASSWORD)[0]->value,

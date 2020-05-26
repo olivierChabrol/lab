@@ -32,7 +32,7 @@ class LAB_LDAP {
     private $base;
     private $ldap_admin_login;
     private $ldap_admin_password;
-    private static $_instance = null;
+    private static $_instance = [];
     private $ldap_link;
 
     /**
@@ -76,6 +76,17 @@ class LAB_LDAP {
     * @return LAB_LDAP
     */
     public static function getInstance($url = null, $base = null, $login=null, $password=null, $forceReload = false) {
+
+        $cls = static::class;
+        if (!isset(self::$_instance[$cls]) || $forceReload) {
+            if (isset(self::$_instance[$cls])) {
+                self::$_instance->close();
+            }
+            self::$_instance[$cls] = new LAB_LDAP($url, $base, $login, $password);
+        }
+
+        return self::$_instance[$cls];
+/*
         if(is_null(self::$_instance) || $forceReload) {
             if ($forceReloadi && self::$_instance != null) {
                 self::$_instance->close();
@@ -89,6 +100,7 @@ class LAB_LDAP {
             }
         }
     return self::$_instance;
+    //*/
     }
     public function bindAdmin() {
         return ldap_bind($this->ldap_link,$this->ldap_admin_login.",".$this->base,$this->ldap_admin_password);
