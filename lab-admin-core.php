@@ -223,6 +223,7 @@ function lab_admin_initTable_param() {
             (11, 1, 'LDAP BASE', NULL),
             (12, 1, 'LDAP LOGIN', NULL),
             (13, 1, 'LDAP PASSWORD', NULL),
+            (14, 1, 'LDAP TLS', NULL),
             (NULL, 2, 'Equipe', NULL),
             (NULL, 2, 'Groupe', NULL),
             (NULL, 3, 'Clé', NULL),
