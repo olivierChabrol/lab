@@ -2,6 +2,9 @@
 
 include 'lab-admin-core.php';
 include 'lib/vendor/autoload.php';
+require_once("lab-admin-params.php");
+
+use AdminParams;
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
