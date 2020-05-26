@@ -82,7 +82,7 @@ class LAB_LDAP {
             }
 
             if ($url == null || $base == null || $login == null || $password== null) {
-                echo "Please Fill all LDAP params";
+                //echo "Please Fill all LDAP params";
                 return;
             } else {
                 self::$_instance = new LAB_LDAP($url, $base, $login, $password);

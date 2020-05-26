@@ -1221,7 +1221,11 @@ function lab_ldap_list_update() {
   $itemPerPage = isset($_POST['value']) ? $_POST['value'] : '5' ;
   $page = isset($_POST['page']) ? $_POST['page'] : '1' ;
 
-  $ldap_obj = LAB_LDAP::getInstance();
+  $ldap = LAB_LDAP::getInstance(AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_URL)[0]->value,
+                        AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_BASE)[0]->value,
+                        AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_LOGIN)[0]->value,
+                        AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_PASSWORD)[0]->value,
+                      true);
   $result   = $ldap_obj->searchAccounts("*");
   $count    = $ldap_obj->countResults($result);
   if($page > ceil($count/$itemPerPage)) {
@@ -1296,7 +1300,11 @@ function lab_ldap_edit_user() {
   {
     wp_send_json_error("No UID");
   }
-  $ldap_obj = LAB_LDAP::getInstance();
+  $ldap = LAB_LDAP::getInstance(AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_URL)[0]->value,
+                        AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_BASE)[0]->value,
+                        AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_LOGIN)[0]->value,
+                        AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_PASSWORD)[0]->value,
+                      true);
   $ldapRes = $ldap_obj->editUser($_POST['uid'], $_POST['givenname'], $_POST['sn'], $_POST['uidnumber'], $_POST['homeDirectory'], $_POST['mail']);
   wp_send_json_success();
 }
@@ -1310,7 +1318,11 @@ function lab_admin_get_userLogin_Req() {
 }
 function lab_ldap_user_details() {
   $uid = $_POST['uid'];
-  $ldap_obj = LAB_LDAP::getInstance();
+  $ldap = LAB_LDAP::getInstance(AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_URL)[0]->value,
+                        AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_BASE)[0]->value,
+                        AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_LOGIN)[0]->value,
+                        AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_PASSWORD)[0]->value,
+                      true);
   $result   = $ldap_obj->get_info_from_uid($uid);
   wp_send_json_success($result);
 }
