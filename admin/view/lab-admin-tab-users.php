@@ -7,10 +7,6 @@
 */
 
 function lab_admin_tab_user() {
-  LAB_LDAP::getInstance(AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_URL)[0]->value,
-                        AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_BASE)[0]->value,
-                        AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_LOGIN)[0]->value,
-                        AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_PASSWORD)[0]->value);
 ?>
   <div style="display:flex; flex-wrap:wrap;">
   <form>
