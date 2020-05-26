@@ -1254,6 +1254,11 @@ function lab_ldap_list_update() {
   wp_send_json_success(array($count,$ldapResult,$page));
 }
 function lab_ldap_add_user() {
+  $ldap_obj = LAB_LDAP::getInstance(AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_URL)[0]->value,
+                        AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_BASE)[0]->value,
+                        AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_LOGIN)[0]->value,
+                        AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_PASSWORD)[0]->value,
+                      true);
   $ldapRes = lab_ldap_addUser($ldap_obj, $_POST['first_name'],$_POST['last_name'],$_POST['email'],$_POST['password'],$_POST['uid'],$_POST['organization']);
   if ($ldapRes == 0 ) {
     if ($_POST['addToWP'] == 'true') {
