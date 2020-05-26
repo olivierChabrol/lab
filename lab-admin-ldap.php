@@ -77,7 +77,7 @@ class LAB_LDAP {
     */
     public static function getInstance($url = null, $base = null, $login=null, $password=null, $forceReload = false) {
         if(is_null(self::$_instance) || $forceReload) {
-            if ($forceReload) {
+            if ($forceReloadi && self::$_instance != null) {
                 self::$_instance->close();
             }
 
