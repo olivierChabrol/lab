@@ -20,7 +20,7 @@ jQuery(function($){
        jQuery("#lab_user_left_date").val("");
     }
   });
-  $( "#lab_user_left_date" ).datepicker();
+  //$( "#lab_user_left_date" ).datepicker();
   $("#lab_hal_delete_table").click(function () { 
     deleteHalTable();
   });

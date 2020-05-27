@@ -85,7 +85,7 @@ function lab_admin_tab_user() {
           <label for="lab_user_left"><?php esc_html_e('Parti','lab') ?></label>
         </td>
         <td>
-          <input type="checkbox" id="lab_user_left"> <label for="lab_user_left_date"><?php esc_html_e('Date de départ','lab') ?></label><input type="text" id="lab_user_left_date">
+          <input type="checkbox" id="lab_user_left"> <label for="lab_user_left_date"><?php esc_html_e('Date de départ','lab') ?></label><input type="date" id="lab_user_left_date">
           <input type="hidden" id="lab_usermeta_id">
         </td>
       </tr>
