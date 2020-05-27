@@ -262,8 +262,11 @@ function lab_usermeta_update($userId, $left, $userFunction, $userLocation, $offi
   $sql = "";
   if ($left != null || !empty($left)) {
     $sql = "UPDATE `".$wpdb->prefix."usermeta` SET `meta_value` = '" . $left . "' WHERE `user_id` = " . $userId. " AND meta_key='lab_user_left'";
+    // if left is set to a date, remove acces to user to the web site
+    removeAllRoleToUser($userId);
   } else {
     $sql = "UPDATE `".$wpdb->prefix."usermeta` SET `meta_value` = NULL WHERE `user_id` = " . $userId. " AND meta_key='lab_user_left'";
+    setDefaultRole($userId);
   }
   $sql = $wpdb->prepare($sql);
   $wpdb->query($sql);
@@ -1339,6 +1342,12 @@ function lab_ldap_user_details() {
                       true);
   $result   = $ldap_obj->get_info_from_uid($uid);
   wp_send_json_success($result);
+}
+
+function setDefaultRole($userId) {
+  $user = new WP_User($userId);
+  $user->set_role('subscriber');
+
 }
 
 function removeAllRoleToUser($userId)
