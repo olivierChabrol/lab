@@ -1,7 +1,25 @@
-
+.striped {
+	background: repeating-linear-gradient(
+			45deg,
+			#FFFFFF,
+			#FFFFFF 10px,
+			#DDDDDD 10px,
+			#DDDDDD 20px
+		)};
+#lab-table-directory tr {
+	cursor: pointer;
+}
+.content-area {
+	max-width:1140px;
+}
+  
+.email{
+	unicode-bidi: bidi-override;
+	direction: rtl;
+}
 .alpha-links a {
-		padding-right: 6px;
-	}
+	padding-right: 6px;
+}
 @media screen and (max-width: 600px) {	
 	.alpha-links {
 		display : flex;
@@ -9,14 +27,14 @@
 	.alpha-links a {
 		padding-right: 1px;
 	}
-	  .directory table {width:100%;}
-	  thead {display: none;}
-	  tr:nth-of-type(2n) {background-color: inherit;}
-	  tr td:first-child {background: #c0c0c0; font-weight:bold;font-size:1.3em;}
-	  tbody td {display: block;  text-align:center; background: white;}
-	  tbody td:before {
-	      content: attr(data-th);
-	      display: block;
-	      text-align:center; 
-	  }
+	.directory table {width:100%;}
+	thead {display: none;}
+	tr:nth-of-type(2n) {background-color: inherit;}
+	tr td:first-child {background: #c0c0c0; font-weight:bold;font-size:1.3em;}
+	tbody td {display: block;  text-align:center; background: white;}
+	tbody td:before {
+		content: attr(data-th);
+		display: block;
+		text-align:center; 
+	}
 }

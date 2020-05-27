@@ -201,6 +201,26 @@ jQuery(function($){
     saveUserLeft($("#lab_user_left_date").val(), $("#lab_user_left").is(":checked"), $("#lab_user_location").val(), $("#lab_user_function").val(), $("#lab_user_office_number").val(), $("#lab_user_office_floor").val(), $("#lab_user_employer").val(), $("#lab_user_funding").val(), $("#lab_user_firstname").val(), $("#lab_user_lastname").val());
   });
 
+  $("#lab_user_button_delete").click(function() {
+    $("#lab_user_keep_data"). prop("checked", true);
+    $("#lab_user_delete_modal").show();
+  });
+  
+  $("#lab_user_delete_close").click(function() {
+    $("#lab_user_delete_modal").hide();
+  });
+  $("#lab_user_delete_close_icon").click(function() {
+    $("#lab_user_delete_modal").hide();
+  });
+  $("#lab_user_delete").click(function() {
+    data = {
+        'action': 'lab_ldap_delete_user',
+        'user_id': $("#lab_user_search_id").val(),
+        'keepData': $("#lab_user_keep_data").is(":checked"),
+    };
+    callAjax(data, __("User delete  success",'lab'),userDeleteSuccess, __("Failed to delete user",'lab'), null);
+  });
+
   $("#lab_settings_correct_um").click(function() {
     correctUMFields();
   });
@@ -610,6 +630,11 @@ jQuery(function($){
  * FUNCTIONS
  *************************************************************************************************************************************************/
 
+ function userDeleteSuccess() {
+  resetUserTabFields();
+  jQuery("#lab_user_delete_modal").hide();
+  toast_success("User delete")
+ }
 
 function reset_and_load_groups_users(cond1, cond2) {
     jQuery.post(LAB.ajaxurl,

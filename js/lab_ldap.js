@@ -45,7 +45,8 @@ jQuery(function($) {
     $("#lab_ldap_delete_button").click(function (){
         data = {
             'action': 'lab_ldap_delete_user',
-            'user_id': $("#lab_ldap_delete_search").attr('user_id')
+            'user_id': $("#lab_user_search_id").val(),
+            'keepData': $("#lab_user_keep_data").val(),
         };
         $.post(LAB.ajaxurl,data,function (response){
             if (response.success) {

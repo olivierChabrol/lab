@@ -92,10 +92,30 @@ function lab_admin_tab_user() {
       <tr>
         <td colspan="2">
           <a href="#" class="page-title-action" id="lab_user_button_save_left"><?php esc_html_e('Modifier le statut de l\'utilisateur','lab') ?></a>
+          <a href="#" class="page-title-action" id="lab_user_button_delete"><?php esc_html_e('Delete user','lab') ?></a>
         </td>
       </tr>
     </table>
   </form>
+  <div class="modal" tabindex="-1" role="dialog" id="lab_user_delete_modal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"><?php esc_html_e('Delete user','lab') ?></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"  id="lab_user_delete_close_icon">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p><?php esc_html_e('Keep user data in our web site ?','lab') ?><input type="checkbox" id="lab_user_keep_data"></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="lab_user_delete">Save changes</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" id="lab_user_delete_close">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
   <form style="flex-grow:1;">
     <h3><?php esc_html_e('Historique de l\'utilisateur','lab') ?></h3>
     <div>

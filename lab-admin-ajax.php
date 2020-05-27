@@ -1340,38 +1340,72 @@ function lab_ldap_user_details() {
   $result   = $ldap_obj->get_info_from_uid($uid);
   wp_send_json_success($result);
 }
+
+function removeAllRoleToUser($userId)
+{
+  $user = new WP_User($userId);
+  
+  if ( !empty( $user->roles ) && is_array( $user->roles ) ) {
+    foreach ($user->roles as $role_key => $role_details) {
+
+      $user->remove_role($role_details);
+    }
+  }
+}
+
 function lab_ldap_delete_userReq() {
   $uid = lab_admin_get_userLogin($_POST['user_id']);
-  wp_delete_user($_POST['user_id'],1);
-  $ldap = LAB_LDAP::getInstance(AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_URL)[0]->value,
-                        AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_BASE)[0]->value,
-                        AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_LOGIN)[0]->value,
-                        AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_PASSWORD)[0]->value,
-                      true);
-  $res = ldap_delete_user($ldap, $uid);
-  if ($res==0) {
+  $keepData = true;
+  if(isset($_POST['keepData']) && $_POST['keepData'] == 'false') {
+    $keepData = false;
+  }
+  if (!$keepData) {
+    wp_delete_user($_POST['user_id'],1);
+  }
+  else 
+  {
+    removeAllRoleToUser($_POST['user_id']);
+  }
+
+  if (lab_admin_param_is_ldap_enable())
+  {
+    $ldap = LAB_LDAP::getInstance(AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_URL)[0]->value,
+                          AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_BASE)[0]->value,
+                          AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_LOGIN)[0]->value,
+                          AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_PASSWORD)[0]->value,
+                        true);
+    $res = ldap_delete_user($ldap, $uid);
+    if ($res==0) {
+      wp_send_json_success();
+    } else {
+      wp_send_json_error("LDAP : ".ldap_err2str($res));
+    }
+  }
+  else
+  {
     wp_send_json_success();
-  } else {
-    wp_send_json_error("LDAP : ".ldap_err2str($res));
   }
 }
 
 function lab_ldap_reconnect() {
-  $ldap = LAB_LDAP::getInstance(AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_URL)[0]->value,
-                        AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_BASE)[0]->value,
-                        AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_LOGIN)[0]->value,
-                        AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_PASSWORD)[0]->value,
-                      true);
-  $str = "URL : ".$ldap->getURL()." <br> ";
-  $str .= "Base : ".$ldap->getBase()." <br> ";
-  $str .= "Login : ".$ldap->getLogin()." <br> ";
-  $str .= "Passwd : ".$ldap->getPassword()." <br> ";
-  if($ldap->bindAdmin())
+  if (lab_admin_param_is_ldap_enable())
   {
-    wp_send_json_success("Connection to LDAP server successfull");
-  }
-  else {
-    wp_send_json_error("Failed to connect to LDAP server :<br>" .$str);
+    $ldap = LAB_LDAP::getInstance(AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_URL)[0]->value,
+                          AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_BASE)[0]->value,
+                          AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_LOGIN)[0]->value,
+                          AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_PASSWORD)[0]->value,
+                        true);
+    $str = "URL : ".$ldap->getURL()." <br> ";
+    $str .= "Base : ".$ldap->getBase()." <br> ";
+    $str .= "Login : ".$ldap->getLogin()." <br> ";
+    $str .= "Passwd : ".$ldap->getPassword()." <br> ";
+    if($ldap->bindAdmin())
+    {
+      wp_send_json_success("Connection to LDAP server successfull");
+    }
+    else {
+      wp_send_json_error("Failed to connect to LDAP server :<br>" .$str);
+    }
   }
   //*/
 }
