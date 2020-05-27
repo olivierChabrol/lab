@@ -885,6 +885,7 @@ function resetUserTabFields()
   jQuery("#lab_user_function").val("");
   jQuery("#lab_user_employer").val("");
   jQuery("#lab_user_funding").val("");
+  jQuery("#lab_user_phone").val("");
 }
 
 function load_usermeta_dateLeft() {
