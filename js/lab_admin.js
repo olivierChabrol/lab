@@ -198,7 +198,7 @@ jQuery(function($){
   });
 
   $("#lab_user_button_save_left").click(function() {
-    saveUserLeft($("#lab_user_left_date").val(), $("#lab_user_left").is(":checked"), $("#lab_user_location").val(), $("#lab_user_function").val(), $("#lab_user_office_number").val(), $("#lab_user_office_floor").val(), $("#lab_user_employer").val(), $("#lab_user_funding").val());
+    saveUserLeft($("#lab_user_left_date").val(), $("#lab_user_left").is(":checked"), $("#lab_user_location").val(), $("#lab_user_function").val(), $("#lab_user_office_number").val(), $("#lab_user_office_floor").val(), $("#lab_user_employer").val(), $("#lab_user_funding").val(), $("#lab_user_firstname").val(), $("#lab_user_lastname").val());
   });
 
   $("#lab_settings_correct_um").click(function() {
@@ -853,7 +853,7 @@ function saveUserMetaData(userId, date, isChecked, location, userFunction) {
 
 }
 
-function saveUserLeft(date, isChecked, location, userFunction, userOfficeNumber, userOfficeFloor, employer, funding) {
+function saveUserLeft(date, isChecked, location, userFunction, userOfficeNumber, userOfficeFloor, employer, funding, firstname, lastname) {
   var c = isChecked?date:null;
   var data = {
                'action' : 'update_user_metadata',
@@ -865,6 +865,8 @@ function saveUserLeft(date, isChecked, location, userFunction, userOfficeNumber,
                'employer' : employer,
                'officeNumber' : userOfficeNumber,
                'officeFloor' : userOfficeFloor,
+               'firstname' : firstname,
+               'lastname' : lastname,
   };
   callAjax(data, "User saved", resetUserTabFields, "Failed to save user", null);
 }
@@ -878,6 +880,11 @@ function resetUserTabFields()
   jQuery("#lab_user_function").val("");
   jQuery("#lab_user_office_number").val("");
   jQuery("#lab_user_office_floor").val("");
+  jQuery("#lab_user_firstname").val("");
+  jQuery("#lab_user_lastname").val("");
+  jQuery("#lab_user_function").val("");
+  jQuery("#lab_user_employer").val("");
+  jQuery("#lab_user_funding").val("");
 }
 
 function load_usermeta_dateLeft() {
@@ -941,10 +948,18 @@ function loadUserMetaData(response) {
     if (response.data["user_phone"] != null) {
       jQuery("#lab_user_phone").val(response.data["user_phone"]);
     }
+    setField("#lab_user_firstname", response.data["first_name"]);
+    setField("#lab_user_lastname", response.data["last_name"]);
   }
   else
   {
 
+  }
+}
+
+function setField(fieldId, value){
+  if (value != null) {
+    jQuery(fieldId).val(value);
   }
 }
 

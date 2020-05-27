@@ -241,20 +241,22 @@ function lab_admin_update_user_metadata_db()
 
 function lab_admin_update_user_metadata()
 {
-  $userId       =  $_POST["userId"];
+  $userId       = $_POST["userId"];
   $dateLeft     = $_POST["dateLeft"];
   $userFunction = $_POST["function"];
   $userEmployer = $_POST["employer"];
   $userFunding  = $_POST["funding"];
+  $firstname    = $_POST["firstname"];
+  $lastname     = $_POST["lastname"];
   $userLocation = $_POST["location"];
   $officeNumber = $_POST["officeNumber"];
   $officeFloor  = $_POST["officeFloor"];
   $phone        = $_POST["phone"];
-  lab_usermeta_update($userId, $dateLeft, $userFunction, $userLocation, $officeNumber, $officeFloor, $userEmployer, $phone, $userFunding);
+  lab_usermeta_update($userId, $dateLeft, $userFunction, $userLocation, $officeNumber, $officeFloor, $userEmployer, $phone, $userFunding, $firstname, $lastname);
   wp_send_json_success("");
 }
 
-function lab_usermeta_update($userId, $left, $userFunction, $userLocation, $officeNumber, $officeFloor, $userEmployer, $user_phone, $userFunding)
+function lab_usermeta_update($userId, $left, $userFunction, $userLocation, $officeNumber, $officeFloor, $userEmployer, $user_phone, $userFunding, $firstname, $lastname)
 {
   global $wpdb;
   $sql = "";
@@ -272,6 +274,8 @@ function lab_usermeta_update($userId, $left, $userFunction, $userLocation, $offi
   $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$userEmployer),array("user_id"=>$userId, "meta_key"=>"lab_user_employer"));
   $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$user_phone),array("user_id"=>$userId, "meta_key"=>"lab_user_phone"));
   $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$userFunding),array("user_id"=>$userId, "meta_key"=>"lab_user_funding"));
+  $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$firstname),array("user_id"=>$userId, "meta_key"=>"first_name"));
+  $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$lastname),array("user_id"=>$userId, "meta_key"=>"last_name"));
 }
 
 function lab_usermeta_update_lab_left_key($usermetaId, $left)

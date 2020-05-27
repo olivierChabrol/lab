@@ -21,6 +21,10 @@ function lab_admin_tab_user() {
         </td>
       </tr>
       <tr>
+        <td colspan="2"> <input type="text" id="lab_user_firstname" value="" placeholder="<?php esc_html_e('First name','lab') ?>"/><input type="text" id="lab_user_lastname" value=""  placeholder="<?php esc_html_e('Last name','lab') ?>"/>
+        </td>
+      </tr>
+      <tr>
         <td>
           <label for="lab_user_function"><?php esc_html_e('User function','lab') ?></label>
         </td>
