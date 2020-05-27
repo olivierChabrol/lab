@@ -45,7 +45,7 @@ function lab_admin_tab_user() {
           <label for="lab_user_funding"><?php esc_html_e('Funding','lab') ?></label>
         </td>
         <td>
-          <?php lab_html_select("lab_user_funding", "lab_user_funding", "", lab_admin_get_params_userEmployer, null, array("value"=>"","label"=>"None"), ""); ?>
+          <?php lab_html_select("lab_user_funding", "lab_user_funding", "", lab_admin_get_params_userFunding, null, array("value"=>"","label"=>"None"), ""); ?>
         </td>
       </tr>
       <tr>
