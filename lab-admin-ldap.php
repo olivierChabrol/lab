@@ -191,6 +191,10 @@ class LAB_LDAP {
         ldap_sort($this->ldap_link,$result,'cn');
         return $result;
     }
+    public function searchBy($filter, $attr) {
+        return ldap_search($this->ldap_link, $this->base, $filter, $attr);
+    }
+
     public function search($dn,$filter) {
         return ldap_search($this->ldap_link,"$dn,".$this->base,$filter);
     }
@@ -198,12 +202,32 @@ class LAB_LDAP {
         return ldap_get_entries($this->ldap_link,$result)[$i][$field][0];
     }
 
+
+    public function get_info_from_mail($mail) {
+        $filter    = "(mail=" . $uid . ")";
+        $attrRead  = array("givenname", "sn", "mail", "uid", "password", "homedirectory");
+        $result    = ldap_search($this->ldap_link, $this->base, $filter, $attrRead) 
+            or die ("Error in query");
+        $entry     = ldap_get_entries($this->ldap_link,$result);
+    
+        $surname  = $entry[0]["sn"][0];
+        $name     = $entry[0]["givenname"][0];
+        $email    = $entry[0]["mail"][0];
+        $password = $entry[0]["password"][0];
+        $uid      = $entry[0]["uid"][0];
+    
+        return array("lastname"=>$name, "firstname"=>$surname, "mail"=>$email, "password"=>$password, "uid"=>$uid);
+    }
     public function get_info_from_uid($uid) {
         $filter    = "(uid=" . $uid . ")";
         $attrRead  = array("givenname", "sn", "mail", "uid", "uidnumber", "homedirectory");
         $result    = ldap_search($this->ldap_link, $this->base, $filter, $attrRead) 
             or die ("Error in query");
         $entry     = ldap_get_entries($this->ldap_link,$result);
+        if ($entry["count"] == 0)
+        {
+            return null;
+        }
     
         $surname = $entry[0]["sn"][0];
         $name    = $entry[0]["givenname"][0];

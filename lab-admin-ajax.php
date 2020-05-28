@@ -1268,20 +1268,35 @@ function lab_ldap_add_user() {
                         AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_LOGIN)[0]->value,
                         AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_PASSWORD)[0]->value,
                       true);
-  $ldapRes = lab_ldap_addUser($ldap_obj, $_POST['first_name'],$_POST['last_name'],$_POST['email'],$_POST['password'],$_POST['uid'],$_POST['organization']);
-  if ($ldapRes == 0 ) {
-    if ($_POST['addToWP'] == 'true') {
-      $wpRes = lab_ldap_new_WPUser(strtoupper($_POST['last_name'])." ".$_POST['first_name'],$_POST['email'],$_POST['password'],$_POST['uid']);
-      if ($wpRes==true) {
-        wp_send_json_success();
+  $results = $ldap_obj->get_info_from_mail($_POST['email']);
+  // if already exist in ldap, only set to WP
+  if ($results != null)
+  {
+    $wpRes = lab_ldap_new_WPUser(strtoupper($results["lastname"])." ".$results["firstname"],$results["mail"],$results["password"],$results['uid']);
+    if ($wpRes==true) {
+      wp_send_json_success("Already exist in LDAP just have to add to WP");
+    } else {
+      wp_send_json_error("WordPress : ".$wpRes);
+    }
+    
+  }
+  else
+  {
+    $ldapRes = lab_ldap_addUser($ldap_obj, $_POST['first_name'],$_POST['last_name'],$_POST['email'],$_POST['password'],$_POST['uid'],$_POST['organization']);
+    if ($ldapRes == 0 ) {
+      if ($_POST['addToWP'] == 'true') {
+        $wpRes = lab_ldap_new_WPUser(strtoupper($_POST['last_name'])." ".$_POST['first_name'],$_POST['email'],$_POST['password'],$_POST['uid']);
+        if ($wpRes==true) {
+          wp_send_json_success();
+        } else {
+          wp_send_json_error("WordPress : ".$wpRes);
+        }
       } else {
-        wp_send_json_error("WordPress : ".$wpRes);
+        wp_send_json_success();
       }
     } else {
-      wp_send_json_success();
+      wp_send_json_error("LDAP : ".ldap_err2str($ldapRes));
     }
-  } else {
-    wp_send_json_error("LDAP : ".ldap_err2str($ldapRes));
   }
 }
 function lab_ldap_amu_lookup() {
@@ -1346,7 +1361,9 @@ function lab_ldap_user_details() {
 
 function setDefaultRole($userId) {
   $user = new WP_User($userId);
-  $user->set_role('subscriber');
+  if(count($user->role() == 0)) {
+    $user->add_role('subscriber');
+  }
 
 }
 
