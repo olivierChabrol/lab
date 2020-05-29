@@ -33,7 +33,7 @@ function lab_profile($id=0) {
 					</div>';
 	$editSocial ='<p><input style="display:none;" type="text" class="lab_profile_edit" id="lab_profile_edit_social" placeholder="'.esc_html__("Cliquez sur l'icône d'un réseau social pour le modifier","lab").'"/></p>';
 	$halFields = '<p id="lab_profile_halID">
-					<span class="lab_current">'.(strlen($user->hal_id) ? '<i>'.esc_html__('Votre ID HAL','lab').' : </i>'.$user->hal_id : '<i>'.esc_html__('Vous n\'avez pas défini votre ID HAL','lab').'</i>').'</span>
+					<span class="lab_current">'.(strlen($user->hal_id) ? '<i>'.esc_html__('Votre ID HAL','lab').' : </i>'.$user->hal_id : '<i>'.esc_html__('Vous n\'avez pas défini votre ID HAL','lab').'</i>&nbsp;<a href="https://doc.archives-ouvertes.fr/identifiant-auteur-idhal-cv/" target="hal"><i class="fa fa-info"></i></a>').'</span>
 					<input style="display:none;" type="text" class="lab_profile_edit" id="lab_profile_edit_halID" placeholder="ID HAL" value="' . $user->hal_id .'"/><a id="lab_profile_testHal_id" target="_blank" style="display:none" class="lab_profile_edit" href="'.$HalID_URL.'">'.esc_html__('Tester sur HAL','lab').'</a>
 				  </p>
 				  <p id="lab_profile_halName">
