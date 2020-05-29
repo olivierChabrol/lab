@@ -1,14 +1,10 @@
-.striped {
-	background: repeating-linear-gradient(
-			45deg,
-			#FFFFFF,
-			#FFFFFF 10px,
-			#DDDDDD 10px,
-			#DDDDDD 20px
-		)};
 #lab-table-directory tr {
 	cursor: pointer;
 }
+#lab-table-directory tr:hover {
+	background-color: #FD7E29;
+}
+
 .content-area {
 	max-width:1140px;
 }
@@ -38,3 +34,12 @@
 		text-align:center; 
 	}
 }
+
+.striped {
+	background: repeating-linear-gradient(
+			45deg,
+			#FFFFFF,
+			#FFFFFF 10px,
+			#DDDDDD 10px,
+			#DDDDDD 20px
+		);}

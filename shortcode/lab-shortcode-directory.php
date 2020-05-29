@@ -144,7 +144,7 @@ function lab_directory($param) {
         </style>"; // style for table (stripped colors)
 
     /* Table directory */
-    $directoryStr .= "<div class=\"table-responsive\"><table  id=\"lab-table-directory\" class=\"table table-striped\"><thead class=\"thead-dark\"><tr><th>".esc_html__("Name", "lab")."</th><th>".esc_html__("User details", "lab")."</th>";
+    $directoryStr .= "<div class=\"table-responsive\"><table  id=\"lab-table-directory\" class=\"table table-striped  table-hover\"><thead class=\"thead-dark\"><tr><th>".esc_html__("Name", "lab")."</th><th>".esc_html__("User details", "lab")."</th>";
     // No need to display column group if a group is specified as a shortcode option
     if (!$groupAsSCOption) {
         $directoryStr .= "<th>".esc_html__("Group", "lab")."</th>";
