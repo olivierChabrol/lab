@@ -19,7 +19,7 @@ function lab_ldap_getName($cn) {
           $i++;
       }
   }
-  return array('first_name'=>$first_name,'last_name'=>$last_name);
+  return array('first_name'=>$last_name,'last_name'=>$first_name);
 }
 
 class LAB_LDAP {

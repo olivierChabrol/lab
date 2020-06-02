@@ -1070,6 +1070,7 @@ function lab_hal_get_publication($userId, $year = null) {
     {
         $sql .= " AND `producedDate_tdate` >= '".$year."-01-01'  AND `producedDate_tdate` <= '".$year."-12-31'";
     }
+    $sql .= " ORDER BY `lh`.`producedDate_tdate` DESC";
     return $wpdb->get_results($sql);
 }
 

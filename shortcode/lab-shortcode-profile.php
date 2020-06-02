@@ -52,7 +52,8 @@ function lab_profile($id=0) {
 				<div id="lab_profile_name"><span id="lab_profile_name_span">'.$user->first_name.' • '.$user->last_name.'</span>'
 					.($is_current_user || current_user_can('edit_users') ? $editIcons : ' ').
 				'</div>
-				<div id="lab_profile_function">'.$user->function.' • '.esc_html__('site','lab').' : '.$user->location.'</div>
+				<div id="lab_profile_function">'.$user->function.' • '.esc_html__('Affiliation','lab').' : '.$user->affiliation.'</div>
+				<div id="lab_profile_function">'.esc_html__('Site','lab').' : '.$user->location.' • '.esc_html__('Office','lab').' : '.$user->office.' • '.esc_html__('Office Floor','lab').' : '.$user->officeFloor.' • </div>
 				<div id="lab_profile_links">
 					<p><i class="fas fa-at"></i>'.$user->print_mail().'</p>
 					<p id="lab_profile_url">
@@ -83,6 +84,9 @@ class labUser {
 	public $email;
 	public $location;
 	public $function;
+	public $affiliation;
+	public $office;
+	public $officeFloor;
 	public $phone;
 	public $description;
 	public $url;
@@ -95,10 +99,13 @@ class labUser {
 
 	function __construct($id) {
 		$this -> id = $id;
-		$this -> first_name = lab_profile_get_metaKey($id,'first_name');
-		$this -> last_name = lab_profile_get_metaKey($id,'last_name');
-		$this -> location = lab_profile_get_param_metaKey($id,'lab_user_location', AdminParams::PARAMS_SITE_ID);
-		$this -> function = lab_profile_get_param_metaKey($id,'lab_user_function', AdminParams::PARAMS_USER_FUNCTION_ID);
+		$this -> first_name  = lab_profile_get_metaKey($id,'first_name');
+		$this -> last_name   = lab_profile_get_metaKey($id,'last_name');
+		$this -> location    = lab_profile_get_param_metaKey($id,'lab_user_location', AdminParams::PARAMS_SITE_ID);
+		$this -> function    = lab_profile_get_param_metaKey($id,'lab_user_function', AdminParams::PARAMS_USER_FUNCTION_ID);
+		$this -> affiliation = lab_profile_get_param_metaKey($id,'lab_user_employer', AdminParams::PARAMS_EMPLOYER);
+		$this -> office      = lab_profile_get_metaKey($id,'lab_user_office_number');
+		$this -> officeFloor = lab_profile_get_metaKey($id,'lab_user_office_floor');
 		$temp = lab_profile_get_Info($id);
 		$this -> email = $temp[0]->user_email;
 		$this -> url = $temp[0]->user_url;
