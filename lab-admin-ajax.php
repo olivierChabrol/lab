@@ -1270,7 +1270,7 @@ function lab_ldap_add_user() {
                       true);
   $results = $ldap_obj->get_info_from_mail($_POST['email']);
   // if already exist in ldap, only set to WP
-  if ($results != null)
+  if ($results != null && $results["mail"] != null)
   {
     $wpRes = lab_ldap_new_WPUser(strtoupper($results["lastname"])." ".$results["firstname"],$results["mail"],$results["password"],$results['uid']);
     if ($wpRes==true) {
