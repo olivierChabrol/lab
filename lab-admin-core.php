@@ -1022,9 +1022,54 @@ function lab_hal_createTable_hal() {
     lab_admin_createTable_hal_keywords();
 }
 
-function lab_hal_get_publication($userId) {
+/**
+ * List all the hal articles by groups and year
+ *
+ * @param [type] $groups type array
+ * @param [type] $year
+ * @return void
+ */
+function lab_hal_getPublication_by_group($groups, $year = null)
+{
+    global $wpdb;
+    $sql = "";
+    if (is_array($groups))
+    {
+        $sql = "SELECT lh.* FROM `".$wpdb->prefix."lab_hal` as lh JOIN `".$wpdb->prefix."lab_hal_users` AS lhu ON lhu.hal_id=lh.id WHERE lhu.user_id IN (";
+        $sql .= "SELECT DISTINCT lug.user_id FROM `".$wpdb->prefix."lab_groups` AS lg JOIN `".$wpdb->prefix."lab_users_groups` AS lug ON lug.group_id=lg.id WHERE ";
+        foreach($groups as $g) {
+            $sql .= " lg.acronym='".$g."' OR";
+        }
+        $sql = substr($sql, 0, strlen($sql) - 2);
+
+        $sql .= ")";
+        if ($year != null)
+        {
+            $sql .= " AND lh.`producedDate_tdate` >= '".$year."-01-01'  AND lh.`producedDate_tdate` <= '".$year."-12-31'";
+        }
+
+    }
+    else
+    {
+        $sql = "SELECT DISTINCT lh.id, lh.* FROM  `".$wpdb->prefix."lab_groups` AS lg JOIN `".$wpdb->prefix."lab_users_groups` AS lug ON lug.group_id=lg.id JOIN `".$wpdb->prefix."lab_hal_users` AS lhu ON lhu.user_id=lug.user_id JOIN `".$wpdb->prefix."lab_hal` as lh ON lh.id=lhu.hal_id WHERE lg.acronym='".$groups."'";
+        if ($year != null)
+        {
+            $sql .= " AND lh.`producedDate_tdate` >= '".$year."-01-01'  AND lh.`producedDate_tdate` <= '".$year."-12-31'";
+        }
+    }
+    $sql .= " ORDER BY `lh`.`producedDate_tdate` DESC";
+    return $wpdb->get_results($sql);
+    //return $sql;
+}
+
+function lab_hal_get_publication($userId, $year = null) {
     global $wpdb;
     $sql = "SELECT lh.* FROM `".$wpdb->prefix."lab_hal` as lh JOIN `".$wpdb->prefix."lab_hal_users` AS lhu ON lhu.hal_id=lh.id WHERE lhu.user_id=".$userId;
+    
+    if ($year != null)
+    {
+        $sql .= " AND `producedDate_tdate` >= '".$year."-01-01'  AND `producedDate_tdate` <= '".$year."-12-31'";
+    }
     return $wpdb->get_results($sql);
 }
 
