@@ -630,7 +630,7 @@ function formatGroupsName($userId) {
     }
     $items = array();
     foreach($groupNames as $g) {
-        $items[] ="<a href=\"$g->url\">" . esc_html($g->group_name) . "</a>";
+        $items[] ="<a href=\"$g->url\" target=\"_blank\">" . esc_html($g->group_name) . "</a>";
     }
     return join(", ", $items);
 }
