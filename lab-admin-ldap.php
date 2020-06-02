@@ -204,7 +204,7 @@ class LAB_LDAP {
 
 
     public function get_info_from_mail($mail) {
-        $filter    = "(mail=" . $uid . ")";
+        $filter    = "(mail=" . $mail . ")";
         $attrRead  = array("givenname", "sn", "mail", "uid", "password", "homedirectory");
         $result    = ldap_search($this->ldap_link, $this->base, $filter, $attrRead) 
             or die ("Error in query");
