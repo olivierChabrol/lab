@@ -37,6 +37,9 @@ function lab_admin_username_get($userId) {
         if ($r->meta_key == 'lab_user_office_floor') {
             $items['user_office_floor'] = $r->meta_value;
         }
+        if ($r->meta_key == 'lab_user_funding') {
+            $items['user_funding'] = $r->meta_value;
+        }
     }
     
     return $items;
@@ -223,6 +226,8 @@ function lab_admin_initTable_param() {
             (11, 1, 'LDAP BASE', NULL),
             (12, 1, 'LDAP LOGIN', NULL),
             (13, 1, 'LDAP PASSWORD', NULL),
+            (14, 1, 'LDAP TLS', NULL),
+            (15, 1, 'LDAP ENABLE', NULL),
             (NULL, 2, 'Equipe', NULL),
             (NULL, 2, 'Groupe', NULL),
             (NULL, 3, 'Clé', NULL),
@@ -438,6 +443,7 @@ function lab_admin_initTable_usermeta()
     lab_userMetaData_create_metaKeys("user_office_number", "");
     lab_userMetaData_create_metaKeys("user_office_floor", "");
     lab_userMetaData_create_metaKeys("user_phone", "");
+    lab_userMetaData_create_metaKeys("user_funding", "");
     lab_userMetaData_create_metaKeys("user_left", null);
     lab_userMetaData_create_metaKeys("user_slug", null);
     lab_userMetaData_create_metaKeys("user_position", null);
@@ -624,7 +630,7 @@ function formatGroupsName($userId) {
     }
     $items = array();
     foreach($groupNames as $g) {
-        $items[] ="<a href=\"$g->url\">" . esc_html($g->group_name) . "</a>";
+        $items[] ="<a href=\"$g->url\" target=\"_blank\">" . esc_html($g->group_name) . "</a>";
     }
     return join(", ", $items);
 }
@@ -1016,9 +1022,55 @@ function lab_hal_createTable_hal() {
     lab_admin_createTable_hal_keywords();
 }
 
-function lab_hal_get_publication($userId) {
+/**
+ * List all the hal articles by groups and year
+ *
+ * @param [type] $groups type array
+ * @param [type] $year
+ * @return void
+ */
+function lab_hal_getPublication_by_group($groups, $year = null)
+{
+    global $wpdb;
+    $sql = "";
+    if (is_array($groups))
+    {
+        $sql = "SELECT lh.* FROM `".$wpdb->prefix."lab_hal` as lh JOIN `".$wpdb->prefix."lab_hal_users` AS lhu ON lhu.hal_id=lh.id WHERE lhu.user_id IN (";
+        $sql .= "SELECT DISTINCT lug.user_id FROM `".$wpdb->prefix."lab_groups` AS lg JOIN `".$wpdb->prefix."lab_users_groups` AS lug ON lug.group_id=lg.id WHERE ";
+        foreach($groups as $g) {
+            $sql .= " lg.acronym='".$g."' OR";
+        }
+        $sql = substr($sql, 0, strlen($sql) - 2);
+
+        $sql .= ")";
+        if ($year != null)
+        {
+            $sql .= " AND lh.`producedDate_tdate` >= '".$year."-01-01'  AND lh.`producedDate_tdate` <= '".$year."-12-31'";
+        }
+
+    }
+    else
+    {
+        $sql = "SELECT DISTINCT lh.id, lh.* FROM  `".$wpdb->prefix."lab_groups` AS lg JOIN `".$wpdb->prefix."lab_users_groups` AS lug ON lug.group_id=lg.id JOIN `".$wpdb->prefix."lab_hal_users` AS lhu ON lhu.user_id=lug.user_id JOIN `".$wpdb->prefix."lab_hal` as lh ON lh.id=lhu.hal_id WHERE lg.acronym='".$groups."'";
+        if ($year != null)
+        {
+            $sql .= " AND lh.`producedDate_tdate` >= '".$year."-01-01'  AND lh.`producedDate_tdate` <= '".$year."-12-31'";
+        }
+    }
+    $sql .= " ORDER BY `lh`.`producedDate_tdate` DESC";
+    return $wpdb->get_results($sql);
+    //return $sql;
+}
+
+function lab_hal_get_publication($userId, $year = null) {
     global $wpdb;
     $sql = "SELECT lh.* FROM `".$wpdb->prefix."lab_hal` as lh JOIN `".$wpdb->prefix."lab_hal_users` AS lhu ON lhu.hal_id=lh.id WHERE lhu.user_id=".$userId;
+    
+    if ($year != null)
+    {
+        $sql .= " AND `producedDate_tdate` >= '".$year."-01-01'  AND `producedDate_tdate` <= '".$year."-12-31'";
+    }
+    $sql .= " ORDER BY `lh`.`producedDate_tdate` DESC";
     return $wpdb->get_results($sql);
 }
 

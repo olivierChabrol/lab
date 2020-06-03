@@ -40,6 +40,7 @@ require_once(LAB_DIR_PATH."admin/view/lab-admin-tab-groups.php");
 require_once(LAB_DIR_PATH."admin/view/lab-admin-tab-params.php");
 require_once(LAB_DIR_PATH."admin/view/lab-admin-tab-users.php");
 require_once(LAB_DIR_PATH."admin/view/lab-admin-tab-settings.php");
+require_once(LAB_DIR_PATH."admin/view/lab-admin-tab-ldap.php");
 require_once(LAB_DIR_PATH."lab-admin-ldap.php");
 require_once("lab-html-helper.php");
 require_once("lab-utils.php");
@@ -118,15 +119,17 @@ add_action('admin_enqueue_scripts', 'admin_enqueue');
 register_activation_hook( __FILE__, 'lab_activation_hook' );
 register_uninstall_hook(__FILE__, 'lab_uninstall_hook');
   
-/**
+/*
  * Ajoute le widget wphal à l'initialisation des widgets
  */
 add_action('widgets_init', 'wplab_init');
 function myplugin_load_textdomain() {
+  /*
   LAB_LDAP::getInstance(AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_URL)[0]->value,
                         AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_BASE)[0]->value,
                         AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_LOGIN)[0]->value,
                         AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_PASSWORD)[0]->value);
+                        //*/
   load_plugin_textdomain( 'lab', false, '/lab/lang' ); 
 }
 
@@ -206,7 +209,8 @@ function wp_lab_menu()
 {
   add_menu_page('Options', 'LAB', 'edit_plugins', 'wp-lab.php', 'wp_lab_option', '', 21);
   add_menu_page("KeyRing","KeyRing",'keyring','lab_keyring','lab_keyring','dashicons-admin-network',22);
-  add_menu_page("LDAP Admin","LDAP Admin",'edit_plugins','lab_ldap','lab_ldap','dashicons-id-alt',23);
+  //add_menu_page("LDAP Admin","LDAP Admin",'edit_plugins','lab_ldap','lab_ldap','dashicons-id-alt',23);
+  add_submenu_page( 'wp-lab.php', "LDAP Admin", "LDAP Admin",'edit_plugins', 'lab_ldap', 'lab_ldap_test', 24 );
   if ( ! current_user_can('edit_plugins') ) {
     remove_menu_page('wpfastestcacheoptions');
     remove_menu_page('options-general.php');
@@ -225,6 +229,7 @@ function admin_enqueue()
   wp_enqueue_script('fontAwesome',"https://kit.fontawesome.com/341f99cb81.js",array(),"3.2",true);
   wp_enqueue_script('SpectrumJS', plugins_url('js/spectrum.js',__FILE__), array('jquery','wp-i18n'), '1.8.0', true);
   wp_enqueue_style('SpectrumCSS',plugins_url('css/spectrum.css',__FILE__));
+  wp_enqueue_style('bootstrap',plugins_url('css/bootstrap.css',__FILE__));
   //Plugin permettant d'afficher les toasts :
   wp_enqueue_style('jqueryToastCSS',plugins_url('css/jquery.toast.css',__FILE__));
   wp_enqueue_script('jqueryToastJS',plugins_url('js/jquery.toast.js',__FILE__), array('jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog'),"1.3.2",false);
@@ -267,6 +272,7 @@ function wp_lab_fe_enqueues()
   wp_set_script_translations( 'lab-fe', 'lab', dirname(__FILE__).'/lang' );
   wp_enqueue_script('fontAwesome',"https://kit.fontawesome.com/341f99cb81.js",array(),"3.2",true);
   wp_enqueue_style('InvitationCSS',plugins_url('css/lab-invitation.css',__FILE__));
+  wp_enqueue_style('LdapCSS',plugins_url('css/lab-ldap.css',__FILE__));
   wp_enqueue_style('CountrySelectCSS',plugins_url('css/countrySelect.min.css',__FILE__));
   wp_enqueue_script('CountrySelectJS',plugins_url('js/countrySelect.min.js',__FILE__),array('jquery'),"3.5",false);
   wp_enqueue_style('TelInputCSS',plugins_url('css/intlTelInput.min.css',__FILE__));

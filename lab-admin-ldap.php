@@ -8,23 +8,6 @@
  *  a requested person from LDAP. It needs the mail of the person to work.
  * 
  **************************************************************************************************************/
-function get_ldap_data_from_mail($mail) {
-    $lc        = ldap_connect("localhost","389");
-    $base      = "ou=accounts,dc=i2m,dc=univ-amu,dc=fr";
-    $filter    = "(mail=" . $mail . ")";
-    $attrRead  = array("givenname", "sn", "mail", "uid");
-    $result    = ldap_search($lc, $base, $filter, $attrRead) 
-        or die ("Error in query");
-    $entry     = ldap_get_entries($lc,$result);
-
-    $surname = $entry[0]["sn"][0];
-    $name    = $entry[0]["givenname"][0];
-    $login   = $entry[0]["uid"][0];
-
-    ldap_close($lc);
-    return array($surname, $name, $login);
-}
-
 function lab_ldap_getName($cn) {
   $list = explode(" ",$cn);
   $i = 0;
@@ -36,7 +19,7 @@ function lab_ldap_getName($cn) {
           $i++;
       }
   }
-  return array('first_name'=>$first_name,'last_name'=>$last_name);
+  return array('first_name'=>$last_name,'last_name'=>$first_name);
 }
 
 class LAB_LDAP {
@@ -49,7 +32,7 @@ class LAB_LDAP {
     private $base;
     private $ldap_admin_login;
     private $ldap_admin_password;
-    private static $_instance = null;
+    private static $_instance = [];
     private $ldap_link;
 
     /**
@@ -66,6 +49,8 @@ class LAB_LDAP {
         $this->ldap_link = ldap_connect($this->ldap_url)
             or die ("URL du serveur LDAP incorrecte : ".$this->ldap_url);
         ldap_set_option($this->ldap_link, LDAP_OPT_PROTOCOL_VERSION, 3);
+        ldap_set_option($this->ldap_link, LDAP_OPT_REFERRALS, 0);
+        ldap_start_tls($this->ldap_link);
     }
 
     public function reconnect()
@@ -90,19 +75,35 @@ class LAB_LDAP {
     * @param void
     * @return LAB_LDAP
     */
-    public static function getInstance($url = null, $base = null, $login=null, $password=null) {
-        if(is_null(self::$_instance)) {
+    public static function getInstance($url = null, $base = null, $login=null, $password=null, $forceReload = false) {
+
+        $cls = static::class;
+        if (!isset(self::$_instance[$cls]) || $forceReload) {
+            if (isset(self::$_instance[$cls])) {
+                self::$_instance->close();
+            }
+            self::$_instance[$cls] = new LAB_LDAP($url, $base, $login, $password);
+        }
+
+        return self::$_instance[$cls];
+/*
+        if(is_null(self::$_instance) || $forceReload) {
+            if ($forceReloadi && self::$_instance != null) {
+                self::$_instance->close();
+            }
+
             if ($url == null || $base == null || $login == null || $password== null) {
-                echo "Please Fill all LDAP params";
+                //echo "Please Fill all LDAP params";
                 return;
             } else {
                 self::$_instance = new LAB_LDAP($url, $base, $login, $password);
             }
         }
     return self::$_instance;
+    //*/
     }
     public function bindAdmin() {
-        ldap_bind($this->ldap_link,$this->ldap_admin_login.",".$this->base,$this->ldap_admin_password);
+        return ldap_bind($this->ldap_link,$this->ldap_admin_login.",".$this->base,$this->ldap_admin_password);
     }
     public function getLink() {
         return $this->ldap_link;
@@ -114,10 +115,10 @@ class LAB_LDAP {
         $this->base = $base;
     }
     public function getPassword() {
-        return $this->password;
+        return $this->ldap_admin_password;
     }
     public function setPassword($password) {
-        $this->password = $password;
+        $this->ldap_admin_password = $password;
     }
     public function getHost() {
         return $this->host;
@@ -141,16 +142,59 @@ class LAB_LDAP {
         return ldap_count_entries($this->ldap_link,$result);
     }
 
+    public function get_ldap_data_from_mail($mail) {
+        $filter    = "(mail=" . $mail . ")";
+        $attrRead  = array("givenname", "sn", "mail", "uid");
+        $result    = ldap_search($this->ldap_link, $this->base, $filter, $attrRead) 
+            or die ("Error in query");
+        $entry     = ldap_get_entries($lc,$result);
+    
+        $surname = $entry[0]["sn"][0];
+        $name    = $entry[0]["givenname"][0];
+        $login   = $entry[0]["uid"][0];
+
+        return array($surname, $name, $login);
+    }
+
+    function editUser($uid, $givenName, $sn, $uidNumber, $homeDirectory, $mail) {
+        $info                  = array();
+        $info["uid"]           = $uid;
+        $info["givenname"]     = $givenName;
+        $info["sn"]            = $sn;
+        $info["uidnumber"]     = $uidNumber;
+        $info["homedirectory"] = $homeDirectory;
+        $info["mail"]          = $mail;
+        $res = ldap_mod_replace($this->ldap_link,"uid=$uid,ou=accounts,".$this->base,$info);
+    }
+
+    public function get_ldap_data_from_uid($uid) {
+        $filter    = "(uid=" . $uid . ")";
+        $attrRead  = array("givenname", "sn", "mail", "uid");
+        $result    = ldap_search($this->ldap_link, $this->base, $filter, $attrRead) 
+            or die ("Error in query");
+        $entry     = ldap_get_entries($this->ldap_link,$result);
+    
+        $surname = $entry[0]["sn"][0];
+        $name    = $entry[0]["givenname"][0];
+        $login   = $entry[0]["uid"][0];
+
+        return array($surname, $name, $login);
+    }
+
     /**
      * Search and sort over all uids
      *
      * @return ldapresult
      */
-    public function searchAccounts() {
-        $result = ldap_search($this->ldap_link,'ou=accounts,'.$this->base,"uid=*");
+    public function searchAccounts($uid = "*") {
+        $result = ldap_search($this->ldap_link,'ou=accounts,'.$this->base,"uid=".$uid);
         ldap_sort($this->ldap_link,$result,'cn');
         return $result;
     }
+    public function searchBy($filter, $attr) {
+        return ldap_search($this->ldap_link, $this->base, $filter, $attr);
+    }
+
     public function search($dn,$filter) {
         return ldap_search($this->ldap_link,"$dn,".$this->base,$filter);
     }
@@ -158,9 +202,50 @@ class LAB_LDAP {
         return ldap_get_entries($this->ldap_link,$result)[$i][$field][0];
     }
 
+
+    public function get_info_from_mail($mail) {
+        $filter    = "(mail=" . $mail . ")";
+        $attrRead  = array("givenname", "sn", "mail", "uid", "password", "homedirectory");
+        $result    = ldap_search($this->ldap_link, $this->base, $filter, $attrRead) 
+            or die ("Error in query");
+        $entry     = ldap_get_entries($this->ldap_link,$result);
+    
+        $surname  = $entry[0]["sn"][0];
+        $name     = $entry[0]["givenname"][0];
+        $email    = $entry[0]["mail"][0];
+        $password = $entry[0]["password"][0];
+        $uid      = $entry[0]["uid"][0];
+    
+        return array("lastname"=>$name, "firstname"=>$surname, "mail"=>$email, "password"=>$password, "uid"=>$uid);
+    }
+    public function get_info_from_uid($uid) {
+        $filter    = "(uid=" . $uid . ")";
+        $attrRead  = array("givenname", "sn", "mail", "uid", "uidnumber", "homedirectory");
+        $result    = ldap_search($this->ldap_link, $this->base, $filter, $attrRead) 
+            or die ("Error in query");
+        $entry     = ldap_get_entries($this->ldap_link,$result);
+        if ($entry["count"] == 0)
+        {
+            return null;
+        }
+    
+        $surname = $entry[0]["sn"][0];
+        $name    = $entry[0]["givenname"][0];
+        $email   = $entry[0]["mail"][0];
+        $uidNumber = $entry[0]["uidnumber"][0];
+        $homeDirectory = $entry[0]["homedirectory"][0];
+    
+        return array($name, $surname, $email, $uidNumber, $homeDirectory);
+    }
+
     public function addEntry($path,$fields) {
         $this->bindAdmin();
-        ldap_add($this->ldap_link,"$path,".$this->base,$fields);
+        error_log("[addEntry] base : ".$this->base);
+        error_log("[addEntry] bind : ".print_r( $b, true ));
+        ldap_add($this->ldap_link,$path.",".$this->base,$fields);
+        error_log("[addEntry] ldap_add".$path.",".$this->base." / ".print_r( $fields, true ));
+
+//        ldap_add($this->ldap_link,"$path,".$this->base,$fields);
         return ldap_errno($this->ldap_link);
     }
     public function deleteEntry($path) {
@@ -176,6 +261,7 @@ function lab_ldap_new_WPUser($name,$email,$password,$uid) {
     if ($wpdb->get_var($sql)>0) {
         return "WP User already exists";
     }
+    $ldap = LAB_LDAP::getInstance();
     $userData = array(
       'user_login'=>$uid,
       'user_pass'=>substr($password,0,7)=='{CRYPT}' ? 'hahaha' : substr($password,0,7),
@@ -188,7 +274,7 @@ function lab_ldap_new_WPUser($name,$email,$password,$uid) {
     $user_id = wp_insert_user($userData);
     $sql = "INSERT INTO ".$wpdb->prefix."usermeta 
         (`user_id`, `meta_key`, `meta_value`) VALUES
-        ($user_id, 'mo_ldap_user_dn', 'uid=$uid,ou=accounts,dc=i2m,dc=univ-amu,dc=fr');";
+        ($user_id, 'mo_ldap_user_dn', 'uid=$uid,ou=accounts,'".$ldap->getBase()."');";
     if ($wpdb->query($sql)===false) {
         return $wpdb->last_error;
     }
@@ -196,8 +282,8 @@ function lab_ldap_new_WPUser($name,$email,$password,$uid) {
     //lab_admin_add_new_user_metadata($user_id);
 }
 
-function lab_ldap_addUser($first_name, $last_name,$email,$password,$uid,$organization="I2M") {
-    $ldap_obj = LAB_LDAP::getInstance();
+function lab_ldap_addUser($ldap_obj, $first_name, $last_name,$email,$password,$uid,$organization="I2M") {
+    //$ldap_obj = LAB_LDAP::getInstance();
     $info["objectclass"][0] = "top";
     $info["objectclass"][1] = "person";
     $info["objectclass"][2] = "inetOrgPerson";
@@ -232,8 +318,8 @@ function lab_ldap_addUser($first_name, $last_name,$email,$password,$uid,$organiz
     return $res1;
 }
 
-function ldap_delete_user($uid) {
-    $ldap_obj=LAB_LDAP::getInstance();
+function ldap_delete_user($ldap_obj,$uid) {
+    //$ldap_obj=LAB_LDAP::getInstance();
     $home = explode("/",$ldap_obj->getEntries($ldap_obj->search("ou=accounts","uid=$uid"), 0, "homedirectory"))[2];
     $homeEntry = (ldap_get_entries($ldap_obj->getLink(),$ldap_obj->search("ou=auto.home","cn=$home")));
     $errorNo = 0;

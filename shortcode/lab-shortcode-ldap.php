@@ -3,31 +3,19 @@
  * File Name: lab-shortcode-ldap.php
  * Description: shortcode pour afficher une page de gestion des utilisateurs dans le LDAP
  * Authors: Ivan Ivanov, Lucas Urgenti, Astrid Beyer
- * Version: 0.5
+ * Version: 0.7
  * 
  */
 
-function lab_ldap($args) {
-    $BASE = "dc=i2m,dc=univ-amu,dc=fr";
-    $lc = ldap_connect("localhost","389")
-        or die ("Impossible de se connecter au serveur LDAP.");
-    ldap_set_option($lc, LDAP_OPT_PROTOCOL_VERSION,3);
-    $lb = ldap_bind($lc, 'cn=admin,'.$BASE,'root');
+ function lab_ldap_test() {
+    echo(lab_ldap());
+ }
 
-    /* **** CONNEXION TEST - SUCCESS! [do not erase if you want to test] ****
-    if($lb) {
-        echo("Connecté avec succès ! ");
-    } else {
-        $errname = ldap_error($lc);
-        $errno   = ldap_errno($lc);
-        echo "Problème à la connexion : " . $errno . " - " . $errname . "</br>";
-    }
-    */
-
-    //TODO : pagination, bouton détail (récupère attributs LDAP)
+function lab_ldap($args=null) {
     $ldapStr = '
+    <button type="button" class="btn btn-warning" id="lab_ldap_button_reconnect">'.esc_html('Reconnect LDAP','lab').'</button>
     <div class="d-flex justify-content-between bd-highlight mb-3">
-        <div class="p-2">
+        <div class="p-2" id="p-2-list">
             <h3>' . esc_html("Parcourir l'annuaire LDAP", "lab") . '</h3>
             <div>    
                 <label for="lab_results_number">'.esc_html__("Nombre de résultats par page","lab").' : </label>
@@ -46,14 +34,10 @@ function lab_ldap($args) {
                             <th>'.esc_html__("Action", "lab").'</th>
                         <tr>
                     </thead>
-                <tbody id="lab_ldapListBody">';
-    
-    //$ldapStr .= lab_ldap_list_update($lc,$BASE);
-
-    $ldapStr .= '           
-        </tbody>
-    </table>
-    </div>';
+                    <tbody id="lab_ldapListBody">
+                    </tbody>
+                </table>
+            </div>';
 
     $ldapStr .= '<div id="lab_pages">'.lab_ldap_pagination(1,1).'</div></div>
     <div class="p-2"> <br/><br/></div>';
@@ -76,10 +60,42 @@ function lab_ldap($args) {
                         <li><b>'.esc_html("Login","lab").'</b> : '    . (get_ldap_data_from_mail($mail)[2]) . '</li>
                     </ul></div>';
     }
-    $ldapStr .= '</div>';
+    $ldapStr .= editModal();
+    //////////////////////////////A Vérifier div ////////////////////////////
+    $ldapStr .= '   </div>
+                </div>
+                <div id="lab_ldap_details_container" wrapped="true">
+                    <h2 id="lab_ldap_detail_title" style="cursor:pointer; display:none;">Détails de l\'utilisateur <i class="fas fa-arrow-up"></i></h2>
+                    <div id="lab_ldap_details" style="display:none" class="table-responsive">
+                        <table class="table table-striped">
+                            <tbody>
+                                <tr>
+                                    <th>Nom</th>
+                                    <td id="lab_ldap_name"></td>
+                                </tr>
+                                <tr>
+                                    <th>Prénom</th>
+                                    <td id="lab_ldap_surname"></td>
+                                </tr>
+                                <tr>
+                                    <th>Email</th>
+                                    <td id="lab_ldap_email"></td>
+                                </tr>
+                                <tr>
+                                    <th>Numéro uid</th>
+                                    <td id="lab_ldap_uidNumber"></td>
+                                </tr>
+                                <tr>
+                                    <th>Répertoire personnel</th>
+                                    <td id="lab_ldap_homeDirectory"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>';
     return $ldapStr;
-
 }
+
 function lab_ldap_pagination($pages, $currentPage) {
     $out = '<ul id="pagination-digg">';
     $out .= '<li class="page_previous'.($currentPage>1 ? '">' : ' gris">').'« Précédent</li>';
@@ -108,6 +124,51 @@ function lab_ldap_pagination($pages, $currentPage) {
     return $out;
 }
 
-//get_ldap_data_from_mail("asaf1985@hotmail.com");
+/**
+ * Generate modal to edit
+ *
+ * @return void
+ */
+function editModal()
+{
+    $str = '<div class="modal" id="lab_admin_ldap_edit" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
 
-?>
+            <form action="javascript:lab_ldap_editUser()">
+                <div class="modal-content">
+                    <div class="modal-header">
+                    <h5 class="modal-title">' . esc_html("Modifier une entrée LDAP","lab") . '</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            <input id="lab_ldap_edit_uid" name="uid" type="hidden"/>
+
+                            <label for="lab_ldap_edit_givenName"><b>'.esc_html("Prénom","lab").'</b> (givenName) :</label>
+                            <input type="text" id="lab_ldap_edit_givenName" name="givenName"/></br>
+
+                            <label for="lab_ldap_edit_sn"><b>'.esc_html("Nom","lab").'</b> (sn) :</label>
+                            <input type="text" id="lab_ldap_edit_sn" name="sn"/></br>
+
+                            <label for="lab_ldap_edit_uidNumber"><b>'.esc_html("Numéro","lab").'</b> (uidNumber) :</label>
+                            <input type="text" id="lab_ldap_edit_uidNumber" name="uidNumber"/></br>
+
+                            <label for="lab_ldap_edit_homeDirectory"><b>Autohome</b> (homeDirectory) :</label>
+                            <input type="text" id="lab_ldap_edit_homeDirectory" name="homeDirectory"/></br>
+
+                            <label for="lab_ldap_edit_mail"><b>Mail</b> (mail) :</label>
+                            <input type="text" id="lab_ldap_edit_mail" name="mail"/></br>
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                    <button type="button submit" class="btn btn-primary" id="saveEditLdapUser" data-dismiss="modal">'.esc_html("Sauvegarder","lab").'</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">'.esc_html("Fermer","lab").'</button>
+                    </div>
+                </div>
+            </form>
+            </div>
+        </div>';
+    return $str;
+}

@@ -21,6 +21,10 @@ function lab_admin_tab_user() {
         </td>
       </tr>
       <tr>
+        <td colspan="2"> <input type="text" id="lab_user_firstname" value="" placeholder="<?php esc_html_e('First name','lab') ?>"/><input type="text" id="lab_user_lastname" value=""  placeholder="<?php esc_html_e('Last name','lab') ?>"/>
+        </td>
+      </tr>
+      <tr>
         <td>
           <label for="lab_user_function"><?php esc_html_e('User function','lab') ?></label>
         </td>
@@ -34,6 +38,14 @@ function lab_admin_tab_user() {
         </td>
         <td>
           <?php lab_html_select("lab_user_employer", "lab_user_employer", "", lab_admin_get_params_userEmployer, null, array("value"=>"","label"=>"None"), ""); ?>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label for="lab_user_funding"><?php esc_html_e('Funding','lab') ?></label>
+        </td>
+        <td>
+          <?php lab_html_select("lab_user_funding", "lab_user_funding", "", lab_admin_get_params_userFunding, null, array("value"=>"","label"=>"None"), ""); ?>
         </td>
       </tr>
       <tr>
@@ -73,17 +85,37 @@ function lab_admin_tab_user() {
           <label for="lab_user_left"><?php esc_html_e('Parti','lab') ?></label>
         </td>
         <td>
-          <input type="checkbox" id="lab_user_left"> <label for="lab_user_left_date"><?php esc_html_e('Date de départ','lab') ?></label><input type="text" id="lab_user_left_date">
+          <input type="checkbox" id="lab_user_left"> <label for="lab_user_left_date"><?php esc_html_e('Date de départ','lab') ?></label><input type="date" id="lab_user_left_date">
           <input type="hidden" id="lab_usermeta_id">
         </td>
       </tr>
       <tr>
         <td colspan="2">
           <a href="#" class="page-title-action" id="lab_user_button_save_left"><?php esc_html_e('Modifier le statut de l\'utilisateur','lab') ?></a>
+          <a href="#" class="page-title-action" id="lab_user_button_delete"><?php esc_html_e('Delete user','lab') ?></a>
         </td>
       </tr>
     </table>
   </form>
+  <div class="modal" tabindex="-1" role="dialog" id="lab_user_delete_modal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"><?php esc_html_e('Delete user','lab') ?></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"  id="lab_user_delete_close_icon">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p><?php esc_html_e('Keep user data in our web site ?','lab') ?><input type="checkbox" id="lab_user_keep_data"></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="lab_user_delete">Save changes</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" id="lab_user_delete_close">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
   <form style="flex-grow:1;">
     <h3><?php esc_html_e('Historique de l\'utilisateur','lab') ?></h3>
     <div>

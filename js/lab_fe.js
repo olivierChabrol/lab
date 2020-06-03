@@ -4,7 +4,6 @@ const { __, _x, _n, sprintf } = wp.i18n;
 /*** DIRECTORY ***/ 
 
 jQuery(function($){
-
   $("#lab-directory-group-id").on('change', function() {
     $("#groupSearch").val($(this).val());
     letter = $("#letterSearch").val();
@@ -757,70 +756,4 @@ function lab_pagination(pages, currentPage) {
       });
     }
   });
-}
-/********** LDAP ***********/
-
-function lab_pagination_ldap(pages, currentPage) {
-  data = {
-    'action': 'lab_ldap_pagination',
-    'pages': pages,
-    'currentPage': currentPage
-  };
-  jQuery.post(LAB.ajaxurl,data,function(response){
-    if (response.success) {
-      jQuery("#pagination-digg")[0].outerHTML=response.data;
-      $(".page_previous:not(.gris)").click(function() {
-        currentPage = parseInt($("#active").attr("page"));
-        $("#active").attr("id","");
-        $(".page_number[page=" + (currentPage - 1) + "]").attr("id","active");
-        lab_update_ldap_list();
-      });
-      $(".page_next:not(.gris)").click(function() {
-        currentPage = parseInt($("#active").attr("page"));
-        $("#active").attr("id","");
-        $(".page_number[page=" + (currentPage + 1) + "]").attr("id","active");
-        lab_update_ldap_list();
-      });
-      $(".page_number").click(function() {
-        $("#active").attr("id","");
-        $(this).attr("id","active");
-        lab_update_ldap_list();
-      });
-    }
-  });
-}
-
-function lab_update_ldap_list() {
-  jQuery(function($) {
-    data = {
-      //sortBy: $(".lab_column_name[sel=true]").attr('name'),
-      //order: $(".lab_column_name[sel=true]").attr('order'),
-      page: $("#active").attr("page"),
-      value: $("#lab_results_number").val(),
-      //status: statuses,
-      //year: $("#lab_filter_year").val(),
-    };
-   
-    data['action'] = 'lab_ldap_list_update';
-    $.post(LAB.ajaxurl,data, function(response) {
-      $("#lab_ldapListBody").html(response.data[1]);
-      pages = Math.ceil(response.data[0]/data['value']);
-      currentPage = data['page']<=pages ? data['page'] : pages;
-      lab_pagination_ldap(pages,currentPage);
-    });
-  });
-};
-
-function LABLoadLDAPList()
-{
-  lab_update_ldap_list();
-  jQuery(function($) {
-    $("#lab_results_number").change(function() {
-      lab_update_ldap_list();
-    });
-  });
-};
-
-if (document.querySelector("#lab_ldapListBody")!=null) {
-  LABLoadLDAPList();
 }

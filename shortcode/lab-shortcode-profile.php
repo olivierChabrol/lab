@@ -15,8 +15,8 @@ function lab_profile($id=0) {
 		$user = new labUser($id);
 	}
 	$is_current_user = $user->id == get_current_user_id() ? true : false; 
-	$HalID_URL = "https://api.archives-ouvertes.fr/search/?q=*:*&fq=authIdHal_s:(".$user->hal_id.")&fl=docid,citationFull_s,producedDate_tdate,uri_s,title_s,journalTitle_s&sort=producedDate_tdate+desc&wt=json&json.nl=arrarr";
-	$HalName_URL = "https://api.archives-ouvertes.fr/search/?q=authLastNameFirstName_s:%22".$user->hal_name."%22&fl=docid,citationFull_s,producedDate_tdate,uri_s,title_s,journalTitle_s&sort=producedDate_tdate+desc&wt=json&json.nl=arrarr";
+	$HalID_URL = "https://api.archives-ouvertes.fr/search/?q=*:*&fq=authIdHal_s:(".$user->hal_id.")&fl=docid,citationFull_s,producedDate_tdate,uri_s,title_s,journalTitle_s&sort=producedDate_tdate+desc&wt=xml";
+	$HalName_URL = "https://api.archives-ouvertes.fr/search/?q=authLastNameFirstName_s:%22".$user->hal_name."%22&fl=docid,citationFull_s,producedDate_tdate,uri_s,title_s,journalTitle_s&sort=producedDate_tdate+desc&wt=xml";
 	$editIcons = '<div id="lab_profile_icons" class="lab_profile_edit">
 					<i title="'.esc_html__("Modifier la couleur d'arrière plan","lab").'" style="display:none" id="lab_profile_colorpicker" class="fas fa-fill-drip lab_profile_edit"></i>
 					<i id="lab_profile_edit" title="'.esc_html__('Modifier le profil','lab').'" class="fas fa-user-edit"></i> 
@@ -33,7 +33,7 @@ function lab_profile($id=0) {
 					</div>';
 	$editSocial ='<p><input style="display:none;" type="text" class="lab_profile_edit" id="lab_profile_edit_social" placeholder="'.esc_html__("Cliquez sur l'icône d'un réseau social pour le modifier","lab").'"/></p>';
 	$halFields = '<p id="lab_profile_halID">
-					<span class="lab_current">'.(strlen($user->hal_id) ? '<i>'.esc_html__('Votre ID HAL','lab').' : </i>'.$user->hal_id : '<i>'.esc_html__('Vous n\'avez pas défini votre ID HAL','lab').'</i>').'</span>
+					<span class="lab_current">'.(strlen($user->hal_id) ? '<i>'.esc_html__('Votre ID HAL','lab').' : </i>'.$user->hal_id : '<i>'.esc_html__('Vous n\'avez pas défini votre ID HAL','lab').'</i>&nbsp;<a href="https://doc.archives-ouvertes.fr/identifiant-auteur-idhal-cv/" target="hal"><i class="fa fa-info"></i></a>').'</span>
 					<input style="display:none;" type="text" class="lab_profile_edit" id="lab_profile_edit_halID" placeholder="ID HAL" value="' . $user->hal_id .'"/><a id="lab_profile_testHal_id" target="_blank" style="display:none" class="lab_profile_edit" href="'.$HalID_URL.'">'.esc_html__('Tester sur HAL','lab').'</a>
 				  </p>
 				  <p id="lab_profile_halName">
@@ -52,7 +52,8 @@ function lab_profile($id=0) {
 				<div id="lab_profile_name"><span id="lab_profile_name_span">'.$user->first_name.' • '.$user->last_name.'</span>'
 					.($is_current_user || current_user_can('edit_users') ? $editIcons : ' ').
 				'</div>
-				<div id="lab_profile_function">'.$user->function.' • '.esc_html__('site','lab').' : '.$user->location.'</div>
+				<div id="lab_profile_function">'.$user->function.' • '.esc_html__('Affiliation','lab').' : '.$user->affiliation.'</div>
+				<div id="lab_profile_function">'.esc_html__('Site','lab').' : '.$user->location.' • '.esc_html__('Office','lab').' : '.$user->office.' • '.esc_html__('Office Floor','lab').' : '.$user->officeFloor.' • </div>
 				<div id="lab_profile_links">
 					<p><i class="fas fa-at"></i>'.$user->print_mail().'</p>
 					<p id="lab_profile_url">
@@ -83,6 +84,9 @@ class labUser {
 	public $email;
 	public $location;
 	public $function;
+	public $affiliation;
+	public $office;
+	public $officeFloor;
 	public $phone;
 	public $description;
 	public $url;
@@ -95,10 +99,13 @@ class labUser {
 
 	function __construct($id) {
 		$this -> id = $id;
-		$this -> first_name = lab_profile_get_metaKey($id,'first_name');
-		$this -> last_name = lab_profile_get_metaKey($id,'last_name');
-		$this -> location = lab_profile_get_param_metaKey($id,'lab_user_location', AdminParams::PARAMS_SITE_ID);
-		$this -> function = lab_profile_get_param_metaKey($id,'lab_user_function', AdminParams::PARAMS_USER_FUNCTION_ID);
+		$this -> first_name  = lab_profile_get_metaKey($id,'first_name');
+		$this -> last_name   = lab_profile_get_metaKey($id,'last_name');
+		$this -> location    = lab_profile_get_param_metaKey($id,'lab_user_location', AdminParams::PARAMS_SITE_ID);
+		$this -> function    = lab_profile_get_param_metaKey($id,'lab_user_function', AdminParams::PARAMS_USER_FUNCTION_ID);
+		$this -> affiliation = lab_profile_get_param_metaKey($id,'lab_user_employer', AdminParams::PARAMS_EMPLOYER);
+		$this -> office      = lab_profile_get_metaKey($id,'lab_user_office_number');
+		$this -> officeFloor = lab_profile_get_metaKey($id,'lab_user_office_floor');
 		$temp = lab_profile_get_Info($id);
 		$this -> email = $temp[0]->user_email;
 		$this -> url = $temp[0]->user_url;

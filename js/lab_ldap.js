@@ -1,4 +1,10 @@
 jQuery(function($) {
+    $("#lab_ldap_button_reconnect").click(function () {
+        data = {action:"lab_ldap_reconnect"};
+        
+        callAjax(data, "LDAP Reconnected", null, null, null);
+        //$('#lab_ldap_newUser_uid').val( $("#lab_ldap_newUser_lastName").val().toLowerCase() + '.' + $(this).val().toLowerCase().charAt(0));
+    });
     $("#lab_ldap_newUser_firstName").change(function () {
         $('#lab_ldap_newUser_uid').val( $("#lab_ldap_newUser_lastName").val().toLowerCase() + '.' + $(this).val().toLowerCase().charAt(0));
     });
@@ -39,7 +45,8 @@ jQuery(function($) {
     $("#lab_ldap_delete_button").click(function (){
         data = {
             'action': 'lab_ldap_delete_user',
-            'user_id': $("#lab_ldap_delete_search").attr('user_id')
+            'user_id': $("#lab_user_search_id").val(),
+            'keepData': $("#lab_user_keep_data").val(),
         };
         $.post(LAB.ajaxurl,data,function (response){
             if (response.success) {
@@ -49,6 +56,8 @@ jQuery(function($) {
             toast_error(__("Erreur lors de la suppression",'lab')+ "<br>"+response.data);
         });
     });
+
+
 });
 function lab_ldap_addUser() {
     jQuery(function($){ 

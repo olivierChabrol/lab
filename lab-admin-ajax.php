@@ -2,6 +2,9 @@
 
 include 'lab-admin-core.php';
 include 'lib/vendor/autoload.php';
+require_once("lab-admin-params.php");
+
+use AdminParams as AdminParams;
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -238,26 +241,32 @@ function lab_admin_update_user_metadata_db()
 
 function lab_admin_update_user_metadata()
 {
-  $userId       =  $_POST["userId"];
+  $userId       = $_POST["userId"];
   $dateLeft     = $_POST["dateLeft"];
   $userFunction = $_POST["function"];
   $userEmployer = $_POST["employer"];
+  $userFunding  = $_POST["funding"];
+  $firstname    = $_POST["firstname"];
+  $lastname     = $_POST["lastname"];
   $userLocation = $_POST["location"];
   $officeNumber = $_POST["officeNumber"];
   $officeFloor  = $_POST["officeFloor"];
   $phone        = $_POST["phone"];
-  lab_usermeta_update($userId, $dateLeft, $userFunction, $userLocation, $officeNumber, $officeFloor, $userEmployer, $phone);
+  lab_usermeta_update($userId, $dateLeft, $userFunction, $userLocation, $officeNumber, $officeFloor, $userEmployer, $phone, $userFunding, $firstname, $lastname);
   wp_send_json_success("");
 }
 
-function lab_usermeta_update($userId, $left, $userFunction, $userLocation, $officeNumber, $officeFloor, $userEmployer, $user_phone)
+function lab_usermeta_update($userId, $left, $userFunction, $userLocation, $officeNumber, $officeFloor, $userEmployer, $user_phone, $userFunding, $firstname, $lastname)
 {
   global $wpdb;
   $sql = "";
   if ($left != null || !empty($left)) {
     $sql = "UPDATE `".$wpdb->prefix."usermeta` SET `meta_value` = '" . $left . "' WHERE `user_id` = " . $userId. " AND meta_key='lab_user_left'";
+    // if left is set to a date, remove acces to user to the web site
+    removeAllRoleToUser($userId);
   } else {
     $sql = "UPDATE `".$wpdb->prefix."usermeta` SET `meta_value` = NULL WHERE `user_id` = " . $userId. " AND meta_key='lab_user_left'";
+    setDefaultRole($userId);
   }
   $sql = $wpdb->prepare($sql);
   $wpdb->query($sql);
@@ -267,6 +276,9 @@ function lab_usermeta_update($userId, $left, $userFunction, $userLocation, $offi
   $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$officeFloor),array("user_id"=>$userId, "meta_key"=>"lab_user_office_floor"));
   $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$userEmployer),array("user_id"=>$userId, "meta_key"=>"lab_user_employer"));
   $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$user_phone),array("user_id"=>$userId, "meta_key"=>"lab_user_phone"));
+  $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$userFunding),array("user_id"=>$userId, "meta_key"=>"lab_user_funding"));
+  $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$firstname),array("user_id"=>$userId, "meta_key"=>"first_name"));
+  $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$lastname),array("user_id"=>$userId, "meta_key"=>"last_name"));
 }
 
 function lab_usermeta_update_lab_left_key($usermetaId, $left)
@@ -1021,6 +1033,7 @@ function lab_invitations_pagination_Req() {
   wp_send_json_success(lab_invitations_pagination($_POST['pages'],$_POST['currentPage']));
 }
 
+
 /**************************************************************************************************************
  * PRESENCE
  **************************************************************************************************************/
@@ -1220,7 +1233,11 @@ function lab_ldap_list_update() {
   $itemPerPage = isset($_POST['value']) ? $_POST['value'] : '5' ;
   $page = isset($_POST['page']) ? $_POST['page'] : '1' ;
 
-  $ldap_obj = LAB_LDAP::getInstance();
+  $ldap_obj = LAB_LDAP::getInstance(AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_URL)[0]->value,
+                        AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_BASE)[0]->value,
+                        AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_LOGIN)[0]->value,
+                        AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_PASSWORD)[0]->value,
+                      true);
   $result   = $ldap_obj->searchAccounts();
   $count    = $ldap_obj->countResults($result);
   if($page > ceil($count/$itemPerPage)) {
@@ -1229,32 +1246,61 @@ function lab_ldap_list_update() {
   $pageVar = ($page - 1) * $itemPerPage;
   for($i = $pageVar; $i < ($itemPerPage+$pageVar) && $i < $count; $i++)
   {
-      $ldapResult .= '<tr><td>'. $ldap_obj->getEntries($result,$i, 'cn').'</td>
-                    <td><button class="">Détails</button><span id="eraseLdap" class="fas fa-trash-alt" style="cursor: pointer;"></span>
-                    <span id="editLdap"  class="fas fa-pen-alt" style="cursor: pointer;"></span></td>
-                </tr>';
+    $ldapResult .= '<tr><td>'. $ldap_obj->getEntries($result,$i, 'cn').'</td>
+                        <td><button class="">Détails</button>
+                            <span id="eraseLdap" class="fas fa-trash-alt" style="cursor: pointer;"></span>
+                            <span id="editLdap" 
+                              uid="'.$ldap_obj->getEntries($result,$i,'uid').'"
+                              givenName="'.$ldap_obj->getEntries($result,$i,'givenname').'"
+                              sn="'.$ldap_obj->getEntries($result,$i,'sn').'"
+                              uidNumber="'.$ldap_obj->getEntries($result,$i,'uidnumber').'"
+                              homeDirectory="'.$ldap_obj->getEntries($result,$i,'homedirectory').'"
+                              mail="'.$ldap_obj->getEntries($result,$i,'mail').'"
+                              class="fas fa-pen-alt" style="cursor: pointer;"></span>
+                        </td>
+                    </tr>';
   }
   wp_send_json_success(array($count,$ldapResult,$page));
 }
 function lab_ldap_add_user() {
-  $ldapRes = lab_ldap_addUser($_POST['first_name'],$_POST['last_name'],$_POST['email'],$_POST['password'],$_POST['uid'],$_POST['organization']);
-  if ($ldapRes == 0 ) {
-    if ($_POST['addToWP'] == 'true') {
-      $wpRes = lab_ldap_new_WPUser(strtoupper($_POST['last_name'])." ".$_POST['first_name'],$_POST['email'],$_POST['password'],$_POST['uid']);
-      if ($wpRes==true) {
-        wp_send_json_success();
+  $ldap_obj = LAB_LDAP::getInstance(AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_URL)[0]->value,
+                        AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_BASE)[0]->value,
+                        AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_LOGIN)[0]->value,
+                        AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_PASSWORD)[0]->value,
+                      true);
+  $results = $ldap_obj->get_info_from_mail($_POST['email']);
+  // if already exist in ldap, only set to WP
+  if ($results != null && $results["mail"] != null)
+  {
+    $wpRes = lab_ldap_new_WPUser(strtoupper($results["lastname"])." ".$results["firstname"],$results["mail"],$results["password"],$results['uid']);
+    if ($wpRes==true) {
+      wp_send_json_success("Already exist in LDAP just have to add to WP");
+    } else {
+      wp_send_json_error("WordPress : ".$wpRes);
+    }
+    
+  }
+  else
+  {
+    $ldapRes = lab_ldap_addUser($ldap_obj, $_POST['first_name'],$_POST['last_name'],$_POST['email'],$_POST['password'],$_POST['uid'],$_POST['organization']);
+    if ($ldapRes == 0 ) {
+      if ($_POST['addToWP'] == 'true') {
+        $wpRes = lab_ldap_new_WPUser(strtoupper($_POST['last_name'])." ".$_POST['first_name'],$_POST['email'],$_POST['password'],$_POST['uid']);
+        if ($wpRes==true) {
+          wp_send_json_success();
+        } else {
+          wp_send_json_error("WordPress : ".$wpRes);
+        }
       } else {
-        wp_send_json_error("WordPress : ".$wpRes);
+        wp_send_json_success();
       }
     } else {
-      wp_send_json_success();
+      wp_send_json_error("LDAP : ".ldap_err2str($ldapRes));
     }
-  } else {
-    wp_send_json_error("LDAP : ".ldap_err2str($ldapRes));
   }
 }
 function lab_ldap_amu_lookup() {
-  $url = "http://ldap.i2m.univ-amu.fr/getAMUUser.php?token=".AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_TOKEN)[0]->value."&query=".$_POST['query'];
+  $url = "http://".AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_URL)[0]->value."/getAMUUser.php?token=".AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_TOKEN)[0]->value."&query=".$_POST['query'];
   // create curl resource
   $ch = curl_init();
   // set url
@@ -1279,6 +1325,21 @@ function lab_ldap_amu_lookup() {
     ));
   }
 }
+
+function lab_ldap_edit_user() {
+  $uid = $_POST['uid'];
+  if (!isset($uid) || $uid == "")
+  {
+    wp_send_json_error("No UID");
+  }
+  $ldap = LAB_LDAP::getInstance(AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_URL)[0]->value,
+                        AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_BASE)[0]->value,
+                        AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_LOGIN)[0]->value,
+                        AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_PASSWORD)[0]->value,
+                      true);
+  $ldapRes = $ldap_obj->editUser($_POST['uid'], $_POST['givenname'], $_POST['sn'], $_POST['uidnumber'], $_POST['homeDirectory'], $_POST['mail']);
+  wp_send_json_success();
+}
 function lab_admin_get_userLogin_Req() {
   $res = lab_admin_get_userLogin($_POST['user_id']);
   if ($res==null) {
@@ -1287,13 +1348,90 @@ function lab_admin_get_userLogin_Req() {
     wp_send_json_success($res);
   }
 }
+function lab_ldap_user_details() {
+  $uid = $_POST['uid'];
+  $ldap = LAB_LDAP::getInstance(AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_URL)[0]->value,
+                        AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_BASE)[0]->value,
+                        AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_LOGIN)[0]->value,
+                        AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_PASSWORD)[0]->value,
+                      true);
+  $result   = $ldap_obj->get_info_from_uid($uid);
+  wp_send_json_success($result);
+}
+
+function setDefaultRole($userId) {
+  $user = new WP_User($userId);
+  if(count($user->role() == 0)) {
+    $user->add_role('subscriber');
+  }
+
+}
+
+function removeAllRoleToUser($userId)
+{
+  $user = new WP_User($userId);
+  
+  if ( !empty( $user->roles ) && is_array( $user->roles ) ) {
+    foreach ($user->roles as $role_key => $role_details) {
+
+      $user->remove_role($role_details);
+    }
+  }
+}
+
 function lab_ldap_delete_userReq() {
   $uid = lab_admin_get_userLogin($_POST['user_id']);
-  wp_delete_user($_POST['user_id'],1);
-  $res = ldap_delete_user($uid);
-  if ($res==0) {
-    wp_send_json_success();
-  } else {
-    wp_send_json_error("LDAP : ".ldap_err2str($res));
+  $keepData = true;
+  if(isset($_POST['keepData']) && $_POST['keepData'] == 'false') {
+    $keepData = false;
   }
+  if (!$keepData) {
+    wp_delete_user($_POST['user_id'],1);
+  }
+  else 
+  {
+    removeAllRoleToUser($_POST['user_id']);
+  }
+
+  if (lab_admin_param_is_ldap_enable())
+  {
+    $ldap = LAB_LDAP::getInstance(AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_URL)[0]->value,
+                          AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_BASE)[0]->value,
+                          AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_LOGIN)[0]->value,
+                          AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_PASSWORD)[0]->value,
+                        true);
+    $res = ldap_delete_user($ldap, $uid);
+    if ($res==0) {
+      wp_send_json_success();
+    } else {
+      wp_send_json_error("LDAP : ".ldap_err2str($res));
+    }
+  }
+  else
+  {
+    wp_send_json_success();
+  }
+}
+
+function lab_ldap_reconnect() {
+  if (lab_admin_param_is_ldap_enable())
+  {
+    $ldap = LAB_LDAP::getInstance(AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_URL)[0]->value,
+                          AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_BASE)[0]->value,
+                          AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_LOGIN)[0]->value,
+                          AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_PASSWORD)[0]->value,
+                        true);
+    $str = "URL : ".$ldap->getURL()." <br> ";
+    $str .= "Base : ".$ldap->getBase()." <br> ";
+    $str .= "Login : ".$ldap->getLogin()." <br> ";
+    $str .= "Passwd : ".$ldap->getPassword()." <br> ";
+    if($ldap->bindAdmin())
+    {
+      wp_send_json_success("Connection to LDAP server successfull");
+    }
+    else {
+      wp_send_json_error("Failed to connect to LDAP server :<br>" .$str);
+    }
+  }
+  //*/
 }

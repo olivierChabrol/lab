@@ -30,3 +30,5 @@ We reuse code from :
 [lab-profile]
 ### Event
 [lab-old-event]
+### HAL
+[lab-hal group=AA] Display hal records associated to a group (the acronym group is use)
