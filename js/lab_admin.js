@@ -198,7 +198,7 @@ jQuery(function($){
   });
 
   $("#lab_user_button_save_left").click(function() {
-    saveUserLeft($("#lab_user_left_date").val(), $("#lab_user_left").is(":checked"), $("#lab_user_location").val(), $("#lab_user_function").val(), $("#lab_user_office_number").val(), $("#lab_user_office_floor").val(), $("#lab_user_employer").val(), $("#lab_user_funding").val(), $("#lab_user_firstname").val(), $("#lab_user_lastname").val());
+    saveUserLeft($("#lab_user_left_date").val(), $("#lab_user_left").is(":checked"), $("#lab_user_location").val(), $("#lab_user_function").val(), $("#lab_user_office_number").val(), $("#lab_user_office_floor").val(), $("#lab_user_employer").val(), $("#lab_user_funding").val(), $("#lab_user_firstname").val(), $("#lab_user_lastname").val(), $("#lab_user_section_cn").val(), $("#lab_user_section_cnu").val());
   });
 
   $("#lab_user_button_delete").click(function() {
@@ -881,7 +881,7 @@ function saveUserMetaData(userId, date, isChecked, location, userFunction) {
 
 }
 
-function saveUserLeft(date, isChecked, location, userFunction, userOfficeNumber, userOfficeFloor, employer, funding, firstname, lastname) {
+function saveUserLeft(date, isChecked, location, userFunction, userOfficeNumber, userOfficeFloor, employer, funding, firstname, lastname, sectionCn, sectionCnu) {
   var c = isChecked?date:null;
   var data = {
                'action' : 'update_user_metadata',
@@ -895,6 +895,8 @@ function saveUserLeft(date, isChecked, location, userFunction, userOfficeNumber,
                'officeFloor' : userOfficeFloor,
                'firstname' : firstname,
                'lastname' : lastname,
+               'sectionCn' : sectionCn,
+               'sectionCnu' : sectionCnu
   };
   callAjax(data, "User saved", resetUserTabFields, "Failed to save user", null);
 }
@@ -914,6 +916,8 @@ function resetUserTabFields()
   jQuery("#lab_user_employer").val("");
   jQuery("#lab_user_funding").val("");
   jQuery("#lab_user_phone").val("");
+  jQuery("#lab_user_section_cn").val("");
+  jQuery("#lab_user_section_cnu").val("");
 }
 
 function load_usermeta_dateLeft() {
@@ -976,6 +980,12 @@ function loadUserMetaData(response) {
     }
     if (response.data["user_phone"] != null) {
       jQuery("#lab_user_phone").val(response.data["user_phone"]);
+    }
+    if (response.data["user_section_cn"] != null) {
+      jQuery("#lab_user_section_cn").val(response.data["user_section_cn"]);
+    }
+    if (response.data["user_section_cnu"] != null) {
+      jQuery("#lab_user_section_cnu").val(response.data["user_section_cnu"]);
     }
     setField("#lab_user_firstname", response.data["first_name"]);
     setField("#lab_user_lastname", response.data["last_name"]);

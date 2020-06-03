@@ -40,6 +40,12 @@ function lab_admin_username_get($userId) {
         if ($r->meta_key == 'lab_user_funding') {
             $items['user_funding'] = $r->meta_value;
         }
+        if ($r->meta_key == 'lab_user_section_cn') {
+            $items['user_section_cn'] = $r->meta_value;
+        }
+        if ($r->meta_key == 'lab_user_section_cnu') {
+            $items['user_section_cnu'] = $r->meta_value;
+        }
     }
     
     return $items;
@@ -547,6 +553,8 @@ function lab_admin_initTable_usermeta()
     lab_userMetaData_create_metaKeys("user_left", null);
     lab_userMetaData_create_metaKeys("user_slug", null);
     lab_userMetaData_create_metaKeys("user_position", null);
+    lab_userMetaData_create_metaKeys("user_section_cn", "");
+    lab_userMetaData_create_metaKeys("user_section_cnu", "");
     lab_userMetaData_create_metaKeys("hal_id", null);
     lab_userMetaData_create_metaKeys("hal_name", null);
     lab_userMetaData_create_metaKeys("profile_bg_color", "#F2F2F2");
