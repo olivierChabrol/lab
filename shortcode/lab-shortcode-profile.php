@@ -67,16 +67,19 @@ function lab_profile($id=0) {
 					.($is_current_user || current_user_can('edit_users') ? $editSocial.$halFields : '').'
 				</div>
 			</div>
-			</div>
-			<hr/>
-			<div id="lab_alert"></div>
-			<div id="lab_profile_bio">'
-				.($is_current_user || current_user_can('edit_users') ? '<textarea style="display:none;" rows="4" cols="50" class="lab_profile_edit" id="lab_profile_edit_bio" placeholder="Biographie (200 caractères max)">'.$user->description.'</textarea>' : '').
-				'<span style="display:block; max-width:700px;" class="lab_current">'.(isset($user->description) ? $user->description :  '...' ).'</span>
-			</div><hr/>'.esc_html__("User group(s) : ", "lab").'<ul id="lab_profile_groups">'.$user->print_groups().'</ul></div>	
-			<div id="lab_profile_keywords"><hr/>
-			<ul>'.$user->print_keywords().'</ul></div>';
-			
+		</div>
+		<hr/>
+		<div id="lab_alert"></div>
+		<div id="lab_profile_bio">'
+			.($is_current_user || current_user_can('edit_users') ? '<textarea style="display:none;" rows="4" cols="50" class="lab_profile_edit" id="lab_profile_edit_bio" placeholder="Biographie (200 caractères max)">'.$user->description.'</textarea>' : '').
+			'<span style="display:block; max-width:700px;" class="lab_current">'.(isset($user->description) ? $user->description :  '...' ).'</span>
+		</div>
+		<hr/>'.esc_html__("User group(s) : ", "lab").'<ul id="lab_profile_groups">'.$user->print_groups().'</ul>	
+		<div id="lab_profile_keywords"><hr/>
+			'.esc_html__("Research keywords : ", "lab").'
+			'.$user->print_keywords().'
+		</div>
+	</div>';
     return $profileStr;
 }
 /*** CLASS LABUSER ***/
@@ -156,12 +159,13 @@ class labUser {
 		return $output;
 	}
 	public function print_keywords() {
+		$output = "<ul>";
 		foreach($this->keywords as $k) {
-			$output = "<span>".$k->value."</span>";
+			$output .= '<span class="badge badge-pill badge-primary">'.$k->value.'</span> ';
 		}
+		$output .= "</ul>";
+		return $output;
 	}
-
-	//lab html helper : fonction print keywords à laquelle on passe une liste de tag//
 }
 /*** SQL ***/
 function lab_profile_getID($slug) {
@@ -196,7 +200,7 @@ function lab_profile_get_param_metaKey($id,$key, $paramType) {
 }
 function lab_profile_get_keywords($id) {
 	global $wpdb;
-	$sql = "SELECT value FROM `".$wpdb->prefix."lab_hal_keywords` AS kw JOIN `".$wpdb->prefix."lab_hal_keywords_user` AS kwU ON kwU.keyword_id = kw.id WHERE kwU.user_id = ".$id." LIMIT 5;";
+	$sql = "SELECT value FROM `".$wpdb->prefix."lab_hal_keywords` AS kw JOIN `".$wpdb->prefix."lab_hal_keywords_user` AS kwU ON kwU.keyword_id = kw.id WHERE kwU.user_id = ".$id." ORDER BY number DESC LIMIT 5;";
 	return $wpdb->get_results($sql);
 }
 // Fonctions utilisées par une fonction Ajax Externe
