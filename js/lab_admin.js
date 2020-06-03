@@ -772,7 +772,7 @@ function load_params_type_after_new_param() {
   jQuery("#wp_lab_param_value").val("");
   jQuery("#wp_lab_param_color").val("");
   jQuery("#wp_lab_param_color").css("background-color","#FFFFFF");
-  jQuery("#wp_lab_param_shift_param").val("");
+  jQuery("#wp_lab_param_shift_param").prop("checked", false);;
   load_params_type('#wp_lab_param_type');
 }
 
