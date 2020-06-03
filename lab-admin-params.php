@@ -15,6 +15,8 @@ class AdminParams {
     public const PARAMS_LDAP_PASSWORD = 13;
     public const PARAMS_LDAP_TLS = 14;
     public const PARAMS_LDAP_ENABLE = 15;
+    public const PARAMS_USER_SECTION_CN = 101;
+    public const PARAMS_USER_SECTION_CNU = 102;
 
     public static function get_params_fromId($id) {
         $sql = "SELECT value,id FROM `wp_lab_params` WHERE type_param=".$id." ORDER BY value;";
@@ -45,6 +47,14 @@ class AdminParams {
     public static function lab_admin_get_params_ldap_enable()
     {
         return AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_ENABLE);
+    }
+    public static function lab_admin_get_params_userSectionCn()
+    {
+        return AdminParams::get_params_fromId(AdminParams::PARAMS_USER_SECTION_CN);
+    }
+    public static function lab_admin_get_params_userSectionCnu()
+    {
+        return AdminParams::get_params_fromId(AdminParams::PARAMS_USER_SECTION_CNU);
     }
     public function get_param($id) {
         $sql = "SELECT value FROM `wp_lab_params` WHERE id=".$id." ORDER BY value;";
@@ -78,6 +88,14 @@ function lab_admin_get_params_userEmployer() {
 
 function lab_admin_get_params_userFunding() {
     return AdminParams::lab_admin_get_params_userFunding();
+}
+
+function lab_admin_get_params_userSectionCn() {
+    return AdminParams::lab_admin_get_params_userSectionCn();
+}
+
+function lab_admin_get_params_userSectionCnu() {
+    return AdminParams::lab_admin_get_params_userSectionCnu();
 }
 
 function lab_admin_param_is_ldap_enable() {

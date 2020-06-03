@@ -82,6 +82,22 @@ function lab_admin_tab_user() {
       </tr>
       <tr>
         <td>
+          <label for="lab_user_section_cn"><?php esc_html_e('Section CN','lab') ?></label>
+        </td>
+        <td>
+          <?php lab_html_select("lab_user_section_cn", "lab_user_section_cn", "", lab_admin_get_params_userSectionCn, null, array("value"=>"","label"=>"None"), ""); ?>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label for="lab_user_section_cnu"><?php esc_html_e('Section CNU','lab') ?></label>
+        </td>
+        <td>
+          <?php lab_html_select("lab_user_section_cnu", "lab_user_section_cnu", "", lab_admin_get_params_userSectionCnu, null, array("value"=>"","label"=>"None"), ""); ?>
+        </td>
+      </tr>
+      <tr>
+        <td>
           <label for="lab_user_left"><?php esc_html_e('Parti','lab') ?></label>
         </td>
         <td>
