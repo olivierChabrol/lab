@@ -25,4 +25,4 @@ $wpdb->prefix = "wp_";
 delete_hal_table();
 hal_download_all();
 //$docIds = array();
-//hal_download_1(121, $docIds);
+//hal_download_1(278, $docIds);
