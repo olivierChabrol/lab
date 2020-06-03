@@ -22,6 +22,12 @@ function lab_admin_username_get($userId) {
         if ($r->meta_key == 'lab_user_function') {
             $items['user_function'] = $r->meta_value;
         }
+        if ($r->meta_key == 'lab_user_employer') {
+            $items['user_employer'] = $r->meta_value;
+        }
+        if ($r->meta_key == 'lab_user_phone') {
+            $items['user_phone'] = $r->meta_value;
+        }
         if ($r->meta_key == 'lab_user_location') {
             $items['user_location'] = $r->meta_value;
         }
@@ -31,11 +37,28 @@ function lab_admin_username_get($userId) {
         if ($r->meta_key == 'lab_user_office_floor') {
             $items['user_office_floor'] = $r->meta_value;
         }
+        if ($r->meta_key == 'lab_user_funding') {
+            $items['user_funding'] = $r->meta_value;
+        }
     }
     
     return $items;
 }
-
+function lab_admin_get_userLogin($user_id) {
+    global $wpdb;
+    $sql = "SELECT `user_login` FROM `".$wpdb->prefix."users` WHERE ID=$user_id";
+    return $wpdb->get_var($sql);
+}
+function lab_admin_loadUserHistory($user_id) {
+    global $wpdb;
+    $sql = "SELECT * from `".$wpdb->prefix."lab_users_historic` WHERE `user_id`=$user_id;";
+    $res = $wpdb->get_results($sql);
+    if ($res==null) {
+        return "<li>No history</li>";
+    } else {
+        return lab_admin_history($res);
+    }
+}
 /*******************************************************************************************************
  * PARAM
  *******************************************************************************************************/
@@ -76,12 +99,87 @@ function lab_admin_param_save($paramType, $paramName, $color = null, $paramId = 
     }
 }
 
+/**
+ * Update or create keyword to user
+ *
+ * @param [type] $userId
+ * @param [type] $keyword
+ * @param [type] $keywordNumber
+ * @return void
+ */
+function lab_admin_hal_add_keyword_to_user($userId, $keyword, $keywordNumber)
+{
+    global $wpdb;
+    $sql = "SELECT id FROM `".$wpdb->prefix."lab_hal_keywords` WHERE value='".str_replace("'","\'", $keyword)."'";
+    $results = $wpdb->get_results($sql);
+    if(count($results) == 1) {
+        $keywordId = $results[0]->id;
+    }
+    else {
+        $wpdb->insert($wpdb->prefix."lab_hal_keywords",array("value"=>$keyword));
+        $keywordId = $wpdb->insert_id;
+    }
+    $sql = "SELECT id FROM `".$wpdb->prefix."lab_hal_keywords_user` WHERE user_id=".$userId." AND keyword_id=".$keywordId;
+    $results = $wpdb->get_results($sql);
+    if(count($results) == 1) {
+        try {
+            $wpdb->update($wpdb->prefix."lab_hal_keywords_user", array("number"=>$keywordNumber), array("id"=>$results[0]->id));
+        } catch (Exception $e) {
+            echo("\n\n################\n \$userId".$userId."\n\$keyword :".$keyword."\n\$keywordNumber :".$keywordNumber."\n#################\n");
+            echo 'Caught exception: ',  $e->getMessage(), "\n";
+            exit(1);
+        }
+        
+    }
+    else {
+        $wpdb->insert($wpdb->prefix."lab_hal_keywords_user", array("user_id"=>$userId, "keyword_id"=>$keywordId, "number"=>$keywordNumber));
+    }
+}
+
 function lab_admin_param_exist($paramType, $paramName)
 {
     global $wpdb;
     $sql = "SELECT id FROM `".$wpdb->prefix."lab_params` WHERE `type_param` = ".$paramType." AND  `value` = '".$paramName."'";
     $results = $wpdb->get_results($sql);
     return count($results) == 1;
+}
+
+function lab_admin_createTable_hal_keywords() {
+    global $wpdb;
+    $sql = "CREATE TABLE IF NOT EXISTS `".$wpdb->prefix."lab_hal_keywords` (
+        `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
+        `value` varchar(255) DEFAULT NULL,
+        PRIMARY KEY (`id`)
+      ) ENGINE=InnoDB";
+    $wpdb->get_results($sql);
+    
+}
+function lab_admin_createTable_hal_keywords_user() {
+    global $wpdb;
+    $sql = "CREATE TABLE IF NOT EXISTS `".$wpdb->prefix."lab_hal_keywords_user` (
+        `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
+        `user_id` bigint UNSIGNED NOT NULL,
+        `keyword_id` bigint UNSIGNED NOT NULL,
+        `number` int NOT NULL DEFAULT '0',
+        PRIMARY KEY (`id`)
+      ) ENGINE=InnoDB";
+    $wpdb->get_results($sql);
+    
+}
+function lab_admin_createTable_users_historic() {
+    global $wpdb;
+    $sql = "CREATE TABLE IF NOT EXISTS `".$wpdb->prefix."lab_users_historic` (
+        `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
+        `user_id` bigint UNSIGNED NOT NULL,
+        `ext` tinyint NOT NULL COMMENT '0 if insite wp_users, 1 if in lab_guests',
+        `begin` datetime NOT NULL,
+        `end` datetime NOT NULL,
+        `host_id` bigint UNSIGNED NOT NULL COMMENT 'link with a user',
+        `function` bigint UNSIGNED NOT NULL COMMENT 'link with parameter lab_user_function',
+        PRIMARY KEY (`id`)
+      ) ENGINE=InnoDB";
+    $wpdb->get_results($sql);
+    
 }
 
 function lab_admin_createTable_param() {
@@ -122,8 +220,14 @@ function lab_admin_initTable_param() {
             (5, 1, 'USER FUNCTION', NULL),
             (6, 1, 'MISSION', NULL),
             (7, 1, 'FUNDING', NULL),
-            (8, 1, 'INSERT LDAP TOKEN HERE', NULL),
-            (9, 1, 'localhost', NULL),
+            (8, 1, 'EMPLOYER', NULL),            
+            (9, 1, 'LDAP TOKEN', NULL),
+            (10, 1, 'LDAP HOST', NULL),
+            (11, 1, 'LDAP BASE', NULL),
+            (12, 1, 'LDAP LOGIN', NULL),
+            (13, 1, 'LDAP PASSWORD', NULL),
+            (14, 1, 'LDAP TLS', NULL),
+            (15, 1, 'LDAP ENABLE', NULL),
             (NULL, 2, 'Equipe', NULL),
             (NULL, 2, 'Groupe', NULL),
             (NULL, 3, 'Clé', NULL),
@@ -339,6 +443,7 @@ function lab_admin_initTable_usermeta()
     lab_userMetaData_create_metaKeys("user_office_number", "");
     lab_userMetaData_create_metaKeys("user_office_floor", "");
     lab_userMetaData_create_metaKeys("user_phone", "");
+    lab_userMetaData_create_metaKeys("user_funding", "");
     lab_userMetaData_create_metaKeys("user_left", null);
     lab_userMetaData_create_metaKeys("user_slug", null);
     lab_userMetaData_create_metaKeys("user_position", null);
@@ -525,7 +630,7 @@ function formatGroupsName($userId) {
     }
     $items = array();
     foreach($groupNames as $g) {
-        $items[] ="<a href=\"$g->url\">" . esc_html($g->group_name) . "</a>";
+        $items[] ="<a href=\"$g->url\" target=\"_blank\">" . esc_html($g->group_name) . "</a>";
     }
     return join(", ", $items);
 }
@@ -912,11 +1017,60 @@ function lab_hal_createTable_hal() {
         `user_id` bigint UNSIGNED NOT NULL
       ) ENGINE=InnoDB";
     return $wpdb->get_results($sql);
+
+    lab_admin_createTable_hal_keywords_user();
+    lab_admin_createTable_hal_keywords();
 }
 
-function lab_hal_get_publication($userId) {
+/**
+ * List all the hal articles by groups and year
+ *
+ * @param [type] $groups type array
+ * @param [type] $year
+ * @return void
+ */
+function lab_hal_getPublication_by_group($groups, $year = null)
+{
+    global $wpdb;
+    $sql = "";
+    if (is_array($groups))
+    {
+        $sql = "SELECT lh.* FROM `".$wpdb->prefix."lab_hal` as lh JOIN `".$wpdb->prefix."lab_hal_users` AS lhu ON lhu.hal_id=lh.id WHERE lhu.user_id IN (";
+        $sql .= "SELECT DISTINCT lug.user_id FROM `".$wpdb->prefix."lab_groups` AS lg JOIN `".$wpdb->prefix."lab_users_groups` AS lug ON lug.group_id=lg.id WHERE ";
+        foreach($groups as $g) {
+            $sql .= " lg.acronym='".$g."' OR";
+        }
+        $sql = substr($sql, 0, strlen($sql) - 2);
+
+        $sql .= ")";
+        if ($year != null)
+        {
+            $sql .= " AND lh.`producedDate_tdate` >= '".$year."-01-01'  AND lh.`producedDate_tdate` <= '".$year."-12-31'";
+        }
+
+    }
+    else
+    {
+        $sql = "SELECT DISTINCT lh.id, lh.* FROM  `".$wpdb->prefix."lab_groups` AS lg JOIN `".$wpdb->prefix."lab_users_groups` AS lug ON lug.group_id=lg.id JOIN `".$wpdb->prefix."lab_hal_users` AS lhu ON lhu.user_id=lug.user_id JOIN `".$wpdb->prefix."lab_hal` as lh ON lh.id=lhu.hal_id WHERE lg.acronym='".$groups."'";
+        if ($year != null)
+        {
+            $sql .= " AND lh.`producedDate_tdate` >= '".$year."-01-01'  AND lh.`producedDate_tdate` <= '".$year."-12-31'";
+        }
+    }
+    $sql .= " ORDER BY `lh`.`producedDate_tdate` DESC";
+    return $wpdb->get_results($sql);
+    //return $sql;
+}
+
+function lab_hal_get_publication($userId, $year = null) {
     global $wpdb;
     $sql = "SELECT lh.* FROM `".$wpdb->prefix."lab_hal` as lh JOIN `".$wpdb->prefix."lab_hal_users` AS lhu ON lhu.hal_id=lh.id WHERE lhu.user_id=".$userId;
+    
+    if ($year != null)
+    {
+        $sql .= " AND `producedDate_tdate` >= '".$year."-01-01'  AND `producedDate_tdate` <= '".$year."-12-31'";
+    }
+    $sql .= " ORDER BY `lh`.`producedDate_tdate` DESC";
     return $wpdb->get_results($sql);
 }
 
@@ -1000,10 +1154,12 @@ function get_hal_url($userId) {
         $hal_id   = $results[0]->lab_hal_id;
         $hal_name = $results[0]->lab_hal_name;
         if ($hal_id != null) {
-            return "https://api.archives-ouvertes.fr/search/?authIdHal_s:(".$hal_id.")&fl=docid,citationFull_s,producedDate_tdate,uri_s,title_s,journalTitle_s&sort=producedDate_tdate+desc&wt=json&json.nl=arrarr";
+            //return "https://api.archives-ouvertes.fr/search/?q=*:*&fq=authIdHal_s:(".$hal_id.")&fl=docid,citationFull_s,producedDate_tdate,uri_s,title_s,journalTitle_s&sort=producedDate_tdate+desc&wt=json&json.nl=arrarr";
+            //return "https://api.archives-ouvertes.fr/search/?q=*:*&fq=authIdHal_s:(".$hal_id.")&group=true&group.field=docType_s&group.limit=1000&&fl=docid,citationFull_s,producedDate_tdate,uri_s,title_s,journalTitle_s&facet.field=fr_domainAllCodeLabel_fs&facet.field=keyword_s&facet.field=journalIdTitle_fs&facet.field=producedDateY_i&facet.field=authIdLastNameFirstName_fs&facet.field=instStructIdName_fs&facet.field=labStructIdName_fs&facet.field=deptStructIdName_fs&facet.field=rteamStructIdName_fs&facet.mincount=1&facet=true&wt=json&json.nl=arrarr";
+            return "https://api.archives-ouvertes.fr/search/?q=*:*&fq=authIdHal_s:(".$hal_id.")&fl=docid,citationFull_s,producedDate_tdate,uri_s,title_s,journalTitle_s&facet.field=fr_domainAllCodeLabel_fs&facet.field=keyword_s&facet.mincount=1&facet=true&wt=json&json.nl=arrarr";
         }
         else {
-            return "https://api.archives-ouvertes.fr/search/?q=authLastNameFirstName_s:%22".$hal_name."%22&fl=docid,citationFull_s,producedDate_tdate,uri_s,title_s,journalTitle_s&sort=producedDate_tdate+desc&wt=json&json.nl=arrarr";
+            return "https://api.archives-ouvertes.fr/search/?q=authLastNameFirstName_s:%22".$hal_name."%22&fl=docid,citationFull_s,producedDate_tdate,uri_s,title_s,journalTitle_s&facet.field=fr_domainAllCodeLabel_fs&facet.field=keyword_s&facet.mincount=1&facet=true&wt=json&json.nl=arrarr";
         }
     }
 }
@@ -1049,49 +1205,75 @@ function hal_download($userId, &$docIds) {
     if ($docIds == null) {
         $docId = array();
     }
-
+    //echo($url."\n");
 
     $json = lab_do_common_curl_call($url);
-    $c =count($json->response->docs);
-    $display = false;
-    for ($i = 0; $i < $c; $i++) {
-        $keep = false;
-        $docId = $json->response->docs[$i]->docid;
-        $citation = $json->response->docs[$i]->citationFull_s;
-        $producedDate = strtotime($json->response->docs[$i]->producedDate_tdate);
-        $title = $json->response->docs[$i]->title_s[0];
-        $url = $json->response->docs[$i]->uri_s;
-        if (isset($json->response->docs[$i]->journalTitle_s))
-        {
-            $journal = $json->response->docs[$i]->journalTitle_s;
-        }
-        else {
-            $journal = null;
-        }
-
-        $display = $docId == "2508732";
-        
-
-        if (!array_key_exists ($docId, $docIds)) {
-            $id = saveHalProduction($docId, $citation, date('Y-m-d', $producedDate), $title, $url, $journal);
-            //echo "id=".$id."\n";
-            $docIds[$docId] = $id;
-            $halId = $id;
-            if ($display) {
-                echo "[$userId] La clef n'existe pas on la crée docIds[".$docId."]=".$id."\n";
-            }
-            //echo "La clef n'existe pas on la crée docIds[".$docId."]=".$id."\n";
-        }
-        else {
-            if ($display) {
-                echo "[".$userId."] La clef existe deja\n";
-            }
-        }
-        saveHalUsers($userId, $docIds[$docId]);
-        
-
-        //$content .= '<li>' . $json->response->docs[$i]->citationFull_s . '</li>';
+    if (!isset($json->response) || !$json->response) {
+        echo "No data for user ".$userId."\n";
+        return;
     }
+
+    $docs = $json->response->docs;
+    if(isset($json->response->docs) && $json->response->docs)
+    {
+        //echo("\$c:".$c."\n");
+        $c    = count($json->response->docs);
+        
+        $display = false;
+        for ($i = 0; $i < $c; $i++) {
+            $keep = false;
+            $docId = $docs[$i]->docid;
+            $citation = $docs[$i]->citationFull_s;
+            $producedDate = strtotime($docs[$i]->producedDate_tdate);
+            $title = $docs[$i]->title_s[0];
+            $url = $docs[$i]->uri_s;
+            //echo ($citation."\n");
+            if (isset($docs[$i]->journalTitle_s))
+            {
+                $journal = $docs[$i]->journalTitle_s;
+            }
+            else {
+                $journal = null;
+            }
+
+            if (!array_key_exists ($docId, $docIds)) {
+                
+                $id = saveHalProduction($docId, $citation, date('Y-m-d', $producedDate), $title, $url, $journal);
+                
+                $docIds[$docId] = $id;
+                $halId = $id;            
+            }
+            saveHalUsers($userId, $docIds[$docId]);
+        }
+    }
+    /*
+    $fr_domainAllCodeLabel_fs = $json->facet_counts->facet_fields->fr_domainAllCodeLabel_fs;
+    $c = count($fr_domainAllCodeLabel_fs);
+    
+    for ($i = 0; $i < $c; $i++) {
+        $domain  = $fr_domainAllCodeLabel_fs[$i][0];
+        $percent = $fr_domainAllCodeLabel_fs[$i][1];
+        $name = explode("_FacetSep_", $domain);
+        $code = $name[0];
+        $translation = $name[1];
+        echo($code."\n");
+        echo($translation."\n");
+        $fields = explode("/", $translation);
+        foreach($fields as $field) {
+            echo(preg_replace("/\[.*\]/","", $field)."\n");
+        }
+    }
+    //*/
+
+    $keywords = $json->facet_counts->facet_fields->keyword_s;
+    $c = count($keywords);
+    for ($i = 0; $i < $c; $i++) {
+        $keyword = $keywords[$i][0];
+        $keyWordPercent = $keywords[$i][1];
+        //echo ($keyword." ".$keyWordPercent."\n");
+        lab_admin_hal_add_keyword_to_user($userId, $keyword, $keyWordPercent);
+    }
+
     return $url;
 }
 
@@ -1176,6 +1358,7 @@ function create_all_tables() {
     lab_admin_initTable_usermeta();
     lab_admin_createTable_presence();
     lab_invitations_createTables();
+    lab_admin_createTable_users_historic();
 }
 
 function delete_all_tables() {
@@ -1188,6 +1371,8 @@ function delete_all_tables() {
     drop_table("lab_key_loans");
     drop_table("lab_keys");
     drop_table("lab_hal");
+    drop_table("lab_hal_keywords");
+    drop_table("lab_hal_keywords_user");
     drop_table("lab_hal_users");
     drop_table("lab_groups");
     drop_table("lab_presence");

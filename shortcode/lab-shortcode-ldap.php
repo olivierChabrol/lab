@@ -7,10 +7,15 @@
  * 
  */
 
-function lab_ldap($args) {
+ function lab_ldap_test() {
+    echo(lab_ldap());
+ }
+
+function lab_ldap($args=null) {
     $ldapStr = '
+    <button type="button" class="btn btn-warning" id="lab_ldap_button_reconnect">'.esc_html('Reconnect LDAP','lab').'</button>
     <div class="d-flex justify-content-between bd-highlight mb-3">
-        <div class="p-2">
+        <div class="p-2" id="p-2-list">
             <h3>' . esc_html("Parcourir l'annuaire LDAP", "lab") . '</h3>
             <div>    
                 <label for="lab_results_number">'.esc_html__("Nombre de résultats par page","lab").' : </label>
@@ -56,6 +61,38 @@ function lab_ldap($args) {
                     </ul></div>';
     }
     $ldapStr .= editModal();
+    //////////////////////////////A Vérifier div ////////////////////////////
+    $ldapStr .= '   </div>
+                </div>
+                <div id="lab_ldap_details_container" wrapped="true">
+                    <h2 id="lab_ldap_detail_title" style="cursor:pointer; display:none;">Détails de l\'utilisateur <i class="fas fa-arrow-up"></i></h2>
+                    <div id="lab_ldap_details" style="display:none" class="table-responsive">
+                        <table class="table table-striped">
+                            <tbody>
+                                <tr>
+                                    <th>Nom</th>
+                                    <td id="lab_ldap_name"></td>
+                                </tr>
+                                <tr>
+                                    <th>Prénom</th>
+                                    <td id="lab_ldap_surname"></td>
+                                </tr>
+                                <tr>
+                                    <th>Email</th>
+                                    <td id="lab_ldap_email"></td>
+                                </tr>
+                                <tr>
+                                    <th>Numéro uid</th>
+                                    <td id="lab_ldap_uidNumber"></td>
+                                </tr>
+                                <tr>
+                                    <th>Répertoire personnel</th>
+                                    <td id="lab_ldap_homeDirectory"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>';
     return $ldapStr;
 }
 

@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-17 21:14+0200\n"
-"PO-Revision-Date: 2020-05-17 21:18+0200\n"
+"POT-Creation-Date: 2020-05-26 16:27+0200\n"
+"PO-Revision-Date: 2020-05-26 16:28+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en\n"
@@ -28,6 +28,7 @@ msgstr ""
 "X-Poedit-SearchPath-10: shortcode/lab-shortcode-present.php\n"
 "X-Poedit-SearchPath-11: js/lab_shortcode_present.js\n"
 "X-Poedit-SearchPath-12: lab-admin-ajax.php\n"
+"X-Poedit-SearchPath-13: shortcode/lab-shortcode-profile.php\n"
 
 #: admin/view/lab-admin-tab-groups.php:9
 msgid "Nom du groupe  "
@@ -177,7 +178,7 @@ msgstr "Effacer Paramètre ?"
 #: admin/view/lab-admin-tab-params.php:80
 #: admin/view/lab-admin-tab-settings.php:70 lab-admin-keyring.php:36
 #: lab-admin-keyring.php:45 lab-admin-keyring.php:189
-#: shortcode/lab-shortcode-present.php:410
+#: shortcode/lab-shortcode-present.php:431
 msgid "Annuler"
 msgstr "Annuler"
 
@@ -239,55 +240,96 @@ msgstr "Vider la table HAL"
 msgid "Add Meta Key"
 msgstr "Ajouter une metakey"
 
-#: admin/view/lab-admin-tab-users.php:14
+#: admin/view/lab-admin-tab-users.php:20
 msgid "Nom de l'utilisateur"
 msgstr "Nom de l'utilisateur"
 
-#: admin/view/lab-admin-tab-users.php:23
+#: admin/view/lab-admin-tab-users.php:29
 msgid "User function"
 msgstr "Fonction"
 
-#: admin/view/lab-admin-tab-users.php:31
+#: admin/view/lab-admin-tab-users.php:37
+msgid "Employer"
+msgstr "Employeur"
+
+#: admin/view/lab-admin-tab-users.php:45
+msgid "Funding"
+msgstr "Soutien financier"
+
+#: admin/view/lab-admin-tab-users.php:53
 msgid "User Location"
 msgstr "Site"
 
-#: admin/view/lab-admin-tab-users.php:39
+#: admin/view/lab-admin-tab-users.php:61
 msgid "User office number"
 msgstr "Numéro de bureau"
 
-#: admin/view/lab-admin-tab-users.php:47
+#: admin/view/lab-admin-tab-users.php:69
 msgid "User office floor"
 msgstr "Etage du bureau"
 
-#: admin/view/lab-admin-tab-users.php:55
+#: admin/view/lab-admin-tab-users.php:77
+msgid "Phone"
+msgstr "Téléphone"
+
+#: admin/view/lab-admin-tab-users.php:85
 msgid "Parti"
 msgstr "Parti"
 
-#: admin/view/lab-admin-tab-users.php:58
+#: admin/view/lab-admin-tab-users.php:88
 msgid "Date de départ"
 msgstr "Date de départ"
 
-#: admin/view/lab-admin-tab-users.php:63
+#: admin/view/lab-admin-tab-users.php:94
 msgid "Modifier le statut de l'utilisateur"
 msgstr "Modifier le statut de l'utilisateur"
 
-#: admin/view/lab-admin-tab-users.php:65
+#: admin/view/lab-admin-tab-users.php:100
+#, fuzzy
+#| msgid "Historique des prêts de l'utilisateur"
+msgid "Historique de l'utilisateur"
+msgstr "Historique des prêts de l'utilisateur"
+
+#: admin/view/lab-admin-tab-users.php:106
+#, fuzzy
+#| msgid "+ Ajouter un suppléant"
+msgid "Ajouter une période"
+msgstr "+ Ajouter un suppléant"
+
+#: admin/view/lab-admin-tab-users.php:110 lab-admin-keyring.php:320
+msgid "Date de début"
+msgstr "Date de début"
+
+#: admin/view/lab-admin-tab-users.php:118 lab-admin-keyring.php:322
+msgid "Date de fin"
+msgstr "Date de fin"
+
+#: admin/view/lab-admin-tab-users.php:126
+#, fuzzy
+msgid "Fonction"
+msgstr "Actions"
+
+#: admin/view/lab-admin-tab-users.php:139
+msgid "Hôte"
+msgstr ""
+
+#: admin/view/lab-admin-tab-users.php:149
 msgid "Affecter des utilisateurs à des groupes"
 msgstr "Affecter des utilisateurs à des groupes"
 
-#: admin/view/lab-admin-tab-users.php:67
+#: admin/view/lab-admin-tab-users.php:151
 msgid "Afficher aussi les personnes qui ont déjà un groupe"
 msgstr "Afficher aussi les personnes qui ont déjà un groupe"
 
-#: admin/view/lab-admin-tab-users.php:69
+#: admin/view/lab-admin-tab-users.php:153
 msgid "Afficher aussi les utilisateurs qui ont quitté l'Institut"
 msgstr "Afficher aussi les utilisateurs qui ont quitté l'Institut"
 
-#: admin/view/lab-admin-tab-users.php:78
+#: admin/view/lab-admin-tab-users.php:162
 msgid "Choisissez une ou plusieurs personne(s) à affecter :"
 msgstr "Choisissez une ou plusieurs personne(s) à affecter :"
 
-#: admin/view/lab-admin-tab-users.php:85
+#: admin/view/lab-admin-tab-users.php:169
 msgid ""
 "Choisissez le ou les groupe(s) au(x)quel(s) vous allez affecter des "
 "personnes :"
@@ -295,9 +337,61 @@ msgstr ""
 "Choisissez le ou les groupe(s) au(x)quel(s) vous allez affecter des "
 "personnes :"
 
-#: admin/view/lab-admin-tab-users.php:90
+#: admin/view/lab-admin-tab-users.php:174
 msgid "envoyer"
 msgstr "envoyer"
+
+#: admin/view/lab-admin-tab-users.php:178
+msgid "Ajouter un utilisateur dans l'annuaire"
+msgstr ""
+
+#: admin/view/lab-admin-tab-users.php:182
+#, fuzzy
+#| msgid "Nom de l'utilisateur"
+msgid "E-Mail d'utilisateur AMU :"
+msgstr "Nom de l'utilisateur"
+
+#: admin/view/lab-admin-tab-users.php:190
+#, fuzzy
+#| msgid "Nom HAL"
+msgid "Nom"
+msgstr "Nom HAL"
+
+#: admin/view/lab-admin-tab-users.php:198
+msgid "Prénom"
+msgstr ""
+
+#: admin/view/lab-admin-tab-users.php:206
+msgid "E-Mail"
+msgstr ""
+
+#: admin/view/lab-admin-tab-users.php:214
+msgid "Login (uid)"
+msgstr ""
+
+#: admin/view/lab-admin-tab-users.php:222
+msgid "Mot de passe"
+msgstr ""
+
+#: admin/view/lab-admin-tab-users.php:230
+msgid "Organisation"
+msgstr ""
+
+#: admin/view/lab-admin-tab-users.php:238
+#, fuzzy
+#| msgid "Affecter des utilisateurs à des groupes"
+msgid "Ajouter l'utilisateur à WordPress"
+msgstr "Affecter des utilisateurs à des groupes"
+
+#: admin/view/lab-admin-tab-users.php:252
+#, fuzzy
+#| msgid "Rechercher un utilisateur"
+msgid "Supprimer un utilisateur"
+msgstr "Rechercher un utilisateur"
+
+#: admin/view/lab-admin-tab-users.php:256
+msgid "Nom - Prénom - mail :"
+msgstr ""
 
 #: admin/view/lab-admin-tabs.php:23
 msgid "Séminaire"
@@ -435,7 +529,7 @@ msgstr "La clé/badge numéro"
 
 #: js/lab_keyring.js:530
 msgid "A été prêtée à"
-msgstr "loan to"
+msgstr "A été prêtée à"
 
 #: js/lab_keyring.js:534
 msgid "Et devra être rendue avant le"
@@ -443,7 +537,7 @@ msgstr "Et devra être rendue avant le"
 
 #: js/lab_keyring.js:535 lab-admin-keyring.php:81 lab-admin-keyring.php:131
 #: lab-admin-keyring.php:171 lab-admin-keyring.php:247
-#: lab-admin-keyring.php:308 shortcode/lab-shortcode-present.php:217
+#: lab-admin-keyring.php:308 shortcode/lab-shortcode-present.php:238
 msgid "Commentaire"
 msgstr "Commentaire"
 
@@ -459,42 +553,42 @@ msgstr "Imprimer"
 msgid "Reason of your attendance is require"
 msgstr "La raison de votre présence est requise"
 
-#: lab-admin-ajax.php:56
+#: lab-admin-ajax.php:59
 #, php-format
 msgid "A param key with '%1s' already exist in db"
 msgstr "Un paramètre avec la clef '%1s' existe déjà en BDD"
 
-#: lab-admin-ajax.php:79
+#: lab-admin-ajax.php:82
 msgid "Cant delete system param"
 msgstr "Impossible d'effacer un paramètre sytème"
 
-#: lab-admin-ajax.php:824
+#: lab-admin-ajax.php:814
 msgid "Votre demande a bien été prise en compte"
 msgstr "Votre demande a bien été prise en compte"
 
-#: lab-admin-ajax.php:853
+#: lab-admin-ajax.php:843
 msgid "Votre invitation a bien été modifiée"
 msgstr "Votre invitation a bien été modifiée"
 
-#: lab-admin-ajax.php:981
+#: lab-admin-ajax.php:971
 msgid "Aucune invitation"
 msgstr "Aucune invitation"
 
-#: lab-admin-ajax.php:1018
+#: lab-admin-ajax.php:1008
 msgid "indéfini"
 msgstr "indéfini"
 
-#: lab-admin-ajax.php:1125
+#: lab-admin-ajax.php:1117
 #, php-format
 msgid "%s is a non wordking day"
 msgstr "%s est férié"
 
-#: lab-admin-ajax.php:1147
+#: lab-admin-ajax.php:1139
 #, php-format
 msgid "Your are already present in %s the %s between %s and %s"
 msgstr "Vous êtes déjà présent au/à %s le %s entre %s et %s"
 
-#: lab-admin-ajax.php:1170 lab-admin-ajax.php:1179
+#: lab-admin-ajax.php:1162 lab-admin-ajax.php:1171
 #, php-format
 msgid ""
 "Your new schedules overlap to an existing one : %s the %s between %s and %s"
@@ -660,14 +754,6 @@ msgstr "Afficher Reçu"
 msgid "Usager"
 msgstr "Usager"
 
-#: lab-admin-keyring.php:320
-msgid "Date de début"
-msgstr "Date de début"
-
-#: lab-admin-keyring.php:322
-msgid "Date de fin"
-msgstr "Date de fin"
-
 #: lab-admin-keyring.php:326
 msgid "Commentaire faculatif"
 msgstr "Commentaire faculatif"
@@ -720,89 +806,133 @@ msgstr "Coordonnées"
 msgid "Group"
 msgstr "Groupes"
 
-#: shortcode/lab-shortcode-present.php:110
+#: shortcode/lab-shortcode-present.php:120
 msgid "Lundi"
-msgstr ""
+msgstr "Lundi"
 
-#: shortcode/lab-shortcode-present.php:111
+#: shortcode/lab-shortcode-present.php:121
 msgid "Mardi"
-msgstr ""
+msgstr "Mardi"
 
-#: shortcode/lab-shortcode-present.php:112
+#: shortcode/lab-shortcode-present.php:122
 msgid "Mercredi"
-msgstr ""
+msgstr "Mercredi"
 
-#: shortcode/lab-shortcode-present.php:113
+#: shortcode/lab-shortcode-present.php:123
 msgid "Jeudi"
-msgstr ""
+msgstr "Jeudi"
 
-#: shortcode/lab-shortcode-present.php:114
+#: shortcode/lab-shortcode-present.php:124
 msgid "Vendredi"
-msgstr ""
+msgstr "Vendredi"
 
-#: shortcode/lab-shortcode-present.php:198
+#: shortcode/lab-shortcode-present.php:134
+msgid "Non working day"
+msgstr "Férié"
+
+#: shortcode/lab-shortcode-present.php:219
 msgid "Je serai présent·e"
-msgstr ""
+msgstr "Je serai présent·e"
 
-#: shortcode/lab-shortcode-present.php:203
-#: shortcode/lab-shortcode-present.php:257
+#: shortcode/lab-shortcode-present.php:224
+#: shortcode/lab-shortcode-present.php:278
 msgid "Le"
-msgstr ""
+msgstr "Le"
 
-#: shortcode/lab-shortcode-present.php:210
-#: shortcode/lab-shortcode-present.php:259
+#: shortcode/lab-shortcode-present.php:231
+#: shortcode/lab-shortcode-present.php:280
 msgid "Jusqu'à"
-msgstr ""
+msgstr "Jusqu'à"
 
-#: shortcode/lab-shortcode-present.php:213
-#, fuzzy
-#| msgid "on the site"
+#: shortcode/lab-shortcode-present.php:234
 msgid "sur le site"
 msgstr "sur le site"
 
-#: shortcode/lab-shortcode-present.php:221
+#: shortcode/lab-shortcode-present.php:242
 msgid "Sauvegarder"
-msgstr ""
+msgstr "Sauvegarder"
 
-#: shortcode/lab-shortcode-present.php:241
+#: shortcode/lab-shortcode-present.php:262
 msgid "Je souhaite modifier une de mes présences"
-msgstr ""
+msgstr "Je souhaite modifier une de mes présences"
 
-#: shortcode/lab-shortcode-present.php:258
+#: shortcode/lab-shortcode-present.php:279
 msgid "De"
-msgstr ""
+msgstr "De"
 
-#: shortcode/lab-shortcode-present.php:260
+#: shortcode/lab-shortcode-present.php:281
 msgid "Sur"
-msgstr ""
+msgstr "Sur"
 
-#: shortcode/lab-shortcode-present.php:261
-#, fuzzy
-#| msgid "Actions"
+#: shortcode/lab-shortcode-present.php:282
 msgid "Action"
-msgstr "Actions"
+msgstr "Action"
 
-#: shortcode/lab-shortcode-present.php:328
-#: shortcode/lab-shortcode-present.php:374
-#, fuzzy
+#: shortcode/lab-shortcode-present.php:349
+#: shortcode/lab-shortcode-present.php:395
 msgid "Comment"
-msgstr "Comments"
+msgstr "Commentaire"
 
-#: shortcode/lab-shortcode-present.php:400
-#, fuzzy
-#| msgid "Imprimer"
+#: shortcode/lab-shortcode-present.php:421
 msgid "Supprimer"
-msgstr "Imprimer"
+msgstr "Supprimer"
 
-#: shortcode/lab-shortcode-present.php:406
-#, fuzzy
-#| msgid "Voulez-vous vraiment supprimer cette clé ?"
+#: shortcode/lab-shortcode-present.php:427
 msgid "Êtes vous certain·e de vouloir supprimer cette présence ?"
-msgstr "Voulez-vous vraiment supprimer cette clé ?"
+msgstr "Êtes vous certain·e de vouloir supprimer cette présence ?"
 
-#: shortcode/lab-shortcode-present.php:409
+#: shortcode/lab-shortcode-present.php:430
 msgid "Oui"
-msgstr ""
+msgstr "Oui"
+
+#: shortcode/lab-shortcode-profile.php:21
+msgid "Modifier la couleur d'arrière plan"
+msgstr "Modifier la couleur d'arrière plan"
+
+#: shortcode/lab-shortcode-profile.php:22
+msgid "Modifier le profil"
+msgstr "Modifier le profil"
+
+#: shortcode/lab-shortcode-profile.php:23
+msgid "Valider les changements"
+msgstr "Valider les changements"
+
+#: shortcode/lab-shortcode-profile.php:34
+msgid "Cliquez sur l'icône d'un réseau social pour le modifier"
+msgstr "Cliquez sur l'icône d'un réseau social pour le modifier"
+
+#: shortcode/lab-shortcode-profile.php:36
+msgid "Votre ID HAL"
+msgstr "Votre ID HAL"
+
+#: shortcode/lab-shortcode-profile.php:36
+msgid "Vous n'avez pas défini votre ID HAL"
+msgstr "Vous n'avez pas défini votre ID HAL"
+
+#: shortcode/lab-shortcode-profile.php:37
+#: shortcode/lab-shortcode-profile.php:41
+msgid "Tester sur HAL"
+msgstr "Tester sur HAL"
+
+#: shortcode/lab-shortcode-profile.php:40
+msgid "Votre nom HAL"
+msgstr "Votre nom HAL"
+
+#: shortcode/lab-shortcode-profile.php:40
+msgid "Vous n'avez pas défini votre nom HAL"
+msgstr "Vous n'avez pas défini votre nom HAL"
+
+#: shortcode/lab-shortcode-profile.php:41
+msgid "Nom HAL"
+msgstr "Nom HAL"
+
+#: shortcode/lab-shortcode-profile.php:55
+msgid "site"
+msgstr "site"
+
+#: shortcode/lab-shortcode-profile.php:75
+msgid "User group(s) : "
+msgstr "Groupe(s) scientifiques(s) de l'utilisateur"
 
 #~ msgid "I will be there"
 #~ msgstr "Je serais présent·e"
@@ -866,10 +996,6 @@ msgstr ""
 
 #, fuzzy
 #~ msgid "Location Name:"
-#~ msgstr "Actions"
-
-#, fuzzy
-#~ msgid "location"
 #~ msgstr "Actions"
 
 #, fuzzy

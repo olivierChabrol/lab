@@ -16,48 +16,53 @@ function lab_hal($param) {
     $param = shortcode_atts(array(
         'id' => get_option('lab-hal'),
         'um' => get_option('lab-hal'),
+        'group' => get_option('lab-hal'),
+        'year' => get_option('lab-hal'),
         ),
         $param, 
         "lab-hal"
     );
     global $wp;
-    $userId  = $param['id'];
-    $um  = $param['um'];
+    $userId = $param['id'];
+    $um     = $param['um'];
+    $group  = $param['group'];
+    $year   = $param['year'];
     $useUltimaterMemberPlugin = false;
     $userId = null;
+
+    if (!isset($year) || empty($year)) {
+        $year = null;
+    }
 
     if (isset($um) && !empty($um)) {
         $useUltimaterMemberPlugin = true;
     }
-    $html  = "<h1>".__('Publications HAL','lab')."</h1>";
-    if ($useUltimaterMemberPlugin) {
-        // if begins with user/ 
-        $userPattern = "user/";
-        /*
-        if (beginWith($wp->request, $userPattern)) {
-            $umUser = substr ($wp->request, strlen($userPattern));
-            global $wpdb;
-            $sql = "SELECT user_id FROM `".$wpdb->prefix."usermeta` WHERE meta_key='um_user_profile_url_slug_name' AND meta_value='".$umUser."'";
-            //$sql = "SELECT lh.* FROM `".$wpdb->prefix."lab_hal` as lh JOIN `".$wpdb->prefix."lab_hal_users` AS lhu ON lhu.hal_id=lh.id WHERE lhu.user_id=".$umUser;
-            $results = $wpdb->get_results($sql);
-            if (count($results) == 1) {
-                $userId = $results[0]->user_id;
-            }
-        }
-        //*/
-        if (beginWith($wp->request, $userPattern)) {
-            $umUser = substr ($wp->request, strlen($userPattern));
-            global $wpdb;
-            $sql = "SELECT user_id FROM `".$wpdb->prefix."usermeta` WHERE meta_key='lab_user_slug' AND meta_value='".$umUser."'";
-            $results = $wpdb->get_results($sql);
-            if (count($results) == 1) {
-                $userId = $results[0]->user_id;
-            }
-            //$html .= "sub SQL :".$sql."<br>";
+
+    $publications = null;
+    if (isset($group) && !empty($group)) {
+        if (strpos($group,",") === false) {
+            $publications = lab_hal_getPublication_by_group($group, $year);
+        } else {
+            $publications = lab_hal_getPublication_by_group(explode (",", $group), $year);
         }
     }
-    //$html .= "userId :".$userId."<br>";
-    $publications = lab_hal_get_publication($userId);
+    else{
+        $html  = "<h1>".__('Publications HAL','lab')."</h1>";
+        if ($useUltimaterMemberPlugin) {
+            // if begins with user/ 
+            $userPattern = "user/";
+            if (beginWith($wp->request, $userPattern)) {
+                $umUser = substr ($wp->request, strlen($userPattern));
+                global $wpdb;
+                $sql = "SELECT user_id FROM `".$wpdb->prefix."usermeta` WHERE meta_key='lab_user_slug' AND meta_value='".$umUser."'";
+                $results = $wpdb->get_results($sql);
+                if (count($results) == 1) {
+                    $userId = $results[0]->user_id;
+                }
+            }
+        }
+        $publications = lab_hal_get_publication($userId);
+    }
     $i = 0;
     foreach($publications as $p) {
         $i++;

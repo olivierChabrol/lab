@@ -34,7 +34,12 @@ function lab_admin_tab_params() {
       <td>
         <div id="lab_profile_icons" class="lab_profile_edit">
 					<i title="<?php esc_html_e("Affect color to param","lab") ?>" id="lab_admin_param_colorpicker" class="fas fa-fill-drip"></i>
-				</div>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2">
+        See this web site to choose good colors : <a href="https://coolors.co/" target="coolors">https://coolors.co/</a>
       </td>
     </tr>
     <tr><td colspan="3">&nbsp;</td></tr>
