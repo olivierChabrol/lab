@@ -63,7 +63,87 @@ function lab_admin_loadUserHistory($user_id) {
  * PARAM
  *******************************************************************************************************/
 
-function lab_admin_param_save($paramType, $paramName, $color = null, $paramId = null)
+ /**
+  * Return the last id of the system param (where type = 1)
+  *
+  * @return int max id, 0 otherwise
+  */
+function lab_admin_param_last_param_system_id()
+{
+    global $wpdb;
+    $sql = "SELECT MAX(id) AS max FROM `".$wpdb->prefix."lab_params` WHERE `type_param`=1";
+    $results = $wpdb->get_results($sql);
+    if (count($results) > 0)
+    {
+        return intval($results[0]->max);
+    }
+    return 0;
+}
+
+function lab_admin_param_get_by_id($paramId)
+{
+    global $wpdb;
+    $sql = "SELECT * FROM `".$wpdb->prefix."lab_params` WHERE `id`=$paramId";
+    $results = $wpdb->get_results($sql);
+    if (count($results) == 1)
+    {
+        return $results[0];
+    }
+    else{
+        return null;
+    }
+}
+
+function lab_admin_param_clone($param)
+{
+    global $wpdb;
+    if ($wpdb->insert($wpdb->prefix.'lab_params', array("type_param"=>$param->type_param, "value"=>$param->value, "color"=>$param->color)))
+    {
+        return $wpdb->insert_id;
+    }
+    else
+    {
+        return false;
+    }
+}
+function lab_admin_param_change_id($oldId, $type, $newId)
+{
+    global $wpdb;
+    if ($type == AdminParams::PARAMS_GROUPTYPE_ID)
+    {
+        $wpdb->update($wpdb->prefix.'lab_groups', array("group_type"=>$newId), array("group_type"=>$oldId));
+    } 
+    else if ($type == AdminParams::PARAMS_KEYTYPE_ID)
+    {
+        $wpdb->update($wpdb->prefix.'lab_keys', array("type"=>$newId), array("type"=>$oldId));
+    } 
+    else if ($type == AdminParams::PARAMS_SITE_ID)
+    {
+        $wpdb->update($wpdb->prefix.'usermeta', array("meta_value"=>$newId), array("meta_value"=>$oldId, "meta_key"=>"lab_user_location"));
+        $wpdb->update($wpdb->prefix.'lab_keys', array("site"=>$newId), array("site"=>$oldId));
+        $wpdb->update($wpdb->prefix.'lab_presence', array("site"=>$newId), array("site"=>$oldId));
+    } 
+    else if ($type == AdminParams::PARAMS_USER_FUNCTION_ID)
+    {
+        $wpdb->update($wpdb->prefix.'usermeta', array("meta_value"=>$newId), array("meta_value"=>$oldId, "meta_key"=>"lab_user_function"));
+    }
+    else if ($type == AdminParams::PARAMS_MISSION_ID)
+    {
+        $wpdb->update($wpdb->prefix.'lab_invitations', array("mission_objective"=>$newId), array("mission_objective"=>$oldId));
+    }
+    else if ($type == AdminParams::PARAMS_FUNDING_ID)
+    {
+        $wpdb->update($wpdb->prefix.'lab_invitations', array("funding_source"=>$newId), array("funding_source"=>$oldId));
+        $wpdb->update($wpdb->prefix.'usermeta', array("meta_value"=>$newId), array("meta_value"=>$oldId, "meta_key"=>"lab_user_funding"));
+        
+    }
+    else if ($type == AdminParams::PARAMS_EMPLOYER)
+    {
+        $wpdb->update($wpdb->prefix.'usermeta', array("meta_value"=>$newId), array("meta_value"=>$oldId, "meta_key"=>"lab_user_employer"));
+    }
+}
+
+function lab_admin_param_save($paramType, $paramName, $color = null, $paramId = null, $shift = null)
 {
     global $wpdb;
     if ($type == -1) {
@@ -81,14 +161,27 @@ function lab_admin_param_save($paramType, $paramName, $color = null, $paramId = 
 
     if ($paramId == null)
     {
-        //return !lab_admin_param_exist($paramType, $paramName);
+        //return "count > 0 : ".lab_admin_param_exist($paramType, $paramName);
         if (lab_admin_param_exist($paramType, $paramName)) {
             return false;
         } else {
-            //$sql = "INSERT INTO `".$wpdb->prefix."lab_params` (`id`, `type_param`, `value`) VALUES (NULL, '".$paramType."', '".$paramName."')";
-            $wpdb->insert($wpdb->prefix.'lab_params', array("type_param"=>$paramType, "value"=>$paramName, "color"=>$color));
-            //$results = $wpdb->get_results($sql);
-            return $wpdb->insert_id;
+            // case of new param
+            if ($shift != null && $shift == 'on' && $paramType == AdminParams::PARAMS_ID) {
+                $lastParamId = lab_admin_param_last_param_system_id();
+                $newId = $lastParamId + 1;
+
+                $oldParam = lab_admin_param_get_by_id($newId);
+                
+                $cloneId  = lab_admin_param_clone($oldParam);
+                lab_admin_param_change_id($oldParam->id, $oldParam->type_param, $cloneId);
+                $wpdb->update($wpdb->prefix.'lab_params', array("type_param"=>AdminParams::PARAMS_ID, "value"=>$paramName, "color"=>$color), array("id"=>$newId));
+                return $cloneId;
+            }
+            else {
+                $wpdb->insert($wpdb->prefix.'lab_params', array("type_param"=>$paramType, "value"=>$paramName, "color"=>$color));
+                return $wpdb->insert_id;
+            }
+
             
         }
     }
@@ -141,7 +234,13 @@ function lab_admin_param_exist($paramType, $paramName)
     global $wpdb;
     $sql = "SELECT id FROM `".$wpdb->prefix."lab_params` WHERE `type_param` = ".$paramType." AND  `value` = '".$paramName."'";
     $results = $wpdb->get_results($sql);
-    return count($results) == 1;
+    //return count($results) == 1;
+    //return $sql;
+    if (count($results) == 1)
+    {
+        return true;
+    }
+    return 0;
 }
 
 function lab_admin_createTable_hal_keywords() {
@@ -228,6 +327,7 @@ function lab_admin_initTable_param() {
             (13, 1, 'LDAP PASSWORD', NULL),
             (14, 1, 'LDAP TLS', NULL),
             (15, 1, 'LDAP ENABLE', NULL),
+            (16, 1, 'OUTGOING MOBILITY', NULL),
             (NULL, 2, 'Equipe', NULL),
             (NULL, 2, 'Groupe', NULL),
             (NULL, 3, 'Clé', NULL),

@@ -44,13 +44,20 @@ function lab_admin_ajax_param_save() {
   $type  = $_POST['type'];
   $value = $_POST['value'];
   $color = $_POST['color'];
+  $shift = $_POST['shift'];
   if (!isset($paramId) || $paramId == "")
   {
     $paramId = null;
   }
+
+  if (!isset($shift) || $shift == "")
+  {
+    $shift = null;
+  }
   
     
-  $ok = lab_admin_param_save($type, $value, $color, $paramId);
+  $ok = lab_admin_param_save($type, $value, $color, $paramId, $shift);
+  wp_send_json_success($ok);
   if ($ok) {
     wp_send_json_success($ok);
   }

@@ -15,6 +15,8 @@ class AdminParams {
     public const PARAMS_LDAP_PASSWORD = 13;
     public const PARAMS_LDAP_TLS = 14;
     public const PARAMS_LDAP_ENABLE = 15;
+    public const PARAMS_USER_SECTION_CN = 16;
+    public const PARAMS_USER_SECTION_CNU = 17;
 
     public static function get_params_fromId($id) {
         $sql = "SELECT value,id FROM `wp_lab_params` WHERE type_param=".$id." ORDER BY value;";
