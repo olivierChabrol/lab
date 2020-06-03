@@ -24,3 +24,5 @@ $wpdb->prefix = "wp_";
 //echo LAB_DIR_PATH;
 delete_hal_table();
 hal_download_all();
+//$docIds = array();
+//hal_download_1(121, $docIds);

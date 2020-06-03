@@ -1302,10 +1302,106 @@ function hal_download_all()
     $docIds = array();
     foreach($results as $r) 
     {
-        hal_download($r->id, $docIds);
+        hal_download_1($r->id, $docIds);
     }
 }
 
+
+function get_hal_url_1($userId) {
+    global $wpdb;
+    $sql = "SELECT um1.meta_value as lab_hal_id, um2.meta_value as lab_hal_name FROM `".$wpdb->prefix."usermeta` AS um1 JOIN `".$wpdb->prefix."usermeta` AS um2 ON um2.user_id=um1.user_id WHERE um1.`user_id`=".$userId." AND um1.`meta_key`='lab_hal_id' AND um2.`meta_key`='lab_hal_name'";
+    
+    $results = $wpdb->get_results($sql);
+    if (count($results) == 1) {
+        $hal_id   = $results[0]->lab_hal_id;
+        $hal_name = $results[0]->lab_hal_name;
+        if ($hal_id != null) {
+            //return "https://api.archives-ouvertes.fr/search/?q=*:*&fq=authIdHal_s:(".$hal_id.")&fl=docid,citationFull_s,producedDate_tdate,uri_s,title_s,journalTitle_s&sort=producedDate_tdate+desc&wt=json&json.nl=arrarr";
+            //return "https://api.archives-ouvertes.fr/search/?q=*:*&fq=authIdHal_s:(".$hal_id.")&group=true&group.field=docType_s&group.limit=1000&&fl=docid,citationFull_s,producedDate_tdate,uri_s,title_s,journalTitle_s&facet.field=fr_domainAllCodeLabel_fs&facet.field=keyword_s&facet.field=journalIdTitle_fs&facet.field=producedDateY_i&facet.field=authIdLastNameFirstName_fs&facet.field=instStructIdName_fs&facet.field=labStructIdName_fs&facet.field=deptStructIdName_fs&facet.field=rteamStructIdName_fs&facet.mincount=1&facet=true&wt=json&json.nl=arrarr";
+            return "https://api.archives-ouvertes.fr/search/?q=*:*&fq=authIdHal_s:(".$hal_id.")&fl=docid,citationFull_s,producedDate_tdate,uri_s,title_s,journalTitle_s&facet.field=fr_domainAllCodeLabel_fs&facet.field=keyword_s&facet.mincount=1&facet=true&wt=json&json.nl=arrarr";
+        }
+        else {
+            return "https://api.archives-ouvertes.fr/search/hal/?omitHeader=true&wt=json&q=".$hal_name."&sort=producedDate_tdate+desc&fq=NOT+instance_s%3Asfo&fq=NOT+instance_s%3Adumas&fq=NOT+instance_s%3Amemsic&fq=NOT+instance_s%3Ahceres&fq=NOT+%28docType_s%3A%28THESE+OR+HDR%29+AND+submitType_s%3A%28notice+OR+annex%29%29&fq=NOT+docType_s%3A%28MEM+OR+PRESCONF+OR+MINUTES+OR+NOTE+OR+SYNTHESE+OR+OTHERREPORT+OR+REPACT+OR+BOOKREPORT%29&fq=NOT+status_i%3A111&defType=edismax&rows=1000&fl=halId_s%2Curi_s%2CdocType_s%2CdoiId_s%2CnntId_s%2Ctitle_s%2CsubTitle_s%2CauthFullName_s%2CproducedDate_s%2CjournalTitle_s%2CjournalPublisher_s%2Cvolume_s%2Cnumber_s%2Cpage_s%2CconferenceTitle_s%2CconferenceStartDate_s%2Ccountry_s%2Clanguage_s%2CinPress_bool%2Cdocid%2CjournalTitle_s%2CcitationFull_s%2Ckeyword_s&sort=score+desc";
+            //return "https://api.archives-ouvertes.fr/search/?q=authLastNameFirstName_s:%22".$hal_name."%22&fl=docid,citationFull_s,producedDate_tdate,uri_s,title_s,journalTitle_s&facet.field=fr_domainAllCodeLabel_fs&facet.field=keyword_s&facet.mincount=1&facet=true&wt=json&json.nl=arrarr";
+        }
+    }
+}
+
+function hal_download_1($userId, &$docIds) {
+    $url = get_hal_url_1($userId);
+    if ($docIds == null) {
+        $docId = array();
+    }
+    // keywords
+    $kw = array();
+    echo($url."\n");
+    $json = lab_do_common_curl_call($url);
+    if (!isset($json->response) || !$json->response) {
+        echo "No data for user ".$userId."\n";
+        return;
+    }
+    $docs = $json->response->docs;
+    if(isset($json->response->docs) && $json->response->docs)
+    {
+        $c    = count($json->response->docs);
+        echo("\$c:".$c."\n");
+        $display = false;
+        for ($i = 0; $i < $c; $i++) {
+            $keep = false;
+            $docId = $docs[$i]->docid;
+            //echo "[".$i."]=".$docId."\n";
+            $citation = $docs[$i]->citationFull_s;
+            $producedDate = strtotime($docs[$i]->producedDate_s);
+            $title = $docs[$i]->title_s[0];
+            $url = $docs[$i]->uri_s;
+
+            if (isset($docs[$i]->journalTitle_s))
+            {
+                $journal = $docs[$i]->journalTitle_s;
+            }
+            else {
+                $journal = null;
+            }
+
+            if (!array_key_exists ($docId, $docIds)) {
+                
+                $id = saveHalProduction($docId, $citation, date('Y-m-d', $producedDate), $title, $url, $journal);
+                
+                $docIds[$docId] = $id;
+                $halId = $id;            
+            }
+
+            if (isset($docs[$i]->keyword_s))
+            {
+                $keywords = $docs[$i]->keyword_s;
+                $kwc = count($keywords);
+                for ($j = 0; $j < $kwc; $j++) {
+                    //$keyword = preg_replace('/[\x00-\x1F\x7F]/u', '',$keywords[$j]);
+                    $keyword = preg_replace( '/[^[:print:]]/', '',$keywords[$j]);
+                    //echo $keyword."\n";
+                    if(array_key_exists($keyword, $kw))
+                    {
+                        $kw[$keyword] = $kw[$keyword] + 1;
+                    }
+                    else
+                    {
+                        $kw[$keyword] = 1;
+                    }
+                }
+            }
+
+            saveHalUsers($userId, $docIds[$docId]);
+            //echo "FIN : ".$docId."\n";
+        }
+
+        foreach($kw as $word=>$num)
+        {
+            lab_admin_hal_add_keyword_to_user($userId, $word, $num);
+        }
+
+    }
+
+}
 
 function hal_download($userId, &$docIds) {
     $url = get_hal_url($userId);
@@ -1313,7 +1409,7 @@ function hal_download($userId, &$docIds) {
     if ($docIds == null) {
         $docId = array();
     }
-    //echo($url."\n");
+    echo($url."\n");
 
     $json = lab_do_common_curl_call($url);
     if (!isset($json->response) || !$json->response) {
@@ -1324,8 +1420,8 @@ function hal_download($userId, &$docIds) {
     $docs = $json->response->docs;
     if(isset($json->response->docs) && $json->response->docs)
     {
-        //echo("\$c:".$c."\n");
         $c    = count($json->response->docs);
+        echo("\$c:".$c."\n");
         
         $display = false;
         for ($i = 0; $i < $c; $i++) {
@@ -1388,9 +1484,13 @@ function hal_download($userId, &$docIds) {
 function delete_hal_table() {
     global $wpdb;
     $wpdb->query("TRUNCATE TABLE `".$wpdb->prefix."lab_hal_users`");
+    $wpdb->query("TRUNCATE TABLE `".$wpdb->prefix."lab_hal_keywords_user`");
+    $wpdb->query("TRUNCATE TABLE `".$wpdb->prefix."lab_hal_keywords`");
     $wpdb->query("TRUNCATE TABLE `".$wpdb->prefix."lab_hal`");//delete( $wpdb->prefix."lab_hal", array());
     $wpdb->get_results("ALTER TABLE `".$wpdb->prefix."lab_hal` AUTO_INCREMENT = 1");
     $wpdb->get_results("ALTER TABLE `".$wpdb->prefix."lab_hal_users` AUTO_INCREMENT = 1");
+    $wpdb->get_results("ALTER TABLE `".$wpdb->prefix."lab_hal_keywords_user` AUTO_INCREMENT = 1");
+    $wpdb->get_results("ALTER TABLE `".$wpdb->prefix."lab_hal_keywords` AUTO_INCREMENT = 1");
     return true;
 }
 
