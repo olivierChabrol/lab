@@ -75,8 +75,7 @@ function lab_profile($id=0) {
 			'<span style="display:block; max-width:700px;" class="lab_current">'.(isset($user->description) ? $user->description :  '...' ).'</span>
 		</div>
 		<hr/>'.esc_html__("User group(s) : ", "lab").'<ul id="lab_profile_groups">'.$user->print_groups().'</ul>	
-		<div id="lab_profile_keywords"><hr/>
-			'.esc_html__("Research keywords : ", "lab").'
+		<div id="lab_profile_keywords">
 			'.$user->print_keywords().'
 		</div>
 	</div>';
@@ -159,11 +158,16 @@ class labUser {
 		return $output;
 	}
 	public function print_keywords() {
-		$output = "<ul>";
-		foreach($this->keywords as $k) {
-			$output .= '<span class="badge badge-pill badge-primary">'.$k->value.'</span> ';
+		$output='';
+		if ($this->keywords != null) {
+			$output .= "<hr/>";
+			$output .= esc_html__("Research keywords : ", "lab");
+			$output .= "<ul>";
+			foreach($this->keywords as $k) {
+				$output .= '<span class="badge badge-pill badge-primary">'.$k->value.'</span> ';
+			}
+			$output .= "</ul>";
 		}
-		$output .= "</ul>";
 		return $output;
 	}
 }
