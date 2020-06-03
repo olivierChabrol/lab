@@ -73,7 +73,10 @@ function lab_profile($id=0) {
 			<div id="lab_profile_bio">'
 				.($is_current_user || current_user_can('edit_users') ? '<textarea style="display:none;" rows="4" cols="50" class="lab_profile_edit" id="lab_profile_edit_bio" placeholder="Biographie (200 caractères max)">'.$user->description.'</textarea>' : '').
 				'<span style="display:block; max-width:700px;" class="lab_current">'.(isset($user->description) ? $user->description :  '...' ).'</span>
-			</div><hr/>'.esc_html__("User group(s) : ", "lab").'<ul id="lab_profile_groups">'.$user->print_groups().'</ul></div>';
+			</div><hr/>'.esc_html__("User group(s) : ", "lab").'<ul id="lab_profile_groups">'.$user->print_groups().'</ul></div>	
+			<div id="lab_profile_keywords"><hr/>
+			<ul>'.$user->print_keywords().'</ul></div>';
+			
     return $profileStr;
 }
 /*** CLASS LABUSER ***/
@@ -96,6 +99,7 @@ class labUser {
 	public $hal_name;
 	public $hal_id;
 	public $social;
+	public $keywords;
 
 	function __construct($id) {
 		$this -> id = $id;
@@ -106,18 +110,19 @@ class labUser {
 		$this -> affiliation = lab_profile_get_param_metaKey($id,'lab_user_employer', AdminParams::PARAMS_EMPLOYER);
 		$this -> office      = lab_profile_get_metaKey($id,'lab_user_office_number');
 		$this -> officeFloor = lab_profile_get_metaKey($id,'lab_user_office_floor');
-		$temp = lab_profile_get_Info($id);
-		$this -> email = $temp[0]->user_email;
-		$this -> url = $temp[0]->user_url;
-		$this -> phone = lab_profile_get_metaKey($id,'lab_user_phone');
+		$temp 				 = lab_profile_get_Info($id);
+		$this -> keywords 	 = lab_profile_get_keywords($id);
+		$this -> email 		 = $temp[0]->user_email;
+		$this -> url 		 = $temp[0]->user_url;
+		$this -> phone 		 = lab_profile_get_metaKey($id,'lab_user_phone');
 		$this -> description = lab_profile_get_metaKey($id,'description');
-		$this -> groups = lab_profile_get_Groups($id);
-		$Gravmail = trim($this->email);
-		$Gravmail = strtolower($Gravmail); 
-		$this -> gravatar = "https://www.gravatar.com/avatar/".md5($Gravmail)."?s=160&d=mp";
-		$this -> bg_color = lab_profile_get_metaKey($id,'lab_profile_bg_color');
-		$this -> hal_id = lab_profile_get_metaKey($id,'lab_hal_id');
-		$this -> hal_name = lab_profile_get_metaKey($id,'lab_hal_name');
+		$this -> groups 	 = lab_profile_get_Groups($id);
+		$Gravmail 			 = trim($this->email);
+		$Gravmail 			 = strtolower($Gravmail); 
+		$this -> gravatar 	 = "https://www.gravatar.com/avatar/".md5($Gravmail)."?s=160&d=mp";
+		$this -> bg_color 	 = lab_profile_get_metaKey($id,'lab_profile_bg_color');
+		$this -> hal_id 	 = lab_profile_get_metaKey($id,'lab_hal_id');
+		$this -> hal_name 	 = lab_profile_get_metaKey($id,'lab_hal_name');
 		foreach (['facebook','instagram','linkedin','pinterest','twitter','tumblr','youtube'] as $reseau) {
 			$this->social[$reseau] = lab_profile_get_metaKey($id,'lab_'.$reseau);
 		}
@@ -150,6 +155,13 @@ class labUser {
 		}
 		return $output;
 	}
+	public function print_keywords() {
+		foreach($this->keywords as $k) {
+			$output = "<span>".$k->value."</span>";
+		}
+	}
+
+	//lab html helper : fonction print keywords à laquelle on passe une liste de tag//
 }
 /*** SQL ***/
 function lab_profile_getID($slug) {
@@ -182,7 +194,11 @@ function lab_profile_get_param_metaKey($id,$key, $paramType) {
 	$res = $wpdb->get_var($sql);
 	return $res;
 }
-
+function lab_profile_get_keywords($id) {
+	global $wpdb;
+	$sql = "SELECT value FROM `".$wpdb->prefix."lab_hal_keywords` AS kw JOIN `".$wpdb->prefix."lab_hal_keywords_user` AS kwU ON kwU.keyword_id = kw.id WHERE kwU.user_id = ".$id." LIMIT 5;";
+	return $wpdb->get_results($sql);
+}
 // Fonctions utilisées par une fonction Ajax Externe
 function lab_profile_set_MetaKey($id,$key,$val) {
 	global $wpdb;
