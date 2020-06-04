@@ -204,7 +204,7 @@ function lab_profile_get_param_metaKey($id,$key, $paramType) {
 }
 function lab_profile_get_keywords($id) {
 	global $wpdb;
-	$sql = "SELECT value FROM `".$wpdb->prefix."lab_hal_keywords` AS kw JOIN `".$wpdb->prefix."lab_hal_keywords_user` AS kwU ON kwU.keyword_id = kw.id WHERE kwU.user_id = ".$id." ORDER BY number DESC LIMIT 5;";
+	$sql = "SELECT value FROM `".$wpdb->prefix."lab_hal_keywords` AS kw JOIN `".$wpdb->prefix."lab_hal_keywords_user` AS kwU ON kwU.keyword_id = kw.id WHERE kwU.user_id = ".$id." ORDER BY number DESC LIMIT 7;";
 	return $wpdb->get_results($sql);
 }
 // Fonctions utilisées par une fonction Ajax Externe
