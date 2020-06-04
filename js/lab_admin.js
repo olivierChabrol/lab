@@ -187,6 +187,13 @@ jQuery(function($){
    check_metaKey_exist();
     //if ($("#usermetadata_key_all").)
   });
+
+  $("#lab_settings_button_addKey_complete").click(function() {
+    var key = $('#usermetadata_key_complete').val();
+    var value = $('#usermetadata_value_complete').val();
+    completeMetakeys(key, value);
+  });
+
   $("#lab_settings_button_addKey_all").click(function() {
     var key = $('#usermetadata_key_all').val();
     var value = $('#usermetadata_value_all').val();
@@ -1121,6 +1128,15 @@ function loadExistingKeysFields(data) {
   }
 }
 
+function completeMetakeys(key, value) {
+  var data = {
+    'action' : 'complete_new_metakeys',
+    'key' : key,
+    'value' : value
+  };
+  console.log(data);
+  callAjax(data, "key " + key + " added for all users without it", resetUserMetaFields, "Error when saving key '" + key + "'", null);
+}
 function createMetakeys(key, value) {
   var data = {
     'action' : 'add_new_metakeys',

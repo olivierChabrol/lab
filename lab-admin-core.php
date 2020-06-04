@@ -1037,6 +1037,10 @@ function lab_admin_usermeta_fill_user_slug($userId = null)
 }
 
 function lab_userMetaData_create_metaKeys($metadataKey, $defaultValue) {
+
+    if (substr($metadataKey, 0, strlen(LAB_META_PREFIX)) !== LAB_META_PREFIX) {
+        $metadataKey = LAB_META_PREFIX.$metadataKey;
+    }
     $userIds = userMetaData_get_userId_with_no_key($metadataKey);
     //return $userIds;
     $errors = array();

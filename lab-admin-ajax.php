@@ -608,7 +608,8 @@ function lab_keyring_deleteKey_Req() {
 function lab_ajax_userMetaData_new_key() {
   wp_send_json_success(lab_userMetaData_save_key($_POST['userId'],$_POST['key'],$_POST['value']));
 }
-function lab_ajax_userMetaData_create_keys() {
+function lab_ajax_userMetaData_complete_keys() {
+  //wp_send_json_success("OK");
   wp_send_json_success(lab_userMetaData_create_metaKeys($_POST['key'],$_POST['value']));
 }
 function lab_ajax_userMetaData_list_keys() {
