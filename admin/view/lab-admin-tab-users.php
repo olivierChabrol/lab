@@ -21,7 +21,11 @@ function lab_admin_tab_user() {
         </td>
       </tr>
       <tr>
-        <td colspan="2"> <input type="text" id="lab_user_firstname" value="" placeholder="<?php esc_html_e('First name','lab') ?>"/><input type="text" id="lab_user_lastname" value=""  placeholder="<?php esc_html_e('Last name','lab') ?>"/>
+        <td>
+          <input type="text" id="lab_user_firstname" value="" placeholder="<?php esc_html_e('First name','lab') ?>"/>
+        </td>
+        <td>
+          <input type="text" id="lab_user_lastname" value=""  placeholder="<?php esc_html_e('Last name','lab') ?>"/>
         </td>
       </tr>
       <tr>
@@ -116,7 +120,7 @@ function lab_admin_tab_user() {
     </div>
   </div>
 </div>
-  <form action="javascript:lab_addHistoric();" style="flex-grow:1;">
+  <form style="display:none" id="lab_admin_historic" action="javascript:lab_addHistoric(false);" style="flex-grow:1;">
     <h3><?php esc_html_e('Historique de l\'utilisateur','lab') ?></h3>
     <div>
         <ul id="lab_history_list">
@@ -130,7 +134,7 @@ function lab_admin_tab_user() {
           <label for="lab_historic_start"><?php esc_html_e('Date de début','lab') ?> : </label>
         </th>
         <td>
-          <input type="date" id="lab_historic_start"/>
+          <input required type="date" id="lab_historic_start"/>
         </td>
       </tr>
       <tr>
@@ -143,7 +147,7 @@ function lab_admin_tab_user() {
       </tr>
       <tr>
         <th>
-          <label for="lab_historic_function"><?php esc_html_e('Fonction','lab') ?> : </label>
+          <label required for="lab_historic_function"><?php esc_html_e('Fonction','lab') ?> : </label>
         </th>
         <td>
           <?php lab_html_select("lab_historic_function",
@@ -176,12 +180,12 @@ function lab_admin_tab_user() {
         </td>
       </tr>
       <tr>
-        <td scope="row">
-          <input type="submit" id="lab_historic_add" value="<?php esc_html_e('Ajouter','lab')?>"/>
-        </td>
-        <td scope="row">
-          <input type="reset" value="<?php esc_html_e('Annuler','lab')?>"/>
-          <input type="button" id="lab_historic_edit" value="<?php esc_html_e('Modifier','lab')?>"/>
+        <td scope="row" colspan="2">
+          <div id="lab_historic_actions">
+            <input class="btn btn-primary" type="submit" id="lab_historic_add" value="<?php esc_html_e('Ajouter','lab')?>"/>
+            <button style="display:none" class="btn btn-secondary" id="lab_historic_edit"><?php esc_html_e('Modifier','lab')?></button>
+            <input type="reset" value="<?php esc_html_e('Annuler','lab')?>"/>
+          </div>
         </td>
       </tr>
     </table>
@@ -290,29 +294,6 @@ function lab_admin_tab_user() {
         </tr>
       </table>
     </form>
-    <form>
-      <h3><?php esc_html_e('Supprimer un utilisateur','lab') ?></h3>
-      <table class="form-table" role="presentation">
-        <tr class="user-rich-editing-wrap">
-          <th scope="row">
-            <label for="lab_ldap_delete_search"><?php esc_html_e('Nom - Prénom - mail :','lab') ?></label>
-          </th>
-          <td>
-            <input type="email" id="lab_ldap_delete_search"/>
-          </td>
-        </tr>
-        <tr>
-          <td colspan="2">
-            <p id="lab_ldap_delete_res"></p>
-          </td>
-        </tr>
-        <tr class="user-rich-editing-wrap">
-          <td scope="row" colspan="2">
-            <input type="button" id="lab_ldap_delete_button" value="Supprimer"/>
-          </td>
-        </tr>
-      </table>
-    </form>
     <!-- Dialogue de confirmation modal s'affichant lorsque l'utilisateur essaie de supprimer une clé -->
     <div id="lab_historic_delete_dialog" class="modal">
       <p><?php esc_html_e('Voulez-vous vraiment supprimer cette période ?','lab');?></p>
@@ -332,10 +313,10 @@ function lab_admin_history($list) {
   $out = '';
   foreach ($list as $elem) {
     $date_begin = date_create_from_format("Y-m-d", $elem->begin);
-    $date_end = date_create_from_format("Y-m-d", $elem->end);
+    $date_end = isset($elem->end) ? date_create_from_format("Y-m-d", $elem->end) : NULL;
     $host = $elem->host_id==null ? null : new LabUser($elem->host_id);
     $out .= "<li class='lab_history_li' ".( $elem->mobility==0 ? '': "style='background-color:#".AdminParams::get_paramWithColor($elem->mobility)->color)."'>
-      <div class='lab_history_dates'><div>".strftime('%d %B %G',$date_begin->getTimestamp())."</div><div>".strftime('%d %B %G',$date_end->getTimestamp())."</div></div>
+      <div class='lab_history_dates'><div>".strftime('%d %B %G',$date_begin->getTimestamp())."</div><div>".(isset($date_end) ? strftime('%d %B %G',$date_end->getTimestamp()) : ' ')."</div></div>
       <div class='lab_history_desc'>
         <div class='lab_history_topDesc'>
           <p>".($elem->mobility==0 ? "I2M" : AdminParams::get_param($elem->mobility))."</p>

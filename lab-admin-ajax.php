@@ -1272,20 +1272,19 @@ function lab_ldap_add_user() {
   // if already exist in ldap, only set to WP
   if ($results != null && $results["mail"] != null)
   {
-    $wpRes = lab_ldap_new_WPUser(strtoupper($results["lastname"])." ".$results["firstname"],$results["mail"],$results["password"],$results['uid']);
+    $wpRes = lab_ldap_new_WPUser(strtoupper($results["lastname"]),$results["firstname"],$results["mail"],$results["password"],$results['uid']);
     if ($wpRes==true) {
-      wp_send_json_success("Already exist in LDAP just have to add to WP");
+      wp_send_json_success("Already exists in LDAP, added to WP");
     } else {
       wp_send_json_error("WordPress : ".$wpRes);
     }
-    
   }
   else
   {
     $ldapRes = lab_ldap_addUser($ldap_obj, $_POST['first_name'],$_POST['last_name'],$_POST['email'],$_POST['password'],$_POST['uid'],$_POST['organization']);
     if ($ldapRes == 0 ) {
       if ($_POST['addToWP'] == 'true') {
-        $wpRes = lab_ldap_new_WPUser(strtoupper($_POST['last_name'])." ".$_POST['first_name'],$_POST['email'],$_POST['password'],$_POST['uid']);
+        $wpRes = lab_ldap_new_WPUser(strtoupper($_POST["last_name"]),$results["first_name"],$_POST['email'],$_POST['password'],$_POST['uid']);
         if ($wpRes==true) {
           wp_send_json_success();
         } else {
@@ -1458,7 +1457,7 @@ function lab_historic_add() {
     'user_id'=>$_POST['user_id'],
     'ext'=>false,
     'begin'=>$_POST['begin'],
-    'end'=>$_POST['end'],
+    'end'=>(strlen($_POST['end'])>1 ? $_POST['end'] : NULL),
     'mobility'=>$_POST['mobility'],
     'host_id'=>$_POST['host_id'],
     'function'=>$_POST['function'],
@@ -1485,5 +1484,22 @@ function lab_historic_getEntry() {
     wp_send_json_error();
   } else {
     wp_send_json_success($res);
+  }
+}
+
+function lab_historic_update() {
+  $res = lab_admin_historic_update($_POST['entry_id'],array(
+    'user_id'=>$_POST['user_id'],
+    'ext'=>false,
+    'begin'=>$_POST['begin'],
+    'end'=>(strlen($_POST['end'])>1 ? $_POST['end'] : NULL),
+    'mobility'=>$_POST['mobility'],
+    'host_id'=>$_POST['host_id'],
+    'function'=>$_POST['function']));
+  if ($res === false) {
+    global $wpdb;
+    wp_send_json_error($wpdb->last_error);
+  } else {
+    wp_send_json_success();
   }
 }

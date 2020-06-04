@@ -51,3 +51,8 @@
 #lab_historic_delete_dialog_options a:first-of-type {
     background: #cf4944;
 }
+#lab_historic_actions {
+    display: flex;
+    justify-content: space-around;
+    width: 80%;
+}

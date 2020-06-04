@@ -608,6 +608,10 @@ jQuery(function($){
       hide: function() {
       }
   });
+  $("#lab_historic_host").focus( function(){
+    $(this).val('');
+    $(this).attr('host_id','');
+  });
   $("#lab_historic_host").autocomplete({
     minChars: 3,
     source: function(term, suggest){
@@ -641,6 +645,10 @@ jQuery(function($){
         toast_error(__('Échec lors de la suppression<br/>')+response.data);
       }
     });
+  });
+  $("#lab_historic_edit").click(function (e){
+    e.preventDefault();
+    lab_addHistoric(true,$(this).attr('entry_id'));
   });
 });
 
@@ -1219,11 +1227,14 @@ function loadUserHistory() {
     'user_id':jQuery("#lab_user_search_id").val()
   }
   jQuery(function($){
+    $("#lab_admin_historic").show();
     $.post(LAB.ajaxurl,data,function (response){
       if (response.success) {
         $("#lab_history_list").html(response.data);
         $(".lab_history_edit").click(function (event){
           event.preventDefault();
+          $("#lab_historic_edit").show();
+          $("#lab_historic_edit").attr('entry_id',$(this).attr('entry_id'));
           $.post(LAB.ajaxurl,{'action':'lab_historic_getEntry','entry_id':$(this).attr('entry_id')},function (response) {
             if (response.success) {
               $("#lab_historic_start").val(response.data['begin']);
@@ -1373,20 +1384,29 @@ function LABLoadLDAPList()
   });
 };
 
-function lab_addHistoric() {
+function lab_addHistoric(update,entry_id=null) {
   jQuery(function ($) {
     data = {
-      'action': 'lab_historic_add',
       'user_id': $("#lab_user_search_id").val(),
       'begin': $("#lab_historic_start").val(),
       'end': $("#lab_historic_end").val(),
       'function': $("#lab_historic_function").val(),
-      'mobility': $("#lab_historic_mobility").val(),
-      'host_id': $("#lab_historic_host").attr('host_id')
+      'mobility': $("#lab_historic_mobility").val()
+    }
+    if ($("#lab_historic_host").attr('host_id')!=null && $("#lab_historic_host").attr('host_id').length) {
+      data['host_id']=$("#lab_historic_host").attr('host_id');
+    }
+    if (update) {
+      data['action'] = 'lab_historic_update';
+      data['entry_id'] = entry_id;
+    } else {
+      data['action']= 'lab_historic_add';
     }
     $.post(LAB.ajaxurl,data,function (response) {
       if (response.success) {
-        toast_success("Période ajoutée avec succès");
+        update ? toast_success("Période modifiée avec succès") : toast_success("Période ajoutée avec succès");
+        document.forms['lab_admin_historic'].reset();
+        $("#lab_historic_edit").hide();
         loadUserHistory();
       } else {
         toast_error("Erreur lors de l'ajout de la période <br>"+response.data);

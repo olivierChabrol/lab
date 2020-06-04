@@ -80,6 +80,10 @@ function lab_admin_historic_get($entry_id) {
     global $wpdb;
     return $wpdb->get_results("SELECT * FROM `".$wpdb->prefix."lab_users_historic` WHERE `id`=".$entry_id.";")[0];
 }
+function lab_admin_historic_update($entry_id,$fields) {
+    global $wpdb;
+    return $wpdb->update($wpdb->prefix."lab_users_historic",$fields,array('id'=>$entry_id));
+}
 /*******************************************************************************************************
  * PARAM
  *******************************************************************************************************/
@@ -194,9 +198,9 @@ function lab_admin_createTable_users_historic() {
         `user_id` bigint UNSIGNED NOT NULL,
         `ext` tinyint NOT NULL COMMENT '0 if insite wp_users, 1 if in lab_guests',
         `begin` datetime NOT NULL,
-        `end` datetime NOT NULL,
+        `end` datetime NULL,
         `mobility` bigint UNSIGNED NOT NULL DEFAULT 0,
-        `host_id` bigint UNSIGNED NOT NULL COMMENT 'link with a user',
+        `host_id` bigint UNSIGNED NULL COMMENT 'link with a user',
         `function` bigint UNSIGNED NOT NULL COMMENT 'link with parameter lab_user_function',
         PRIMARY KEY (`id`)
       ) ENGINE=InnoDB";

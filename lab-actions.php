@@ -32,6 +32,7 @@ if (is_admin()) {
     add_action( 'wp_ajax_lab_historic_add','lab_historic_add' );
     add_action( 'wp_ajax_lab_historic_getEntry','lab_historic_getEntry' );
     add_action( 'wp_ajax_lab_historic_delete','lab_historic_delete' );
+    add_action( 'wp_ajax_lab_historic_update','lab_historic_update' );
     //Actions pour la gestion des groupes
     add_action( 'wp_ajax_group_search_ac', 'lab_admin_group_availableAc' );
     add_action( 'wp_ajax_group_create', 'lab_admin_group_createReq' );

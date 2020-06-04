@@ -210,8 +210,8 @@ class LAB_LDAP {
             or die ("Error in query");
         $entry     = ldap_get_entries($this->ldap_link,$result);
     
-        $surname  = $entry[0]["sn"][0];
-        $name     = $entry[0]["givenname"][0];
+        $surname  = $entry[0]["givenname"][0];
+        $name     = $entry[0]["sn"][0];
         $email    = $entry[0]["mail"][0];
         $password = $entry[0]["password"][0];
         $uid      = $entry[0]["uid"][0];
@@ -254,8 +254,7 @@ class LAB_LDAP {
         return ldap_errno($this->ldap_link);
     }
 }
-function lab_ldap_new_WPUser($name,$email,$password,$uid) {
-    $names = lab_ldap_getName($name);
+function lab_ldap_new_WPUser($lastname,$firstname,$email,$password,$uid) {
     global $wpdb;
     $sql = "SELECT COUNT(*) FROM `".$wpdb->prefix."users` WHERE `user_login`='$uid'";
     if ($wpdb->get_var($sql)>0) {
@@ -267,14 +266,14 @@ function lab_ldap_new_WPUser($name,$email,$password,$uid) {
       'user_pass'=>substr($password,0,7)=='{CRYPT}' ? 'hahaha' : substr($password,0,7),
       'user_email'=>$email,
       'user_registered'=>date("Y-m-d H:i:s",time()),
-      'first_name'=>$names['first_name'],
-      'last_name'=>$names['last_name'],
-      'display_name'=>$name,
+      'first_name'=>$firstname,
+      'last_name'=>$lastname,
+      'display_name'=>$firstname." ".$lastname,
       'role'=>'subscriber');
     $user_id = wp_insert_user($userData);
     $sql = "INSERT INTO ".$wpdb->prefix."usermeta 
         (`user_id`, `meta_key`, `meta_value`) VALUES
-        ($user_id, 'mo_ldap_user_dn', 'uid=$uid,ou=accounts,'".$ldap->getBase()."');";
+        ($user_id, 'mo_ldap_user_dn', 'uid=$uid,ou=accounts,".$ldap->getBase()."');";
     if ($wpdb->query($sql)===false) {
         return $wpdb->last_error;
     }
