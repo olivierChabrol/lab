@@ -141,17 +141,42 @@ function lab_event($param)
 }
 
 /***********************************************************************************************************************
+ * PLUGIN SHORTCODE lab-event-of-the-year
+ **********************************************************************************************************************/
+/*** 
+ * Display events from a year
+ * Shortcode use : [lab-event-of-the-year {slug} {year}]
+***/ 
+/// faire en sorte qu'une des deux méthodes appelle l'autre et ça retire le < ou non ?
+function lab_event_of_the_year($param) {
+    $param = shortcode_atts(array(
+        'slug' => get_option('lab-event-of-the-year'),
+        'year' => get_option('lab-event-of-the-year')
+    ),
+        $param,
+        "lab-event-of-the-year"
+    );
+    $eventCategory = $param['slug'];
+    $eventYear     = $param['year'];
+    lab_events($param);
+
+}
+/***********************************************************************************************************************
  * PLUGIN SHORTCODE lab-old-event
  **********************************************************************************************************************/
 /*** 
- * Shortcode use : [lab-old-event {slug} {year}]
+ ** Shortcode use : [lab-old-event {slug} {year}]
+ * To search category OR another category :
     slug='categoryName1, categoryName2...'
+ * To search category AND another category :
+    slug='categoryName1+categoryName2...'
      You can add as more slugs as you want but there must be at least one
-    year='20xx'
+    
+     year='20xx'
      Year is optional
 ***/ 
 
- function lab_old_event($param)
+function lab_old_event($param)
 {
     $param = shortcode_atts(array(
         'slug' => get_option('lab-old-event'),
@@ -162,7 +187,10 @@ function lab_event($param)
     );
     $eventCategory = $param['slug'];
     $eventYear     = $param['year'];
+    lab_events($param);
+}
 
+function lab_events($param) {
     if(strpos($eventCategory, ",")) {
         $category      = explode(",", $eventCategory); 
         $sqlYearCondition = "";
@@ -177,12 +205,12 @@ function lab_event($param)
                     ON tr.`term_taxonomy_id`=t.`term_id` 
                 JOIN `wp_em_events` as p 
                     ON p.`post_id`=tr.`object_id`
-                WHERE t.slug='".$category[0]."'";
+                WHERE (t.slug='".$category[0]."'";
         for($i = 1 ; $i < count($category) ; ++$i)
         {
-            $sql .= "OR t.slug = '" . $category[$i] . "'";
+            $sql .= " OR t.slug = '" . $category[$i] . "'";
         }
-        $sql .=     $sqlYearCondition  . " 
+        $sql .=     ")" . $sqlYearCondition  . " 
                     AND `p`.`event_end_date` < NOW() 
                     ORDER BY `p`.`event_end_date` DESC ";
     } else if (strpos($eventCategory,"+")) {
@@ -213,7 +241,7 @@ function lab_event($param)
                 $sql .= " AND ";
             }
         }
-        $sql .= $sqlYearCondition  . " 
+        $sql .= ")" . $sqlYearCondition  . " 
                 AND `ee`.`event_end_date` < NOW()
                 ORDER BY `ee`.`event_start_date` DESC";
     }

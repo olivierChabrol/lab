@@ -29,6 +29,14 @@ We reuse code from :
 ### Profile
 [lab-profile]
 ### Event
-[lab-old-event]
+[lab-old-event {slug} {year}] Display past events for a given year (optional)
+##### Use
+To search a category OR another category :
+* slug='categoryName1, categoryName2...'
+To search a category AND another category :
+* slug='categoryName1+categoryName2...'
+
+You can add as more category as you want but there must be at least one.
+
 ### HAL
 [lab-hal group=AA] Display hal records associated to a group (the acronym group is use)
