@@ -544,20 +544,21 @@ function lab_admin_firstname_lastname2($name){
  */
 function lab_admin_initTable_usermeta()
 {
-    lab_userMetaData_create_metaKeys("user_function", "");
-    lab_userMetaData_create_metaKeys("user_location", "");
-    lab_userMetaData_create_metaKeys("user_office_number", "");
-    lab_userMetaData_create_metaKeys("user_office_floor", "");
-    lab_userMetaData_create_metaKeys("user_phone", "");
-    lab_userMetaData_create_metaKeys("user_funding", "");
-    lab_userMetaData_create_metaKeys("user_left", null);
-    lab_userMetaData_create_metaKeys("user_slug", null);
-    lab_userMetaData_create_metaKeys("user_position", null);
-    lab_userMetaData_create_metaKeys("user_section_cn", "");
-    lab_userMetaData_create_metaKeys("user_section_cnu", "");
     lab_userMetaData_create_metaKeys("hal_id", null);
     lab_userMetaData_create_metaKeys("hal_name", null);
     lab_userMetaData_create_metaKeys("profile_bg_color", "#F2F2F2");
+    lab_userMetaData_create_metaKeys("user_employer", "");
+    lab_userMetaData_create_metaKeys("user_function", "");
+    lab_userMetaData_create_metaKeys("user_funding", "");
+    lab_userMetaData_create_metaKeys("user_left", null);
+    lab_userMetaData_create_metaKeys("user_location", "");
+    lab_userMetaData_create_metaKeys("user_office_floor", "");
+    lab_userMetaData_create_metaKeys("user_office_number", "");
+    lab_userMetaData_create_metaKeys("user_phone", "");
+    lab_userMetaData_create_metaKeys("user_section_cn", "");
+    lab_userMetaData_create_metaKeys("user_section_cnu", "");
+    lab_userMetaData_create_metaKeys("user_slug", null);
+    lab_userMetaData_create_metaKeys("user_position", null);
     lab_admin_usermeta_fill_hal_name();
     lab_admin_usermeta_fill_user_slug();
     lab_admin_createSocial();
@@ -565,20 +566,29 @@ function lab_admin_initTable_usermeta()
 
 function lab_admin_add_new_user_metadata($userId)
 {
-    lab_userMetaData_save_key($userId, "user_function", "");
-    lab_userMetaData_save_key($userId, "user_location", "");
-    lab_userMetaData_save_key($userId, "user_office_number", "");
-    lab_userMetaData_save_key($userId, "user_office_floor", "");
-    lab_userMetaData_save_key($userId, "user_phone", "");
-    lab_userMetaData_save_key($userId, "user_left", null);
-    lab_userMetaData_save_key($userId, "user_slug", null);
-    lab_userMetaData_save_key($userId, "user_position", null);
     lab_userMetaData_save_key($userId, "hal_id", null);
     lab_userMetaData_save_key($userId, "hal_name", null);
     lab_userMetaData_save_key($userId, "profile_bg_color", "#F2F2F2");
+    lab_userMetaData_save_key($userId, "user_employer", "");
+    lab_userMetaData_save_key($userId, "user_function", "");
+    lab_userMetaData_save_key($userId, "user_funding", "");
+    lab_userMetaData_save_key($userId, "user_left", null);
+    lab_userMetaData_save_key($userId, "user_location", "");
+    lab_userMetaData_save_key($userId, "user_office_floor", "");
+    lab_userMetaData_save_key($userId, "user_office_number", "");
+    lab_userMetaData_save_key($userId, "user_phone", "");
+    lab_userMetaData_save_key($userId, "user_section_cn", "");
+    lab_userMetaData_save_key($userId, "user_section_cnu", "");
+    lab_userMetaData_save_key($userId, "user_slug", null);
+    lab_userMetaData_save_key($userId, "user_position", null);
     lab_admin_usermeta_fill_hal_name($userId);
     lab_admin_usermeta_fill_user_slug($userId);
     lab_admin_createSocial($userId);
+}
+
+function lab_admin_complete_missing_user_metadata()
+{
+
 }
 
 function lab_admin_firstname_lastname($param, $name){
@@ -971,7 +981,12 @@ function lab_keyring_get_loan($id) {
 /**************************************************************************************************
  * SETTINGS
  *************************************************************************************************/
-
+/**
+ * List user with no metakey
+ *
+ * @param [type] $metadataKey
+ * @return void
+ */
 function userMetaData_get_userId_with_no_key($metadataKey) {
     global $wpdb;
     $sql = "SELECT ID FROM `".$wpdb->prefix."users` WHERE NOT EXISTS ( SELECT 1 FROM `".$wpdb->prefix."usermeta` WHERE `".$wpdb->prefix."usermeta`.`meta_key` = '".$metadataKey."' AND `".$wpdb->prefix."usermeta`.`user_id`=`".$wpdb->prefix."users`.`ID`)";
@@ -1319,7 +1334,7 @@ function get_hal_url_1($userId) {
             //return "https://api.archives-ouvertes.fr/search/?q=*:*&fq=authIdHal_s:(".$hal_id.")&fl=docid,citationFull_s,producedDate_tdate,uri_s,title_s,journalTitle_s&sort=producedDate_tdate+desc&wt=json&json.nl=arrarr";
             //return "https://api.archives-ouvertes.fr/search/?q=*:*&fq=authIdHal_s:(".$hal_id.")&group=true&group.field=docType_s&group.limit=1000&&fl=docid,citationFull_s,producedDate_tdate,uri_s,title_s,journalTitle_s&facet.field=fr_domainAllCodeLabel_fs&facet.field=keyword_s&facet.field=journalIdTitle_fs&facet.field=producedDateY_i&facet.field=authIdLastNameFirstName_fs&facet.field=instStructIdName_fs&facet.field=labStructIdName_fs&facet.field=deptStructIdName_fs&facet.field=rteamStructIdName_fs&facet.mincount=1&facet=true&wt=json&json.nl=arrarr";
             //return "https://api.archives-ouvertes.fr/search/?q=*:*&fq=authIdHal_s:(".$hal_id.")&fl=docid,citationFull_s,producedDate_tdate,uri_s,title_s,journalTitle_s&facet.field=fr_domainAllCodeLabel_fs&facet.field=keyword_s&facet.mincount=1&facet=true&wt=json&json.nl=arrarr";
-            return "https://api.archives-ouvertes.fr/search/hal/?omitHeader=true&wt=json&q=authLastNameFirstName_s:%22".$hal_name."%22&sort=producedDate_tdate+desc&fq=NOT+instance_s%3Asfo&fq=NOT+instance_s%3Adumas&fq=NOT+instance_s%3Amemsic&fq=NOT+instance_s%3Ahceres&fq=NOT+%28docType_s%3A%28THESE+OR+HDR%29+AND+submitType_s%3A%28notice+OR+annex%29%29&fq=NOT+docType_s%3A%28MEM+OR+PRESCONF+OR+MINUTES+OR+NOTE+OR+SYNTHESE+OR+OTHERREPORT+OR+REPACT+OR+BOOKREPORT%29&fq=NOT+status_i%3A111&defType=edismax&rows=1000&fl=halId_s%2Curi_s%2CdocType_s%2CdoiId_s%2CnntId_s%2Ctitle_s%2CsubTitle_s%2CauthFullName_s%2CproducedDate_s%2CjournalTitle_s%2CjournalPublisher_s%2Cvolume_s%2Cnumber_s%2Cpage_s%2CconferenceTitle_s%2CconferenceStartDate_s%2Ccountry_s%2Clanguage_s%2CinPress_bool%2Cdocid%2CjournalTitle_s%2CcitationFull_s%2Ckeyword_s%2CstructCode_s&sort=score+desc";
+            return "https://api.archives-ouvertes.fr/search/hal/?omitHeader=true&wt=json&q=authIdHal_s:(".$hal_name.")&sort=producedDate_tdate+desc&fq=NOT+instance_s%3Asfo&fq=NOT+instance_s%3Adumas&fq=NOT+instance_s%3Amemsic&fq=NOT+instance_s%3Ahceres&fq=NOT+%28docType_s%3A%28THESE+OR+HDR%29+AND+submitType_s%3A%28notice+OR+annex%29%29&fq=NOT+docType_s%3A%28MEM+OR+PRESCONF+OR+MINUTES+OR+NOTE+OR+SYNTHESE+OR+OTHERREPORT+OR+REPACT+OR+BOOKREPORT%29&fq=NOT+status_i%3A111&defType=edismax&rows=1000&fl=halId_s%2Curi_s%2CdocType_s%2CdoiId_s%2CnntId_s%2Ctitle_s%2CsubTitle_s%2CauthFullName_s%2CproducedDate_s%2CjournalTitle_s%2CjournalPublisher_s%2Cvolume_s%2Cnumber_s%2Cpage_s%2CconferenceTitle_s%2CconferenceStartDate_s%2Ccountry_s%2Clanguage_s%2CinPress_bool%2Cdocid%2CjournalTitle_s%2CcitationFull_s%2Ckeyword_s%2CstructCode_s&sort=score+desc";
         }
         else {
             return "https://api.archives-ouvertes.fr/search/hal/?omitHeader=true&wt=json&q=authLastNameFirstName_s:%22".$hal_name."%22&sort=producedDate_tdate+desc&fq=NOT+instance_s%3Asfo&fq=NOT+instance_s%3Adumas&fq=NOT+instance_s%3Amemsic&fq=NOT+instance_s%3Ahceres&fq=NOT+%28docType_s%3A%28THESE+OR+HDR%29+AND+submitType_s%3A%28notice+OR+annex%29%29&fq=NOT+docType_s%3A%28MEM+OR+PRESCONF+OR+MINUTES+OR+NOTE+OR+SYNTHESE+OR+OTHERREPORT+OR+REPACT+OR+BOOKREPORT%29&fq=NOT+status_i%3A111&defType=edismax&rows=1000&fl=halId_s%2Curi_s%2CdocType_s%2CdoiId_s%2CnntId_s%2Ctitle_s%2CsubTitle_s%2CauthFullName_s%2CproducedDate_s%2CjournalTitle_s%2CjournalPublisher_s%2Cvolume_s%2Cnumber_s%2Cpage_s%2CconferenceTitle_s%2CconferenceStartDate_s%2Ccountry_s%2Clanguage_s%2CinPress_bool%2Cdocid%2CjournalTitle_s%2CcitationFull_s%2Ckeyword_s%2CstructCode_s&sort=score+desc";
