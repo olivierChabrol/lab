@@ -163,29 +163,33 @@ function lab_event($param)
     $eventCategory = $param['slug'];
     $eventYear     = $param['year'];
 
-    $category      = explode(",", $eventCategory);
-    $sqlYearCondition = "";
-    if (isset($eventYear) && !empty($eventYear)) 
-    {
-        $sqlYearCondition = " AND YEAR(`p`.`event_end_date`) = '".$eventYear."'";
+    if(strpos($eventCategory, ",")) {
+        $category      = explode(",", $eventCategory); 
+        $sqlYearCondition = "";
+        if (isset($eventYear) && !empty($eventYear)) 
+        {
+            $sqlYearCondition = " AND YEAR(`p`.`event_end_date`) = '".$eventYear."'";
+        }
+        /***  SQL ***/
+        $sql = "SELECT p.* 
+                FROM `wp_terms` AS t 
+                JOIN `wp_term_relationships` AS tr 
+                    ON tr.`term_taxonomy_id`=t.`term_id` 
+                JOIN `wp_em_events` as p 
+                    ON p.`post_id`=tr.`object_id`
+                WHERE t.slug='".$category[0]."'";
+        for($i = 1 ; $i < count($category) ; ++$i)
+        {
+            $sql .= "OR t.slug = '" . $category[$i] . "'";
+        }
+        $sql .=     $sqlYearCondition  . " 
+                    AND `p`.`event_end_date` < NOW() 
+                    ORDER BY `p`.`event_end_date` DESC ";
+        global $wpdb;
+        $results = $wpdb->get_results($sql);
+    } else if (strpos($eventCategory,"+")) {
+        
     }
-    /***  SQL ***/
-    $sql = "SELECT p.* 
-            FROM `wp_terms` AS t 
-            JOIN `wp_term_relationships` AS tr 
-                ON tr.`term_taxonomy_id`=t.`term_id` 
-            JOIN `wp_em_events` as p 
-                ON p.`post_id`=tr.`object_id` 
-            WHERE t.slug='".$category[0]."'";
-    for($i = 1 ; $i < count($category) ; ++$i)
-    {
-        $sql .= "OR t.slug = '" . $category[$i] . "'";
-    }
-    $sql .=     $sqlYearCondition  . " 
-                AND `p`.`event_end_date` < NOW() 
-                ORDER BY `p`.`event_end_date` DESC ";
-    global $wpdb;
-    $results = $wpdb->get_results($sql);
 
     /***  DISPLAY ***/
     $listEventStr = "<table>";
