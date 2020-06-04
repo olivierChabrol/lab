@@ -1285,7 +1285,7 @@ function lab_ldap_add_user() {
   if ($results != null && $results["mail"] != null)
   {
     $wpRes = lab_ldap_new_WPUser(strtoupper($results["lastname"]),$results["firstname"],$results["mail"],$results["password"],$results['uid']);
-    if ($wpRes==true) {
+    if ($wpRes===true) {
       wp_send_json_success("Already exists in LDAP, added to WP");
     } else {
       wp_send_json_error("WordPress : ".$wpRes);
@@ -1513,5 +1513,30 @@ function lab_historic_update() {
     wp_send_json_error($wpdb->last_error);
   } else {
     wp_send_json_success();
+  }
+}
+function lab_user_getRoles() {
+  if (isset($_POST['user_id'])) {
+    wp_send_json_success(lab_admin_user_roles($_POST['user_id']));
+  } else {
+    wp_send_json_error();
+  }
+}
+function lab_user_addRole() {
+  if (isset($_POST['user_id']) && isset($_POST['role'])) {
+    $user = new WP_USER($_POST['user_id']);
+    $user->add_role($_POST['role']);
+    wp_send_json_success();
+  } else {
+    wp_send_json_error();
+  }
+}
+function lab_user_delRole() {
+  if (isset($_POST['user_id']) && isset($_POST['role'])) {
+    $user = new WP_USER($_POST['user_id']);
+    $user->remove_role($_POST['role']);
+    wp_send_json_success();
+  } else {
+    wp_send_json_error();
   }
 }

@@ -90,6 +90,16 @@ function lab_admin_historic_update($entry_id,$fields) {
     global $wpdb;
     return $wpdb->update($wpdb->prefix."lab_users_historic",$fields,array('id'=>$entry_id));
 }
+
+function lab_get_all_roles() {
+    $roles = new WP_Roles();
+    $names = $roles->get_names();
+    $result = array();
+    foreach ($names as $key => $value) {
+        array_push($result,(object)array('id'=>$key,'value'=>$value));
+    }
+    return $result;
+}
 /*******************************************************************************************************
  * PARAM
  *******************************************************************************************************/
@@ -302,8 +312,8 @@ function lab_admin_createTable_users_historic() {
         `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
         `user_id` bigint UNSIGNED NOT NULL,
         `ext` tinyint NOT NULL COMMENT '0 if insite wp_users, 1 if in lab_guests',
-        `begin` datetime NOT NULL,
-        `end` datetime NULL,
+        `begin` date NOT NULL,
+        `end` date NULL,
         `mobility` bigint UNSIGNED NOT NULL DEFAULT 0,
         `host_id` bigint UNSIGNED NULL COMMENT 'link with a user',
         `function` bigint UNSIGNED NOT NULL COMMENT 'link with parameter lab_user_function',

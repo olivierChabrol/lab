@@ -56,3 +56,13 @@
     justify-content: space-around;
     width: 80%;
 }
+.user-role-badge {
+    padding: 0.5em 1em;
+    margin-right: 1em;
+}
+.lab_role_delete {
+    cursor:pointer;
+}
+.form-table td, .form-table th {
+    padding:10px;
+}
