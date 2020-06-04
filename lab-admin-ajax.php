@@ -1283,20 +1283,19 @@ function lab_ldap_add_user() {
   // if already exist in ldap, only set to WP
   if ($results != null && $results["mail"] != null)
   {
-    $wpRes = lab_ldap_new_WPUser(strtoupper($results["lastname"])." ".$results["firstname"],$results["mail"],$results["password"],$results['uid']);
+    $wpRes = lab_ldap_new_WPUser(strtoupper($results["lastname"]),$results["firstname"],$results["mail"],$results["password"],$results['uid']);
     if ($wpRes==true) {
-      wp_send_json_success("Already exist in LDAP just have to add to WP");
+      wp_send_json_success("Already exists in LDAP, added to WP");
     } else {
       wp_send_json_error("WordPress : ".$wpRes);
     }
-    
   }
   else
   {
     $ldapRes = lab_ldap_addUser($ldap_obj, $_POST['first_name'],$_POST['last_name'],$_POST['email'],$_POST['password'],$_POST['uid'],$_POST['organization']);
     if ($ldapRes == 0 ) {
       if ($_POST['addToWP'] == 'true') {
-        $wpRes = lab_ldap_new_WPUser(strtoupper($_POST['last_name'])." ".$_POST['first_name'],$_POST['email'],$_POST['password'],$_POST['uid']);
+        $wpRes = lab_ldap_new_WPUser(strtoupper($_POST["last_name"]),$results["first_name"],$_POST['email'],$_POST['password'],$_POST['uid']);
         if ($wpRes==true) {
           wp_send_json_success();
         } else {
@@ -1445,4 +1444,73 @@ function lab_ldap_reconnect() {
     }
   }
   //*/
+}
+
+function lab_historic_createTable() {
+  global $wpdb;
+  if (lab_admin_createTable_users_historic()===false) {
+    wp_send_json_error($wpdb->last_error);
+  }
+  wp_send_json_success();
+}
+
+/**
+ * @param array $fields ('user_id'=>$user_id,
+ *                        'ext'=>$end,
+ *                        'begin'=>$begin,
+ *                        'end'=>$end,
+ *                        'mobility'=>$mobility,
+ *                        'host_id'=>$host_id,
+ *                        'function'=>$function)
+ */
+function lab_historic_add() {
+  $res = lab_admin_add_historic(array(
+    'user_id'=>$_POST['user_id'],
+    'ext'=>false,
+    'begin'=>$_POST['begin'],
+    'end'=>(strlen($_POST['end'])>1 ? $_POST['end'] : NULL),
+    'mobility'=>$_POST['mobility'],
+    'host_id'=>$_POST['host_id'],
+    'function'=>$_POST['function'],
+  ));
+  if ($res===false) {
+    global $wpdb;
+    wp_send_json_error($wpdb->last_error());
+  } else {
+    wp_send_json_success();
+  }
+}
+
+function lab_historic_delete() {
+  if (lab_admin_historic_delete($_POST['entry_id'])===false) {
+    global $wpdb;
+    wp_send_json_error($wpdb->last_error);
+  } else {
+    wp_send_json_success();
+  }
+}
+function lab_historic_getEntry() {
+  $res = lab_admin_historic_get($_POST['entry_id']);
+  if ($res===false) {
+    wp_send_json_error();
+  } else {
+    wp_send_json_success($res);
+  }
+}
+
+function lab_historic_update() {
+  $res = lab_admin_historic_update($_POST['entry_id'],array(
+    'user_id'=>$_POST['user_id'],
+    'ext'=>false,
+    'begin'=>$_POST['begin'],
+    'end'=>(strlen($_POST['end'])>1 ? $_POST['end'] : NULL),
+    'mobility'=>$_POST['mobility'],
+    'host_id'=>$_POST['host_id'],
+    'function'=>$_POST['function']));
+  if ($res === false) {
+    global $wpdb;
+    wp_send_json_error($wpdb->last_error);
+  } else {
+    wp_send_json_success();
+  }
 }
