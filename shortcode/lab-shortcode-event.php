@@ -185,11 +185,40 @@ function lab_event($param)
         $sql .=     $sqlYearCondition  . " 
                     AND `p`.`event_end_date` < NOW() 
                     ORDER BY `p`.`event_end_date` DESC ";
-        global $wpdb;
-        $results = $wpdb->get_results($sql);
     } else if (strpos($eventCategory,"+")) {
-        
+        $category = explode("+", $eventCategory);
+        $sqlYearCondition = "";
+        if (isset($eventYear) && !empty($eventYear)) 
+        {
+            $sqlYearCondition = " AND YEAR(`ee`.`event_end_date`) = '".$eventYear."'";
+        }
+        $sql = "SELECT ee.*";
+        $categorySize = count($category);
+        for ($i = 0; $i < $categorySize; $i++)
+        {
+            $sql .= ", t".$i.".slug";
+        }
+        $sql .= " FROM `wp_em_events` AS ee ";
+        for ($i = 0; $i < $categorySize; $i++) 
+        {
+            $sql .= " JOIN `wp_term_relationships` AS tr".$i." ON ee.post_id=tr".$i.".`object_id`
+                JOIN `wp_term_taxonomy`      AS tt".$i." ON tt".$i.".term_taxonomy_id=tr".$i.".term_taxonomy_id 
+                JOIN `wp_terms`              AS t".$i."  ON t".$i.".term_id=tt".$i.".term_id";
+        }
+        $sql .= " WHERE ";
+        for($i = 0; $i < $categorySize ; $i++)
+        {
+            $sql .= " t".$i.".slug = '" . $category[$i] . "'";
+            if ($i+1 < $categorySize) {
+                $sql .= " AND ";
+            }
+        }
+        $sql .= $sqlYearCondition  . " 
+                AND `ee`.`event_end_date` < NOW()
+                ORDER BY `ee`.`event_start_date` DESC";
     }
+    global $wpdb;
+    $results = $wpdb->get_results($sql);
 
     /***  DISPLAY ***/
     $listEventStr = "<table>";
