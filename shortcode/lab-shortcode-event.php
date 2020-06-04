@@ -158,7 +158,7 @@ function lab_event_of_the_year($param) {
     );
     $eventCategory = $param['slug'];
     $eventYear     = $param['year'];
-    lab_events($param);
+    lab_events($eventCategory, $eventYear);
 
 }
 /***********************************************************************************************************************
@@ -187,10 +187,10 @@ function lab_old_event($param)
     );
     $eventCategory = $param['slug'];
     $eventYear     = $param['year'];
-    lab_events($param);
+    lab_events($eventCategory, $eventYear);
 }
 
-function lab_events($param) {
+function lab_events($eventCategory, $eventYear) {
     if(strpos($eventCategory, ",")) {
         $category      = explode(",", $eventCategory); 
         $sqlYearCondition = "";
