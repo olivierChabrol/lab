@@ -100,6 +100,17 @@ function lab_admin_tab_user() {
         </td>
       </tr>
     </table>
+    <div> <!-- Rôles -->
+      <h5><?php esc_html_e("Affecter des rôles à l'utilisateur",'lab') ?></h5>
+      <div>
+        <div id="lab_admin_user_roles">
+        </div>
+        <br/>
+        <?php
+        lab_html_select('lab_allRoles','lab_allRoles','lab_allRoles','lab_get_all_roles',null,array("value"=>0,"label"=>"--- Sélectionnez un rôle ---"),0);?>
+        <button class="btn btn-primary" id="lab_admin_add_role"><?php esc_html_e("Ajouter","lab")?></button>
+      </div>
+    </div>
   </form>
   <div class="modal" tabindex="-1" role="dialog" id="lab_user_delete_modal">
     <div class="modal-dialog" role="document">
@@ -190,17 +201,6 @@ function lab_admin_tab_user() {
       </tr>
     </table>
   </form>
-</div>
-<div> <!-- Rôles -->
-  <h5><?php esc_html_e("Affecter des rôles à l'utilisateur",'lab') ?></h5>
-  <div>
-    <div id="lab_admin_user_roles">
-    </div>
-    <br/>
-    <?php
-    lab_html_select('lab_allRoles','lab_allRoles','lab_allRoles','lab_get_all_roles',null,array("value"=>0,"label"=>"--- Sélectionnez un rôle ---"),0);?>
-    <button class="btn btn-primary" id="lab_admin_add_role"><?php esc_html_e("Ajouter","lab")?></button>
-  </div>
 </div>
 <br/>
 <div>

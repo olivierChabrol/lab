@@ -1273,7 +1273,7 @@ function lab_ldap_add_user() {
   if ($results != null && $results["mail"] != null)
   {
     $wpRes = lab_ldap_new_WPUser(strtoupper($results["lastname"]),$results["firstname"],$results["mail"],$results["password"],$results['uid']);
-    if ($wpRes==true) {
+    if ($wpRes===true) {
       wp_send_json_success("Already exists in LDAP, added to WP");
     } else {
       wp_send_json_error("WordPress : ".$wpRes);
