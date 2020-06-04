@@ -98,8 +98,7 @@
             <select id="lab_keyring_edit_type">
               <?php //Récupère la liste des types de clés existants
                 $output ="";
-                $params = new AdminParams;
-                foreach ( $params->get_params_fromId($params::PARAMS_KEYTYPE_ID) as $r ) {
+                foreach ( AdminParams::get_params_fromId(AdminParams::PARAMS_KEYTYPE_ID) as $r ) {
                   $output .= "<option value=".$r->id.">".$r->value."</option>";
                 }
                 echo $output;

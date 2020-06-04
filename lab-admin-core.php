@@ -51,13 +51,34 @@ function lab_admin_get_userLogin($user_id) {
 }
 function lab_admin_loadUserHistory($user_id) {
     global $wpdb;
-    $sql = "SELECT * from `".$wpdb->prefix."lab_users_historic` WHERE `user_id`=$user_id;";
+    $sql = "SELECT * from `".$wpdb->prefix."lab_users_historic` WHERE `user_id`=$user_id ORDER BY `begin` ASC";
     $res = $wpdb->get_results($sql);
     if ($res==null) {
         return "<li>No history</li>";
     } else {
         return lab_admin_history($res);
     }
+}
+/**
+ * @param array $fields ('user_id'=>$user_id,
+ *                        'ext'=>$end,
+ *                        'begin'=>$begin,
+ *                        'end'=>$end,
+ *                        'mobility'=>$mobility,
+ *                        'host_id'=>$host_id,
+ *                        'function'=>$function)
+ */
+function lab_admin_add_historic($fields) {
+    global $wpdb;
+    return $wpdb->insert($wpdb->prefix.'lab_users_historic',$fields);
+}
+function lab_admin_historic_delete($entry_id) {
+    global $wpdb;
+    return $wpdb->delete($wpdb->prefix."lab_users_historic",array('id'=>$entry_id));
+}
+function lab_admin_historic_get($entry_id) {
+    global $wpdb;
+    return $wpdb->get_results("SELECT * FROM `".$wpdb->prefix."lab_users_historic` WHERE `id`=".$entry_id.";")[0];
 }
 /*******************************************************************************************************
  * PARAM
@@ -174,12 +195,12 @@ function lab_admin_createTable_users_historic() {
         `ext` tinyint NOT NULL COMMENT '0 if insite wp_users, 1 if in lab_guests',
         `begin` datetime NOT NULL,
         `end` datetime NOT NULL,
+        `mobility` bigint UNSIGNED NOT NULL DEFAULT 0,
         `host_id` bigint UNSIGNED NOT NULL COMMENT 'link with a user',
         `function` bigint UNSIGNED NOT NULL COMMENT 'link with parameter lab_user_function',
         PRIMARY KEY (`id`)
       ) ENGINE=InnoDB";
-    $wpdb->get_results($sql);
-    
+    return $wpdb->query($sql);
 }
 
 function lab_admin_createTable_param() {
@@ -228,6 +249,7 @@ function lab_admin_initTable_param() {
             (13, 1, 'LDAP PASSWORD', NULL),
             (14, 1, 'LDAP TLS', NULL),
             (15, 1, 'LDAP ENABLE', NULL),
+            (16, 1, 'OUTGOING MOBILITY', NULL),
             (NULL, 2, 'Equipe', NULL),
             (NULL, 2, 'Groupe', NULL),
             (NULL, 3, 'Clé', NULL),

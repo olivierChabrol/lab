@@ -624,6 +624,24 @@ jQuery(function($){
       $("#lab_historic_host").attr('host_id',value);
     }
   });
+  $("#lab_create_table_historic").click(function() {
+    $.post(LAB.ajaxurl,{'action':'lab_historic_createTable'},function (response) {
+      if (response.success) {
+        toast_success(__('Table créée avec succès','lab'));
+      } else {
+        toast_error(__('Échec lors de la création de la table','lab'));
+      }
+    });
+  });
+  $("#lab_history_edit_delete_confirm").click(function () {
+    $.post(LAB.ajaxurl,{'action':'lab_historic_delete','entry_id':$(this).attr('entry_id')},function (response) {
+      if (response.success) {
+        loadUserHistory();
+      } else {
+        toast_error(__('Échec lors de la suppression<br/>')+response.data);
+      }
+    });
+  });
 });
 
 /*************************************************************************************************************************************************
@@ -1204,15 +1222,33 @@ function loadUserHistory() {
     $.post(LAB.ajaxurl,data,function (response){
       if (response.success) {
         $("#lab_history_list").html(response.data);
-        $("#lab_history_edit").click(function (event){
+        $(".lab_history_edit").click(function (event){
           event.preventDefault();
-
+          $.post(LAB.ajaxurl,{'action':'lab_historic_getEntry','entry_id':$(this).attr('entry_id')},function (response) {
+            if (response.success) {
+              $("#lab_historic_start").val(response.data['begin']);
+              $("#lab_historic_end").val(response.data['end']);
+              $("#lab_historic_function option[value="+response.data['function']+"]").prop('selected','true');
+              $("#lab_historic_mobility option[value="+response.data['mobility']+"]").prop('selected','true');
+              $("#lab_historic_host").attr('host_id',response.data['host_id']);
+              callbUser(response.data['host_id'],loadHostNames);
+            }
+          });
+        });
+        $(".lab_history_edit_delete").click(function(){
+          event.preventDefault();
+          $("#lab_historic_delete_dialog").modal("show");
+          $("#lab_history_edit_delete_confirm").attr('entry_id',$(this).attr('entry_id'));
         });
       }
     });
   });
 }
-
+function loadHostNames(response) {
+  if (response.data) {
+    jQuery("#lab_historic_host").val(response.data["first_name"] + " " + response.data["last_name"]);
+  }
+}
 
 /********** LDAP ***********/
 
@@ -1336,3 +1372,25 @@ function LABLoadLDAPList()
     });
   });
 };
+
+function lab_addHistoric() {
+  jQuery(function ($) {
+    data = {
+      'action': 'lab_historic_add',
+      'user_id': $("#lab_user_search_id").val(),
+      'begin': $("#lab_historic_start").val(),
+      'end': $("#lab_historic_end").val(),
+      'function': $("#lab_historic_function").val(),
+      'mobility': $("#lab_historic_mobility").val(),
+      'host_id': $("#lab_historic_host").attr('host_id')
+    }
+    $.post(LAB.ajaxurl,data,function (response) {
+      if (response.success) {
+        toast_success("Période ajoutée avec succès");
+        loadUserHistory();
+      } else {
+        toast_error("Erreur lors de l'ajout de la période <br>"+response.data);
+      }
+    });
+  });
+}

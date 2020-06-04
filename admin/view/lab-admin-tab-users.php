@@ -116,7 +116,7 @@ function lab_admin_tab_user() {
     </div>
   </div>
 </div>
-  <form style="flex-grow:1;">
+  <form action="javascript:lab_addHistoric();" style="flex-grow:1;">
     <h3><?php esc_html_e('Historique de l\'utilisateur','lab') ?></h3>
     <div>
         <ul id="lab_history_list">
@@ -146,8 +146,8 @@ function lab_admin_tab_user() {
           <label for="lab_historic_function"><?php esc_html_e('Fonction','lab') ?> : </label>
         </th>
         <td>
-          <?php lab_html_select("lab_history_function",
-                                "lab_history_function",
+          <?php lab_html_select("lab_historic_function",
+                                "lab_historic_function",
                                 '',
                                 'lab_admin_get_params_userFunction',
                                 AdminParams::PARAMS_USER_FUNCTION_ID,
@@ -156,10 +156,32 @@ function lab_admin_tab_user() {
       </tr>
       <tr>
         <th>
+          <label for="lab_historic_mobility"><?php esc_html_e('Établissement','lab') ?> : </label>
+        </th>
+        <td>
+          <?php lab_html_select("lab_historic_mobility",
+                                "lab_historic_mobility",
+                                '',
+                                'lab_admin_get_params_outgoingMobility',
+                                AdminParams::PARAMS_OUTGOING_MOBILITY,
+                                array("value"=>0,"label"=>"I2M"),0); ?>
+        </td>
+      </tr>
+      <tr>
+        <th>
           <label for="lab_historic_host"><?php esc_html_e('Hôte','lab') ?> : </label>
         </th>
         <td>
           <input type="text" id="lab_historic_host"/>
+        </td>
+      </tr>
+      <tr>
+        <td scope="row">
+          <input type="submit" id="lab_historic_add" value="<?php esc_html_e('Ajouter','lab')?>"/>
+        </td>
+        <td scope="row">
+          <input type="reset" value="<?php esc_html_e('Annuler','lab')?>"/>
+          <input type="button" id="lab_historic_edit" value="<?php esc_html_e('Modifier','lab')?>"/>
         </td>
       </tr>
     </table>
@@ -291,6 +313,14 @@ function lab_admin_tab_user() {
         </tr>
       </table>
     </form>
+    <!-- Dialogue de confirmation modal s'affichant lorsque l'utilisateur essaie de supprimer une clé -->
+    <div id="lab_historic_delete_dialog" class="modal">
+      <p><?php esc_html_e('Voulez-vous vraiment supprimer cette période ?','lab');?></p>
+      <div id="lab_historic_delete_dialog_options">
+        <a href="#" rel="modal:close"><?php esc_html_e('Annuler','lab')?></a>
+        <a href="#" rel="modal:close" id="lab_history_edit_delete_confirm" entry_id=""><?php esc_html_e('Confirmer','lab'); ?></a>
+      </div>
+    </div>
   <?php
 }
 
@@ -301,13 +331,19 @@ function lab_admin_tab_user() {
 function lab_admin_history($list) {
   $out = '';
   foreach ($list as $elem) {
-    $date_begin = date_create_from_format("Y-m-d H:i:s", $elem->begin);
-    $date_end = date_create_from_format("Y-m-d H:i:s", $elem->end);
-    $host = new LabUser($elem->host_id);
-    $out .= "<li class='lab_history_li'>
+    $date_begin = date_create_from_format("Y-m-d", $elem->begin);
+    $date_end = date_create_from_format("Y-m-d", $elem->end);
+    $host = $elem->host_id==null ? null : new LabUser($elem->host_id);
+    $out .= "<li class='lab_history_li' ".( $elem->mobility==0 ? '': "style='background-color:#".AdminParams::get_paramWithColor($elem->mobility)->color)."'>
       <div class='lab_history_dates'><div>".strftime('%d %B %G',$date_begin->getTimestamp())."</div><div>".strftime('%d %B %G',$date_end->getTimestamp())."</div></div>
-      <div class='lab_history_desc'>".AdminParams::get_param($elem->function)." host : ".$host->first_name . ' ' . $host->last_name."</div>
-      <div class='lab_history_actions'><a id='lab_history_edit' entry_id=$elem->id href='#'>🖊</a><a id='lab_history_edit_delete' entry_id=$elem->id href='#'>❌</a></div>
+      <div class='lab_history_desc'>
+        <div class='lab_history_topDesc'>
+          <p>".($elem->mobility==0 ? "I2M" : AdminParams::get_param($elem->mobility))."</p>
+          <p>".($host==null ? ' ': "Host : ".$host->first_name . ' ' . $host->last_name)."</p>
+        </div>
+        <h5>· ".AdminParams::get_param($elem->function)."</h5>
+      </div>
+      <div class='lab_history_actions'><a class='lab_history_edit' entry_id=$elem->id href='#'>🖊</a><a class='lab_history_edit_delete' entry_id=$elem->id href='#'>❌</a></div>
     </li>";
   }
   return $out;

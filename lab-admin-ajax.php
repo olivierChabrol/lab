@@ -1435,3 +1435,55 @@ function lab_ldap_reconnect() {
   }
   //*/
 }
+
+function lab_historic_createTable() {
+  global $wpdb;
+  if (lab_admin_createTable_users_historic()===false) {
+    wp_send_json_error($wpdb->last_error);
+  }
+  wp_send_json_success();
+}
+
+/**
+ * @param array $fields ('user_id'=>$user_id,
+ *                        'ext'=>$end,
+ *                        'begin'=>$begin,
+ *                        'end'=>$end,
+ *                        'mobility'=>$mobility,
+ *                        'host_id'=>$host_id,
+ *                        'function'=>$function)
+ */
+function lab_historic_add() {
+  $res = lab_admin_add_historic(array(
+    'user_id'=>$_POST['user_id'],
+    'ext'=>false,
+    'begin'=>$_POST['begin'],
+    'end'=>$_POST['end'],
+    'mobility'=>$_POST['mobility'],
+    'host_id'=>$_POST['host_id'],
+    'function'=>$_POST['function'],
+  ));
+  if ($res===false) {
+    global $wpdb;
+    wp_send_json_error($wpdb->last_error());
+  } else {
+    wp_send_json_success();
+  }
+}
+
+function lab_historic_delete() {
+  if (lab_admin_historic_delete($_POST['entry_id'])===false) {
+    global $wpdb;
+    wp_send_json_error($wpdb->last_error);
+  } else {
+    wp_send_json_success();
+  }
+}
+function lab_historic_getEntry() {
+  $res = lab_admin_historic_get($_POST['entry_id']);
+  if ($res===false) {
+    wp_send_json_error();
+  } else {
+    wp_send_json_success($res);
+  }
+}
