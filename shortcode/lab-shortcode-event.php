@@ -158,7 +158,7 @@ function lab_event_of_the_year($param) {
     );
     $eventCategory = $param['slug'];
     $eventYear     = $param['year'];
-    lab_events($eventCategory, $eventYear);
+    lab_events($eventCategory, $eventYear, false);
 
 }
 /***********************************************************************************************************************
@@ -187,16 +187,21 @@ function lab_old_event($param)
     );
     $eventCategory = $param['slug'];
     $eventYear     = $param['year'];
-    lab_events($eventCategory, $eventYear);
+    lab_events($eventCategory, $eventYear, true);
 }
 
-function lab_events($eventCategory, $eventYear) {
+function lab_events($eventCategory, $eventYear, $old) {
     if(strpos($eventCategory, ",")) {
         $category      = explode(",", $eventCategory); 
         $sqlYearCondition = "";
         if (isset($eventYear) && !empty($eventYear)) 
         {
             $sqlYearCondition = " AND YEAR(`p`.`event_end_date`) = '".$eventYear."'";
+        }
+        if ($old == true) {
+            " AND `ee`.`event_end_date` < NOW() ";
+        } else {
+            "";
         }
         /***  SQL ***/
         $sql = "SELECT p.* 
@@ -241,9 +246,8 @@ function lab_events($eventCategory, $eventYear) {
                 $sql .= " AND ";
             }
         }
-        $sql .= ")" . $sqlYearCondition  . " 
-                AND `ee`.`event_end_date` < NOW()
-                ORDER BY `ee`.`event_start_date` DESC";
+        $sql .= ")" . $sqlYearCondition  . $old .
+            " ORDER BY `ee`.`event_start_date` DESC";
     }
     global $wpdb;
     $results = $wpdb->get_results($sql);
