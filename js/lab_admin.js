@@ -135,6 +135,7 @@ jQuery(function($){
       $("#lab_user_search_id").val(value);
       callbUser(value, loadUserMetaData);
       loadUserHistory();
+      loadUserRoles();
       return false;
     }
   });
@@ -650,6 +651,14 @@ jQuery(function($){
     e.preventDefault();
     lab_addHistoric(true,$(this).attr('entry_id'));
   });
+  $("#lab_admin_add_role").click(function () { 
+    data = {
+      'action':'lab_user_addRole',
+      'user_id': $("#lab_user_search_id").val(),
+      'role': $("#lab_allRoles").val()
+    }
+    callAjax(data,"Succès",loadUserRoles,"Erreur",null);
+   })
 });
 
 /*************************************************************************************************************************************************
@@ -1413,4 +1422,21 @@ function lab_addHistoric(update,entry_id=null) {
       }
     });
   });
+}
+function loadUserRoles() {
+  jQuery(function ($) {
+    $.post(LAB.ajaxurl,{'action':'lab_user_getRoles','user_id':$("#lab_user_search_id").val()},function (response) {
+      if (response.success) {
+        $("#lab_admin_user_roles").html(response.data);
+        $(".lab_role_delete").click(function (){
+          data = {
+            'action':'lab_user_delRole',
+            'user_id':$(this).attr('user_id'),
+            'role': $(this).attr('role'),
+          };
+          callAjax(data,"Rôle "+$(this).attr('role')+" supprimé !",loadUserRoles,'Erreur lors de la suppression du rôle',null);
+        });
+      }
+    })
+  })
 }

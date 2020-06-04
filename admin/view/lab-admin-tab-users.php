@@ -8,7 +8,7 @@
 
 function lab_admin_tab_user() {
 ?>
-  <div style="display:flex; flex-wrap:wrap;">
+<div style="display:flex; flex-wrap:wrap;">
   <form>
     <table class="form-table" role="presentation">
       <tr class="user-rich-editing-wrap">
@@ -102,24 +102,24 @@ function lab_admin_tab_user() {
     </table>
   </form>
   <div class="modal" tabindex="-1" role="dialog" id="lab_user_delete_modal">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title"><?php esc_html_e('Delete user','lab') ?></h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"  id="lab_user_delete_close_icon">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <p><?php esc_html_e('Keep user data in our web site ?','lab') ?><input type="checkbox" id="lab_user_keep_data"></p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary" id="lab_user_delete">Save changes</button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal" id="lab_user_delete_close">Close</button>
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title"><?php esc_html_e('Delete user','lab') ?></h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"  id="lab_user_delete_close_icon">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p><?php esc_html_e('Keep user data in our web site ?','lab') ?><input type="checkbox" id="lab_user_keep_data"></p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" id="lab_user_delete">Save changes</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" id="lab_user_delete_close">Close</button>
+        </div>
       </div>
     </div>
   </div>
-</div>
   <form style="display:none" id="lab_admin_historic" action="javascript:lab_addHistoric(false);" style="flex-grow:1;">
     <h3><?php esc_html_e('Historique de l\'utilisateur','lab') ?></h3>
     <div>
@@ -190,10 +190,22 @@ function lab_admin_tab_user() {
       </tr>
     </table>
   </form>
+</div>
+<div> <!-- Rôles -->
+  <h5><?php esc_html_e("Affecter des rôles à l'utilisateur",'lab') ?></h5>
+  <div>
+    <div id="lab_admin_user_roles">
+    </div>
+    <br/>
+    <?php
+    lab_html_select('lab_allRoles','lab_allRoles','lab_allRoles','lab_get_all_roles',null,array("value"=>0,"label"=>"--- Sélectionnez un rôle ---"),0);?>
+    <button class="btn btn-primary" id="lab_admin_add_role"><?php esc_html_e("Ajouter","lab")?></button>
   </div>
-  <br/><br/>
+</div>
+<br/>
+<div>
   <h3><?php esc_html_e('Affecter des utilisateurs à des groupes','lab') ?></h3>
-  
+
   <label for="lab_all_users"><b><?php esc_html_e('Afficher aussi les personnes qui ont déjà un groupe', 'lab') ?></b></label>
   <input type="checkbox" id="lab_all_users"/><br/>
   <label for="lab_no_users_left"><b><?php esc_html_e('Afficher aussi les utilisateurs qui ont quitté l\'Institut','lab') ?></b></label>
@@ -215,94 +227,95 @@ function lab_admin_tab_user() {
                           <label for='groups'><?php esc_html_e('Choisissez le ou les groupe(s) au(x)quel(s) vous allez affecter des personnes :', 'lab') ?>
                           </label><br/><br/>
     <select id='list_groups' name='groups[]' multiple style='height:150px;'></select></div>
-  
+
   </div>
   <button style='margin-top:10px;' id='lab_add_users_groups'><?php esc_html_e('envoyer','lab') ?></button>
-  <hr/>
-  <div id="ldap_menu_flex" style="display:flex; flex-wrap:wrap;">
-    <form style="margin-right: 2em" id="lab_ldap_newUser" action="javascript:lab_ldap_addUser()">
-      <h3><?php esc_html_e('Ajouter un utilisateur dans l\'annuaire','lab') ?></h3>
-      <table class="form-table" role="presentation">
-        <tr class="user-rich-editing-wrap">
-          <th scope="row">
-            <label for="lab_ldap_queryAmu"><?php esc_html_e('E-Mail d\'utilisateur AMU :','lab') ?></label>
-          </th>
-          <td>
-            <input type="email" id="lab_ldap_queryAmu"/>
-          </td>
-        </tr>
-        <tr class="user-rich-editing-wrap">
-          <th scope="row">
-            <label for="lab_ldap_newUser_lastName"><?php esc_html_e('Nom','lab') ?><span class="lab_form_required_star"> *</span></label>
-          </th>
-          <td>
-            <input required type="text" id="lab_ldap_newUser_lastName"/>
-          </td>
-        </tr>
-        <tr class="user-rich-editing-wrap">
-          <th scope="row">
-            <label for="lab_ldap_newUser_firstName"><?php esc_html_e('Prénom','lab') ?><span class="lab_form_required_star"> *</span></label>
-          </th>
-          <td>
-            <input required type="text" id="lab_ldap_newUser_firstName"/>
-          </td>
-        </tr>
-        <tr class="user-rich-editing-wrap">
-          <th scope="row">
-            <label for="lab_ldap_newUser_email"><?php esc_html_e('E-Mail','lab') ?><span class="lab_form_required_star"> *</span></label>
-          </th>
-          <td>
-            <input required type="email" id="lab_ldap_newUser_email"/>
-          </td>
-        </tr>
-        <tr class="user-rich-editing-wrap">
-          <th scope="row">
-            <label for="lab_ldap_newUser_uid"><?php esc_html_e('Login (uid)','lab') ?><span class="lab_form_required_star"> *</span></label>
-          </th>
-          <td>
-            <input required type="text" id="lab_ldap_newUser_uid"/>
-          </td>
-        </tr>
-        <tr class="user-rich-editing-wrap">
-          <th scope="row">
-            <label for="lab_ldap_newUser_pass"><?php esc_html_e('Mot de passe','lab') ?><span class="lab_form_required_star"> *</span></label>
-          </th>
-          <td>
-            <input required type="text" id="lab_ldap_newUser_pass"/>
-          </td>
-        </tr>
-        <tr class="user-rich-editing-wrap">
-          <th scope="row">
-            <label for="lab_ldap_newUser_org"><?php esc_html_e('Organisation','lab') ?></label>
-          </th>
-          <td>
-            <input type="text" id="lab_ldap_newUser_org"/>
-          </td>
-        </tr>
-        <tr class="user-rich-editing-wrap">
-          <th scope="row">
-            <label for="lab_ldap_newUser_addToWP"><?php esc_html_e('Ajouter l\'utilisateur à WordPress','lab') ?></label>
-          </th>
-          <td>
-            <input type="checkbox" id="lab_ldap_newUser_addToWP"/>
-          </td>
-        </tr>
-        <tr class="user-rich-editing-wrap">
-          <td scope="row" colspan="2">
-            <input type="submit" value="Valider"/>
-          </td>
-        </tr>
-      </table>
-    </form>
-    <!-- Dialogue de confirmation modal s'affichant lorsque l'utilisateur essaie de supprimer une clé -->
-    <div id="lab_historic_delete_dialog" class="modal">
-      <p><?php esc_html_e('Voulez-vous vraiment supprimer cette période ?','lab');?></p>
-      <div id="lab_historic_delete_dialog_options">
-        <a href="#" rel="modal:close"><?php esc_html_e('Annuler','lab')?></a>
-        <a href="#" rel="modal:close" id="lab_history_edit_delete_confirm" entry_id=""><?php esc_html_e('Confirmer','lab'); ?></a>
-      </div>
+</div>
+<hr/>
+<div id="ldap_menu_flex" style="display:flex; flex-wrap:wrap;">
+  <form style="margin-right: 2em" id="lab_ldap_newUser" action="javascript:lab_ldap_addUser()">
+    <h3><?php esc_html_e('Ajouter un utilisateur dans l\'annuaire','lab') ?></h3>
+    <table class="form-table" role="presentation">
+      <tr class="user-rich-editing-wrap">
+        <th scope="row">
+          <label for="lab_ldap_queryAmu"><?php esc_html_e('E-Mail d\'utilisateur AMU :','lab') ?></label>
+        </th>
+        <td>
+          <input type="email" id="lab_ldap_queryAmu"/>
+        </td>
+      </tr>
+      <tr class="user-rich-editing-wrap">
+        <th scope="row">
+          <label for="lab_ldap_newUser_lastName"><?php esc_html_e('Nom','lab') ?><span class="lab_form_required_star"> *</span></label>
+        </th>
+        <td>
+          <input required type="text" id="lab_ldap_newUser_lastName"/>
+        </td>
+      </tr>
+      <tr class="user-rich-editing-wrap">
+        <th scope="row">
+          <label for="lab_ldap_newUser_firstName"><?php esc_html_e('Prénom','lab') ?><span class="lab_form_required_star"> *</span></label>
+        </th>
+        <td>
+          <input required type="text" id="lab_ldap_newUser_firstName"/>
+        </td>
+      </tr>
+      <tr class="user-rich-editing-wrap">
+        <th scope="row">
+          <label for="lab_ldap_newUser_email"><?php esc_html_e('E-Mail','lab') ?><span class="lab_form_required_star"> *</span></label>
+        </th>
+        <td>
+          <input required type="email" id="lab_ldap_newUser_email"/>
+        </td>
+      </tr>
+      <tr class="user-rich-editing-wrap">
+        <th scope="row">
+          <label for="lab_ldap_newUser_uid"><?php esc_html_e('Login (uid)','lab') ?><span class="lab_form_required_star"> *</span></label>
+        </th>
+        <td>
+          <input required type="text" id="lab_ldap_newUser_uid"/>
+        </td>
+      </tr>
+      <tr class="user-rich-editing-wrap">
+        <th scope="row">
+          <label for="lab_ldap_newUser_pass"><?php esc_html_e('Mot de passe','lab') ?><span class="lab_form_required_star"> *</span></label>
+        </th>
+        <td>
+          <input required type="text" id="lab_ldap_newUser_pass"/>
+        </td>
+      </tr>
+      <tr class="user-rich-editing-wrap">
+        <th scope="row">
+          <label for="lab_ldap_newUser_org"><?php esc_html_e('Organisation','lab') ?></label>
+        </th>
+        <td>
+          <input type="text" id="lab_ldap_newUser_org"/>
+        </td>
+      </tr>
+      <tr class="user-rich-editing-wrap">
+        <th scope="row">
+          <label for="lab_ldap_newUser_addToWP"><?php esc_html_e('Ajouter l\'utilisateur à WordPress','lab') ?></label>
+        </th>
+        <td>
+          <input type="checkbox" id="lab_ldap_newUser_addToWP"/>
+        </td>
+      </tr>
+      <tr class="user-rich-editing-wrap">
+        <td scope="row" colspan="2">
+          <input type="submit" value="Valider"/>
+        </td>
+      </tr>
+    </table>
+  </form>
+  <!-- Dialogue de confirmation modal s'affichant lorsque l'utilisateur essaie de supprimer une clé -->
+  <div id="lab_historic_delete_dialog" class="modal">
+    <p><?php esc_html_e('Voulez-vous vraiment supprimer cette période ?','lab');?></p>
+    <div id="lab_historic_delete_dialog_options">
+      <a href="#" rel="modal:close"><?php esc_html_e('Annuler','lab')?></a>
+      <a href="#" rel="modal:close" id="lab_history_edit_delete_confirm" entry_id=""><?php esc_html_e('Confirmer','lab'); ?></a>
     </div>
-  <?php
+  </div>
+<?php
 }
 
 /**
@@ -326,6 +339,22 @@ function lab_admin_history($list) {
       </div>
       <div class='lab_history_actions'><a class='lab_history_edit' entry_id=$elem->id href='#'>🖊</a><a class='lab_history_edit_delete' entry_id=$elem->id href='#'>❌</a></div>
     </li>";
+  }
+  return $out;
+}
+function lab_admin_user_roles($user_id) {
+  $user = new WP_User($user_id);
+  $userRoles = $user->roles;
+  $all_roles = lab_get_all_roles();
+  if (count($userRoles)>0) {
+    $out = '';
+    foreach ($all_roles as $value) {
+      if (in_array($value->id, $userRoles)) {
+        $out .= "<span class='badge badge-secondary user-role-badge'>".$value->value." <span class='lab_role_delete' user_id='".$user_id."' role='".$value->id."'>❌</span></span>";
+      }
+    }
+  } else {
+    $out = 'Aucun rôle';
   }
   return $out;
 }
