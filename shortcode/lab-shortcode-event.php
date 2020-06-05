@@ -157,7 +157,8 @@ function lab_event_of_the_year($param) {
     );
     $eventCategory = $param['slug'];
     $eventYear     = $param['year'];
-    lab_events($eventCategory, $eventYear, false);
+    //return "[lab_event_of_the_year] eventCategory : ".$eventCategory.", eventYear : ".$eventYear.", year : ".$year."<br>";
+    return lab_events($eventCategory, $eventYear, false);
 
 }
 /***********************************************************************************************************************
@@ -186,11 +187,13 @@ function lab_old_event($param)
     );
     $eventCategory = $param['slug'];
     $eventYear     = $param['year'];
-    lab_events($eventCategory, $eventYear, true);
+    //return "[lab_old_event] eventCategory : ".$eventCategory.", eventYear : ".$eventYear.", year : ".$year."<br>";
+    return lab_events($eventCategory, $eventYear, true);
 }
 
 /* SQL request for lab_old_event & lab_event_of_the_year */
 function lab_events($eventCategory, $eventYear, $old) {
+    //return "[lab_events] : ".$eventCategory.", ".$eventYear.", ".$old."<br>";
     if(strpos($eventCategory, ",")) {
         $category         = explode(",", $eventCategory); 
         $sqlYearCondition = "";
@@ -254,16 +257,15 @@ function lab_events($eventCategory, $eventYear, $old) {
         $sql .= ")" . $sqlYearCondition . $sqlCondition .
             " ORDER BY `ee`.`event_start_date` DESC";
     }
+    //return "MON SQL : ".$sql."<br>";
     global $wpdb;
     $results = $wpdb->get_results($sql);
 
     /***  DISPLAY ***/
     $listEventStr = "<table>";
     $url = esc_url(home_url('/'));
-    foreach ( $results as $r ){
-        $listEventStr .= "<tr>";
-        $listEventStr .= "<td>".esc_html($r->event_start_date)."</td><td><a href=\"".$url."event/".$r->event_slug."\">".$r->event_name."</a></td>";
-        $listEventStr .= "</tr>";
+    foreach ($results as $r){
+        $listEventStr .= "<tr><td>" . esc_html($r->event_start_date) . "</td><td><a href=\"".$url."event/".$r->event_slug."\">".$r->event_name."</a></td></tr>";
     }
     $listEventStr .= "</table>";
     return $listEventStr;
