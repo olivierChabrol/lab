@@ -353,7 +353,7 @@ function lab_admin_history($list) {
         </div>
         <h5>· ".AdminParams::get_param($elem->function)."</h5>
       </div>
-      <div class='lab_history_actions'><a class='lab_history_edit' entry_id=$elem->id href='#'>🖊</a><a class='lab_history_edit_delete' entry_id=$elem->id href='#'>❌</a></div>
+      <div class='lab_history_actions'><a class='lab_history_edit' entry_id=$elem->id href='#'><i class = fas fa-pen></i></a><a class='lab_history_edit_delete' entry_id=$elem->id href='#'><i class='fas fa-trash'></i></a></div>
     </li>";
   }
   return $out;
@@ -366,7 +366,7 @@ function lab_admin_user_roles($user_id) {
     $out = '';
     foreach ($all_roles as $value) {
       if (in_array($value->id, $userRoles)) {
-        $out .= "<span class='badge badge-secondary user-role-badge'>".$value->value." <span class='lab_role_delete' user_id='".$user_id."' role='".$value->id."'>❌</span></span>";
+        $out .= "<span class='badge badge-secondary user-role-badge'>".$value->value." <span class='lab_role_delete' user_id='".$user_id."' role='".$value->id."'><i class='fas fa-trash'></i></span></span>";
       }
     }
   } else {
