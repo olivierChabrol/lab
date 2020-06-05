@@ -1226,10 +1226,12 @@ function lab_hal_getPublication_by_group($groups, $year = null)
 
 function lab_hal_get_publication($userId, $year = null) {
     global $wpdb;
+    
     if(!isset($userId) || $userId == null || empty($userId))
     {
         return null;
     }
+    //*/
     $sql = "SELECT lh.* FROM `".$wpdb->prefix."lab_hal` as lh JOIN `".$wpdb->prefix."lab_hal_users` AS lhu ON lhu.hal_id=lh.id WHERE lhu.user_id=".$userId;
     
     if ($year != null)
@@ -1237,6 +1239,7 @@ function lab_hal_get_publication($userId, $year = null) {
         $sql .= " AND `producedDate_tdate` >= '".$year."-01-01'  AND `producedDate_tdate` <= '".$year."-12-31'";
     }
     $sql .= " ORDER BY `lh`.`producedDate_tdate` DESC";
+    //return $sql;
     return $wpdb->get_results($sql);
 }
 
