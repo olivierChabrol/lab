@@ -15,6 +15,10 @@ class AdminParams {
     public const PARAMS_LDAP_PASSWORD = 13;
     public const PARAMS_LDAP_TLS = 14;
     public const PARAMS_LDAP_ENABLE = 15;
+    public const PARAMS_USER_SECTION_CN = 16;
+    public const PARAMS_USER_SECTION_CNU = 17;
+    public const PARAMS_OUTGOING_MOBILITY = 18;
+    
 
     public static function get_params_fromId($id) {
         $sql = "SELECT value,id FROM `wp_lab_params` WHERE type_param=".$id." ORDER BY value;";
@@ -46,11 +50,25 @@ class AdminParams {
     {
         return AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_ENABLE);
     }
-    public function get_param($id) {
-        $sql = "SELECT value FROM `wp_lab_params` WHERE id=".$id." ORDER BY value;";
+    public static function lab_admin_get_params_userSectionCn()
+    {
+        return AdminParams::get_params_fromId(AdminParams::PARAMS_USER_SECTION_CN);
+    }
+    public static function lab_admin_get_params_userSectionCnu()
+    {
+        return AdminParams::get_params_fromId(AdminParams::PARAMS_USER_SECTION_CNU);
+    }
+    public static function get_param($id) {
         global $wpdb;
+        $sql = "SELECT value FROM `".$wpdb->prefix."lab_params` WHERE id=".$id." ORDER BY value;";
         $results = $wpdb->get_results($sql);
         return $results[0]->value;
+    }
+    public static function get_paramWithColor($id) {
+        global $wpdb;
+        $sql = "SELECT * FROM `".$wpdb->prefix."lab_params` WHERE id=".$id." ORDER BY value;";
+        $results = $wpdb->get_results($sql);
+        return $results[0];
     }
     /* Inutiles, préférer utiliser get_params_fromId(CONSTANTE)
     public function lab_admin_get_params_Types() {
@@ -80,8 +98,19 @@ function lab_admin_get_params_userFunding() {
     return AdminParams::lab_admin_get_params_userFunding();
 }
 
+function lab_admin_get_params_userSectionCn() {
+    return AdminParams::lab_admin_get_params_userSectionCn();
+}
+
+function lab_admin_get_params_userSectionCnu() {
+    return AdminParams::lab_admin_get_params_userSectionCnu();
+}
+
 function lab_admin_param_is_ldap_enable() {
     return AdminParams::lab_admin_get_params_ldap_enable() == 'true';
 }
 
+function lab_admin_get_params_outgoingMobility() {
+    return AdminParams::get_params_fromId(AdminParams::PARAMS_OUTGOING_MOBILITY);
+}
 ?>

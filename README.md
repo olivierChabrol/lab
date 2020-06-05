@@ -20,7 +20,7 @@ We reuse code from :
 
 [lab-directory] display-left-user=false Display only user present in lab (not declare as left)
 
-[lab-directory] display-left-user=true Display only left user
+[lab-directory display-left-user=true] Display only left user
 
 [lab-directory group=AA] Display user associated to a group (the acronym group is use) with alphabet letters for search
 
