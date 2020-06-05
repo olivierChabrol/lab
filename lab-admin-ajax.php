@@ -44,13 +44,20 @@ function lab_admin_ajax_param_save() {
   $type  = $_POST['type'];
   $value = $_POST['value'];
   $color = $_POST['color'];
+  $shift = $_POST['shift'];
   if (!isset($paramId) || $paramId == "")
   {
     $paramId = null;
   }
+
+  if (!isset($shift) || $shift == "")
+  {
+    $shift = null;
+  }
   
     
-  $ok = lab_admin_param_save($type, $value, $color, $paramId);
+  $ok = lab_admin_param_save($type, $value, $color, $paramId, $shift);
+  wp_send_json_success($ok);
   if ($ok) {
     wp_send_json_success($ok);
   }
@@ -241,22 +248,24 @@ function lab_admin_update_user_metadata_db()
 
 function lab_admin_update_user_metadata()
 {
-  $userId       = $_POST["userId"];
-  $dateLeft     = $_POST["dateLeft"];
-  $userFunction = $_POST["function"];
-  $userEmployer = $_POST["employer"];
-  $userFunding  = $_POST["funding"];
-  $firstname    = $_POST["firstname"];
-  $lastname     = $_POST["lastname"];
-  $userLocation = $_POST["location"];
-  $officeNumber = $_POST["officeNumber"];
-  $officeFloor  = $_POST["officeFloor"];
-  $phone        = $_POST["phone"];
-  lab_usermeta_update($userId, $dateLeft, $userFunction, $userLocation, $officeNumber, $officeFloor, $userEmployer, $phone, $userFunding, $firstname, $lastname);
+  $userId           = $_POST["userId"];
+  $dateLeft         = $_POST["dateLeft"];
+  $userFunction     = $_POST["function"];
+  $userEmployer     = $_POST["employer"];
+  $userFunding      = $_POST["funding"];
+  $firstname        = $_POST["firstname"];
+  $lastname         = $_POST["lastname"];
+  $userLocation     = $_POST["location"];
+  $officeNumber     = $_POST["officeNumber"];
+  $officeFloor      = $_POST["officeFloor"];
+  $phone            = $_POST["phone"];
+  $userSectionCn    = $_POST["sectionCn"];
+  $userSectionCnu   = $_POST["sectionCnu"];
+  lab_usermeta_update($userId, $dateLeft, $userFunction, $userLocation, $officeNumber, $officeFloor, $userEmployer, $phone, $userFunding, $firstname, $lastname, $userSectionCn, $userSectionCnu);
   wp_send_json_success("");
 }
 
-function lab_usermeta_update($userId, $left, $userFunction, $userLocation, $officeNumber, $officeFloor, $userEmployer, $user_phone, $userFunding, $firstname, $lastname)
+function lab_usermeta_update($userId, $left, $userFunction, $userLocation, $officeNumber, $officeFloor, $userEmployer, $user_phone, $userFunding, $firstname, $lastname, $userSectionCn, $userSectionCnu)
 {
   global $wpdb;
   $sql = "";
@@ -279,6 +288,8 @@ function lab_usermeta_update($userId, $left, $userFunction, $userLocation, $offi
   $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$userFunding),array("user_id"=>$userId, "meta_key"=>"lab_user_funding"));
   $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$firstname),array("user_id"=>$userId, "meta_key"=>"first_name"));
   $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$lastname),array("user_id"=>$userId, "meta_key"=>"last_name"));
+  $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$userSectionCn),array("user_id"=>$userId, "meta_key"=>"lab_user_section_cn"));
+  $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$userSectionCnu),array("user_id"=>$userId, "meta_key"=>"lab_user_section_cnu"));
 }
 
 function lab_usermeta_update_lab_left_key($usermetaId, $left)
@@ -597,7 +608,8 @@ function lab_keyring_deleteKey_Req() {
 function lab_ajax_userMetaData_new_key() {
   wp_send_json_success(lab_userMetaData_save_key($_POST['userId'],$_POST['key'],$_POST['value']));
 }
-function lab_ajax_userMetaData_create_keys() {
+function lab_ajax_userMetaData_complete_keys() {
+  //wp_send_json_success("OK");
   wp_send_json_success(lab_userMetaData_create_metaKeys($_POST['key'],$_POST['value']));
 }
 function lab_ajax_userMetaData_list_keys() {

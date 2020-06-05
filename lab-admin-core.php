@@ -40,6 +40,12 @@ function lab_admin_username_get($userId) {
         if ($r->meta_key == 'lab_user_funding') {
             $items['user_funding'] = $r->meta_value;
         }
+        if ($r->meta_key == 'lab_user_section_cn') {
+            $items['user_section_cn'] = $r->meta_value;
+        }
+        if ($r->meta_key == 'lab_user_section_cnu') {
+            $items['user_section_cnu'] = $r->meta_value;
+        }
     }
     
     return $items;
@@ -98,7 +104,87 @@ function lab_get_all_roles() {
  * PARAM
  *******************************************************************************************************/
 
-function lab_admin_param_save($paramType, $paramName, $color = null, $paramId = null)
+ /**
+  * Return the last id of the system param (where type = 1)
+  *
+  * @return int max id, 0 otherwise
+  */
+function lab_admin_param_last_param_system_id()
+{
+    global $wpdb;
+    $sql = "SELECT MAX(id) AS max FROM `".$wpdb->prefix."lab_params` WHERE `type_param`=1";
+    $results = $wpdb->get_results($sql);
+    if (count($results) > 0)
+    {
+        return intval($results[0]->max);
+    }
+    return 0;
+}
+
+function lab_admin_param_get_by_id($paramId)
+{
+    global $wpdb;
+    $sql = "SELECT * FROM `".$wpdb->prefix."lab_params` WHERE `id`=$paramId";
+    $results = $wpdb->get_results($sql);
+    if (count($results) == 1)
+    {
+        return $results[0];
+    }
+    else{
+        return null;
+    }
+}
+
+function lab_admin_param_clone($param)
+{
+    global $wpdb;
+    if ($wpdb->insert($wpdb->prefix.'lab_params', array("type_param"=>$param->type_param, "value"=>$param->value, "color"=>$param->color)))
+    {
+        return $wpdb->insert_id;
+    }
+    else
+    {
+        return false;
+    }
+}
+function lab_admin_param_change_id($oldId, $type, $newId)
+{
+    global $wpdb;
+    if ($type == AdminParams::PARAMS_GROUPTYPE_ID)
+    {
+        $wpdb->update($wpdb->prefix.'lab_groups', array("group_type"=>$newId), array("group_type"=>$oldId));
+    } 
+    else if ($type == AdminParams::PARAMS_KEYTYPE_ID)
+    {
+        $wpdb->update($wpdb->prefix.'lab_keys', array("type"=>$newId), array("type"=>$oldId));
+    } 
+    else if ($type == AdminParams::PARAMS_SITE_ID)
+    {
+        $wpdb->update($wpdb->prefix.'usermeta', array("meta_value"=>$newId), array("meta_value"=>$oldId, "meta_key"=>"lab_user_location"));
+        $wpdb->update($wpdb->prefix.'lab_keys', array("site"=>$newId), array("site"=>$oldId));
+        $wpdb->update($wpdb->prefix.'lab_presence', array("site"=>$newId), array("site"=>$oldId));
+    } 
+    else if ($type == AdminParams::PARAMS_USER_FUNCTION_ID)
+    {
+        $wpdb->update($wpdb->prefix.'usermeta', array("meta_value"=>$newId), array("meta_value"=>$oldId, "meta_key"=>"lab_user_function"));
+    }
+    else if ($type == AdminParams::PARAMS_MISSION_ID)
+    {
+        $wpdb->update($wpdb->prefix.'lab_invitations', array("mission_objective"=>$newId), array("mission_objective"=>$oldId));
+    }
+    else if ($type == AdminParams::PARAMS_FUNDING_ID)
+    {
+        $wpdb->update($wpdb->prefix.'lab_invitations', array("funding_source"=>$newId), array("funding_source"=>$oldId));
+        $wpdb->update($wpdb->prefix.'usermeta', array("meta_value"=>$newId), array("meta_value"=>$oldId, "meta_key"=>"lab_user_funding"));
+        
+    }
+    else if ($type == AdminParams::PARAMS_EMPLOYER)
+    {
+        $wpdb->update($wpdb->prefix.'usermeta', array("meta_value"=>$newId), array("meta_value"=>$oldId, "meta_key"=>"lab_user_employer"));
+    }
+}
+
+function lab_admin_param_save($paramType, $paramName, $color = null, $paramId = null, $shift = null)
 {
     global $wpdb;
     if ($type == -1) {
@@ -116,14 +202,27 @@ function lab_admin_param_save($paramType, $paramName, $color = null, $paramId = 
 
     if ($paramId == null)
     {
-        //return !lab_admin_param_exist($paramType, $paramName);
+        //return "count > 0 : ".lab_admin_param_exist($paramType, $paramName);
         if (lab_admin_param_exist($paramType, $paramName)) {
             return false;
         } else {
-            //$sql = "INSERT INTO `".$wpdb->prefix."lab_params` (`id`, `type_param`, `value`) VALUES (NULL, '".$paramType."', '".$paramName."')";
-            $wpdb->insert($wpdb->prefix.'lab_params', array("type_param"=>$paramType, "value"=>$paramName, "color"=>$color));
-            //$results = $wpdb->get_results($sql);
-            return $wpdb->insert_id;
+            // case of new param
+            if ($shift != null && $shift == 'on' && $paramType == AdminParams::PARAMS_ID) {
+                $lastParamId = lab_admin_param_last_param_system_id();
+                $newId = $lastParamId + 1;
+
+                $oldParam = lab_admin_param_get_by_id($newId);
+                
+                $cloneId  = lab_admin_param_clone($oldParam);
+                lab_admin_param_change_id($oldParam->id, $oldParam->type_param, $cloneId);
+                $wpdb->update($wpdb->prefix.'lab_params', array("type_param"=>AdminParams::PARAMS_ID, "value"=>$paramName, "color"=>$color), array("id"=>$newId));
+                return $cloneId;
+            }
+            else {
+                $wpdb->insert($wpdb->prefix.'lab_params', array("type_param"=>$paramType, "value"=>$paramName, "color"=>$color));
+                return $wpdb->insert_id;
+            }
+
             
         }
     }
@@ -176,7 +275,13 @@ function lab_admin_param_exist($paramType, $paramName)
     global $wpdb;
     $sql = "SELECT id FROM `".$wpdb->prefix."lab_params` WHERE `type_param` = ".$paramType." AND  `value` = '".$paramName."'";
     $results = $wpdb->get_results($sql);
-    return count($results) == 1;
+    //return count($results) == 1;
+    //return $sql;
+    if (count($results) == 1)
+    {
+        return true;
+    }
+    return 0;
 }
 
 function lab_admin_createTable_hal_keywords() {
@@ -474,18 +579,21 @@ function lab_admin_firstname_lastname2($name){
  */
 function lab_admin_initTable_usermeta()
 {
-    lab_userMetaData_create_metaKeys("user_function", "");
-    lab_userMetaData_create_metaKeys("user_location", "");
-    lab_userMetaData_create_metaKeys("user_office_number", "");
-    lab_userMetaData_create_metaKeys("user_office_floor", "");
-    lab_userMetaData_create_metaKeys("user_phone", "");
-    lab_userMetaData_create_metaKeys("user_funding", "");
-    lab_userMetaData_create_metaKeys("user_left", null);
-    lab_userMetaData_create_metaKeys("user_slug", null);
-    lab_userMetaData_create_metaKeys("user_position", null);
     lab_userMetaData_create_metaKeys("hal_id", null);
     lab_userMetaData_create_metaKeys("hal_name", null);
     lab_userMetaData_create_metaKeys("profile_bg_color", "#F2F2F2");
+    lab_userMetaData_create_metaKeys("user_employer", "");
+    lab_userMetaData_create_metaKeys("user_function", "");
+    lab_userMetaData_create_metaKeys("user_funding", "");
+    lab_userMetaData_create_metaKeys("user_left", null);
+    lab_userMetaData_create_metaKeys("user_location", "");
+    lab_userMetaData_create_metaKeys("user_office_floor", "");
+    lab_userMetaData_create_metaKeys("user_office_number", "");
+    lab_userMetaData_create_metaKeys("user_phone", "");
+    lab_userMetaData_create_metaKeys("user_section_cn", "");
+    lab_userMetaData_create_metaKeys("user_section_cnu", "");
+    lab_userMetaData_create_metaKeys("user_slug", null);
+    lab_userMetaData_create_metaKeys("user_position", null);
     lab_admin_usermeta_fill_hal_name();
     lab_admin_usermeta_fill_user_slug();
     lab_admin_createSocial();
@@ -493,20 +601,29 @@ function lab_admin_initTable_usermeta()
 
 function lab_admin_add_new_user_metadata($userId)
 {
-    lab_userMetaData_save_key($userId, "user_function", "");
-    lab_userMetaData_save_key($userId, "user_location", "");
-    lab_userMetaData_save_key($userId, "user_office_number", "");
-    lab_userMetaData_save_key($userId, "user_office_floor", "");
-    lab_userMetaData_save_key($userId, "user_phone", "");
-    lab_userMetaData_save_key($userId, "user_left", null);
-    lab_userMetaData_save_key($userId, "user_slug", null);
-    lab_userMetaData_save_key($userId, "user_position", null);
     lab_userMetaData_save_key($userId, "hal_id", null);
     lab_userMetaData_save_key($userId, "hal_name", null);
     lab_userMetaData_save_key($userId, "profile_bg_color", "#F2F2F2");
+    lab_userMetaData_save_key($userId, "user_employer", "");
+    lab_userMetaData_save_key($userId, "user_function", "");
+    lab_userMetaData_save_key($userId, "user_funding", "");
+    lab_userMetaData_save_key($userId, "user_left", null);
+    lab_userMetaData_save_key($userId, "user_location", "");
+    lab_userMetaData_save_key($userId, "user_office_floor", "");
+    lab_userMetaData_save_key($userId, "user_office_number", "");
+    lab_userMetaData_save_key($userId, "user_phone", "");
+    lab_userMetaData_save_key($userId, "user_section_cn", "");
+    lab_userMetaData_save_key($userId, "user_section_cnu", "");
+    lab_userMetaData_save_key($userId, "user_slug", null);
+    lab_userMetaData_save_key($userId, "user_position", null);
     lab_admin_usermeta_fill_hal_name($userId);
     lab_admin_usermeta_fill_user_slug($userId);
     lab_admin_createSocial($userId);
+}
+
+function lab_admin_complete_missing_user_metadata()
+{
+
 }
 
 function lab_admin_firstname_lastname($param, $name){
@@ -899,7 +1016,12 @@ function lab_keyring_get_loan($id) {
 /**************************************************************************************************
  * SETTINGS
  *************************************************************************************************/
-
+/**
+ * List user with no metakey
+ *
+ * @param [type] $metadataKey
+ * @return void
+ */
 function userMetaData_get_userId_with_no_key($metadataKey) {
     global $wpdb;
     $sql = "SELECT ID FROM `".$wpdb->prefix."users` WHERE NOT EXISTS ( SELECT 1 FROM `".$wpdb->prefix."usermeta` WHERE `".$wpdb->prefix."usermeta`.`meta_key` = '".$metadataKey."' AND `".$wpdb->prefix."usermeta`.`user_id`=`".$wpdb->prefix."users`.`ID`)";
@@ -925,6 +1047,10 @@ function lab_admin_usermeta_fill_user_slug($userId = null)
 }
 
 function lab_userMetaData_create_metaKeys($metadataKey, $defaultValue) {
+
+    if (substr($metadataKey, 0, strlen(LAB_META_PREFIX)) !== LAB_META_PREFIX) {
+        $metadataKey = LAB_META_PREFIX.$metadataKey;
+    }
     $userIds = userMetaData_get_userId_with_no_key($metadataKey);
     //return $userIds;
     $errors = array();
@@ -1230,10 +1356,155 @@ function hal_download_all()
     $docIds = array();
     foreach($results as $r) 
     {
-        hal_download($r->id, $docIds);
+        hal_download_1($r->id, $docIds);
     }
 }
 
+
+function get_hal_url_1($userId) {
+    global $wpdb;
+    $sql = "SELECT um1.meta_value as lab_hal_id, um2.meta_value as lab_hal_name FROM `".$wpdb->prefix."usermeta` AS um1 JOIN `".$wpdb->prefix."usermeta` AS um2 ON um2.user_id=um1.user_id WHERE um1.`user_id`=".$userId." AND um1.`meta_key`='lab_hal_id' AND um2.`meta_key`='lab_hal_name'";
+    
+    $results = $wpdb->get_results($sql);
+    if (count($results) == 1) {
+        $hal_id   = $results[0]->lab_hal_id;
+        $hal_name = $results[0]->lab_hal_name;
+        if ($hal_id != null) {
+            //return "https://api.archives-ouvertes.fr/search/?q=*:*&fq=authIdHal_s:(".$hal_id.")&fl=docid,citationFull_s,producedDate_tdate,uri_s,title_s,journalTitle_s&sort=producedDate_tdate+desc&wt=json&json.nl=arrarr";
+            //return "https://api.archives-ouvertes.fr/search/?q=*:*&fq=authIdHal_s:(".$hal_id.")&group=true&group.field=docType_s&group.limit=1000&&fl=docid,citationFull_s,producedDate_tdate,uri_s,title_s,journalTitle_s&facet.field=fr_domainAllCodeLabel_fs&facet.field=keyword_s&facet.field=journalIdTitle_fs&facet.field=producedDateY_i&facet.field=authIdLastNameFirstName_fs&facet.field=instStructIdName_fs&facet.field=labStructIdName_fs&facet.field=deptStructIdName_fs&facet.field=rteamStructIdName_fs&facet.mincount=1&facet=true&wt=json&json.nl=arrarr";
+            //return "https://api.archives-ouvertes.fr/search/?q=*:*&fq=authIdHal_s:(".$hal_id.")&fl=docid,citationFull_s,producedDate_tdate,uri_s,title_s,journalTitle_s&facet.field=fr_domainAllCodeLabel_fs&facet.field=keyword_s&facet.mincount=1&facet=true&wt=json&json.nl=arrarr";
+            return "https://api.archives-ouvertes.fr/search/hal/?omitHeader=true&wt=json&q=authIdHal_s:(".$hal_name.")&sort=producedDate_tdate+desc&fq=NOT+instance_s%3Asfo&fq=NOT+instance_s%3Adumas&fq=NOT+instance_s%3Amemsic&fq=NOT+instance_s%3Ahceres&fq=NOT+%28docType_s%3A%28THESE+OR+HDR%29+AND+submitType_s%3A%28notice+OR+annex%29%29&fq=NOT+docType_s%3A%28MEM+OR+PRESCONF+OR+MINUTES+OR+NOTE+OR+SYNTHESE+OR+OTHERREPORT+OR+REPACT+OR+BOOKREPORT%29&fq=NOT+status_i%3A111&defType=edismax&rows=1000&fl=halId_s%2Curi_s%2CdocType_s%2CdoiId_s%2CnntId_s%2Ctitle_s%2CsubTitle_s%2CauthFullName_s%2CproducedDate_s%2CjournalTitle_s%2CjournalPublisher_s%2Cvolume_s%2Cnumber_s%2Cpage_s%2CconferenceTitle_s%2CconferenceStartDate_s%2Ccountry_s%2Clanguage_s%2CinPress_bool%2Cdocid%2CjournalTitle_s%2CcitationFull_s%2Ckeyword_s%2CstructCode_s&sort=score+desc";
+        }
+        else {
+            return "https://api.archives-ouvertes.fr/search/hal/?omitHeader=true&wt=json&q=authLastNameFirstName_s:%22".$hal_name."%22&sort=producedDate_tdate+desc&fq=NOT+instance_s%3Asfo&fq=NOT+instance_s%3Adumas&fq=NOT+instance_s%3Amemsic&fq=NOT+instance_s%3Ahceres&fq=NOT+%28docType_s%3A%28THESE+OR+HDR%29+AND+submitType_s%3A%28notice+OR+annex%29%29&fq=NOT+docType_s%3A%28MEM+OR+PRESCONF+OR+MINUTES+OR+NOTE+OR+SYNTHESE+OR+OTHERREPORT+OR+REPACT+OR+BOOKREPORT%29&fq=NOT+status_i%3A111&defType=edismax&rows=1000&fl=halId_s%2Curi_s%2CdocType_s%2CdoiId_s%2CnntId_s%2Ctitle_s%2CsubTitle_s%2CauthFullName_s%2CproducedDate_s%2CjournalTitle_s%2CjournalPublisher_s%2Cvolume_s%2Cnumber_s%2Cpage_s%2CconferenceTitle_s%2CconferenceStartDate_s%2Ccountry_s%2Clanguage_s%2CinPress_bool%2Cdocid%2CjournalTitle_s%2CcitationFull_s%2Ckeyword_s%2CstructCode_s&sort=score+desc";
+            //return "https://api.archives-ouvertes.fr/search/?q=authLastNameFirstName_s:%22".$hal_name."%22&fl=docid,citationFull_s,producedDate_tdate,uri_s,title_s,journalTitle_s&facet.field=fr_domainAllCodeLabel_fs&facet.field=keyword_s&facet.mincount=1&facet=true&wt=json&json.nl=arrarr";
+        }
+    }
+}
+
+function is_user_left($userId)
+{
+    global $wpdb;
+    $sql = "SELECT meta_value as gone FROM `".$wpdb->prefix."usermeta` WHERE `user_id`=".$userId." AND `meta_key`='lab_user_left'";
+    $results = $wpdb->get_results($sql);
+    return $results[0]->gone;
+}
+
+function hal_download_1($userId, &$docIds) {
+    $url  = get_hal_url_1($userId);
+    $left = is_user_left($userId) != null;
+    
+    if ($docIds == null) {
+        $docId = array();
+    }
+    // keywords
+    $kw = array();
+    echo($url."\n");
+    $json = lab_do_common_curl_call($url);
+    if (!isset($json->response) || !$json->response) {
+        echo "No data for user ".$userId."\n";
+        return;
+    }
+    $docs = $json->response->docs;
+    if(isset($json->response->docs) && $json->response->docs)
+    {
+        $c    = count($json->response->docs);
+        echo("\$c:".$c."\n");
+        $display = false;
+        for ($i = 0; $i < $c; $i++) {
+            $keep = false;
+            $docId = $docs[$i]->docid;
+            //echo "[".$i."]=".$docId."\n";
+            $citation = $docs[$i]->citationFull_s;
+            $title = $docs[$i]->title_s[0];
+
+            if(isset($docs[$i]->producedDate_s))
+            {
+                $producedDate = $docs[$i]->producedDate_s;
+                // sometime day is missing, we add it
+                if (substr_count($docs[$i]->producedDate_s,"-") == 0)
+                {
+                    $producedDate .= "-01-01";
+                }
+                else if (substr_count($docs[$i]->producedDate_s,"-") == 1)
+                {
+                    $producedDate .= "-01";
+                }
+                echo $producedDate." - ".$title."\n";
+                $producedDate = strtotime($producedDate);
+            }
+            else {
+                echo "Pas de producedDate_s pour : ".$title."\n";
+            }
+
+            $url = $docs[$i]->uri_s;
+
+            // if user left the lab we only keep articles with our lab signature
+            $labSignatureFound = false;
+            if ($left) {    
+                if(isset($docs[$i]->structCode_s)) {
+                    $strutures = $docs[$i]->structCode_s;
+                    $structuresSize = count($strutures);
+                    for ($s = 0; $s < $structuresSize; $s++) {
+                        if ($strutures[$s] == "UMR7373" || $strutures[$s] == "UMR6632" || $strutures[$s] == "UMR6206") {
+                            $labSignatureFound = true;
+                            $s = $structuresSize;
+                        }
+                    }
+
+                }
+            }
+
+            if (!$left || ($left && labSignatureFound))
+            {
+                if (isset($docs[$i]->journalTitle_s))
+                {
+                    $journal = $docs[$i]->journalTitle_s;
+                }
+                else {
+                    $journal = null;
+                }
+
+                if (!array_key_exists ($docId, $docIds)) {
+                    
+                    $id = saveHalProduction($docId, $citation, date('Y-m-d', $producedDate), $title, $url, $journal);
+                    
+                    $docIds[$docId] = $id;
+                    $halId = $id;            
+                }
+
+                if (isset($docs[$i]->keyword_s))
+                {
+                    $keywords = $docs[$i]->keyword_s;
+                    $kwc = count($keywords);
+                    for ($j = 0; $j < $kwc; $j++) {
+                        //$keyword = preg_replace('/[\x00-\x1F\x7F]/u', '',$keywords[$j]);
+                        $keyword = preg_replace( '/[^[:print:]]/', '',$keywords[$j]);
+                        //echo $keyword."\n";
+                        if(array_key_exists($keyword, $kw))
+                        {
+                            $kw[$keyword] = $kw[$keyword] + 1;
+                        }
+                        else
+                        {
+                            $kw[$keyword] = 1;
+                        }
+                    }
+                }
+
+                saveHalUsers($userId, $docIds[$docId]);
+            }
+            //echo "FIN : ".$docId."\n";
+        }
+
+        foreach($kw as $word=>$num)
+        {
+            lab_admin_hal_add_keyword_to_user($userId, $word, $num);
+        }
+
+    }
+
+}
 
 function hal_download($userId, &$docIds) {
     $url = get_hal_url($userId);
@@ -1241,7 +1512,7 @@ function hal_download($userId, &$docIds) {
     if ($docIds == null) {
         $docId = array();
     }
-    //echo($url."\n");
+    echo($url."\n");
 
     $json = lab_do_common_curl_call($url);
     if (!isset($json->response) || !$json->response) {
@@ -1252,8 +1523,8 @@ function hal_download($userId, &$docIds) {
     $docs = $json->response->docs;
     if(isset($json->response->docs) && $json->response->docs)
     {
-        //echo("\$c:".$c."\n");
         $c    = count($json->response->docs);
+        echo("\$c:".$c."\n");
         
         $display = false;
         for ($i = 0; $i < $c; $i++) {
@@ -1316,9 +1587,13 @@ function hal_download($userId, &$docIds) {
 function delete_hal_table() {
     global $wpdb;
     $wpdb->query("TRUNCATE TABLE `".$wpdb->prefix."lab_hal_users`");
+    $wpdb->query("TRUNCATE TABLE `".$wpdb->prefix."lab_hal_keywords_user`");
+    $wpdb->query("TRUNCATE TABLE `".$wpdb->prefix."lab_hal_keywords`");
     $wpdb->query("TRUNCATE TABLE `".$wpdb->prefix."lab_hal`");//delete( $wpdb->prefix."lab_hal", array());
     $wpdb->get_results("ALTER TABLE `".$wpdb->prefix."lab_hal` AUTO_INCREMENT = 1");
     $wpdb->get_results("ALTER TABLE `".$wpdb->prefix."lab_hal_users` AUTO_INCREMENT = 1");
+    $wpdb->get_results("ALTER TABLE `".$wpdb->prefix."lab_hal_keywords_user` AUTO_INCREMENT = 1");
+    $wpdb->get_results("ALTER TABLE `".$wpdb->prefix."lab_hal_keywords` AUTO_INCREMENT = 1");
     return true;
 }
 

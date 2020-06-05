@@ -42,6 +42,12 @@ function lab_admin_tab_params() {
         See this web site to choose good colors : <a href="https://coolors.co/" target="coolors">https://coolors.co/</a>
       </td>
     </tr>
+    <tr>
+      <td>
+        <label for="wp_lab_param_shift_param"><?php esc_html_e("Shift param", "lab") ?> : </label>
+      </td>
+      <td colspan="2"><input type="checkbox" id="wp_lab_param_shift_param"></td>
+    </tr>
     <tr><td colspan="3">&nbsp;</td></tr>
     <tr><td colspan="3"><a href="#" class="page-title-action" id="lab_tab_param_save"><?php esc_html_e("Save param", "lab") ?></a></td></tr>
     </table>

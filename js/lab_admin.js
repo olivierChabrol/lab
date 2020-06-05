@@ -188,6 +188,13 @@ jQuery(function($){
    check_metaKey_exist();
     //if ($("#usermetadata_key_all").)
   });
+
+  $("#lab_settings_button_addKey_complete").click(function() {
+    var key = $('#usermetadata_key_complete').val();
+    var value = $('#usermetadata_value_complete').val();
+    completeMetakeys(key, value);
+  });
+
   $("#lab_settings_button_addKey_all").click(function() {
     var key = $('#usermetadata_key_all').val();
     var value = $('#usermetadata_value_all').val();
@@ -199,7 +206,7 @@ jQuery(function($){
   });
 
   $("#lab_user_button_save_left").click(function() {
-    saveUserLeft($("#lab_user_left_date").val(), $("#lab_user_left").is(":checked"), $("#lab_user_location").val(), $("#lab_user_function").val(), $("#lab_user_office_number").val(), $("#lab_user_office_floor").val(), $("#lab_user_employer").val(), $("#lab_user_funding").val(), $("#lab_user_firstname").val(), $("#lab_user_lastname").val());
+    saveUserLeft($("#lab_user_left_date").val(), $("#lab_user_left").is(":checked"), $("#lab_user_location").val(), $("#lab_user_function").val(), $("#lab_user_office_number").val(), $("#lab_user_office_floor").val(), $("#lab_user_employer").val(), $("#lab_user_funding").val(), $("#lab_user_firstname").val(), $("#lab_user_lastname").val(), $("#lab_user_section_cn").val(), $("#lab_user_section_cnu").val());
   });
 
   $("#lab_user_button_delete").click(function() {
@@ -326,11 +333,11 @@ jQuery(function($){
   });
 
   $("#lab_tab_param_save").click(function(){
-    saveParam(null, jQuery("#wp_lab_param_type").val(), jQuery("#wp_lab_param_value").val(), jQuery("#wp_lab_param_color").val(), load_params_type_after_new_param);
+    saveParam(null, jQuery("#wp_lab_param_type").val(), jQuery("#wp_lab_param_value").val(), jQuery("#wp_lab_param_color").val(), jQuery("#wp_lab_param_shift_param").val(), load_params_type_after_new_param);
   });
 
   $("#lab_tab_param_save_edit").click(function(){
-    saveParam(jQuery("#wp_lab_param_id").val(), jQuery("#wp_lab_param_type_edit").val(), jQuery("#lab_param_value_search").val(), jQuery("#wp_lab_param_color_edit").val(), resetParamEditFields);
+    saveParam(jQuery("#wp_lab_param_id").val(), jQuery("#wp_lab_param_type_edit").val(), jQuery("#lab_param_value_search").val(), jQuery("#wp_lab_param_color_edit").val(), false, resetParamEditFields);
   });
 
   $("#lab_tab_param_delete_edit").click(function(){
@@ -807,15 +814,17 @@ function load_params_type_after_new_param() {
   jQuery("#wp_lab_param_value").val("");
   jQuery("#wp_lab_param_color").val("");
   jQuery("#wp_lab_param_color").css("background-color","#FFFFFF");
+  jQuery("#wp_lab_param_shift_param").prop("checked", false);;
   load_params_type('#wp_lab_param_type');
 }
 
-function saveParam(paramId, paramType, paramValue, paramColor, callAfterComplete) {
+function saveParam(paramId, paramType, paramValue, paramColor, paramShift ,callAfterComplete) {
   var data = {
     'action' : 'save_param',
     'type' : paramType,
     'value' : paramValue,
     'color' : paramColor,
+    'shift' : paramShift,
   };
   if (paramId != null) {
     data = {
@@ -824,6 +833,7 @@ function saveParam(paramId, paramType, paramValue, paramColor, callAfterComplete
       'type' : paramType,
       'value' : paramValue,
       'color' : paramColor,
+      'shift' : paramShift,
     };
   }
   callAjax(data, "Param " + paramValue + " successfully created", callAfterComplete, null, null);
@@ -913,7 +923,7 @@ function saveUserMetaData(userId, date, isChecked, location, userFunction) {
 
 }
 
-function saveUserLeft(date, isChecked, location, userFunction, userOfficeNumber, userOfficeFloor, employer, funding, firstname, lastname) {
+function saveUserLeft(date, isChecked, location, userFunction, userOfficeNumber, userOfficeFloor, employer, funding, firstname, lastname, sectionCn, sectionCnu) {
   var c = isChecked?date:null;
   var data = {
                'action' : 'update_user_metadata',
@@ -927,6 +937,8 @@ function saveUserLeft(date, isChecked, location, userFunction, userOfficeNumber,
                'officeFloor' : userOfficeFloor,
                'firstname' : firstname,
                'lastname' : lastname,
+               'sectionCn' : sectionCn,
+               'sectionCnu' : sectionCnu
   };
   callAjax(data, "User saved", resetUserTabFields, "Failed to save user", null);
 }
@@ -946,6 +958,8 @@ function resetUserTabFields()
   jQuery("#lab_user_employer").val("");
   jQuery("#lab_user_funding").val("");
   jQuery("#lab_user_phone").val("");
+  jQuery("#lab_user_section_cn").val("");
+  jQuery("#lab_user_section_cnu").val("");
 }
 
 function load_usermeta_dateLeft() {
@@ -1008,6 +1022,12 @@ function loadUserMetaData(response) {
     }
     if (response.data["user_phone"] != null) {
       jQuery("#lab_user_phone").val(response.data["user_phone"]);
+    }
+    if (response.data["user_section_cn"] != null) {
+      jQuery("#lab_user_section_cn").val(response.data["user_section_cn"]);
+    }
+    if (response.data["user_section_cnu"] != null) {
+      jQuery("#lab_user_section_cnu").val(response.data["user_section_cnu"]);
     }
     setField("#lab_user_firstname", response.data["first_name"]);
     setField("#lab_user_lastname", response.data["last_name"]);
@@ -1117,6 +1137,15 @@ function loadExistingKeysFields(data) {
   }
 }
 
+function completeMetakeys(key, value) {
+  var data = {
+    'action' : 'complete_new_metakeys',
+    'key' : key,
+    'value' : value
+  };
+  console.log(data);
+  callAjax(data, "key " + key + " added for all users without it", resetUserMetaFields, "Error when saving key '" + key + "'", null);
+}
 function createMetakeys(key, value) {
   var data = {
     'action' : 'add_new_metakeys',
