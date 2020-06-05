@@ -62,7 +62,7 @@ function lab_present_select($param) {
     $current_url =  home_url( $wp->request ); 
 
     $str .= "<a href=\"".$current_url."/?date=".date("Y-m-d",$previousWeek)."\"><i class='fas fa-chevron-circle-left'></i></a> Semaine du  : ".date("d-m-Y",$startDay)." au ".date("d-m-Y",$endDay)." <a href=\"".$current_url."/?date=".date("Y-m-d",$nextWeek)."\"><i class='fas fa-chevron-circle-right'></i></a>";
-    $str .= "<a href=\"/wp-content/plugins/lab/lab_export.php?do=presentOfTheWeek&filename=present.xlsx&param=".date("d-m-Y",$startDay)."\">export</a>";
+    $str .= "&nbsp;<a href=\"/wp-content/plugins/lab/lab_export.php?do=presentOfTheWeek&filename=present.xlsx&param=".date("d-m-Y",$startDay)."\" targer=\"_export\">export</a>";
     if (!is_user_logged_in() && $externalUserAllowed) {
         $str .=  "<div id=\"a_external_presency\" class=\"float-right\"><a href=\"#\" title=\"Add your presency\">" . esc_html("Ajouter une présence en tant qu'invité", "lab") . "<i class=\"fas fa-plus-circle fa-3x text-success\"></i></a></div>";
     }
