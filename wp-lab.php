@@ -108,6 +108,7 @@ add_shortcode('lab_old-event', 'lab_old_event');
 add_shortcode('lab-old-event', 'lab_old_event');
 add_shortcode('lab-event', 'lab_event');
 add_shortcode('lab-event-of-the-week', 'lab_event_of_the_week');
+add_shortcode('lab-event-of-the-year', 'lab_event_of_the_year');
 add_shortcode('lab-incoming-event', 'lab_incoming_event');
 add_shortcode('lab-hal', 'lab_hal');
 add_shortcode('lab-invite', 'lab_invitation');

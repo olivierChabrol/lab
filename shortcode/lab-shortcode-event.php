@@ -141,17 +141,42 @@ function lab_event($param)
 }
 
 /***********************************************************************************************************************
+ * PLUGIN SHORTCODE lab-event-of-the-year
+ **********************************************************************************************************************/
+/*** 
+ * Display events from a year
+ * Shortcode use : [lab-event-of-the-year {slug} {year}]
+***/
+function lab_event_of_the_year($param) {
+    $param = shortcode_atts(array(
+        'slug' => get_option('lab-event-of-the-year'),
+        'year' => get_option('lab-event-of-the-year')
+    ),
+        $param,
+        "lab-event-of-the-year"
+    );
+    $eventCategory = $param['slug'];
+    $eventYear     = $param['year'];
+    //return "[lab_event_of_the_year] eventCategory : ".$eventCategory.", eventYear : ".$eventYear.", year : ".$year."<br>";
+    return lab_events($eventCategory, $eventYear, false);
+
+}
+/***********************************************************************************************************************
  * PLUGIN SHORTCODE lab-old-event
  **********************************************************************************************************************/
 /*** 
- * Shortcode use : [lab-old-event {slug} {year}]
+ ** Shortcode use : [lab-old-event {slug} {year}]
+ * To search category OR another category :
     slug='categoryName1, categoryName2...'
+ * To search category AND another category :
+    slug='categoryName1+categoryName2...'
      You can add as more slugs as you want but there must be at least one
-    year='20xx'
+    
+     year='20xx'
      Year is optional
 ***/ 
 
- function lab_old_event($param)
+function lab_old_event($param)
 {
     $param = shortcode_atts(array(
         'slug' => get_option('lab-old-event'),
@@ -162,39 +187,85 @@ function lab_event($param)
     );
     $eventCategory = $param['slug'];
     $eventYear     = $param['year'];
+    //return "[lab_old_event] eventCategory : ".$eventCategory.", eventYear : ".$eventYear.", year : ".$year."<br>";
+    return lab_events($eventCategory, $eventYear, true);
+}
 
-    $category      = explode(",", $eventCategory);
-    $sqlYearCondition = "";
-    if (isset($eventYear) && !empty($eventYear)) 
-    {
-        $sqlYearCondition = " AND YEAR(`p`.`event_end_date`) = '".$eventYear."'";
+/* SQL request for lab_old_event & lab_event_of_the_year */
+function lab_events($eventCategory, $eventYear, $old) {
+    //return "[lab_events] : ".$eventCategory.", ".$eventYear.", ".$old."<br>";
+    if(strpos($eventCategory, ",")) {
+        $category         = explode(",", $eventCategory); 
+        $sqlYearCondition = "";
+        $sqlCondition     = "";
+        
+        if (isset($eventYear) && !empty($eventYear)) {
+            $sqlYearCondition = " AND YEAR(`p`.`event_end_date`) = '".$eventYear."'";
+        }
+
+        if ($old == true) {
+            $sqlCondition = " AND `p`.`event_end_date` < NOW() ";
+        }
+        
+        /***  SQL ***/
+        $sql = "SELECT p.* 
+                FROM `wp_terms` AS t 
+                JOIN `wp_term_relationships` AS tr 
+                    ON tr.`term_taxonomy_id`=t.`term_id` 
+                JOIN `wp_em_events` as p 
+                    ON p.`post_id`=tr.`object_id`
+                WHERE (t.slug='".$category[0]."'";
+        for($i = 1 ; $i < count($category) ; ++$i) {
+            $sql .= " OR t.slug = '" . $category[$i] . "'";
+        }
+        $sql .=     ")" . $sqlYearCondition  . $sqlCondition . "
+                    ORDER BY `p`.`event_end_date` DESC ";
+    } else if (strpos($eventCategory,"+")) {
+        $category = explode("+", $eventCategory);
+        $sqlYearCondition = "";
+        $sqlCondition = "";
+
+        if (isset($eventYear) && !empty($eventYear)) {
+            $sqlYearCondition = " AND YEAR(`ee`.`event_end_date`) = '".$eventYear."'";
+        }
+
+        if ($old == true) {
+            $sqlCondition = " AND `ee`.`event_end_date` < NOW() ";
+        }
+        
+        $sql = "SELECT ee.*";
+        $categorySize = count($category);
+        for ($i = 0; $i < $categorySize; $i++)
+        {
+            $sql .= ", t".$i.".slug";
+        }
+        $sql .= " FROM `wp_em_events` AS ee ";
+        for ($i = 0; $i < $categorySize; $i++) 
+        {
+            $sql .= " JOIN `wp_term_relationships` AS tr".$i." ON ee.post_id=tr".$i.".`object_id`
+                JOIN `wp_term_taxonomy`      AS tt".$i." ON tt".$i.".term_taxonomy_id=tr".$i.".term_taxonomy_id 
+                JOIN `wp_terms`              AS t".$i."  ON t".$i.".term_id=tt".$i.".term_id";
+        }
+        $sql .= " WHERE (";
+        for($i = 0; $i < $categorySize ; $i++)
+        {
+            $sql .= " t".$i.".slug = '" . $category[$i] . "'";
+            if ($i+1 < $categorySize) {
+                $sql .= " AND ";
+            }
+        }
+        $sql .= ")" . $sqlYearCondition . $sqlCondition .
+            " ORDER BY `ee`.`event_start_date` DESC";
     }
-    /***  SQL ***/
-    $sql = "SELECT p.* 
-            FROM `wp_terms` AS t 
-            JOIN `wp_term_relationships` AS tr 
-                ON tr.`term_taxonomy_id`=t.`term_id` 
-            JOIN `wp_em_events` as p 
-                ON p.`post_id`=tr.`object_id` 
-            WHERE t.slug='".$category[0]."'";
-    for($i = 1 ; $i < count($category) ; ++$i)
-    {
-        $sql .= "OR t.slug = '" . $category[$i] . "'";
-    }
-    $sql .=     $sqlYearCondition  . " 
-                AND `p`.`event_end_date` < NOW() 
-                ORDER BY `p`.`event_end_date` DESC ";
+    //return "MON SQL : ".$sql."<br>";
     global $wpdb;
     $results = $wpdb->get_results($sql);
 
     /***  DISPLAY ***/
     $listEventStr = "<table>";
     $url = esc_url(home_url('/'));
-    foreach ( $results as $r )
-    {
-        $listEventStr .= "<tr>";
-        $listEventStr .= "<td>".esc_html($r->event_start_date)."</td><td><a href=\"".$url."event/".$r->event_slug."\">".$r->event_name."</a></td>";
-        $listEventStr .= "</tr>";
+    foreach ($results as $r){
+        $listEventStr .= "<tr><td>" . esc_html($r->event_start_date) . "</td><td><a href=\"".$url."event/".$r->event_slug."\">".$r->event_name."</a></td></tr>";
     }
     $listEventStr .= "</table>";
     return $listEventStr;
