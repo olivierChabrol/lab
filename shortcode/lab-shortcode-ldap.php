@@ -53,11 +53,12 @@ function lab_ldap($args=null) {
     
     $mail = $_POST['mailLdap'];
     if (isset($mail)) {
+        $ldapObj = LAB_LDAP::getInstance();
         $ldapStr .= '<h5>Résultat de la recherche pour ' . $mail . '</h5>
                     <ul>
-                        <li><b>'.esc_html("Nom","lab").'</b> : '      . (get_ldap_data_from_mail($mail)[0]) . '</li>
-                        <li><b>'.esc_html("Prénom","lab").'</b> : '   . (get_ldap_data_from_mail($mail)[1]) . '</li>
-                        <li><b>'.esc_html("Login","lab").'</b> : '    . (get_ldap_data_from_mail($mail)[2]) . '</li>
+                        <li><b>'.esc_html("Nom","lab").'</b> : '      . ($ldapObj->get_ldap_data_from_mail($mail)[0]) . '</li>
+                        <li><b>'.esc_html("Prénom","lab").'</b> : '   . ($ldapObj->get_ldap_data_from_mail($mail)[1]) . '</li>
+                        <li><b>'.esc_html("Login","lab").'</b> : '    . ($ldapObj->get_ldap_data_from_mail($mail)[2]) . '</li>
                     </ul></div>';
     }
     $ldapStr .= editModal();

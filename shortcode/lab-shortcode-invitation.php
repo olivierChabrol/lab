@@ -181,7 +181,7 @@ function lab_invitation($args) {
             '<div class="lab_invite_field">
                 <label for="lab_form_comment">'.esc_html__("Commentaire",'lab').'</label>
                 <textarea row="1" id="lab_form_comment" name="lab_form_comment"></textarea>
-                <p>'.esc_html__("(par exemple vos numéros de carte de fidélité à utiliser lors de la réservation de vos voyages)",'lab').'</p>
+                <p>'.esc_html__("(par exemple vos numéros de carte de fidélité à utiliser lors de la réservation de vos voyages + la date d'expiration si nécessaire)",'lab').'</p>
         </div>';
         }
         if ( $param["hostpage"] ) {//Affiche les champs supplémentaires, pour les responsables/invitants.
@@ -298,7 +298,7 @@ function lab_invitations_filters() {
     return $out;
 }
 function lab_invitations_interface($args) {
-    var_dump(setlocale(LC_ALL,'fr_FR'));
+    //var_dump(setlocale(LC_ALL,'fr_FR'));
     $param = shortcode_atts(array(
         'view' => 'host' //host, chief or admin 
         ),
@@ -424,7 +424,7 @@ function lab_invitations_interface_fromList($list,$view) {
                             <td>'. $invitation->maximum_cost.'</td>'
                             .($view!='admin' ? '<td><a href="/invite/'. $invitation->token.'">'.esc_html__("Modifier",'lab').'</a>' 
                             : '<td><button class="lab_invite_showDetail" token="'.$invitation->token.'">'.esc_html__("Détails","lab").'</button>').
-                            ($view=='admin'&& $invitation->status==20 ?
+                            ($view=='admin'&& $invitation->status>1 ?
                             '<button title="'.esc_html("Cliquez pour prendre en charge l'invitation","lab").'" token="'.$invitation->token.'" class="lab_invite_takeCharge">Gérer</button></td>' : '</td>').
                         '</tr>';
         }
@@ -442,19 +442,19 @@ function lab_invitations_mail($type=1, $guest, $invite) {
             $subj = esc_html__("Votre demande d'invitation à l'I2M",'lab');
             $date = date_create_from_format("Y-m-d H:i:s", $invite["creation_time"]);
             $content = "<p><i>".strftime('%A %d %B %G - %H:%M',$date->getTimestamp())."</i></p>";
-            $content .= "<p>".get_locale()."</p>";
+            //$content .= "<p>".get_locale()."</p>";
             $content .= "<p>".esc_html__("Votre demande d'invitation a bien été prise en compte",'lab').".<br>".esc_html__("Elle a été transmise à votre invitant",'lab').".</p>";
             $content .= lab_InviteForm('',$guest,$invite);
-            unload_textdomain("lab");
-            add_filter('locale','lab_invitations_switchLocale',10);
-            myplugin_load_textdomain();
-            $content .= "<h5>Translated version :</h5>";
-            $content .= "<p>".get_locale()."</p>";
-            $content .= "<p>".esc_html__("Votre demande d'invitation a bien été prise en compte",'lab').".<br>".esc_html__("Elle a été transmise à votre invitant",'lab').".</p>";
-            $content .= lab_InviteForm('',$guest,$invite);
-            unload_textdomain("lab");
-            add_filter('locale','lab_invitations_switchLocale',10);
-            myplugin_load_textdomain();
+            // unload_textdomain("lab");
+            // add_filter('locale','lab_invitations_switchLocale',10);
+            // myplugin_load_textdomain();
+            // $content .= "<h5>Translated version :</h5>";
+            // $content .= "<p>".get_locale()."</p>";
+            // $content .= "<p>".esc_html__("Votre demande d'invitation a bien été prise en compte",'lab').".<br>".esc_html__("Elle a été transmise à votre invitant",'lab').".</p>";
+            // $content .= lab_InviteForm('',$guest,$invite);
+            // unload_textdomain("lab");
+            // add_filter('locale','lab_invitations_switchLocale',10);
+            // myplugin_load_textdomain();
             break;
         case 5: //Envoi de mail récapitulatif à l'invitant lorsque l'invité a créé une invitation
             $host = new LabUser($invite['host_id']);
@@ -581,8 +581,9 @@ function lab_invitations_getStatusName($status) {
 function lab_invite_prefGroupsList($user_id) {
     $prefGroups = lab_invitations_getPrefGroups($user_id);
     if (count($prefGroups)>0) {
+        $out = '';
         foreach ($prefGroups as $g){
-            $out .= "<li class='lab_prefGroup_element'>$g->group_name <i group_id='$g->group_id' class='fas fa-trash lab_prefGroup_del'></i></li>";
+            $out .= "<li title='$g->group_name' class='lab_prefGroup_element'>$g->acronym <i group_id='$g->group_id' class='fas fa-trash lab_prefGroup_del'></i></li>";
         }
     } else {
         $out = '<li>'.esc_html__("Aucun groupe préféré trouvé",'lab').'</li>';
