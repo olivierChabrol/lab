@@ -63,11 +63,13 @@ function lab_hal($param) {
         }
         $publications = lab_hal_get_publication($userId);
     }
-    $i = 0;
-    foreach($publications as $p) {
-        $i++;
-        $html .= date("Y/m", strtotime($p->producedDate_tdate))." <i>".($p->journalTitle_s !=null?$p->journalTitle_s :"")."</i> - <a href=\"".$p->url."\"  target=\"".$p->docid."\">".$p->title."</a><br>";
-        $html .= "<br>";
+    if ($publication != null) {
+        $i = 0;
+        foreach($publications as $p) {
+            $i++;
+            $html .= date("Y/m", strtotime($p->producedDate_tdate))." <i>".($p->journalTitle_s !=null?$p->journalTitle_s :"")."</i> - <a href=\"".$p->url."\"  target=\"".$p->docid."\">".$p->title."</a><br>";
+            $html .= "<br>";
+        }
     }
     
     return $html;
