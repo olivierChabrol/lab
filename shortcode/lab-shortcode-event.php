@@ -146,8 +146,7 @@ function lab_event($param)
 /*** 
  * Display events from a year
  * Shortcode use : [lab-event-of-the-year {slug} {year}]
-***/ 
-/// faire en sorte qu'une des deux méthodes appelle l'autre et ça retire le < ou non ?
+***/
 function lab_event_of_the_year($param) {
     $param = shortcode_atts(array(
         'slug' => get_option('lab-event-of-the-year'),
@@ -190,19 +189,21 @@ function lab_old_event($param)
     lab_events($eventCategory, $eventYear, true);
 }
 
+/* SQL request for lab_old_event & lab_event_of_the_year */
 function lab_events($eventCategory, $eventYear, $old) {
     if(strpos($eventCategory, ",")) {
-        $category      = explode(",", $eventCategory); 
+        $category         = explode(",", $eventCategory); 
         $sqlYearCondition = "";
-        if (isset($eventYear) && !empty($eventYear)) 
-        {
+        $sqlCondition     = "";
+        
+        if (isset($eventYear) && !empty($eventYear)) {
             $sqlYearCondition = " AND YEAR(`p`.`event_end_date`) = '".$eventYear."'";
         }
+
         if ($old == true) {
-            " AND `ee`.`event_end_date` < NOW() ";
-        } else {
-            "";
+            $sqlCondition = " AND `p`.`event_end_date` < NOW() ";
         }
+        
         /***  SQL ***/
         $sql = "SELECT p.* 
                 FROM `wp_terms` AS t 
@@ -211,20 +212,24 @@ function lab_events($eventCategory, $eventYear, $old) {
                 JOIN `wp_em_events` as p 
                     ON p.`post_id`=tr.`object_id`
                 WHERE (t.slug='".$category[0]."'";
-        for($i = 1 ; $i < count($category) ; ++$i)
-        {
+        for($i = 1 ; $i < count($category) ; ++$i) {
             $sql .= " OR t.slug = '" . $category[$i] . "'";
         }
-        $sql .=     ")" . $sqlYearCondition  . " 
-                    AND `p`.`event_end_date` < NOW() 
+        $sql .=     ")" . $sqlYearCondition  . $sqlCondition . "
                     ORDER BY `p`.`event_end_date` DESC ";
     } else if (strpos($eventCategory,"+")) {
         $category = explode("+", $eventCategory);
         $sqlYearCondition = "";
-        if (isset($eventYear) && !empty($eventYear)) 
-        {
+        $sqlCondition = "";
+
+        if (isset($eventYear) && !empty($eventYear)) {
             $sqlYearCondition = " AND YEAR(`ee`.`event_end_date`) = '".$eventYear."'";
         }
+
+        if ($old == true) {
+            $sqlCondition = " AND `ee`.`event_end_date` < NOW() ";
+        }
+        
         $sql = "SELECT ee.*";
         $categorySize = count($category);
         for ($i = 0; $i < $categorySize; $i++)
@@ -238,7 +243,7 @@ function lab_events($eventCategory, $eventYear, $old) {
                 JOIN `wp_term_taxonomy`      AS tt".$i." ON tt".$i.".term_taxonomy_id=tr".$i.".term_taxonomy_id 
                 JOIN `wp_terms`              AS t".$i."  ON t".$i.".term_id=tt".$i.".term_id";
         }
-        $sql .= " WHERE ";
+        $sql .= " WHERE (";
         for($i = 0; $i < $categorySize ; $i++)
         {
             $sql .= " t".$i.".slug = '" . $category[$i] . "'";
@@ -246,7 +251,7 @@ function lab_events($eventCategory, $eventYear, $old) {
                 $sql .= " AND ";
             }
         }
-        $sql .= ")" . $sqlYearCondition  . $old .
+        $sql .= ")" . $sqlYearCondition . $sqlCondition .
             " ORDER BY `ee`.`event_start_date` DESC";
     }
     global $wpdb;
@@ -255,8 +260,7 @@ function lab_events($eventCategory, $eventYear, $old) {
     /***  DISPLAY ***/
     $listEventStr = "<table>";
     $url = esc_url(home_url('/'));
-    foreach ( $results as $r )
-    {
+    foreach ( $results as $r ){
         $listEventStr .= "<tr>";
         $listEventStr .= "<td>".esc_html($r->event_start_date)."</td><td><a href=\"".$url."event/".$r->event_slug."\">".$r->event_name."</a></td>";
         $listEventStr .= "</tr>";
