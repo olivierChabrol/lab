@@ -30,9 +30,10 @@ We reuse code from :
 [lab-profile]
 ### Event
 [lab-old-event {slug} {year}] Display past events for a given year (optional)
-##### Use
+#### Use
 To search a category OR another category :
 * slug='categoryName1, categoryName2...'
+
 To search a category AND another category :
 * slug='categoryName1+categoryName2...'
 
