@@ -1809,7 +1809,6 @@ function lab_admin_presence_save($id, $userId, $dateOpen, $dateEnd, $siteId, $co
     }
     return array("success"=>true, "data"=>null);
 }
-
 function lab_admin_presence_delete($presenceId, $userId) {
     global $wpdb;
     if (current_user_can('administrator')) {

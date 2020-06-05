@@ -1441,3 +1441,21 @@ function loadUserRoles() {
     })
   })
 }
+function lab_admin_ldap_settings() {
+  jQuery(function ($) {
+    data = {
+      'action': 'lab_admin_ldap_settings',
+      'enable': [$("#lab_admin_tab_ldap_enable").prop('checked').toString(), $("#lab_admin_tab_ldap_enable").attr('param_id').length > 0 ? $("#lab_admin_tab_ldap_enable").attr('param_id') : null],
+      'host': [$("#lab_admin_tab_ldap_host").val(), $("#lab_admin_tab_ldap_host").attr('param_id').length > 0 ? $("#lab_admin_tab_ldap_host").attr('param_id') : null],
+      'token': [$("#lab_admin_tab_ldap_token").val(), $("#lab_admin_tab_ldap_token").attr('param_id').length > 0 ? $("#lab_admin_tab_ldap_token").attr('param_id') : null],
+      'base': [$("#lab_admin_tab_ldap_base").val(), $("#lab_admin_tab_ldap_base").attr('param_id').length > 0 ? $("#lab_admin_tab_ldap_base").attr('param_id') : null],
+      'login': [$("#lab_admin_tab_ldap_login").val(), $("#lab_admin_tab_ldap_login").attr('param_id').length > 0 ? $("#lab_admin_tab_ldap_login").attr('param_id') : null],
+      'password': [$("#lab_admin_tab_ldap_pass").val(), $("#lab_admin_tab_ldap_pass").attr('param_id').length > 0 ? $("#lab_admin_tab_ldap_pass").attr('param_id') : null],
+      'tls': [$("#lab_admin_tab_ldap_tls").prop('checked').toString(), $("#lab_admin_tab_ldap_tls").attr('param_id').length > 0 ? $("#lab_admin_tab_ldap_tls").attr('param_id') : null],
+    }
+    callAjax(data,__('Paramètres mis à jour','lab'),lab_admin_reload_ldap_settings,__('Erreur lors de la mise à jour des paramètres'),null);
+  });
+}
+function lab_admin_reload_ldap_settings(data) {
+  document.querySelector('#lab_admin_ldap_tab').outerHTML=data;
+}

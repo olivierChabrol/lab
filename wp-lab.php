@@ -126,7 +126,7 @@ register_uninstall_hook(__FILE__, 'lab_uninstall_hook');
 add_action('widgets_init', 'wplab_init');
 function myplugin_load_textdomain() {
   /*
-  LAB_LDAP::getInstance(AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_URL)[0]->value,
+  LAB_LDAP::getInstance(AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_HOST)[0]->value,
                         AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_BASE)[0]->value,
                         AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_LOGIN)[0]->value,
                         AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_PASSWORD)[0]->value);
@@ -212,7 +212,7 @@ function wp_lab_menu()
   add_menu_page("KeyRing","KeyRing",'keyring','lab_keyring','lab_keyring','dashicons-admin-network',22);
   //add_menu_page("LDAP Admin","LDAP Admin",'edit_plugins','lab_ldap','lab_ldap','dashicons-id-alt',23);
   add_submenu_page( 'wp-lab.php', "LDAP Admin", "LDAP Admin",'edit_plugins', 'lab_ldap', 'lab_ldap_test', 24 );
-  add_submenu_page("wp-lab.php", "User Admin", "User Admin", "edit_plugins", "lab_user", "lab_user_echo", 25);
+  add_submenu_page("wp-lab.php", "User Admin", "User Admin", "lab_user_manager", "lab_user", "lab_user_echo", 25);
   if ( ! current_user_can('edit_plugins') ) {
     remove_menu_page('wpfastestcacheoptions');
     remove_menu_page('options-general.php');
@@ -241,6 +241,7 @@ function admin_enqueue()
   wp_enqueue_script('lab-keyring',plugins_url('js/lab_keyring.js',__FILE__), array('lab-global','jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog'), version_id(), true);
   //Feuille de style des interfaces d'administration WordPress :
   wp_enqueue_style('lab-admin-CSS',plugins_url('css/lab-admin.css',__FILE__));
+  wp_enqueue_style('LdapCSS',plugins_url('css/lab-ldap.css',__FILE__));
   //Feuille de style de l'onglet keyring :
   wp_enqueue_style('KeyRingCSS',plugins_url('css/keyring.css',__FILE__));
   //Plugin permettant d'afficher des fenêtres modales :
