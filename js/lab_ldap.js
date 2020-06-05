@@ -81,3 +81,25 @@ function lab_ldap_addUser() {
         });
     });
 }
+function lab_ldap_addUser_wp() {
+    jQuery(function($){ 
+        data = {
+            'action': 'lab_ldap_add_user',
+            'first_name': $("#lab_ldap_newUser_firstName").val(),
+            'last_name': $("#lab_ldap_newUser_lastName").val(),
+            'email': $("#lab_ldap_newUser_email").val(),
+            'organization': $("#lab_ldap_newUser_org").val(),
+            'uid': $("#lab_ldap_newUser_uid").val(),
+            'password': $("#lab_ldap_newUser_pass").val()=='--- Crypté ---' ? $("#lab_ldap_newUser_pass").attr('cryptedPass'): $("#lab_ldap_newUser_pass").val(),
+            'addToWP': 'true'
+        };
+        $.post(LAB.ajaxurl,data,function (response) {
+            if(response.success) {
+                toast_success(__("Utilisateur créé avec succès",'lab'));
+            } else {
+                toast_error(__("Erreur lors de l'ajout de l'utilisateur",'lab')+"<br>"+response.data);
+                clearFields("lab_ldap_newUser_",['firstName','lastName','email','org','uid','pass','addToWP']);
+            }
+        });
+    });
+}
