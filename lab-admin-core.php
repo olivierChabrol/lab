@@ -1723,6 +1723,28 @@ function lab_create_roles() {
     $role ->add_cap('keyring',true);
     $role = get_role('administrator');
     $role ->add_cap('keyring',true);
+    add_role(
+        'lab_user_manager',
+        'User Manager',
+        [
+            'read'  => true
+        ]
+    );
+    $role = get_role('lab_user_manager');
+    $role ->add_cap('lab_user_manager',true);
+    $role = get_role('administrator');
+    $role ->add_cap('lab_user_manager',true);
+    add_role(
+        'lab_manager',
+        'Budget Manager',
+        [
+            'read'  => true
+        ]
+    );
+    $role = get_role('lab_manager');
+    $role ->add_cap('lab_manager',true);
+    $role = get_role('administrator');
+    $role ->add_cap('lab_manager',true);
 }
 
 /**
@@ -1794,7 +1816,6 @@ function lab_admin_presence_save($id, $userId, $dateOpen, $dateEnd, $siteId, $co
     }
     return array("success"=>true, "data"=>null);
 }
-
 function lab_admin_presence_delete($presenceId, $userId) {
     global $wpdb;
     if (current_user_can('administrator')) {

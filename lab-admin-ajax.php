@@ -1245,7 +1245,7 @@ function lab_ldap_list_update() {
   $itemPerPage = isset($_POST['value']) ? $_POST['value'] : '5' ;
   $page = isset($_POST['page']) ? $_POST['page'] : '1' ;
 
-  $ldap_obj = LAB_LDAP::getInstance(AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_URL)[0]->value,
+  $ldap_obj = LAB_LDAP::getInstance(AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_HOST)[0]->value,
                         AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_BASE)[0]->value,
                         AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_LOGIN)[0]->value,
                         AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_PASSWORD)[0]->value,
@@ -1275,7 +1275,7 @@ function lab_ldap_list_update() {
   wp_send_json_success(array($count,$ldapResult,$page));
 }
 function lab_ldap_add_user() {
-  $ldap_obj = LAB_LDAP::getInstance(AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_URL)[0]->value,
+  $ldap_obj = LAB_LDAP::getInstance(AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_HOST)[0]->value,
                         AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_BASE)[0]->value,
                         AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_LOGIN)[0]->value,
                         AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_PASSWORD)[0]->value,
@@ -1311,7 +1311,7 @@ function lab_ldap_add_user() {
   }
 }
 function lab_ldap_amu_lookup() {
-  $url = "http://".AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_URL)[0]->value."/getAMUUser.php?token=".AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_TOKEN)[0]->value."&query=".$_POST['query'];
+  $url = "http://".AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_HOST)[0]->value."/getAMUUser.php?token=".AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_TOKEN)[0]->value."&query=".$_POST['query'];
   // create curl resource
   $ch = curl_init();
   // set url
@@ -1343,7 +1343,7 @@ function lab_ldap_edit_user() {
   {
     wp_send_json_error("No UID");
   }
-  $ldap = LAB_LDAP::getInstance(AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_URL)[0]->value,
+  $ldap = LAB_LDAP::getInstance(AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_HOST)[0]->value,
                         AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_BASE)[0]->value,
                         AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_LOGIN)[0]->value,
                         AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_PASSWORD)[0]->value,
@@ -1361,7 +1361,7 @@ function lab_admin_get_userLogin_Req() {
 }
 function lab_ldap_user_details() {
   $uid = $_POST['uid'];
-  $ldap = LAB_LDAP::getInstance(AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_URL)[0]->value,
+  $ldap = LAB_LDAP::getInstance(AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_HOST)[0]->value,
                         AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_BASE)[0]->value,
                         AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_LOGIN)[0]->value,
                         AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_PASSWORD)[0]->value,
@@ -1406,7 +1406,7 @@ function lab_ldap_delete_userReq() {
 
   if (lab_admin_param_is_ldap_enable())
   {
-    $ldap = LAB_LDAP::getInstance(AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_URL)[0]->value,
+    $ldap = LAB_LDAP::getInstance(AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_HOST)[0]->value,
                           AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_BASE)[0]->value,
                           AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_LOGIN)[0]->value,
                           AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_PASSWORD)[0]->value,
@@ -1427,7 +1427,7 @@ function lab_ldap_delete_userReq() {
 function lab_ldap_reconnect() {
   if (lab_admin_param_is_ldap_enable())
   {
-    $ldap = LAB_LDAP::getInstance(AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_URL)[0]->value,
+    $ldap = LAB_LDAP::getInstance(AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_HOST)[0]->value,
                           AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_BASE)[0]->value,
                           AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_LOGIN)[0]->value,
                           AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_PASSWORD)[0]->value,
@@ -1539,4 +1539,23 @@ function lab_user_delRole() {
   } else {
     wp_send_json_error();
   }
+}
+function lab_admin_ldap_settings() {
+  $associations = array(
+    'host'=>AdminParams::PARAMS_LDAP_HOST,
+    'enable'=>AdminParams::PARAMS_LDAP_ENABLE,
+    'token'=>AdminParams::PARAMS_LDAP_TOKEN,
+    'base'=>AdminParams::PARAMS_LDAP_BASE,
+    'login'=>AdminParams::PARAMS_LDAP_LOGIN,
+    'password'=>AdminParams::PARAMS_LDAP_PASSWORD,
+    'tls'=>AdminParams::PARAMS_LDAP_TLS
+  );
+  foreach ($associations as $key => $value) {
+    if (strlen($_POST[$key][0])>0) {
+      if (lab_admin_param_save($value,$_POST[$key][0],'000001',$_POST[$key][1])===false) {
+        wp_send_json_error();
+      }
+    }
+  }
+  wp_send_json_success(lab_admin_tab_ldap());
 }

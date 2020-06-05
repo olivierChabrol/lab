@@ -147,7 +147,7 @@ class LAB_LDAP {
         $attrRead  = array("givenname", "sn", "mail", "uid");
         $result    = ldap_search($this->ldap_link, $this->base, $filter, $attrRead) 
             or die ("Error in query");
-        $entry     = ldap_get_entries($lc,$result);
+        $entry     = ldap_get_entries($this->link,$result);
     
         $surname = $entry[0]["sn"][0];
         $name    = $entry[0]["givenname"][0];

@@ -9,7 +9,7 @@ class AdminParams {
     public const PARAMS_FUNDING_ID = 7;
     public const PARAMS_EMPLOYER = 8;
     public const PARAMS_LDAP_TOKEN = 9;
-    public const PARAMS_LDAP_URL = 10;
+    public const PARAMS_LDAP_HOST = 10;
     public const PARAMS_LDAP_BASE = 11;
     public const PARAMS_LDAP_LOGIN = 12;
     public const PARAMS_LDAP_PASSWORD = 13;

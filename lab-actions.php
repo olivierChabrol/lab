@@ -137,6 +137,7 @@ if (is_admin()) {
     add_action( 'wp_ajax_lab_ldap_delete_user','lab_ldap_delete_userReq' );
     add_action( 'wp_ajax_lab_ldap_edit_user','lab_ldap_edit_user' );
     add_action( 'wp_ajax_lab_ldap_reconnect', 'lab_ldap_reconnect');
+    add_action( 'wp_ajax_lab_admin_ldap_settings', 'lab_admin_ldap_settings');
 }
 // no admin
 else{

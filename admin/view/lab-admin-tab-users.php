@@ -9,7 +9,7 @@
 function lab_admin_tab_user() {
 ?>
 <div style="display:flex; flex-wrap:wrap;">
-  <form>
+  <form name="lab_admin_user_form">
     <table class="form-table" role="presentation">
       <tr class="user-rich-editing-wrap">
         <th scope="row">
