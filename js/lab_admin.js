@@ -206,7 +206,7 @@ jQuery(function($){
   });
 
   $("#lab_user_button_save_left").click(function() {
-    saveUserLeft($("#lab_user_left_date").val(), $("#lab_user_left").is(":checked"), $("#lab_user_location").val(), $("#lab_user_function").val(), $("#lab_user_office_number").val(), $("#lab_user_office_floor").val(), $("#lab_user_employer").val(), $("#lab_user_funding").val(), $("#lab_user_firstname").val(), $("#lab_user_lastname").val(), $("#lab_user_section_cn").val(), $("#lab_user_section_cnu").val());
+    saveUserLeft($("#lab_user_left_date").val(), $("#lab_user_left").is(":checked"), $("#lab_user_location").val(), $("#lab_user_function").val(), $("#lab_user_office_number").val(), $("#lab_user_office_floor").val(), $("#lab_user_employer").val(), $("#lab_user_funding").val(), $("#lab_user_firstname").val(), $("#lab_user_lastname").val(), $("#lab_user_section_cn").val(), $("#lab_user_section_cnu").val(), $("#lab_user_phone").val());
   });
 
   $("#lab_user_button_delete").click(function() {
@@ -923,7 +923,7 @@ function saveUserMetaData(userId, date, isChecked, location, userFunction) {
 
 }
 
-function saveUserLeft(date, isChecked, location, userFunction, userOfficeNumber, userOfficeFloor, employer, funding, firstname, lastname, sectionCn, sectionCnu) {
+function saveUserLeft(date, isChecked, location, userFunction, userOfficeNumber, userOfficeFloor, employer, funding, firstname, lastname, sectionCn, sectionCnu, phone) {
   var c = isChecked?date:null;
   var data = {
                'action' : 'update_user_metadata',
@@ -938,6 +938,7 @@ function saveUserLeft(date, isChecked, location, userFunction, userOfficeNumber,
                'firstname' : firstname,
                'lastname' : lastname,
                'sectionCn' : sectionCn,
+               'phone' : phone,
                'sectionCnu' : sectionCnu
   };
   callAjax(data, "User saved", resetUserTabFields, "Failed to save user", null);
@@ -960,6 +961,8 @@ function resetUserTabFields()
   jQuery("#lab_user_phone").val("");
   jQuery("#lab_user_section_cn").val("");
   jQuery("#lab_user_section_cnu").val("");
+  document.forms['lab_admin_historic'].reset();
+  jQuery("#lab_admin_historic").hide();
 }
 
 function load_usermeta_dateLeft() {
