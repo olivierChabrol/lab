@@ -11,12 +11,19 @@
     flex-direction:column;
     justify-content:space-between;
     min-height: 4em;
-    padding:0.5em 0;
+    font-size: 0.9em;
+    padding:0.2em 0;
+    font-style: italic;
 }
 .lab_history_desc {
     flex-grow:1;
     margin-left: 1em;
     line-height: 4em;
+}
+.lab_history_topDesc {
+    display: flex;
+    justify-content: space-between;
+    padding-right: 2em;
 }
 .lab_history_actions {
     display:flex;
@@ -26,4 +33,36 @@
 }
 .lab_history_actions a {
     text-decoration: none;
+}
+#lab_historic_delete_dialog_options {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+#lab_historic_delete_dialog_options a {
+    width: 6em;
+    padding: 0.5em;
+    text-align: center;
+    border-radius: 4px;
+    background: #77b255;
+    color: white;
+    text-decoration: none;
+}
+#lab_historic_delete_dialog_options a:first-of-type {
+    background: #cf4944;
+}
+#lab_historic_actions {
+    display: flex;
+    justify-content: space-around;
+    width: 80%;
+}
+.user-role-badge {
+    padding: 0.5em 1em;
+    margin-right: 1em;
+}
+.lab_role_delete {
+    cursor:pointer;
+}
+.form-table td, .form-table th {
+    padding:10px;
 }

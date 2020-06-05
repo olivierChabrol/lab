@@ -55,13 +55,11 @@ function lab_admin_tab_settings() {
   <button class="page-title-action" id="lab_createGroup_createTable_Sub">Créer la table Substitutes</button>
   <button class="page-title-action" id="lab_createGroup_createRoot">Créer groupe root</button>
   <hr/>
-  <button class="page-title-action" id="lab_keyring_create_table_keys"><?php echo esc_html__('Créer la table Keys','lab'); ?></button>
-  <button class="page-title-action" id="lab_keyring_create_table_loans"><?php echo esc_html__('Créer la table Loans','lab'); ?></button><br><br>
-  <hr/>
   <button class="page-title-action" id="lab_presence_create_table"><?php echo esc_html__('Créer la table presence','lab'); ?></button><br>
   <hr/>
-
-  <button class="page-title-action" id="lab_invite_create_tables"><?php echo esc_html__('Créer la table Invitation','lab'); ?></button>
+  <button class="page-title-action" id="lab_invite_create_tables"><?php echo esc_html__('Créer la table Invitations','lab'); ?></button>
+  <hr/>
+  <button class="page-title-action" id="lab_create_table_historic"><?php echo esc_html__('Créer la table Historic','lab'); ?></button>
   <hr/>
   <button class="page-title-action" id="lab_admin_reset_db"><?php echo esc_html__('Reset DB','lab'); ?></button>
   <div id="lab_admin_setting_delete_dialog" class="modal">
@@ -99,6 +97,13 @@ function lab_admin_tab_settings() {
   <input type="text" id="usermetadata_value_all">
   <!-- <a href="#" class="page-title-action" id="lab_settings_button_addKey_all">Add Keys</a> -->
   <button class="lab_keyring_create_table_keys" id="lab_settings_button_addKey_all">Add Keys</button>
+  <hr/>
+  <h2>Complete Metadata key for all user</h2>
+  <label for="usermetadata_key_complete">Key</label>
+  <input type="text" id="usermetadata_key_complete">
+  <label for="usermetadata_value_complete">Value</label>
+  <input type="text" id="usermetadata_value_complete">
+  <a href="#" class="page-title-action" id="lab_settings_button_addKey_complete">Add missing Keys</a>
   <hr/>
   <h2>Social networks for all user</h2>
   <button class="page-title-action" id="lab_setting_social_delete_button">Delete all social networks keys</button>

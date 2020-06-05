@@ -29,6 +29,13 @@ if (is_admin()) {
     add_action( 'wp_ajax_test', 'lab_admin_test');
     add_action( 'wp_ajax_lab_admin_get_userLogin','lab_admin_get_userLogin_Req' );
     add_action( 'wp_ajax_lab_admin_loadUserHistory','lab_admin_loadUserHistory_Req' );
+    add_action( 'wp_ajax_lab_historic_add','lab_historic_add' );
+    add_action( 'wp_ajax_lab_historic_getEntry','lab_historic_getEntry' );
+    add_action( 'wp_ajax_lab_historic_delete','lab_historic_delete' );
+    add_action( 'wp_ajax_lab_historic_update','lab_historic_update' );
+    add_action( 'wp_ajax_lab_user_getRoles','lab_user_getRoles' );
+    add_action( 'wp_ajax_lab_user_addRole','lab_user_addRole' );
+    add_action( 'wp_ajax_lab_user_delRole','lab_user_delRole' );
     //Actions pour la gestion des groupes
     add_action( 'wp_ajax_group_search_ac', 'lab_admin_group_availableAc' );
     add_action( 'wp_ajax_group_create', 'lab_admin_group_createReq' );
@@ -72,7 +79,7 @@ if (is_admin()) {
     add_action('wp_ajax_edit_group', 'lab_group_editGroup');
     //Action for settings
     add_action( 'wp_ajax_add_new_metakey', 'lab_ajax_userMetaData_new_key');
-    add_action( 'wp_ajax_add_new_metakeys', 'lab_ajax_userMetaData_create_keys');
+    add_action( 'wp_ajax_complete_new_metakeys', 'lab_ajax_userMetaData_complete_keys');
     add_action( 'wp_ajax_list_metakeys', 'lab_ajax_userMetaData_list_keys');
     add_action( 'wp_ajax_delete_metakey', 'lab_ajax_userMetaData_delete_key');
     add_action( 'wp_ajax_not_exist_metakey', 'lab_ajax_userMeta_key_not_exist');
@@ -83,6 +90,7 @@ if (is_admin()) {
     add_action( 'wp_ajax_reset_lab_db', 'lab_admin_setting_reset_tables');
     add_action( 'wp_ajax_invite_createTablePrefGroup', 'lab_invitations_createPrefGroupTable' );
     add_action( 'wp_ajax_invite_createTables', 'lab_invitations_createTables_Req' );
+    add_action( 'wp_ajax_lab_historic_createTable', 'lab_historic_createTable' );
     //Action for hal
     add_action( 'wp_ajax_hal_create_table', 'lab_ajax_hal_create_table');
     add_action( 'wp_ajax_hal_fill_hal_name', 'lab_ajax_hal_fill_fields');
