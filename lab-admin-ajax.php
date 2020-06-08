@@ -715,7 +715,7 @@ function lab_keyring_find_oldLoansReq() {
     $res = lab_keyring_find_oldLoans('user_id',$_POST['user_id']);
   } 
   if (count($res)==0) {
-    wp_send_json_error("<tr><td colspan='9'>No loans found</td></tr>");
+    wp_send_json_error("<tr><td colspan='9'>".__('Aucun prêt trouvé','lab')."</td></tr>");
     return;
   } else {
     wp_send_json_success(lab_keyringtableFromLoansList($res));
@@ -726,7 +726,7 @@ function lab_keyring_find_oldLoansReq() {
 function lab_keyring_search_current_loans_Req() {
   $res = lab_keyring_search_current_loans($_POST["user"],$_POST["page"],$_POST["limit"]);
   if (count($res)==0) {
-    wp_send_json_error("<tr><td colspan='9'>No loans found</td></tr>");
+    wp_send_json_error("<tr><td colspan='9'>".__('Aucun prêt trouvé','lab')."</td></tr>");
     return;
   } else {
     $html = lab_keyringtableFromLoansList($res['items']);
@@ -1259,7 +1259,7 @@ function lab_ldap_list_update() {
   for($i = $pageVar; $i < ($itemPerPage+$pageVar) && $i < $count; $i++)
   {
     $ldapResult .= '<tr><td>'. $ldap_obj->getEntries($result,$i, 'cn').'</td>
-                        <td><button class="">Détails</button>
+                        <td><button id="lab_ldap_detail_button_'.$ldap_obj->getEntries($result,$i, 'uid').'">Détails</button>
                             <span id="eraseLdap" class="fas fa-trash-alt" style="cursor: pointer;"></span>
                             <span id="editLdap" 
                               uid="'.$ldap_obj->getEntries($result,$i,'uid').'"

@@ -359,7 +359,7 @@
         }
       }
       $element->available == 1 ?
-                  $output .= '<td scope="col" class="lab_keyring_icon">✅<a href="#lab_keyring_loan_title" class="page-title-action lab_keyring_key_lend" keyid="'.$element->id.'">'.esc_html__("Prêter",'lab').'</a></td>'
+                  $output .= '<td scope="col" class="lab_keyring_icon"><span style="color:#00cf00; font-size: 2em">✓</span><a href="#lab_keyring_loan_title" class="page-title-action lab_keyring_key_lend" keyid="'.$element->id.'">'.esc_html__("Prêter",'lab').'</a></td>'
                 : $output.='<td scope="col" class="lab_keyring_icon">❌<a href="#lab_keyring_loan_title" class="page-title-action lab_keyring_key_lend" keyid="'.$element->id.'">'.esc_html__("Voir prêt",'lab').'</a></td>';
       $output .= '<td scope="col" class="lab_keyring_icon">
                     <a class="page-title-action lab_keyring_key_edit" href="#lab_keyring_newForm" keyid="'.$element->id.'">🖊</a>
@@ -374,15 +374,18 @@
       $output .= '<tr>';
       foreach (['id','key_id', 'referent_id','user_id', 'start_date','end_date','commentary','ended'] as $field) {
         if ($field == "ended") {  
-          $output .= '<td scope="col" class="lab_keyring_icon">'.($element->$field == 1 ? "✅" : "❌").'</td>';
+          $output .= '<td scope="col" class="lab_keyring_icon">'.($element->$field == 1 ? "<span style='color:#00cf00; font-size: 2em'>✓</span>" : "❌").'</td>';
         } elseif ( $field =='user_id' || $field =='referent_id' ) {
           $user = lab_admin_username_get($element->$field);
           $output .= '<td scope="col">'.$user['first_name'].' '.$user['last_name'].'</td>';
         } elseif ( $field == 'key_id' ) {
           $key = lab_keyring_search_key($element->$field)[0];
           $output .= '<td scope="col">';
-          $output .= $key->type == 7 ? '🔑' : '💳';
+          $output .= AdminParams::get_param($key->type) == 'Clé' ? '🔑' : '💳';
           $output .= ' '.$key->number.'</td>';
+        } elseif ( substr($field,-4,4) == 'date') {
+          $date = strlen($element->$field)>0 ? date_format(date_create_from_format("Y-m-d", $element->$field),'d/m/Y') : '';
+          $output.='<td scope="col">'.$date.'</td>';
         } else {
           $output.='<td scope="col">'.$element->$field.'</td>';
         }
