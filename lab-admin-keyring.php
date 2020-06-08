@@ -383,6 +383,9 @@
           $output .= '<td scope="col">';
           $output .= AdminParams::get_param($key->type) == 'Clé' ? '🔑' : '💳';
           $output .= ' '.$key->number.'</td>';
+        } elseif ( substr($field,-4,4) == 'date') {
+          $date = strlen($element->$field)>0 ? date_format(date_create_from_format("Y-m-d", $element->$field),'d/m/Y') : '';
+          $output.='<td scope="col">'.$date.'</td>';
         } else {
           $output.='<td scope="col">'.$element->$field.'</td>';
         }
