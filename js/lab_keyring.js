@@ -37,7 +37,8 @@ jQuery(function($){
       $("#lab_keyring_newKey_"+i).css("border-color","#0071a1");
       params[i] = $("#lab_keyring_newKey_"+i).val();
       }
-      params["commentary"] = $("#lab_keyring_newKey_commentary").val();
+      regex=/\"/g;
+      params["commentary"] = $("#lab_keyring_newKey_commentary").val().replace(regex,"”").replace(/\'/g,"’");
       createKey(params);
       clearFields("lab_keyring_newKey_",['number','office','brand','commentary']);
   });
@@ -165,8 +166,9 @@ jQuery(function($){
           $("#lab_keyring_edit_"+i).css("border-color","#0071a1");
       }
       }
+      regex=/\"/g;
       for (i of ['type','number','office','brand','site','commentary']) {
-      fields[i] = $("#lab_keyring_edit_"+i).val();
+      fields[i] = $("#lab_keyring_edit_"+i).val().replace(regex,"”").replace(/\'/g,"’");
       }
       data = {
       'action': 'keyring_edit_key',
@@ -276,8 +278,9 @@ jQuery(function($){
         $("#lab_keyring_loanform_"+i).css("border-color","");
     }
     }
+    regex=/\"/g;
     for (i of ['commentary', 'start_date','end_date']) {
-    params[i] = $("#lab_keyring_loanform_"+i).val();
+    params[i] = $("#lab_keyring_loanform_"+i).val().replace(regex,"”").replace(/\'/g,"’");
     }
     params["referent_id"] = $("#lab_keyring_loanform_referent").attr("referent_id");
     params["key_id"] = $("#lab_keyring_loanform_key_id").text();
@@ -288,8 +291,9 @@ jQuery(function($){
   });
   $("#lab_keyring_loanform_edit").click(function () { 
       params={};
+      regex=/\"/g;
       for (i of ['commentary', 'start_date','end_date']) {
-      params[i] = $("#lab_keyring_loanform_"+i).val();
+      params[i] = $("#lab_keyring_loanform_"+i).val().replace(regex,"”").replace(/\'/g,"’");
       }
       params["referent_id"] = $("#lab_keyring_loanform_referent").attr("referent_id");
       params["key_id"] = $("#lab_keyring_loanform_key_id").text();
@@ -555,7 +559,7 @@ function oldLoans(id) {
     'action': 'keyring_find_old_loans'
   };
   //Selon l'onglet, affiche l'historique des prêts pour la clé ou pour l'utilisateur :
-  (getUrlVars()['tab'].split("#")[0] == 'default') ? data['key_id'] = id : data['user_id']= id;
+  (getUrlVars()['tab'] == null || getUrlVars()['tab'].split("#")[0] == 'default') ? data['key_id'] = id : data['user_id']= id;
   jQuery.post(ajaxurl, data, function(response) {
     jQuery(".lab_keyring_loansList")[0].innerHTML=response.data;
   });
