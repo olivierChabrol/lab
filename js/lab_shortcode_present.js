@@ -4,6 +4,19 @@ jQuery(function($){
                         color: green;
                       }`;
     document.head.appendChild(style);
+
+    $("#workGroupFollow").change(function() {
+        if ($(this).val() != "") {
+            
+            setDay($( "#workGroupFollow option:selected" ).attr("date"), $( "#workGroupFollow option:selected" ).attr("hour_start"), $( "#workGroupFollow option:selected" ).attr("hour_end"));
+            $("#comment").val(__("participe au group de travail","lab") + " " + $( "#workGroupFollow option:selected" ).attr("name"));
+        }
+        else
+        {
+            resetDate();
+            $("#comment").val("");
+        }
+    });
   
     $(".icon-edit").click(function() {
         let editable = $(this).parents('tr').find('.edit');
@@ -64,31 +77,8 @@ jQuery(function($){
             $("#comment").focus();
             return;
         }
-         /*
-        $('#datetimePicker').datetimepicker();
-        $('#meetingForm').bootstrapValidator({
-            feedbackIcons: {
-                valid: 'glyphicon glyphicon-ok',
-                invalid: 'glyphicon glyphicon-remove',
-                validating: 'glyphicon glyphicon-refresh'
-            },
-            fields: {
-                meeting: {
-                    validators: {
-                        date: {
-                            format: 'MM/DD/YYYY h:m A',
-                            message: 'The value is not a valid date'
-                        }
-                    }
-                }
-            }
-        });
-        $('#datetimePicker').on('dp.change dp.show', function(e) {
-            $('#meetingForm').bootstrapValidator('revalidateField', 'meeting');
-        });*/
-
         if (checkPresenceInputs('date-open', 'hour-open', 'hour-close')) {
-            savePresence(null, $("#userId").val(), $("#date-open").val(), $("#hour-open").val(), $("#hour-close").val(), $("#siteId").val(), $("#comment").val(), 0);
+            savePresence(null, $("#userId").val(), $("#date-open").val(), $("#hour-open").val(), $("#hour-close").val(), $("#siteId").val(), $("#comment").val(), 0, $("#workGroupName").val(), $("#workGroupFollow").val() );
         }
     });
 
@@ -165,6 +155,20 @@ jQuery(function($){
         });
     });
 });
+
+function resetDate()
+{
+    $("#date-open").val("YYYY-MM-DD");
+    $("#hour-open").val("--:--");
+    $("#hour-close").val("--:--");
+}
+
+function setDay(date, start, end)
+{
+    $("#date-open").val(date);
+    $("#hour-open").val(start);
+    $("#hour-close").val(end);
+}
 
 /**
  * convertie un string de format hh:: en minutes hh*60+mm
@@ -266,7 +270,7 @@ function saveExternaluser() {
     });
 }
 
-function savePresence(idPresence, userId, date, opening, closing, site, comment = "", external = "") {
+function savePresence(idPresence, userId, date, opening, closing, site, comment = "", external = "", workgroup="",worgroupFollow="") {
     /*
     console.log("[savePresence] idPresence : '" + idPresence + "'");
     console.log("[savePresence] userId : '" + userId + "'");
@@ -285,6 +289,8 @@ function savePresence(idPresence, userId, date, opening, closing, site, comment 
         hourClose :   closing,
         siteId :       site,
         external :       external,
+        workgroup :       workgroup,
+        worgroupFollow :       worgroupFollow,
         comment: comment.replace(/\"/g,"”").replace(/\'/g,"’")
     };
     $.post(LAB.ajaxurl, data, function(response) {

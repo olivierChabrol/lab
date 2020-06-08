@@ -1108,10 +1108,20 @@ function lab_admin_presence_save_ajax()
   $siteId    = $_POST['siteId'];
   $comment   = $_POST['comment'];
   $external   = $_POST['external'];
+  $workgroup   = $_POST['workgroup'];
+  $worgroupFollow   = $_POST['worgroupFollow'];
 
   if (!isset($external) || $external == null || $external== "")
   {
     $external = null;
+  }
+  if (!isset($workgroup) || $workgroup == null || $workgroup== "")
+  {
+    $workgroup = null;
+  }
+  if (!isset($worgroupFollow) || $worgroupFollow == null || $worgroupFollow== "")
+  {
+    $worgroupFollow = null;
   }
  
   if (!isset($userId)) {
@@ -1212,14 +1222,57 @@ function lab_admin_presence_save_ajax()
       }
     }
   }
-  $res = lab_admin_presence_save($presenceId, $userId, $dateOpen." ".$hourOpen, $dateOpen." ".$hourClose, $siteId, $comment, $external);
+  if ($workgroup != null)
+  {
+    save_new_workgroup($workgroup, $newDateStart, $userId, $hourOpen, $hourClose, 10);
+    $res = lab_admin_presence_save($presenceId, $userId, $dateOpen." ".$hourOpen, $dateOpen." ".$hourClose, $siteId, $comment, $external);
+  }
+  else if ($worgroupFollow != null)
+  {
+    $canInsert = check_can_follow_workgroup($worgroupFollow,$userId);
+    if ($canInsert["success"]) {
+
+      $res = lab_admin_presence_save($presenceId, $userId, $dateOpen." ".$hourOpen, $dateOpen." ".$hourClose, $siteId, $comment, $external);
+      save_workgroup_follow($worgroupFollow, $userId);
+    }
+    else
+    {
+      wp_send_json_error($canInsert["data"]);
+    }
+  }
   //wp_send_json_error($res);
   if ($res["success"]) {
     wp_send_json_success();
   } else {
     wp_send_json_error($res["data"]);
   }
+}
 
+function check_can_follow_workgroup($workgroupId, $userId)
+{
+  $workGroup = workgroup_get($workgroupId);
+  //return ["success"=>false,"data"=>$workGroup];
+  $usersFolloginGroup = load_workgroup_follow($workgroupId);
+  if (count($usersFolloginGroup) + 1 > intval($workGroup->max))
+  {
+    return ["success"=>false,"data"=>"Exceed maximum group capacity (".$workGroup->max.")"];
+  }
+  else
+  {
+    $alreadyPresent = false;
+    foreach($usersFolloginGroup as $user)
+    {
+      if ($user->user_id == $userId)
+      {
+        $alreadyPresent = true;
+      }
+    }
+    if ($alreadyPresent)
+    {
+      return ["success"=>false,"data"=>"User already present in workgroup"];
+    }
+  }
+  return ["success"=>true,"data"=>""];
 }
 
 function lab_admin_presence_update_ajax() {

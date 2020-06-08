@@ -1826,6 +1826,49 @@ function lab_admin_presence_delete($presenceId, $userId) {
     }
 }
 
+function save_new_workgroup($name, $day, $owner, $hourStart, $hourEnd, $max)
+{
+    global $wpdb;
+    $wpdb->insert($wpdb->prefix."lab_presence_workgroup",array("name"=>$name, "date"=>date('Y-m-d', $day), "owner_id"=>$owner, "max"=>$max, "hour_start"=>$hourStart, "hour_end"=>$hourEnd ));
+    save_workgroup_follow($wpdb->insert_id, $owner);
+    //$wpdb->insert($wpdb->prefix."lab_presence_users_workgroup",array("workgroup_id"=>$wpdb->insert_id, "user_id"=>$owner));
+}
+function save_workgroup_follow($groupId, $userId)
+{
+    global $wpdb;
+    //$wpdb->insert($wpdb->prefix."lab_presence_workgroup",array("name"=>$name, "date"=>date('Y-m-d', $day), "owner_id"=>$owner, "max"=>$max));
+    $wpdb->insert($wpdb->prefix."lab_presence_users_workgroup",array("workgroup_id"=>$groupId, "user_id"=>$userId));
+}
+
+function workgroup_get($groupId)
+{
+    global $wpdb;
+    $sql = "SELECT * FROM ".$wpdb->prefix."lab_presence_workgroup WHERE id = ".$groupId;
+    return $wpdb->get_results($sql)[0];
+}
+
+function load_workgroup_follow($groupId)
+{
+    global $wpdb;
+    $sql = "SELECT * FROM ".$wpdb->prefix."lab_presence_users_workgroup WHERE workgroup_id = ".$groupId;
+    return $wpdb->get_results($sql);
+}
+
+function get_workgroup_of_the_week($day)
+{
+    global $wpdb;
+    $startDayOfTheWeek = getFirstDayOfTheWeek($day);
+    $lastDayOfTheWeek  = strtotime("+5 days", $startDayOfTheWeek);
+    $sql = "SELECT * FROM ".$wpdb->prefix."lab_presence_workgroup WHERE date >= '".date('Y-m-d', $startDayOfTheWeek)."' AND date <= '".date('Y-m-d', $lastDayOfTheWeek)."'";
+    //return $sql;
+    return $wpdb->get_results($sql);
+}
+
+/**************************************************************************************************************************************
+ * PRESENCE
+ *************************************************************************************************************************************/
+
+
 /**************************************************************************************************************************************
  * UTILS
  *************************************************************************************************************************************/
@@ -1846,4 +1889,17 @@ function startsWith ($string, $startString)
 { 
     $len = strlen($startString); 
     return (substr($string, 0, $len) === $startString); 
-} 
+}
+
+function getFirstDayOfTheWeek($dateObj) {
+    $dayofweek = date('w', $dateObj);
+    //echo $dayofweek."<br>";
+    // if sunday
+    if ($dayofweek < 1) {
+        return strtotime('-6 days', $dateObj);
+    }
+    else {
+        $aStr = '-'.($dayofweek-1).' days';
+        return strtotime($aStr, $dateObj);
+    }
+}

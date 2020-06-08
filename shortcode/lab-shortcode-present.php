@@ -204,6 +204,25 @@ function getDay($dayInt, $dayInMonth, $year = 0) {
     return $dayInt;
 }
 
+function getWorgroups($day)
+{
+    $ar = get_workgroup_of_the_week($day);
+    $r = array();
+    foreach($ar as $a)
+    {
+        $obj = new stdClass();
+        $obj->value = $a->name . " (" . $a->date . "  ". $a->hour_start." - ".$a->hour_end.")";
+        $obj->id = $a->id;
+        $obj->name = $a->name;
+        $obj->date = $a->date;
+        $obj->hour_start = $a->hour_start;
+        $obj->hour_end   = $a->hour_end;
+        $r[] = $obj;
+    }
+    //var_dump($r);
+    return $r;
+}
+
 function lab_present_choice($param) {
     if (!is_user_logged_in())
     {
@@ -218,6 +237,10 @@ function lab_present_choice($param) {
 
     $choiceStr = "<br/><hr><div>
         <h3>".esc_html__("Je serai présent·e", "lab")."</h3>
+            <div class=\"input-group mb-3\">Rejoindre un groupe de travail : ".
+            //lab_html_select_str("workGroupFollow", "workGroupFollow", "", get_workgroup_of_the_week, $startDay, array("label"=>"None","value"=>""), null, array("id"=>"id", "value"=>"name"))."</div>
+            lab_html_select_str("workGroupFollow", "workGroupFollow", "", getWorgroups, $startDay, array("label"=>"None","value"=>""), null, null, array("date"=>"date", "hour_start"=>"hour_start", "hour_end"=>"hour_end", "name"=>"name")).
+            "</div>
             <div class=\"input-group mb-3\">
             <input id='userId' name='userId' type='hidden' value='" . get_current_user_id() . "' />
             <input id=\"external\" type=\"hidden\"  val=\"0\"/>
@@ -234,6 +257,7 @@ function lab_present_choice($param) {
             <div id='messErr_hour-close' class='invalid-feedback'></div>
             <label for='site-selected'>".esc_html__("sur le site", "lab")."</label>
             " . lab_html_select_str("siteId", "siteName", "custom-select", lab_admin_list_site) . "</div>
+            <div class=\"input-group mb-3\">Créer un groupe de travail : <input type='text' id='workGroupName' class='form-control'/></div>
             <div class=\"input-group mb-3\">
             <div class=\"form-group\">
                 <label for='comment'>".esc_html__("Commentaire", "lab")."</label>
@@ -447,22 +471,12 @@ function getStartDate()
     if (isset( $_GET["date"] ) && !empty( $_GET["date"] ) ) {
         $date = $_GET["date"];
     }
-    $str = "";
     $dateObj = strtotime("now");
 
     if ($date != null) {
         $dateObj = strtotime($date);
     }
-    $dayofweek = date('w', $dateObj);
-    //echo $dayofweek."<br>";
-    // if sunday
-    if ($dayofweek < 1) {
-        return strtotime('-6 days', $dateObj);
-    }
-    else {
-        $aStr = '-'.($dayofweek-1).' days';
-        return strtotime($aStr, $dateObj);
-    }
+    return getFirstDayOfTheWeek($dateObj);
 }
 
 /**
