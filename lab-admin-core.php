@@ -76,10 +76,26 @@ function lab_admin_loadUserHistory($user_id) {
  */
 function lab_admin_add_historic($fields) {
     global $wpdb;
-    return $wpdb->insert($wpdb->prefix.'lab_users_historic',$fields);
+    $wpdb->insert($wpdb->prefix.'lab_users_historic',$fields);
+    $insertId = $wpdb->insert_id;
+    $histos = lab_admin_historic_get_historics_ordered_by_date($fields["user_id"]);
+    $hSize = count($histos);
+    // set user left to the last historic end date defined
+    if ($hSize > 0 )
+    {
+        lab_userMetaData_save_key($fields["user_id"], "user_left", $histos[$hSize - 1]->end);
+    }
+    return true;
 }
 function lab_admin_historic_delete($entry_id) {
     global $wpdb;
+    $histo = lab_admin_historic_get($entry_id);
+    $date_user_left = is_user_left($histo->user_id);
+    //return $date_user_left;
+    if ($date_user_left != null && $histo->end == $date_user_left)
+    {
+        lab_userMetaData_save_key($histo->user_id, "user_left", null);
+    }
     return $wpdb->delete($wpdb->prefix."lab_users_historic",array('id'=>$entry_id));
 }
 function lab_admin_historic_get($entry_id) {
@@ -88,7 +104,29 @@ function lab_admin_historic_get($entry_id) {
 }
 function lab_admin_historic_update($entry_id,$fields) {
     global $wpdb;
-    return $wpdb->update($wpdb->prefix."lab_users_historic",$fields,array('id'=>$entry_id));
+    $wpdb->update($wpdb->prefix."lab_users_historic",$fields,array('id'=>$entry_id));
+    $histos = lab_admin_historic_get_historics_ordered_by_date($fields["user_id"]);
+    $hSize = count($histos);
+    
+    // set user left to the last historic end date defined
+    if ($hSize > 0 )
+    {
+        lab_userMetaData_save_key($fields["user_id"], "user_left", $histos[$hSize - 1]->end);
+    }
+    return true;
+}
+
+/**
+ * Return all historics of the user orderby date end
+ *
+ * @param [type] $userId
+ * @return void
+ */
+function lab_admin_historic_get_historics_ordered_by_date($userId)
+{
+    global $wpdb;
+    $sql = "SELECT * FROM ".$wpdb->prefix."lab_users_historic WHERE user_id=".$userId."  ORDER BY `end` DESC ";
+    return $wpdb->get_results($sql);
 }
 
 function lab_get_all_roles() {

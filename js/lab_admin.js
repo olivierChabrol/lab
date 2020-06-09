@@ -992,6 +992,7 @@ function loadUserMetaData(response) {
       jQuery("#lab_user_left_date").val(response.data["lab_user_left"]["value"]);
     } else {
 	    jQuery("#lab_user_left").prop("checked", false);
+      jQuery("#lab_user_left_date").val("YYY-mm-dd");
       jQuery("#lab_user_left_date").prop("disabled", true);
       jQuery("#lab_user_left_date").val("");
     }

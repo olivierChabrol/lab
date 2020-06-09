@@ -1537,6 +1537,7 @@ function lab_historic_add() {
 }
 
 function lab_historic_delete() {
+  //wp_send_json_error(lab_admin_historic_delete($_POST['entry_id']));
   if (lab_admin_historic_delete($_POST['entry_id'])===false) {
     global $wpdb;
     wp_send_json_error($wpdb->last_error);

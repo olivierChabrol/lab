@@ -353,7 +353,7 @@ function lab_admin_history($list) {
         </div>
         <h5>· ".AdminParams::get_param($elem->function)."</h5>
       </div>
-      <div class='lab_history_actions'><a class='lab_history_edit' entry_id=$elem->id href='#'><i class = fas fa-pen></i></a><a class='lab_history_edit_delete' entry_id=$elem->id href='#'><i class='fas fa-trash'></i></a></div>
+      <div class='lab_history_actions'><a class='lab_history_edit' entry_id=\"$elem->id\" href=\"#\"><i class=\"fas fa-pen\"></i></a><a class='lab_history_edit_delete' entry_id=\"$elem->id\" href='#'><i class=\"fas fa-trash\"></i></a></div>
     </li>";
   }
   return $out;
