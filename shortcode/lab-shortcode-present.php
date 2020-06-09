@@ -48,11 +48,20 @@ function lab_present_select($param) {
         $user->hour_start = strtotime($user->hour_start);
         $user->hour_end   = strtotime($user->hour_end);
 
-        if ($userId == 0 || $userId != $user->user_id) {
+        if (isset($user->wg_name) && $user->wg_name != null)
+        {
+            $user->nbUsers = workgroup_users_count($user->wg_id);
+            $users["<b>".$user->wg_name . "</b><br>" . $user->first_name." ".$user->last_name][date('d', $user->hour_start)][] = $user;
+
+        }
+        else if ($userId == 0 || $userId != $user->user_id) 
+        {
             $userId = $user->user_id;
+            $user->nbUsers = null;
             $users[$user->first_name." ".$user->last_name][date('d', $user->hour_start)][] = $user;
         }
         else if ($userId == $user->user_id) {
+            $user->nbUsers = null;
             $users[$user->first_name." ".$user->last_name][date('d', $user->hour_start)][] = $user;
         }
     }
@@ -145,15 +154,14 @@ function lab_present_select($param) {
                         if (date('H', $hours->hour_end) >= 13) {
                             $sum[$hours->site_id][$i*2] = $sum[$i*2] + 1;
                             $sum[$hours->site_id][$i*2+1] = $sum[$i*2+1] + 1;
-                            $str .= td($hours->hour_start,$hours->hour_end,$hours->site_id, false,"style=\"background-color:#".$colors[$hours->site_id].";color:white;\"", $hours->user_id, $hours->id, true, $hours->comment);
+                            $str .= td($hours->hour_start,$hours->hour_end,$hours->site_id, false,"style=\"background-color:#".$colors[$hours->site_id].";color:white;\"", $hours->user_id, $hours->id, true, $hours->comment, $hours->nbUsers);
                             //$str .= td($hours->hour_end,null,false,"style=\"background-color:#".$colors[$hours->site_id].";color:white;\"", $hours->user_id, $hours->id);
                             $nb = 2; 
                         }
                         // presence le matin
                         else {
-                            $str .= td($hours->hour_start, $hours->hour_end,$hours->site_id, false,"style=\"background-color:#".$colors[$hours->site_id].";color:white;\"", $hours->user_id, $hours->id,false, $hours->comment);
+                            $str .= td($hours->hour_start, $hours->hour_end,$hours->site_id, false,"style=\"background-color:#".$colors[$hours->site_id].";color:white;\"", $hours->user_id, $hours->id,false, $hours->comment, $hours->nbUsers);
                             $sum[$hours->site_id][$i*2] += 1;
-                            //$str .= td(null, null, true);
                         }
                     }
                     // presence l'aprem
@@ -162,7 +170,7 @@ function lab_present_select($param) {
                             $str .= td(null, null, null, true);
                             $nb++;
                         }
-                        $str .= td($hours->hour_start, $hours->hour_end, $hours->site_id, false, "style=\"background-color:#".$colors[$hours->site_id].";color:white;\"", $hours->user_id, $hours->id,false, $hours->comment);
+                        $str .= td($hours->hour_start, $hours->hour_end, $hours->site_id, false, "style=\"background-color:#".$colors[$hours->site_id].";color:white;\"", $hours->user_id, $hours->id,false, $hours->comment, $hours->nbUsers);
                         $sum[$hours->site_id][$i*2+1] += 1;
                     }
                     $nb++;
@@ -211,12 +219,14 @@ function getWorgroups($day)
     foreach($ar as $a)
     {
         $obj = new stdClass();
-        $obj->value = $a->name . " (" . $a->date . "  ". $a->hour_start." - ".$a->hour_end.")";
+        $obj->value = $a->name . " ".$a->site_name." (" . $a->date . "  ". $a->hour_start." - ".$a->hour_end.")";
         $obj->id = $a->id;
         $obj->name = $a->name;
         $obj->date = $a->date;
         $obj->hour_start = $a->hour_start;
         $obj->hour_end   = $a->hour_end;
+        $obj->site = $a->site;
+        $obj->site_name = $a->site_name;
         $r[] = $obj;
     }
     //var_dump($r);
@@ -239,7 +249,7 @@ function lab_present_choice($param) {
         <h3>".esc_html__("Je serai présent·e", "lab")."</h3>
             <div class=\"input-group mb-3\">Rejoindre un groupe de travail : ".
             //lab_html_select_str("workGroupFollow", "workGroupFollow", "", get_workgroup_of_the_week, $startDay, array("label"=>"None","value"=>""), null, array("id"=>"id", "value"=>"name"))."</div>
-            lab_html_select_str("workGroupFollow", "workGroupFollow", "", getWorgroups, $startDay, array("label"=>"None","value"=>""), null, null, array("date"=>"date", "hour_start"=>"hour_start", "hour_end"=>"hour_end", "name"=>"name")).
+            lab_html_select_str("workGroupFollow", "workGroupFollow", "", getWorgroups, $startDay, array("label"=>"None","value"=>""), null, null, array("date"=>"date", "hour_start"=>"hour_start", "hour_end"=>"hour_end", "name"=>"name", "site"=>"site")).
             "</div>
             <div class=\"input-group mb-3\">
             <input id='userId' name='userId' type='hidden' value='" . get_current_user_id() . "' />
@@ -257,7 +267,7 @@ function lab_present_choice($param) {
             <div id='messErr_hour-close' class='invalid-feedback'></div>
             <label for='site-selected'>".esc_html__("sur le site", "lab")."</label>
             " . lab_html_select_str("siteId", "siteName", "custom-select", lab_admin_list_site) . "</div>
-            <div class=\"input-group mb-3\">Créer un groupe de travail : <input type='text' id='workGroupName' class='form-control'/></div>
+            <div class=\"input-group mb-3\" id=\"divNewWorkingGroup\">Créer un groupe de travail : <input type='text' id='workGroupName' class='form-control'/></div>
             <div class=\"input-group mb-3\">
             <div class=\"form-group\">
                 <label for='comment'>".esc_html__("Commentaire", "lab")."</label>
@@ -492,7 +502,7 @@ function getStartDate()
  * @param [type] $comment
  * @return void
  */
-function td($dateStart = null, $dateEnd = null, $siteId = null, $empty = false, $site = null, $userId = null, $presenceId=null, $allDay = false, $comment= null) {
+function td($dateStart = null, $dateEnd = null, $siteId = null, $empty = false, $site = null, $userId = null, $presenceId=null, $allDay = false, $comment= null, $workgroupUserNumber = null) {
     if ($empty) {
         $str .= "<td >&nbsp;</td>";
     } else {
@@ -505,7 +515,19 @@ function td($dateStart = null, $dateEnd = null, $siteId = null, $empty = false, 
             $colSpan = "";
 
             if ($admin || $userId == $currentUserId) {
-                $canDelete = ' class="canDelete" userId="'.$userId.'" presenceId="'.$presenceId.'" ';
+                $canDelete = ' class="';
+                if ($workgroupUserNumber != null)
+                {
+                    $canDelete .='userNumber ';
+                }
+                $canDelete .= 'canDelete" userId="'.$userId.'" presenceId="'.$presenceId.'" ';
+            }
+            else
+            {
+                if ($workgroupUserNumber != null)
+                {
+                    $canDelete .=' class="userNumber" ';
+                }
             }
             if ($allDay) {
                 $colSpan = " colspan=\"2\" ";
@@ -521,8 +543,18 @@ function td($dateStart = null, $dateEnd = null, $siteId = null, $empty = false, 
         $siteId   = " siteId=\"".$siteId."\"";
         $hourStart = " hourStart=\"".date("H:i", $dateStart)."\"";
         $hourEnd   = " hourEnd=\"".date("H:i", $dateEnd)."\"";
+        $userNumber = "";
+        if ($workgroupUserNumber != null)
+        {
+            $userNumber .= " userNumber=\"".$workgroupUserNumber."\"";
+        }
 
-        $str .= '<td '.$canDelete.' '.($site!=null?$site:'').$colSpan.$tdId.$date.$title.$siteId.$hourStart.$hourEnd.'><div class="wrapper"><div class="actions"'.$actionId.'><div title="Update" '.$editId.' class="floatLeft iconset_16px"><i class="fas fa-pen fa-xs"></i></div><div title="delete" '.$deleteId.' class="floatLeft iconset_16px"><i class="fas fa-trash fa-xs"></i></div></div><div class="gal_name">'.date('H:i', $dateStart);
+        $str .= '<td '.$canDelete.' '.($site!=null?$site:'').$colSpan.$tdId.$date.$title.$siteId.$hourStart.$hourEnd.$userNumber.'>';
+        if ($workgroupUserNumber != null)
+        {
+            $str .= '<div class="usersWg"><b>'.$workgroupUserNumber.'</b> <i class="fas fa-users fa-xs"></i></div>';
+        }
+        $str .= '<div class="wrapper"><div class="actions"'.$actionId.'><div title="Update" '.$editId.' class="floatLeft iconset_16px"><i class="fas fa-pen fa-xs"></i></div><div title="delete" '.$deleteId.' class="floatLeft iconset_16px"><i class="fas fa-trash fa-xs"></i></div></div><div class="gal_name">'.date('H:i', $dateStart);
         if ($dateEnd != null) {
             $str .= " - ".date('H:i', $dateEnd);
         }

@@ -1224,8 +1224,9 @@ function lab_admin_presence_save_ajax()
   }
   if ($workgroup != null)
   {
-    save_new_workgroup($workgroup, $newDateStart, $userId, $hourOpen, $hourClose, 10);
+    $wgId = save_new_workgroup($workgroup, $newDateStart, $userId, $hourOpen, $hourClose, 10);
     $res = lab_admin_presence_save($presenceId, $userId, $dateOpen." ".$hourOpen, $dateOpen." ".$hourClose, $siteId, $comment, $external);
+    workgroup_update_presencyId($wgId, $res["data"]);
   }
   else if ($worgroupFollow != null)
   {

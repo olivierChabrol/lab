@@ -416,7 +416,7 @@ function lab_admin_getSite($sideId)
  */
 function lab_admin_list_present_user($startDate, $endDate) {
     global $wpdb;
-    $sql = "SELECT lp.id, lp.user_id, lp.hour_start, lp.hour_end, lp.site as site_id, lp.comment as comment, p.value as site, um1.meta_value as first_name, um2.meta_value as last_name, um4.meta_value as office, um5.meta_value as floor FROM `".$wpdb->prefix."lab_presence` AS lp JOIN ".$wpdb->prefix."lab_params as p ON p.id=lp.site JOIN ".$wpdb->prefix."usermeta AS um1 ON um1.user_id=lp.user_id JOIN ".$wpdb->prefix."usermeta AS um2 ON um2.user_id=lp.user_id JOIN ".$wpdb->prefix."usermeta AS um3 ON um3.user_id=lp.user_id JOIN ".$wpdb->prefix."usermeta AS um4 ON um4.user_id=lp.user_id JOIN ".$wpdb->prefix."usermeta AS um5 ON um5.user_id=lp.user_id WHERE lp.external=0 AND (lp.`hour_start` BETWEEN '".date("Y-m-d", $startDate)." 00:00:00' AND '".date("Y-m-d", $endDate)." 23:59:59') AND um1.meta_key='first_name' AND um2.meta_key='last_name' AND um3.meta_key='lab_user_location' AND um4.meta_key='lab_user_office_number' AND um5.meta_key='lab_user_office_floor' ORDER BY lp.user_id, lp.`hour_start`";
+    $sql = "SELECT lp.id, lp.user_id, lp.hour_start, lp.hour_end, lp.site as site_id, lp.comment as comment, p.value as site, um1.meta_value as first_name, um2.meta_value as last_name, um4.meta_value as office, um5.meta_value as floor, wg.name as wg_name, wg.id as wg_id, wg.owner_id as wg_user_id FROM `".$wpdb->prefix."lab_presence` AS lp JOIN ".$wpdb->prefix."lab_params as p ON p.id=lp.site JOIN ".$wpdb->prefix."usermeta AS um1 ON um1.user_id=lp.user_id JOIN ".$wpdb->prefix."usermeta AS um2 ON um2.user_id=lp.user_id JOIN ".$wpdb->prefix."usermeta AS um3 ON um3.user_id=lp.user_id JOIN ".$wpdb->prefix."usermeta AS um4 ON um4.user_id=lp.user_id JOIN ".$wpdb->prefix."usermeta AS um5 ON um5.user_id=lp.user_id LEFT JOIN wp_lab_presence_workgroup as wg on wg.presency_id=lp.id WHERE lp.external=0 AND (lp.`hour_start` BETWEEN '".date("Y-m-d", $startDate)." 00:00:00' AND '".date("Y-m-d", $endDate)." 23:59:59') AND um1.meta_key='first_name' AND um2.meta_key='last_name' AND um3.meta_key='lab_user_location' AND um4.meta_key='lab_user_office_number' AND um5.meta_key='lab_user_office_floor' ORDER BY lp.user_id, lp.`hour_start`";
     $registredUser = $wpdb->get_results($sql);
     $sql = "SELECT lp.id, lp.user_id, lp.hour_start, lp.hour_end, lp.site as site_id, lp.comment as comment, p.value as site, lug.first_name as first_name, lug.last_name as last_name FROM `".$wpdb->prefix."lab_presence` AS lp JOIN ".$wpdb->prefix."lab_params as p ON p.id=lp.site JOIN ".$wpdb->prefix."lab_guests AS lug ON lug.id=lp.user_id WHERE lp.external=1 AND (lp.`hour_start` BETWEEN '".date("Y-m-d", $startDate)." 00:00:00' AND '".date("Y-m-d", $endDate)." 23:59:59') ORDER BY lp.user_id, lp.`hour_start`";
     //return $wpdb->get_results($sql);
@@ -1814,23 +1814,27 @@ function lab_admin_presence_save($id, $userId, $dateOpen, $dateEnd, $siteId, $co
         }
         
     }
-    return array("success"=>true, "data"=>null);
+    return array("success"=>true, "data"=>$wpdb->insert_id);
 }
 function lab_admin_presence_delete($presenceId, $userId) {
     global $wpdb;
     if (current_user_can('administrator')) {
+        workgroup_delete_by_presenceId($presenceId);
         return $wpdb->delete($wpdb->prefix."lab_presence", array("id"=>$presenceId));
     } 
     else {
+        workgroup_delete_by_presenceId($presenceId);
         return $wpdb->delete($wpdb->prefix."lab_presence", array("id"=>$presenceId,"user_id"=>$userId));
     }
 }
 
-function save_new_workgroup($name, $day, $owner, $hourStart, $hourEnd, $max)
+function save_new_workgroup($name, $day, $owner, $hourStart, $hourEnd, $max, $presencyId = -1)
 {
     global $wpdb;
-    $wpdb->insert($wpdb->prefix."lab_presence_workgroup",array("name"=>$name, "date"=>date('Y-m-d', $day), "owner_id"=>$owner, "max"=>$max, "hour_start"=>$hourStart, "hour_end"=>$hourEnd ));
-    save_workgroup_follow($wpdb->insert_id, $owner);
+    $wpdb->insert($wpdb->prefix."lab_presence_workgroup",array("name"=>$name, "date"=>date('Y-m-d', $day), "owner_id"=>$owner, "max"=>$max, "hour_start"=>$hourStart, "hour_end"=>$hourEnd, "presency_id"=> $presencyId));
+    $id = $wpdb->insert_id;
+    save_workgroup_follow($id, $owner);
+    return $id;
     //$wpdb->insert($wpdb->prefix."lab_presence_users_workgroup",array("workgroup_id"=>$wpdb->insert_id, "user_id"=>$owner));
 }
 function save_workgroup_follow($groupId, $userId)
@@ -1838,6 +1842,38 @@ function save_workgroup_follow($groupId, $userId)
     global $wpdb;
     //$wpdb->insert($wpdb->prefix."lab_presence_workgroup",array("name"=>$name, "date"=>date('Y-m-d', $day), "owner_id"=>$owner, "max"=>$max));
     $wpdb->insert($wpdb->prefix."lab_presence_users_workgroup",array("workgroup_id"=>$groupId, "user_id"=>$userId));
+}
+
+function workgroup_update_presencyId($workgroupId, $presencyId)
+{
+    global $wpdb;
+    $wpdb->update($wpdb->prefix."lab_presence_workgroup", array("presency_id"=>$presencyId), array("id"=>$workgroupId));
+}
+
+function workgroup_delete_by_presenceId($presencyId)
+{
+    global $wpdb;
+    $sql = "SELECT id FROM ".$wpdb->prefix."lab_presence_workgroup WHERE presency_id=".$presencyId;
+    $rs = $wpdb->get_results($sql);
+    foreach($rs as $r)
+    {
+        workgroup_delete($r->id);
+    }
+}
+
+function workgroup_users_count($groupId)
+{
+    global $wpdb;
+    $sql = "SELECT count(*) AS c FROM `".$wpdb->prefix."lab_presence_users_workgroup` WHERE workgroup_id=".$groupId;
+    $rs = $wpdb->get_results($sql);
+    return $rs[0]->c;
+}
+
+function workgroup_delete($groupId)
+{
+    global $wpdb;
+    $wpdb->delete($wpdb->prefix."lab_presence_workgroup", array("id"=>$groupId));
+    $wpdb->delete($wpdb->prefix."lab_presence_users_workgroup", array("workgroup_id"=>$groupId));
 }
 
 function workgroup_get($groupId)
@@ -1859,7 +1895,7 @@ function get_workgroup_of_the_week($day)
     global $wpdb;
     $startDayOfTheWeek = getFirstDayOfTheWeek($day);
     $lastDayOfTheWeek  = strtotime("+5 days", $startDayOfTheWeek);
-    $sql = "SELECT * FROM ".$wpdb->prefix."lab_presence_workgroup WHERE date >= '".date('Y-m-d', $startDayOfTheWeek)."' AND date <= '".date('Y-m-d', $lastDayOfTheWeek)."'";
+    $sql = "SELECT wg.*,p.site, param.value AS site_name FROM ".$wpdb->prefix."lab_presence_workgroup AS wg JOIN ".$wpdb->prefix."lab_presence AS p ON p.id = wg.presency_id JOIN ".$wpdb->prefix."lab_params AS param ON param.id = p.site WHERE date >= '".date('Y-m-d', $startDayOfTheWeek)."' AND date <= '".date('Y-m-d', $lastDayOfTheWeek)."'";
     //return $sql;
     return $wpdb->get_results($sql);
 }

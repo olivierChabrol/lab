@@ -9,12 +9,14 @@ jQuery(function($){
         if ($(this).val() != "") {
             
             setDay($( "#workGroupFollow option:selected" ).attr("date"), $( "#workGroupFollow option:selected" ).attr("hour_start"), $( "#workGroupFollow option:selected" ).attr("hour_end"));
-            $("#comment").val(__("participe au group de travail","lab") + " " + $( "#workGroupFollow option:selected" ).attr("name"));
+            $("#siteId").val($( "#workGroupFollow option:selected" ).attr("site"));
+            $("#comment").val(__("I participate in the working group","lab") + " " + $( "#workGroupFollow option:selected" ).attr("name"));
+            $("#divNewWorkingGroup").hide();
         }
         else
         {
-            resetDate();
-            $("#comment").val("");
+            $("#divNewWorkingGroup").show();
+            resetFields();
         }
     });
   
@@ -149,6 +151,7 @@ jQuery(function($){
         }
         $.post(LAB.ajaxurl, data, function(response) {
           if (response.success) {
+            resetFields();
             //$("#invitationForm")[0].outerHTML=response.data;
             window.location.reload(false); 
           }
@@ -156,11 +159,20 @@ jQuery(function($){
     });
 });
 
-function resetDate()
+function resetFields()
 {
+    /*
     $("#date-open").val("YYYY-MM-DD");
     $("#hour-open").val("--:--");
     $("#hour-close").val("--:--");
+    //*/
+
+    $('input[type="date"]').val('');
+    $('input[type="time"]').val('');
+    $('#siteId').val('');
+    $('#comment').val('');
+    $("#workGroupFollow").val("");
+    $("#workGroupName").val("");
 }
 
 function setDay(date, start, end)
@@ -263,6 +275,7 @@ function saveExternaluser() {
     console.log(data);
     $.post(LAB.ajaxurl, data, function(response) {
         if (response.success) {
+            resetFields();
             //window.location.reload(false); 
             console.log("[saveExternaluser]" + response.data);
             window.location.reload(false); 
@@ -295,10 +308,7 @@ function savePresence(idPresence, userId, date, opening, closing, site, comment 
     };
     $.post(LAB.ajaxurl, data, function(response) {
         if (response.success) {
-            $('input[type="date"]').val('');
-            $('input[type="time"]').val('');
-            $('#siteId').val('');
-            $('#comment').val('');
+            resetFields();
             window.location.reload(false);
         }
         else {
