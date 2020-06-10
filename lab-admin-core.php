@@ -384,7 +384,26 @@ function lab_admin_createTable_presence() {
         `external` tinyint(1) NOT NULL DEFAULT '0',
         PRIMARY KEY (`id`)
       ) ENGINE=InnoDB;";
+    $wpdb->get_results($sql);
+    $sql = "CREATE TABLE IF NOT EXISTS `".$wpdb->prefix."lab_presence_users_workgroup` (
+        `id` bigint NOT NULL AUTO_INCREMENT,
+        `workgroup_id` bigint NOT NULL,
+        `user_id` bigint NOT NULL,
+        PRIMARY KEY (`id`)
+    ) ENGINE=InnoDB;";
+    $wpdb->get_results($sql);
+    $sql = "CREATE TABLE IF NOT EXISTS `".$wpdb->prefix."lab_presence_workgroup` (
+        `id` bigint NOT NULL AUTO_INCREMENT, 
+        `name` varchar(200) NOT NULL, 
+        `owner_id` bigint NOT NULL, 
+        `max` int NOT NULL, 
+        `date` date NOT NULL DEFAULT '2020-06-05', 
+        `hour_start` varchar(5) NOT NULL DEFAULT '08:00', 
+        `hour_end` varchar(5) NOT NULL DEFAULT '09:00', 
+        `presency_id` bigint NOT NULL, 
+        PRIMARY KEY (`id`) ) ENGINE=InnoDB;";
     return $wpdb->get_results($sql);
+
 }
 
 function lab_admin_initTable_param() {
