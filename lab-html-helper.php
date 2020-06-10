@@ -1,4 +1,6 @@
 <?php
+require_once("lab-admin-params.php");
+
 /**
  * Generate HTML <select> field
  * @param String $htmlId : id of the select

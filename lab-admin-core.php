@@ -48,6 +48,15 @@ function lab_admin_username_get($userId) {
         if ($r->meta_key == 'lab_user_section_cnu') {
             $items['user_section_cnu'] = $r->meta_value;
         }
+        if ($r->meta_key == 'lab_user_thesis_title') {
+            $items['user_thesis_title'] = $r->meta_value;
+        }
+        if ($r->meta_key == 'lab_user_hdr_title') {
+            $items['user_hdr_title'] = $r->meta_value;
+        }
+        if ($r->meta_key == 'user_phd_school') {
+            $items['user_phd_school'] = $r->meta_value;
+        }
     }
     
     return $items;

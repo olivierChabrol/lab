@@ -281,13 +281,16 @@ function lab_admin_update_user_metadata()
   $phone            = $_POST["phone"];
   $userSectionCn    = $_POST["sectionCn"];
   $userSectionCnu   = $_POST["sectionCnu"];
-  $email   = $_POST["email"];
-  $url   = $_POST["url"];
-  lab_usermeta_update($userId, $dateLeft, $userFunction, $userLocation, $officeNumber, $officeFloor, $userEmployer, $phone, $userFunding, $firstname, $lastname, $userSectionCn, $userSectionCnu, $email, $url);
-  wp_send_json_success("");
+  $userThesisTitle  = $_POST["thesisTitle"];
+  $userHdrTitle     = $_POST["hdrTitle"];
+  $userPhdSchool    = $_POST["phdSchool"];
+  $email            = $_POST["email"];
+  $url              = $_POST["url"];
+  lab_usermeta_update($userId, $dateLeft, $userFunction, $userLocation, $officeNumber, $officeFloor, $userEmployer, $phone, $userFunding, $firstname, $lastname, $userSectionCn, $userSectionCnu, $email, $url, $userThesisTitle, $userHdrTitle, $userPhdSchool);
+  wp_send_json_success($userThesisTitle);
 }
 
-function lab_usermeta_update($userId, $left, $userFunction, $userLocation, $officeNumber, $officeFloor, $userEmployer, $user_phone, $userFunding, $firstname, $lastname, $userSectionCn, $userSectionCnu, $email = null, $url = null)
+function lab_usermeta_update($userId, $left, $userFunction, $userLocation, $officeNumber, $officeFloor, $userEmployer, $user_phone, $userFunding, $firstname, $lastname, $userSectionCn, $userSectionCnu, $email = null, $url = null, $userThesisTitle = null, $userHdrTitle = null, $userPhdSchool = null)
 {
   global $wpdb;
   $sql = "";
@@ -312,6 +315,9 @@ function lab_usermeta_update($userId, $left, $userFunction, $userLocation, $offi
   $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$lastname),array("user_id"=>$userId, "meta_key"=>"last_name"));
   $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$userSectionCn),array("user_id"=>$userId, "meta_key"=>"lab_user_section_cn"));
   $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$userSectionCnu),array("user_id"=>$userId, "meta_key"=>"lab_user_section_cnu"));
+  $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$userThesisTitle),array("user_id"=>$userId, "meta_key"=>"lab_user_thesis_title"));
+  $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$userHdrTitle),array("user_id"=>$userId, "meta_key"=>"lab_user_hdr_title"));
+  $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$userPhdSchool),array("user_id"=>$userId, "meta_key"=>"lab_user_phd_school"));
   if ($email != null)
   {
     $wpdb->update($wpdb->prefix."users", array("user_email"=>$email),array("ID"=>$userId));

@@ -207,7 +207,24 @@ jQuery(function($){
   });
 
   $("#lab_user_button_save_left").click(function() {
-    saveUserLeft($("#lab_user_left_date").val(), $("#lab_user_left").is(":checked"), $("#lab_user_location").val(), $("#lab_user_function").val(), $("#lab_user_office_number").val(), $("#lab_user_office_floor").val(), $("#lab_user_employer").val(), $("#lab_user_funding").val(), $("#lab_user_firstname").val(), $("#lab_user_lastname").val(), $("#lab_user_section_cn").val(), $("#lab_user_section_cnu").val(), $("#lab_user_phone").val(), $("#lab_user_email").val(), $("#lab_user_url").val());
+    saveUserLeft($("#lab_user_left_date").val(), 
+                $("#lab_user_left").is(":checked"), 
+                $("#lab_user_location").val(), 
+                $("#lab_user_function").val(), 
+                $("#lab_user_office_number").val(), 
+                $("#lab_user_office_floor").val(), 
+                $("#lab_user_employer").val(), 
+                $("#lab_user_funding").val(), 
+                $("#lab_user_firstname").val(), 
+                $("#lab_user_lastname").val(), 
+                $("#lab_user_section_cn").val(), 
+                $("#lab_user_section_cnu").val(), 
+                $("#lab_user_phone").val(), 
+                $("#lab_user_email").val(), 
+                $("#lab_user_url").val(), 
+                $("#lab_user_thesis_title").val(), 
+                $("#lab_user_hdr_title").val(), 
+                $("#lab_user_phd_school").val());
   });
 
   $("#lab_user_button_delete").click(function() {
@@ -924,7 +941,7 @@ function saveUserMetaData(userId, date, isChecked, location, userFunction) {
 
 }
 
-function saveUserLeft(date, isChecked, location, userFunction, userOfficeNumber, userOfficeFloor, employer, funding, firstname, lastname, sectionCn, sectionCnu, phone, email, url) {
+function saveUserLeft(date, isChecked, location, userFunction, userOfficeNumber, userOfficeFloor, employer, funding, firstname, lastname, sectionCn, sectionCnu, phone, email, url, thesisTitle, hdrTitle, phdSchool) {
   var c = isChecked?date:null;
   var data = {
                'action' : 'update_user_metadata',
@@ -942,7 +959,10 @@ function saveUserLeft(date, isChecked, location, userFunction, userOfficeNumber,
                'phone' : phone,
                'sectionCnu' : sectionCnu,
                'email' : email,
-               'url' : url
+               'url' : url,
+               'thesisTitle' : thesisTitle,
+               'hdrTitle' : hdrTitle,
+               'phdSchool' : phdSchool,
   };
   callAjax(data, "User saved", resetUserTabFields, "Failed to save user", null);
 }
@@ -967,6 +987,9 @@ function resetUserTabFields()
   jQuery("#lab_user_section_cnu").val("");
   jQuery("#lab_user_email").val("");
   jQuery("#lab_user_url").val("");
+  jQuery("#lab_user_thesis_title").val("");
+  jQuery("#lab_user_hdr_title").val("");
+  jQuery("#lab_user_phd_school").val("");
   document.forms['lab_admin_historic'].reset();
   jQuery("#lab_admin_historic").hide();
 }
@@ -998,10 +1021,23 @@ function loadUserName(response) {
 function loadUserMetaData(response) {
   if(response.data) {
     resetUserMetaFields();
-    jQuery("#lab_user_firstname").val(response.data["first_name"]["value"]);
-    jQuery("#lab_user_lastname").val(response.data["last_name"]["value"]);
-    jQuery("#lab_user_email").val(response.data["user_email"]);
-    jQuery("#lab_user_url").val(response.data["user_url"]);
+
+    setField("#lab_user_firstname", response.data["first_name"]);
+    setField("#lab_user_lastname", response.data["last_name"]);
+    setField("#lab_user_email", response.data["user_email"]);
+    setField("#lab_user_url", response.data["user_url"]);
+
+    setField("#lab_user_thesis_title", response.data["user_thesis_title"]);
+    setField("#lab_user_hdr_title", response.data["user_hdr_title"]);
+    setField("#lab_user_phd_school", response.data["user_phd_school"]);
+    setField("#lab_user_function", response.data["user_function"]);
+    setField("#lab_user_funding", response.data["user_funding"]);
+    setField("#lab_user_employer", response.data["user_employer"]);
+    setField("#lab_user_location", response.data["user_location"]);
+    setField("#lab_user_office_floor", response.data["user_office_floor"]);
+    setField("#lab_user_office_number", response.data["user_office_number"]);
+    setField("#lab_user_phone", response.data["user_phone"]);
+
     if (response.data["lab_user_left"]) {
       jQuery("#lab_usermeta_id").val(response.data["lab_user_left"]["id"]);
     }
@@ -1015,30 +1051,6 @@ function loadUserMetaData(response) {
       jQuery("#lab_user_left_date").prop("disabled", true);
       jQuery("#lab_user_left_date").val("");
     }
-
-    if (response.data["user_function"] != null) {
-      jQuery("#lab_user_function").val(response.data["user_function"]);
-    }
-    if (response.data["user_funding"] != null) {
-      jQuery("#lab_user_funding").val(response.data["user_funding"]);
-    }
-    if (response.data["user_employer"] != null) {
-      jQuery("#lab_user_employer").val(response.data["user_employer"]);
-    }
-    if (response.data["user_location"] != null) {
-      jQuery("#lab_user_location").val(response.data["user_location"]);
-    }
-    if (response.data["user_office_floor"] != null) {
-      jQuery("#lab_user_office_floor").val(response.data["user_office_floor"]);
-    }
-    if (response.data["user_office_number"] != null) {
-      jQuery("#lab_user_office_number").val(response.data["user_office_number"]);
-    }
-    if (response.data["user_phone"] != null) {
-      jQuery("#lab_user_phone").val(response.data["user_phone"]);
-    }
-    setField("#lab_user_firstname", response.data["first_name"]);
-    setField("#lab_user_lastname", response.data["last_name"]);
   }
   else
   {

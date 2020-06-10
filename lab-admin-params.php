@@ -60,6 +60,11 @@ class AdminParams {
     {
         return AdminParams::get_params_fromId(AdminParams::PARAMS_USER_SECTION_CNU);
     }
+    public static function lab_admin_get_params_userPhdSchool()
+    {
+        return AdminParams::get_params_fromId(AdminParams::PARAMS_USER_ECOLE_DOCTORALE);
+    }
+
     public static function get_param($id) {
         global $wpdb;
         $sql = "SELECT value FROM `".$wpdb->prefix."lab_params` WHERE id=".$id." ORDER BY value;";
@@ -114,5 +119,8 @@ function lab_admin_param_is_ldap_enable() {
 
 function lab_admin_get_params_outgoingMobility() {
     return AdminParams::get_params_fromId(AdminParams::PARAMS_OUTGOING_MOBILITY);
+}
+function lab_admin_get_params_userPhdSchool() {
+    return AdminParams::lab_admin_get_params_userPhdSchool();
 }
 ?>
