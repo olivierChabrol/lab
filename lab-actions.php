@@ -80,7 +80,8 @@ if (is_admin()) {
 
     add_action('wp_ajax_edit_group', 'lab_group_editGroup');
     //Action for settings
-    add_action( 'wp_ajax_add_new_metakey', 'lab_ajax_userMetaData_new_key');
+    //add_action( 'wp_ajax_add_new_metakeys', 'lab_ajax_userMetaData_complete_keys');
+    add_action( 'wp_ajax_add_new_metakeys', 'lab_ajax_userMetaData_complete_keys');
     add_action( 'wp_ajax_complete_new_metakeys', 'lab_ajax_userMetaData_complete_keys');
     add_action( 'wp_ajax_list_metakeys', 'lab_ajax_userMetaData_list_keys');
     add_action( 'wp_ajax_delete_metakey', 'lab_ajax_userMetaData_delete_key');
