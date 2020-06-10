@@ -135,6 +135,26 @@ function lab_admin_usermeta_update_phone()
 {
   wp_send_json_success(lab_usermeta_copy_existing_phone());
 }
+
+function lab_admin_correct_user_metadatas()
+{
+  $userId = $_POST['id'];
+  if (isset($userId) && !empty($userId))
+  {
+    wp_send_json_success(correct_missing_usermeta_data($userId));
+  }
+  else
+  {
+    
+  }
+}
+
+function lab_admin_check_missing_usermeta_data()
+{
+  $userId = $_POST['id'];
+  wp_send_json_success(check_missing_usermeta_data($userId));
+}
+
 /********************************************************************************************
  * EVENT
  ********************************************************************************************/

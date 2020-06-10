@@ -271,6 +271,7 @@ function lab_ldap_new_WPUser($lastname,$firstname,$email,$password,$uid) {
       'display_name'=>$firstname." ".$lastname,
       'role'=>'subscriber');
     $user_id = wp_insert_user($userData);
+    lab_admin_add_new_user_metadata($user_id);
     $sql = "INSERT INTO ".$wpdb->prefix."usermeta 
         (`user_id`, `meta_key`, `meta_value`) VALUES
         ($user_id, 'mo_ldap_user_dn', 'uid=$uid,ou=accounts,".$ldap->getBase()."');";

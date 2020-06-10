@@ -16,7 +16,7 @@ function lab_admin_tab_user() {
           <label for="lab_user_name"><?php esc_html_e('Nom de l\'utilisateur','lab') ?></label>
         </th>
         <td>
-          <input type="text"   id="lab_user_search"    value="" /><br>
+          <input type="text"   id="lab_user_search"    value="" /><span id="lab_user_id"></span><br>
           <input type="hidden" id="lab_user_search_id" value="" /><br>
         </td>
       </tr>
@@ -214,6 +214,15 @@ function lab_admin_tab_user() {
             <input type="reset" value="<?php esc_html_e('Annuler','lab')?>"/>
           </div>
         </td>
+      </tr>
+      <tr>
+          <td scope="row" colspan="2">
+              <div id="missingUserMetaData">
+                  <h4>Missing Fields :</h4>
+                  <div id="missingUserMetaDataContent"></div>
+                  <a href="#" class="page-title-action" id="lab_user_button_correct_missing_usermetaDataFields"><?php esc_html_e('Correct missing metadata','lab') ?></a>
+              </div>
+          </td>
       </tr>
     </table>
   </form>

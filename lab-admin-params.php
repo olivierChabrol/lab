@@ -18,6 +18,7 @@ class AdminParams {
     public const PARAMS_USER_SECTION_CN = 16;
     public const PARAMS_USER_SECTION_CNU = 17;
     public const PARAMS_OUTGOING_MOBILITY = 18;
+    public const PARAMS_KEY_STATE = 19;
     
 
     public static function get_params_fromId($id) {

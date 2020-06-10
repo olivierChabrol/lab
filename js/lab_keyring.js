@@ -167,7 +167,7 @@ jQuery(function($){
       }
       }
       regex=/\"/g;
-      for (i of ['type','number','office','brand','site','commentary']) {
+      for (i of ['type','number','office','brand','site','state','commentary']) {
       fields[i] = $("#lab_keyring_edit_"+i).val().replace(regex,"”").replace(/\'/g,"’");
       }
       data = {

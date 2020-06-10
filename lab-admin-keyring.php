@@ -78,6 +78,7 @@
           <th scope="col"><?php esc_html_e('Bureau','lab'); ?></th>
           <th scope="col"><?php esc_html_e('Marque','lab'); ?></th>
           <th scope="col"><?php esc_html_e('Site','lab'); ?></th>
+          <th scope="col"><?php esc_html_e('State','lab'); ?></th>
           <th scope="col"><?php esc_html_e('Commentaire','lab'); ?></th>
           <th scope="col" class="lab_keyring_icon"><?php esc_html_e('Dispo','lab'); ?></th>
           <th scope="col" class="lab_keyring_icon"><?php esc_html_e('Actions','lab'); ?></th>
@@ -120,6 +121,18 @@
                 $output ="";
                 $params = new AdminParams;
                 foreach ( $params->get_params_fromId($params::PARAMS_SITE_ID) as $r ) {
+                  $output .= "<option value=".$r->id.">".$r->value."</option>";
+                }
+                echo $output;
+              ?>
+            </select>
+          </td>
+          <td scope="col">
+            <select id="lab_keyring_edit_state">
+              <?php //Récupère la liste des types de clés existants
+                $output ="";
+                $params = new AdminParams;
+                foreach ( $params->get_params_fromId($params::PARAMS_KEY_STATE) as $r ) {
                   $output .= "<option value=".$r->id.">".$r->value."</option>";
                 }
                 echo $output;
@@ -349,11 +362,13 @@
     $adminParams = new AdminParams;
     foreach ($list as $element) {
       $output .= '<tr>';
-      foreach (['id','type','number', 'office','brand','site','commentary'] as $field) {
+      foreach (['id','type','number', 'office','brand','site', 'state','commentary'] as $field) {
         if ($field == "site") {  
-          $output .= '<td scope="col">'.$adminParams->get_param($element->site).'</td>';
+          $output .= '<td scope="col">'.AdminParams::get_param($element->site).'</td>';
         } elseif ( $field =='type' ) {
-          $output .= '<td scope="col">'.$adminParams->get_param($element->type).'</td>';
+          $output .= '<td scope="col">'.AdminParams::get_param($element->type).'</td>';
+        } elseif ( $field =='state' ) {
+          $output .= '<td scope="col">'.AdminParams::get_param($element->state).'</td>';
         } else {
           $output.='<td scope="col">'.$element->$field.'</td>';
         }

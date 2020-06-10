@@ -678,6 +678,46 @@ function lab_admin_add_new_user_metadata($userId)
     lab_admin_createSocial($userId);
 }
 
+function correct_missing_usermeta_data($userId)
+{
+    $missingFields = check_missing_usermeta_data($userId);
+    
+    foreach($missingFields as $field)
+    {
+        if ($field == "hal_id" || $field == "hal_name" || $field == "user_left" || $field == "user_slug" || $field == "user_position")
+        {
+            lab_userMetaData_save_key($userId, $field, null);
+            if ($field == "hal_name")
+            {
+                lab_admin_usermeta_fill_hal_name($userId);
+            }
+            if ($field == "user_slug")
+            {
+                lab_admin_usermeta_fill_user_slug($userId);
+            }
+        }
+        else
+        {
+            lab_userMetaData_save_key($userId, $field, "");
+        }
+    }
+
+}
+
+function check_missing_usermeta_data($userId)
+{
+    $labFields = array("hal_id", "hal_name", "profile_bg_color", "user_employer", "user_function", "user_funding", "user_left", "user_location", "user_office_floor", "user_office_number", "user_phone", "user_section_cn", "user_section_cnu", "user_slug", "user_position");
+    $missings = array();
+    foreach($labFields as $field)
+    {
+        if (userMetaData_exist_metakey_for_user($field, $userId) === false)
+        {
+            $missings[] = $field;
+        }
+    }
+    return $missings;
+}
+
 function lab_admin_complete_missing_user_metadata()
 {
 
@@ -908,6 +948,7 @@ function lab_keyring_createTable_keys() {
         `site` text,
         `commentary` text,
         `available` boolean NOT NULL DEFAULT TRUE,
+        `state` int NOT NULL COMMENT 'etat de la clef, perdue, cassée, volée'
         PRIMARY KEY(`id`)
         ) ENGINE=INNODB;";
     $wpdb->get_results($sql);
@@ -1061,7 +1102,15 @@ function lab_keyring_end_loan($loan_id,$end_date, $key_id) {
 }
 function lab_keyring_find_oldLoans($field, $id) {
     global $wpdb;
-    $sql = "SELECT * from `".$wpdb->prefix."lab_key_loans` WHERE `".$field."`=".$id." ORDER BY `start_date` DESC";
+    $sql = "";
+    if(empty($id)) 
+    {
+        $sql = "SELECT * from `".$wpdb->prefix."lab_key_loans` ORDER BY `start_date` DESC";
+    }
+    else
+    {
+        $sql = "SELECT * from `".$wpdb->prefix."lab_key_loans` WHERE `".$field."`=".$id." ORDER BY `start_date` DESC";
+    }
     return $wpdb->get_results($sql);
 }
 function lab_keyring_get_loan($id) {
@@ -1185,6 +1234,13 @@ function userMetaData_delete_metakeys($metadataKey) {
     return $wpdb->delete($wpdb->prefix.'usermeta', array("meta_key"=>$metadataKey));
 }
 
+/**
+ * Return usermeta data id, false if this usermetadata does not exist
+ *
+ * @param [type] $metadataKey
+ * @param [type] $userId
+ * @return Return usermeta data id, false if this usermetadata does not exist
+ */
 function userMetaData_exist_metakey_for_user($metadataKey, $userId) {
     if (substr($metadataKey, 0, strlen(LAB_META_PREFIX)) !== LAB_META_PREFIX) {
         $metadataKey = LAB_META_PREFIX.$metadataKey;

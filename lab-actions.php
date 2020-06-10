@@ -21,6 +21,8 @@ if (is_admin()) {
     add_action( 'wp_ajax_nopriv_search_username2', 'lab_admin_search_username2' );
     add_action( 'wp_ajax_search_username2', 'lab_admin_search_username2' );
     add_action( 'wp_ajax_search_user_metadata', 'lab_admin_search_user_metadata' );
+    add_action( 'wp_ajax_missing_user_metadata', 'lab_admin_check_missing_usermeta_data' );
+    add_action( 'wp_ajax_correct_user_metadatas', 'lab_admin_correct_user_metadatas' );
     add_action( 'wp_ajax_update_user_metadata', 'lab_admin_update_user_metadata' );
     add_action( 'wp_ajax_update_user_metadata_db', 'lab_admin_update_user_metadata_db' );
     add_action( 'wp_ajax_search_event_category', 'lab_admin_get_event_category' );

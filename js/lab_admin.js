@@ -3,13 +3,18 @@ const { __, _x, _n, sprintf } = wp.i18n;
 
 jQuery(function($){
   var searchRequest;
-  loadExistingKeys();
+  //loadExistingKeys();
 
 
   if ($("#lab_ldapListBody")!=null && $("#lab_ldapListBody").length) {
     console.log("DANS lab_ldapListBody");
     LABLoadLDAPList();
   }
+
+  $("#lab_user_button_correct_missing_usermetaDataFields").click(function () { 
+    correctUserMetadaField($("#lab_user_search_id").val());
+  });
+
 
   if(!$("#lab_user_left").is(':checked')) {
     $("#lab_user_left_date").prop("disabled", true);
@@ -132,10 +137,13 @@ jQuery(function($){
       var value = ui.item.value;
       event.preventDefault();
       $("#lab_user_search").val(label);
+
+      $("#lab_user_id").html(value);
       $("#lab_user_search_id").val(value);
       callbUser(value, loadUserMetaData);
       loadUserHistory();
       loadUserRoles();
+      loadMissingMetaData(value);
       return false;
     }
   });
@@ -326,11 +334,11 @@ jQuery(function($){
   });
 
   $("#lab_tab_param_save").click(function(){
-    saveParam(null, jQuery("#wp_lab_param_type").val(), jQuery("#wp_lab_param_value").val(), jQuery("#wp_lab_param_color").val(), load_params_type_after_new_param);
+    saveParam(null, jQuery("#wp_lab_param_type").val(), jQuery("#wp_lab_param_value").val(), jQuery("#wp_lab_param_color").val(), jQuery("#wp_lab_param_shift_param").val(), load_params_type_after_new_param);
   });
 
   $("#lab_tab_param_save_edit").click(function(){
-    saveParam(jQuery("#wp_lab_param_id").val(), jQuery("#wp_lab_param_type_edit").val(), jQuery("#lab_param_value_search").val(), jQuery("#wp_lab_param_color_edit").val(), resetParamEditFields);
+    saveParam(jQuery("#wp_lab_param_id").val(), jQuery("#wp_lab_param_type_edit").val(), jQuery("#lab_param_value_search").val(), jQuery("#wp_lab_param_shift_param").val(), jQuery("#wp_lab_param_color_edit").val(), resetParamEditFields);
   });
 
   $("#lab_tab_param_delete_edit").click(function(){
@@ -811,12 +819,13 @@ function load_params_type_after_new_param() {
   load_params_type('#wp_lab_param_type');
 }
 
-function saveParam(paramId, paramType, paramValue, paramColor, callAfterComplete) {
+function saveParam(paramId, paramType, paramValue, paramColor, paramshift, callAfterComplete) {
   var data = {
     'action' : 'save_param',
     'type' : paramType,
     'value' : paramValue,
     'color' : paramColor,
+    'shift' : paramshift,
   };
   if (paramId != null) {
     data = {
@@ -825,6 +834,7 @@ function saveParam(paramId, paramType, paramValue, paramColor, callAfterComplete
       'type' : paramType,
       'value' : paramValue,
       'color' : paramColor,
+      'shift' : paramshift,
     };
   }
   callAjax(data, "Param " + paramValue + " successfully created", callAfterComplete, null, null);
@@ -937,6 +947,7 @@ function saveUserLeft(date, isChecked, location, userFunction, userOfficeNumber,
 function resetUserTabFields()
 {
   jQuery("#lab_user_search").val("");
+  jQuery("#lab_user_id").html("");
   jQuery("#lab_user_search_id").val("");
   jQuery("#lab_user_left").prop("checked", false);
   jQuery("#lab_user_left_date").val("");
@@ -985,7 +996,9 @@ function loadUserMetaData(response) {
     resetUserMetaFields();
     jQuery("#lab_user_firstname").val(response.data["first_name"]["value"]);
     jQuery("#lab_user_lastname").val(response.data["last_name"]["value"]);
-    jQuery("#lab_usermeta_id").val(response.data["lab_user_left"]["id"]);
+    if (response.data["lab_user_left"]) {
+      jQuery("#lab_usermeta_id").val(response.data["lab_user_left"]["id"]);
+    }
     if (response.data["lab_user_left"]["value"] != null) {
       jQuery("#lab_user_left").prop("checked", true);
       jQuery("#lab_user_left_date").prop("disabled", false);
@@ -1432,6 +1445,31 @@ function lab_addHistoric(update,entry_id=null) {
     });
   });
 }
+
+function loadMissingMetaData(userId)
+{
+  callAjax({'action':'missing_user_metadata','id':userId}, null, displayMissingMetaData, null, hideMissingMetaData);
+}
+
+function correctUserMetadaField(userId)
+{
+  callAjax({'action':'correct_user_metadatas','id':userId}, "Data corrected", null, "Failed to correct metadata fields", null);
+}
+
+function displayMissingMetaData(data)
+{
+  jQuery('missingUserMetaDataContent').empty();
+  var list = jQuery('<ul/>').appendTo('#missingUserMetaDataContent');
+  for (var i = 0; i < data.length; i++) {
+    // New <li> elements are created here and added to the <ul> element.
+    list.append('<li>'+data[i]+'</li>');
+  }
+}
+function hideMissingMetaData(data)
+{
+  $("#missingUserMetaData").hide();
+}
+
 function loadUserRoles() {
   jQuery(function ($) {
     $.post(LAB.ajaxurl,{'action':'lab_user_getRoles','user_id':$("#lab_user_search_id").val()},function (response) {
