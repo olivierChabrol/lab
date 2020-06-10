@@ -190,7 +190,7 @@ function setDay(date, start, end)
 function stringHourToMinutes(str)
 {
     let temps = str.split(':');
-    return ((temps[0] * 60) + temps[1]);
+    return ((parseInt(temps[0]) * 60) + parseInt(temps[1]));
 }
 
 function checkPresenceInputs(dateElm, openElm, closeElm) {
@@ -210,10 +210,14 @@ function checkPresenceInputs(dateElm, openElm, closeElm) {
     let debut = stringHourToMinutes(valueHourOpen);
     let fin   = stringHourToMinutes(valueHourClose);
 
-    console.log("pour la date du " + valueDate + " commençant à " + valueHourOpen + " et finissant à " + valueHourClose);
+    let checkHours = debut < fin;
+    console.log(" DEB : " + debut);
+    console.log(" FIN : " + fin);
+    console.log("pour la date du " + valueDate + " commençant à " + valueHourOpen + " ("+debut+") et finissant à " + valueHourClose + " ("+fin+") checkHours : " + checkHours);
    
+    
+
     let checkDate = Date.parse(valueDate);
-    let checkHours = fin > debut;
     let retour = true;
 
     if (!checkDate)
