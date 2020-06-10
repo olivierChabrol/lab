@@ -29,7 +29,7 @@ We reuse code from :
 ### Profile
 [lab-profile]
 ### Event
-[lab-old-event {slug} {year}] Display past events for a given year (optional)
+[lab-old-event {slug=slugname} {year=2020}] Display past events for a given year (optional)
 #### Use
 To search a category OR another category :
 * slug='categoryName1, categoryName2...'
