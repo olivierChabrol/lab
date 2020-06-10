@@ -4,12 +4,14 @@
 
 function lab_admin_username_get($userId) {
     global $wpdb;
-    $results = $wpdb->get_results( "SELECT * FROM `".$wpdb->prefix."usermeta` WHERE (meta_key = 'first_name' or meta_key='last_name' or meta_key LIKE 'lab_%') and user_id=".$userId  );
+    $results = $wpdb->get_results( "SELECT um.*, u.user_email, u.user_url FROM `".$wpdb->prefix."usermeta` AS um JOIN `".$wpdb->prefix."users` AS u ON u.id=um.user_id WHERE (um.meta_key = 'first_name' or um.meta_key='last_name' or um.meta_key LIKE 'lab_%') and um.user_id=".$userId  );
     $items = array();
     $items["id"] = $userId;
 
     foreach ( $results as $r )
     {
+        $items['user_email'] = $r->user_email;
+        $items['user_url']   = $r->user_url;
         if ($r->meta_key == 'first_name')
             $items['first_name'] = $r->meta_value;
         if ($r->meta_key == 'last_name')
@@ -425,7 +427,11 @@ function lab_admin_initTable_param() {
             (13, 1, 'LDAP PASSWORD', NULL),
             (14, 1, 'LDAP TLS', NULL),
             (15, 1, 'LDAP ENABLE', NULL),
-            (16, 1, 'OUTGOING MOBILITY', NULL),
+            (16, 1, 'USER SECTION CN', NULL),
+            (17, 1, 'USER SECTION CNU', NULL),
+            (18, 1, 'OUTGOING MOBILITY', NULL),
+            (19, 1, 'KEY STATE', NULL),
+            (20, 1, 'ECOLE DOCTORALE', NULL),
             (NULL, 2, 'Equipe', NULL),
             (NULL, 2, 'Groupe', NULL),
             (NULL, 3, 'Clé', NULL),
@@ -436,7 +442,11 @@ function lab_admin_initTable_param() {
             (NULL, 6, 'Séminaire', NULL),
             (NULL, 7, 'CNRS', NULL),
             (NULL, 7, 'AMU', NULL),
-            (NULL, 7, 'ECM', NULL);";
+            (NULL, 7, 'ECM', NULL),
+            (NULL, 15, 'false', NULL),
+            (NULL, 19, 'OK', NULL),
+            (NULL, 19, 'LOST', NULL),
+            (NULL, 19, 'BROKEN', NULL);";
     $wpdb->get_results($sql);
 }
 
@@ -651,6 +661,9 @@ function lab_admin_initTable_usermeta()
     lab_userMetaData_create_metaKeys("user_section_cnu", "");
     lab_userMetaData_create_metaKeys("user_slug", null);
     lab_userMetaData_create_metaKeys("user_position", null);
+    lab_userMetaData_create_metaKeys("user_thesis_title", null);
+    lab_userMetaData_create_metaKeys("user_hdr_title", null);
+    lab_userMetaData_create_metaKeys("user_phd_school", null);
     lab_admin_usermeta_fill_hal_name();
     lab_admin_usermeta_fill_user_slug();
     lab_admin_createSocial();
@@ -673,6 +686,9 @@ function lab_admin_add_new_user_metadata($userId)
     lab_userMetaData_save_key($userId, "user_section_cnu", "");
     lab_userMetaData_save_key($userId, "user_slug", null);
     lab_userMetaData_save_key($userId, "user_position", null);
+    lab_userMetaData_save_key($userId, "user_thesis_title", null);
+    lab_userMetaData_save_key($userId, "user_hdr_title", null);
+    lab_userMetaData_save_key($userId, "user_phd_school", null);
     lab_admin_usermeta_fill_hal_name($userId);
     lab_admin_usermeta_fill_user_slug($userId);
     lab_admin_createSocial($userId);
@@ -681,7 +697,7 @@ function lab_admin_add_new_user_metadata($userId)
 function correct_missing_usermeta_data($userId)
 {
     $missingFields = check_missing_usermeta_data($userId);
-    
+
     foreach($missingFields as $field)
     {
         if ($field == "hal_id" || $field == "hal_name" || $field == "user_left" || $field == "user_slug" || $field == "user_position")
@@ -706,7 +722,7 @@ function correct_missing_usermeta_data($userId)
 
 function check_missing_usermeta_data($userId)
 {
-    $labFields = array("hal_id", "hal_name", "profile_bg_color", "user_employer", "user_function", "user_funding", "user_left", "user_location", "user_office_floor", "user_office_number", "user_phone", "user_section_cn", "user_section_cnu", "user_slug", "user_position");
+    $labFields = array("hal_id", "hal_name", "profile_bg_color", "user_employer", "user_function", "user_funding", "user_left", "user_location", "user_office_floor", "user_office_number", "user_phone", "user_section_cn", "user_section_cnu", "user_slug", "user_position", "user_thesis_title", "user_hdr_title", "user_phd_school");
     $missings = array();
     foreach($labFields as $field)
     {

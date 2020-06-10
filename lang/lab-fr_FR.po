@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-26 16:27+0200\n"
-"PO-Revision-Date: 2020-05-26 16:28+0200\n"
+"POT-Creation-Date: 2020-06-10 15:58+0200\n"
+"PO-Revision-Date: 2020-06-10 16:04+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en\n"
@@ -132,7 +132,7 @@ msgid "New Parameters"
 msgstr "Nouveau Paramètre"
 
 #: admin/view/lab-admin-tab-params.php:17
-#: admin/view/lab-admin-tab-params.php:53
+#: admin/view/lab-admin-tab-params.php:64
 msgid "Param type"
 msgstr "Type de paramètre"
 
@@ -145,191 +145,236 @@ msgid "Param value"
 msgstr "Valeur du paramètre"
 
 #: admin/view/lab-admin-tab-params.php:32
-#: admin/view/lab-admin-tab-params.php:57
+#: admin/view/lab-admin-tab-params.php:68
 msgid "Param color"
 msgstr "Couleur du paramètre"
 
 #: admin/view/lab-admin-tab-params.php:36
-#: admin/view/lab-admin-tab-params.php:61
+#: admin/view/lab-admin-tab-params.php:72
 msgid "Affect color to param"
 msgstr "Changer la couleur du param"
 
-#: admin/view/lab-admin-tab-params.php:41
-#: admin/view/lab-admin-tab-params.php:67
+#: admin/view/lab-admin-tab-params.php:47
+msgid "Shift param"
+msgstr "Décalé paramètre"
+
+#: admin/view/lab-admin-tab-params.php:52
+#: admin/view/lab-admin-tab-params.php:78
 msgid "Save param"
 msgstr "Sauver Paramètre"
 
-#: admin/view/lab-admin-tab-params.php:46
+#: admin/view/lab-admin-tab-params.php:57
 msgid "Edit parameters"
 msgstr "Modifier Paramètre"
 
-#: admin/view/lab-admin-tab-params.php:49
+#: admin/view/lab-admin-tab-params.php:60
 msgid "Param title"
 msgstr "Nom du paramètre"
 
-#: admin/view/lab-admin-tab-params.php:68
+#: admin/view/lab-admin-tab-params.php:79
 msgid "Delete param"
 msgstr "Effacer Paramètre"
 
-#: admin/view/lab-admin-tab-params.php:76
+#: admin/view/lab-admin-tab-params.php:87
 msgid "delete this param ?"
 msgstr "Effacer Paramètre ?"
 
-#: admin/view/lab-admin-tab-params.php:80
-#: admin/view/lab-admin-tab-settings.php:70 lab-admin-keyring.php:36
-#: lab-admin-keyring.php:45 lab-admin-keyring.php:189
-#: shortcode/lab-shortcode-present.php:431
+#: admin/view/lab-admin-tab-params.php:91
+#: admin/view/lab-admin-tab-settings.php:68
+#: admin/view/lab-admin-tab-users.php:214
+#: admin/view/lab-admin-tab-users.php:339 lab-admin-keyring.php:36
+#: lab-admin-keyring.php:45 lab-admin-keyring.php:206
+#: shortcode/lab-shortcode-present.php:466
 msgid "Annuler"
 msgstr "Annuler"
 
-#: admin/view/lab-admin-tab-params.php:81
-#: admin/view/lab-admin-tab-settings.php:71 lab-admin-keyring.php:37
-#: lab-admin-keyring.php:46 lab-admin-keyring.php:190
+#: admin/view/lab-admin-tab-params.php:92
+#: admin/view/lab-admin-tab-settings.php:69
+#: admin/view/lab-admin-tab-users.php:340 lab-admin-keyring.php:37
+#: lab-admin-keyring.php:46 lab-admin-keyring.php:207
 msgid "Confirmer"
 msgstr "Confirmer"
 
-#: admin/view/lab-admin-tab-settings.php:58 lab-admin-keyring.php:18
-msgid "Créer la table Keys"
-msgstr "Créer la table Keys"
-
-#: admin/view/lab-admin-tab-settings.php:59 lab-admin-keyring.php:22
-msgid "Créer la table Loans"
-msgstr "Créer la table Keys"
-
-#: admin/view/lab-admin-tab-settings.php:61
+#: admin/view/lab-admin-tab-settings.php:58
 msgid "Créer la table presence"
 msgstr "Créer la table Keys"
 
-#: admin/view/lab-admin-tab-settings.php:64
-msgid "Créer la table Invitation"
-msgstr "Créer la table Invitation"
+#: admin/view/lab-admin-tab-settings.php:60
+msgid "Créer la table Invitations"
+msgstr "Créer la table Invitations"
 
-#: admin/view/lab-admin-tab-settings.php:66
+#: admin/view/lab-admin-tab-settings.php:62
+msgid "Créer la table Historic"
+msgstr "Créer la table Historic"
+
+#: admin/view/lab-admin-tab-settings.php:64
 msgid "Reset DB"
 msgstr "Reset DB"
 
-#: admin/view/lab-admin-tab-settings.php:68
+#: admin/view/lab-admin-tab-settings.php:66
 msgid "Reset LAB DB ?"
 msgstr "Reset LAB DB?"
 
-#: admin/view/lab-admin-tab-settings.php:74
-msgid "Add role keyring"
-msgstr "Ajouter le rôle pour keyring"
+#: admin/view/lab-admin-tab-settings.php:72
+msgid "Add LAB roles"
+msgstr "Ajouter les rôles LAB"
 
-#: admin/view/lab-admin-tab-settings.php:77
+#: admin/view/lab-admin-tab-settings.php:75
 msgid "Corriger usermeta fields UM"
 msgstr "Corriger usermeta fields UM"
 
-#: admin/view/lab-admin-tab-settings.php:78
+#: admin/view/lab-admin-tab-settings.php:76
 msgid "Copier les champs phone"
 msgstr "Copier les champs phone"
 
-#: admin/view/lab-admin-tab-settings.php:81
+#: admin/view/lab-admin-tab-settings.php:79
 msgid "Fill HAL name"
 msgstr "Remplir metakey hal_name"
 
-#: admin/view/lab-admin-tab-settings.php:82
+#: admin/view/lab-admin-tab-settings.php:80
 msgid "Fill user slug"
 msgstr "Remplir metakey user slug"
 
-#: admin/view/lab-admin-tab-settings.php:84
+#: admin/view/lab-admin-tab-settings.php:82
 msgid "Empty HAL Table"
 msgstr "Vider la table HAL"
 
-#: admin/view/lab-admin-tab-settings.php:93
+#: admin/view/lab-admin-tab-settings.php:91
 msgid "Add Meta Key"
 msgstr "Ajouter une metakey"
 
-#: admin/view/lab-admin-tab-users.php:20
+#: admin/view/lab-admin-tab-users.php:16
 msgid "Nom de l'utilisateur"
 msgstr "Nom de l'utilisateur"
 
-#: admin/view/lab-admin-tab-users.php:29
+#: admin/view/lab-admin-tab-users.php:25
+msgid "First name"
+msgstr "Prénom"
+
+#: admin/view/lab-admin-tab-users.php:28
+msgid "Last name"
+msgstr "Nom"
+
+#: admin/view/lab-admin-tab-users.php:33
 msgid "User function"
 msgstr "Fonction"
 
-#: admin/view/lab-admin-tab-users.php:37
+#: admin/view/lab-admin-tab-users.php:41
 msgid "Employer"
 msgstr "Employeur"
 
-#: admin/view/lab-admin-tab-users.php:45
+#: admin/view/lab-admin-tab-users.php:49
 msgid "Funding"
 msgstr "Soutien financier"
 
-#: admin/view/lab-admin-tab-users.php:53
+#: admin/view/lab-admin-tab-users.php:57
 msgid "User Location"
 msgstr "Site"
 
-#: admin/view/lab-admin-tab-users.php:61
+#: admin/view/lab-admin-tab-users.php:65
 msgid "User office number"
 msgstr "Numéro de bureau"
 
-#: admin/view/lab-admin-tab-users.php:69
+#: admin/view/lab-admin-tab-users.php:73
 msgid "User office floor"
 msgstr "Etage du bureau"
 
-#: admin/view/lab-admin-tab-users.php:77
+#: admin/view/lab-admin-tab-users.php:81
 msgid "Phone"
 msgstr "Téléphone"
 
-#: admin/view/lab-admin-tab-users.php:85
+#: admin/view/lab-admin-tab-users.php:89
+msgid "Section CN"
+msgstr "Section CN"
+
+#: admin/view/lab-admin-tab-users.php:97
+msgid "Section CNU"
+msgstr "Section CNU"
+
+#: admin/view/lab-admin-tab-users.php:105
 msgid "Parti"
 msgstr "Parti"
 
-#: admin/view/lab-admin-tab-users.php:88
+#: admin/view/lab-admin-tab-users.php:108
 msgid "Date de départ"
 msgstr "Date de départ"
 
-#: admin/view/lab-admin-tab-users.php:94
+#: admin/view/lab-admin-tab-users.php:114
 msgid "Modifier le statut de l'utilisateur"
 msgstr "Modifier le statut de l'utilisateur"
 
-#: admin/view/lab-admin-tab-users.php:100
-#, fuzzy
-#| msgid "Historique des prêts de l'utilisateur"
+#: admin/view/lab-admin-tab-users.php:115
+#: admin/view/lab-admin-tab-users.php:135
+msgid "Delete user"
+msgstr "Effacer"
+
+#: admin/view/lab-admin-tab-users.php:120
+msgid "Affecter des rôles à l'utilisateur"
+msgstr "Affecter des rôles à l'utilisateur"
+
+#: admin/view/lab-admin-tab-users.php:127
+#: admin/view/lab-admin-tab-users.php:212
+msgid "Ajouter"
+msgstr "Add"
+
+#: admin/view/lab-admin-tab-users.php:141
+msgid "Keep user data in our web site ?"
+msgstr "Garder les informations des utilisateurs sur le site web?"
+
+#: admin/view/lab-admin-tab-users.php:151
 msgid "Historique de l'utilisateur"
-msgstr "Historique des prêts de l'utilisateur"
+msgstr "Historique de l'utilisateur"
 
-#: admin/view/lab-admin-tab-users.php:106
-#, fuzzy
-#| msgid "+ Ajouter un suppléant"
+#: admin/view/lab-admin-tab-users.php:157
 msgid "Ajouter une période"
-msgstr "+ Ajouter un suppléant"
+msgstr "Ajouter une période"
 
-#: admin/view/lab-admin-tab-users.php:110 lab-admin-keyring.php:320
+#: admin/view/lab-admin-tab-users.php:161 lab-admin-keyring.php:337
 msgid "Date de début"
 msgstr "Date de début"
 
-#: admin/view/lab-admin-tab-users.php:118 lab-admin-keyring.php:322
+#: admin/view/lab-admin-tab-users.php:169 lab-admin-keyring.php:339
 msgid "Date de fin"
 msgstr "Date de fin"
 
-#: admin/view/lab-admin-tab-users.php:126
-#, fuzzy
+#: admin/view/lab-admin-tab-users.php:177
 msgid "Fonction"
-msgstr "Actions"
+msgstr "Fonction"
 
-#: admin/view/lab-admin-tab-users.php:139
+#: admin/view/lab-admin-tab-users.php:190
+msgid "Établissement"
+msgstr "Établissement"
+
+#: admin/view/lab-admin-tab-users.php:203
 msgid "Hôte"
-msgstr ""
+msgstr "Invitant"
 
-#: admin/view/lab-admin-tab-users.php:149
+#: admin/view/lab-admin-tab-users.php:213 lab-admin-keyring.php:97
+#: lab-admin-keyring.php:145 lab-admin-keyring.php:414
+msgid "Modifier"
+msgstr "Modifier"
+
+#: admin/view/lab-admin-tab-users.php:223
+msgid "Correct missing metadata"
+msgstr "Corriger les metadatas manquantes"
+
+#: admin/view/lab-admin-tab-users.php:232
 msgid "Affecter des utilisateurs à des groupes"
 msgstr "Affecter des utilisateurs à des groupes"
 
-#: admin/view/lab-admin-tab-users.php:151
+#: admin/view/lab-admin-tab-users.php:234
 msgid "Afficher aussi les personnes qui ont déjà un groupe"
 msgstr "Afficher aussi les personnes qui ont déjà un groupe"
 
-#: admin/view/lab-admin-tab-users.php:153
+#: admin/view/lab-admin-tab-users.php:236
 msgid "Afficher aussi les utilisateurs qui ont quitté l'Institut"
 msgstr "Afficher aussi les utilisateurs qui ont quitté l'Institut"
 
-#: admin/view/lab-admin-tab-users.php:162
+#: admin/view/lab-admin-tab-users.php:245
 msgid "Choisissez une ou plusieurs personne(s) à affecter :"
 msgstr "Choisissez une ou plusieurs personne(s) à affecter :"
 
-#: admin/view/lab-admin-tab-users.php:169
+#: admin/view/lab-admin-tab-users.php:252
 msgid ""
 "Choisissez le ou les groupe(s) au(x)quel(s) vous allez affecter des "
 "personnes :"
@@ -337,67 +382,55 @@ msgstr ""
 "Choisissez le ou les groupe(s) au(x)quel(s) vous allez affecter des "
 "personnes :"
 
-#: admin/view/lab-admin-tab-users.php:174
+#: admin/view/lab-admin-tab-users.php:257
 msgid "envoyer"
 msgstr "envoyer"
 
-#: admin/view/lab-admin-tab-users.php:178
+#: admin/view/lab-admin-tab-users.php:262
 msgid "Ajouter un utilisateur dans l'annuaire"
-msgstr ""
+msgstr "Ajouter un utilisateur dans l'annuaire"
 
-#: admin/view/lab-admin-tab-users.php:182
-#, fuzzy
-#| msgid "Nom de l'utilisateur"
+#: admin/view/lab-admin-tab-users.php:266
 msgid "E-Mail d'utilisateur AMU :"
-msgstr "Nom de l'utilisateur"
+msgstr "E-Mail d'utilisateur AMU :"
 
-#: admin/view/lab-admin-tab-users.php:190
-#, fuzzy
-#| msgid "Nom HAL"
+#: admin/view/lab-admin-tab-users.php:274
 msgid "Nom"
-msgstr "Nom HAL"
+msgstr "Nom"
 
-#: admin/view/lab-admin-tab-users.php:198
+#: admin/view/lab-admin-tab-users.php:282
 msgid "Prénom"
-msgstr ""
+msgstr "Prénom"
 
-#: admin/view/lab-admin-tab-users.php:206
+#: admin/view/lab-admin-tab-users.php:290
 msgid "E-Mail"
-msgstr ""
+msgstr "E-Mail"
 
-#: admin/view/lab-admin-tab-users.php:214
+#: admin/view/lab-admin-tab-users.php:298
 msgid "Login (uid)"
-msgstr ""
+msgstr "Login (uid)"
 
-#: admin/view/lab-admin-tab-users.php:222
+#: admin/view/lab-admin-tab-users.php:306
 msgid "Mot de passe"
-msgstr ""
+msgstr "Mot de passe"
 
-#: admin/view/lab-admin-tab-users.php:230
+#: admin/view/lab-admin-tab-users.php:314
 msgid "Organisation"
-msgstr ""
+msgstr "Organisation"
 
-#: admin/view/lab-admin-tab-users.php:238
-#, fuzzy
-#| msgid "Affecter des utilisateurs à des groupes"
+#: admin/view/lab-admin-tab-users.php:322
 msgid "Ajouter l'utilisateur à WordPress"
-msgstr "Affecter des utilisateurs à des groupes"
+msgstr "Ajouter l'utilisateur à WordPress"
 
-#: admin/view/lab-admin-tab-users.php:252
-#, fuzzy
-#| msgid "Rechercher un utilisateur"
-msgid "Supprimer un utilisateur"
-msgstr "Rechercher un utilisateur"
-
-#: admin/view/lab-admin-tab-users.php:256
-msgid "Nom - Prénom - mail :"
-msgstr ""
+#: admin/view/lab-admin-tab-users.php:337
+msgid "Voulez-vous vraiment supprimer cette période ?"
+msgstr "Voulez-vous vraiment supprimer cette période ?"
 
 #: admin/view/lab-admin-tabs.php:23
 msgid "Séminaire"
 msgstr "Séminaire"
 
-#: admin/view/lab-admin-tabs.php:24 lab-admin-keyring.php:244
+#: admin/view/lab-admin-tabs.php:24 lab-admin-keyring.php:261
 msgid "Utilisateur"
 msgstr "Utilisateur"
 
@@ -414,6 +447,10 @@ msgid "Paramètres"
 msgstr "Paramètres"
 
 #: admin/view/lab-admin-tabs.php:28
+msgid "LDAP"
+msgstr "LDAP"
+
+#: admin/view/lab-admin-tabs.php:29
 msgid "Paramètres globaux"
 msgstr "Paramètres globaux"
 
@@ -429,166 +466,174 @@ msgstr "Erreur lors de la création de la table"
 msgid "Erreur lors de la création de la clé"
 msgstr "Erreur lors de la création de la clé"
 
-#: js/lab_keyring.js:34 js/lab_keyring.js:162
+#: js/lab_keyring.js:34 js/lab_keyring.js:163
 msgid "Tous les champs requis doivent être remplis"
 msgstr "Tous les champs requis doivent être remplis"
 
-#: js/lab_keyring.js:89
+#: js/lab_keyring.js:90
 msgid "Impossible de trouver le prêt correspondant à cette clé"
 msgstr "Impossible de trouver le prêt correspondant à cette clé"
 
-#: js/lab_keyring.js:98 js/lab_keyring.js:391
+#: js/lab_keyring.js:99 js/lab_keyring.js:395
 msgid "Impossible de trouver les informations de cette clé"
 msgstr "Impossible de trouver les informations de cette clé"
 
-#: js/lab_keyring.js:112 js/lab_keyring.js:573
+#: js/lab_keyring.js:113 js/lab_keyring.js:577
 msgid "résultat(s)"
 msgstr "résultat(s)"
 
-#: js/lab_keyring.js:115
+#: js/lab_keyring.js:116
 msgid "Aucune clé trouvée. Vous pouvez en créer une ci-dessous"
 msgstr "Aucune clé trouvée. Vous pouvez en créer une ci-dessous"
 
-#: js/lab_keyring.js:162
+#: js/lab_keyring.js:163
 msgid "Erreur lors de la modification de la clé"
 msgstr "Erreur lors de la modification de la clé"
 
-#: js/lab_keyring.js:178
+#: js/lab_keyring.js:180
 msgid "Clé modifiée avec succès"
 msgstr "Clé modifiée avec succès"
 
-#: js/lab_keyring.js:184
+#: js/lab_keyring.js:186
 msgid "Échec de modification de la clé"
 msgstr "Échec de modification de la clé"
 
-#: js/lab_keyring.js:194
+#: js/lab_keyring.js:196
 msgid "Clé supprimée avec succès"
 msgstr "Clé supprimée avec succès"
 
-#: js/lab_keyring.js:198
+#: js/lab_keyring.js:200
 msgid "La clé n'a pas pu être supprimée"
 msgstr "La clé n'a pas pu être supprimée"
 
-#: js/lab_keyring.js:273
+#: js/lab_keyring.js:275
 msgid ""
 "Impossible de créer le prêt : le formulaire n'est pas rempli correctement"
 msgstr ""
 "Impossible de créer le prêt : le formulaire n'est pas rempli correctement"
 
-#: js/lab_keyring.js:395
+#: js/lab_keyring.js:399
 msgid "Impossible de trouver le prêt d'ID"
 msgstr "Impossible de trouver le prêt d'ID"
 
-#: js/lab_keyring.js:414
+#: js/lab_keyring.js:418
 msgid "Clé créée avec succès"
 msgstr "Clé créée avec succès"
 
-#: js/lab_keyring.js:418
+#: js/lab_keyring.js:422
 msgid "Erreur de création de clé"
 msgstr "Erreur de création de clé"
 
-#: js/lab_keyring.js:428
+#: js/lab_keyring.js:432
 msgid "Prêt créé avec succès"
 msgstr "Prêt créé avec succès"
 
-#: js/lab_keyring.js:437
+#: js/lab_keyring.js:441
 msgid "Erreur de création du prêt"
 msgstr "Erreur de création du prêt"
 
-#: js/lab_keyring.js:448
+#: js/lab_keyring.js:452
 msgid "Prêt modifié avec succès"
 msgstr "Prêt modifié avec succès"
 
-#: js/lab_keyring.js:454
+#: js/lab_keyring.js:458
 msgid "Erreur de modification du prêt"
 msgstr "Erreur de modification du prêt"
 
-#: js/lab_keyring.js:466
+#: js/lab_keyring.js:470
 msgid "Prêt terminé avec succès"
 msgstr "Prêt terminé avec succès"
 
-#: js/lab_keyring.js:476
+#: js/lab_keyring.js:480
 msgid "Erreur lors de la tentative de fin du prêt"
 msgstr "Erreur lors de la tentative de fin du prêt"
 
-#: js/lab_keyring.js:520 js/lab_keyring.js:524
+#: js/lab_keyring.js:524 js/lab_keyring.js:528
 msgid "Reçu de prêt"
 msgstr "Reçu de prêt"
 
-#: js/lab_keyring.js:527
+#: js/lab_keyring.js:531
 msgid "ID du prêt"
 msgstr "ID du prêt"
 
-#: js/lab_keyring.js:528 lab-admin-keyring.php:243 lab-admin-keyring.php:314
+#: js/lab_keyring.js:532 lab-admin-keyring.php:260 lab-admin-keyring.php:331
 msgid "Référent"
 msgstr "Référent"
 
-#: js/lab_keyring.js:529
+#: js/lab_keyring.js:533
 msgid "La clé/badge numéro"
 msgstr "La clé/badge numéro"
 
-#: js/lab_keyring.js:530
+#: js/lab_keyring.js:534
 msgid "A été prêtée à"
 msgstr "A été prêtée à"
 
-#: js/lab_keyring.js:534
+#: js/lab_keyring.js:538
 msgid "Et devra être rendue avant le"
 msgstr "Et devra être rendue avant le"
 
-#: js/lab_keyring.js:535 lab-admin-keyring.php:81 lab-admin-keyring.php:131
-#: lab-admin-keyring.php:171 lab-admin-keyring.php:247
-#: lab-admin-keyring.php:308 shortcode/lab-shortcode-present.php:238
+#: js/lab_keyring.js:539 lab-admin-keyring.php:82 lab-admin-keyring.php:143
+#: lab-admin-keyring.php:188 lab-admin-keyring.php:264
+#: lab-admin-keyring.php:325 shortcode/lab-shortcode-present.php:273
 msgid "Commentaire"
 msgstr "Commentaire"
 
-#: js/lab_keyring.js:536
+#: js/lab_keyring.js:540
 msgid "Signature"
 msgstr "Signature"
 
-#: js/lab_keyring.js:539
+#: js/lab_keyring.js:543
 msgid "Imprimer"
 msgstr "Imprimer"
 
-#: js/lab_shortcode_present.js:63
+#: js/lab_shortcode_present.js:13
+msgid "I participate in the working group"
+msgstr "Je participe au groupe de travail"
+
+#: js/lab_shortcode_present.js:78
 msgid "Reason of your attendance is require"
 msgstr "La raison de votre présence est requise"
 
-#: lab-admin-ajax.php:59
+#: lab-admin-ajax.php:66
 #, php-format
 msgid "A param key with '%1s' already exist in db"
 msgstr "Un paramètre avec la clef '%1s' existe déjà en BDD"
 
-#: lab-admin-ajax.php:82
+#: lab-admin-ajax.php:89
 msgid "Cant delete system param"
 msgstr "Impossible d'effacer un paramètre sytème"
 
-#: lab-admin-ajax.php:814
+#: lab-admin-ajax.php:738 lab-admin-ajax.php:749
+msgid "Aucun prêt trouvé"
+msgstr "Aucun prêt trouvé"
+
+#: lab-admin-ajax.php:853
 msgid "Votre demande a bien été prise en compte"
 msgstr "Votre demande a bien été prise en compte"
 
-#: lab-admin-ajax.php:843
+#: lab-admin-ajax.php:882
 msgid "Votre invitation a bien été modifiée"
 msgstr "Votre invitation a bien été modifiée"
 
-#: lab-admin-ajax.php:971
+#: lab-admin-ajax.php:1010
 msgid "Aucune invitation"
 msgstr "Aucune invitation"
 
-#: lab-admin-ajax.php:1008
+#: lab-admin-ajax.php:1047
 msgid "indéfini"
 msgstr "indéfini"
 
-#: lab-admin-ajax.php:1117
+#: lab-admin-ajax.php:1165
 #, php-format
 msgid "%s is a non wordking day"
 msgstr "%s est férié"
 
-#: lab-admin-ajax.php:1139
+#: lab-admin-ajax.php:1188
 #, php-format
 msgid "Your are already present in %s the %s between %s and %s"
 msgstr "Vous êtes déjà présent au/à %s le %s entre %s et %s"
 
-#: lab-admin-ajax.php:1162 lab-admin-ajax.php:1171
+#: lab-admin-ajax.php:1211 lab-admin-ajax.php:1220
 #, php-format
 msgid ""
 "Your new schedules overlap to an existing one : %s the %s between %s and %s"
@@ -608,11 +653,19 @@ msgstr "Clés"
 msgid "Prêts"
 msgstr "Prêts"
 
+#: lab-admin-keyring.php:18
+msgid "Créer la table Keys"
+msgstr "Créer la table Keys"
+
+#: lab-admin-keyring.php:22
+msgid "Créer la table Loans"
+msgstr "Créer la table Keys"
+
 #: lab-admin-keyring.php:34
 msgid "Voulez-vous vraiment supprimer cette clé ?"
 msgstr "Voulez-vous vraiment supprimer cette clé ?"
 
-#: lab-admin-keyring.php:42 lab-admin-keyring.php:186
+#: lab-admin-keyring.php:42 lab-admin-keyring.php:203
 msgid "Voulez-vous vraiment terminer ce prêt ?"
 msgstr "Voulez-vous vraiment terminer ce prêt ?"
 
@@ -620,7 +673,7 @@ msgstr "Voulez-vous vraiment terminer ce prêt ?"
 msgid "Date de rendu"
 msgstr "Date de rendu"
 
-#: lab-admin-keyring.php:43 lab-admin-keyring.php:187
+#: lab-admin-keyring.php:43 lab-admin-keyring.php:204
 msgid "Aujourd'hui"
 msgstr "Aujourd'hui"
 
@@ -632,58 +685,59 @@ msgstr "Liste des clés"
 msgid "Rechercher une clé"
 msgstr "Rechercher une clé"
 
-#: lab-admin-keyring.php:54 lab-admin-keyring.php:197
+#: lab-admin-keyring.php:54 lab-admin-keyring.php:214
 msgid "Page"
 msgstr "Page"
 
-#: lab-admin-keyring.php:60 lab-admin-keyring.php:203
+#: lab-admin-keyring.php:60 lab-admin-keyring.php:220
 msgid "Nombre de résultats par page"
 msgstr "Nombre de résultats par page"
 
-#: lab-admin-keyring.php:65 lab-admin-keyring.php:208
+#: lab-admin-keyring.php:65 lab-admin-keyring.php:225
 msgid "Autre"
 msgstr "Autre"
 
-#: lab-admin-keyring.php:75 lab-admin-keyring.php:241 lab-admin-keyring.php:279
+#: lab-admin-keyring.php:75 lab-admin-keyring.php:258 lab-admin-keyring.php:296
 msgid "ID"
 msgstr "ID"
 
-#: lab-admin-keyring.php:77 lab-admin-keyring.php:283
+#: lab-admin-keyring.php:77 lab-admin-keyring.php:300
 msgid "Numéro"
 msgstr "Numéro"
 
-#: lab-admin-keyring.php:78 lab-admin-keyring.php:287
+#: lab-admin-keyring.php:78 lab-admin-keyring.php:304
 msgid "Bureau"
 msgstr "Bureau"
 
-#: lab-admin-keyring.php:79 lab-admin-keyring.php:116 lab-admin-keyring.php:156
-#: lab-admin-keyring.php:291
+#: lab-admin-keyring.php:79 lab-admin-keyring.php:116 lab-admin-keyring.php:168
+#: lab-admin-keyring.php:308
 msgid "Marque"
 msgstr "Marque"
 
-#: lab-admin-keyring.php:80 lab-admin-keyring.php:295
+#: lab-admin-keyring.php:80 lab-admin-keyring.php:312
+#: shortcode/lab-shortcode-profile.php:56
 msgid "Site"
 msgstr "Site"
 
-#: lab-admin-keyring.php:82
+#: lab-admin-keyring.php:81
+msgid "State"
+msgstr "Etat"
+
+#: lab-admin-keyring.php:83
 msgid "Dispo"
 msgstr "Dispo"
 
-#: lab-admin-keyring.php:83 lab-admin-keyring.php:249 lab-admin-keyring.php:327
+#: lab-admin-keyring.php:84 lab-admin-keyring.php:266 lab-admin-keyring.php:344
 msgid "Actions"
 msgstr "Actions"
 
-#: lab-admin-keyring.php:91 lab-admin-keyring.php:225
+#: lab-admin-keyring.php:92 lab-admin-keyring.php:242
 msgid "Page précédente"
 msgstr "Page précédente"
 
-#: lab-admin-keyring.php:92 lab-admin-keyring.php:226
+#: lab-admin-keyring.php:93 lab-admin-keyring.php:243
 msgid "Page suivante"
 msgstr "Page suivante"
-
-#: lab-admin-keyring.php:96 lab-admin-keyring.php:133 lab-admin-keyring.php:392
-msgid "Modifier"
-msgstr "Modifier"
 
 #: lab-admin-keyring.php:110
 msgid "numéro"
@@ -693,96 +747,108 @@ msgstr "numéro"
 msgid "bureau"
 msgstr "bureau"
 
-#: lab-admin-keyring.php:131 lab-admin-keyring.php:171
-#: lab-admin-keyring.php:322
+#: lab-admin-keyring.php:143 lab-admin-keyring.php:188
+#: lab-admin-keyring.php:339
 msgid "facultatif"
 msgstr "facultatif"
 
-#: lab-admin-keyring.php:136
+#: lab-admin-keyring.php:148
 msgid "Nouvelle"
 msgstr "Nouvelle"
 
+#: lab-admin-keyring.php:171
+msgid "ok"
+msgstr "ok"
+
+#: lab-admin-keyring.php:172
+msgid "lost"
+msgstr "perdu(e)"
+
 #: lab-admin-keyring.php:173
+msgid "broken"
+msgstr "cassé(e)"
+
+#: lab-admin-keyring.php:190
 msgid "Créer"
 msgstr "Créer"
 
-#: lab-admin-keyring.php:187
+#: lab-admin-keyring.php:204
 msgid "Date de rendu : "
 msgstr "Date de rendu : "
 
-#: lab-admin-keyring.php:193
+#: lab-admin-keyring.php:210
 msgid "Liste des prêts en cours"
 msgstr "Liste des prêts en cours"
 
-#: lab-admin-keyring.php:195
+#: lab-admin-keyring.php:212
 msgid "Rechercher un utilisateur"
 msgstr "Rechercher un utilisateur"
 
-#: lab-admin-keyring.php:242
+#: lab-admin-keyring.php:259
 msgid "Clé"
 msgstr "Clé"
 
-#: lab-admin-keyring.php:245
+#: lab-admin-keyring.php:262
 msgid "Début"
 msgstr "Début"
 
-#: lab-admin-keyring.php:246
+#: lab-admin-keyring.php:263
 msgid "Échéance"
 msgstr "Échéance"
 
-#: lab-admin-keyring.php:248
+#: lab-admin-keyring.php:265
 msgid "Terminé"
 msgstr "Terminé"
 
-#: lab-admin-keyring.php:255
+#: lab-admin-keyring.php:272
 msgid "Gestion des prêts"
 msgstr "Gestion des prêts"
 
-#: lab-admin-keyring.php:258
+#: lab-admin-keyring.php:275
 msgid "Nouveau prêt"
 msgstr "Nouveau prêt"
 
-#: lab-admin-keyring.php:260
+#: lab-admin-keyring.php:277
 msgid "Prêt en cours"
 msgstr "Prêt en cours"
 
-#: lab-admin-keyring.php:261
+#: lab-admin-keyring.php:278
 msgid "Afficher Reçu"
 msgstr "Afficher Reçu"
 
-#: lab-admin-keyring.php:316
+#: lab-admin-keyring.php:333
 msgid "Usager"
 msgstr "Usager"
 
-#: lab-admin-keyring.php:326
+#: lab-admin-keyring.php:343
 msgid "Commentaire faculatif"
 msgstr "Commentaire faculatif"
 
-#: lab-admin-keyring.php:328
+#: lab-admin-keyring.php:345
 msgid "Créer le prêt"
 msgstr "Créer le prêt"
 
-#: lab-admin-keyring.php:329
+#: lab-admin-keyring.php:346
 msgid "Modifier le prêt"
 msgstr "Modifier le prêt"
 
-#: lab-admin-keyring.php:330
+#: lab-admin-keyring.php:347
 msgid "Marquer comme rendu"
 msgstr "Marquer comme rendu"
 
-#: lab-admin-keyring.php:335
+#: lab-admin-keyring.php:352
 msgid "Historique des prêts pour cette clé"
 msgstr "Historique des prêts pour cette clé"
 
-#: lab-admin-keyring.php:335
+#: lab-admin-keyring.php:352
 msgid "Historique des prêts de l'utilisateur"
 msgstr "Historique des prêts de l'utilisateur"
 
-#: lab-admin-keyring.php:363
+#: lab-admin-keyring.php:382
 msgid "Prêter"
 msgstr "Prêter"
 
-#: lab-admin-keyring.php:364
+#: lab-admin-keyring.php:383
 msgid "Voir prêt"
 msgstr "Voir prêt"
 
@@ -806,82 +872,82 @@ msgstr "Coordonnées"
 msgid "Group"
 msgstr "Groupes"
 
-#: shortcode/lab-shortcode-present.php:120
+#: shortcode/lab-shortcode-present.php:130
 msgid "Lundi"
 msgstr "Lundi"
 
-#: shortcode/lab-shortcode-present.php:121
+#: shortcode/lab-shortcode-present.php:131
 msgid "Mardi"
 msgstr "Mardi"
 
-#: shortcode/lab-shortcode-present.php:122
+#: shortcode/lab-shortcode-present.php:132
 msgid "Mercredi"
 msgstr "Mercredi"
 
-#: shortcode/lab-shortcode-present.php:123
+#: shortcode/lab-shortcode-present.php:133
 msgid "Jeudi"
 msgstr "Jeudi"
 
-#: shortcode/lab-shortcode-present.php:124
+#: shortcode/lab-shortcode-present.php:134
 msgid "Vendredi"
 msgstr "Vendredi"
 
-#: shortcode/lab-shortcode-present.php:134
+#: shortcode/lab-shortcode-present.php:144
 msgid "Non working day"
 msgstr "Férié"
 
-#: shortcode/lab-shortcode-present.php:219
+#: shortcode/lab-shortcode-present.php:249
 msgid "Je serai présent·e"
 msgstr "Je serai présent·e"
 
-#: shortcode/lab-shortcode-present.php:224
-#: shortcode/lab-shortcode-present.php:278
+#: shortcode/lab-shortcode-present.php:258
+#: shortcode/lab-shortcode-present.php:313
 msgid "Le"
 msgstr "Le"
 
-#: shortcode/lab-shortcode-present.php:231
-#: shortcode/lab-shortcode-present.php:280
+#: shortcode/lab-shortcode-present.php:265
+#: shortcode/lab-shortcode-present.php:315
 msgid "Jusqu'à"
 msgstr "Jusqu'à"
 
-#: shortcode/lab-shortcode-present.php:234
+#: shortcode/lab-shortcode-present.php:268
 msgid "sur le site"
 msgstr "sur le site"
 
-#: shortcode/lab-shortcode-present.php:242
+#: shortcode/lab-shortcode-present.php:277
 msgid "Sauvegarder"
 msgstr "Sauvegarder"
 
-#: shortcode/lab-shortcode-present.php:262
+#: shortcode/lab-shortcode-present.php:297
 msgid "Je souhaite modifier une de mes présences"
 msgstr "Je souhaite modifier une de mes présences"
 
-#: shortcode/lab-shortcode-present.php:279
+#: shortcode/lab-shortcode-present.php:314
 msgid "De"
 msgstr "De"
 
-#: shortcode/lab-shortcode-present.php:281
+#: shortcode/lab-shortcode-present.php:316
 msgid "Sur"
 msgstr "Sur"
 
-#: shortcode/lab-shortcode-present.php:282
+#: shortcode/lab-shortcode-present.php:317
 msgid "Action"
 msgstr "Action"
 
-#: shortcode/lab-shortcode-present.php:349
-#: shortcode/lab-shortcode-present.php:395
+#: shortcode/lab-shortcode-present.php:384
+#: shortcode/lab-shortcode-present.php:430
 msgid "Comment"
 msgstr "Commentaire"
 
-#: shortcode/lab-shortcode-present.php:421
+#: shortcode/lab-shortcode-present.php:456
 msgid "Supprimer"
 msgstr "Supprimer"
 
-#: shortcode/lab-shortcode-present.php:427
+#: shortcode/lab-shortcode-present.php:462
 msgid "Êtes vous certain·e de vouloir supprimer cette présence ?"
 msgstr "Êtes vous certain·e de vouloir supprimer cette présence ?"
 
-#: shortcode/lab-shortcode-present.php:430
+#: shortcode/lab-shortcode-present.php:465
 msgid "Oui"
 msgstr "Oui"
 
@@ -927,12 +993,35 @@ msgid "Nom HAL"
 msgstr "Nom HAL"
 
 #: shortcode/lab-shortcode-profile.php:55
-msgid "site"
-msgstr "site"
+msgid "Affiliation"
+msgstr "Affiliation"
 
-#: shortcode/lab-shortcode-profile.php:75
+#: shortcode/lab-shortcode-profile.php:56
+msgid "Office"
+msgstr "Bureau"
+
+#: shortcode/lab-shortcode-profile.php:56
+msgid "Office Floor"
+msgstr "Etage du bureau"
+
+#: shortcode/lab-shortcode-profile.php:77
 msgid "User group(s) : "
 msgstr "Groupe(s) scientifiques(s) de l'utilisateur"
+
+#: shortcode/lab-shortcode-profile.php:164
+msgid "Research keywords : "
+msgstr "Rechercher mots clef : "
+
+#~ msgid "Add role keyring"
+#~ msgstr "Ajouter le rôle pour keyring"
+
+#, fuzzy
+#~| msgid "Rechercher un utilisateur"
+#~ msgid "Supprimer un utilisateur"
+#~ msgstr "Rechercher un utilisateur"
+
+#~ msgid "site"
+#~ msgstr "site"
 
 #~ msgid "I will be there"
 #~ msgstr "Je serais présent·e"

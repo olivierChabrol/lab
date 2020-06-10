@@ -133,7 +133,7 @@
                 $output ="";
                 $params = new AdminParams;
                 foreach ( $params->get_params_fromId($params::PARAMS_KEY_STATE) as $r ) {
-                  $output .= "<option value=".$r->id.">".$r->value."</option>";
+                  $output .= "<option value=".$r->id.">".esc_html__($r->value, "lab")."</option>";
                 }
                 echo $output;
               ?>
@@ -167,6 +167,11 @@
           <td scope="col">
             <input type="text" id="lab_keyring_newKey_brand" placeholder="<?php esc_html_e('Marque','lab'); ?>"/>
           </td>
+          <!-- 
+          <?php esc_html_e('ok','lab'); ?>
+          <?php esc_html_e('lost','lab'); ?>
+          <?php esc_html_e('broken','lab'); ?>
+          -->
           <td scope="col">
             <select id="lab_keyring_newKey_site">
               <?php //Récupère la liste des Sites existants
