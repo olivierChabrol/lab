@@ -216,6 +216,7 @@ function lab_admin_param_change_id($oldId, $type, $newId)
     else if ($type == AdminParams::PARAMS_USER_FUNCTION_ID)
     {
         $wpdb->update($wpdb->prefix.'usermeta', array("meta_value"=>$newId), array("meta_value"=>$oldId, "meta_key"=>"lab_user_function"));
+        $wpdb->update($wpdb->prefix.'lab_users_historic', array("function"=>$newId), array("function"=>$oldId));
     }
     else if ($type == AdminParams::PARAMS_MISSION_ID)
     {
