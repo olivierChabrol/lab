@@ -230,6 +230,7 @@ jQuery(function($){
                 $("#lab_user_thesis_title").val(), 
                 $("#lab_user_hdr_title").val(), 
                 $("#lab_user_phd_school").val(), 
+                $("#lab_user_sex").val(), 
                 $("#lab_user_country").countrySelect("getSelectedCountryData")['iso2'],)
   });
 
@@ -957,7 +958,7 @@ function saveUserMetaData(userId, date, isChecked, location, userFunction) {
 
 }
 
-function saveUser(date, isChecked, location, userFunction, userOfficeNumber, userOfficeFloor, employer, funding, firstname, lastname, sectionCn, sectionCnu, phone, email, url, thesisTitle, hdrTitle, phdSchool, userCountry) {
+function saveUser(date, isChecked, location, userFunction, userOfficeNumber, userOfficeFloor, employer, funding, firstname, lastname, sectionCn, sectionCnu, phone, email, url, thesisTitle, hdrTitle, phdSchool, user_sex, userCountry) {
   var c = isChecked?date:null;
   var data = {
                'action' : 'update_user_metadata',
@@ -980,6 +981,7 @@ function saveUser(date, isChecked, location, userFunction, userOfficeNumber, use
                'hdrTitle' : hdrTitle,
                'phdSchool' : phdSchool,
                'user_country' : userCountry,
+               'user_sex' : user_sex,
   };
   callAjax(data, "User saved", resetUserTabFields, "Failed to save user", null);
 }
@@ -1007,6 +1009,7 @@ function resetUserTabFields()
   jQuery("#lab_user_thesis_title").val("");
   jQuery("#lab_user_hdr_title").val("");
   jQuery("#lab_user_phd_school").val("");
+  jQuery("#lab_user_sex").val("");
   jQuery("#lab_user_country").countrySelect("selectCountry","fr");
   document.forms['lab_admin_historic'].reset();
   jQuery("#lab_admin_historic").hide();
@@ -1058,6 +1061,8 @@ function loadUserMetaData(response) {
     console.log($country);
     jQuery("#lab_user_country").countrySelect("selectCountry",$country);
     //setField("#lab_user_country", $country);
+    console.log("[lab_admin.js][loadUserMetaData] user_sex : " + response.data["user_sex"]);
+    setField("#lab_user_sex", response.data["user_sex"]);
     setField("#lab_user_function", response.data["user_function"]);
     setField("#lab_user_funding", response.data["user_funding"]);
     setField("#lab_user_employer", response.data["user_employer"]);

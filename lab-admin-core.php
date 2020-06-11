@@ -28,47 +28,6 @@ function lab_admin_userMetaDatas_get($userId) {
                 $items[substr($r->meta_key, 4)] = $r->meta_value;
             }
         }
-        /*
-        if ($r->meta_key == 'lab_user_function') {
-            $items['user_function'] = $r->meta_value;
-        }
-        if ($r->meta_key == 'lab_user_employer') {
-            $items['user_employer'] = $r->meta_value;
-        }
-        if ($r->meta_key == 'lab_user_phone') {
-            $items['user_phone'] = $r->meta_value;
-        }
-        if ($r->meta_key == 'lab_user_location') {
-            $items['user_location'] = $r->meta_value;
-        }
-        if ($r->meta_key == 'lab_user_office_number') {
-            $items['user_office_number'] = $r->meta_value;
-        }
-        if ($r->meta_key == 'lab_user_office_floor') {
-            $items['user_office_floor'] = $r->meta_value;
-        }
-        if ($r->meta_key == 'lab_user_funding') {
-            $items['user_funding'] = $r->meta_value;
-        }
-        if ($r->meta_key == 'lab_user_section_cn') {
-            $items['user_section_cn'] = $r->meta_value;
-        }
-        if ($r->meta_key == 'lab_user_section_cnu') {
-            $items['user_section_cnu'] = $r->meta_value;
-        }
-        if ($r->meta_key == 'lab_user_thesis_title') {
-            $items['user_thesis_title'] = $r->meta_value;
-        }
-        if ($r->meta_key == 'lab_user_hdr_title') {
-            $items['user_hdr_title'] = $r->meta_value;
-        }
-        if ($r->meta_key == 'lab_user_phd_school') {
-            $items['user_phd_school'] = $r->meta_value;
-        }
-        if ($r->meta_key == 'lab_user_country') {
-            $items['user_country'] = $r->meta_value;
-        }
-        //*/
     }
     
     return $items;
@@ -686,6 +645,7 @@ function lab_admin_initTable_usermeta()
     lab_userMetaData_create_metaKeys("user_thesis_title", null);
     lab_userMetaData_create_metaKeys("user_hdr_title", null);
     lab_userMetaData_create_metaKeys("user_phd_school", null);
+    lab_userMetaData_create_metaKeys("user_sex", null);
     lab_admin_usermeta_fill_hal_name();
     lab_admin_usermeta_fill_user_slug();
     lab_admin_createSocial();
@@ -698,6 +658,7 @@ function lab_admin_add_new_user_metadata($userId)
     lab_userMetaData_save_key($userId, "profile_bg_color", "#F2F2F2");
     lab_userMetaData_save_key($userId, "user_employer", "");
     lab_userMetaData_save_key($userId, "user_function", "");
+    lab_userMetaData_save_key($userId, "user_sex", "");
     lab_userMetaData_save_key($userId, "user_funding", "");
     lab_userMetaData_save_key($userId, "user_left", null);
     lab_userMetaData_save_key($userId, "user_location", "");
@@ -744,7 +705,7 @@ function correct_missing_usermeta_data($userId)
 
 function check_missing_usermeta_data($userId)
 {
-    $labFields = array("hal_id", "hal_name", "profile_bg_color", "user_employer", "user_function", "user_funding", "user_left", "user_location", "user_office_floor", "user_office_number", "user_phone", "user_section_cn", "user_section_cnu", "user_slug", "user_position", "user_thesis_title", "user_hdr_title", "user_phd_school");
+    $labFields = array("hal_id", "hal_name", "profile_bg_color", "user_employer", "user_sex", "user_function", "user_funding", "user_left", "user_location", "user_office_floor", "user_office_number", "user_phone", "user_section_cn", "user_section_cnu", "user_slug", "user_position", "user_thesis_title", "user_hdr_title", "user_phd_school", "user_country");
     $missings = array();
     foreach($labFields as $field)
     {

@@ -26,7 +26,11 @@ function lab_admin_tab_user() {
         </td>
         <td>
           <input type="text" id="lab_user_lastname" value=""  placeholder="<?php esc_html_e('Last name','lab') ?>"/>
-          <!-- <select type="text" id="lab_user_sex" value=""  placeholder="<?php esc_html_e('Sex','lab') ?>"/> -->
+          <select id="lab_user_sex">
+            <option value=""><?php esc_html_e('Sex','lab') ?></option>
+            <option value="F">Feminin</option>
+            <option value="M">Masculin</option>
+          </select>
         </td>
       </tr>
       <tr>
