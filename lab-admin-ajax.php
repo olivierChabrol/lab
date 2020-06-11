@@ -129,7 +129,7 @@ function lab_admin_usermeta_names()
 {
   $search = $_POST['search'];
   $userId  = $search["term"];
-  wp_send_json_success(lab_admin_username_get($userId));
+  wp_send_json_success(lab_admin_userMetaDatas_get($userId));
 }
 function lab_admin_usermeta_update_phone()
 {
@@ -286,11 +286,12 @@ function lab_admin_update_user_metadata()
   $userPhdSchool    = $_POST["phdSchool"];
   $email            = $_POST["email"];
   $url              = $_POST["url"];
-  lab_usermeta_update($userId, $dateLeft, $userFunction, $userLocation, $officeNumber, $officeFloor, $userEmployer, $phone, $userFunding, $firstname, $lastname, $userSectionCn, $userSectionCnu, $email, $url, $userThesisTitle, $userHdrTitle, $userPhdSchool);
+  $user_country     = $_POST["user_country"];
+  lab_usermeta_update($userId, $dateLeft, $userFunction, $userLocation, $officeNumber, $officeFloor, $userEmployer, $phone, $userFunding, $firstname, $lastname, $userSectionCn, $userSectionCnu, $email, $url, $userThesisTitle, $userHdrTitle, $userPhdSchool, $user_country);
   wp_send_json_success($userThesisTitle);
 }
 
-function lab_usermeta_update($userId, $left, $userFunction, $userLocation, $officeNumber, $officeFloor, $userEmployer, $user_phone, $userFunding, $firstname, $lastname, $userSectionCn, $userSectionCnu, $email = null, $url = null, $userThesisTitle = null, $userHdrTitle = null, $userPhdSchool = null)
+function lab_usermeta_update($userId, $left, $userFunction, $userLocation, $officeNumber, $officeFloor, $userEmployer, $user_phone, $userFunding, $firstname, $lastname, $userSectionCn, $userSectionCnu, $email = null, $url = null, $userThesisTitle = null, $userHdrTitle = null, $userPhdSchool = null, $userCountry = null)
 {
   global $wpdb;
   $sql = "";
@@ -318,6 +319,7 @@ function lab_usermeta_update($userId, $left, $userFunction, $userLocation, $offi
   $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$userThesisTitle),array("user_id"=>$userId, "meta_key"=>"lab_user_thesis_title"));
   $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$userHdrTitle),array("user_id"=>$userId, "meta_key"=>"lab_user_hdr_title"));
   $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$userPhdSchool),array("user_id"=>$userId, "meta_key"=>"lab_user_phd_school"));
+  $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$userCountry),array("user_id"=>$userId, "meta_key"=>"lab_user_country"));
   if ($email != null)
   {
     $wpdb->update($wpdb->prefix."users", array("user_email"=>$email),array("ID"=>$userId));
@@ -934,7 +936,7 @@ function lab_invitations_validate() {
 }
 // Invitation prise en charge
 function lab_invitations_assume() {
-  $user = lab_admin_username_get(get_current_user_id());
+  $user = lab_admin_userMetaDatas_get(get_current_user_id());
   $token = $_POST['token'];
   date_default_timezone_set("Europe/Paris");
   $timeStamp=date("Y-m-d H:i:s",time());
@@ -1055,7 +1057,7 @@ function lab_invitations_summary() {
 function lab_invitations_comments(){
   $token = $_POST['token'];
   $string = lab_inviteComments($token);
-  $string .= lab_newComments(lab_admin_username_get(get_current_user_id()), $token);
+  $string .= lab_newComments(lab_admin_userMetaDatas_get(get_current_user_id()), $token);
   wp_send_json_success($string);
 }
 

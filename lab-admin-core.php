@@ -2,7 +2,7 @@
 
 
 
-function lab_admin_username_get($userId) {
+function lab_admin_userMetaDatas_get($userId) {
     global $wpdb;
     $results = $wpdb->get_results( "SELECT um.*, u.user_email, u.user_url FROM `".$wpdb->prefix."usermeta` AS um JOIN `".$wpdb->prefix."users` AS u ON u.id=um.user_id WHERE (um.meta_key = 'first_name' or um.meta_key='last_name' or um.meta_key LIKE 'lab_%') and um.user_id=".$userId  );
     $items = array();
@@ -16,11 +16,19 @@ function lab_admin_username_get($userId) {
             $items['first_name'] = $r->meta_value;
         if ($r->meta_key == 'last_name')
             $items['last_name'] = $r->meta_value;
-        if ($r->meta_key == 'lab_user_left') {
-            $items['lab_user_left'] = array();
-            $items['lab_user_left']['id'] = $r->umeta_id;
-            $items['lab_user_left']['value'] = $r->meta_value;
+        if (beginsWith($r->meta_key, "lab_"))
+        {
+            if ($r->meta_key == 'lab_user_left') {
+                $items['lab_user_left'] = array();
+                $items['lab_user_left']['id'] = $r->umeta_id;
+                $items['lab_user_left']['value'] = $r->meta_value;
+            }
+            else
+            {
+                $items[substr($r->meta_key, 4)] = $r->meta_value;
+            }
         }
+        /*
         if ($r->meta_key == 'lab_user_function') {
             $items['user_function'] = $r->meta_value;
         }
@@ -54,9 +62,13 @@ function lab_admin_username_get($userId) {
         if ($r->meta_key == 'lab_user_hdr_title') {
             $items['user_hdr_title'] = $r->meta_value;
         }
-        if ($r->meta_key == 'user_phd_school') {
+        if ($r->meta_key == 'lab_user_phd_school') {
             $items['user_phd_school'] = $r->meta_value;
         }
+        if ($r->meta_key == 'lab_user_country') {
+            $items['user_country'] = $r->meta_value;
+        }
+        //*/
     }
     
     return $items;

@@ -1,4 +1,10 @@
 <?php
+
+function beginsWith($string_n, $prefix)
+{
+    return strncmp($string_n, $prefix, strlen($prefix)) === 0;
+}
+
 function get_easter_datetime($year) {
     $base = new DateTime("$year-03-21");
     $days = easter_days($year);

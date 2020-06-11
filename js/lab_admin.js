@@ -5,11 +5,16 @@ jQuery(function($){
   var searchRequest;
   //loadExistingKeys();
 
+  $("#lab_user_country").countrySelect({
+    defaultCountry: "fr",
+    preferredCountries: ['fr', 'de', 'it', 'es', 'us'],
+  });
 
   if ($("#lab_ldapListBody")!=null && $("#lab_ldapListBody").length) {
     console.log("DANS lab_ldapListBody");
     LABLoadLDAPList();
   }
+
 
   $("#lab_user_button_correct_missing_usermetaDataFields").click(function () { 
     correctUserMetadaField($("#lab_user_search_id").val());
@@ -206,8 +211,8 @@ jQuery(function($){
     deleteMetaKeys(key);
   });
 
-  $("#lab_user_button_save_left").click(function() {
-    saveUserLeft($("#lab_user_left_date").val(), 
+  $("#lab_user_button_user_save").click(function() {
+    saveUser($("#lab_user_left_date").val(), 
                 $("#lab_user_left").is(":checked"), 
                 $("#lab_user_location").val(), 
                 $("#lab_user_function").val(), 
@@ -224,7 +229,8 @@ jQuery(function($){
                 $("#lab_user_url").val(), 
                 $("#lab_user_thesis_title").val(), 
                 $("#lab_user_hdr_title").val(), 
-                $("#lab_user_phd_school").val());
+                $("#lab_user_phd_school").val(), 
+                $("#lab_user_country").countrySelect("getSelectedCountryData")['iso2'],)
   });
 
   $("#lab_user_button_delete").click(function() {
@@ -551,6 +557,10 @@ jQuery(function($){
   $("#lab_all_users").click(function() 
   {
     reset_and_load_groups_users(!$("#lab_all_users").is(':checked'),  !$("#lab_no_users_left").is(':checked'));
+
+    if ($("#usermetadata_keys") != null && $("#usermetadata_keys").length) {
+      console.log("[lab_admin.js] settings tab");
+    }
   });
 
   $("#lab_no_users_left").click(function()
@@ -560,7 +570,13 @@ jQuery(function($){
 
   $(document).ready(function()
   {
-    reset_and_load_groups_users(!$("#lab_all_users").is(':checked'), !$("#lab_no_users_left").is(':checked'));
+    if ($("#list_users") != null && $("#list_users").length > 0) {
+      reset_and_load_groups_users(!$("#lab_all_users").is(':checked'), !$("#lab_no_users_left").is(':checked'));
+    }
+    if ($("#usermetadata_keys") != null && $("#usermetadata_keys").length > 0) {
+      console.log("[lab_admin.js][ready] usermetadata_keys present");
+      loadExistingKeys();
+    }
   });
 
 
@@ -941,7 +957,7 @@ function saveUserMetaData(userId, date, isChecked, location, userFunction) {
 
 }
 
-function saveUserLeft(date, isChecked, location, userFunction, userOfficeNumber, userOfficeFloor, employer, funding, firstname, lastname, sectionCn, sectionCnu, phone, email, url, thesisTitle, hdrTitle, phdSchool) {
+function saveUser(date, isChecked, location, userFunction, userOfficeNumber, userOfficeFloor, employer, funding, firstname, lastname, sectionCn, sectionCnu, phone, email, url, thesisTitle, hdrTitle, phdSchool, userCountry) {
   var c = isChecked?date:null;
   var data = {
                'action' : 'update_user_metadata',
@@ -963,6 +979,7 @@ function saveUserLeft(date, isChecked, location, userFunction, userOfficeNumber,
                'thesisTitle' : thesisTitle,
                'hdrTitle' : hdrTitle,
                'phdSchool' : phdSchool,
+               'user_country' : userCountry,
   };
   callAjax(data, "User saved", resetUserTabFields, "Failed to save user", null);
 }
@@ -990,6 +1007,7 @@ function resetUserTabFields()
   jQuery("#lab_user_thesis_title").val("");
   jQuery("#lab_user_hdr_title").val("");
   jQuery("#lab_user_phd_school").val("");
+  jQuery("#lab_user_country").countrySelect("selectCountry","fr");
   document.forms['lab_admin_historic'].reset();
   jQuery("#lab_admin_historic").hide();
 }
@@ -1030,6 +1048,16 @@ function loadUserMetaData(response) {
     setField("#lab_user_thesis_title", response.data["user_thesis_title"]);
     setField("#lab_user_hdr_title", response.data["user_hdr_title"]);
     setField("#lab_user_phd_school", response.data["user_phd_school"]);
+
+    $country = response.data["user_country"];
+    console.log($country);
+    if ($country == null || $country == "")
+    {
+      $country = "fr";
+    }
+    console.log($country);
+    jQuery("#lab_user_country").countrySelect("selectCountry",$country);
+    //setField("#lab_user_country", $country);
     setField("#lab_user_function", response.data["user_function"]);
     setField("#lab_user_funding", response.data["user_funding"]);
     setField("#lab_user_employer", response.data["user_employer"]);
@@ -1171,7 +1199,7 @@ function deleteMetaKeys(key) {
     'action' : 'delete_metakey',
     'key' : key
   };
-  callAjax(data, "MetaKey delete for all user", loadExistingKeysFields, "failed to delete key '" + key + "'", null);
+  callAjax(data, "MetaKey delete for all user", loadExistingKeys, "failed to delete key '" + key + "'", null);
 }
 function correctUMFields() {
   var data = {

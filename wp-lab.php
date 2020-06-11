@@ -249,6 +249,8 @@ function admin_enqueue()
   wp_enqueue_style('jqueryModalCSS',plugins_url('css/jquery.modal.min.css',__FILE__));
   wp_enqueue_script('jqueryModalJS',plugins_url('js/jquery.modal.min.js',__FILE__),array('jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog'),"0.9.1",false);
   wp_enqueue_script('lab-ldap', plugins_url('js/lab_ldap.js',__FILE__), array('jquery', 'wp-i18n'), version_id(), true);
+  wp_enqueue_style('CountrySelectCSS',plugins_url('css/countrySelect.min.css',__FILE__));
+  wp_enqueue_script('CountrySelectJS',plugins_url('js/countrySelect.min.js',__FILE__),array('jquery'),"3.5",false);
   localize_script('lab-global');
   wp_set_script_translations( 'lab-global' , 'lab', dirname(__FILE__).'/lang' );
   wp_set_script_translations( 'lab-admin'  , 'lab', dirname(__FILE__).'/lang' );

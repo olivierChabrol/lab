@@ -16,7 +16,7 @@ function lab_admin_tab_user() {
           <label for="lab_user_name"><?php esc_html_e('Nom de l\'utilisateur','lab') ?></label>
         </th>
         <td>
-          <input type="text"   id="lab_user_search"    value="" /><span id="lab_user_id"></span><br>
+          <input type="text"   id="lab_user_search"    value="" /><b>&nbsp;<span id="lab_user_id"></span></b><br>
           <input type="hidden" id="lab_user_search_id" value="" /><br>
         </td>
       </tr>
@@ -26,11 +26,12 @@ function lab_admin_tab_user() {
         </td>
         <td>
           <input type="text" id="lab_user_lastname" value=""  placeholder="<?php esc_html_e('Last name','lab') ?>"/>
+          <!-- <select type="text" id="lab_user_sex" value=""  placeholder="<?php esc_html_e('Sex','lab') ?>"/> -->
         </td>
       </tr>
       <tr>
         <td colspan="2">
-        <input type="text" id="lab_user_email" value="" size="40" placeholder="<?php esc_html_e('Email','lab') ?>"/>
+        <input type="text" id="lab_user_email" value="" size="40" placeholder="<?php esc_html_e('Email','lab') ?>"/> &nbsp <input type="text" id="lab_user_country">
         </td>
       </tr>
       <tr>
@@ -145,7 +146,7 @@ function lab_admin_tab_user() {
       </tr>
       <tr>
         <td colspan="2">
-          <a href="#" class="page-title-action" id="lab_user_button_save_left"><?php esc_html_e('Modifier le statut de l\'utilisateur','lab') ?></a>
+          <a href="#" class="page-title-action" id="lab_user_button_user_save"><?php esc_html_e('Modifier le statut de l\'utilisateur','lab') ?></a>
           <a href="#" class="page-title-action" id="lab_user_button_delete"><?php esc_html_e('Delete user','lab') ?></a>
         </td>
       </tr>
