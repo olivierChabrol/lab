@@ -231,7 +231,9 @@ jQuery(function($){
                 $("#lab_user_hdr_title").val(), 
                 $("#lab_user_phd_school").val(), 
                 $("#lab_user_sex").val(), 
-                $("#lab_user_country").countrySelect("getSelectedCountryData")['iso2'],)
+                $("#lab_user_country").countrySelect("getSelectedCountryData")['iso2'],
+                $("#lab_user_hdr_date").val(), 
+                $("#lab_user_thesis_date").val(), )
   });
 
   $("#lab_user_button_delete").click(function() {
@@ -958,7 +960,7 @@ function saveUserMetaData(userId, date, isChecked, location, userFunction) {
 
 }
 
-function saveUser(date, isChecked, location, userFunction, userOfficeNumber, userOfficeFloor, employer, funding, firstname, lastname, sectionCn, sectionCnu, phone, email, url, thesisTitle, hdrTitle, phdSchool, user_sex, userCountry) {
+function saveUser(date, isChecked, location, userFunction, userOfficeNumber, userOfficeFloor, employer, funding, firstname, lastname, sectionCn, sectionCnu, phone, email, url, thesisTitle, hdrTitle, phdSchool, user_sex, userCountry, user_hdr_date, user_thesis_date) {
   var c = isChecked?date:null;
   var data = {
                'action' : 'update_user_metadata',
@@ -982,6 +984,8 @@ function saveUser(date, isChecked, location, userFunction, userOfficeNumber, use
                'phdSchool' : phdSchool,
                'user_country' : userCountry,
                'user_sex' : user_sex,
+               'user_hdr_date' : user_hdr_date,
+               'user_thesis_date' : user_thesis_date,
   };
   callAjax(data, "User saved", resetUserTabFields, "Failed to save user", null);
 }
@@ -1011,6 +1015,8 @@ function resetUserTabFields()
   jQuery("#lab_user_phd_school").val("");
   jQuery("#lab_user_sex").val("");
   jQuery("#lab_user_country").countrySelect("selectCountry","fr");
+  jQuery("#lab_user_hdr_date").val("YYYY-mm-dd");
+  jQuery("#lab_user_thesis_date").val("YYYY-mm-dd");
   document.forms['lab_admin_historic'].reset();
   jQuery("#lab_admin_historic").hide();
 }
@@ -1049,8 +1055,11 @@ function loadUserMetaData(response) {
     setField("#lab_user_url", response.data["user_url"]);
 
     setField("#lab_user_thesis_title", response.data["user_thesis_title"]);
-    setField("#lab_user_hdr_title", response.data["user_hdr_title"]);
+    setField("#lab_user_hdr_title" , response.data["user_hdr_title"]);
+    setField("#lab_user_hdr_date"  , response.data["user_hdr_date"]);
     setField("#lab_user_phd_school", response.data["user_phd_school"]);
+    console.log("[lab_admin.js] [loadUserMetaData ]: "+ response.data["user_thesis_date"]);
+    setField("#lab_user_thesis_date"  , response.data["user_thesis_date"]);
 
     $country = response.data["user_country"];
     console.log($country);
@@ -1058,7 +1067,7 @@ function loadUserMetaData(response) {
     {
       $country = "fr";
     }
-    console.log($country);
+    //console.log($country);
     jQuery("#lab_user_country").countrySelect("selectCountry",$country);
     //setField("#lab_user_country", $country);
     console.log("[lab_admin.js][loadUserMetaData] user_sex : " + response.data["user_sex"]);

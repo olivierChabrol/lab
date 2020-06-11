@@ -121,6 +121,7 @@ function lab_admin_tab_user() {
         </td>
         <td>
         <input type="text" id="lab_user_thesis_title"/>
+        <input type="date" id="lab_user_thesis_date"/>
         </td>
       </tr>
       <tr>
@@ -129,6 +130,7 @@ function lab_admin_tab_user() {
         </td>
         <td>
         <input type="text" id="lab_user_hdr_title"/>
+        <input type="date" id="lab_user_hdr_date"/>
         </td>
       </tr>
       <tr>
