@@ -455,6 +455,18 @@ function lab_admin_getSite($sideId)
     return $wpdb->get_results($sql)[0]->value;
 }
 
+function lab_admin_user_get_employer($userId)
+{
+    global $wpdb;
+    $sql = "SELECT p.value FROM `".$wpdb->prefix."usermeta` AS um JOIN `".$wpdb->prefix."lab_params` AS p ON um.meta_value=p.id WHERE um.meta_key='lab_user_employer' AND um.user_id=".$userId;
+    $r = $wpdb->get_results($sql);
+    if (count($r) > 0)
+    {
+        return $r[0]->value;
+    }
+    return null;
+}
+
 /**
  * Return presence of all user order by user_id, start_hour
  *
@@ -711,7 +723,7 @@ function correct_missing_usermeta_data($userId)
 
 function check_missing_usermeta_data($userId)
 {
-    $labFields = array("hal_id", "hal_name", "profile_bg_color", "user_employer", "user_sex", "user_function", "user_funding", "user_left", "user_location", "user_office_floor", "user_office_number", "user_phone", "user_section_cn", "user_section_cnu", "user_slug", "user_position", "user_thesis_title", "user_hdr_title", "user_phd_school", "user_country");
+    $labFields = array("hal_id", "hal_name", "profile_bg_color", "user_employer", "user_sex", "user_function", "user_funding", "user_left", "user_location", "user_office_floor", "user_office_number", "user_phone", "user_section_cn", "user_section_cnu", "user_slug", "user_thesis_title", "user_hdr_title", "user_phd_school", "user_country");
     $missings = array();
     foreach($labFields as $field)
     {
