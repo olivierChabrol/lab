@@ -644,8 +644,11 @@ function lab_admin_initTable_usermeta()
     lab_userMetaData_create_metaKeys("user_position", null);
     lab_userMetaData_create_metaKeys("user_thesis_title", null);
     lab_userMetaData_create_metaKeys("user_hdr_title", null);
+    lab_userMetaData_create_metaKeys("user_phd_date", null);
+    lab_userMetaData_create_metaKeys("user_hdr_date", null);
     lab_userMetaData_create_metaKeys("user_phd_school", null);
     lab_userMetaData_create_metaKeys("user_sex", null);
+    lab_userMetaData_create_metaKeys("user_country", null);
     lab_admin_usermeta_fill_hal_name();
     lab_admin_usermeta_fill_user_slug();
     lab_admin_createSocial();
@@ -672,6 +675,9 @@ function lab_admin_add_new_user_metadata($userId)
     lab_userMetaData_save_key($userId, "user_thesis_title", null);
     lab_userMetaData_save_key($userId, "user_hdr_title", null);
     lab_userMetaData_save_key($userId, "user_phd_school", null);
+    lab_userMetaData_create_metaKeys("user_phd_date", null);
+    lab_userMetaData_create_metaKeys("user_hdr_date", null);
+    lab_userMetaData_create_metaKeys("user_country", null);
     lab_admin_usermeta_fill_hal_name($userId);
     lab_admin_usermeta_fill_user_slug($userId);
     lab_admin_createSocial($userId);
