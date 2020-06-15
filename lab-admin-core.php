@@ -723,7 +723,7 @@ function correct_missing_usermeta_data($userId)
 
 function check_missing_usermeta_data($userId)
 {
-    $labFields = array("hal_id", "hal_name", "profile_bg_color", "user_employer", "user_sex", "user_function", "user_funding", "user_left", "user_location", "user_office_floor", "user_office_number", "user_phone", "user_section_cn", "user_section_cnu", "user_slug", "user_thesis_title", "user_hdr_title", "user_phd_school", "user_country");
+    $labFields = array("hal_id", "hal_name", "profile_bg_color", "user_employer", "user_sex", "user_function", "user_funding", "user_left", "user_location", "user_office_floor", "user_office_number", "user_phone", "user_section_cn", "user_section_cnu", "user_slug", "user_thesis_title", "user_thesis_date", "user_hdr_title", "user_hdr_date", "user_phd_school", "user_country");
     $missings = array();
     foreach($labFields as $field)
     {
