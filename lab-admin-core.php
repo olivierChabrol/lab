@@ -21,7 +21,7 @@ function lab_admin_userMetaDatas_get($userId) {
             if ($r->meta_key == 'lab_user_left') {
                 $items['lab_user_left'] = array();
                 $items['lab_user_left']['id'] = $r->umeta_id;
-                $items['lab_user_left']['value'] = stripslashes($r->meta_value);
+                $items['lab_user_left']['value'] = $r->meta_value;
             }
             else
             {
@@ -66,6 +66,7 @@ function lab_admin_add_historic($fields) {
     if ($hSize > 0 )
     {
         lab_userMetaData_save_key($fields["user_id"], "user_left", $histos[$hSize - 1]->end);
+        lab_userMetaData_save_key($fields["user_id"], "user_function", $histos[$hSize - 1]->function);
     }
     return true;
 }
@@ -77,6 +78,7 @@ function lab_admin_historic_delete($entry_id) {
     if ($date_user_left != null && $histo->end == $date_user_left)
     {
         lab_userMetaData_save_key($histo->user_id, "user_left", null);
+        lab_userMetaData_save_key($fields["user_id"], "user_function", $histos[$hSize - 1]->function);
     }
     return $wpdb->delete($wpdb->prefix."lab_users_historic",array('id'=>$entry_id));
 }
@@ -94,6 +96,7 @@ function lab_admin_historic_update($entry_id,$fields) {
     if ($hSize > 0 )
     {
         lab_userMetaData_save_key($fields["user_id"], "user_left", $histos[$hSize - 1]->end);
+        lab_userMetaData_save_key($fields["user_id"], "user_function", $histos[$hSize - 1]->function);
     }
     return true;
 }
