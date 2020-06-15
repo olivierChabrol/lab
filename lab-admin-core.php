@@ -13,19 +13,19 @@ function lab_admin_userMetaDatas_get($userId) {
         $items['user_email'] = $r->user_email;
         $items['user_url']   = $r->user_url;
         if ($r->meta_key == 'first_name')
-            $items['first_name'] = $r->meta_value;
+            $items['first_name'] = stripslashes($r->meta_value);
         if ($r->meta_key == 'last_name')
-            $items['last_name'] = $r->meta_value;
+            $items['last_name'] = stripslashes($r->meta_value);
         if (beginsWith($r->meta_key, "lab_"))
         {
             if ($r->meta_key == 'lab_user_left') {
                 $items['lab_user_left'] = array();
                 $items['lab_user_left']['id'] = $r->umeta_id;
-                $items['lab_user_left']['value'] = $r->meta_value;
+                $items['lab_user_left']['value'] = stripslashes($r->meta_value);
             }
             else
             {
-                $items[substr($r->meta_key, 4)] = $r->meta_value;
+                $items[substr($r->meta_key, 4)] = stripslashes($r->meta_value);
             }
         }
     }
