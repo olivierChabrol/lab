@@ -53,6 +53,7 @@ function lab_admin_loadUserHistory($user_id) {
  *                        'begin'=>$begin,
  *                        'end'=>$end,
  *                        'mobility'=>$mobility,
+ *                        'mobility_status'=>$mobility_status,
  *                        'host_id'=>$host_id,
  *                        'function'=>$function)
  */
@@ -339,6 +340,7 @@ function lab_admin_createTable_users_historic() {
         `begin` date NOT NULL,
         `end` date NULL,
         `mobility` bigint UNSIGNED NOT NULL DEFAULT 0,
+        `mobility_status` bigint UNSIGNED NOT NULL DEFAULT 0,
         `host_id` bigint UNSIGNED NULL COMMENT 'link with a user',
         `function` bigint UNSIGNED NOT NULL COMMENT 'link with parameter lab_user_function',
         PRIMARY KEY (`id`)
@@ -416,6 +418,7 @@ function lab_admin_initTable_param() {
             (18, 1, 'OUTGOING MOBILITY', NULL),
             (19, 1, 'KEY STATE', NULL),
             (20, 1, 'ECOLE DOCTORALE', NULL),
+            (21, 1, 'OUTGOING MOBILITY STATUS', NULL),
             (NULL, 2, 'Equipe', NULL),
             (NULL, 2, 'Groupe', NULL),
             (NULL, 3, 'Clé', NULL),

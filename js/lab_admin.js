@@ -1332,6 +1332,7 @@ function loadUserHistory() {
               $("#lab_historic_end").val(response.data['end']);
               $("#lab_historic_function option[value="+response.data['function']+"]").prop('selected','true');
               $("#lab_historic_mobility option[value="+response.data['mobility']+"]").prop('selected','true');
+              $("#lab_historic_mobility_status option[value="+response.data['mobility_status']+"]").prop('selected','true');
               $("#lab_historic_host").attr('host_id',response.data['host_id']);
               callbUser(response.data['host_id'],loadHostNames);
             }
@@ -1482,7 +1483,8 @@ function lab_addHistoric(update,entry_id=null) {
       'begin': $("#lab_historic_start").val(),
       'end': $("#lab_historic_end").val(),
       'function': $("#lab_historic_function").val(),
-      'mobility': $("#lab_historic_mobility").val()
+      'mobility': $("#lab_historic_mobility").val(),
+      'mobility_status': $("#lab_historic_mobility_status").val()
     }
     if ($("#lab_historic_host").attr('host_id')!=null && $("#lab_historic_host").attr('host_id').length) {
       data['host_id']=$("#lab_historic_host").attr('host_id');

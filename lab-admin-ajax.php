@@ -1575,6 +1575,7 @@ function lab_historic_add() {
     'begin'=>$_POST['begin'],
     'end'=>(strlen($_POST['end'])>1 ? $_POST['end'] : NULL),
     'mobility'=>$_POST['mobility'],
+    'mobility_status'=>$_POST['mobility_status'],
     'host_id'=>$_POST['host_id'],
     'function'=>$_POST['function'],
   ));
@@ -1611,6 +1612,7 @@ function lab_historic_update() {
     'begin'=>$_POST['begin'],
     'end'=>(strlen($_POST['end'])>1 ? $_POST['end'] : NULL),
     'mobility'=>$_POST['mobility'],
+    'mobility_status'=>$_POST['mobility_status'],
     'host_id'=>$_POST['host_id'],
     'function'=>$_POST['function']));
   if ($res === false) {

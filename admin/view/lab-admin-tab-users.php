@@ -241,6 +241,19 @@ function lab_admin_tab_user() {
       </tr>
       <tr>
         <th>
+          <label for="lab_historic_mobility_status"><?php esc_html_e('Outgoing mobility status','lab') ?> : </label>
+        </th>
+        <td>
+          <?php lab_html_select("lab_historic_mobility_status",
+                                "lab_historic_mobility_status",
+                                '',
+                                'lab_admin_get_params_outgoingMobilityStatus',
+                                AdminParams::PARAMS_OUTGOING_MOBILITY_STATUS,
+                                array("value"=>0,"label"=>"None"),0); ?>
+        </td>
+      </tr>
+      <tr>
+        <th>
           <label for="lab_historic_host"><?php esc_html_e('Hôte','lab') ?> : </label>
         </th>
         <td>

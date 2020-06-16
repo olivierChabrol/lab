@@ -20,6 +20,7 @@ class AdminParams {
     public const PARAMS_OUTGOING_MOBILITY = 18;
     public const PARAMS_KEY_STATE = 19;
     public const PARAMS_USER_ECOLE_DOCTORALE = 20;
+    public const PARAMS_OUTGOING_MOBILITY_STATUS = 21;
     
 
     public static function get_params_fromId($id) {
@@ -117,6 +118,9 @@ function lab_admin_param_is_ldap_enable() {
     return AdminParams::lab_admin_get_params_ldap_enable() == 'true';
 }
 
+function lab_admin_get_params_outgoingMobilityStatus() {
+    return AdminParams::get_params_fromId(AdminParams::PARAMS_OUTGOING_MOBILITY_STATUS);
+}
 function lab_admin_get_params_outgoingMobility() {
     return AdminParams::get_params_fromId(AdminParams::PARAMS_OUTGOING_MOBILITY);
 }
