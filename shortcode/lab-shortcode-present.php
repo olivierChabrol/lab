@@ -510,6 +510,24 @@ function td($dateStart = null, $dateEnd = null, $siteId = null, $empty = false, 
         $str .= "<td >&nbsp;</td>";
     } else {
         $canDelete = '';
+        $userList = "";
+
+        if ($workgroupUsers != null)
+        {
+            foreach($workgroupUsers as $wgU)
+            {
+                $userList .= $wgU->last_name." ".$wgU->first_name."\n";
+            }
+            if ($comment == null)
+            {
+                $comment = "";
+            }
+            else
+            {
+                $comment .= "\n";
+            }
+            $comment .= "Participants :\n".$userList;
+        }
         
         if ($userId != null && $presenceId != null) {
             
@@ -555,11 +573,6 @@ function td($dateStart = null, $dateEnd = null, $siteId = null, $empty = false, 
         $str .= '<td '.$canDelete.' '.($site!=null?$site:'').$colSpan.$tdId.$date.$title.$siteId.$hourStart.$hourEnd.$userNumber.'>';
         if ($workgroupUsers != null)
         {
-            $userList = "";
-            foreach($workgroupUsers as $wgU)
-            {
-                $userList .= $wgU->last_name." ".$wgU->first_name."\n";
-            }
             $str .= '<div class="usersWg" title="'.$userList.'"><b>'.count($workgroupUsers).'</b> <i class="fas fa-users fa-xs"></i></div>';
         }
         $str .= '<div class="wrapper"><div class="actions"'.$actionId.'><div title="Update" '.$editId.' class="floatLeft iconset_16px"><i class="fas fa-pen fa-xs"></i></div><div title="delete" '.$deleteId.' class="floatLeft iconset_16px"><i class="fas fa-trash fa-xs"></i></div></div><div class="gal_name">'.date('H:i', $dateStart);
