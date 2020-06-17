@@ -1997,6 +1997,14 @@ function workgroup_delete_by_presenceId($presencyId)
     }
 }
 
+function workgroup_users_list($groupId)
+{
+    global $wpdb;
+    $sql = "SELECT lpuw.user_id,um1.meta_value AS last_name,um2.meta_value AS first_name FROM `".$wpdb->prefix."lab_presence_users_workgroup` AS lpuw LEFT JOIN ".$wpdb->prefix."usermeta AS um1 ON um1.user_id=lpuw.user_id LEFT JOIN ".$wpdb->prefix."usermeta AS um2 ON um2.user_id=lpuw.user_id WHERE workgroup_id=".$groupId." AND um1.meta_key='last_name' AND um2.meta_key='first_name'";
+    $rs = $wpdb->get_results($sql);
+    return $rs;
+}
+
 function workgroup_users_count($groupId)
 {
     global $wpdb;

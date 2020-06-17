@@ -50,17 +50,20 @@ function lab_present_select($param) {
 
         if (isset($user->wg_name) && $user->wg_name != null)
         {
-            $user->nbUsers = workgroup_users_count($user->wg_id);
+            $user->users = workgroup_users_list($user->wg_id);
+            //$user->nbUsers = workgroup_users_count($user->wg_id);
             $users["<b>".$user->wg_name . "</b><br>" . $user->first_name." ".$user->last_name][date('d', $user->hour_start)][] = $user;
 
         }
         else if ($userId == 0 || $userId != $user->user_id) 
         {
             $userId = $user->user_id;
+            $user->users = null;
             $user->nbUsers = null;
             $users[$user->first_name." ".$user->last_name][date('d', $user->hour_start)][] = $user;
         }
         else if ($userId == $user->user_id) {
+            $user->users = null;
             $user->nbUsers = null;
             $users[$user->first_name." ".$user->last_name][date('d', $user->hour_start)][] = $user;
         }
@@ -154,13 +157,13 @@ function lab_present_select($param) {
                         if (date('H', $hours->hour_end) >= 13) {
                             $sum[$hours->site_id][$i*2] = $sum[$i*2] + 1;
                             $sum[$hours->site_id][$i*2+1] = $sum[$i*2+1] + 1;
-                            $str .= td($hours->hour_start,$hours->hour_end,$hours->site_id, false,"style=\"background-color:#".$colors[$hours->site_id].";color:white;\"", $hours->user_id, $hours->id, true, $hours->comment, $hours->nbUsers);
+                            $str .= td($hours->hour_start,$hours->hour_end,$hours->site_id, false,"style=\"background-color:#".$colors[$hours->site_id].";color:white;\"", $hours->user_id, $hours->id, true, $hours->comment, $hours->users);
                             //$str .= td($hours->hour_end,null,false,"style=\"background-color:#".$colors[$hours->site_id].";color:white;\"", $hours->user_id, $hours->id);
                             $nb = 2; 
                         }
                         // presence le matin
                         else {
-                            $str .= td($hours->hour_start, $hours->hour_end,$hours->site_id, false,"style=\"background-color:#".$colors[$hours->site_id].";color:white;\"", $hours->user_id, $hours->id,false, $hours->comment, $hours->nbUsers);
+                            $str .= td($hours->hour_start, $hours->hour_end,$hours->site_id, false,"style=\"background-color:#".$colors[$hours->site_id].";color:white;\"", $hours->user_id, $hours->id,false, $hours->comment, $hours->users);
                             $sum[$hours->site_id][$i*2] += 1;
                         }
                     }
@@ -170,7 +173,7 @@ function lab_present_select($param) {
                             $str .= td(null, null, null, true);
                             $nb++;
                         }
-                        $str .= td($hours->hour_start, $hours->hour_end, $hours->site_id, false, "style=\"background-color:#".$colors[$hours->site_id].";color:white;\"", $hours->user_id, $hours->id,false, $hours->comment, $hours->nbUsers);
+                        $str .= td($hours->hour_start, $hours->hour_end, $hours->site_id, false, "style=\"background-color:#".$colors[$hours->site_id].";color:white;\"", $hours->user_id, $hours->id,false, $hours->comment, $hours->users);
                         $sum[$hours->site_id][$i*2+1] += 1;
                     }
                     $nb++;
@@ -502,7 +505,7 @@ function getStartDate()
  * @param [type] $comment
  * @return void
  */
-function td($dateStart = null, $dateEnd = null, $siteId = null, $empty = false, $site = null, $userId = null, $presenceId=null, $allDay = false, $comment= null, $workgroupUserNumber = null) {
+function td($dateStart = null, $dateEnd = null, $siteId = null, $empty = false, $site = null, $userId = null, $presenceId=null, $allDay = false, $comment= null, $workgroupUsers = null) {
     if ($empty) {
         $str .= "<td >&nbsp;</td>";
     } else {
@@ -516,7 +519,7 @@ function td($dateStart = null, $dateEnd = null, $siteId = null, $empty = false, 
 
             if ($admin || $userId == $currentUserId) {
                 $canDelete = ' class="';
-                if ($workgroupUserNumber != null)
+                if ($workgroupUsers != null)
                 {
                     $canDelete .='userNumber ';
                 }
@@ -524,7 +527,7 @@ function td($dateStart = null, $dateEnd = null, $siteId = null, $empty = false, 
             }
             else
             {
-                if ($workgroupUserNumber != null)
+                if ($workgroupUsers != null)
                 {
                     $canDelete .=' class="userNumber" ';
                 }
@@ -544,15 +547,20 @@ function td($dateStart = null, $dateEnd = null, $siteId = null, $empty = false, 
         $hourStart = " hourStart=\"".date("H:i", $dateStart)."\"";
         $hourEnd   = " hourEnd=\"".date("H:i", $dateEnd)."\"";
         $userNumber = "";
-        if ($workgroupUserNumber != null)
+        if ($workgroupUsers != null)
         {
-            $userNumber .= " userNumber=\"".$workgroupUserNumber."\"";
+            $userNumber .= " userNumber=\"".count($workgroupUsers)."\"";
         }
 
         $str .= '<td '.$canDelete.' '.($site!=null?$site:'').$colSpan.$tdId.$date.$title.$siteId.$hourStart.$hourEnd.$userNumber.'>';
-        if ($workgroupUserNumber != null)
+        if ($workgroupUsers != null)
         {
-            $str .= '<div class="usersWg"><b>'.$workgroupUserNumber.'</b> <i class="fas fa-users fa-xs"></i></div>';
+            $userList = "";
+            foreach($workgroupUsers as $wgU)
+            {
+                $userList .= $wgU->last_name." ".$wgU->first_name."\n";
+            }
+            $str .= '<div class="usersWg" title="'.$userList.'"><b>'.count($workgroupUsers).'</b> <i class="fas fa-users fa-xs"></i></div>';
         }
         $str .= '<div class="wrapper"><div class="actions"'.$actionId.'><div title="Update" '.$editId.' class="floatLeft iconset_16px"><i class="fas fa-pen fa-xs"></i></div><div title="delete" '.$deleteId.' class="floatLeft iconset_16px"><i class="fas fa-trash fa-xs"></i></div></div><div class="gal_name">'.date('H:i', $dateStart);
         if ($dateEnd != null) {
