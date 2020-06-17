@@ -52,7 +52,7 @@ function lab_present_select($param) {
         {
             $user->users = workgroup_users_list($user->wg_id);
             //$user->nbUsers = workgroup_users_count($user->wg_id);
-            $users["<b>".$user->wg_name . "</b><br>" . $user->first_name." ".$user->last_name][date('d', $user->hour_start)][] = $user;
+            $users["<b>".stripslashes($user->wg_name) . "</b><br>" . $user->first_name." ".$user->last_name][date('d', $user->hour_start)][] = $user;
 
         }
         else if ($userId == 0 || $userId != $user->user_id) 
@@ -248,15 +248,7 @@ function lab_present_choice($param) {
     );
     $startDay = getStartDate();
 
-    $choiceStr = "<br/><hr><div>
-        <h3>".esc_html__("Je serai présent·e", "lab")."</h3>
-            <div class=\"input-group mb-3\">Rejoindre un groupe de travail : ".
-            //lab_html_select_str("workGroupFollow", "workGroupFollow", "", get_workgroup_of_the_week, $startDay, array("label"=>"None","value"=>""), null, array("id"=>"id", "value"=>"name"))."</div>
-            lab_html_select_str("workGroupFollow", "workGroupFollow", "", getWorgroups, $startDay, array("label"=>"None","value"=>""), null, null, array("date"=>"date", "hour_start"=>"hour_start", "hour_end"=>"hour_end", "name"=>"name", "site"=>"site")).
-            "</div>
-            <div class=\"input-group mb-3\">
-            <input id='userId' name='userId' type='hidden' value='" . get_current_user_id() . "' />
-            <input id=\"external\" type=\"hidden\"  val=\"0\"/>
+    $choiceStr = "<br/><hr><div>usersPresent\"  val=\"0\"/>
 
             <label for='date-open'>".esc_html__("Le", "lab")."</label>
             <input type='date' name='date-open' id='date-open' class='form-control'/>
