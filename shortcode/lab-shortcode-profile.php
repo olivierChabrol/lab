@@ -40,6 +40,33 @@ function lab_profile($id=0) {
 					<span class="lab_current">'.(strlen($user->hal_name) ? '<i>'.esc_html__('Votre nom HAL','lab').' : </i>'.$user->hal_name : '<i>'.esc_html__('Vous n\'avez pas défini votre nom HAL','lab').'</i>').'</span>
 					<input style="display:none;" type="text" class="lab_profile_edit" id="lab_profile_edit_halName" placeholder="'.esc_html__('Nom HAL','lab').'" value="' . $user->hal_name .'"/><a id="lab_profile_testHal_name" target="_blank" style="display:none" class="lab_profile_edit" href="'.$HalName_URL.'">'.esc_html__('Tester sur HAL','lab').'</a>
 				  </p>';
+	$metaDatas = "";
+	if (isset($user->funding) && !empty($user->funding))
+	{
+		$metaDatas .='<p id="lab_profile_funding"><span class="lab_current">'.$user->funding.'</span></p>';
+	}
+	if (isset($user->sectionCn) && !empty($user->sectionCn))
+	{
+		$metaDatas .='<p id="lab_profile_section_cn"><span class="lab_current">'.esc_html__('Section CN','lab').' : '.$user->sectionCn.'</span></p>';
+	}
+	if (isset($user->sectionCnu) && !empty($user->sectionCnu))
+	{
+		$metaDatas .='<p id="lab_profile_section_cnu"><span class="lab_current">'.esc_html__('Section CNU','lab').' : '.$user->sectionCnu.'</span></p>';
+	}
+	if (isset($user->thesisTitle) && !empty($user->thesisTitle))
+	{
+		$metaDatas .='<p id="lab_profile_thesis_title"><span class="lab_current">'.esc_html__('Thesis','lab').' : '.$user->thesisTitle.'</span></p>';
+	}
+	if (isset($user->phdSchool) && !empty($user->phdSchool))
+	{
+		$metaDatas .='<p id="lab_profile_php_school"><span class="lab_current">'.esc_html__('PHD School','lab').' : '.$user->phdSchool.'</span></p>';
+	}
+	if (isset($user->hdrTitle) && !empty($user->hdrTitle))
+	{
+		$metaDatas .='<p id="lab_profile_hdr_title"><span class="lab_current">'.esc_html__('HDR','lab').' : '.$user->hdrTitle.'</span></p>';
+	}
+	  
+	  				  
 	$profileStr = '
     <div id="lab_profile_card" bg-color="'.$user->bg_color.'">
 		<div id="lab_pic_name">
@@ -64,7 +91,7 @@ function lab_profile($id=0) {
 						<span class="lab_current">'.$user->print_phone().'</span>'
 						.($is_current_user || current_user_can('edit_users') ? '<input style="display:none;" type="text" class="lab_profile_edit" id="lab_profile_edit_phone" placeholder="Numéro de téléphone" value="' . $user->phone .'"/>' : '').
 					'</p>'
-					.($is_current_user || current_user_can('edit_users') ? $editSocial.$halFields : '').'
+					.($is_current_user || current_user_can('edit_users') ? $editSocial.$metaDatas.$halFields : '').'
 				</div>
 			</div>
 		</div>
@@ -102,6 +129,12 @@ class labUser {
 	public $hal_id;
 	public $social;
 	public $keywords;
+	public $funding;
+	public $sectionCn;
+	public $sectionCnu;
+	public $thesisTitle;
+	public $hdrTitle;
+	public $phdSchool;
 
 	function __construct($id) {
 		$this -> id = $id;
@@ -110,6 +143,14 @@ class labUser {
 		$this -> location    = lab_profile_get_param_metaKey($id,'lab_user_location', AdminParams::PARAMS_SITE_ID);
 		$this -> function    = lab_profile_get_param_metaKey($id,'lab_user_function', AdminParams::PARAMS_USER_FUNCTION_ID);
 		$this -> affiliation = lab_profile_get_param_metaKey($id,'lab_user_employer', AdminParams::PARAMS_EMPLOYER);
+		$this -> funding     = lab_profile_get_param_metaKey($id,'lab_user_funding', AdminParams::PARAMS_FUNDING_ID);
+		$this -> sectionCn   = lab_profile_get_param_metaKey($id,'lab_user_section_cn', AdminParams::PARAMS_USER_SECTION_CN);
+		$this -> sectionCnu  = lab_profile_get_param_metaKey($id,'lab_user_section_cnu', AdminParams::PARAMS_USER_SECTION_CNU);
+		$this -> thesisTitle = stripslashes(lab_profile_get_metaKey($id,'lab_user_thesis_title'));
+		//$this -> thesisTitle = lab_profile_get_metaKey($id,'lab_user_thesis_title');
+		$this -> hdrTitle    = stripslashes(lab_profile_get_metaKey($id,'lab_user_hdr_title'));
+		$this -> phdSchool   = lab_profile_get_metaKey($id,'lab_user_phd_school');
+
 		$this -> office      = lab_profile_get_metaKey($id,'lab_user_office_number');
 		$this -> officeFloor = lab_profile_get_metaKey($id,'lab_user_office_floor');
 		$temp 				 = lab_profile_get_Info($id);
