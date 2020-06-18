@@ -65,7 +65,7 @@ function lab_profile($id=0) {
 	{
 		$metaDatas .='<p id="lab_profile_hdr_title"><span class="lab_current">'.esc_html__('HDR','lab').' : '.$user->hdrTitle.'</span></p>';
 	}
-	if (isset($user->historics) )
+	if ($user->historics != null && isset($user->historics))
 	{
 		$lastHisto = $user->historics;
 		//var_dump($lastHisto);
