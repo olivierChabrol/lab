@@ -24,6 +24,8 @@ We reuse code from :
 
 [lab-directory only-left-user=true] Display only left user of the lab (declare as left)
 
+[lab-directory function=PR,DR] Display only user with the lab_user_function slug parameter
+
 [lab-directory debug=true] Display debug info
 
 [lab-directory group=AA] Display user associated to a group (the acronym group is use) with alphabet letters for search
