@@ -20,20 +20,27 @@
 
 function lab_directory($param) {
     $param = shortcode_atts(array(
-        'display-left-user' => get_option('lab-directory'),
         'group' => get_option('lab-directory'),
         'display-group' => get_option('display-group'),
         'all-group' => get_option('all-group'),
+        'include-left-user' => get_option('include-left-user'),
+        'only-left-user' => get_option('only-left-user'),
+        'debug' => get_option('debug'),
         ),
         $param, 
         "lab-directory"
     );
 
-    $displayLeftUser  = $param['display-left-user'];
-    $displayAllgroup  = $param['all-group'];
-    $group   = $param['group'];
-    $displayGroupParam   = $param['display-group'];
+    $includeLeftUserParam  = $param['include-left-user'];
+    $onlyLeftUserParam     = $param['only-left-user'];
+    $displayAllgroup       = $param['all-group'];
+    $group                 = $param['group'];
+    $displayGroupParam     = $param['display-group'];
+    $debugParam            = $param['debug'];
     $displayGroup = false;
+    $displayLeftUser = false;
+    $displayOnlyLeftUser = false;
+    $debug               = false;
 
     $joinAsLeft  = "";
     $whereAsLeft = "";
@@ -46,6 +53,11 @@ function lab_directory($param) {
     $groupAsSCOption = isset($displayGroupParam) && !empty($group);
     // if $displayAllgroup is set to true, don't display alphabet
     $displayAllgroup  = isset($displayAllgroup) && !empty($displayAllgroup) && $displayAllgroup=="true";
+    // if $displayAllgroup is set to true, display user left, otherwise display only user present
+    $displayLeftUser  = isset($includeLeftUserParam) && !empty($includeLeftUserParam) && $includeLeftUserParam=="true";
+
+    $displayOnlyLeftUser = isset($onlyLeftUserParam) && !empty($onlyLeftUserParam) && $onlyLeftUserParam=="true";
+    $debug = isset($debugParam) && !empty($debugParam) && $debugParam=="true";
 
     global $wpdb;
     if (!$displayAllgroup && !$groupAsSCOption) {
@@ -54,14 +66,29 @@ function lab_directory($param) {
             $groupAsParameter = true;
         }
     }
+
+    $directoryStr = "";
+    if ($debug)
+    {
+        //$directoryStr .= "**** LETTER :". $_GET["letter"]."<br>";
+        $directoryStr .= "**** onlyLeftUserParam :". $onlyLeftUserParam."<br>";
+        $directoryStr .= "**** displayOnlyLeftUser :". $displayOnlyLeftUser."<br>";
+        $directoryStr .= "**** includeLeftUserParam :". $includeLeftUserParam."<br>";
+        $directoryStr .= "**** displayLeftUser :". $displayLeftUser."<br>";
+    }
     
 
     /*** FILTER FOR SHORTCODE PARAMETERS  ***/
-    if(!empty($displayLeftUser)) {
-        $displayLeftUserValue = ($displayLeftUser === 'true');
+    if(!$displayLeftUser && !$displayOnlyLeftUser) {
+        //$displayLeftUserValue = ($displayLeftUser === 'true');
         $joinDisplayLeftUser = " JOIN `".$wpdb->prefix."usermeta` AS um6 ON um1.`user_id` = um6.`user_id` ";
-        $whereDisplayLeftUser = " AND um6.`meta_key`='lab_user_left' "."AND um6.`meta_value` IS ".($displayLeftUserValue?"NOT":"")." NULL";
+        $whereDisplayLeftUser = " AND um6.`meta_key`='lab_user_left' "."AND um6.`meta_value` IS  NULL";
     }
+    else if ($displayOnlyLeftUser) {
+        $joinDisplayLeftUser = " JOIN `".$wpdb->prefix."usermeta` AS um6 ON um1.`user_id` = um6.`user_id` ";
+        $whereDisplayLeftUser = " AND um6.`meta_key`='lab_user_left' "."AND um6.`meta_value` IS NOT NULL";
+    }
+
     if(!empty($group)) {
         $joinGroup = " JOIN `".$wpdb->prefix."lab_users_groups`AS ug6 ON um1.`user_id` = ug6.`user_id` JOIN `".$wpdb->prefix."lab_groups` AS g7 ON ug6.`group_id` = g7.`id` ";
         $whereGroup = " AND g7.`acronym`  = '" . $group . "'";
@@ -93,15 +120,15 @@ function lab_directory($param) {
         }
         $sql .= " AND um1.`meta_value`LIKE '$currentLetter%'"; 
     }
-    $sql .= "ORDER BY last_name";
+    $sql .= " ORDER BY last_name";
+    if ($debug)
+    {
+        $directoryStr .= $sql."<br>";
+    }
 
     $results = $wpdb->get_results($sql);
     $nbResult = $wpdb->num_rows;
     $items = array();
-    $directoryStr = "";
-    //$directoryStr .= "**** LETTER :". $_GET["letter"]."<br>";
-    //$directoryStr .= "**** GROUP :". $group."<br>";
-    //$directoryStr .= $sql;
     if (!$displayAllgroup) 
     {
         $alphachar = array_merge(range('A', 'Z'));

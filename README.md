@@ -18,9 +18,13 @@ We reuse code from :
 
 [lab-directory] Display all user in lab
 
-[lab-directory] display-left-user=false Display only user present in lab (not declare as left)
+[lab-directory] include-left-user=true Include left user of the lab (declare as left), false as default
 
-[lab-directory display-left-user=true] Display only left user
+[lab-directory include-left-user=true] Include left user of the lab (declare as left)
+
+[lab-directory only-left-user=true] Display only left user of the lab (declare as left)
+
+[lab-directory debug=true] Display debug info
 
 [lab-directory group=AA] Display user associated to a group (the acronym group is use) with alphabet letters for search
 
