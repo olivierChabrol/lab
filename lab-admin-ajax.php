@@ -41,10 +41,11 @@ function lab_admin_param_create_table() {
 
 function lab_admin_ajax_param_save() {
   $paramId = $_POST['id'];
-  $type  = $_POST['type'];
-  $value = $_POST['value'];
-  $color = $_POST['color'];
-  $shift = $_POST['shift'];
+  $type    = $_POST['type'];
+  $value   = $_POST['value'];
+  $slug    = $_POST['slug'];
+  $color   = $_POST['color'];
+  $shift   = $_POST['shift'];
   if (!isset($paramId) || $paramId == "")
   {
     $paramId = null;
@@ -54,16 +55,21 @@ function lab_admin_ajax_param_save() {
   {
     $shift = null;
   }
+  if (!isset($slug) || $slug == "")
+  {
+    $slug = null;
+  }
   
-    
-  $ok = lab_admin_param_save($type, $value, $color, $paramId, $shift);
-  wp_send_json_success($ok);
-  if ($ok) {
-    wp_send_json_success($ok);
+  //wp_send_json_error(" paramId : ".$paramId." type : ".$type." value : ".$value." slug : ".$slug." color : ".$color." shift : ".$shift);
+  $ok = lab_admin_param_save($type, $value, $color, $paramId, $shift, $slug);
+  //wp_send_json_success($ok);
+  if ($ok["success"] !== false) {
+    wp_send_json_success($ok["success"]);
   }
   else
   {
-    wp_send_json_error(sprintf(__("A param key with '%1s' already exist in db", "lab"), $value));
+   // wp_send_json_error(sprintf(__("A param key with '%1s' already exist in db", "lab"), $value));
+   wp_send_json_error($ok["data"]);
   }
 }
 
@@ -102,7 +108,7 @@ function lab_admin_param_search_value() {
     $items = array();
   
     foreach ($results as $r) {
-      $items[] = array("label" => $r->value, "value" => $r->id, "type"=>$r->type_param, "color"=>$r->color);
+      $items[] = array("label" => $r->value, "value" => $r->id, "type"=>$r->type_param, "color"=>$r->color, "slug"=>$r->slug);
     }
     wp_send_json_success($items);
   }
@@ -1659,7 +1665,7 @@ function lab_admin_ldap_settings() {
   );
   foreach ($associations as $key => $value) {
     if (strlen($_POST[$key][0])>0) {
-      if (lab_admin_param_save($value,$_POST[$key][0],'000001',$_POST[$key][1])===false) {
+      if (lab_admin_param_save($value, $_POST[$key][0],'000001',($_POST[$key][1])===false, null)) {
         wp_send_json_error();
       }
     }

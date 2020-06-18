@@ -43,7 +43,7 @@ function lab_profile($id=0) {
 	$metaDatas = "";
 	if (isset($user->funding) && !empty($user->funding))
 	{
-		$metaDatas .='<p id="lab_profile_funding"><span class="lab_current">'.$user->funding.'</span></p>';
+		$metaDatas .='<p id="lab_profile_funding"><span class="lab_current">'.esc_html__('Funding','lab').' : '.$user->funding.'</span></p>';
 	}
 	if (isset($user->sectionCn) && !empty($user->sectionCn))
 	{

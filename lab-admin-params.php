@@ -66,6 +66,14 @@ class AdminParams {
         return AdminParams::get_params_fromId(AdminParams::PARAMS_USER_ECOLE_DOCTORALE);
     }
 
+    public static function get_param_by_slug($slug)
+    {
+        global $wpdb;
+        $sql = "SELECT * FROM `".$wpdb->prefix."lab_params` WHERE slug='".$slug."'";
+        $results = $wpdb->get_results($sql);
+        return $results;
+    }
+
     public static function get_param($id) {
         global $wpdb;
         $sql = "SELECT value FROM `".$wpdb->prefix."lab_params` WHERE id=".$id." ORDER BY value;";

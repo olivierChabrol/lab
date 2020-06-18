@@ -26,6 +26,7 @@ function lab_directory($param) {
         'include-left-user' => get_option('include-left-user'),
         'only-left-user' => get_option('only-left-user'),
         'debug' => get_option('debug'),
+        'function' => get_option('function'),
         ),
         $param, 
         "lab-directory"
@@ -37,15 +38,19 @@ function lab_directory($param) {
     $group                 = $param['group'];
     $displayGroupParam     = $param['display-group'];
     $debugParam            = $param['debug'];
+    $functionParam         = $param['function'];
     $displayGroup = false;
     $displayLeftUser = false;
     $displayOnlyLeftUser = false;
     $debug               = false;
+    $byFunction          = false;
 
     $joinAsLeft  = "";
     $whereAsLeft = "";
     $joinGroup   = "";
     $whereGroup  = "";
+    $joinFunctionUser  = "";
+    $whereFunctionUser = "";
 
     // if the searchedGroup is passed as an URL parameter
     $groupAsParameter = isset($displayGroupParam) && !empty($displayGroupParam) && $displayGroupParam=="true";
@@ -58,8 +63,30 @@ function lab_directory($param) {
 
     $displayOnlyLeftUser = isset($onlyLeftUserParam) && !empty($onlyLeftUserParam) && $onlyLeftUserParam=="true";
     $debug = isset($debugParam) && !empty($debugParam) && $debugParam=="true";
+    $byFunction = isset($functionParam) && !empty($functionParam);
+    $functions = "";
 
     global $wpdb;
+    if ($byFunction)
+    {
+        $functions = explode(",", $functionParam);
+        $joinFunctionUser = " JOIN `".$wpdb->prefix."usermeta` AS um9 ON um1.`user_id` = um9.`user_id` ";
+        $whereFunctionUser = " AND um9.`meta_key`='lab_user_function' AND (";
+        foreach($functions as $fct)
+        {
+            $params = AdminParams::get_param_by_slug($fct);
+            if (count($param) > 0)
+            {
+                foreach($params as $param)
+                {
+                    $whereFunctionUser .= "um9.`meta_value` = '".$param->id."' OR ";
+                }
+            }
+        }
+        $whereFunctionUser = substr($whereFunctionUser, 0, strlen($whereFunctionUser) - 3);
+        $whereFunctionUser .= ") ";
+    }
+
     if (!$displayAllgroup && !$groupAsSCOption) {
         if (isset( $_GET["group"] ) && !empty( $_GET["group"] ) ) {
             $group = $_GET["group"];
@@ -106,12 +133,12 @@ function lab_directory($param) {
         JOIN `".$wpdb->prefix."users` AS u4 ON um1.`user_id` = u4.`ID` 
         JOIN `".$wpdb->prefix."usermeta` AS um5 ON um1.`user_id` = um5.`user_id`
         JOIN `".$wpdb->prefix."usermeta` AS um8 ON um1.`user_id` = um8.`user_id`
-        ".$joinDisplayLeftUser.$joinGroup."
+        ".$joinDisplayLeftUser.$joinGroup.$joinFunctionUser."
         WHERE   um1.`meta_key`='last_name' 
             AND um2.`meta_key`='last_name' 
             AND um3.`meta_key`='first_name' 
             AND um8.`meta_key`='lab_user_slug' 
-            AND um5.`meta_key`='lab_user_phone'".$whereDisplayLeftUser.$whereGroup;
+            AND um5.`meta_key`='lab_user_phone'".$whereDisplayLeftUser.$whereGroup.$whereFunctionUser;
 
     if (!$displayAllgroup) {
         $currentLetter = $_GET["letter"];

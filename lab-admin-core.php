@@ -216,8 +216,9 @@ function lab_admin_param_change_id($oldId, $type, $newId)
     }
 }
 
-function lab_admin_param_save($paramType, $paramName, $color = null, $paramId = null, $shift = null)
+function lab_admin_param_save($paramType, $paramName, $color = null, $paramId = null, $shift = null, $paramSlug = null)
 {
+    //return ["success"=>false, "data"=>(" paramId : ".$paramId." type : ".$paramType." value : ".$paramName." slug : ".$paramSlug." color : ".$color." shift : ".$shift)];
     global $wpdb;
     if ($type == -1) {
       $type = 0;
@@ -236,10 +237,13 @@ function lab_admin_param_save($paramType, $paramName, $color = null, $paramId = 
     {
         //return "count > 0 : ".lab_admin_param_exist($paramType, $paramName);
         if (lab_admin_param_exist($paramType, $paramName)) {
-            return false;
+            return ["success"=>false,"data"=>sprintf(__("A param key with '%1s' and type %1s already exist in db", "lab"), $paramName,AdminParams::get_param($paramType))];
+        } else if (strpos($paramSlug, " ") > 0) {
+            return ["success"=>false,"data"=>sprintf(__("Can't have space in param slug name '%1s'", "lab"), $paramSlug)];
         } else {
             // case of new param
-            if ($shift != null && $shift == 'on' && $paramType == AdminParams::PARAMS_ID) {
+            if ($shift != null && $shift == 'true' && $paramType == AdminParams::PARAMS_ID) {
+                return ["success"=>false, "data"=>"LA1"];
                 $lastParamId = lab_admin_param_last_param_system_id();
                 $newId = $lastParamId + 1;
 
@@ -247,20 +251,23 @@ function lab_admin_param_save($paramType, $paramName, $color = null, $paramId = 
                 
                 $cloneId  = lab_admin_param_clone($oldParam);
                 lab_admin_param_change_id($oldParam->id, $oldParam->type_param, $cloneId);
-                $wpdb->update($wpdb->prefix.'lab_params', array("type_param"=>AdminParams::PARAMS_ID, "value"=>$paramName, "color"=>$color), array("id"=>$newId));
+                $wpdb->update($wpdb->prefix.'lab_params', array("type_param"=>AdminParams::PARAMS_ID, "value"=>$paramName,"slug"=>$paramSlug, "color"=>$color), array("id"=>$newId));
                 return $cloneId;
             }
             else {
-                $wpdb->insert($wpdb->prefix.'lab_params', array("type_param"=>$paramType, "value"=>$paramName, "color"=>$color));
+                //return ["success"=>false, "data"=>"LA2"];
+                //return ["success"=>false, "data"=>(" paramId : ".$paramId." type : ".$paramType." value : ".$paramName." slug : ".$paramSlug." color : ".$color." shift : ".$shift)];
+                $wpdb->insert($wpdb->prefix.'lab_params', array("slug"=>$paramSlug,"type_param"=>$paramType, "value"=>$paramName, "color"=>$color));
                 return $wpdb->insert_id;
             }
-
+            //*/
             
         }
     }
     else
     {
-        $wpdb->update($wpdb->prefix.'lab_params', array("type_param"=>$paramType, "value"=>$paramName, "color"=>$color), array("id"=>$paramId));
+        //return ["success"=>false, "data"=>(" paramId : ".$paramId." type : ".$paramType." value : ".$paramName." slug : ".$paramSlug." color : ".$color." shift : ".$shift)];
+        $wpdb->update($wpdb->prefix.'lab_params', array("type_param"=>$paramType, "value"=>$paramName, "slug"=>$paramSlug, "color"=>$color), array("id"=>$paramId));
         return $paramId;
     }
 }
@@ -362,6 +369,7 @@ function lab_admin_createTable_param() {
         `type_param` bigint UNSIGNED NOT NULL,
         `value` varchar(45) DEFAULT NULL,
         `color` varchar(8) DEFAULT NULL,
+        `slug` varchar(8) DEFAULT NULL,
         PRIMARY KEY (`id`)
       ) ENGINE=InnoDB";
     $wpdb->get_results($sql);
