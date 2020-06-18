@@ -399,6 +399,9 @@ function lab_admin_tab_user() {
 
 
 function lab_admin_history_fields($elem) {
+  if ($elem == null) {
+    return null;
+  }
   //var_dump($elem->begin);
   $histoObj = new StdClass();
   $histoObj->begin = date_create_from_format("Y-m-d", $elem->begin);
