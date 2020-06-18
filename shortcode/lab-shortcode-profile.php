@@ -171,7 +171,7 @@ class labUser {
 		$this -> thesisTitle = stripslashes(lab_profile_get_metaKey($id,'lab_user_thesis_title'));
 		//$this -> thesisTitle = lab_profile_get_metaKey($id,'lab_user_thesis_title');
 		$this -> hdrTitle    = stripslashes(lab_profile_get_metaKey($id,'lab_user_hdr_title'));
-		$this -> phdSchool   = lab_profile_get_metaKey($id,'lab_user_phd_school');
+		$this -> phdSchool   = lab_profile_get_param_metaKey($id,'lab_user_phd_school', AdminParams::PARAMS_USER_ECOLE_DOCTORALE);
 
 		$this -> office      = lab_profile_get_metaKey($id,'lab_user_office_number');
 		$this -> officeFloor = lab_profile_get_metaKey($id,'lab_user_office_floor');
