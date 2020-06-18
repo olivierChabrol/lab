@@ -37,6 +37,7 @@ function lab_admin_get_userLogin($user_id) {
     $sql = "SELECT `user_login` FROM `".$wpdb->prefix."users` WHERE ID=$user_id";
     return $wpdb->get_var($sql);
 }
+
 function lab_admin_loadUserHistory($user_id) {
     global $wpdb;
     $sql = "SELECT * from `".$wpdb->prefix."lab_users_historic` WHERE `user_id`=$user_id ORDER BY `begin` ASC";
@@ -46,6 +47,12 @@ function lab_admin_loadUserHistory($user_id) {
     } else {
         return lab_admin_history($res);
     }
+}
+function lab_admin_load_lastUserHistory($user_id) {
+    global $wpdb;
+    $sql = "SELECT * from `".$wpdb->prefix."lab_users_historic` WHERE `user_id`=$user_id ORDER BY `begin` DESC LIMIT 1";
+    $res = $wpdb->get_results($sql);
+    return lab_admin_history_fields($res[0]);
 }
 /**
  * @param array $fields ('user_id'=>$user_id,

@@ -65,6 +65,27 @@ function lab_profile($id=0) {
 	{
 		$metaDatas .='<p id="lab_profile_hdr_title"><span class="lab_current">'.esc_html__('HDR','lab').' : '.$user->hdrTitle.'</span></p>';
 	}
+	if (isset($user->historics) )
+	{
+		$lastHisto = $user->historics;
+		//var_dump($lastHisto);
+		$metaDatas .='<p id="lab_profile_historic"><span class="lab_current">'.esc_html__('Begin','lab').' : '.strftime('%d %B %G',$lastHisto->begin->getTimestamp()).' - '.
+		($lastHisto->end == null?esc_html__('present','lab'):$lastHisto->end).' • '.AdminParams::get_param($lastHisto->function);
+		if ($lastHisto->host) {
+			$metaDatas .= " ".esc_html('Host','lab')." : " .$lastHisto->host;
+		}
+		if ($lastHisto->mobility) {
+			$metaDatas .= "<br>".esc_html('Mobility','lab')." : " .$lastHisto->mobility;
+			if ($lastHisto->mobility_status) {
+				$metaDatas .= " " .$lastHisto->mobility_status;
+			}
+		}
+		else
+		{$metaDatas .= "<br>".esc_html('Mobility','lab')." : " .$lastHisto->mobility_status;
+
+		}
+		$metaDatas .='</span></p>';
+	}
 	  
 	  				  
 	$profileStr = '
@@ -146,6 +167,7 @@ class labUser {
 		$this -> funding     = lab_profile_get_param_metaKey($id,'lab_user_funding', AdminParams::PARAMS_FUNDING_ID);
 		$this -> sectionCn   = lab_profile_get_param_metaKey($id,'lab_user_section_cn', AdminParams::PARAMS_USER_SECTION_CN);
 		$this -> sectionCnu  = lab_profile_get_param_metaKey($id,'lab_user_section_cnu', AdminParams::PARAMS_USER_SECTION_CNU);
+		$this -> historics   = lab_admin_load_lastUserHistory($id);
 		$this -> thesisTitle = stripslashes(lab_profile_get_metaKey($id,'lab_user_thesis_title'));
 		//$this -> thesisTitle = lab_profile_get_metaKey($id,'lab_user_thesis_title');
 		$this -> hdrTitle    = stripslashes(lab_profile_get_metaKey($id,'lab_user_hdr_title'));

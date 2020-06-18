@@ -397,6 +397,22 @@ function lab_admin_tab_user() {
 <?php
 }
 
+
+function lab_admin_history_fields($elem) {
+  //var_dump($elem->begin);
+  $histoObj = new StdClass();
+  $histoObj->begin = date_create_from_format("Y-m-d", $elem->begin);
+  $histoObj->end   = isset($elem->end) ? date_create_from_format("Y-m-d", $elem->end) : NULL;
+  
+  $host = $elem->host_id==null ? null : new LabUser($elem->host_id);
+  $histoObj->host  = $host==null ? null : $host->first_name . ' ' . $host->last_name;
+  $histoObj->function = $elem->function;
+  $histoObj->mobility        = $elem->mobility!=0?AdminParams::get_param($elem->mobility):null;
+  $histoObj->mobility_status = $elem->mobility_status!=0?AdminParams::get_param($elem->mobility_status):null;
+  //*/
+  return $histoObj;
+}
+
 /**
  * @param array $list : id, ext, begin, end, host_id, function
  * @return string HTML results
