@@ -71,9 +71,9 @@ function lab_directory($param) {
     if ($byFunction)
     {
         $functions = explode(",", $functionParam);
-        $fieldsFunctionUser = " ,pm0.value as `function` ";
-        $joinFunctionUser   = " JOIN `".$wpdb->prefix."usermeta` AS um9 ON um1.`user_id` = um9.`user_id` LEFT JOIN `".$wpdb->prefix."lab_params` AS pm0 ON pm0.id=um9.meta_value";
-        $whereFunctionUser  = " AND um9.`meta_key`='lab_user_function' AND (";
+        //$fieldsFunctionUser = " ,pm0.value as `function`, pm0.slug as `function_slug` ";
+        //$joinFunctionUser   = " JOIN `".$wpdb->prefix."usermeta` AS um9 ON um1.`user_id` = um9.`user_id` LEFT JOIN `".$wpdb->prefix."lab_params` AS pm0 ON pm0.id=um9.meta_value";
+        $whereFunctionUser  = " AND (";
         foreach($functions as $fct)
         {
             $params = AdminParams::get_param_by_slug($fct);
@@ -128,19 +128,23 @@ function lab_directory($param) {
     }
 
     $sql = "SELECT um1.`user_id` AS id, um3.`meta_value` AS first_name, um2.`meta_value` AS last_name, 
-        u4.`user_email` AS mail, um5.`meta_value` AS phone, um8.`meta_value` AS slug".$fieldsFunctionUser."
+        u4.`user_email` AS mail, um5.`meta_value` AS phone, um8.`meta_value` AS slug
+         ,pm0.value as `function`, pm0.slug as `function_slug` 
         FROM `".$wpdb->prefix."usermeta` AS um1 
         JOIN `".$wpdb->prefix."usermeta` AS um2 ON um1.`user_id` = um2.`user_id` 
         JOIN `".$wpdb->prefix."usermeta` AS um3 ON um1.`user_id` = um3.`user_id` 
         JOIN `".$wpdb->prefix."users` AS u4 ON um1.`user_id` = u4.`ID` 
         JOIN `".$wpdb->prefix."usermeta` AS um5 ON um1.`user_id` = um5.`user_id`
         JOIN `".$wpdb->prefix."usermeta` AS um8 ON um1.`user_id` = um8.`user_id`
+        JOIN `".$wpdb->prefix."usermeta` AS um9 ON um1.`user_id` = um9.`user_id` 
+        LEFT JOIN `".$wpdb->prefix."lab_params` AS pm0 ON pm0.id=um9.meta_value
         ".$joinDisplayLeftUser.$joinGroup.$joinFunctionUser."
         WHERE   um1.`meta_key`='last_name' 
             AND um2.`meta_key`='last_name' 
             AND um3.`meta_key`='first_name' 
             AND um8.`meta_key`='lab_user_slug' 
-            AND um5.`meta_key`='lab_user_phone'".$whereDisplayLeftUser.$whereGroup.$whereFunctionUser;
+            AND um5.`meta_key`='lab_user_phone'
+            AND um9.`meta_key`='lab_user_function'".$whereDisplayLeftUser.$whereGroup.$whereFunctionUser;
 
     if (!$displayAllgroup) {
         $currentLetter = $_GET["letter"];
@@ -205,10 +209,12 @@ function lab_directory($param) {
     if (!$groupAsSCOption) {
         $directoryStr .= "<th>".esc_html__("Group", "lab")."</th>";
     }
-    if ($byFunction) {
+    //if ($byFunction) 
+    {
         $directoryStr .= "<th>".esc_html__("Function", "lab")."</th>";
     }
     $directoryStr .= "</thead><tbody>";
+    $acronymList = array();
     foreach ($results as $r) {
         $directoryStr .= "<tr  userId='".esc_html($r->slug)."'>";
         $directoryStr .= "<td id='name_col'>".esc_html($r->last_name . " " . $r->first_name)."</td>";
@@ -216,11 +222,17 @@ function lab_directory($param) {
         if (!$groupAsSCOption) {
             $directoryStr .= "<td>" . formatGroupsName($r->id) . "</td>";
         }
-        if ($byFunction) {
-            $directoryStr .= "<td>" . $r->function . "</td>";
+        $directoryStr .= "<td>" . $r->function_slug . "</td>";
+        if (!key_exists($r->function_slug, $acronymList)) {
+            $acronymList[$r->function_slug] = $r->function;
         }
         $directoryStr .= "</tr>";
     }
-    $directoryStr .= "</tbody></table></div>";
+    $directoryStr .= "</tbody></table><p>Legend</p><table><tr><th>Acronym</th><th>Display</th></tr>";
+    foreach($acronymList as $k=>$v) {
+        $directoryStr .= "<tr><td>".$k."</td><td>".$v."</td></tr>";
+    }
+
+    $directoryStr .= "</table></div>";
     return $directoryStr;
 }
