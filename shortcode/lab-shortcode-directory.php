@@ -49,6 +49,7 @@ function lab_directory($param) {
     $whereAsLeft = "";
     $joinGroup   = "";
     $whereGroup  = "";
+    $fieldsFunctionUser = "";
     $joinFunctionUser  = "";
     $whereFunctionUser = "";
 
@@ -70,8 +71,9 @@ function lab_directory($param) {
     if ($byFunction)
     {
         $functions = explode(",", $functionParam);
-        $joinFunctionUser = " JOIN `".$wpdb->prefix."usermeta` AS um9 ON um1.`user_id` = um9.`user_id` ";
-        $whereFunctionUser = " AND um9.`meta_key`='lab_user_function' AND (";
+        $fieldsFunctionUser = " ,pm0.value as `function` ";
+        $joinFunctionUser   = " JOIN `".$wpdb->prefix."usermeta` AS um9 ON um1.`user_id` = um9.`user_id` LEFT JOIN `".$wpdb->prefix."lab_params` AS pm0 ON pm0.id=um9.meta_value";
+        $whereFunctionUser  = " AND um9.`meta_key`='lab_user_function' AND (";
         foreach($functions as $fct)
         {
             $params = AdminParams::get_param_by_slug($fct);
@@ -126,7 +128,7 @@ function lab_directory($param) {
     }
 
     $sql = "SELECT um1.`user_id` AS id, um3.`meta_value` AS first_name, um2.`meta_value` AS last_name, 
-        u4.`user_email` AS mail, um5.`meta_value` AS phone, um8.`meta_value` AS slug 
+        u4.`user_email` AS mail, um5.`meta_value` AS phone, um8.`meta_value` AS slug".$fieldsFunctionUser."
         FROM `".$wpdb->prefix."usermeta` AS um1 
         JOIN `".$wpdb->prefix."usermeta` AS um2 ON um1.`user_id` = um2.`user_id` 
         JOIN `".$wpdb->prefix."usermeta` AS um3 ON um1.`user_id` = um3.`user_id` 
@@ -203,6 +205,9 @@ function lab_directory($param) {
     if (!$groupAsSCOption) {
         $directoryStr .= "<th>".esc_html__("Group", "lab")."</th>";
     }
+    if ($byFunction) {
+        $directoryStr .= "<th>".esc_html__("Function", "lab")."</th>";
+    }
     $directoryStr .= "</thead><tbody>";
     foreach ($results as $r) {
         $directoryStr .= "<tr  userId='".esc_html($r->slug)."'>";
@@ -210,6 +215,9 @@ function lab_directory($param) {
         $directoryStr .= "<td><span class=\"email\">" . esc_html(strrev($r->mail))."</span><br>".correctNumber(esc_html($r->phone))."</td>";
         if (!$groupAsSCOption) {
             $directoryStr .= "<td>" . formatGroupsName($r->id) . "</td>";
+        }
+        if ($byFunction) {
+            $directoryStr .= "<td>" . $r->function . "</td>";
         }
         $directoryStr .= "</tr>";
     }
