@@ -233,6 +233,7 @@ function lab_directory($param) {
         $directoryStr .= "</tr>";
     }
     $directoryStr .= "</tbody></table><p>Legend</p><table class=\"table table-striped  table-hover\"><thead class=\"thead-dark\"><tr><th>Acronym</th><th>Display</th></tr></thead><tbody>";
+    ksort($acronymList);
     foreach($acronymList as $k=>$v) {
         $directoryStr .= "<tr><td>".$k."</td><td>";
         $size = count($v);
