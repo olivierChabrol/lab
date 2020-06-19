@@ -204,25 +204,24 @@ function lab_directory($param) {
         </style>"; // style for table (stripped colors)
 
     /* Table directory */
-    $directoryStr .= "<div class=\"table-responsive\"><table  id=\"lab-table-directory\" class=\"table table-striped  table-hover\"><thead class=\"thead-dark\"><tr><th>".esc_html__("Name", "lab")."</th><th>".esc_html__("User details", "lab")."</th>";
+    $directoryStr .= "<div class=\"table-responsive\"><table  id=\"lab-table-directory\" class=\"table table-striped  table-hover\"><thead class=\"thead-dark\"><tr><th>".esc_html__("Name", "lab")."</th>";
+
+    $directoryStr .= "<th>".esc_html__("Function", "lab")."</th>";
+    $directoryStr .= "<th>".esc_html__("User details", "lab")."</th>";
     // No need to display column group if a group is specified as a shortcode option
     if (!$groupAsSCOption) {
         $directoryStr .= "<th>".esc_html__("Group", "lab")."</th>";
-    }
-    //if ($byFunction) 
-    {
-        $directoryStr .= "<th>".esc_html__("Function", "lab")."</th>";
     }
     $directoryStr .= "</thead><tbody>";
     $acronymList = array();
     foreach ($results as $r) {
         $directoryStr .= "<tr  userId='".esc_html($r->slug)."'>";
         $directoryStr .= "<td id='name_col'>".esc_html($r->last_name . " " . $r->first_name)."</td>";
+        $directoryStr .= "<td>" . $r->function_slug . "</td>";
         $directoryStr .= "<td><span class=\"email\">" . esc_html(strrev($r->mail))."</span><br>".correctNumber(esc_html($r->phone))."</td>";
         if (!$groupAsSCOption) {
             $directoryStr .= "<td>" . formatGroupsName($r->id) . "</td>";
         }
-        $directoryStr .= "<td>" . $r->function_slug . "</td>";
         if (!key_exists($r->function_slug, $acronymList)) {
             $acronymList[$r->function_slug] = $r->function;
         }
