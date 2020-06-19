@@ -223,15 +223,31 @@ function lab_directory($param) {
             $directoryStr .= "<td>" . formatGroupsName($r->id) . "</td>";
         }
         if (!key_exists($r->function_slug, $acronymList)) {
-            $acronymList[$r->function_slug] = $r->function;
+            //$acronymList[$r->function_slug] = $r->function;
+            $acronymList[$r->function_slug] = array();
         }
+        if (!key_exists($r->function, $acronymList[$r->function_slug])) {
+            $acronymList[$r->function_slug][$r->function] = $r->function;
+        }
+
         $directoryStr .= "</tr>";
     }
-    $directoryStr .= "</tbody></table><p>Legend</p><table><tr><th>Acronym</th><th>Display</th></tr>";
+    $directoryStr .= "</tbody></table><p>Legend</p><table class=\"table table-striped  table-hover\"><thead class=\"thead-dark\"><tr><th>Acronym</th><th>Display</th></tr></thead><tbody>";
     foreach($acronymList as $k=>$v) {
-        $directoryStr .= "<tr><td>".$k."</td><td>".$v."</td></tr>";
+        $directoryStr .= "<tr><td>".$k."</td><td>";
+        $size = count($v);
+        foreach($v as $fctKey=>$fctVal)
+        {
+            $directoryStr .= $fctKey;
+            if ($i + 1 < $size) {
+                $directoryStr .= "/";
+            }
+            $i++;
+        }
+        $directoryStr .= "</td></tr>";
     }
 
-    $directoryStr .= "</table></div>";
+    $directoryStr .= "</tbody></table></div>";
+    //var_dump($acronymList);
     return $directoryStr;
 }
