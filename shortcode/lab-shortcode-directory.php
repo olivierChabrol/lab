@@ -70,7 +70,15 @@ function lab_directory($param) {
     global $wpdb;
     if ($byFunction)
     {
-        $functions = explode(",", $functionParam);
+        $functions = array();
+        if (strpos($functionParam, ",") > 0)
+        {
+            $functions = explode(",", $functionParam);
+        }
+        else
+        {
+            $functions[] = $functionParam;
+        }
         //$fieldsFunctionUser = " ,pm0.value as `function`, pm0.slug as `function_slug` ";
         //$joinFunctionUser   = " JOIN `".$wpdb->prefix."usermeta` AS um9 ON um1.`user_id` = um9.`user_id` LEFT JOIN `".$wpdb->prefix."lab_params` AS pm0 ON pm0.id=um9.meta_value";
         $whereFunctionUser  = " AND (";
@@ -104,6 +112,8 @@ function lab_directory($param) {
         $directoryStr .= "**** displayOnlyLeftUser :". $displayOnlyLeftUser."<br>";
         $directoryStr .= "**** includeLeftUserParam :". $includeLeftUserParam."<br>";
         $directoryStr .= "**** displayLeftUser :". $displayLeftUser."<br>";
+        $directoryStr .= "**** functionParam :". $functionParam."<br>";
+        var_dump($functions);
     }
     
 
@@ -127,11 +137,10 @@ function lab_directory($param) {
         $displayGroup = true;
     }
 
-    $sql = "SELECT um1.`user_id` AS id, um3.`meta_value` AS first_name, um2.`meta_value` AS last_name, 
+    $sql = "SELECT um1.`user_id` AS id, um3.`meta_value` AS first_name, um1.`meta_value` AS last_name, 
         u4.`user_email` AS mail, um5.`meta_value` AS phone, um8.`meta_value` AS slug
          ,pm0.value as `function`, pm0.slug as `function_slug` 
-        FROM `".$wpdb->prefix."usermeta` AS um1 
-        JOIN `".$wpdb->prefix."usermeta` AS um2 ON um1.`user_id` = um2.`user_id` 
+        FROM `".$wpdb->prefix."usermeta` AS um1  
         JOIN `".$wpdb->prefix."usermeta` AS um3 ON um1.`user_id` = um3.`user_id` 
         JOIN `".$wpdb->prefix."users` AS u4 ON um1.`user_id` = u4.`ID` 
         JOIN `".$wpdb->prefix."usermeta` AS um5 ON um1.`user_id` = um5.`user_id`
@@ -140,7 +149,6 @@ function lab_directory($param) {
         LEFT JOIN `".$wpdb->prefix."lab_params` AS pm0 ON pm0.id=um9.meta_value
         ".$joinDisplayLeftUser.$joinGroup.$joinFunctionUser."
         WHERE   um1.`meta_key`='last_name' 
-            AND um2.`meta_key`='last_name' 
             AND um3.`meta_key`='first_name' 
             AND um8.`meta_key`='lab_user_slug' 
             AND um5.`meta_key`='lab_user_phone'

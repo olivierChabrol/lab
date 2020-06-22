@@ -69,8 +69,8 @@ function lab_profile($id=0) {
 	{
 		$lastHisto = $user->historics;
 		//var_dump($lastHisto);
-		$metaDatas .='<p id="lab_profile_historic"><span class="lab_current">'.esc_html__('Begin','lab').' : '.strftime('%d %B %G',$lastHisto->begin->getTimestamp()).' - '.
-		($lastHisto->end == null?esc_html__('present','lab'):strftime('%d %B %G',$lastHisto->end->getTimestamp())).' • '.AdminParams::get_param($lastHisto->function);
+		$metaDatas .='<p id="lab_profile_historic"><span class="lab_current">'.esc_html('Mobility','lab')." ".esc_html('Begin','lab').' : '.strftime('%d %B %G',$lastHisto->begin->getTimestamp()).' - '.
+		($lastHisto->end == null?esc_html__('present','lab'):esc_html('End','lab').' : '.strftime('%d %B %G',$lastHisto->end->getTimestamp())).' • '.AdminParams::get_param($lastHisto->function);
 		if ($lastHisto->host) {
 			$metaDatas .= " ".esc_html('Host','lab')." : " .$lastHisto->host;
 		}
