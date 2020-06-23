@@ -202,7 +202,7 @@ function lab_present_select($param) {
     }
     $str .= "</tbody></table>";
     if (!is_user_logged_in() && $externalUserAllowed) {
-        $str .=  newUserDiv();
+        $str .=  newUserDiv($startDay);
     }
     return $str;
 }
@@ -242,11 +242,17 @@ function lab_present_choice($param) {
         return "";
     }
     $param = shortcode_atts(array(
+        'comment-mandatory' => get_option('lab-incoming-event')
         ),
         $param, 
         "lab-present-choice"
     );
     $startDay = getStartDate();
+    $commentMandatory = "true";
+
+    if (isset($param['comment-mandatory']) && $param['comment-mandatory'] == "false") {
+        $commentMandatory = "false";
+    }
 
     $choiceStr = "<br/><hr><div>
         <h3>".esc_html__("Je serai présent·e", "lab")."</h3>
@@ -274,7 +280,7 @@ function lab_present_choice($param) {
             <div class=\"input-group mb-3\">
             <div class=\"form-group\">
                 <label for='comment'>".esc_html__("Commentaire", "lab")."</label>
-                <textarea id=\"comment\" rows=\"4\" cols=\"50\" class=\"form-control rounded-0\" maxlength=\"200\" placeholder=\"200 caractères maximum\"></textarea>
+                <textarea id=\"comment\" rows=\"4\" mandatory=\"".$commentMandatory."\" cols=\"50\" class=\"form-control rounded-0\" maxlength=\"200\" placeholder=\"200 caractères maximum\"></textarea>
             </div>
             </div>
             <button class=\"btn btn-success\" id=\"lab_presence_button_save\">".esc_html__("Sauvegarder", "lab")."</button>
@@ -346,7 +352,7 @@ function lab_present_choice($param) {
  *
  * @return void
  */
-function newUserDiv()
+function newUserDiv($startDay)
 {
     $str = 
     '<div id="lab_presence_external_user_dialog" class="modal fade">
@@ -371,6 +377,10 @@ function newUserDiv()
                         <label for="date-lab_presence_ext_new_user_email">'.esc_html("E-mail", "lab").'</label>
                         <input type="email" class="form-control" id="lab_presence_ext_new_user_email" aria-describedby="emailHelp" placeholder="Enter email (mandatory)">
                     </div>
+                    <div class=\"input-group mb-3\">Rejoindre un groupe de travail : '.
+                    //lab_html_select_str("workGroupFollow", "workGroupFollow", "", get_workgroup_of_the_week, $startDay, array("label"=>"None","value"=>""), null, array("id"=>"id", "value"=>"name"))."</div>
+                    lab_html_select_str("workGroupFollowExt", "workGroupFollowExt", "", getWorgroups, $startDay, array("label"=>"None","value"=>""), null, null, array("date"=>"date", "hour_start"=>"hour_start", "hour_end"=>"hour_end", "name"=>"name", "site"=>"site")).
+                    '</div>
                     <small id="emailHelp" class="form-text text-muted">We\'ll never share your email with anyone else.</small>
                     <div class="h-divider"></div>
                     <label for="date-open">'.esc_html("From", "lab").'</label>

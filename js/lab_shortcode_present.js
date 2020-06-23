@@ -19,6 +19,21 @@ jQuery(function($){
             resetFields();
         }
     });
+    $("#workGroupFollowExt").change(function() {
+        console.log("Change workGroupFollowExt");
+        if ($(this).val() != "") {
+            
+            setDayExt($( "#workGroupFollowExt option:selected" ).attr("date"), $( "#workGroupFollowExt option:selected" ).attr("hour_start"), $( "#workGroupFollowExt option:selected" ).attr("hour_end"));
+            $("#lab_presence_ext_new_siteId").val($( "#workGroupFollowExt option:selected" ).attr("site"));
+            $("#lab_presence_ext_new_comment").val(__("I participate in the working group","lab") + " " + $( "#workGroupFollowExt option:selected" ).attr("name"));
+            $("#divNewWorkingGroup").hide();
+        }
+        else
+        {
+            $("#divNewWorkingGroup").show();
+            resetFields();
+        }
+    });
   
     $(".icon-edit").click(function() {
         let editable = $(this).parents('tr').find('.edit');
@@ -74,7 +89,7 @@ jQuery(function($){
     });
     $("#lab_presence_button_save").click(function() {
 
-        if ($("#comment").val()=="") {
+        if (($("#comment").attr("mandatory") != "false" && $("#comment").val()=="") {
             toast_error(__("Reason of your attendance is require", "lab"));
             $("#comment").focus();
             return;
@@ -173,6 +188,22 @@ function resetFields()
     $('#comment').val('');
     $("#workGroupFollow").val("");
     $("#workGroupName").val("");
+}
+function resetExtFields()
+{
+    $('input[type="date"]').val('');
+    $('input[type="time"]').val('');
+    $('#lab_presence_ext_new_siteId').val('');
+    $('#lab_presence_ext_new_comment').val('');
+    $("#workGroupFollow").val("");
+    $("#workGroupName").val("");
+}
+
+function setDayExt(date, start, end)
+{
+    $("#lab_presence_ext_new_date_open").val(date);
+    $("#lab_presence_ext_new_hour_open").val(start);
+    $("#lab_presence_ext_new_hour_close").val(end);
 }
 
 function setDay(date, start, end)
