@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-06-18 10:43+0200\n"
-"PO-Revision-Date: 2020-06-18 10:45+0200\n"
+"PO-Revision-Date: 2020-06-23 14:57+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en\n"
@@ -358,7 +358,7 @@ msgstr "Keep user data in our web site ?"
 
 #: admin/view/lab-admin-tab-users.php:192
 msgid "Historique de l'utilisateur"
-msgstr "user's history"
+msgstr "User's history"
 
 #: admin/view/lab-admin-tab-users.php:198
 msgid "Ajouter une période"
@@ -382,7 +382,7 @@ msgstr "Establishment"
 
 #: admin/view/lab-admin-tab-users.php:244
 msgid "Outgoing mobility status"
-msgstr "Outgoing mobility status"
+msgstr "Internal/external mobility"
 
 #: admin/view/lab-admin-tab-users.php:257
 msgid "Hôte"
@@ -430,7 +430,7 @@ msgstr "Add user to directory"
 
 #: admin/view/lab-admin-tab-users.php:320
 msgid "E-Mail d'utilisateur AMU :"
-msgstr "user e-mail : "
+msgstr "user e-mail :"
 
 #: admin/view/lab-admin-tab-users.php:328
 #: shortcode/lab-shortcode-invitation.php:63
@@ -1026,7 +1026,7 @@ msgstr "in €"
 #: shortcode/lab-shortcode-invitation.php:128
 #: shortcode/lab-shortcode-invitation.php:145
 msgid "À ne remplir que si l'I2M devra vous défrayer ce trajet."
-msgstr "Fill it only, if I2M take in charge"
+msgstr "Fill it only, if I2M take in charge."
 
 #: shortcode/lab-shortcode-invitation.php:131
 #: shortcode/lab-shortcode-invitation.php:513
@@ -1064,7 +1064,7 @@ msgstr "Other cost"
 
 #: shortcode/lab-shortcode-invitation.php:163
 msgid "Précisez les frais qui devront être pris en charge par l'I2M."
-msgstr "Other cost"
+msgstr "Other cost."
 
 #: shortcode/lab-shortcode-invitation.php:166
 msgid "Hôtel"
@@ -1082,7 +1082,7 @@ msgstr "Taxi"
 msgid ""
 "(par exemple vos numéros de carte de fidélité à utiliser lors de la "
 "réservation de vos voyages + la date d'expiration si nécessaire)"
-msgstr "(ex. : fidelity card) "
+msgstr "(ex. : fidelity card)"
 
 #: shortcode/lab-shortcode-invitation.php:190
 msgid "Champs pour l'invitant : "
@@ -1336,7 +1336,7 @@ msgstr "Confirmed"
 #: shortcode/lab-shortcode-invitation.php:573
 msgid ""
 "Cette invitation a été prise en charge par un administratif du pôle budget."
-msgstr "This invitation has been take by an dministrator"
+msgstr "This invitation has been take by an dministrator."
 
 #: shortcode/lab-shortcode-invitation.php:574
 msgid "Prise en charge"
@@ -1346,7 +1346,7 @@ msgstr "Take in charge"
 msgid "Aucun groupe préféré trouvé"
 msgstr ""
 "This invitation was taken over by an administrative department in the budget "
-"division."
+"division"
 
 #: shortcode/lab-shortcode-present.php:133
 msgid "Lundi"
@@ -1498,7 +1498,7 @@ msgstr "User group(s) : "
 
 #: shortcode/lab-shortcode-profile.php:205
 msgid "Research keywords : "
-msgstr "Research keywords :"
+msgstr "Research keywords : "
 
 #~ msgid "Add role keyring"
 #~ msgstr "Add role keyring"
