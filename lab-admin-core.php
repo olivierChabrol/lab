@@ -392,6 +392,7 @@ function lab_admin_createTable_presence() {
         `id` bigint NOT NULL AUTO_INCREMENT,
         `workgroup_id` bigint NOT NULL,
         `user_id` bigint NOT NULL,
+        `external` tinyint(1) NOT NULL DEFAULT '0',
         PRIMARY KEY (`id`)
     ) ENGINE=InnoDB;";
     $wpdb->get_results($sql);
@@ -1988,14 +1989,14 @@ function save_new_workgroup($name, $day, $owner, $hourStart, $hourEnd, $max, $pr
     return $id;
     //$wpdb->insert($wpdb->prefix."lab_presence_users_workgroup",array("workgroup_id"=>$wpdb->insert_id, "user_id"=>$owner));
 }
-function save_workgroup_follow($groupId, $userId)
+function save_workgroup_follow($groupId, $userId, $external = 0)
 {
     global $wpdb;
     //$wpdb->insert($wpdb->prefix."lab_presence_workgroup",array("name"=>$name, "date"=>date('Y-m-d', $day), "owner_id"=>$owner, "max"=>$max));
-    $wpdb->insert($wpdb->prefix."lab_presence_users_workgroup",array("workgroup_id"=>$groupId, "user_id"=>$userId));
+    $wpdb->insert($wpdb->prefix."lab_presence_users_workgroup",array("workgroup_id"=>$groupId, "external"=>$external, "user_id"=>$userId));
 }
 
-function workgroup_update_presencyId($workgroupId, $presencyId)
+function workgroup_update_presencyId($workgroupId, $presencyId, $external = 0)
 {
     global $wpdb;
     $wpdb->update($wpdb->prefix."lab_presence_workgroup", array("presency_id"=>$presencyId), array("id"=>$workgroupId));
@@ -2015,9 +2016,11 @@ function workgroup_delete_by_presenceId($presencyId)
 function workgroup_users_list($groupId)
 {
     global $wpdb;
-    $sql = "SELECT lpuw.user_id,um1.meta_value AS last_name,um2.meta_value AS first_name FROM `".$wpdb->prefix."lab_presence_users_workgroup` AS lpuw LEFT JOIN ".$wpdb->prefix."usermeta AS um1 ON um1.user_id=lpuw.user_id LEFT JOIN ".$wpdb->prefix."usermeta AS um2 ON um2.user_id=lpuw.user_id WHERE workgroup_id=".$groupId." AND um1.meta_key='last_name' AND um2.meta_key='first_name'";
+    $sql = "SELECT lpuw.user_id,um1.meta_value AS last_name,um2.meta_value AS first_name FROM `".$wpdb->prefix."lab_presence_users_workgroup` AS lpuw LEFT JOIN ".$wpdb->prefix."usermeta AS um1 ON um1.user_id=lpuw.user_id LEFT JOIN ".$wpdb->prefix."usermeta AS um2 ON um2.user_id=lpuw.user_id WHERE workgroup_id=".$groupId." AND external=0 AND um1.meta_key='last_name' AND um2.meta_key='first_name'";
     $rs = $wpdb->get_results($sql);
-    return $rs;
+    $sql = "SELECT lpuw.user_id,g.first_name AS first_name,g.last_name AS last_name FROM `".$wpdb->prefix."lab_presence_users_workgroup` AS lpuw LEFT JOIN ".$wpdb->prefix."lab_guests AS g ON g.id=lpuw.user_id WHERE workgroup_id=".$groupId." AND external=1";
+    $rs1 = $wpdb->get_results($sql);
+    return array_merge($rs, $rs1);
 }
 
 function workgroup_users_count($groupId)

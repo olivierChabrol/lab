@@ -1112,6 +1112,7 @@ function lab_admin_presence_save_ext_ajax()
   $siteId    = $_POST['siteId'];
   $comment   = $_POST['comment'];
   $external  = $_POST['external'];
+  $worgroupFollow  = $_POST['worgroupFollow'];
 
 
   $str = $_POST;
@@ -1136,10 +1137,27 @@ function lab_admin_presence_save_ext_ajax()
   $str .= "siteId  :".$siteId."\n"; 
   $str .= "comment  :".$comment."\n"; 
 
-  if (lab_admin_presence_save(null, $guestId, $date." ".$hourOpen, $date." ".$hourClose, $siteId, $comment, 1)) {
-    wp_send_json_success($str);
-  } else {
-    wp_send_json_error($str);
+  if ($worgroupFollow != "")
+  {
+    $canInsert = check_can_follow_workgroup($worgroupFollow,$guestId, 1);
+    //wp_send_json_error("canInsert : ". $canInsert["success"]);
+    if ($canInsert["success"]) {
+
+      $res = lab_admin_presence_save($presenceId, $guestId, $dateOpen." ".$hourOpen, $dateOpen." ".$hourClose, $siteId, $comment, 1);
+      save_workgroup_follow($worgroupFollow, $guestId, 1);
+    }
+    else
+    {
+      wp_send_json_error("[105]"+ $canInsert["data"]);
+    }
+  }
+  else
+  {
+    if (lab_admin_presence_save(null, $guestId, $date." ".$hourOpen, $date." ".$hourClose, $siteId, $comment, 1)) {
+      wp_send_json_success($str);
+    } else {
+      wp_send_json_error($str);
+    }
   }
 }
 
@@ -1305,7 +1323,15 @@ function lab_admin_presence_save_ajax()
   }
 }
 
-function check_can_follow_workgroup($workgroupId, $userId)
+/**
+ * Check if user is not already present in the group et don't exceed max group number
+ *
+ * @param [type] $workgroupId
+ * @param [type] $userId
+ * @param integer $external
+ * @return void
+ */
+function check_can_follow_workgroup($workgroupId, $userId, $external=0)
 {
   $workGroup = workgroup_get($workgroupId);
   //return ["success"=>false,"data"=>$workGroup];
@@ -1319,7 +1345,7 @@ function check_can_follow_workgroup($workgroupId, $userId)
     $alreadyPresent = false;
     foreach($usersFolloginGroup as $user)
     {
-      if ($user->user_id == $userId)
+      if ($user->user_id == $userId && $external == $user->external)
       {
         $alreadyPresent = true;
       }

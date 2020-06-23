@@ -89,7 +89,7 @@ jQuery(function($){
     });
     $("#lab_presence_button_save").click(function() {
 
-        if (($("#comment").attr("mandatory") != "false" && $("#comment").val()=="") {
+        if ($("#comment").attr("mandatory") != "false" && $("#comment").val()=="") {
             toast_error(__("Reason of your attendance is require", "lab"));
             $("#comment").focus();
             return;
@@ -296,6 +296,7 @@ function saveExternaluser() {
     let hClose    = $("#lab_presence_ext_new_hour_close").val();
     let comment   = $("#lab_presence_ext_new_comment").val().replace(/\"/g,"”").replace(/\'/g,"’");
     let siteId    = $("#lab_presence_ext_new_siteId").val();
+    let worgroupFollow =  $("#workGroupFollowExt").val();
     var data = {
         'action' : 'lab_presence_save_ext',
         firstName :         firstName,
@@ -305,7 +306,8 @@ function saveExternaluser() {
         hourOpen : hOpen,
         hourClose :   hClose,
         siteId :       siteId,
-        comment: comment
+        comment: comment,
+        worgroupFollow: worgroupFollow,
     };
     console.log(data);
     $.post(LAB.ajaxurl, data, function(response) {
