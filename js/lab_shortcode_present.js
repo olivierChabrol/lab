@@ -312,7 +312,7 @@ function saveExternaluser() {
     console.log(data);
     $.post(LAB.ajaxurl, data, function(response) {
         if (response.success) {
-            resetFields();
+            resetExtFields();
             //window.location.reload(false); 
             console.log("[saveExternaluser]" + response.data);
             window.location.reload(false); 

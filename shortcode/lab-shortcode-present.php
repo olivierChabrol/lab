@@ -16,14 +16,21 @@
 
 function lab_present_select($param) {
     $param = shortcode_atts(array(
-        'allow-external' => get_option('lab-incoming-event')
+        'allow-external' => get_option('lab-incoming-event'),
+        'debug' => get_option('lab-incoming-event')
         ),
         $param, 
         "lab-present-select"
     );
+    $debug = false;
     $externalUserAllowed = false;
+
     if (isset($param['allow-external']) && $param['allow-external'] == "true") {
         $externalUserAllowed = true;
+    }
+
+    if (isset($param['debug']) && $param['debug'] == "true") {
+        $debug = true;
     }
     $str = "";
     //$str.= "\$param['allow-external'] : ".$param['allow-external']." \ $externalUserAllowed : ". $externalUserAllowed."<br>";
@@ -52,7 +59,7 @@ function lab_present_select($param) {
         {
             $user->users = workgroup_users_list($user->wg_id);
             //$user->nbUsers = workgroup_users_count($user->wg_id);
-            $users["<b>".stripslashes($user->wg_name) . "</b><br>" . $user->first_name." ".$user->last_name][date('d', $user->hour_start)][] = $user;
+            $users["<b>".stripslashes($user->wg_name) . "</b><br>" . $user->first_name." ".strtoupper($user->last_name)][date('d', $user->hour_start)][] = $user;
 
         }
         else if ($userId == 0 || $userId != $user->user_id) 
@@ -60,13 +67,18 @@ function lab_present_select($param) {
             $userId = $user->user_id;
             $user->users = null;
             $user->nbUsers = null;
-            $users[$user->first_name." ".$user->last_name][date('d', $user->hour_start)][] = $user;
+            $users[$user->first_name." ".strtoupper($user->last_name)][date('d', $user->hour_start)][] = $user;
         }
         else if ($userId == $user->user_id) {
             $user->users = null;
             $user->nbUsers = null;
-            $users[$user->first_name." ".$user->last_name][date('d', $user->hour_start)][] = $user;
+            $users[$user->first_name." ".strtoupper($user->last_name)][date('d', $user->hour_start)][] = $user;
         }
+    }
+
+    if(debug)
+    {
+        var_dump($users);
     }
 
     global $wp;

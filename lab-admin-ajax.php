@@ -1143,8 +1143,16 @@ function lab_admin_presence_save_ext_ajax()
     //wp_send_json_error("canInsert : ". $canInsert["success"]);
     if ($canInsert["success"]) {
 
-      $res = lab_admin_presence_save($presenceId, $guestId, $dateOpen." ".$hourOpen, $dateOpen." ".$hourClose, $siteId, $comment, 1);
-      save_workgroup_follow($worgroupFollow, $guestId, 1);
+      $res = lab_admin_presence_save(null, $guestId, $date." ".$hourOpen, $date." ".$hourClose, $siteId, $comment, 1);
+      if ($res["success"]) 
+      {
+        save_workgroup_follow($worgroupFollow, $guestId, 1);
+        wp_send_json_success($str);
+      }
+      else 
+      {
+        wp_send_json_error($res["data"]." str :".$str);
+      }
     }
     else
     {
