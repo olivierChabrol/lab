@@ -76,7 +76,7 @@ function lab_present_select($param) {
         }
     }
 
-    if(debug)
+    if($debug)
     {
         var_dump($users);
     }
