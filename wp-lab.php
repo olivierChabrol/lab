@@ -3,7 +3,7 @@
 Plugin Name: LAB
 Plugin URI: https://www.i2m.univ-amu.fr
 Description: Pluggin de l'I2M de gestion du labo
-Authors: Astrid BEYER, Ivan Ivanov, Lucas Argenti, Olivier CHABROL
+Authors: Astrid BEYER, Ivan Ivanov, Lucas Argenti, Olivier CHABROL, Hongda MA
 Version: 1.0
 Author URI: http://www.i2m.univ-amu.fr
 Text Domain: lab
