@@ -3,11 +3,40 @@
 include 'lab-admin-core.php';
 include 'lib/vendor/autoload.php';
 require_once("lab-admin-params.php");
+require_once("core/lab_thematic.php");
 
 use AdminParams as AdminParams;
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+
+/********************************************************************************************
+ * THEMATIC
+ ********************************************************************************************/
+
+function ajax_thematic_get_thematics_by_user()
+{
+  $userId = $_POST['user_id'];
+  wp_send_json_success( lab_admin_thematic_get_thematics_by_user($userId));
+  return;
+}
+
+function lab_user_delThematic()
+{
+  $thematic_id = $_POST['thematic_id'];
+  wp_send_json_success( lab_admin_thematic_delete($thematic_id));
+  return;
+
+}
+
+function ajax_thematic_add()
+{
+  $userId = $_POST['user_id'];
+  $thematic_id = $_POST['thematic_id'];
+  wp_send_json_success( lab_admin_thematic_add_to_user($userId, $thematic_id));
+  return;
+
+}
 
 /**
  * Fonction qui répond à la requete ajax de recherche d'evenement
@@ -400,7 +429,7 @@ function lab_changeLocale($locale) {
 }
 function lab_admin_test()
 { 
-  wp_send_json_success("oui");
+  wp_send_json_success(lab_admin_thematic_load_all());
   return;
 }
 

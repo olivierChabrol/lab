@@ -1,7 +1,6 @@
 <?php
 
 
-
 function lab_admin_userMetaDatas_get($userId) {
     global $wpdb;
     $results = $wpdb->get_results( "SELECT um.*, u.user_email, u.user_url FROM `".$wpdb->prefix."usermeta` AS um JOIN `".$wpdb->prefix."users` AS u ON u.id=um.user_id WHERE (um.meta_key = 'first_name' or um.meta_key='last_name' or um.meta_key LIKE 'lab_%') and um.user_id=".$userId  );
@@ -243,7 +242,7 @@ function lab_admin_param_save($paramType, $paramName, $color = null, $paramId = 
         } else {
             // case of new param
             if ($shift != null && $shift == 'true' && $paramType == AdminParams::PARAMS_ID) {
-                return ["success"=>false, "data"=>"LA1"];
+                //return ["success"=>false, "data"=>"LA1"];
                 $lastParamId = lab_admin_param_last_param_system_id();
                 $newId = $lastParamId + 1;
 
@@ -435,6 +434,7 @@ function lab_admin_initTable_param() {
             (19, 1, 'KEY STATE', NULL),
             (20, 1, 'ECOLE DOCTORALE', NULL),
             (21, 1, 'OUTGOING MOBILITY STATUS', NULL),
+            (22, 1, 'THEMATIC', NULL),
             (NULL, 2, 'Equipe', NULL),
             (NULL, 2, 'Groupe', NULL),
             (NULL, 3, 'Clé', NULL),

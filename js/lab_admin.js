@@ -148,6 +148,7 @@ jQuery(function($){
       callbUser(value, loadUserMetaData);
       loadUserHistory();
       loadUserRoles();
+      loaduserThematic();
       loadMissingMetaData(value);
       return false;
     }
@@ -704,7 +705,16 @@ jQuery(function($){
       'role': $("#lab_allRoles").val()
     }
     callAjax(data,"Succès",loadUserRoles,"Erreur",null);
-   })
+   });
+   $("#lab_admin_add_thematic").click(function (e) {
+     e.preventDefault();
+     data = {
+       'action':'lab_user_addThematic',
+       'user_id': $("#lab_user_search_id").val(),
+       'thematic_id': $("#lab_thematic").val()
+     }
+     callAjax(data,"Succès",loadUserRoles,"Erreur",null);
+    })
 });
 
 /*************************************************************************************************************************************************
@@ -1549,6 +1559,35 @@ function displayMissingMetaData(data)
 function hideMissingMetaData(data)
 {
   $("#missingUserMetaData").hide();
+}
+
+function loaduserThematic() {
+  jQuery(function ($) {
+    $.post(LAB.ajaxurl,{'action':'lab_user_getThematics_by_user','user_id':$("#lab_user_search_id").val()},function (response) {
+      if (response.success) {
+        $("#lab_admin_user_thematics").html("");
+        $.each(response.data, function(i, obj) {
+          //use obj.id and obj.name here, for example:
+          //alert(obj.name);
+          let span = $('<span />').attr('class', 'badge badge-secondary user-role-badge').html(obj.name+" ");
+          let innerSpan = $('<span />').attr('class', 'lab_thematic_delete').attr('thematic_id', obj.id);
+          let innerI = $('<i />').attr('class', 'fas fa-trash').attr('thematic_id', obj.id);
+          innerSpan.append(innerI);
+          span.append(innerSpan);
+          $("#lab_admin_user_thematics").append(span);
+        });
+        //$("#lab_admin_user_thematics").html(response.data);
+        //<span class='lab_role_delete' user_id='".$user_id."' role='".$value->id."'><i class='fas fa-trash'></i></span></span>
+        $(".lab_thematic_delete").click(function (){
+          data = {
+            'action':'lab_user_delThematic',
+            'thematic_id':$(this).attr('thematic_id'),
+          };
+          callAjax(data,"Thematic "+$(this).attr('role')+" delete !",loaduserThematic,'Failed to delete thematic',null);
+        });
+      }
+    })
+  });
 }
 
 function loadUserRoles() {

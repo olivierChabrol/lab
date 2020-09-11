@@ -157,6 +157,18 @@ function lab_admin_tab_user() {
         </td>
       </tr>
     </table>
+
+    <div> <!-- Thematics -->
+      <h5><?php esc_html_e("Add thematic to user",'lab') ?></h5>
+      <div>
+        <div id="lab_admin_user_thematics">
+        </div>
+        <br/>
+        <?php
+        lab_html_select('lab_thematic','lab_thematic','lab_allRoles','lab_admin_thematic_load_all',null,array("value"=>0,"label"=>"--- Select thematic ---"),0);?>
+        <button class="btn btn-primary" id="lab_admin_add_thematic"><?php esc_html_e("Ajouter","lab")?></button>
+      </div>
+    </div>
     <div> <!-- Rôles -->
       <h5><?php esc_html_e("Affecter des rôles à l'utilisateur",'lab') ?></h5>
       <div>

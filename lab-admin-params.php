@@ -21,6 +21,7 @@ class AdminParams {
     public const PARAMS_KEY_STATE = 19;
     public const PARAMS_USER_ECOLE_DOCTORALE = 20;
     public const PARAMS_OUTGOING_MOBILITY_STATUS = 21;
+    public const PARAMS_THEMATIC = 22;
     
 
     public static function get_params_fromId($id) {
@@ -29,6 +30,10 @@ class AdminParams {
         return $results = $wpdb->get_results($sql);
     }
 
+    public static function lab_admin_get_params_thematics()
+    {
+        return AdminParams::get_params_fromId(AdminParams::PARAMS_THEMATIC);
+    }
     public static function lab_admin_get_params_groupTypes()
     {
         return AdminParams::get_params_fromId(AdminParams::PARAMS_GROUPTYPE_ID);
