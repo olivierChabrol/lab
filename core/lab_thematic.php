@@ -1,6 +1,30 @@
 <?php
 use AdminParams as AdminParams;
 
+function lab_shortcode_thematic_display()
+{
+    $thematics = lab_admin_thematic_load_all();
+    global $wpdb;
+    $results = $wpdb->get_results($sql);
+    $html = "";
+    foreach($thematics as $thematic) {
+        $thematic_id = $thematic->id;
+        $label = $thematic->value;
+        $sql = "SELECT ut.*, umfn.meta_value as firstName, umln.meta_value as lastName, umsn.meta_value as slug FROM `".$wpdb->prefix."lab_users_thematic` AS ut  
+        LEFT JOIN ".$wpdb->prefix."usermeta as umfn ON ut.user_id=umfn.user_id 
+        LEFT JOIN ".$wpdb->prefix."usermeta as umln ON ut.user_id=umln.user_id  
+        LEFT JOIN ".$wpdb->prefix."usermeta as umsn ON ut.user_id=umsn.user_id 
+        WHERE umln.meta_key='last_name' AND umfn.meta_key='first_name' AND umsn.meta_key='lab_user_slug' AND ut.thematic_id=".$thematic_id;
+        $results = $wpdb->get_results($sql);
+        $html .= "<h3>".$label."</h3>";
+        foreach($results as $r) 
+        {
+            $html .= "- ".$r->firstName." ".strtoupper($r->lastName)."<br>";
+        }
+    }
+    return $html;
+}
+
 /*****************************************************************************************************************
  * THEMATIC
  *****************************************************************************************************************/

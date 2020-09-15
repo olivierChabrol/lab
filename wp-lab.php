@@ -104,6 +104,7 @@ add_action( 'plugins_loaded', 'myplugin_load_textdomain' );
 add_action('admin_enqueue_scripts', 'admin_enqueue');
 
 
+add_shortcode('lab-users-thematic', 'lab_shortcode_thematic_display');
 add_shortcode('lab-present', 'lab_present_select');
 add_shortcode('lab-present-choice', 'lab_present_choice');
 add_shortcode('lab-directory', 'lab_directory');
