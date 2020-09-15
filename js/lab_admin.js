@@ -713,7 +713,7 @@ jQuery(function($){
        'user_id': $("#lab_user_search_id").val(),
        'thematic_id': $("#lab_thematic").val()
      }
-     callAjax(data,"Succès",loadUserRoles,"Erreur",null);
+     callAjax(data,"Succès",loaduserThematic,"Erreur",null);
     })
 });
 

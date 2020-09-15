@@ -5,14 +5,22 @@ const { __, _x, _n, sprintf } = wp.i18n;
 
 jQuery(function($){
   $("#lab-directory-group-id").on('change', function() {
-    $("#groupSearch").val($(this).val());
-    letter = $("#letterSearch").val();
-    group = $("#groupSearch").val();
+    loadDirectory();
+  });
+  $("#lab-directory-thematic").on('change', function() {
+    loadDirectory();
+  });
+
+  function loadDirectory()
+  {
+    let letter = $("#letterSearch").val();
+    let group = $("#lab-directory-group-id").val();
+    let thematic = $("#lab-directory-thematic").val();
     href = "/linstitut/annuaire/";
     if (letter != "") {
       href += "?letter="+letter;
     }
-    if (group != "") {
+    if (group != "0") {
       if (letter != "") {
         href += "&";
       } else {
@@ -20,8 +28,16 @@ jQuery(function($){
       }
       href += "group="+group;
     }
+    if (thematic != "0") {
+      if (letter != "" || group != "") {
+        href += "&";
+      } else {
+        href += "?";
+      }
+      href += "thematic="+thematic;
+    }
     window.location.href = href;
-  });
+  }
 
   $("[id^=delete_presence_]").each(function() {
     $(this).click(function() {

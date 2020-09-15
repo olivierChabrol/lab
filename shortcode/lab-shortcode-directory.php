@@ -51,7 +51,10 @@ function lab_directory($param) {
     $whereGroup  = "";
     $fieldsFunctionUser = "";
     $joinFunctionUser  = "";
+    $joinThematicUser  = "";
     $whereFunctionUser = "";
+    $whereThematicUser = "";
+    $thematic          = "0";
 
     // if the searchedGroup is passed as an URL parameter
     $groupAsParameter = isset($displayGroupParam) && !empty($displayGroupParam) && $displayGroupParam=="true";
@@ -66,6 +69,13 @@ function lab_directory($param) {
     $debug = isset($debugParam) && !empty($debugParam) && $debugParam=="true";
     $byFunction = isset($functionParam) && !empty($functionParam);
     $functions = "";
+
+    if (isset( $_GET["thematic"] ) && !empty( $_GET["thematic"] ) ) 
+    {
+        $thematic = $_GET["thematic"];
+        $joinThematicUser  = " INNER JOIN `wp_lab_users_thematic` AS ut ON um1.`user_id` = ut.`user_id` ";
+        $whereThematicUser = " AND ut.`thematic_id`=" . $_GET["thematic"];
+    }
 
     global $wpdb;
     if ($byFunction)
@@ -108,11 +118,13 @@ function lab_directory($param) {
     if ($debug)
     {
         //$directoryStr .= "**** LETTER :". $_GET["letter"]."<br>";
-        $directoryStr .= "**** onlyLeftUserParam :". $onlyLeftUserParam."<br>";
-        $directoryStr .= "**** displayOnlyLeftUser :". $displayOnlyLeftUser."<br>";
-        $directoryStr .= "**** includeLeftUserParam :". $includeLeftUserParam."<br>";
-        $directoryStr .= "**** displayLeftUser :". $displayLeftUser."<br>";
-        $directoryStr .= "**** functionParam :". $functionParam."<br>";
+        $directoryStr .= "**** onlyLeftUserParam : '". $onlyLeftUserParam."'<br>";
+        $directoryStr .= "**** displayOnlyLeftUser : '". $displayOnlyLeftUser."'<br>";
+        $directoryStr .= "**** includeLeftUserParam : '". $includeLeftUserParam."'<br>";
+        $directoryStr .= "**** displayLeftUser : '". $displayLeftUser."'<br>";
+        $directoryStr .= "**** functionParam : '". $functionParam."'<br>";
+        $directoryStr .= "**** thematicParam : '". $whereThematicUser."'<br>";
+        $directoryStr .= "**** thematic : '". $thematic."'<br>";
         var_dump($functions);
     }
     
@@ -147,12 +159,12 @@ function lab_directory($param) {
         JOIN `".$wpdb->prefix."usermeta` AS um8 ON um1.`user_id` = um8.`user_id`
         JOIN `".$wpdb->prefix."usermeta` AS um9 ON um1.`user_id` = um9.`user_id` 
         LEFT JOIN `".$wpdb->prefix."lab_params` AS pm0 ON pm0.id=um9.meta_value
-        ".$joinDisplayLeftUser.$joinGroup.$joinFunctionUser."
+        ".$joinDisplayLeftUser.$joinGroup.$joinFunctionUser.$joinThematicUser."
         WHERE   um1.`meta_key`='last_name' 
             AND um3.`meta_key`='first_name' 
             AND um8.`meta_key`='lab_user_slug' 
             AND um5.`meta_key`='lab_user_phone'
-            AND um9.`meta_key`='lab_user_function'".$whereDisplayLeftUser.$whereGroup.$whereFunctionUser;
+            AND um9.`meta_key`='lab_user_function'".$whereDisplayLeftUser.$whereGroup.$whereFunctionUser.$whereThematicUser;
 
     if (!$displayAllgroup) {
         $currentLetter = $_GET["letter"];
@@ -183,6 +195,9 @@ function lab_directory($param) {
             if ($groupAsParameter) {
                 $forwardUrl .= "&group=".$group;
             }
+            if ($thematic != "0") {
+                $forwardUrl .= "&thematic=".$thematic;
+            }
 
             $directoryStr .= '<a href="' .$forwardUrl. '" '.$letterClass.'><b>' . $element . '</b></a>&nbsp;&nbsp;'; 
         } // letter's url
@@ -197,8 +212,9 @@ function lab_directory($param) {
             $directoryStr .= __('Show only group', 'lab')." : ";
             $directoryStr .= lab_html_select_str("lab-directory-group-id", "lab-directory-group-id", "", lab_admin_group_select_group, "acronym, group_name", array("value"=>0,"label"=>"None"), $group, array("id"=>"acronym", "value"=>"value"));
         }
-        $directoryStr .= "</div>
-            <br>"; // search field
+        $directoryStr .= "<br>";
+        $directoryStr .= lab_html_select_str("lab-directory-thematic", "lab-directory-thematic", "", lab_admin_thematic_load_all, null, array("value"=>0,"label"=>"--- Select thematic ---"),$thematic);
+        $directoryStr .= "</div><br>"; // search field
     }
     $directoryStr .= 
         "<style>
