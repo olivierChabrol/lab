@@ -32,6 +32,8 @@ We reuse code from :
 
 [lab-directory group=AA all-group=true] Display user associated to a group (the acronym group is use) without alphabet letters for search
 
+[lab-users-thematic] Display user by research thematic's
+
 ### Profile
 [lab-profile]
 ### Event
