@@ -794,10 +794,44 @@ function lab_admin_checkTable($tableName) {
  * GROUPS
  ********************************************************************************************/
 
+function lab_admin_group_load_all()
+{
+    global $wpdb;
+    $sql = "SELECT group_name AS value,id FROM `".$wpdb->prefix."lab_groups`;";
+    $results = $wpdb->get_results($sql);
+    $items = array();
+    foreach ( $results as $r )
+    {
+      array_push($items,$r);
+    }
+    return $items;
+}
+
+function lab_admin_group_by_user($userId)
+{
+    $results = lab_group_get_user_groups($userId);
+    $groups = [];
+    foreach($results as $r)
+    {
+        $group = new \stdClass();
+        $group->id = $r->id; 
+        $group->name = $r->group_name;
+        $groups[] = $group;
+    }
+    return $groups;
+}
+
+function lab_admin_group_get_user_groups_delete($groupId)
+{
+    global $wpdb;
+    $wpdb->delete($wpdb->prefix.'lab_users_groups', array('id' => $groupId));
+    return true;
+
+}
 function lab_group_get_user_groups($userId)
 {
     global $wpdb;
-    return $wpdb->get_results("SELECT lg.group_name, lg.url
+    return $wpdb->get_results("SELECT lg.group_name, lg.url, lug.id
                                 FROM `".$wpdb->prefix."lab_users_groups` as lug 
                                 JOIN `".$wpdb->prefix."lab_groups` AS lg ON lg.id=lug.group_id 
                                 WHERE lug.`user_id`=".$userId);

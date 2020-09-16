@@ -455,6 +455,46 @@ function lab_admin_group_search() {
   wp_send_json_success( $items ); 
 }
 
+/**
+ * get all the groups by user
+ *
+ * @param [type] $userId
+ * @return void
+ */
+function lab_admin_ajax_group_by_user($userId)
+{
+  $userId = $_POST['user_id'];
+  if(!isset($userId) || $userId == "")
+  {
+    wp_send_json_error("[lab_admin_ajax_group_by_user] No user defined");
+  }
+  $results = lab_group_get_user_groups($userId);
+  $groups = [];
+  foreach($results as $r)
+  {
+      $group = new \stdClass();
+      $group->id = $r->id; 
+      $group->name = $r->group_name;
+      $groups[] = $group;
+  }
+  wp_send_json_success( $groups);
+}
+
+function lab_admin_ajax_users_group_delete()
+{
+  $groupId = $_POST['group_id'];
+  lab_admin_group_get_user_groups_delete($groupId);
+  wp_send_json_success();
+}
+
+function lab_admin_ajax_group_add()
+{
+  $userId = $_POST['user_id'];
+  $groupId = $_POST['group_id'];
+  lab_admin_users_groups_add_user($userId, $groupId);
+  wp_send_json_success();
+}
+
 function lab_admin_group_delete(){
   $group_id = $_POST['id'];
   lab_admin_delete_group($group_id);

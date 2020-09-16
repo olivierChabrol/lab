@@ -149,6 +149,7 @@ jQuery(function($){
       loadUserHistory();
       loadUserRoles();
       loaduserThematic();
+      loaduserGroup();
       loadMissingMetaData(value);
       return false;
     }
@@ -714,7 +715,17 @@ jQuery(function($){
        'thematic_id': $("#lab_thematic").val()
      }
      callAjax(data,"Succès",loaduserThematic,"Erreur",null);
-    })
+    });
+
+   $("#lab_admin_add_group").click(function (e) {
+    e.preventDefault();
+    data = {
+      'action':'lab_user_addGroup',
+      'user_id': $("#lab_user_search_id").val(),
+      'group_id': $("#lab_group").val()
+    }
+    callAjax(data,"Succès",loaduserGroup,"Erreur",null);
+   })
 });
 
 /*************************************************************************************************************************************************
@@ -1561,6 +1572,34 @@ function hideMissingMetaData(data)
   $("#missingUserMetaData").hide();
 }
 
+function loaduserGroup() {
+  jQuery(function ($) {
+    $.post(LAB.ajaxurl,{'action':'lab_admin_group_by_user','user_id':$("#lab_user_search_id").val()},function (response) {
+      if (response.success) {
+        $("#lab_admin_user_group").html("");
+        $.each(response.data, function(i, obj) {
+          //use obj.id and obj.name here, for example:
+          //alert(obj.name);
+          let span = $('<span />').attr('class', 'badge badge-secondary user-role-badge').html(obj.name+" ");
+          let innerSpan = $('<span />').attr('class', 'lab_group_delete').attr('group_id', obj.id);
+          let innerI = $('<i />').attr('class', 'fas fa-trash').attr('group_id', obj.id);
+          innerSpan.append(innerI);
+          span.append(innerSpan);
+          $("#lab_admin_user_group").append(span);
+        });
+        //$("#lab_admin_user_thematics").html(response.data);
+        //<span class='lab_role_delete' user_id='".$user_id."' role='".$value->id."'><i class='fas fa-trash'></i></span></span>
+        $(".lab_group_delete").click(function (){
+          data = {
+            'action':'lab_user_delGroup',
+            'group_id':$(this).attr('group_id'),
+          };
+          callAjax(data,"Group "+$(this).attr('role')+" delete !",loaduserGroup,'Failed to delete group',null);
+        });
+      }
+    })
+  });
+}
 function loaduserThematic() {
   jQuery(function ($) {
     $.post(LAB.ajaxurl,{'action':'lab_user_getThematics_by_user','user_id':$("#lab_user_search_id").val()},function (response) {

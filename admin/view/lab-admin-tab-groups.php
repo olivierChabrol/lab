@@ -101,6 +101,35 @@ function lab_admin_tab_groups() {
 	</tbody></form></table>
   <br />
   <hr />
+<br/>
+<div>
+  <h3><?php esc_html_e('Affecter des utilisateurs à des groupes','lab') ?></h3>
+
+  <label for="lab_all_users"><b><?php esc_html_e('Afficher aussi les personnes qui ont déjà un groupe', 'lab') ?></b></label>
+  <input type="checkbox" id="lab_all_users"/><br/>
+  <label for="lab_no_users_left"><b><?php esc_html_e('Afficher aussi les utilisateurs qui ont quitté l\'Institut','lab') ?></b></label>
+  <input type="checkbox" id="lab_no_users_left"/>
+  <br/><br/>
+
+  <div style="display:flex;">
+    
+    <!-- CHOIX USER -->
+
+    <div style='float: left; margin-right:50px;'>
+                          <label for='users'><?php esc_html_e('Choisissez une ou plusieurs personne(s) à affecter :','lab') ?>
+                          </label><br/><br/>
+    <select id='list_users' name='users[]' multiple style='height:300px;'></select></div>
+    
+    <!-- CHOIX GROUP -->
+
+    <div style='float: right; margin-left:50px'>
+                          <label for='groups'><?php esc_html_e('Choisissez le ou les groupe(s) au(x)quel(s) vous allez affecter des personnes :', 'lab') ?>
+                          </label><br/><br/>
+    <select id='list_groups' name='groups[]' multiple style='height:150px;'></select></div>
+
+  </div>
+  <button style='margin-top:10px;' id='lab_add_users_groups'><?php esc_html_e('envoyer','lab') ?></button>
+</div>
 
 <?php
 }
