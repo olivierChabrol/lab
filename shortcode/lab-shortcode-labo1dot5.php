@@ -7,26 +7,42 @@ function lab_labo1_5($args) {
     <div id="trajet0">
       <p>
         <label for="trajet0">Trajet:</label>
-        <input type="date" id="travel_date0" name="travel_date0">
-        <input type="text" id="country_from0" name="country_from0" placeholder="Pays de depart">
-        <input type="text" name="from0" id="from0" placeholder="Lieu de depart">
-        <input type="text" id="country_to0" name="country_to0" placeholder="Pays de d\'arrivee">
-        <input type="text" id="to0" name="to0" placeholder="Lieu de d\'arrivee">
-        <select id="lab_transport_to0" name="lab_transport_to0">
-        <option value="">'.esc_html__("Choisissez une option","lab").'</option>
-        <option value="car">'.esc_html__("Voiture","lab").'</option>
-        <option value="train">'.esc_html__("Train","lab").'</option>
-        <option value="plane">'.esc_html__("Avion","lab").'</option>
-        <option value="bus">'.esc_html__("Car","lab").'</option>
-        <option value="none">'.esc_html__("Aucun","lab").'</option>
-        <option value="other">'.esc_html__("Autre","lab").'</option>
-        </select>
-        <select id="go_back0" name="go_back0">
-        <option value="">Aller/Retour?</option>
-        <option value="gosimple">Aller simple</option>
-        <option value="goback">Aller Retour</option>
-        </select>
-        <button class="removeVar" index="0">Supprimer</button>
+        
+        <div>
+            <label for="country_from0">Pays de départ:<span class="lab_form_required_star"> *</span></label>
+            <input type="text" required id="country_from0" name="country_from0">
+            <label for="from0">Ville de départ :<span class="lab_form_required_star"> *</span></label>
+            <input type="text" required id="from0" name="from0">
+        </div>
+        <div>
+            <label for="country_to0">Pays d\'arrivee:<span class="lab_form_required_star"> *</span>&nbsp&nbsp</label>
+            <input type="text" required id="country_to0" name="country_to0">
+            <label for="to0">Ville d\'arrivee :<span class="lab_form_required_star"> *</span>&nbsp&nbsp</label>
+            <input type="text" required id="to0" name="to0">
+        </div>
+        <div>
+            <label for="travel_date0"> Date de départ <span class="lab_form_required_star"> *</span>&nbsp</label>
+            <input type="date" id="travel_date0" name="travel_date0">
+            <label for="lab_transport_to0">Mode de transport<span class="lab_form_required_star"> *</span></label>
+            <select id="lab_transport_to0" name="lab_transport_to0">
+            <option value="">'.esc_html__("Choisissez une option","lab").'</option>
+            <option value="car">'.esc_html__("Voiture","lab").'</option>
+            <option value="train">'.esc_html__("Train","lab").'</option>
+            <option value="plane">'.esc_html__("Avion","lab").'</option>
+            <option value="bus">'.esc_html__("Car","lab").'</option>
+            <option value="none">'.esc_html__("Aucun","lab").'</option>
+            <option value="other">'.esc_html__("Autre","lab").'</option>
+            </select>
+        </div>
+        <div>
+            <label for="go_back0">Un trajet aller/retour?<span class="lab_form_required_star"> *</span></label>
+            <select id="go_back0" name="go_back0">
+            <option value="">Aller/Retour?</option>
+            <option value="gosimple">Aller simple</option>
+            <option value="goback">Aller Retour</option>
+            </select>
+            <button class="removeVar" index="0">Supprimer ce trajet</button>
+        </div>
       </p></div>
       <p><button id="addVar">Ajouter un nouveau trajet</button></p>
       <p><button id="validate">Valider</button></p>';
