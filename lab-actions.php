@@ -155,4 +155,5 @@ if (is_admin()) {
 else{
 
     add_action( 'wp_ajax_nopriv_lab_presence_save_ext', 'lab_admin_presence_save_ext_ajax');
+    add_action( 'wp_ajax_nopriv_lab_save_transportation', 'lab_labo1dot5_save');
 }
