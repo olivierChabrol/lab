@@ -1,11 +1,39 @@
 <?php
-/*
- * File Name: lab-shortcode-invitation.php
- * Description: shortcode pour afficher un formulaire de création d'invitation
- * Authors: Ivan Ivanov, Lucas Urgenti
- * Version: 1.2
- */
+
+
 function lab_labo1_5($args) {
+    $html = '
+    <h3>Remplir les trajets</h3>
+    <div id="trajet0">
+      <p>
+        <label for="trajet0">Trajet:</label>
+        <input type="date" id="travel_date0" name="travel_date0">
+        <input type="text" id="country_from0" name="country_from0" placeholder="Pays de depart">
+        <input type="text" name="from0" id="from0" placeholder="Lieu de depart">
+        <input type="text" id="country_to0" name="country_to0" placeholder="Pays de d\'arrivee">
+        <input type="text" id="to0" name="to0" placeholder="Lieu de d\'arrivee">
+        <select id="lab_transport_to0" name="lab_transport_to0">
+        <option value="">'.esc_html__("Choisissez une option","lab").'</option>
+        <option value="car">'.esc_html__("Voiture","lab").'</option>
+        <option value="train">'.esc_html__("Train","lab").'</option>
+        <option value="plane">'.esc_html__("Avion","lab").'</option>
+        <option value="bus">'.esc_html__("Car","lab").'</option>
+        <option value="none">'.esc_html__("Aucun","lab").'</option>
+        <option value="other">'.esc_html__("Autre","lab").'</option>
+        </select>
+        <select id="go_back0" name="go_back0">
+        <option value="">Aller/Retour?</option>
+        <option value="gosimple">Aller simple</option>
+        <option value="goback">Aller Retour</option>
+        </select>
+        <button class="removeVar" index="0">Supprimer</button>
+      </p></div>
+      <p><button id="addVar">Ajouter un nouveau trajet</button></p>
+      <p><button id="validate">Valider</button></p>';
+
+    return $html;
+}
+function lab_labo1_5_old($args) {
     $param = shortcode_atts(array(
         'hostpage' => 0 //0 pour invité, 1 pour invitant/responsable
         ),
@@ -24,7 +52,8 @@ function lab_labo1_5($args) {
             $invitation=lab_invitations_getByToken($token);
             $charges = json_decode($invitation->charges);
             if (!isset($invitation)) {
-                return esc_html__("Token d'invitation invalide",'lab');
+                //return esc_html__("Token d'invitation invalide",'lab');
+                return esc_html__("Test Hongda",'lab');
             }
             $guest = lab_invitations_getGuest($invitation->guest_id);
             $host = new labUser($invitation->host_id);

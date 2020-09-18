@@ -46,6 +46,7 @@ require_once(LAB_DIR_PATH."lab-admin-ldap.php");
 require_once(LAB_DIR_PATH."view/lab-view-user.php");
 require_once("lab-html-helper.php");
 require_once("lab-utils.php");
+require_once("lab-labo1dot5.php");
 
 global $wpdb;
 $dbTablePrefix = $wpdb->prefix;

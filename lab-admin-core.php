@@ -886,6 +886,18 @@ function lab_admin_createUserGroupTable()
     $wpdb->get_results($sql);
 }
 
+function lab_admin_createUserThematicTable()
+{
+    global $wpdb;
+    $sql = "CREATE TABLE IF NOT EXISTS `".$wpdb->prefix."lab_users_thematic` (
+        `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
+        `user_id` bigint UNSIGNED NOT NULL,
+        `thematic_id_id` bigint UNSIGNED NOT NULL,
+        PRIMARY KEY(`id`)
+      ) ENGINE=InnoDB;";
+    $wpdb->get_results($sql);
+}
+
 function lab_admin_createGroupTable() {
     global $wpdb;
     $sql = "CREATE TABLE IF NOT EXISTS `".$wpdb->prefix."lab_groups`(
@@ -1856,6 +1868,7 @@ function create_all_tables() {
     lab_hal_createTable_hal();
     lab_admin_createGroupTable();
     lab_admin_createUserGroupTable();
+    lab_admin_createUserThematicTable();
     lab_admin_createSubTable();
     lab_keyring_createTable_keys();
     lab_keyring_createTable_loans();
