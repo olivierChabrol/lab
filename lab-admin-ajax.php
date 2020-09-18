@@ -26,7 +26,21 @@ function lab_user_delThematic()
   $thematic_id = $_POST['thematic_id'];
   wp_send_json_success( lab_admin_thematic_delete($thematic_id));
   return;
+}
 
+function lab_admin_ajax_users_thematic_set_main()
+{
+  $thematic_id = $_POST['thematic_id'];
+  $value = $_POST['thematic_value'];
+  $r = lab_admin_thematic_set_main($thematic_id, $value);
+  if($r)
+  {
+    wp_send_json_success($r);
+  }
+  else
+  {
+    wp_send_json_error();
+  }
 }
 
 function ajax_thematic_add()

@@ -14,6 +14,7 @@ add_action( 'wp_enqueue_scripts'  , 'wp_lab_fe_enqueues' );
 
 if (is_admin()) {
     add_action( 'wp_ajax_lab_user_delGroup', 'lab_admin_ajax_users_group_delete');
+    add_action( 'wp_ajax_lab_user_setMainThematic', 'lab_admin_ajax_users_thematic_set_main');
     add_action( 'wp_ajax_lab_admin_group_by_user', 'lab_admin_ajax_group_by_user');
     add_action( 'wp_ajax_lab_user_addGroup', 'lab_admin_ajax_group_add');
     add_action( 'wp_ajax_lab_user_getThematics', 'lab_admin_thematic_get_thematics_by_user');

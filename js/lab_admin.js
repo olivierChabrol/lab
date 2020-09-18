@@ -1610,9 +1610,17 @@ function loaduserThematic() {
           //alert(obj.name);
           let span = $('<span />').attr('class', 'badge badge-secondary user-role-badge').html(obj.name+" ");
           let innerSpan = $('<span />').attr('class', 'lab_thematic_delete').attr('thematic_id', obj.id);
+          let thematicCssClass = 'lab_thematic_order';
+          if (obj.main == "1") {
+            thematicCssClass += " lab_thematic_main";
+          }
+          let innerSpanMain = $('<span />').attr('class', thematicCssClass).attr('thematic_id', obj.id).attr('thematic_value', obj.main);
           let innerI = $('<i />').attr('class', 'fas fa-trash').attr('thematic_id', obj.id);
+          let innerIMain = $('<i />').attr('class', 'fa fa-star').attr('thematic_id', obj.id);
           innerSpan.append(innerI);
+          innerSpanMain.append(innerIMain);
           span.append(innerSpan);
+          span.append(innerSpanMain);
           $("#lab_admin_user_thematics").append(span);
         });
         //$("#lab_admin_user_thematics").html(response.data);
@@ -1623,6 +1631,15 @@ function loaduserThematic() {
             'thematic_id':$(this).attr('thematic_id'),
           };
           callAjax(data,"Thematic "+$(this).attr('role')+" delete !",loaduserThematic,'Failed to delete thematic',null);
+        });
+        $(".lab_thematic_order").click(function (){
+          data = {
+            'action':'lab_user_setMainThematic',
+            'thematic_id':$(this).attr('thematic_id'),
+            'thematic_value':$(this).attr('thematic_value'),
+          };
+          console.log(data);
+          callAjax(data,"Thematic "+$(this).parent().text()+" set as main",loaduserThematic,'Failed to set main thematic',null);
         });
       }
     })

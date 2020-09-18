@@ -60,9 +60,13 @@
     padding: 0.5em 1em;
     margin-right: 1em;
 }
-.lab_role_delete {
+.lab_role_delete, .lab_group_delete, .lab_thematic_delete, .lab_thematic_order{
     cursor:pointer;
 }
+.lab_thematic_main {
+  color: gold;
+}
+
 .form-table td, .form-table th {
     padding:10px;
 }

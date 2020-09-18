@@ -19,7 +19,11 @@ function lab_shortcode_thematic_display()
         $html .= "<h3>".$label."</h3>";
         foreach($results as $r) 
         {
-            $html .= "- ".$r->firstName." ".strtoupper($r->lastName)."<br>";
+            $html .= "- ".$r->firstName." ".strtoupper($r->lastName);//."<br>";
+            $html .= " (";
+            $html .= $r->main == 1?"P":"S";
+            $html .= ")";
+            $html .= "<br>";
         }
     }
     return $html;
@@ -56,6 +60,18 @@ function lab_admin_thematic_delete($thematicId)
     return true;
 }
 
+function lab_admin_thematic_set_main($thematicId, $value)
+{
+    global $wpdb;
+    $toggleValue = 0;
+    if ($value === "0") {
+        $toggleValue = 1;
+    }
+
+    $wpdb->update($wpdb->prefix.'lab_users_thematic', array('main' => $toggleValue), array('id' => $thematicId));
+    return "\$toggleValue : ".$toggleValue." thematicId : ".$thematicId;
+}
+
 function lab_admin_thematic_add_to_user($userId, $thematicId)
 {
     global $wpdb;
@@ -86,6 +102,7 @@ function lab_admin_thematic_get_thematics_by_user($userId)
             $thematic = new \stdClass();
             $thematic->id = $r->id; 
             $thematic->thematic_id = $r->thematic_id; 
+            $thematic->main = $r->main; 
             $thematic->name = lab_admin_thematic_get_label($r->thematic_id);
             $thematics[] = $thematic;
         }
