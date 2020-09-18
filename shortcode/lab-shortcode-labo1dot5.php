@@ -5,9 +5,7 @@ function lab_labo1_5($args) {
     $html = '
     <h3>Remplir les trajets</h3>
     <div id="trajet0">
-      <p>
-        <label for="trajet0">Trajet:</label>
-        
+        <label for="trajet0">Trajet:</label>     
         <div>
             <label for="country_from0">Pays de départ:<span class="lab_form_required_star"> *</span></label>
             <input type="text" required id="country_from0" name="country_from0">
@@ -41,11 +39,11 @@ function lab_labo1_5($args) {
             <option value="gosimple">Aller simple</option>
             <option value="goback">Aller Retour</option>
             </select>
-            <button class="removeVar" index="0">Supprimer ce trajet</button>
         </div>
-      </p></div>
-      <p><button id="addVar">Ajouter un nouveau trajet</button></p>
-      <p><button id="validate">Valider</button></p>';
+        <button class="removeVar" index="0">Supprimer ce trajet</button><p></p>
+    </div>
+    <p><button id="addVar">Ajouter un nouveau trajet</button></p>
+    <p><button id="validate">Valider</button></p>';
 
     return $html;
 }

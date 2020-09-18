@@ -23,7 +23,6 @@ function addNewTransporationLine(elm)
 {
   varCount++;
   $node = '<div id="trajet'+varCount+'">'
-  +'    <p>'
   +'      <label for="trajet'+varCount+'">Trajet:</label>'  
   +'      <div>'
   +'          <label for="country_from'+varCount+'">Pays de départ:<span class="lab_form_required_star"> *</span></label>'
@@ -58,9 +57,9 @@ function addNewTransporationLine(elm)
   +'          <option value="gosimple">Aller simple</option>'
   +'          <option value="goback">Aller Retour</option>'
   +'          </select>'
-  +'          <button class="removeVar" index="'+varCount+'">Supprimer ce trajet</button>'
-  +'      </div>';
-          
+  +'     </div>'
+  +'     <button class="removeVar" index="'+varCount+'">Supprimer ce trajet</button><p></p>';
+  +'</div>'       
   elm.parent().before($node);
 
   $("#country_from"+varCount).countrySelect({
@@ -109,10 +108,11 @@ $(document).on('click', '.removeVar', function(){
   //varCount--;
   removeTransporationLine($(this));
   });
-  $("#country_from0").countrySelect({
-    preferredCountries: ['fr', 'de', 'it', 'es', 'us'],
-  });
-  $("#country_to0").countrySelect({
-    preferredCountries: ['fr', 'de', 'it', 'es', 'us'],
-  });
+
+$("#country_from0").countrySelect({
+  preferredCountries: ['fr', 'de', 'it', 'es', 'us'],
+});
+$("#country_to0").countrySelect({
+  preferredCountries: ['fr', 'de', 'it', 'es', 'us'],
+});
 });
