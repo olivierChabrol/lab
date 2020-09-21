@@ -96,7 +96,7 @@ function lab_event_of_the_week($param)
         }
     }
 
-    $content ="<h4><a class=\"spip_in\" href=\"/events/\">La semaine de l’I2M</a></h4>";
+    $content ="<h4><a class=\"spip_in\" href=\"/events/\">".esc_html__("I2m Week",'lab')."</a></h4>";
     
     foreach ( $res as $r )
     {
