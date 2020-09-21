@@ -4,6 +4,10 @@ function lab_labo1dot5_save()
 {
     $data = "";
     global $wpdb;
+
+    date_default_timezone_set('Europe/Paris');
+    $travel_id = get_current_user_id().date('YmdHis', time());
+    
     foreach ($_POST as $key => $value) {
         if (strlen($key) > 4)
         {
@@ -14,7 +18,7 @@ function lab_labo1dot5_save()
                 $wpdb->insert($wpdb->prefix.'lab_labo1dot5', array("travel_from"=>$_POST['from'.$index],  "means"=>$_POST['lab_transport_to'.$index],
                                                                    "travel_to"=>$_POST['to'.$index],  "country_from"=>$_POST['country_from'.$index],
                                                                    "country_to"=>$_POST['country_to'.$index], "go_back"=>$_POST['go_back'.$index],
-                                                                   "travel_date"=>$_POST['travel_date'.$index]));
+                                                                   "travel_date"=>$_POST['travel_date'.$index],"travel_id"=>$travel_id));
             }
         }
 
