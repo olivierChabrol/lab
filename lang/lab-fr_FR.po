@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-09-21 10:50+0200\n"
-"PO-Revision-Date: 2020-09-21 10:50+0200\n"
+"POT-Creation-Date: 2020-09-21 11:02+0200\n"
+"PO-Revision-Date: 2020-09-21 11:02+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en\n"
@@ -686,10 +686,9 @@ msgstr ""
 "%s entre %s et %s"
 
 #: lab-admin-core.php:239
-#, fuzzy, php-format
-#| msgid "A param key with '%1s' already exist in db"
+#, php-format
 msgid "A param key with '%1s' and type %1s already exist in db"
-msgstr "Un paramètre avec la clef '%1s' existe déjà en BDD"
+msgstr "Un paramètre avec la clef '%1s' et le type %1s existe déjà en DB"
 
 #: lab-admin-core.php:241
 #, php-format
@@ -920,8 +919,6 @@ msgid "Name"
 msgstr "Nom"
 
 #: shortcode/lab-shortcode-directory.php:233
-#, fuzzy
-#| msgid "Fonction"
 msgid "Function"
 msgstr "Fonction"
 
@@ -1071,7 +1068,7 @@ msgstr "HDR"
 
 #: shortcode/lab-shortcode-profile.php:73
 msgid "present"
-msgstr ""
+msgstr "present"
 
 #: shortcode/lab-shortcode-profile.php:103
 msgid "Affiliation"
