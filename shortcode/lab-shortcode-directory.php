@@ -201,6 +201,14 @@ function lab_directory($param) {
 
             $directoryStr .= '<a href="' .$forwardUrl. '" '.$letterClass.'><b>' . $element . '</b></a>&nbsp;&nbsp;'; 
         } // letter's url
+        $forwardUrl  = $url[0]."?letter=%";
+            if ($groupAsParameter) {
+                $forwardUrl .= "&group=".$group;
+            }
+            if ($thematic != "0") {
+                $forwardUrl .= "&thematic=".$thematic;
+            }
+        $directoryStr .= '<a href="' .$forwardUrl. '" '.$letterClass.'><b>*</b></a>&nbsp;&nbsp;'; 
         $directoryStr .= "</div>"; // letters
         $directoryStr .= 
             "<br>
