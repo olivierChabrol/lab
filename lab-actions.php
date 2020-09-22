@@ -149,7 +149,7 @@ if (is_admin()) {
     add_action( 'wp_ajax_lab_ldap_reconnect', 'lab_ldap_reconnect');
     add_action( 'wp_ajax_lab_admin_ldap_settings', 'lab_admin_ldap_settings');
     // LABO 1.5
-    add_action( 'wp_ajax_nopriv_lab_save_transportation', 'lab_labo1dot5_save');
+    add_action( 'wp_ajax_lab_save_transportation', 'lab_labo1dot5_save');
 }
 // no admin
 else{
