@@ -39,29 +39,6 @@ function lab_labo1dot5_save()
             }
         }
     }
-    //*/
     wp_send_json_success( $data ); 
-    /*
-    for ($i = 0 ; $i <= count($indexes) ; $i++)
-    {
-        $wpdb->insert($wpdb->prefix.'lab_labo1dot5', array("travel_from"=>$_POST['from'.$indexes[$i]], "means"=>$_POST['lab_transport_to'.$indexes[$i]], "travel_to"=>$_POST['to'.$indexes[$i]]));
-    }
-    
-    wp_send_json_success( $length );
-    /*
-    $from0 = $_POST['from0'];
-    $to0 = $_POST['to0'];
-    $transportMeans0 = $_POST['lab_transport_to0'];
-
    
-    
-    if ($wpdb->insert($wpdb->prefix.'lab_labo1dot5', array("travel_from"=>$from, "means"=>$transportMeans, "travel_to"=>$to)))
-    {
-        wp_send_json_success( $wpdb->insert_id );
-    }
-    else
-    {
-        wp_send_json_error( "Fail to insert ..." );
-    }
-    //*/
 }

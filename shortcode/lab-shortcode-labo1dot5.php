@@ -47,7 +47,9 @@ function lab_labo1_5($args) {
 
     return $html;
 }
+
 function lab_labo1_5_old($args) {
+
     $param = shortcode_atts(array(
         'hostpage' => 0 //0 pour invité, 1 pour invitant/responsable
         ),

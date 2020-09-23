@@ -35,6 +35,7 @@ require_once(LAB_DIR_PATH."shortcode/lab-shortcode-hal.php");
 require_once(LAB_DIR_PATH."shortcode/lab-shortcode-event.php");
 require_once(LAB_DIR_PATH."shortcode/lab-shortcode-invitation.php");
 require_once(LAB_DIR_PATH."shortcode/lab-shortcode-labo1dot5.php");
+require_once(LAB_DIR_PATH."shortcode/lab-shortcode-labo1dot5admin.php");
 require_once(LAB_DIR_PATH."shortcode/lab-shortcode-ldap.php");
 require_once(LAB_DIR_PATH."admin/view/lab-admin-tabs.php");
 require_once(LAB_DIR_PATH."admin/view/lab-admin-tab-groups.php");
@@ -119,6 +120,7 @@ add_shortcode('lab-incoming-event', 'lab_incoming_event');
 add_shortcode('lab-hal', 'lab_hal');
 add_shortcode('lab-invite', 'lab_invitation');
 add_shortcode('lab-labo1dot5', 'lab_labo1_5');
+add_shortcode('lab-labo1dot5admin', 'lab_labo1_5admin');
 add_shortcode('lab-invite-interface','lab_invitations_interface');
 add_shortcode('lab-ldap','lab_ldap');
 

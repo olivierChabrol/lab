@@ -1,22 +1,4 @@
-/*jQuery(function($){
-    console.log("test");
-    //$("[id^=add").click(function() {
-    $(document).on( "click", "[id^=add]", function() {
-        let id = $(this).attr("id");
-        console.log(id);
-        let index = id.substring(3);
-        console.log(index);
-        addNewLine(index);
-    });
-});
 
-function addNewLine(previousLineNumber) {
-    let newLineNumber = parseInt(previousLineNumber) + 1;
-    let innerHtml = '<p id="p'+newLineNumber+'"><input type="text" id="from0" placeholder="Lieu de depart"><input type="text" id="to0" placeholder="Lieu de d\'arrivee">';
-
-    $("#p"+previousLineNumber).after(innerHtml);
-    
-}*/
 var varCount = 0;
 
 function addNewTransporationLine(elm)
