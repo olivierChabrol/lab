@@ -89,7 +89,8 @@ function lab_profile($id=0) {
 	  
 	  				  
 	$profileStr = '
-    <div id="lab_profile_card" bg-color="'.$user->bg_color.'">
+	<div id="lab_profile_card" bg-color="'.$user->bg_color.'">
+		<input type="hidden" id="userId" value="'.$user->id.'"/>
 		<div id="lab_pic_name">
 			<div>
 				<img src="'.$user->gravatar.'" id="lab_avatar"></img>'
@@ -222,19 +223,26 @@ class labUser {
 		return $output;
 	}
 	public function print_thematics() {
-		$output='<ul id="lab_profile_thematics">';
-		if (count($this->thematics)==0) { return "<i>".esc_html__("None","lab")."</i>";}
-		foreach ($this->thematics as $g) {
-			$output .= "<li>".$g->name;
-			if ($g->main == 1)
-			{
-				$output .= '<span class="lab_thematic_main"><i class="fa fa-star"></i></span>';
-			}
-			//$output .= ($is_current_user || current_user_can('edit_users')) ? '&nbsp;<span class="lab_profile_edit delete_thematic" thematic_id="'.$g->id.'"><i thematic_id="'.$g->id.'" class="fa fa-trash"></i></span>':'';
-
-			$output .= "</li>";
+		$output .= "";
+		if (count($this->thematics)==0) 
+		{ 
+			$output .= "<i>".esc_html__("None","lab")."</i>";
 		}
-		$output .= '</ul><div id="lab_profile_thematic_add_div" class="lab_profile_edit">';
+		else {
+			$output .= '<ul id="lab_profile_thematics">';
+			foreach ($this->thematics as $g) {
+				$output .= "<li>".$g->name;
+				if ($g->main == 1)
+				{
+					$output .= '<span class="lab_thematic_main"><i class="fa fa-star"></i></span>';
+				}
+				//$output .= ($is_current_user || current_user_can('edit_users')) ? '&nbsp;<span class="lab_profile_edit delete_thematic" thematic_id="'.$g->id.'"><i thematic_id="'.$g->id.'" class="fa fa-trash"></i></span>':'';
+
+				$output .= "</li>";
+			}
+			$output .= '</ul>';
+		}
+		$output .= '<div id="lab_profile_thematic_add_div" class="lab_profile_edit">';
 		$output .= lab_html_select_str('lab_fe_thematic','lab_fe_thematic','lab_profile_edit','lab_admin_thematic_load_all',null,array("value"=>0,"label"=>"--- Select thematic ---"),0);
         $output .= '<button class="btn btn-primary lab_profile_edit" id="lab_fe_add_thematic">'.esc_html__("Add","lab").'</button></div>';
 		return $output;

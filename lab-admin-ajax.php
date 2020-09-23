@@ -14,25 +14,48 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
  * THEMATIC
  ********************************************************************************************/
 
+function canModifyThematic($userId)
+{
+  if ($userId == get_current_user_id())
+  {
+    return true;
+  }
+  else
+  {
+    return current_user_can('edit_users');
+  }
+}
+
 function ajax_thematic_fe_add()
 {
-  $userId = get_current_user_id();
+  $userId = $_POST['user_id'];
   $thematic_id = $_POST['thematic_id'];
-  wp_send_json_success( lab_admin_thematic_add_to_user($userId, $thematic_id));
-  return;
+  if (canModifyThematic($userId)) {
+    wp_send_json_success( lab_admin_thematic_add_to_user($userId, $thematic_id));
+    return;
+  }
+  else{
+    wp_send_json_error("Cant modify this user");
+  }
 }
 
 function ajax_thematic_fe_del()
 {
-  $thematic_id = $_POST['thematic_id'];
-  wp_send_json_success( lab_admin_thematic_delete($thematic_id));
-  return;
+  $userId = $_POST['user_id'];
+  if (canModifyThematic($userId)) {
+    $thematic_id = $_POST['thematic_id'];
+    wp_send_json_success( lab_admin_thematic_delete($thematic_id));
+    return;
+  }
+  else
+  {
+    wp_send_json_error("Cant modify this user");
+  }
 }
 function ajax_thematic_fe_get()
 {
-  $userId = get_current_user_id();
+  $userId = $_POST['user_id'];
   wp_send_json_success( lab_admin_thematic_get_thematics_by_user($userId));
-  return;
 }
 
 function ajax_thematic_get_thematics_by_user()

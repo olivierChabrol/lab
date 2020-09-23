@@ -55,7 +55,8 @@ jQuery(function($){
   $("#lab_fe_add_thematic").click(function() {
     data = {
       'action': 'lab_fe_thematic_add',
-      'thematic_id': $("#lab_fe_thematic").val()
+      'thematic_id': $("#lab_fe_thematic").val(),
+      'user_id' : $("#userId").val()
     };
     $.post(LAB.ajaxurl,data,function(response){
       if (response.success) {
@@ -98,7 +99,8 @@ function addDeleteThematicListener() {
   $(".delete_thematic").click(function() {
     data = {
       'action': 'lab_fe_thematic_del',
-      'thematic_id': $(this).attr("thematic_id")
+      'thematic_id': $(this).attr("thematic_id"),
+      'user_id' : $("#userId").val()
     };
     $.post(LAB.ajaxurl,data,function(response){
       if (response.success) {
@@ -114,6 +116,7 @@ function addChangeMainThematicListener() {
       'action': 'lab_fe_thematic_togle_main',
       'thematic_id': $(this).attr("thematic_id"),
       'thematic_value': $(this).attr("thematic_value"),
+      'user_id' : $("#userId").val()
     };
     $.post(LAB.ajaxurl,data,function(response){
       if (response.success) {
@@ -125,12 +128,15 @@ function addChangeMainThematicListener() {
 
 function loadThematics() {
   data = {
-    'action': 'lab_fe_thematic_get'
+    'action': 'lab_fe_thematic_get',
+    'user_id': $("#userId").val()
   };
   $.post(LAB.ajaxurl,data,function(response){
     if (response.success) {
+      console.log("[loadThematics]] success");
       jQuery.each(response.data, function (index, value){
-        let li = $('<li />').html(value["name"]);
+        console.log("[loadThematics] value : " + value["name"]);
+        let li = $('<li />').html('*'+value["name"]);
 
         let thematicCssClass = 'lab_thematic_order';
         if (value["main"] == "1") {
