@@ -2,7 +2,7 @@
 
 
 function lab_labo1_5($args) {
-    $html = '
+    $html ='
     <h3>Remplir les trajets</h3>
     <div id="trajet0">
         <label for="trajet0">Trajet:</label>     

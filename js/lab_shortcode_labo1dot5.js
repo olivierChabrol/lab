@@ -89,6 +89,7 @@ $(document).on('click', '.removeVar', function(){
   //console.log("clic on removeVar");
   //varCount--;
   removeTransporationLine($(this));
+
   });
 
 $("#country_from0").countrySelect({

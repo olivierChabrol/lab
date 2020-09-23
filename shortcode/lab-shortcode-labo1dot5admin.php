@@ -8,9 +8,10 @@ function lab_labo1_5admin() {
     $results = $wpdb->get_results($sql);  
     
 ?>
-<table border="2" id="travel">
+<table class="table table-hover table-bordered" id="travel">
     <thead>
         <tr>
+          <th>Choisir</th>
           <th>Travel ID</th>
           <th>Pays de départ</th>
           <th>Ville de départ</th>
@@ -20,11 +21,17 @@ function lab_labo1_5admin() {
           <th>Mode de tansport</th>
           <th>Aller/Retour</th>
           <th>Status</th>
+          <th>Modif</th>
+        </tr>
+        <tr>
+            <td><input type="checkbox" onclick="checkAll(this)"/></td>
+            <td colspan="10"><a href="javascrip;" class="btn btn-danger btn-sm" role="button" onclick="delAll(this)">Suprimer les trajets choisis</a></td>
         </tr>
     </thead>
-    <tbody>
+    <tbody id="list_travel">
     <?php foreach ( $results as $myrow ) {  ?>
         <tr>
+          <td><input type="checkbox" name="item" /></td>
           <td><?php echo $myrow->travel_id; ?></td>
           <td><?php echo $myrow->country_from; ?></td>
           <td><?php echo $myrow->travel_from; ?></td>
@@ -34,10 +41,55 @@ function lab_labo1_5admin() {
           <td><?php echo $myrow->means; ?></td>
           <td><?php echo $myrow->go_back; ?></td>
           <td><?php echo $myrow->status; ?></td>
+          <td>
+                <input type="button" name="" value="Supprimer" class="btn btn-danger btn-sm" onclick="del(this)" />
+                <input type="button" name="" value="Modifier" class="btn btn-info btn-sm" onclick="modify(this)" />
+          </td>
         </tr>
     <?php } ?>
     </tbody>
 </table>
-<p><button id="addVar">Ajouter un nouveau trajet</button></p>
+<h5>Ajouter ou Modifer un trajet</h5>
+    <table class="table table-hover table-bordered" id="trajet">
+        <tr>
+            <th>Pays de départ</th>
+            <td><input type="text" id="country_from" name="country_from" class="form-control"/></td>
+            <th>Ville de départ</th>
+            <td><input type="text" id="from" name="from" class="form-control"/></td>
+        </tr>
+        <tr>
+            <th>Pays d\'arrivee</th>
+            <td><input type="text" id="country_to" name="country_to" class="form-control"/></td>
+            <th>Ville d\'arrivee</th>
+            <td><input type="text" id="to" name="to" class="form-control"/></td>
+        </tr>
+        <tr>
+            <th>Date de départ</th>
+            <td><input type="date" id="travel_date" name="travel_date" class="form-control"/></td>
+            <th>Mode de transport</th>
+            <td><select id="lab_transport_to" name="lab_transport_to" class="form-control">
+            <option value="">Choisissez une option</option>
+            <option value="car">Voiture</option>
+            <option value="train">Train</option>
+            <option value="plane">Avion</option>
+            <option value="bus">Car'</option>
+            <option value="none">Aucun</option>
+            <option value="other">Autre</option>
+            </select></td>
+        </tr>
+        <tr>
+            <th>Un trajet aller/retour?</th>
+            <td><select id="go_back" name="go_back" class="form-control">
+            <option value="">Aller/Retour?</option>
+            <option value="gosimple">Aller simple</option>
+            <option value="goback">Aller Retour</option>
+            </select></td>
+            <td colspan="2">
+                <input type="reset" value="Initialiser" class="btn btn-primary" id="reset" />   
+                <input type="button" value="Ajouter"  class="btn btn-success" id="add"  onclick="addList()" />
+                <input type="button" value="Mise à jour"  class="btn btn-info" id=""  onclick="update()" />
+            </td>
+        </tr>
+    </table>
 <?php
 }
