@@ -17,7 +17,7 @@ function lab_profile($id=0) {
 	$is_current_user = $user->id == get_current_user_id() ? true : false; 
 	$HalID_URL = "https://api.archives-ouvertes.fr/search/?q=*:*&fq=authIdHal_s:(".$user->hal_id.")&fl=docid,citationFull_s,producedDate_tdate,uri_s,title_s,journalTitle_s&sort=producedDate_tdate+desc&wt=xml";
 	$HalName_URL = "https://api.archives-ouvertes.fr/search/?q=authLastNameFirstName_s:%22".$user->hal_name."%22&fl=docid,citationFull_s,producedDate_tdate,uri_s,title_s,journalTitle_s&sort=producedDate_tdate+desc&wt=xml";
-	$editIcons = '<div id="lab_profile_icons" class="lab_profile_edit">
+	$editIcons = '<div id="lab_profile_icons">
 					<i title="'.esc_html__("Modifier la couleur d'arrière plan","lab").'" style="display:none" id="lab_profile_colorpicker" class="fas fa-fill-drip lab_profile_edit"></i>
 					<i id="lab_profile_edit" title="'.esc_html__('Modifier le profil','lab').'" class="fas fa-user-edit"></i> 
 					<i style="display:none" class="fas fa-user-check" title="'.esc_html__('Valider les changements','lab').'" id="lab_confirm_change" user_id="'.$user->id.'"></i>
@@ -126,7 +126,7 @@ function lab_profile($id=0) {
 		<div id="lab_profile_keywords">
 			'.$user->print_keywords().'
 		</div>
-	</div>';
+		<hr/><div id="lab_profile_thematics_div">'.esc_html__("User Thematic(s) : ", "lab").$user->print_thematics().'</div><hr/></div>';
     return $profileStr;
 }
 /*** CLASS LABUSER ***/
@@ -182,6 +182,7 @@ class labUser {
 		$this -> phone 		 = lab_profile_get_metaKey($id,'lab_user_phone');
 		$this -> description = lab_profile_get_metaKey($id,'description');
 		$this -> groups 	 = lab_profile_get_Groups($id);
+		$this -> thematics 	 = lab_admin_thematic_get_thematics_by_user($id);
 		$Gravmail 			 = trim($this->email);
 		$Gravmail 			 = strtolower($Gravmail); 
 		$this -> gravatar 	 = "https://www.gravatar.com/avatar/".md5($Gravmail)."?s=160&d=mp";
@@ -218,6 +219,24 @@ class labUser {
 		foreach ($this->groups as $g) {
 			$output .= "<li><a href=\"$g->url\" target=\"_blank\"> $g->acronym • $g->group_name </a></li>";
 		}
+		return $output;
+	}
+	public function print_thematics() {
+		$output='<ul id="lab_profile_thematics">';
+		if (count($this->thematics)==0) { return "<i>".esc_html__("None","lab")."</i>";}
+		foreach ($this->thematics as $g) {
+			$output .= "<li>".$g->name;
+			if ($g->main == 1)
+			{
+				$output .= '<span class="lab_thematic_main"><i class="fa fa-star"></i></span>';
+			}
+			//$output .= ($is_current_user || current_user_can('edit_users')) ? '&nbsp;<span class="lab_profile_edit delete_thematic" thematic_id="'.$g->id.'"><i thematic_id="'.$g->id.'" class="fa fa-trash"></i></span>':'';
+
+			$output .= "</li>";
+		}
+		$output .= '</ul><div id="lab_profile_thematic_add_div" class="lab_profile_edit">';
+		$output .= lab_html_select_str('lab_fe_thematic','lab_fe_thematic','lab_profile_edit','lab_admin_thematic_load_all',null,array("value"=>0,"label"=>"--- Select thematic ---"),0);
+        $output .= '<button class="btn btn-primary lab_profile_edit" id="lab_fe_add_thematic">'.esc_html__("Add","lab").'</button></div>';
 		return $output;
 	}
 	public function print_keywords() {

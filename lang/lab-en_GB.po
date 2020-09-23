@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-09-21 10:51+0200\n"
-"PO-Revision-Date: 2020-09-21 10:54+0200\n"
+"POT-Creation-Date: 2020-09-23 08:04+0200\n"
+"PO-Revision-Date: 2020-09-23 08:05+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en\n"
@@ -382,6 +382,7 @@ msgstr "Add Group to user"
 #: admin/view/lab-admin-tab-users.php:169
 #: admin/view/lab-admin-tab-users.php:180
 #: admin/view/lab-admin-tab-users.php:191
+#: shortcode/lab-shortcode-profile.php:239
 msgid "Add"
 msgstr "Add"
 
@@ -449,7 +450,7 @@ msgstr "Add user to directory"
 
 #: admin/view/lab-admin-tab-users.php:314
 msgid "E-Mail d'utilisateur AMU :"
-msgstr "user e-mail :"
+msgstr "User e-mail :"
 
 #: admin/view/lab-admin-tab-users.php:322
 #: shortcode/lab-shortcode-invitation.php:63
@@ -515,7 +516,7 @@ msgstr "LDAP"
 msgid "Paramètres globaux"
 msgstr "General settings"
 
-#: js/lab_fe.js:137
+#: js/lab_fe.js:199
 msgid "Votre biographie est trop longue (max 200 caractères)"
 msgstr "Your bio is too long (max 200 char)"
 
@@ -659,41 +660,41 @@ msgstr "I participate in the working group"
 msgid "Reason of your attendance is require"
 msgstr "Reason of your attendance is required"
 
-#: lab-admin-ajax.php:138
+#: lab-admin-ajax.php:159
 msgid "Cant delete system param"
 msgstr "Can't delete system param"
 
-#: lab-admin-ajax.php:852 lab-admin-ajax.php:863
+#: lab-admin-ajax.php:873 lab-admin-ajax.php:884
 msgid "Aucun prêt trouvé"
 msgstr "No loan found"
 
-#: lab-admin-ajax.php:967
+#: lab-admin-ajax.php:988
 msgid "Votre demande a bien été prise en compte"
 msgstr "Your invitation request has been take into account"
 
-#: lab-admin-ajax.php:996
+#: lab-admin-ajax.php:1017
 msgid "Votre invitation a bien été modifiée"
 msgstr "Your invitation request has been take into account"
 
-#: lab-admin-ajax.php:1124 shortcode/lab-shortcode-invitation.php:432
+#: lab-admin-ajax.php:1145 shortcode/lab-shortcode-invitation.php:432
 msgid "Aucune invitation"
 msgstr "No invitation"
 
-#: lab-admin-ajax.php:1161
+#: lab-admin-ajax.php:1182
 msgid "indéfini"
 msgstr "undefined"
 
-#: lab-admin-ajax.php:1305
+#: lab-admin-ajax.php:1326
 #, php-format
 msgid "%s is a non wordking day"
 msgstr "%s is a non wordking day"
 
-#: lab-admin-ajax.php:1328
+#: lab-admin-ajax.php:1349
 #, php-format
 msgid "Your are already present in %s the %s between %s and %s"
 msgstr "Your are already present in %s the %s between %s and %s"
 
-#: lab-admin-ajax.php:1351 lab-admin-ajax.php:1360
+#: lab-admin-ajax.php:1372 lab-admin-ajax.php:1381
 #, php-format
 msgid ""
 "Your new schedules overlap to an existing one : %s the %s between %s and %s"
@@ -928,29 +929,31 @@ msgstr "Loan"
 msgid "Voir prêt"
 msgstr "Show Loan"
 
-#: shortcode/lab-shortcode-directory.php:208
+#: shortcode/lab-shortcode-directory.php:250
+msgid "All"
+msgstr "All"
+
+#: shortcode/lab-shortcode-directory.php:255
 msgid "Chercher un nom"
 msgstr "Search for name"
 
-#: shortcode/lab-shortcode-directory.php:212
+#: shortcode/lab-shortcode-directory.php:259
 msgid "Show only group"
 msgstr "Show only group"
 
-#: shortcode/lab-shortcode-directory.php:231
+#: shortcode/lab-shortcode-directory.php:278
 msgid "Name"
 msgstr "Name"
 
-#: shortcode/lab-shortcode-directory.php:233
-#, fuzzy
-#| msgid "Fonction"
+#: shortcode/lab-shortcode-directory.php:280
 msgid "Function"
 msgstr "Function"
 
-#: shortcode/lab-shortcode-directory.php:234
+#: shortcode/lab-shortcode-directory.php:281
 msgid "User details"
 msgstr "User details"
 
-#: shortcode/lab-shortcode-directory.php:237
+#: shortcode/lab-shortcode-directory.php:284
 msgid "Group"
 msgstr "Group"
 
@@ -1516,7 +1519,7 @@ msgstr "HDR"
 
 #: shortcode/lab-shortcode-profile.php:73
 msgid "present"
-msgstr ""
+msgstr "present"
 
 #: shortcode/lab-shortcode-profile.php:103
 msgid "Affiliation"
@@ -1534,7 +1537,15 @@ msgstr "Office Floor"
 msgid "User group(s) : "
 msgstr "User group(s) : "
 
-#: shortcode/lab-shortcode-profile.php:227
+#: shortcode/lab-shortcode-profile.php:129
+msgid "User Thematic(s) : "
+msgstr "User Thematic(s) : "
+
+#: shortcode/lab-shortcode-profile.php:226
+msgid "None"
+msgstr "None"
+
+#: shortcode/lab-shortcode-profile.php:246
 msgid "Research keywords : "
 msgstr "Research keywords : "
 

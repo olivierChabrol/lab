@@ -18,6 +18,39 @@
     }
 ***/ 
 
+/**
+ * Generate URL for directory shortcode
+ *
+ * @param [type] $letter
+ * @param [type] $group
+ * @param [type] $thematic
+ * @return URL
+ */
+function directoryUrl($baseUrl, $letter, $group, $thematic)
+{
+    $url = $baseUrl;
+    if ($letter != "") {
+        $url .= "?letter=".$letter;
+    }
+    if ($group != "0") {
+      if ($letter != "") {
+        $url .= "&";
+      } else {
+        $url .= "?";
+      }
+      $url .= "group=".$group;
+    }
+    if ($thematic != "0") {
+      if ($letter != "" || $group != "") {
+        $url .= "&";
+      } else {
+        $url .= "?";
+      }
+      $url .= "thematic=".$thematic;
+    }
+    return $url;
+}
+
 function lab_directory($param) {
     $param = shortcode_atts(array(
         'group' => get_option('lab-directory'),
@@ -191,24 +224,13 @@ function lab_directory($param) {
         $directoryStr .= "<div class=\"alpha-links\" style=\"font-size:15px;\">";
         foreach ($alphachar as $element) {
             $letterClass = ($element == $currentLetter?"class=\"labSelectedLetter\"":"");
-            $forwardUrl  = $url[0]."?letter=".$element;
-            if ($groupAsParameter) {
-                $forwardUrl .= "&group=".$group;
-            }
-            if ($thematic != "0") {
-                $forwardUrl .= "&thematic=".$thematic;
-            }
-
+            $forwardUrl = directoryUrl($url[0], $element, $group, $thematic);
             $directoryStr .= '<a href="' .$forwardUrl. '" '.$letterClass.'><b>' . $element . '</b></a>&nbsp;&nbsp;'; 
         } // letter's url
-        $forwardUrl  = $url[0]."?letter=%";
-            if ($groupAsParameter) {
-                $forwardUrl .= "&group=".$group;
-            }
-            if ($thematic != "0") {
-                $forwardUrl .= "&thematic=".$thematic;
-            }
-        $directoryStr .= '<a href="' .$forwardUrl. '" '.$letterClass.'><b>*</b></a>&nbsp;&nbsp;'; 
+        
+        $letterClass = ('%' == $currentLetter?"class=\"labSelectedLetter\"":"");
+        $forwardUrl = directoryUrl($url[0], '%', $group, $thematic);
+        $directoryStr .= '<a href="' .$forwardUrl. '" '.$letterClass.'><b>'.__('All', 'lab').'</b></a>&nbsp;&nbsp;'; 
         $directoryStr .= "</div>"; // letters
         $directoryStr .= 
             "<br>

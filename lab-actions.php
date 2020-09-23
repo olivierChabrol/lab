@@ -17,10 +17,17 @@ if (is_admin()) {
     add_action( 'wp_ajax_lab_user_setMainThematic', 'lab_admin_ajax_users_thematic_set_main');
     add_action( 'wp_ajax_lab_admin_group_by_user', 'lab_admin_ajax_group_by_user');
     add_action( 'wp_ajax_lab_user_addGroup', 'lab_admin_ajax_group_add');
+    // Action thematic BE
     add_action( 'wp_ajax_lab_user_getThematics', 'lab_admin_thematic_get_thematics_by_user');
     add_action( 'wp_ajax_lab_user_getThematics_by_user', 'ajax_thematic_get_thematics_by_user');
     add_action( 'wp_ajax_lab_user_delThematic', 'lab_user_delThematic');
     add_action( 'wp_ajax_lab_user_addThematic', 'ajax_thematic_add');
+    // Action thematic FE
+    add_action( 'wp_ajax_lab_fe_thematic_add', 'ajax_thematic_fe_add');
+    add_action( 'wp_ajax_lab_fe_thematic_del', 'lab_user_delThematic');
+    add_action( 'wp_ajax_lab_fe_thematic_get', 'ajax_thematic_fe_get');
+    add_action( 'wp_ajax_lab_fe_thematic_togle_main', 'lab_admin_ajax_users_thematic_set_main');
+
     add_action( 'plugins_loaded', 'myplugin_load_textdomain' );
     add_action( 'admin_menu'          , 'wp_lab_menu' );
     add_action( 'wp_ajax_search_event', 'lab_admin_search_event' );

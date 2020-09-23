@@ -5,6 +5,17 @@
     font-family: Roboto, sans-serif;
 }
 
+.lab_profile_edit {
+    display: none;
+}
+.delete_thematic, .lab_thematic_order {
+    cursor:pointer;
+} 
+
+.lab_thematic_main {
+    color: gold;
+  }
+
 #lab_pic_name {
     display:flex;
     flex-direction: row;

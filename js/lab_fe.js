@@ -50,6 +50,20 @@ jQuery(function($){
     })
   });
 
+  addDeleteThematicListener();
+
+  $("#lab_fe_add_thematic").click(function() {
+    data = {
+      'action': 'lab_fe_thematic_add',
+      'thematic_id': $("#lab_fe_thematic").val()
+    };
+    $.post(LAB.ajaxurl,data,function(response){
+      if (response.success) {
+        deleteThematics();
+      }
+    });
+  });
+
   $("#lab-table-directory tr").click(function() {
     window.location.href = "/user/" + $(this).attr('userId');
   });
@@ -79,6 +93,74 @@ jQuery(function($){
   });
 
 });
+
+function addDeleteThematicListener() {
+  $(".delete_thematic").click(function() {
+    data = {
+      'action': 'lab_fe_thematic_del',
+      'thematic_id': $(this).attr("thematic_id")
+    };
+    $.post(LAB.ajaxurl,data,function(response){
+      if (response.success) {
+        deleteThematics();
+      }
+    });
+  });
+}
+
+function addChangeMainThematicListener() {
+  $(".lab_thematic_order").click(function() {
+    data = {
+      'action': 'lab_fe_thematic_togle_main',
+      'thematic_id': $(this).attr("thematic_id"),
+      'thematic_value': $(this).attr("thematic_value"),
+    };
+    $.post(LAB.ajaxurl,data,function(response){
+      if (response.success) {
+        deleteThematics();
+      }
+    });
+  });
+}
+
+function loadThematics() {
+  data = {
+    'action': 'lab_fe_thematic_get'
+  };
+  $.post(LAB.ajaxurl,data,function(response){
+    if (response.success) {
+      jQuery.each(response.data, function (index, value){
+        let li = $('<li />').html(value["name"]);
+
+        let thematicCssClass = 'lab_thematic_order';
+        if (value["main"] == "1") {
+          thematicCssClass += " lab_thematic_main";
+        }
+        let innerSpanStar = $('<span />').attr('class', thematicCssClass).attr('thematic_id', value['id']).attr('thematic_value', value["main"]);
+        let innerIStar = $('<i />').attr('class', 'fas fa-star').attr('thematic_id', value['id']).attr("title",__('Change main thematic','lab'));
+        innerSpanStar.append(innerIStar);
+        li.append(innerSpanStar);
+        
+        let innerSpanDelete = $('<span />').attr('class', 'lab_profile_edit delete_thematic').attr('thematic_id', value['id']);
+        let innerI = $('<i />').attr('class', 'fas fa-trash').attr('thematic_id', value['id']).attr("title",__('Delete thematic','lab'));
+        innerSpanDelete.append(innerI);
+        li.append(innerSpanDelete);
+
+        $("#lab_profile_thematics").append(li);
+        //li += '&nbsp;<span class="lab_profile_edit delete_thematic" thematic_id="' + value['id'] + '"><i thematic_id="' + value['id'] + '" class="fa fa-trash"></i></span>';
+        
+        $('.delete_thematic').show();
+      }); 
+      addDeleteThematicListener();
+      addChangeMainThematicListener();
+    }
+  });
+}
+
+function deleteThematics(){
+  $("#lab_profile_thematics").empty();
+  loadThematics();
+}
 
 /******************************* ShortCode Profile *******************************/
 function LABloadProfile() {
@@ -114,6 +196,7 @@ function LABloadProfile() {
     $(".entry-title").text("Profil de "+$('#lab_profile_name_span').text().replace("• "," "))
     //Fonction d'édition du profil
     $("#lab_profile_edit").click( function() {
+      deleteThematics();
       //Cache le bouton d'édition et les champs actuels
       $(this).hide();
       $(".lab_current").hide();
@@ -137,14 +220,17 @@ function LABloadProfile() {
         $("#lab_alert").html(_('Votre biographie est trop longue (max 200 caractères)','lab'));
       }
       else{
+        
         //Cache tous les champs de modification
         $(".lab_profile_edit").hide();
         $("#lab_confirm_change").hide();
+        
         //Cache les icônes des réseaux non définis
         $(".lab_profile_social[href='']").hide();
         //Affiche le bouton modifier et les champs actuels
         $("#lab_profile_edit").show();
         $(".lab_current").show();
+        
         //Remplit le tableau socials avec les réseaux sociaux modifiés ^^
         socials={};
         $(".lab_profile_social[modified=true]").each(function() {
@@ -159,6 +245,7 @@ function LABloadProfile() {
                          $("#lab_profile_edit_halID").val(),
                          $("#lab_profile_edit_halName").val(),
                          socials);
+                         //*/
       }
     });
     $(".lab_profile_social").each(function (index) {

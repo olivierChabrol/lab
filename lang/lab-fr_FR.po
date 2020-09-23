@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-09-21 11:02+0200\n"
-"PO-Revision-Date: 2020-09-21 11:02+0200\n"
+"POT-Creation-Date: 2020-09-23 08:05+0200\n"
+"PO-Revision-Date: 2020-09-23 08:05+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en\n"
@@ -375,6 +375,7 @@ msgstr "Ajouter un group à l'utilisateur"
 #: admin/view/lab-admin-tab-users.php:169
 #: admin/view/lab-admin-tab-users.php:180
 #: admin/view/lab-admin-tab-users.php:191
+#: shortcode/lab-shortcode-profile.php:239
 msgid "Add"
 msgstr "Ajouter"
 
@@ -643,41 +644,41 @@ msgstr "Je participe au groupe de travail"
 msgid "Reason of your attendance is require"
 msgstr "La raison de votre présence est requise"
 
-#: lab-admin-ajax.php:138
+#: lab-admin-ajax.php:159
 msgid "Cant delete system param"
 msgstr "Impossible d'effacer un paramètre sytème"
 
-#: lab-admin-ajax.php:852 lab-admin-ajax.php:863
+#: lab-admin-ajax.php:873 lab-admin-ajax.php:884
 msgid "Aucun prêt trouvé"
 msgstr "Aucun prêt trouvé"
 
-#: lab-admin-ajax.php:967
+#: lab-admin-ajax.php:988
 msgid "Votre demande a bien été prise en compte"
 msgstr "Votre demande a bien été prise en compte"
 
-#: lab-admin-ajax.php:996
+#: lab-admin-ajax.php:1017
 msgid "Votre invitation a bien été modifiée"
 msgstr "Votre invitation a bien été modifiée"
 
-#: lab-admin-ajax.php:1124
+#: lab-admin-ajax.php:1145
 msgid "Aucune invitation"
 msgstr "Aucune invitation"
 
-#: lab-admin-ajax.php:1161
+#: lab-admin-ajax.php:1182
 msgid "indéfini"
 msgstr "indéfini"
 
-#: lab-admin-ajax.php:1305
+#: lab-admin-ajax.php:1326
 #, php-format
 msgid "%s is a non wordking day"
 msgstr "%s est férié"
 
-#: lab-admin-ajax.php:1328
+#: lab-admin-ajax.php:1349
 #, php-format
 msgid "Your are already present in %s the %s between %s and %s"
 msgstr "Vous êtes déjà présent au/à %s le %s entre %s et %s"
 
-#: lab-admin-ajax.php:1351 lab-admin-ajax.php:1360
+#: lab-admin-ajax.php:1372 lab-admin-ajax.php:1381
 #, php-format
 msgid ""
 "Your new schedules overlap to an existing one : %s the %s between %s and %s"
@@ -906,27 +907,31 @@ msgstr "Prêter"
 msgid "Voir prêt"
 msgstr "Voir prêt"
 
-#: shortcode/lab-shortcode-directory.php:208
+#: shortcode/lab-shortcode-directory.php:250
+msgid "All"
+msgstr "Tou·te·s"
+
+#: shortcode/lab-shortcode-directory.php:255
 msgid "Chercher un nom"
 msgstr "Chercher un nom"
 
-#: shortcode/lab-shortcode-directory.php:212
+#: shortcode/lab-shortcode-directory.php:259
 msgid "Show only group"
 msgstr "Afficher les membres du groupe"
 
-#: shortcode/lab-shortcode-directory.php:231
+#: shortcode/lab-shortcode-directory.php:278
 msgid "Name"
 msgstr "Nom"
 
-#: shortcode/lab-shortcode-directory.php:233
+#: shortcode/lab-shortcode-directory.php:280
 msgid "Function"
 msgstr "Fonction"
 
-#: shortcode/lab-shortcode-directory.php:234
+#: shortcode/lab-shortcode-directory.php:281
 msgid "User details"
 msgstr "Coordonnées"
 
-#: shortcode/lab-shortcode-directory.php:237
+#: shortcode/lab-shortcode-directory.php:284
 msgid "Group"
 msgstr "Groupes"
 
@@ -1086,7 +1091,15 @@ msgstr "Etage du bureau"
 msgid "User group(s) : "
 msgstr "Groupe(s) scientifiques(s) de l'utilisateur : "
 
-#: shortcode/lab-shortcode-profile.php:227
+#: shortcode/lab-shortcode-profile.php:129
+msgid "User Thematic(s) : "
+msgstr "Thématiques scientifiques : "
+
+#: shortcode/lab-shortcode-profile.php:226
+msgid "None"
+msgstr "Aucun·e"
+
+#: shortcode/lab-shortcode-profile.php:246
 msgid "Research keywords : "
 msgstr "Rechercher mots clef : "
 
