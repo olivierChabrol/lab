@@ -29,26 +29,7 @@ function lab_labo1_5admin() {
         </tr>
     </thead>
     <tbody id="list_travel">
-    <!--
-    <?php foreach ( $results as $myrow ) {  ?>
-        <tr>
-          <td><input type="checkbox" name="item" /></td>
-          <td><?php echo $myrow->travel_id; ?></td>
-          <td><?php echo $myrow->country_from; ?></td>
-          <td><?php echo $myrow->travel_from; ?></td>
-          <td><?php echo $myrow->country_to; ?></td>
-          <td><?php echo $myrow->travel_to; ?></td>
-          <td><?php echo $myrow->travel_date; ?></td>
-          <td><?php echo $myrow->means; ?></td>
-          <td><?php echo $myrow->go_back; ?></td>
-          <td><?php echo $myrow->status; ?></td>
-          <td>
-                <input type="button" name="" value="Supprimer" class="btn btn-danger btn-sm" onclick="del(this)" />
-                <input type="button" name="" value="Modifier" class="btn btn-info btn-sm" onclick="modify(this)" />
-          </td>
-        </tr>
-    <?php } ?>
-    -->
+
     </tbody>
 </table>
 <h5>Ajouter ou Modifer un trajet</h5>
@@ -95,7 +76,7 @@ function lab_labo1_5admin() {
         <tr>
             <td colspan="4">
                 <input type="reset" value="Initialiser" class="btn btn-primary" id="reset" />   
-                <input type="button" value="Ajouter"  class="btn btn-success" id="add"  onclick="addList()" />
+                <input type="button" value="Ajouter"  class="btn btn-success" id="add"/>
                 <input type="button" value="Mise à jour"  class="btn btn-info" id=""  onclick="update()" />
             </td>
         </tr>
