@@ -1,5 +1,15 @@
 <?php
 
+function lab_labo1dot5_get()
+{
+    global $wpdb;
+    $sql = "SELECT * FROM `".$wpdb->prefix."lab_labo1dot5`";
+
+     
+    $results = $wpdb->get_results($sql);  
+    wp_send_json_success( $results ); 
+}
+
 function lab_labo1dot5_save()
 {
     $data = "";

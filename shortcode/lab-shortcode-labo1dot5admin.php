@@ -29,6 +29,7 @@ function lab_labo1_5admin() {
         </tr>
     </thead>
     <tbody id="list_travel">
+    <!--
     <?php foreach ( $results as $myrow ) {  ?>
         <tr>
           <td><input type="checkbox" name="item" /></td>
@@ -47,6 +48,7 @@ function lab_labo1_5admin() {
           </td>
         </tr>
     <?php } ?>
+    -->
     </tbody>
 </table>
 <h5>Ajouter ou Modifer un trajet</h5>

@@ -3,6 +3,38 @@ last_tr = $("#travel tr:last");
 first_td = last_tr.find("td:first");
 intindex = first_td.text();
 
+$( document ).ready(function() {
+    loadTableContent();
+});
+
+function loadTableContent() {
+	
+    data = {
+		"action": 'lab_labo1.5_transportation_get'
+	  }
+  
+	  $.post(LAB.ajaxurl, data, function(response) {
+		if (response.success) {
+			deleteTableContent();
+			$.each(response.data, function(i, item) {
+				let tr = $('<tr />');
+				let td1 = $('<td />');
+				let checkbox = $('<input />').attr("type","checkbox").attr("name","item");
+				td1.append(checkbox);
+				tr.append(td1);
+				let td2 = $('<td />').html(item["travel_id"]);
+				tr.append(td2);
+				$("#list_travel").append(tr);
+			});
+		}
+	  });
+}
+
+function deleteTableContent()
+{
+	$("#list_travel").html("");
+}
+
 function addList(){
 
 	var ocountry_from = document.getElementById('country_from').value;
@@ -64,3 +96,12 @@ function addList(){
 	var olistTable = document.getElementById('list_travel');
 	olistTable.appendChild(oTr);
 }
+
+$(function () {
+	$("#country_from").countrySelect({
+		preferredCountries: ['fr', 'de', 'it', 'es', 'us'],
+	});
+	  $("#country_to").countrySelect({
+		preferredCountries: ['fr', 'de', 'it', 'es', 'us'],
+	});
+});
