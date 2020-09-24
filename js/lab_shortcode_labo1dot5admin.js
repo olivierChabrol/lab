@@ -13,10 +13,10 @@ function loadTableContent() {
 	  $.post(LAB.ajaxurl, data, function(response) {
 		if (response.success) {
 			deleteTableContent();
-			$.each(response.data, function(i, item) {
+			$.each(response.data, function(i,item) {     //i?
 				let tr = $('<tr />');
 				let td1 = $('<td />');
-				let checkbox = $('<input />').attr("type","checkbox").attr("name","item");
+				let checkbox = $('<input />').attr("type","checkbox").attr("name","checkbox");
 				td1.append(checkbox);
 				tr.append(td1);
 				let td2 = $('<td />').html(item["travel_id"]);
@@ -49,9 +49,41 @@ function loadTableContent() {
 	  });
 }
 
-function deleteTableContent()
-{
+function deleteTableContent(){
 	$("#list_travel").html("");
+}
+
+function del(obj){
+	data = {
+		"action": 'lab_delete_transportation_admin'		  
+	}
+	data["travel_id"] = $(obj).parents("tr").find("td").eq(1).text();
+
+	jQuery.post(LAB.ajaxurl, data, function(response) {
+		if (response.success) {
+		console.log("OK succeful");}
+	  });
+	  loadTableContent();
+}
+
+function modify(obj){
+	var ocountry_from=document.getElementById('country_from');
+	var otravel_from=document.getElementById('travel_from');
+	var ocountry_to=document.getElementById('country_to');
+	var otravel_to=document.getElementById('travel_to');
+	var otravel_date=document.getElementById('travel_date');
+	var omeans=document.getElementById('means');
+	var ogo_back=document.getElementById('go_back');
+	var ostatus=document.getElementById('status');
+
+	ocountry_from.value=$(obj).parents("tr").find("td").eq(2).text();
+	otravel_from.value=$(obj).parents("tr").find("td").eq(3).text();
+	ocountry_to.value=$(obj).parents("tr").find("td").eq(4).text();
+	otravel_to.value=$(obj).parents("tr").find("td").eq(5).text();
+	otravel_date.value=$(obj).parents("tr").find("td").eq(6).text();
+	omeans.value=$(obj).parents("tr").find("td").eq(7).text();
+	ogo_back.value=$(obj).parents("tr").find("td").eq(8).text();
+	ostatus.value=$(obj).parents("tr").find("td").eq(9).text();
 }
 
 
@@ -63,11 +95,11 @@ $(function () {
 		  "action": 'lab_save_transportation_admin'		  
 		}
 		data["country_from"] = $("#country_from").val();
-		data["from"] = $("#travel_from").val();
+		data["travel_from"] = $("#travel_from").val();
 		data["country_to"] = $("#country_to").val();
-		data["to"] = $("travel_to").val();
+		data["travel_to"] = $("#travel_to").val();
 		data["travel_date"] = $("#travel_date").val();
-		data["lab_transport_to"] = $("#means").val();
+		data["means"] = $("#means").val();
 		data["go_back"] = $("#go_back").val();
 		data["status"] = $("#status").val();
 	
@@ -75,7 +107,21 @@ $(function () {
 		  if (response.success) {
 		  console.log("OK succeful");}
 		});
-	  });
+		loadTableContent();
+	});
+
+	/*('#ressst').on('click',function(){
+
+		document.getElementById('country_from').reset();
+		document.getElementById('travel_from').reset();
+		document.getElementById('country_to').reset();
+		document.getElementById('travel_to').reset();
+		document.getElementById('travel_date').reset();
+		document.getElementById('means').reset();
+		document.getElementById('go_back').reset();
+		document.getElementById('status').reset();
+	});*/
+
 	$("#country_from").countrySelect({
 		preferredCountries: ['fr', 'de', 'it', 'es', 'us'],
 	});

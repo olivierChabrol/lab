@@ -38,24 +38,24 @@ function lab_labo1_5admin() {
             <th>Pays de départ</th>
             <td><input type="text" id="country_from" name="country_from" class="form-control"/></td>
             <th>Ville de départ</th>
-            <td><input type="text" id="from" name="from" class="form-control"/></td>
+            <td><input type="text" id="travel_from" name="travel_from" class="form-control"/></td>
         </tr>
         <tr>
-            <th>Pays d\'arrivee</th>
+            <th>Pays d'arrivee</th>
             <td><input type="text" id="country_to" name="country_to" class="form-control"/></td>
-            <th>Ville d\'arrivee</th>
-            <td><input type="text" id="to" name="to" class="form-control"/></td>
+            <th>Ville d'arrivee</th>
+            <td><input type="text" id="travel_to" name="travel_to" class="form-control"/></td>
         </tr>
         <tr>
             <th>Date de départ</th>
             <td><input type="date" id="travel_date" name="travel_date" class="form-control"/></td>
             <th>Mode de transport</th>
-            <td><select id="lab_transport_to" name="lab_transport_to" class="form-control">
+            <td><select id="means" name="means" class="form-control">
             <option value="">Choisissez une option</option>
             <option value="car">Voiture</option>
             <option value="train">Train</option>
             <option value="plane">Avion</option>
-            <option value="bus">Car'</option>
+            <option value="bus">Car</option>
             <option value="none">Aucun</option>
             <option value="other">Autre</option>
             </select></td>
@@ -75,7 +75,7 @@ function lab_labo1_5admin() {
         </tr>
         <tr>
             <td colspan="4">
-                <input type="reset" value="Initialiser" class="btn btn-primary" id="reset" />   
+                <input type="button" value="Initialiser" class="btn btn-primary" id="ressst" />   
                 <input type="button" value="Ajouter"  class="btn btn-success" id="add"/>
                 <input type="button" value="Mise à jour"  class="btn btn-info" id=""  onclick="update()" />
             </td>

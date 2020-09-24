@@ -1,7 +1,6 @@
 <?php
 
-function lab_labo1dot5_get()
-{
+function lab_labo1dot5_get(){
     global $wpdb;
     $sql = "SELECT * FROM `".$wpdb->prefix."lab_labo1dot5`";
 
@@ -10,8 +9,7 @@ function lab_labo1dot5_get()
     wp_send_json_success( $results ); 
 }
 
-function lab_labo1dot5_save()
-{
+function lab_labo1dot5_save(){
     $data = "";
     global $wpdb;
 
@@ -54,8 +52,7 @@ function lab_labo1dot5_save()
 }
 
 
-function lab_labo1dot5_saveadmin()
-{
+function lab_labo1dot5_saveadmin(){
     $data = "";
     global $wpdb;
 
@@ -78,12 +75,28 @@ function lab_labo1dot5_saveadmin()
     $travel_id += 1;
 
     $wpdb->insert($wpdb->prefix.'lab_labo1dot5_historic',array("travel_id"=>$travel_id,"user_id"=>$user_id));
-    $wpdb->insert($wpdb->prefix.'lab_labo1dot5', array("travel_from"=>$_POST['from'],  "means"=>$_POST['lab_transport_to'],
-                                                       "travel_to"  =>$_POST['to']        , "country_from"=>$_POST['country_from'],
+    $wpdb->insert($wpdb->prefix.'lab_labo1dot5', array("travel_from"=>$_POST['travel_from'],  "means"=>$_POST['means'],
+                                                       "travel_to"  =>$_POST['travel_to']        , "country_from"=>$_POST['country_from'],
                                                        "country_to" =>$_POST['country_to'], "go_back"     =>$_POST['go_back'],
                                                        "travel_date"=>$_POST['travel_date'],"travel_id"   =>$travel_id,
                                                        "status"=>$_POST['status']));
     
     wp_send_json_success( $data ); 
    
+}
+
+function lab_labo1dot5_deleteadmin(){
+
+    $data = "";
+    global $wpdb;
+    $travel_id = $_POST['travel_id'];
+    $travel_idint = intval($travel_id);
+
+    $sql1 = "DELETE FROM `".$wpdb->prefix."lab_labo1dot5` WHERE travel_id=$travel_idint " ;
+    $sql2 = "DELETE FROM `".$wpdb->prefix."lab_labo1dot5_historic` WHERE travel_id=$travel_idint " ;
+     
+    $results1 = $wpdb->get_results($sql1);  
+    $results2 = $wpdb->get_results($sql2); 
+    wp_send_json_success( $results1 ); 
+    wp_send_json_success( $results2 ); 
 }
