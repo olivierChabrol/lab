@@ -84,7 +84,14 @@ function lab_labo1_5admin() {
             <option value="gosimple">Aller simple</option>
             <option value="goback">Aller Retour</option>
             </select></td>
-            <td colspan="2">
+            <th>Status</th>
+            <td><select id="status" name="status" class="form-control">
+            <option value="novalid">Non Valité</option>
+            <option value="valid">Valité</option>
+            </select></td>
+        </tr>
+        <tr>
+            <td colspan="4">
                 <input type="reset" value="Initialiser" class="btn btn-primary" id="reset" />   
                 <input type="button" value="Ajouter"  class="btn btn-success" id="add"  onclick="addList()" />
                 <input type="button" value="Mise à jour"  class="btn btn-info" id=""  onclick="update()" />

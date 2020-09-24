@@ -12,6 +12,7 @@ function addList(){
 	var otravel_date = document.getElementById('travel_date').value;
 	var olab_transport_to = document.getElementById('lab_transport_to').value;
 	var ogo_back = document.getElementById('go_back').value;
+	var ostatus = document.getElementById('status').value;
 	var oTr = document.createElement('tr');
 	var oTd1 = document.createElement('td');
 	var oInput = document.createElement('input');
@@ -35,18 +36,20 @@ function addList(){
 	var oTd9 = document.createElement('td');
 	oTd9.innerHTML = ogo_back;
 	var oTd10 = document.createElement('td');
+	oTd10.innerHTML = ostatus;
+	var oTd11 = document.createElement('td');
 	var oInput2 = document.createElement('input');
 	var oInput3 = document.createElement('input');
 	oInput2.setAttribute('type','button');
-	oInput2.setAttribute('value','删除');
+	oInput2.setAttribute('value','Supprimer');
 	oInput2.setAttribute('onclick','del(this)');
 	oInput2.className = 'btn btn-danger';
 	oInput3.setAttribute('type','button');
-	oInput3.setAttribute('value','修改');
+	oInput3.setAttribute('value','Modifier');
 	oInput3.setAttribute('onclick','modify(this)');
 	oInput3.className = 'btn btn-info';
-	oTd10.appendChild(oInput2);
-	oTd10.appendChild(oInput3);
+	oTd11.appendChild(oInput2);
+	oTd11.appendChild(oInput3);
 	oTr.appendChild(oTd1);
 	oTr.appendChild(oTd2);
 	oTr.appendChild(oTd3);
@@ -57,6 +60,7 @@ function addList(){
 	oTr.appendChild(oTd8);
 	oTr.appendChild(oTd9);
 	oTr.appendChild(oTd10);
+	oTr.appendChild(oTd11);
 	var olistTable = document.getElementById('list_travel');
 	olistTable.appendChild(oTr);
 }
