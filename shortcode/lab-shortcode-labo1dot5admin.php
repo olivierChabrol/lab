@@ -33,6 +33,7 @@ function lab_labo1_5admin() {
     </tbody>
 </table>
 <h5>Ajouter ou Modifer un trajet</h5>
+    <input type="hidden" id="travel_id" value=""/>
     <table class="table table-hover table-bordered" id="trajet">
         <tr>
             <th>Pays de départ</th>
@@ -77,7 +78,7 @@ function lab_labo1_5admin() {
             <td colspan="4">
                 <input type="button" value="Initialiser" class="btn btn-primary" id="ressst" />   
                 <input type="button" value="Ajouter"  class="btn btn-success" id="add"/>
-                <input type="button" value="Mise à jour"  class="btn btn-info" id=""  onclick="update()" />
+                <input type="button" value="Mise à jour"  class="btn btn-info" id="update"  onclick="update()" />
             </td>
         </tr>
     </table>

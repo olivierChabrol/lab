@@ -19,27 +19,30 @@ function loadTableContent() {
 				let checkbox = $('<input />').attr("type","checkbox").attr("name","checkbox");
 				td1.append(checkbox);
 				tr.append(td1);
-				let td2 = $('<td />').html(item["travel_id"]);
+				let td2 = $('<td />').attr("id", "travel_id"+item["travel_id"]).html(item["travel_id"]);
 				tr.append(td2);
-				let td3 = $('<td />').html(item["country_from"]);
+				let td3 = $('<td />').attr("id", "country_from"+item["travel_id"]).html(item["country_from"]);
 				tr.append(td3);
-				let td4 = $('<td />').html(item["travel_from"]);
+				let td4 = $('<td />').attr("id", "travel_from"+item["travel_id"]).html(item["travel_from"]);
 				tr.append(td4);
-				let td5 = $('<td />').html(item["country_to"]);
+				let td5 = $('<td />').attr("id", "country_to"+item["travel_id"]).html(item["country_to"]);
 				tr.append(td5);
-				let td6 = $('<td />').html(item["travel_to"]);
+				let td6 = $('<td />').attr("id", "travel_to"+item["travel_id"]).html(item["travel_to"]);
 				tr.append(td6);
-				let td7 = $('<td />').html(item["travel_date"]);
+				let td7 = $('<td />').attr("id", "travel_date"+item["travel_id"]).html(item["travel_date"]);
 				tr.append(td7);
-				let td8 = $('<td />').html(item["means"]);
+				let td8 = $('<td />').attr("id", "means"+item["travel_id"]).html(item["means"]);
 				tr.append(td8);
-				let td9 = $('<td />').html(item["go_back"]);
+				let td9 = $('<td />').attr("id", "go_back"+item["travel_id"]).html(item["go_back"]);
 				tr.append(td9);
-				let td10 = $('<td />').html(item["status"]);
+				let td10 = $('<td />').attr("id", "status"+item["travel_id"]).html(item["status"]);
 				tr.append(td10);
 				let td11 = $('<td />');
-				let button_motify = $('<input />').attr("type","button").attr("value","Modifier").attr("onclick","modify(this)").attr("class","btn btn-info btn-sm");
+				let button_motify = $('<input />').attr("type","button").attr("value","Modifier").attr("class","btn btn-info btn-sm").attr("travel_id", item["travel_id"]).attr("id", "modify" + item["travel_id"]);
 				let button_del = $('<input />').attr("type","button").attr("value","Supprimer").attr("onclick","del(this)").attr("class","btn btn-danger btn-sm");
+				button_motify.click(function() {
+					modify(this);
+				  });
 				td11.append(button_motify);
 				td11.append(button_del);
 				tr.append(td11);
@@ -67,30 +70,45 @@ function del(obj){
 }
 
 function modify(obj){
-	var ocountry_from=document.getElementById('country_from');
-	var otravel_from=document.getElementById('travel_from');
-	var ocountry_to=document.getElementById('country_to');
-	var otravel_to=document.getElementById('travel_to');
-	var otravel_date=document.getElementById('travel_date');
-	var omeans=document.getElementById('means');
-	var ogo_back=document.getElementById('go_back');
-	var ostatus=document.getElementById('status');
-
-	ocountry_from.value=$(obj).parents("tr").find("td").eq(2).text();
-	otravel_from.value=$(obj).parents("tr").find("td").eq(3).text();
-	ocountry_to.value=$(obj).parents("tr").find("td").eq(4).text();
-	otravel_to.value=$(obj).parents("tr").find("td").eq(5).text();
-	otravel_date.value=$(obj).parents("tr").find("td").eq(6).text();
-	omeans.value=$(obj).parents("tr").find("td").eq(7).text();
-	ogo_back.value=$(obj).parents("tr").find("td").eq(8).text();
-	ostatus.value=$(obj).parents("tr").find("td").eq(9).text();
+	let id = $(obj).attr("travel_id");
+	console.log("ID : " + id);
+	$("#travel_id").val(id);
+	$("#country_from").val($("#country_from" + id).html());
+	$("#travel_from").val($("#travel_from" + id).html());
+	$("#country_to").val($("#country_to" + id).html());
+	$("#travel_to").val($("#travel_to" + id).html());
+	$("#travel_date").val($("#travel_date" + id).html());
+	$("#means").val($("#means" + id).html());
+	$("#go_back").val($("#go_back" + id).html());
+	$("#status").val($("#status" + id).html());
 }
 
+function update(){
+
+		data = {
+		"action": 'lab_update_transportation_admin'		  
+		}
+		data["travel_id"] = $("#travel_id").val();
+		data["country_from"] = $("#country_from").val();
+		data["travel_from"] = $("#travel_from").val();
+		data["country_to"] = $("#country_to").val();
+		data["travel_to"] = $("#travel_to").val();
+		data["travel_date"] = $("#travel_date").val();
+		data["means"] = $("#means").val();
+		data["go_back"] = $("#go_back").val();
+		data["status"] = $("#status").val();
+	
+		jQuery.post(LAB.ajaxurl, data, function(response) {
+		if (response.success) {
+		console.log("OK succeful");}
+		});
+		loadTableContent();
+}
 
 $(function () {
 
 	$('#add').on('click', function(){
-    
+	
 		data = {
 		  "action": 'lab_save_transportation_admin'		  
 		}
@@ -109,18 +127,6 @@ $(function () {
 		});
 		loadTableContent();
 	});
-
-	/*('#ressst').on('click',function(){
-
-		document.getElementById('country_from').reset();
-		document.getElementById('travel_from').reset();
-		document.getElementById('country_to').reset();
-		document.getElementById('travel_to').reset();
-		document.getElementById('travel_date').reset();
-		document.getElementById('means').reset();
-		document.getElementById('go_back').reset();
-		document.getElementById('status').reset();
-	});*/
 
 	$("#country_from").countrySelect({
 		preferredCountries: ['fr', 'de', 'it', 'es', 'us'],

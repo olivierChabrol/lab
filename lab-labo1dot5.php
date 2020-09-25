@@ -100,3 +100,19 @@ function lab_labo1dot5_deleteadmin(){
     wp_send_json_success( $results1 ); 
     wp_send_json_success( $results2 ); 
 }
+
+function lab_labo1dot5_updateadmin(){
+
+    $data = "";
+    global $wpdb;
+    $travel_id = $_POST['travel_id'];
+    $travel_idint = intval($travel_id);
+
+    $wpdb->update($wpdb->prefix.'lab_labo1dot5', array("travel_from"=>$_POST['travel_from'],  "means"=>$_POST['means'],
+                                                       "travel_to"  =>$_POST['travel_to']   , "country_from"=>$_POST['country_from'],
+                                                       "country_to" =>$_POST['country_to'],   "go_back"     =>$_POST['go_back'],
+                                                       "travel_date"=>$_POST['travel_date'],  "status"=>$_POST['status']),
+                                                 array("travel_id"=>$travel_idint)); 
+    
+    wp_send_json_success($data); 
+}
