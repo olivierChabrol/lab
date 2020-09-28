@@ -9,6 +9,18 @@ function lab_labo1dot5_get(){
     wp_send_json_success( $results ); 
 }
 
+function lab_labo1dot5_get2(){
+    global $wpdb;
+    $userid=$_POST["user_id"];
+    $sql = "SELECT * FROM `".$wpdb->prefix."lab_labo1dot5` AS lb
+            JOIN `".$wpdb->prefix."lab_labo1dot5_historic` AS lbhis ON lb.`travel_id`=lbhis.`travel_id`
+            WHERE lbhis.`user_id`=$userid";
+
+     
+    $results = $wpdb->get_results($sql);  
+    wp_send_json_success( $results ); 
+}
+
 function lab_labo1dot5_save(){
     $data = "";
     global $wpdb;

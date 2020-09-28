@@ -24,8 +24,13 @@ function lab_labo1_5admin() {
           <th>Modif</th>
         </tr>
         <tr>
-            <td><input type="checkbox" onclick="checkAll(this)"/></td>
-            <td colspan="10"><a href="javascrip;" class="btn btn-danger btn-sm" role="button" onclick="delAll(this)">Suprimer les trajets choisis</a></td>
+            <td><input type="checkbox" onclick="checkAll(this)"> Tout</td>
+            <td colspan="3"><a href="javascrip;" class="btn btn-danger btn-sm" role="button" onclick="delAll(this)">Suprimer les trajets choisis</a></td>
+            <td colspan="3">
+            <input type="text" id="filter_user_name" name="filter_user_name" class="form-control" placeholder="Chercher un nom"/>
+            <input type="hidden" id="filter_user_id" value=""/>
+            </td>
+
         </tr>
     </thead>
     <tbody id="list_travel">
@@ -75,8 +80,7 @@ function lab_labo1_5admin() {
             </select></td>
         </tr>
         <tr>
-            <td colspan="4">
-                <input type="button" value="Initialiser" class="btn btn-primary" id="ressst" />   
+            <td colspan="4">  
                 <input type="button" value="Ajouter"  class="btn btn-success" id="add"/>
                 <input type="button" value="Mise à jour"  class="btn btn-info" id="update"  onclick="update()" />
             </td>
