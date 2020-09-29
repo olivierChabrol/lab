@@ -340,6 +340,8 @@ function lab_invitations_interface($args) {
             break;
     }
     $listInvitationStr .= lab_invitations_filters();
+    //$listInvitationStr .= '<div id="loadingAjaxGif" style="display:none;"><img src="/wp-content/plugins/lab/loading.gif"/></div>';
+    $listInvitationStr .= '<div id="loadingAjaxGif"><img src="/wp-content/plugins/lab/loading.gif"/></div>';
     $listInvitationStr .= '<table view="'.$param['view'].'" id="lab_invite_list" class="table">
                             <thead>
                                 <tr id="lab_list_header">'

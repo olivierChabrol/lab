@@ -713,6 +713,19 @@ function lab_updatePrefGroups() {
     });
   });
 }
+
+function displayLoadingGif()
+{
+  //jQuery("#loadingAjaxGif").show();
+  $("#loadingAjaxGif").addClass('show');
+}
+
+function hideLoadingGif()
+{
+  //jQuery("#loadingAjaxGif").hide();
+  $("#loadingAjaxGif").removeClass('show');
+}
+
 function lab_update_invitesList() {
   jQuery(function($) {
     statuses =[];
@@ -729,6 +742,7 @@ function lab_update_invitesList() {
       status: statuses,
       year: $("#lab_filter_year").val(),
     };
+    displayLoadingGif();
     switch ($("#lab_invite_list").attr('view')) {
       case 'admin':
         group_ids = [];
@@ -744,6 +758,7 @@ function lab_update_invitesList() {
           pages = Math.ceil(response.data[0]/data['value']);
           currentPage = data['page']<=pages ? data['page'] : pages;
           lab_pagination(pages,currentPage);
+          hideLoadingGif();
           //Affecte les fonctions aux actions
           $(".lab_invite_showDetail").click(function(){
             $("#lab_invite_realCost_input").attr('token',$(this).attr('token'));
@@ -751,40 +766,49 @@ function lab_update_invitesList() {
             //Descend jusqu'à la partie "details"
             document.querySelector("#lab_invite_detail_title").scrollIntoView({behavior:"smooth"});
             //Récupère les commentaires
+            displayLoadingGif();
             $.post(LAB.ajaxurl,{
               action : 'lab_invitations_comments',
               token : $(this).attr('token')
               },
               function (response) {
-                $("#lab_invite_droite").html(response.data)
+                $("#lab_invite_droite").html(response.data);
+                hideLoadingGif();
               }
             );
+            displayLoadingGif();
             //Récupère le résumé
             $.post(LAB.ajaxurl,{
               action : 'lab_invitations_summary',
               token : $(this).attr('token')
               },
               function (response) {
-                $("#lab_invite_summary").html(response.data)
+                $("#lab_invite_summary").html(response.data);
+                hideLoadingGif();
               }
             );
             $("#lab_invite_budget").show();
+
+            displayLoadingGif();
             jQuery.post(LAB.ajaxurl,{
               action : 'lab_invitations_realCost',
               token : $(this).attr('token')
               },
               function (response) {
                 $("#lab_invite_realCost").html(response.data+"€");
+                hideLoadingGif();
               }
             );
           });
           $(".lab_invite_takeCharge").click(function() {
+            displayLoadingGif();
             jQuery.post(LAB.ajaxurl,{
               action : 'lab_invitations_assume',
               token : $(this).attr('token')
               },
               function (response) {
-                lab_update_invitesList()
+                lab_update_invitesList();
+                hideLoadingGif();
               }
             );
           });
@@ -798,6 +822,7 @@ function lab_update_invitesList() {
           pages = Math.ceil(response.data[0]/data['value']);
           currentPage = data['page']<=pages ? data['page'] : pages;
           lab_pagination(pages,currentPage);
+          hideLoadingGif();
         });
       break;
       case 'host':
@@ -807,6 +832,7 @@ function lab_update_invitesList() {
           pages = Math.ceil(response.data[0]/data['value']);
           currentPage = data['page']<=pages ? data['page'] : pages;
           lab_pagination(pages,currentPage);
+          hideLoadingGif();
         });
         break;
     }
