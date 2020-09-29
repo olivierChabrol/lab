@@ -22,6 +22,7 @@ function lab_invitation($args) {
         } else {//Token fournit, récupère les informations existantes
             $token = explode("/",$url)[1];
             $invitation=lab_invitations_getByToken($token);
+            var_dump($invitation);
             $charges = json_decode($invitation->charges);
             if (!isset($invitation)) {
                 return esc_html__("Token d'invitation invalide",'lab');
@@ -192,9 +193,11 @@ function lab_invitation($args) {
                 <div class="lab_invite_field">
                     <label for="lab_group_name">'.esc_html__("Nom du groupe","lab").'<span class="lab_form_required_star"> *</span></label>
                     <select required id="lab_group_name" name="lab_group_name">';
+                    
                 foreach ($host->groups as $g)
                 {
-                    $invitationStr .= '<option value="'.$g->id.'">'.$g->group_name.'</option>';
+                    $selectedGroup = ($invitation->host_group_id==$g->id)?'selected="selected"':"";
+                    $invitationStr .= '<option value="'.$g->id.'" '.$selectedGroup.'>'.$g->group_name.'</option>';
                 }
 
                 $invitationStr .=
@@ -258,8 +261,7 @@ function lab_invitation($args) {
             <h2>Commentaires <i class="fas fa-arrow-up"></i></h2>
                 '.lab_inviteComments($token).'
                 '.lab_newComments($currentUser,$token).'
-            </div>
-        </div>';
+        </div><!-- end div lab_invitationComments -->';
         }
     return $invitationStr;
 }
