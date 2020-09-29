@@ -422,7 +422,7 @@ function lab_invitations_interface_fromList($list,$view) {
                             <td>'. lab_invitations_getStatusName($invitation->status) .'</td>
                             <td>'. $invitation->estimated_cost.'</td>
                             <td>'. $invitation->maximum_cost.'</td>'
-                            .($view!='admin' ? '<td><a href="/invite/'. $invitation->token.'">'.esc_html__("Modifier",'lab').'</a>' 
+                            .($view!='admin' ? '<td><a href="/invite/'. $invitation->token.'/">'.esc_html__("Modifier",'lab').'</a>' 
                             : '<td><button class="lab_invite_showDetail" token="'.$invitation->token.'">'.esc_html__("Détails","lab").'</button>').
                             ($view=='admin'&& $invitation->status>1 ?
                             '<button title="'.esc_html("Cliquez pour prendre en charge l'invitation","lab").'" token="'.$invitation->token.'" class="lab_invite_takeCharge">Gérer</button></td>' : '</td>').
