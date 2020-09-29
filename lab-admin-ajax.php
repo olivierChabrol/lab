@@ -1000,6 +1000,10 @@ function lab_invitations_new() {
   }
   $invite["charges"]=json_encode($fields["charges"]);
   $invite_id = lab_invitations_createInvite($invite);
+  if (!is_numeric ($invite_id))
+  {
+    wp_send_json_error($invite_id);
+  }
   if (strlen($fields['comment'])>0) {
     lab_invitations_addComment(array(
       'content'=> $fields['comment'],

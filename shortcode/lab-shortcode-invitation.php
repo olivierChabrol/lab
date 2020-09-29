@@ -252,7 +252,7 @@ function lab_invitation($args) {
         </div>';
         }
         if (!$newForm) {
-            $currentUser = lab_admin_username_get(get_current_user_id());
+            $currentUser = lab_admin_userMetaDatas_get(get_current_user_id());
             $invitationStr .= '
         <div id="lab_invitationComments">
             <h2>Commentaires <i class="fas fa-arrow-up"></i></h2>

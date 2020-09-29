@@ -87,6 +87,7 @@ jQuery(function($){
       var firstname  = ui.item.firstname; // first name
       var lastname = ui.item.lastname; // last name
       var userslug = ui.item.userslug;
+      let userId =  ui.item.user_id;
       window.location.href = "/user/" + userslug;
       event.preventDefault();
       $("#lab_directory_user_name").val(firstname + " " + lastname);
