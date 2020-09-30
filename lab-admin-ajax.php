@@ -567,13 +567,22 @@ function lab_group_editGroup() {
   $parent = $_POST['parent'];
   $type = $_POST['group_type'];
   $url = delete_http_and_domain($_POST['url']);
+  if (!isset($parent) || $parent == '' || $parent == '0')
+  {
+    $parent = 'NULL';
+  }
+  else
+  {
+    $parent = "'".$parent."'";
+  }
   
   global $wpdb;
   $sql = "UPDATE `".$wpdb->prefix."lab_groups` SET `group_name` = '$groupName', `acronym` = '$acronym',
-  `chief_id` = '$chiefId', `group_type` = '$type', `parent_group_id` = '$parent', `url`='$url'
+  `chief_id` = '$chiefId', `group_type` = '$type', `parent_group_id` = $parent, `url`='$url'
     WHERE id= '$id';";
 
   wp_send_json_success($wpdb->get_results($sql));
+  //wp_send_json_success($sql);
 }
 function group_delete_substitutes() 
 {
@@ -593,10 +602,11 @@ function group_add_substitutes()
 
 function group_load_substitutes()
 {
+  global $wpdb;
   $id = $_POST['id'];
   $sql = "SELECT lgs.id AS id, um1.meta_value AS last_name, um2.meta_value AS first_name FROM `".$wpdb->prefix."lab_group_substitutes`  AS lgs JOIN `".$wpdb->prefix."usermeta` AS um1 ON um1.user_id=lgs.substitute_id JOIN `".$wpdb->prefix."usermeta` AS um2 ON um2.user_id=lgs.substitute_id WHERE lgs.`group_id`=33 AND um1.meta_key='last_name' AND um2.meta_key='first_name'";
   //$sql = "SELECT lgs.id AS id, um1.meta_value AS last_name, um2.meta_value AS first_name FROM `".$wpdb->prefix."lab_group_substitutes` AS lgs JOIN `".$wpdb->prefix."usermeta` AS um1 ON um1.user_id=lgs.substitute_id JOIN `".$wpdb->prefix."usermeta AS um2 ON um2.user_id=lgs.substitute_id WHERE lgs.`group_id`=33 AND um1.meta_key='last_name' AND um2.meta_key='first_name'";
-  global $wpdb;
+  
   $results = $wpdb->get_results($sql);
   $items = array();
   foreach ( $results as $r )

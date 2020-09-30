@@ -777,7 +777,13 @@ function setinfoToGroupEditionFields(groupId, acronym, groupName, chiefId, paren
   jQuery('#wp_lab_group_name_edit').val(groupName);
   jQuery('#lab_searched_chief_id').val(chiefId);
   jQuery('#wp_lab_group_chief_edit').val(callbUser(chiefId, loadUserName));
-  jQuery('#wp_lab_group_parent_edit').val(parent_group_id);
+  if (parent_group_id == null)
+  {
+    jQuery('#wp_lab_group_parent_edit').val('0');
+  }
+  else {
+    jQuery('#wp_lab_group_parent_edit').val(parent_group_id);
+  }
   jQuery('#wp_lab_group_url_edit').val(url)
 
   jQuery('#wp_lab_group_type_edit').val(group_type);
