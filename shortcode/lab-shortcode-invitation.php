@@ -486,7 +486,8 @@ function lab_invitations_mail($type=1, $guest, $invite) {
             break;
     }
     apply_filters( 'wp_mail_content_type', "text/html" );
-    wp_mail($dest,$subj,$content);
+    $headers = array('Content-Type: text/html; charset=UTF-8');
+    wp_mail($dest,$subj,$content, $headers);
     return $content;
 }
 function lab_InviteForm($who,$guest,$invite) {
