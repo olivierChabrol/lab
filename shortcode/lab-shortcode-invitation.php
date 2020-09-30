@@ -467,7 +467,7 @@ function lab_invitations_mail($type=1, $guest, $invite) {
             $date = date_create_from_format("Y-m-d H:i:s", $invite["creation_time"]);
             $content = "<p><i>".strftime('%A %d %B %G - %H:%M',$date->getTimestamp())."</i></p>";
             $content .= "<p>".esc_html__("Une demande d'invitation à l'I2M vous a été transmise.",'lab')."<br>"
-            .esc_html__("Vous pouvez la modifier en suivant",'lab')." <a href='http://stage.fr/invite/".$invite['token']."'>".esc_html__('ce lien','lab')."</a>.</p>";
+            .esc_html__("Vous pouvez la modifier en suivant",'lab')." <a href='".get_site_url()."/invite/".$invite['token']."/'>".esc_html__('ce lien','lab')."</a>.</p>";
             $content .= lab_InviteForm('',$guest,$invite);
             break;
         case 10: //Envoi du mail au responsable du groupe une fois la demande complétée
@@ -477,7 +477,7 @@ function lab_invitations_mail($type=1, $guest, $invite) {
             $date = date_create_from_format("Y-m-d H:i:s", $invite["completion_time"]);
             $content = "<p><i>".strftime('%A %d %B %G - %H:%M',$date->getTimestamp())."</i></p>";
             $content .= "<p>".esc_html__("Une demande d'invitation à l'I2M a été complétée.",'lab')."<br>"
-            .esc_html__("Vous pouvez la consulter en suivant",'lab')." <a href='http://stage.fr/invite/".$invite['token']."'>".esc_html__('ce lien','lab')."</a><br>
+            .esc_html__("Vous pouvez la consulter en suivant",'lab')." <a href='".get_site_url()."/invite/".$invite['token']."/'>".esc_html__('ce lien','lab')."</a><br>
             et modifier les informations si besoin. Vous pouvez ensuite la valider pour la transmettre au pôle budget.</p>";
             $content .= lab_InviteForm('host',$guest,$invite);
             break;
