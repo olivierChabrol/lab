@@ -22,7 +22,7 @@ function lab_invitation($args) {
         } else {//Token fournit, récupère les informations existantes
             $token = explode("/",$url)[1];
             $invitation=lab_invitations_getByToken($token);
-            var_dump($invitation);
+            //var_dump($invitation);
             $charges = json_decode($invitation->charges);
             if (!isset($invitation)) {
                 return esc_html__("Token d'invitation invalide",'lab');
