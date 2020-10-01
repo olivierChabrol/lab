@@ -21,6 +21,17 @@ function lab_labo1dot5_get2(){
     wp_send_json_success( $results ); 
 }
 
+function lab_labo1dot5_get_sort(){
+    global $wpdb;
+    $orderBy = $_POST["orderBy"];
+    
+    $sql = "SELECT * FROM `".$wpdb->prefix."lab_labo1dot5` ORDER BY $orderBy";
+
+     
+    $results = $wpdb->get_results($sql);  
+    wp_send_json_success( $results ); 
+}
+
 function lab_labo1dot5_save(){
     $data = "";
     global $wpdb;
