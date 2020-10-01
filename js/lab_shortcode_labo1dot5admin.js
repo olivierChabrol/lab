@@ -152,7 +152,10 @@ function loadTableContentSort(orderBy) {
 
 function orderBy(obj){  
 	var value = obj.options[obj.selectedIndex].value;
-	loadTableContentSort(value);
+	if(value!=""){
+	loadTableContentSort(value);}
+	else
+	{loadTableContent();}
 }
 
 function deleteTableContent(){
