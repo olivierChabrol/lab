@@ -28,7 +28,7 @@ function lab_invitation($args) {
                 return esc_html__("Token d'invitation invalide",'lab');
             }
             $guest = lab_invitations_getGuest($invitation->guest_id);
-            var_dump($guest);
+            //var_dump($guest);
             $host = new labUser($invitation->host_id);
             //Qui modifie, l'invitant ou le responsable ?
             $isChief = isset($invitation->host_group_id) ? get_current_user_id()==(int)lab_admin_get_chief_byGroup($invitation->host_group_id): false;
