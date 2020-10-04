@@ -335,19 +335,29 @@ function LABLoadInvitation() {
           $("#lab_firstname").val(response.data['first_name']);
           $("#lab_lastname").val(response.data['last_name']);
           iti.setNumber(response.data["phone"]);
-          $("#lab_country").countrySelect("selectCountry",response.data['country']);
+          $("#residence_country").countrySelect("selectCountry",response.data['residence_country']);
+          $("#residence_city").val(response.data['country']);
+          $("#lab_language").countrySelect("selectCountry",response.data['language']);
         } else {
           $(this).attr('guest_id','');
         }
       });
     }); 
     //Plug-in country selector : https://github.com/mrmarkfrench/country-select-js
-    $("#lab_country").countrySelect({
+    $("#residence_country").countrySelect({
       defaultCountry: "fr",
       preferredCountries: ['fr', 'de', 'it', 'es', 'us'],
     });
-    if ($("#lab_country").attr('countryCode')!="") {
-      $("#lab_country").countrySelect("selectCountry",$("#lab_country").attr('countryCode'));
+    if ($("#residence_country").attr('countryCode')!="") {
+      $("#residence_country").countrySelect("selectCountry",$("#residence_country").attr('countryCode'));
+    }
+    //Plug-in country selector : https://github.com/mrmarkfrench/country-select-js
+    $("#guest_language").countrySelect({
+      defaultCountry: "fr",
+      preferredCountries: ['fr', 'de', 'it', 'es', 'us'],
+    });
+    if ($("#lab_language").attr('countryCode')!="") {
+      $("#guest_language").countrySelect("selectCountry",$("#guest_language").attr('countryCode'));
     }
     $("#lab_phone").keyup(function() {
       if ( !iti.isValidNumber() && iti.getValidationError()!=0) {
@@ -560,12 +570,18 @@ function invitation_submit(callback) {
       'guest_lastName': $("#lab_lastname").val(),
       'guest_email': $("#lab_email").val(),
       'guest_phone': $("#lab_phone").attr('phoneval'),
-      'guest_country': $("#lab_country").countrySelect("getSelectedCountryData")['iso2'],
+      'guest_language': $("#guest_language").countrySelect("getSelectedCountryData")['iso2'],
+      'guest_residence_country': $("#residence_country").countrySelect("getSelectedCountryData")['iso2'],
+      'guest_residence_city': $("#residence_city").val(),
       'host_id': $("#lab_hostname").attr('host_id'),
       'mission_objective': $("#lab_mission").val()=="other" ? $("#lab_mission_other").val().replace(regex,"”").replace(/\'/g,"’") : $("#lab_mission").val(),
       'needs_hostel' : $("#lab_hostel").prop('checked'),
       'travel_mean_from':  $("#lab_transport_from").val()=="other" ? $("#lab_transport_from_other").val() : $("#lab_transport_from").val(),
       'travel_mean_to':  $("#lab_transport_to").val()=="other" ? $("#lab_transport_to_other").val() : $("#lab_transport_to").val(),
+      'forward_start_station':  $("#forward_start_station").val(),
+      'return_end_station':  $("#return_end_station").val(),
+      'forward_travel_reference':  $("#forward_travel_reference").val(),
+      'return_travel_reference':  $("#return_travel_reference").val(),
       'start_date': $("#lab_arrival").val()+" "+$("#lab_arrival_time").val(),
       'end_date': $("#lab_departure").val()+" "+$("#lab_departure_time").val(),
       'charges': charges
@@ -817,13 +833,22 @@ function lab_update_invitesList() {
       case 'chief':
         data['action'] = 'lab_invitations_chiefList_update';
         data['group_id']= $("#lab_groupSelect").val();
-        $.post(LAB.ajaxurl,data, function(response) {
-          $("#lab_invitesListBody").html(response.data[1]);
-          pages = Math.ceil(response.data[0]/data['value']);
-          currentPage = data['page']<=pages ? data['page'] : pages;
-          lab_pagination(pages,currentPage);
+        console.log($("#lab_groupSelect").val());
+        console.log(data['group_id']);
+        if (data['group_id'] != null)
+        {
+          console.log("data['group_id'] != null");
+          $.post(LAB.ajaxurl,data, function(response) {
+            $("#lab_invitesListBody").html(response.data[1]);
+            pages = Math.ceil(response.data[0]/data['value']);
+            currentPage = data['page']<=pages ? data['page'] : pages;
+            lab_pagination(pages,currentPage);
+            hideLoadingGif();
+          });
+        }
+        else{
           hideLoadingGif();
-        });
+        }
       break;
       case 'host':
         data['action'] = 'lab_invitations_hostList_update';
@@ -842,6 +867,8 @@ function lab_submitRealCost() {
   data = {
     'action':'lab_invitations_add_realCost',
     'value' : $("#lab_invite_realCost_input").val(),
+    'forward_carbon_footprint' : $("#forward_carbon_footprint").val(),
+    'return_carbon_footprint' : $("#return_carbon_footprint").val(),
     'token' : $("#lab_invite_realCost_input").attr("token")
   }
   jQuery.post(LAB.ajaxurl,data,

@@ -1037,7 +1037,9 @@ function lab_invitations_edit() {
       'last_name'=> $fields['guest_lastName'],
       'email'=> $fields['guest_email'],
       'phone'=> $fields['guest_phone'],
-      'country'=> $fields['guest_country']
+      'language'=> $fields['guest_language'],
+      'residence_country'=> $fields['guest_residence_country'],
+      'residence_city'=> $fields['guest_residence_city'],
     );
     lab_invitations_editGuest($fields['guest_id'],$guest);
     date_default_timezone_set("Europe/Paris");
@@ -1046,7 +1048,7 @@ function lab_invitations_edit() {
       'needs_hostel'=>$fields['needs_hostel']=='true' ? 1 : 0,
       'completion_time' => $timeStamp
     );
-    foreach (['host_group_id', 'estimated_cost', 'maximum_cost', 'host_id','mission_objective','start_date','end_date','travel_mean_to','travel_mean_from','funding_source','research_contract'] as $champ) {
+    foreach (['host_group_id', 'estimated_cost', 'maximum_cost', 'host_id','mission_objective','start_date','end_date','travel_mean_to','travel_mean_from','funding_source','research_contract','forward_start_station','return_end_station','forward_travel_reference','return_travel_reference'] as $champ) {
       $invite[$champ]=$fields[$champ];
     }
     $invite["charges"]=json_encode($fields["charges"]);
@@ -1222,7 +1224,9 @@ function lab_invitations_realCost() {
 function lab_invitations_add_realCost() {
   $token = $_POST['token'];
   $param = $_POST['value'];
-  lab_invitations_editInvitation($token,array('real_cost'=>$param));
+  $forward_carbon_footprint = $_POST['forward_carbon_footprint'];
+  $return_carbon_footprint = $_POST['return_carbon_footprint'];
+  lab_invitations_editInvitation($token,array('real_cost'=>$param, 'return_carbon_footprint'=>$return_carbon_footprint, 'forward_carbon_footprint' => $forward_carbon_footprint));
   wp_send_json_success();
 }
 function lab_invitations_guestInfo() {
