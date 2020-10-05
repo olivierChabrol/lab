@@ -986,7 +986,9 @@ function lab_invitations_new() {
     'last_name'=> $fields['guest_lastName'],
     'email'=> $fields['guest_email'],
     'phone'=> $fields['guest_phone'],
-    'country'=> $fields['guest_country']
+    'language'=> $fields['guest_country'],
+    'residence_country'=> $fields['guest_residence_country'],
+    'residence_city'=> $fields['guest_residence_city'],
   );
   do {//Génère un token jusqu'à ce qu'il soit unique (on sait jamais)
     $token = bin2hex(random_bytes(10));
@@ -1269,7 +1271,9 @@ function lab_admin_presence_save_ext_ajax()
       'last_name'=> $lastName,
       'email'=> $email,
       'phone'=> "",
-      'country'=> "FR"
+      'language'=> "FR",
+      'residence_country'=>"",
+      'residence_city'=>""
     );
     $guestId = lab_invitations_createGuest($guest);
   } else {
