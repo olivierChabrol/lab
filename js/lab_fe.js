@@ -356,7 +356,7 @@ function LABLoadInvitation() {
       defaultCountry: "fr",
       preferredCountries: ['fr', 'de', 'it', 'es', 'us'],
     });
-    if ($("#lab_language").attr('countryCode')!="") {
+    if ($("#guest_language").attr('countryCode')!="") {
       $("#guest_language").countrySelect("selectCountry",$("#guest_language").attr('countryCode'));
     }
     $("#lab_phone").keyup(function() {
