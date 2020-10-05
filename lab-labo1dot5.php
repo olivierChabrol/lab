@@ -2,7 +2,9 @@
 
 function lab_labo1dot5_get(){
     global $wpdb;
-    $sql = "SELECT * FROM `".$wpdb->prefix."lab_labo1dot5`";
+    $limitM=$_POST["limitM"];
+    $limitN=$_POST["limitN"];
+    $sql = "SELECT * FROM `".$wpdb->prefix."lab_labo1dot5` LIMIT $limitM, $limitN";
 
      
     $results = $wpdb->get_results($sql);  

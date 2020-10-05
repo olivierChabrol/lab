@@ -11,6 +11,18 @@ function lab_labo1_5admin() {
 <table class="table table-hover table-bordered" id="travel">
     <thead>
         <tr>
+            <td><input type="checkbox" onclick="checkAll(this)"> Tout</td>
+            <td colspan="3"><a href="javascrip;" class="btn btn-danger btn-sm" role="button" onclick="delAll(this)">Suprimer les trajets choisis</a></td>
+            <td colspan="3"><input type="text" id="filter_user_name" name="filter_user_name" class="form-control" placeholder="Chercher un nom"/></td>
+            <td colspan="4"><select id="orderBy" name="orderBy" onchange="orderBy(this)" class="form-control">
+                            <option value="">Tirer par ?</option>
+                            <option value="travel_date">Date de départ (les anciens)</option>
+                            <option value="travel_date DESC">Date de départ (les récents)</option>
+                            <option value="status">Status (non valide)</option>
+                            <option value="status DESC">Status (valide)</option>
+                            </select></td>
+        </tr>
+        <tr>
             <th>Choisir</th>
             <th>Travel ID</th>
             <th>Pays de départ</th>
@@ -23,23 +35,12 @@ function lab_labo1_5admin() {
             <th>Status</th>
             <th>Modif</th>
         </tr>
-        <tr>
-            <td><input type="checkbox" onclick="checkAll(this)"> Tout</td>
-            <td colspan="3"><a href="javascrip;" class="btn btn-danger btn-sm" role="button" onclick="delAll(this)">Suprimer les trajets choisis</a></td>
-            <td colspan="3"><input type="text" id="filter_user_name" name="filter_user_name" class="form-control" placeholder="Chercher un nom"/></td>
-            <td colspan="4"><select id="orderBy" name="orderBy" onchange="orderBy(this)" class="form-control">
-                            <option value="">Tirer par ?</option>
-                            <option value="travel_date">Date de départ (les anciens)</option>
-                            <option value="travel_date DESC">Date de départ (les récents)</option>
-                            <option value="status">Status (non valide)</option>
-                            <option value="status DESC">Status (valide)</option>
-                            </select></td>
-        </tr>
     </thead>
     <tbody id="list_travel">
 
     </tbody>
 </table>
+
 <h5>Ajouter ou Modifer un trajet</h5>
     <input type="hidden" id="travel_id" value=""/>
     <table class="table table-hover table-bordered" id="trajet">

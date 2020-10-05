@@ -1,15 +1,17 @@
 
 
 $( document ).ready(function() {
-    loadTableContent();
+	loadTableContent(0,10);
 });
 
-function loadTableContent() {
+function loadTableContent(limitM,limitN) {
 	
     data = {
 		"action": 'lab_labo1.5_transportation_get'
 	  }
-  
+	data["limitM"] = limitM;
+	data["limitN"] = limitN;
+
 	  $.post(LAB.ajaxurl, data, function(response) {
 		if (response.success) {
 			deleteTableContent();
