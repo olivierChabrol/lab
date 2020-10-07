@@ -16,7 +16,7 @@ function lab_profile($id=0) {
 	}
 	$is_current_user = $user->id == get_current_user_id() ? true : false; 
 	$HalID_URL = "https://api.archives-ouvertes.fr/search/?q=*:*&fq=authIdHal_s:(".$user->hal_id.")&fl=docid,citationFull_s,producedDate_tdate,uri_s,title_s,journalTitle_s&sort=producedDate_tdate+desc&wt=xml";
-	$HalName_URL = "https://api.archives-ouvertes.fr/search/?q=authLastNameFirstName_s:%22".$user->hal_name."%22&fl=docid,citationFull_s,producedDate_tdate,uri_s,title_s,journalTitle_s&sort=producedDate_tdate+desc&wt=xml";
+	$HalName_URL = "https://api.archives-ouvertes.fr/search/I2M/?q=authLastNameFirstName_s:%22".$user->hal_name."%22&fl=docid,citationFull_s,producedDate_tdate,uri_s,title_s,journalTitle_s&sort=producedDate_tdate+desc&wt=xml";
 	$editIcons = '<div id="lab_profile_icons">
 					<i title="'.esc_html__("Modifier la couleur d'arrière plan","lab").'" style="display:none" id="lab_profile_colorpicker" class="fas fa-fill-drip lab_profile_edit"></i>
 					<i id="lab_profile_edit" title="'.esc_html__('Modifier le profil','lab').'" class="fas fa-user-edit"></i> 

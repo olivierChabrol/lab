@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-10-05 10:15+0200\n"
-"PO-Revision-Date: 2020-10-05 10:17+0200\n"
+"POT-Creation-Date: 2020-10-07 08:14+0200\n"
+"PO-Revision-Date: 2020-10-07 08:18+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en\n"
@@ -531,7 +531,7 @@ msgstr "Votre biographie est trop longue (max 200 caractères)"
 
 #: js/lab_keyring.js:9 js/lab_keyring.js:22
 msgid "Table créée avec succès"
-msgstr ""
+msgstr "Table créée avec succès"
 
 #: js/lab_keyring.js:13 js/lab_keyring.js:26
 msgid "Erreur lors de la création de la table"
@@ -677,33 +677,33 @@ msgstr "Impossible d'effacer un paramètre sytème"
 msgid "Aucun prêt trouvé"
 msgstr "Aucun prêt trouvé"
 
-#: lab-admin-ajax.php:1025
+#: lab-admin-ajax.php:1027
 msgid "Votre demande a bien été prise en compte"
 msgstr "Votre demande a bien été prise en compte"
 
-#: lab-admin-ajax.php:1056
+#: lab-admin-ajax.php:1058
 msgid "Votre invitation a bien été modifiée"
 msgstr "Votre invitation a bien été modifiée"
 
-#: lab-admin-ajax.php:1184 shortcode/lab-shortcode-invitation.php:479
+#: lab-admin-ajax.php:1186 shortcode/lab-shortcode-invitation.php:479
 msgid "Aucune invitation"
 msgstr "Aucune invitation"
 
-#: lab-admin-ajax.php:1221
+#: lab-admin-ajax.php:1223
 msgid "indéfini"
 msgstr "indéfini"
 
-#: lab-admin-ajax.php:1367
+#: lab-admin-ajax.php:1371
 #, php-format
 msgid "%s is a non wordking day"
 msgstr "%s est férié"
 
-#: lab-admin-ajax.php:1390
+#: lab-admin-ajax.php:1394
 #, php-format
 msgid "Your are already present in %s the %s between %s and %s"
 msgstr "Vous êtes déjà présent au/à %s le %s entre %s et %s"
 
-#: lab-admin-ajax.php:1413 lab-admin-ajax.php:1422
+#: lab-admin-ajax.php:1417 lab-admin-ajax.php:1426
 #, php-format
 msgid ""
 "Your new schedules overlap to an existing one : %s the %s between %s and %s"
@@ -943,27 +943,31 @@ msgstr "Voir prêt"
 msgid "All"
 msgstr "Tou·te·s"
 
-#: shortcode/lab-shortcode-directory.php:238
+#: shortcode/lab-shortcode-directory.php:237
+msgid "People who have left"
+msgstr "Personnels partis"
+
+#: shortcode/lab-shortcode-directory.php:239
 msgid "Chercher un nom"
 msgstr "Chercher un nom"
 
-#: shortcode/lab-shortcode-directory.php:242
+#: shortcode/lab-shortcode-directory.php:243
 msgid "Show only group"
 msgstr "Afficher les membres du groupe"
 
-#: shortcode/lab-shortcode-directory.php:261
+#: shortcode/lab-shortcode-directory.php:262
 msgid "Name"
 msgstr "Nom"
 
-#: shortcode/lab-shortcode-directory.php:263
+#: shortcode/lab-shortcode-directory.php:264
 msgid "Function"
 msgstr "Fonction"
 
-#: shortcode/lab-shortcode-directory.php:264
+#: shortcode/lab-shortcode-directory.php:265
 msgid "User details"
 msgstr "Coordonnées"
 
-#: shortcode/lab-shortcode-directory.php:267
+#: shortcode/lab-shortcode-directory.php:268
 msgid "Group"
 msgstr "Groupes"
 
@@ -985,7 +989,7 @@ msgstr ""
 
 #: shortcode/lab-shortcode-invitation.php:71
 msgid "Numéro de téléphone"
-msgstr ""
+msgstr "Numéro de téléphone"
 
 #: shortcode/lab-shortcode-invitation.php:75
 msgid "Language"
@@ -1135,20 +1139,16 @@ msgstr ""
 "votre moyen de transport au retour"
 
 #: shortcode/lab-shortcode-invitation.php:183
-#, fuzzy
-#| msgid "Autre :"
 msgid "Autres frais"
-msgstr "Other :"
+msgstr "Autres frais"
 
 #: shortcode/lab-shortcode-invitation.php:184
 msgid "Précisez les frais qui devront être pris en charge par l'I2M."
 msgstr ""
 
 #: shortcode/lab-shortcode-invitation.php:187
-#, fuzzy
-#| msgid "Hôte"
 msgid "Hôtel"
-msgstr "Invitant"
+msgstr "Hôtel"
 
 #: shortcode/lab-shortcode-invitation.php:189
 msgid "Repas"
@@ -1169,10 +1169,8 @@ msgid "Champs pour l'invitant : "
 msgstr ""
 
 #: shortcode/lab-shortcode-invitation.php:227
-#, fuzzy
-#| msgid "Liste des clés"
 msgid "Origine des crédits"
-msgstr "Liste des clés"
+msgstr "Origine des crédits"
 
 #: shortcode/lab-shortcode-invitation.php:240
 msgid "Précisez l'origine de crédit ici."
