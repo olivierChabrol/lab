@@ -47,6 +47,8 @@ function lab_admin_tab_settings() {
   <button class="page-title-action" id="lab_keyring_create_table_loans">Créer la table Loans</button>
     <a href="#" class="page-title-action" id="lab_tab_param_create_table">Create table param</a>
   <hr>
+  <a href="#" class="page-title-action" id="lab_tab_param_correct_all_user_slug_name">Correct all user slug name</a>
+  <hr>
   <!-- Gestion des tables -->
   <?php
   ?>

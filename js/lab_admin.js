@@ -363,6 +363,13 @@ jQuery(function($){
     }
   });
 
+  $("#lab_tab_param_correct_all_user_slug_name").click(function() {
+    var data = {
+      'action' : 'correct_all_user_slug',
+    };
+    callAjax(data, "All user slug corrected", null, null, null);
+  });
+
   $('#lab_tab_param_create_table').click(function(){
     var data = {
       'action' : 'param_create_table',
