@@ -273,7 +273,7 @@ function lab_directory($param) {
     $acronymList = array();
     foreach ($results as $r) {
         $directoryStr .= "<tr  userId='".esc_html($r->slug)."'>";
-        $directoryStr .= "<td id='name_col'>".esc_html($r->last_name . " " . $r->first_name)."</td>";
+        $directoryStr .= "<td id='name_col'>".esc_html(strtoupper($r->last_name) . " " . $r->first_name)."</td>";
         $directoryStr .= "<td>" . $r->function_slug . "</td>";
         $directoryStr .= "<td><span class=\"email\">" . esc_html(strrev($r->mail))."</span><br>".correctNumber(esc_html($r->phone))."</td>";
         if (!$groupAsSCOption) {
