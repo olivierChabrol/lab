@@ -232,7 +232,7 @@ function lab_directory($param) {
         $forwardUrl = directoryUrl($url[0], '%', $group, $thematic);
         $directoryStr .= '<a href="' .$forwardUrl. '" '.$letterClass.'><b>'.__('All', 'lab').'</b></a>&nbsp;&nbsp;'; 
         $directoryStr .= "</div>"; // letters
-        if (!$displayLeftUser) {
+        if (!$displayOnlyLeftUser) {
             $directoryStr .= "<br><a href=\"/linstitut/annuaire/personnels-partis/\">".__('People who have left', 'lab')."</a>";
         }
         $directoryStr .= 
