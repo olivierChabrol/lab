@@ -35,6 +35,12 @@ function lab_admin_tab_user() {
       </tr>
       <tr>
         <td colspan="2">
+          <input type="text" id="lab_user_slug" value="" size="40" placeholder="<?php esc_html_e('User slug','lab') ?>" disabled/>
+          <a href="#" class="page-title-action" id="lab_admin_correct_slug_name"><?php esc_html_e("Correct slug name","lab")?></a>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2">
         <input type="text" id="lab_user_email" value="" size="40" placeholder="<?php esc_html_e('Email','lab') ?>"/> &nbsp <input type="text" id="lab_user_country">
         </td>
       </tr>

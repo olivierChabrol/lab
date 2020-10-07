@@ -835,7 +835,13 @@ function lab_ajax_userMeta_um_correction() {
 }
 
 function lab_ajax_admin_usermeta_fill_user_slug() {
-  wp_send_json_success(lab_admin_usermeta_fill_user_slug());
+  if (isset($_POST['userId'])) {
+    wp_send_json_success(lab_admin_usermeta_fill_user_slug($_POST['userId']));
+  }
+  else
+  {
+    wp_send_json_success(lab_admin_usermeta_fill_user_slug());
+  }
 }
 
 /********************************************************************************************
