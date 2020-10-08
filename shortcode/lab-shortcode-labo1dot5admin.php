@@ -1,26 +1,21 @@
 <?php
 
 function lab_labo1_5admin() {
-    global $wpdb;
-    $sql = "SELECT * FROM `".$wpdb->prefix."lab_labo1dot5`";
-
-     
-    $results = $wpdb->get_results($sql);  
-    
 ?>
 <table class="table table-hover table-bordered" id="travel">
     <thead>
         <tr>
             <td><input type="checkbox" onclick="checkAll(this)"> Tout</td>
-            <td colspan="3"><a href="javascrip;" class="btn btn-danger btn-sm" role="button" onclick="delAll(this)">Suprimer les trajets choisis</a></td>
+            <td colspan="2"><input type="button" id ="delAll" class="btn btn-danger btn" onclick="delAll()" value="Suprimer les trajets choisis"/></td>
             <td colspan="3"><input type="text" id="filter_user_name" name="filter_user_name" class="form-control" placeholder="Chercher un nom"/></td>
-            <td colspan="4"><select id="orderBy" name="orderBy" onchange="orderBy(this)" class="form-control">
+            <td colspan="3"><select id="orderBy" name="orderBy" onchange="orderByFunction(this)" class="form-control">
                             <option value="">Tirer par ?</option>
                             <option value="travel_date">Date de départ (les anciens)</option>
                             <option value="travel_date DESC">Date de départ (les récents)</option>
                             <option value="status">Status (non valide)</option>
                             <option value="status DESC">Status (valide)</option>
                             </select></td>
+            <td colspan="2"><select id="page" class="form-control" onchange="page(this)"> </select></td>
         </tr>
         <tr>
             <th>Choisir</th>

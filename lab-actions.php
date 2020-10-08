@@ -151,11 +151,10 @@ if (is_admin()) {
     // LABO 1.5
     add_action( 'wp_ajax_lab_save_transportation', 'lab_labo1dot5_save');
     add_action( 'wp_ajax_lab_labo1.5_transportation_get', 'lab_labo1dot5_get');
-    add_action( 'wp_ajax_lab_labo1.5_transportation_get_sort', 'lab_labo1dot5_get_sort');
-    add_action( 'wp_ajax_lab_labo1.5_transportation_get2', 'lab_labo1dot5_get2');
     add_action( 'wp_ajax_lab_save_transportation_admin', 'lab_labo1dot5_saveadmin');
     add_action( 'wp_ajax_lab_delete_transportation_admin', 'lab_labo1dot5_deleteadmin');
     add_action( 'wp_ajax_lab_update_transportation_admin', 'lab_labo1dot5_updateadmin');
+    add_action( 'wp_ajax_lab_labo1.5_transportation_getRowNum', 'lab_labo1dot5_getRowNum');
 }
 // no admin
 else{

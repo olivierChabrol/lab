@@ -1,113 +1,54 @@
+var limitM=0;
+var limitN=5;
+var userId="";
+var orderBy="";
+
 
 
 $( document ).ready(function() {
-	loadTableContent(0,10);
+	loadTableContent(limitM,limitN,userId,orderBy);
+	pagenation();
 });
 
-function loadTableContent(limitM,limitN) {
-	
+function pagenation(){
+var rowNum;
+var totalPage;
+
+	data = {
+		"action": 'lab_labo1.5_transportation_getRowNum'
+	}
+	$.post(LAB.ajaxurl, data, function(response) {
+		if (response.success) {
+			rowNum=Object.values(response.data[0]);
+			totalPage = Math.ceil(rowNum/5); // 5 lignes par page
+			let op = $('<option />').attr("value","").html("Page");
+			$("#page").append(op);
+			
+			for(var i = 1;i<=totalPage; i++){
+				let opI = $('<option />').attr("value",""+i).html(""+i);
+				$("#page").append(opI);
+			}
+		}
+	});
+}
+
+function page(obj){  
+	var value = obj.options[obj.selectedIndex].value;
+	if(value!=""){
+		loadTableContent(5*(value-1),5*value,userId,orderBy);}
+	else
+		{loadTableContent(limitM,limitN,userId,orderBy);}
+}
+
+
+function loadTableContent(limitM,limitN,userId,orderBy) {
+
     data = {
 		"action": 'lab_labo1.5_transportation_get'
-	  }
+	}
 	data["limitM"] = limitM;
 	data["limitN"] = limitN;
-
-	  $.post(LAB.ajaxurl, data, function(response) {
-		if (response.success) {
-			deleteTableContent();
-			$.each(response.data, function(i,item) {     //i?
-				let tr = $('<tr />');
-				let td1 = $('<td />');
-				let checkbox = $('<input />').attr("type","checkbox").attr("name","checkbox");
-				td1.append(checkbox);
-				tr.append(td1);
-				let td2 = $('<td />').attr("id", "travel_id"+item["travel_id"]).html(item["travel_id"]);
-				tr.append(td2);
-				let td3 = $('<td />').attr("id", "country_from"+item["travel_id"]).html(item["country_from"]);
-				tr.append(td3);
-				let td4 = $('<td />').attr("id", "travel_from"+item["travel_id"]).html(item["travel_from"]);
-				tr.append(td4);
-				let td5 = $('<td />').attr("id", "country_to"+item["travel_id"]).html(item["country_to"]);
-				tr.append(td5);
-				let td6 = $('<td />').attr("id", "travel_to"+item["travel_id"]).html(item["travel_to"]);
-				tr.append(td6);
-				let td7 = $('<td />').attr("id", "travel_date"+item["travel_id"]).html(item["travel_date"]);
-				tr.append(td7);
-				let td8 = $('<td />').attr("id", "means"+item["travel_id"]).html(item["means"]);
-				tr.append(td8);
-				let td9 = $('<td />').attr("id", "go_back"+item["travel_id"]).html(item["go_back"]);
-				tr.append(td9);
-				let td10 = $('<td />').attr("id", "status"+item["travel_id"]).html(item["status"]);
-				tr.append(td10);
-				let td11 = $('<td />');
-				let button_motify = $('<input />').attr("type","button").attr("value","Modifier").attr("class","btn btn-info btn-sm").attr("travel_id", item["travel_id"]).attr("id", "modify" + item["travel_id"]);
-				let button_del = $('<input />').attr("type","button").attr("value","Supprimer").attr("onclick","del(this)").attr("class","btn btn-danger btn-sm").attr("travel_id", item["travel_id"]).attr("id", "modify" + item["travel_id"]);
-				button_motify.click(function() {
-					modify(this);
-				  });
-				td11.append(button_motify);
-				td11.append(button_del);
-				tr.append(td11);
-				$("#list_travel").append(tr);
-			});
-		}
-	  });
-}
-
-function loadTableContent2(userId) {
-	
-    data = {
-		"action": 'lab_labo1.5_transportation_get2'
-	  }
 	data["user_id"] = userId;
-
-	  $.post(LAB.ajaxurl, data, function(response) {
-		if (response.success) {
-			deleteTableContent();
-			$.each(response.data, function(i,item) {     //i?
-				let tr = $('<tr />');
-				let td1 = $('<td />');
-				let checkbox = $('<input />').attr("type","checkbox").attr("name","checkbox");
-				td1.append(checkbox);
-				tr.append(td1);
-				let td2 = $('<td />').attr("id", "travel_id"+item["travel_id"]).html(item["travel_id"]);
-				tr.append(td2);
-				let td3 = $('<td />').attr("id", "country_from"+item["travel_id"]).html(item["country_from"]);
-				tr.append(td3);
-				let td4 = $('<td />').attr("id", "travel_from"+item["travel_id"]).html(item["travel_from"]);
-				tr.append(td4);
-				let td5 = $('<td />').attr("id", "country_to"+item["travel_id"]).html(item["country_to"]);
-				tr.append(td5);
-				let td6 = $('<td />').attr("id", "travel_to"+item["travel_id"]).html(item["travel_to"]);
-				tr.append(td6);
-				let td7 = $('<td />').attr("id", "travel_date"+item["travel_id"]).html(item["travel_date"]);
-				tr.append(td7);
-				let td8 = $('<td />').attr("id", "means"+item["travel_id"]).html(item["means"]);
-				tr.append(td8);
-				let td9 = $('<td />').attr("id", "go_back"+item["travel_id"]).html(item["go_back"]);
-				tr.append(td9);
-				let td10 = $('<td />').attr("id", "status"+item["travel_id"]).html(item["status"]);
-				tr.append(td10);
-				let td11 = $('<td />');
-				let button_motify = $('<input />').attr("type","button").attr("value","Modifier").attr("class","btn btn-info btn-sm").attr("travel_id", item["travel_id"]).attr("id", "modify" + item["travel_id"]);
-				let button_del = $('<input />').attr("type","button").attr("value","Supprimer").attr("onclick","del(this)").attr("class","btn btn-danger btn-sm").attr("travel_id", item["travel_id"]).attr("id", "modify" + item["travel_id"]);
-				button_motify.click(function() {
-					modify(this);
-				  });
-				td11.append(button_motify);
-				td11.append(button_del);
-				tr.append(td11);
-				$("#list_travel").append(tr);
-			});
-		}
-	  });
-}
-
-function loadTableContentSort(orderBy) {
-	
-    data = {
-		"action": 'lab_labo1.5_transportation_get_sort'
-	  }
 	data["orderBy"] = orderBy;
 
 	  $.post(LAB.ajaxurl, data, function(response) {
@@ -142,7 +83,7 @@ function loadTableContentSort(orderBy) {
 				let button_del = $('<input />').attr("type","button").attr("value","Supprimer").attr("onclick","del(this)").attr("class","btn btn-danger btn-sm").attr("travel_id", item["travel_id"]).attr("id", "modify" + item["travel_id"]);
 				button_motify.click(function() {
 					modify(this);
-				  });
+				});
 				td11.append(button_motify);
 				td11.append(button_del);
 				tr.append(td11);
@@ -152,12 +93,9 @@ function loadTableContentSort(orderBy) {
 	  });
 }
 
-function orderBy(obj){  
-	var value = obj.options[obj.selectedIndex].value;
-	if(value!=""){
-	loadTableContentSort(value);}
-	else
-	{loadTableContent();}
+function orderByFunction(obj){  
+	orderBy = obj.options[obj.selectedIndex].value;
+	loadTableContent(limitM,limitN,userId,orderBy);
 }
 
 function deleteTableContent(){
@@ -174,15 +112,17 @@ function del(obj){
 		if (response.success) {
 		console.log("OK succeful");}
 	  });
-	  loadTableContent();
+	  loadTableContent(limitM,limitN,userId,orderBy);
 }
 
 /*function delAll(){
 	var checkboxs = document.getElementsByName('checkbox');
-		if(checkboxs[i].checked){
-			del();
+	for (var j = 0; j<checkboxs.length;j++){
+		if(checkboxs[j].checked){
+			let id =  checkboxs[j].value;
+			console.log("ID : " + id);
+		}
 	}
-
 }*/
 
 function modify(obj){
@@ -218,7 +158,7 @@ function update(){
 		if (response.success) {
 		console.log("OK succeful");}
 		});
-		loadTableContent();
+		loadTableContent(limitM,limitN,userId,orderBy);
 }
 
 $(function () {
@@ -241,7 +181,7 @@ $(function () {
 		  if (response.success) {
 		  console.log("OK succeful");}
 		});
-		loadTableContent();
+		loadTableContent(limitM,limitN,userId,orderBy);
 	});
 
 	$('#filter_user_name').autocomplete({
@@ -254,16 +194,12 @@ $(function () {
 		  });
 		},
 		select: function( event, ui ) {
-		  var firstname  = ui.item.firstname; // first name
-		  var lastname = ui.item.lastname; // last name
-		  //var userslug = ui.item.userslug;
-		  //window.location.href = "/user/" + userslug;
-		  var userid = ui.item.user_id;
-		  console.log(userid);
-
+		  var firstname  = ui.item.firstname; 
+		  var lastname = ui.item.lastname; 
+		  userId = ui.item.user_id;
 		  event.preventDefault();
 		  $("#filter_user_name").val(firstname + " " + lastname);
-		  loadTableContent2(userid);
+		  loadTableContent(limitM,limitN,userId,orderBy);
 		}
 	});
 

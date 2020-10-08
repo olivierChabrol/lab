@@ -4,31 +4,30 @@ function lab_labo1dot5_get(){
     global $wpdb;
     $limitM=$_POST["limitM"];
     $limitN=$_POST["limitN"];
-    $sql = "SELECT * FROM `".$wpdb->prefix."lab_labo1dot5` LIMIT $limitM, $limitN";
+    $userId=$_POST["user_id"];
+    $orderBy=$_POST["orderBy"];
 
-     
-    $results = $wpdb->get_results($sql);  
-    wp_send_json_success( $results ); 
-}
-
-function lab_labo1dot5_get2(){
-    global $wpdb;
-    $userid=$_POST["user_id"];
     $sql = "SELECT * FROM `".$wpdb->prefix."lab_labo1dot5` AS lb
-            JOIN `".$wpdb->prefix."lab_labo1dot5_historic` AS lbhis ON lb.`travel_id`=lbhis.`travel_id`
-            WHERE lbhis.`user_id`=$userid";
+            JOIN `".$wpdb->prefix."lab_labo1dot5_historic` AS lbhis ON lb.`travel_id`=lbhis.`travel_id`";
 
-     
+    if ($userId != "")
+    {
+        $sql .= " WHERE lbhis.`user_id` = $userId"; 
+    }
+
+    if ($orderBy != "")
+    {
+        $sql .= " ORDER BY $orderBy";
+    }
+    $sql .= " LIMIT $limitM, $limitN";
+
     $results = $wpdb->get_results($sql);  
     wp_send_json_success( $results ); 
 }
 
-function lab_labo1dot5_get_sort(){
+function lab_labo1dot5_getRowNum(){
     global $wpdb;
-    $orderBy = $_POST["orderBy"];
-    
-    $sql = "SELECT * FROM `".$wpdb->prefix."lab_labo1dot5` ORDER BY $orderBy";
-
+    $sql = "SELECT COUNT(*) FROM `".$wpdb->prefix."lab_labo1dot5`";
      
     $results = $wpdb->get_results($sql);  
     wp_send_json_success( $results ); 
