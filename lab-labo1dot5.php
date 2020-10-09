@@ -13,12 +13,12 @@ function lab_labo1dot5_get(){
     if ($userId != "")
     {
         $sql .= " WHERE lbhis.`user_id` = $userId"; 
-    }
+    };
 
     if ($orderBy != "")
     {
         $sql .= " ORDER BY $orderBy";
-    }
+    };
     $sql .= " LIMIT $limitM, $limitN";
 
     $results = $wpdb->get_results($sql);  
@@ -139,4 +139,29 @@ function lab_labo1dot5_updateadmin(){
                                                  array("travel_id"=>$travel_idint)); 
     
     wp_send_json_success($data); 
+}
+
+function lab_labo1dot5_exportExcel(){
+    global $wpdb;
+
+    $userId=$_POST["user_id"];
+    $orderBy=$_POST["orderBy"];
+    $sql = "SELECT * FROM `".$wpdb->prefix."lab_labo1dot5` AS lb
+    JOIN `".$wpdb->prefix."lab_labo1dot5_historic` AS lbhis ON lb.`travel_id`=lbhis.`travel_id`";
+
+    if ($userId != "")
+    {
+    $sql .= " WHERE lbhis.`user_id` = $userId"; 
+    };
+
+    if ($orderBy != "")
+    {
+    $sql .= " ORDER BY $orderBy";
+    };
+
+    $results = $wpdb->get_results($sql);  
+    foreach($results as $res){
+        echo $res->travel_id."<br />";
+    }
+
 }

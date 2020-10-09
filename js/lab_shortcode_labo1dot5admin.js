@@ -10,6 +10,19 @@ $( document ).ready(function() {
 	pagenation();
 });
 
+function exportExcel(){
+	data = {
+		"action": 'lab_labo1.5_transportation_exportExcel'
+	}
+	data["user_id"] = userId;
+	data["orderBy"] = orderBy;
+
+	jQuery.post(LAB.ajaxurl, data, function(response) {
+		if (response.success) {
+		console.log("OK succeful");}
+	  });
+}
+
 function pagenation(){
 var rowNum;
 var totalPage;
@@ -103,6 +116,8 @@ function deleteTableContent(){
 }
 
 function del(obj){
+	var r=confirm("Supprimer ce trajet?")
+	if (r==true){
 	data = {
 		"action": 'lab_delete_transportation_admin'		  
 	}
@@ -112,7 +127,8 @@ function del(obj){
 		if (response.success) {
 		console.log("OK succeful");}
 	  });
-	  loadTableContent(limitM,limitN,userId,orderBy);
+	};
+	loadTableContent(limitM,limitN,userId,orderBy);
 }
 
 /*function delAll(){

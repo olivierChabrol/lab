@@ -155,6 +155,7 @@ if (is_admin()) {
     add_action( 'wp_ajax_lab_delete_transportation_admin', 'lab_labo1dot5_deleteadmin');
     add_action( 'wp_ajax_lab_update_transportation_admin', 'lab_labo1dot5_updateadmin');
     add_action( 'wp_ajax_lab_labo1.5_transportation_getRowNum', 'lab_labo1dot5_getRowNum');
+    add_action( 'wp_ajax_lab_labo1.5_transportation_exportExcel', 'lab_labo1dot5_exportExcel');
 }
 // no admin
 else{
