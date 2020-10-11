@@ -142,6 +142,22 @@ function lab_labo1dot5_updateadmin(){
 }
 
 function lab_labo1dot5_exportExcel(){
+    use PhpOffice\PhpSpreadsheet\Spreadsheet;
+    use PhpOffice\PhpSpreadsheet\Writer\Xlsx; 
+
+    $spreadsheet = new Spreadsheet();
+    $sheet = $spreadsheet->getActiveSheet();
+    $sheet->setCellValue('A1', 'Prénom');
+    $sheet->setCellValue('B1', 'Nom');
+    $sheet->setCellValue('C1', 'Employeur');
+    $sheet->setCellValue('D1', 'Site');
+    $sheet->setCellValue('E1', 'Etage');
+    $sheet->setCellValue('F1', 'Bureau');
+    $sheet->setCellValue('G1', 'Date');
+    $sheet->setCellValue('H1', 'Arrivé');
+    $sheet->setCellValue('I1', 'Départ');
+    $sheet->setCellValue('J1', 'Motif');
+
     global $wpdb;
 
     $userId=$_POST["user_id"];
@@ -158,6 +174,7 @@ function lab_labo1dot5_exportExcel(){
     {
     $sql .= " ORDER BY $orderBy";
     };
+    wp_send_json_success( $results ); 
 
     $results = $wpdb->get_results($sql);  
     foreach($results as $res){

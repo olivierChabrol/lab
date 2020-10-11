@@ -20,7 +20,7 @@ function exportExcel(){
 	jQuery.post(LAB.ajaxurl, data, function(response) {
 		if (response.success) {
 		console.log("OK succeful");}
-	  });
+	});
 }
 
 function pagenation(){
