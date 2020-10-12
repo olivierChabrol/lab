@@ -1,7 +1,16 @@
 <?php
 
 function lab_labo1_5admin() {
+    $count = lab_labo1dot5_getRowNum();
+    print('<a href="#">&lt;</a>');
+    for ($i = 0 ; $i < $count[0]; $i++)
+    {
+        print('<a href="#">'.($i+1).'</a>');
+    }
+    print('<a href="#">&gt;</a>');
 ?>
+
+
 <table class="table table-hover table-bordered" id="travel">
     <thead>
         <tr>

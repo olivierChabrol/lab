@@ -25,12 +25,16 @@ function lab_labo1dot5_get(){
     wp_send_json_success( $results ); 
 }
 
+function lab_labo1dot5_getRowNum_ajax(){
+    wp_send_json_success( lab_labo1dot5_getRowNum() ); 
+}
+
 function lab_labo1dot5_getRowNum(){
     global $wpdb;
     $sql = "SELECT COUNT(*) FROM `".$wpdb->prefix."lab_labo1dot5`";
      
     $results = $wpdb->get_results($sql);  
-    wp_send_json_success( $results ); 
+    return $results;
 }
 
 function lab_labo1dot5_save(){
@@ -141,7 +145,7 @@ function lab_labo1dot5_updateadmin(){
     wp_send_json_success($data); 
 }
 
-function lab_labo1dot5_exportExcel(){
+/*function lab_labo1dot5_exportExcel(){
     use PhpOffice\PhpSpreadsheet\Spreadsheet;
     use PhpOffice\PhpSpreadsheet\Writer\Xlsx; 
 
@@ -181,4 +185,4 @@ function lab_labo1dot5_exportExcel(){
         echo $res->travel_id."<br />";
     }
 
-}
+}*/
