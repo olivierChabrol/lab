@@ -43,7 +43,7 @@ function lab_incoming_event($param)
     
     /***  DISPLAY ***/
     $url           = esc_url(home_url('/'));
-    $listEventStr = '<a href="'.$url."events/categories/agenda/seminaires/".$eventCategory.'/ical">iCal</a>';
+    $listEventStr = '<br><a href="'.$url."events/categories/agenda/seminaires/".$eventCategory.'/ical">iCal</a>';
     $listEventStr  .= "<table>";
     foreach ($results as $r )
     {
