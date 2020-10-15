@@ -1595,7 +1595,7 @@ function lab_ldap_add_user() {
     $ldapRes = lab_ldap_addUser($ldap_obj, $_POST['first_name'],$_POST['last_name'],$_POST['email'],$_POST['password'],$_POST['uid'],$_POST['organization']);
     if ($ldapRes == 0 ) {
       if ($_POST['addToWP'] == 'true') {
-        $wpRes = lab_ldap_new_WPUser(strtoupper($_POST["last_name"]),$results["first_name"],$_POST['email'],$_POST['password'],$_POST['uid']);
+        $wpRes = lab_ldap_new_WPUser(strtoupper($_POST["last_name"]),$_POST["first_name"],$_POST['email'],$_POST['password'],$_POST['uid']);
         if ($wpRes==true) {
           wp_send_json_success();
         } else {
