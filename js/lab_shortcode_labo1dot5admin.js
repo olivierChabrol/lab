@@ -14,12 +14,12 @@ function exportExcel(){
 	data = {
 		"action": 'lab_labo1.5_transportation_exportExcel'
 	}
-	data["user_id"] = userId;
-	data["orderBy"] = orderBy;
+	//data["user_id"] = userId;
+	//data["orderBy"] = orderBy;
 
 	jQuery.post(LAB.ajaxurl, data, function(response) {
 		if (response.success) {
-		console.log("OK succeful");}
+		console.log(response.data);}
 	});
 }
 
