@@ -1,8 +1,5 @@
 <?php
 
-    use PhpOffice\PhpSpreadsheet\Spreadsheet;
-    use PhpOffice\PhpSpreadsheet\Writer\Xlsx; 
-
 function lab_labo1dot5_get(){
     global $wpdb;
     $limitM=$_POST["limitM"];
@@ -146,43 +143,4 @@ function lab_labo1dot5_updateadmin(){
                                                  array("travel_id"=>$travel_idint)); 
     
     wp_send_json_success($data); 
-}
-
-function lab_labo1dot5_exportExcel(){
-
-    $spreadsheet = new Spreadsheet();
-    $sheet = $spreadsheet->getActiveSheet();
-    $sheet->setCellValue('A1', 'Travel_ID');
-    $sheet->setCellValue('A2', 'Prénom');
-    /*$sheet->setCellValue('B1', 'Country_from');
-    $sheet->setCellValue('C1', 'Travel_from');
-    $sheet->setCellValue('D1', 'Country_to');
-    $sheet->setCellValue('E1', 'Travel_to');
-    $sheet->setCellValue('F1', 'Means');
-    $sheet->setCellValue('G1', 'Go_back');*/
-
-    global $wpdb;
-
-    //$userId=$_POST["user_id"];
-    //$orderBy=$_POST["orderBy"];
-    $sql = "SELECT lb.`travel_id` FROM `".$wpdb->prefix."lab_labo1dot5` AS lb
-    JOIN `".$wpdb->prefix."lab_labo1dot5_historic` AS lbhis ON lb.`travel_id`=lbhis.`travel_id`";
-
-    /*if ($userId != "")
-    {
-    $sql .= " WHERE lbhis.`user_id` = $userId"; 
-    };
-
-    if ($orderBy != "")
-    {
-    $sql .= " ORDER BY $orderBy";
-    };*/ 
-
-    //$results = $wpdb->get_results($sql);  
-    //wp_send_json_success( $results ); 
-    $writer = new Xlsx($spreadsheet);
-    //$writer->save('hello world.xlsx');
-    $writer->save( "php://output" );
-
-
 }

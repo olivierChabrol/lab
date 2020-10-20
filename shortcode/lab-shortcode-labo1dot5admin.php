@@ -1,6 +1,7 @@
 <?php
 
 function lab_labo1_5admin() {
+
 /*    $count = lab_labo1dot5_getRowNum();
     print('<a href="#">&lt;</a>');
     for ($i = 0 ; $i < $count[0]; $i++)
@@ -25,9 +26,8 @@ function lab_labo1_5admin() {
                             <option value="status DESC">Status (valide)</option>
                             </select></td>
             <td colspan="2"><select id="page" class="form-control" onchange="page(this)"> </select></td>
-            <td colspan="1">
-            <a class="button button-primary button-large" href="?page=lab-exportlabo1dot5.php">
-               Export All
+            <td colspan="1"><a class="btn btn-info" href="/wp-content/plugins/lab/lab_export.php?do=labo1.5&filename=labo1.5.xls">
+                Export All
             </a></td>
         </tr>
         <tr>
@@ -100,3 +100,4 @@ function lab_labo1_5admin() {
     </table>
 <?php
 }
+

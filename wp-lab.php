@@ -49,6 +49,7 @@ require_once("lab-html-helper.php");
 require_once("lab-utils.php");
 require_once("lab-labo1dot5.php");
 
+
 global $wpdb;
 $dbTablePrefix = $wpdb->prefix;
 define("LAB_TABLE_HAL", $dbTablePrefix."lab_hal");

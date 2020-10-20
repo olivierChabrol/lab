@@ -10,19 +10,6 @@ $( document ).ready(function() {
 	pagenation();
 });
 
-function exportExcel(){
-	data = {
-		"action": 'lab_labo1.5_transportation_exportExcel'
-	}
-	//data["user_id"] = userId;
-	//data["orderBy"] = orderBy;
-
-	jQuery.post(LAB.ajaxurl, data, function(response) {
-		if (response.success) {
-		console.log(response.data);}
-	});
-}
-
 function pagenation(){
 var rowNum;
 var totalPage;
