@@ -396,7 +396,7 @@
         if ($field == "ended") {  
           $output .= '<td scope="col" class="lab_keyring_icon">'.($element->$field == 1 ? "<span style='color:#00cf00; font-size: 2em'>✓</span>" : "❌").'</td>';
         } elseif ( $field =='user_id' || $field =='referent_id' ) {
-          $user = lab_admin_username_get($element->$field);
+          $user = lab_admin_userMetaDatas_get($element->$field);
           $output .= '<td scope="col">'.$user['first_name'].' '.$user['last_name'].'</td>';
         } elseif ( $field == 'key_id' ) {
           $key = lab_keyring_search_key($element->$field)[0];
