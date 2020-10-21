@@ -16,10 +16,15 @@ jQuery(function($){
     let letter = $("#letterSearch").val();
     let group = $("#lab-directory-group-id").val();
     let thematic = $("#lab-directory-thematic").val();
-    href = "/linstitut/annuaire/";
+    href = "/linstitut/annuaire/?letter=%";
+    /*
     if (letter != "") {
       href += "?letter="+letter;
     }
+    else{
+      href += "?letter=%"
+    }
+    //*/
     if (group != "0") {
       if (letter != "") {
         href += "&";
