@@ -296,6 +296,7 @@ function lab_ldap_addUser($ldap_obj, $first_name, $last_name,$email,$password,$u
     $info["uid"]=$uid;
     $info["displayname"] = "$first_name $last_name";
     $info["givenName"] = $first_name;
+    
     $info["sn"] = $last_name;
     $info["mail"]=$email;
     $info["uidnumber"]=3000+$ldap_obj->countResults($ldap_obj->searchAccounts());
