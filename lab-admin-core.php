@@ -412,44 +412,44 @@ function lab_admin_createTable_presence() {
 function lab_admin_initTable_param() {
     global $wpdb;
     $wpdb->query("DELETE FROM ".$wpdb->prefix."lab_params WHERE ID < 7");
-    $sql = "INSERT INTO `".$wpdb->prefix."lab_params` (`id`, `type_param`, `value`, `color`) VALUES
-            (1, 1, 'PARAM', NULL),
-            (2, 1, 'GROUP TYPE', NULL),
-            (3, 1, 'KEY TYPE', NULL),
-            (4, 1, 'SITE', NULL),
-            (5, 1, 'USER FUNCTION', NULL),
-            (6, 1, 'MISSION', NULL),
-            (7, 1, 'FUNDING', NULL),
-            (8, 1, 'EMPLOYER', NULL),            
-            (9, 1, 'LDAP TOKEN', NULL),
-            (10, 1, 'LDAP HOST', NULL),
-            (11, 1, 'LDAP BASE', NULL),
-            (12, 1, 'LDAP LOGIN', NULL),
-            (13, 1, 'LDAP PASSWORD', NULL),
-            (14, 1, 'LDAP TLS', NULL),
-            (15, 1, 'LDAP ENABLE', NULL),
-            (16, 1, 'USER SECTION CN', NULL),
-            (17, 1, 'USER SECTION CNU', NULL),
-            (18, 1, 'OUTGOING MOBILITY', NULL),
-            (19, 1, 'KEY STATE', NULL),
-            (20, 1, 'ECOLE DOCTORALE', NULL),
-            (21, 1, 'OUTGOING MOBILITY STATUS', NULL),
-            (22, 1, 'THEMATIC', NULL),
-            (NULL, 2, 'Equipe', NULL),
-            (NULL, 2, 'Groupe', NULL),
-            (NULL, 3, 'Clé', NULL),
-            (NULL, 3, 'Badge', NULL),
-            (NULL, 4, 'Luminy', '067BC2'),
-            (NULL, 4, 'Saint-Charles', 'F75C03'),
-            (NULL, 4, 'CMI', '04A777'),
-            (NULL, 6, 'Séminaire', NULL),
-            (NULL, 7, 'CNRS', NULL),
-            (NULL, 7, 'AMU', NULL),
-            (NULL, 7, 'ECM', NULL),
-            (NULL, 15, 'false', NULL),
-            (NULL, 19, 'OK', NULL),
-            (NULL, 19, 'LOST', NULL),
-            (NULL, 19, 'BROKEN', NULL);";
+    $sql = "INSERT INTO `".$wpdb->prefix."lab_params` (`id`, `type_param`, `value`, `color`, `slug`) VALUES
+            (1, 1, 'PARAM', NULL, NULL),
+            (2, 1, 'GROUP TYPE', NULL, NULL),
+            (3, 1, 'KEY TYPE', NULL, NULL),
+            (4, 1, 'SITE', NULL, NULL),
+            (5, 1, 'USER FUNCTION', NULL, NULL),
+            (6, 1, 'MISSION', NULL, NULL),
+            (7, 1, 'FUNDING', NULL, NULL),
+            (8, 1, 'EMPLOYER', NULL, NULL),            
+            (9, 1, 'LDAP TOKEN', NULL, NULL),
+            (10, 1, 'LDAP HOST', NULL, NULL),
+            (11, 1, 'LDAP BASE', NULL, NULL),
+            (12, 1, 'LDAP LOGIN', NULL, NULL),
+            (13, 1, 'LDAP PASSWORD', NULL, NULL),
+            (14, 1, 'LDAP TLS', NULL, NULL),
+            (15, 1, 'LDAP ENABLE', NULL, NULL),
+            (16, 1, 'USER SECTION CN', NULL, NULL),
+            (17, 1, 'USER SECTION CNU', NULL, NULL),
+            (18, 1, 'OUTGOING MOBILITY', NULL, NULL),
+            (19, 1, 'KEY STATE', NULL, NULL),
+            (20, 1, 'ECOLE DOCTORALE', NULL, NULL),
+            (21, 1, 'OUTGOING MOBILITY STATUS', NULL, NULL),
+            (22, 1, 'THEMATIC', NULL, NULL),
+            (NULL, 2, 'Equipe', NULL, NULL),
+            (NULL, 2, 'Groupe', NULL, NULL),
+            (NULL, 3, 'Clé', NULL, 'key'),
+            (NULL, 3, 'Badge', NULL, 'badge'),
+            (NULL, 4, 'Luminy', '067BC2', NULL),
+            (NULL, 4, 'Saint-Charles', 'F75C03', NULL),
+            (NULL, 4, 'CMI', '04A777', NULL),
+            (NULL, 6, 'Séminaire', NULL, NULL),
+            (NULL, 7, 'CNRS', NULL, NULL),
+            (NULL, 7, 'AMU', NULL, NULL),
+            (NULL, 7, 'ECM', NULL, NULL),
+            (NULL, 15, 'false', NULL, NULL),
+            (NULL, 19, 'OK', NULL, NULL),
+            (NULL, 19, 'LOST', NULL, NULL),
+            (NULL, 19, 'BROKEN', NULL, NULL);";
     $wpdb->get_results($sql);
 }
 
@@ -1056,6 +1056,7 @@ function lab_keyring_createTable_loans() {
       ) ENGINE=InnoDB;";
     $wpdb->get_results($sql);
 }
+
 function lab_keyring_create_key($params) {
     $params['commentary'] = strlen($params['commentary']) ? $params['commentary'] : NULL ;
     global $wpdb;
@@ -1065,11 +1066,27 @@ function lab_keyring_create_key($params) {
         $params
         )
     ) {
-        return;
+        return $wpdb->insert_id;
     } else {
         return $wpdb -> last_error;
     }
 }
+
+function lab_keyring_default_key_state()
+{
+    global $wpdb;
+    $keyStates = AdminParams::lab_admin_get_params_keyStates();
+    $min = 1000000;
+    foreach($keyStates as $r)
+    {
+        if ($r->id < $min)
+        {
+            $min = $r->id;
+        }
+    }
+    return $min;
+}
+
 function lab_keyring_create_loan($params) {
     $params['commentary'] = strlen($params['commentary']) ? $params['commentary'] : NULL ;
     $params['end_date'] = strlen($params['end_date']) ? $params['end_date'] : NULL ;
@@ -1103,10 +1120,28 @@ function lab_keyring_search_byWord($word,$limit,$page) {
     );
     return $res;
 }
+
+/*
+function lab_keyring_find_key($id)
+{
+    global $wpdb;
+    $sql = "SELECT * from `".$wpdb->prefix."lab_keys` WHERE `id` =".$id;
+    return $wpdb->get_row($sql);
+
+}
+//*/
+
+function lab_keyring_search_by_key_number($keyType, $keyNumber)
+{
+    global $wpdb;
+    $sql = "SELECT * from `".$wpdb->prefix."lab_keys` WHERE `number` LIKE '%".$keyNumber."%' AND `type`='".$keyType."';";
+    return $wpdb->get_results($sql);
+    //return $sql;
+}
+
 function lab_keyring_search_key($id) {
     global $wpdb;
-    $sql = "SELECT * from `".$wpdb->prefix."lab_keys`
-            WHERE `id`=".$id.";";
+    $sql = "SELECT * from `".$wpdb->prefix."lab_keys` WHERE `id`=".$id.";";
     return $wpdb->get_results($sql);
 }
 function lab_keyring_edit_key($id,$fields) {

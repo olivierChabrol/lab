@@ -30,6 +30,11 @@ class AdminParams {
         return $results = $wpdb->get_results($sql);
     }
 
+    public static function lab_admin_get_params_keyStates()
+    {
+        return AdminParams::get_params_fromId(AdminParams::PARAMS_KEY_STATE);
+    }
+
     public static function lab_admin_get_params_thematics()
     {
         return AdminParams::get_params_fromId(AdminParams::PARAMS_THEMATIC);
@@ -77,6 +82,15 @@ class AdminParams {
         $sql = "SELECT * FROM `".$wpdb->prefix."lab_params` WHERE slug='".$slug."'";
         $results = $wpdb->get_results($sql);
         return $results;
+    }
+
+
+
+    public static function get_param_all($id) {
+        global $wpdb;
+        $sql = "SELECT * FROM `".$wpdb->prefix."lab_params` WHERE id=".$id;
+        $results = $wpdb->get_results($sql);
+        return $results[0];
     }
 
     public static function get_param($id) {

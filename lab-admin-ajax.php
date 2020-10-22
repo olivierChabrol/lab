@@ -867,6 +867,85 @@ function lab_ajax_delete_hal_table() {
   delete_hal_table();
   wp_send_json_success("Hal table deleted");
 }
+/**********************************************************************************************
+ * KEYRING
+ **********************************************************************************************/
+function lab_keyring_find_key() {
+  $keyId = $_POST['id'];
+
+  wp_send_json_success(lab_keyring_search_key($keyId));
+}
+
+function lab_keyring_search_key_number() {
+  $type = $_POST['type'];
+  $search = $_POST['search'];
+  $keyNumber = $search['term'];
+  $keys = lab_keyring_search_by_key_number($type, $keyNumber);
+
+
+  $items = array();
+
+  foreach ($keys as $r) {
+    $items[] = array(label => $r->number, value => $r->id);
+  }
+  wp_send_json_success($items);
+}
+
+
+function lab_keyring_save_loans()
+{
+  $userId = $_POST["userId"];
+  if (!isset($userId) || empty($userId))
+  {
+    wp_send_json_error("No user selected");
+  }
+  $keyNumber = $_POST["keyNumber"];
+  if (!isset($keyNumber) || empty($keyNumber))
+  {
+    wp_send_json_error("No keys number contact admin");
+  }
+  $keyNumber = intval($keyNumber);
+  $keyFields = ["type","number","brand","site","office","commentary"];
+  $ret = "RETOUR\n";
+  $ret .= "keyNumber : " . $keyNumber;
+  
+  for ($i = 0 ; $i < $keyNumber ; $i++)
+  {
+    $keyId = $_POST["key_id".$i];
+    $ret .= " i:" .$i. " keyId :".$keyId." ";
+    if ($keyId == -1)
+    {
+      $param = array();
+      for( $f = 0 ; $f < sizeof($keyFields) ; $f++)
+      {
+        $param[$keyFields[$f]] = $_POST["key_".$keyFields[$f].$i];
+      }
+      $param["available"]=0;
+      $param["state"]= lab_keyring_default_key_state();
+      $keyId = lab_keyring_create_key($param);
+      //$ret .= $
+      //$ret .= $param;
+      $ret .= " min state : ". $param["state"];
+      $ret .= " Clef ". $keyId ." create";
+    }
+    else
+    {
+      lab_keyring_setKeyAvailable($keyId, 0);
+    }
+    $loanParams = array();
+    $loanParams["referent_id"] = get_current_user_id();
+    $loanParams["start_date"] = date("Y-m-d");
+    $loanParams["user_id"] = $userId;
+    $loanParams["key_id"] = $keyId;
+    $loanParams["commentary"] = $_POST["key_commentary".$i];
+    $resLoan = lab_keyring_create_loan($loanParams);
+    if (strlen($res)!=0) {
+      wp_send_json_error("LOAN : ".$res);
+    }
+  }
+  wp_send_json_success($ret);
+}
+
 function lab_keyring_create_loanReq() {
   $params = $_POST['params'];
   $res = lab_keyring_create_loan($params);

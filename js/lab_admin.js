@@ -5,6 +5,7 @@ jQuery(function($){
   var searchRequest;
   //loadExistingKeys();
 
+
   $("#lab_user_country").countrySelect({
     defaultCountry: "fr",
     preferredCountries: ['fr', 'de', 'it', 'es', 'us'],
@@ -1340,9 +1341,33 @@ function enabledAddKeyAllButton(data) {
   jQuery("#lab_settings_button_addKey_all").prop("disabled",false);
 }
 
+function displayLoadingGif()
+{
+  //jQuery("#loadingAjaxGif").show();
+  jQuery("#loadingAjaxGif").addClass('show');
+}
+
+function hideLoadingGif()
+{
+  //jQuery("#loadingAjaxGif").hide();
+  jQuery("#loadingAjaxGif").removeClass('show');
+}
+
 function callAjax(data, successMessage, callBackSuccess = null, errorMessage, callBackError = null) {
+  let candisplayLoadingGif = false;
+  if (jQuery("#loadingAjaxGif").length) {
+    candisplayLoadingGif = true;
+  }
+  if (candisplayLoadingGif) 
+  {
+    displayLoadingGif();
+  }
   jQuery.post(LAB.ajaxurl, data, function(response) {
     if (response.success) {
+      if (candisplayLoadingGif) 
+      {
+        hideLoadingGif();
+      }
       if (successMessage != null) {
         toast_success(successMessage);
       }
@@ -1351,6 +1376,11 @@ function callAjax(data, successMessage, callBackSuccess = null, errorMessage, ca
       }
     }
     else {
+      if (candisplayLoadingGif) 
+      {
+        hideLoadingGif();
+      }
+
       if (errorMessage != null) {
         toast_error(errorMessage);
       } 
