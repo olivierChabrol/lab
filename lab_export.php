@@ -117,12 +117,6 @@ else if ($do == "labo1.5")
     $results = $wpdb->get_results($sql);
     $line = 1;
 
-    $filename = 'test.xlsx';
-
-    header("Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-    header('Content-Disposition: attachment; filename="'.$filename.'"');
-    header('Cache-Control: max-age=0');
-
     $spreadsheet = new Spreadsheet();
     $sheet = $spreadsheet->getActiveSheet();
     $sheet->setCellValue('A1',"Num_trajet");

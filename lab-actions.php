@@ -149,7 +149,8 @@ if (is_admin()) {
     add_action( 'wp_ajax_lab_ldap_reconnect', 'lab_ldap_reconnect');
     add_action( 'wp_ajax_lab_admin_ldap_settings', 'lab_admin_ldap_settings');
     // LABO 1.5
-    add_action( 'wp_ajax_lab_save_transportation', 'lab_labo1dot5_save');
+    add_action( 'wp_ajax_lab_labo1.5_initial', 'lab_labo1dot5_initial');
+    add_action( 'wp_ajax_lab_labo1.5_save_mission', 'lab_labo1dot5_save_mission');
     add_action( 'wp_ajax_lab_labo1.5_transportation_get', 'lab_labo1dot5_get');
     add_action( 'wp_ajax_lab_save_transportation_admin', 'lab_labo1dot5_saveadmin');
     add_action( 'wp_ajax_lab_delete_transportation_admin', 'lab_labo1dot5_deleteadmin');

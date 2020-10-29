@@ -1,48 +1,53 @@
 
 var varCount = 0;
-
-function addNewTransporationLine(elm)
-{
+function addNewTransporationLine(elm){
   varCount++;
-  $node = '<div id="trajet'+varCount+'">'
-  +'      <label for="trajet'+varCount+'">Trajet:</label>'  
-  +'      <div>'
-  +'          <label for="country_from'+varCount+'">Pays de départ:<span class="lab_form_required_star"> *</span></label>'
-  +'          <input type="text" required id="country_from'+varCount+'" name="country_from'+varCount+'">'
-  +'          <label for="from'+varCount+'">Ville de départ :<span class="lab_form_required_star"> *</span></label>'
-  +'          <input type="text" required id="from'+varCount+'" name="from'+varCount+'">'
-  +'      </div>'
-  +'      <div>'
-  +'          <label for="country_to'+varCount+'">Pays d\'arrivee:<span class="lab_form_required_star"> *</span>&nbsp&nbsp</label>'
-  +'         <input type="text" required id="country_to'+varCount+'" name="country_to'+varCount+'">'
-  +'          <label for="to'+varCount+'">Ville d\'arrivee :<span class="lab_form_required_star"> *</span>&nbsp&nbsp</label>'
-  +'          <input type="text" required id="to'+varCount+'" name="to'+varCount+'">'
-  +'      </div>'
-  +'      <div>'
-  +'          <label for="travel_date'+varCount+'"> Date de départ <span class="lab_form_required_star"> *</span>&nbsp</label>'
-  +'          <input type="date" id="travel_date'+varCount+'" name="travel_date'+varCount+'">'
-  +'          <label for="lab_transport_to'+varCount+'">Mode de transport<span class="lab_form_required_star"> *</span></label>'
-  +'          <select id="lab_transport_to'+varCount+'" name="lab_transport_to'+varCount+'">'
-  +'          <option value="">'+__("Choisissez une option","lab")+'</option>'
-  +'          <option value="car">'+__("Voiture","lab")+'</option>'
-  +'          <option value="train">'+__("Train","lab")+'</option>'
-  +'          <option value="plane">'+__("Avion","lab")+'</option>'
-  +'          <option value="bus">'+__("Car","lab")+'</option>'
-  +'          <option value="none">'+__("Aucun","lab")+'</option>'
-  +'          <option value="other">'+__("Autre","lab")+'</option>'
-  +'          </select>'
-  +'     </div>'
-  +'     <div>'
-  +'          <label for="go_back'+varCount+'">Un trajet aller/retour?<span class="lab_form_required_star"> *</span></label>'
-  +'          <select id="go_back'+varCount+'" name="go_back'+varCount+'">'
-  +'          <option value="">Aller/Retour?</option>'
-  +'          <option value="gosimple">Aller simple</option>'
-  +'          <option value="goback">Aller Retour</option>'
-  +'          </select>'
-  +'     </div>'
-  +'     <button class="removeVar" index="'+varCount+'">Supprimer ce trajet</button><p></p>';
-  +'</div>'       
-  elm.parent().before($node);
+  var num=varCount+1;
+  $node = '<table class="table" id="trajet'+varCount+'">'
+  +'<tr>'
+  +'<th colspan="1">Trajet N°'+num+'</th>'
+  +'<th colspan="3"><input type="button" id="removeVar" class="btn btn-danger" value="Supprimer ce trajet" onclick="removeTransporationLine(this)"></th>'
+  +'</tr>'
+  +'      <tr>'
+  +'          <th>Pays de départ<span class="lab_form_required_star"> *</span></th>'
+  +'          <td><input type="text" id="country_from'+varCount+'" name="country_from'+varCount+'" class="form-control"/></td>'
+  +'          <th>Ville de départ<span class="lab_form_required_star"> *</span></th>'
+  +'          <td><input type="text" id="travel_from'+varCount+'" name="travel_from'+varCount+'" class="form-control"/></td>'
+  +'      </tr>'
+  +'      <tr>'
+  +'          <th>Pays d\'arrivee<span class="lab_form_required_star"> *</span></th>'
+  +'          <td><input type="text" id="country_to'+varCount+'" name="country_to'+varCount+'" class="form-control"/></td>'
+  +'          <th>Ville d\'arrivee<span class="lab_form_required_star"> *</span></th>'
+  +'          <td><input type="text" id="travel_to'+varCount+'" name="travel_to'+varCount+'" class="form-control"/></td>'
+  +'      </tr>'
+  +'      <tr>'
+  +'          <th>Date de départ<span class="lab_form_required_star"> *</span></th>'
+  +'          <td><input type="date" id="travel_date'+varCount+'" name="travel_date'+varCount+'" class="form-control"/></td>'
+  +'          <th>Mode de transport<span class="lab_form_required_star"> *</span></th>'
+  +'          <td><select id="means'+varCount+'" name="means'+varCount+'" class="form-control">'
+  +'              <option value="">Choisissez une option</option>'
+  +'              <option value="avion">Avion</option>'
+  +'              <option value="train">Train</option>'
+  +'              <option value="voiture personnelle">Voiture personnelle</option>'
+  +'              <option value="taxi">Taxi</option>'
+  +'              <option value="bus">Bus</option>'
+  +'              <option value="tramway">Tramway</option>'
+  +'              <option value="rer">RER</option>'
+  +'              <option value="metro">Métro</option>'
+  +'              <option value="ferry">Ferry</option>'
+  +'              </select></td>'
+  +'      </tr>'
+  +'      <tr>'
+  +'          <th>Nb de personne</th>'
+  +'          <td><input type="text" id="nb_person'+varCount+'" name="nb_person'+varCount+'"class="form-control" placeholder="en cas voiture ou taxi"/></td>'
+  +'          <th>Un trajet aller/retour?<span class="lab_form_required_star"> *</span></th>'
+  +'          <td><select id="go_back'+varCount+'" name="go_back'+varCount+'"class="form-control">'
+  +'              <option value="oui">Oui</option>'
+  +'              <option value="non">Non</option>'
+  +'              </select></td>'
+  +'      </tr>'
+  +'  </table>'
+  elm.before($node);
 
   $("#country_from"+varCount).countrySelect({
     preferredCountries: ['fr', 'de', 'it', 'es', 'us'],
@@ -54,28 +59,66 @@ function addNewTransporationLine(elm)
 
 function removeTransporationLine(elm)
 {
-  console.log("remove "+ elm.attr("index"));
-  $(elm).parent().remove();
+  var msg="supprimer ce trajet?"
+  if (confirm(msg)==true){
+    $(elm).parent().parent().parent().remove();
+  }
 }
 
-$(function () {   
+$(function () {
+  var user_firstname;
+  var user_lastname;
+  var user_email;
+  var user_group;
+  data = {
+    "action":'lab_labo1.5_initial'
+  }
+  $.post(LAB.ajaxurl, data, function(response) {
+		if (response.success) {
+      console.log(response.data);
+      user_firstname=Object.values(response.data[0]);
+      $("#user_firstname").val(user_firstname);
+      user_lastname=Object.values(response.data[1]);
+      $("#user_lastname").val(user_lastname);
+      user_email=Object.values(response.data[2]);
+      $("#user_email").val(user_email);
+      user_group=Object.values(response.data[3]);
+      $("#user_group").val(user_group);
+		}
+  });
+  
+
   $('#addVar').on('click', function(){
     addNewTransporationLine( $(this));
   });
   
   $('#validate').on('click', function(){
-    
+    var cost_cover=document.getElementsByName("cost_cover[]");
+    var str="";
+    for(i=0;i<cost_cover.length;i++){
+      if (cost_cover[i].checked){
+        str=str + cost_cover[i].value + "_";
+      }
+    }
     data = {
-      "action": 'lab_save_transportation',
+      "action": 'lab_labo1.5_save_mission',
       "length" : varCount,
     }
+
+    data["mission_motif"]=$("#mission_motif").val();
+    data["mission_cost"]=$("#mission_cost").val();
+    data["cost_cover"]=str;
+    data["mission_credit"]=$("#mission_credit").val();
+    data["mission_comment"]=$("#mission_comment").val();
+
     for(i = 0; i <= varCount;i++){
-      data["travel_date"+i] = $("#travel_date"+i).val();
-      data["from"+i] = $("#from"+i).val();
-      data["to"+i] = $("#to"+i).val();
-      data["lab_transport_to"+i] = $("#lab_transport_to"+i).val();
       data["country_from"+i] = $("#country_from"+i).val();
+      data["from"+i] = $("#travel_from"+i).val();
       data["country_to"+i] = $("#country_to"+i).val();
+      data["to"+i] = $("#travel_to"+i).val();
+      data["travel_date"+i] = $("#travel_date"+i).val();
+      data["means"+i] = $("#means"+i).val();
+      data["nb_person"+i] = $("#nb_person"+i).val();
       data["go_back"+i] = $("#go_back"+i).val();
     }
 
@@ -84,18 +127,11 @@ $(function () {
       console.log("OK succeful");}
     });
   });
-          
-$(document).on('click', '.removeVar', function(){
-  //console.log("clic on removeVar");
-  //varCount--;
-  removeTransporationLine($(this));
 
+  $("#country_from0").countrySelect({
+    preferredCountries: ['fr', 'de', 'it', 'es', 'us'],
   });
-
-$("#country_from0").countrySelect({
-  preferredCountries: ['fr', 'de', 'it', 'es', 'us'],
-});
-$("#country_to0").countrySelect({
-  preferredCountries: ['fr', 'de', 'it', 'es', 'us'],
-});
+  $("#country_to0").countrySelect({
+    preferredCountries: ['fr', 'de', 'it', 'es', 'us'],
+  });
 });

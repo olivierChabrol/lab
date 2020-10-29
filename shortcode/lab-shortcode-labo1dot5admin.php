@@ -15,8 +15,6 @@ function lab_labo1_5admin() {
 <table class="table table-hover table-bordered" id="travel">
     <thead>
         <tr>
-            <td><input type="checkbox" onclick="checkAll(this)"> Tout</td>
-            <td colspan="2"><input type="button" id ="delAll" class="btn btn-danger btn" onclick="delAll()" value="Suprimer les trajets choisis"/></td>
             <td colspan="3"><input type="text" id="filter_user_name" name="filter_user_name" class="form-control" placeholder="Chercher un nom"/></td>
             <td colspan="2"><select id="orderBy" name="orderBy" onchange="orderByFunction(this)" class="form-control">
                             <option value="">Tirer par ?</option>
@@ -31,17 +29,15 @@ function lab_labo1_5admin() {
             </a></td>
         </tr>
         <tr>
-            <th>Choisir</th>
-            <th>Travel ID</th>
-            <th>Pays de départ</th>
-            <th>Ville de départ</th>
-            <th>Pays d'arrivee</th>
-            <th>Ville d'arrivee</th>
-            <th>Date de départ</th>
-            <th>Mode de tansport</th>
-            <th>Aller/Retour</th>
-            <th>Status</th>
-            <th>Modif</th>
+            <th>N°Mission</th>
+            <th>Nom</th>
+            <th>Motif de mission</th>
+            <th>Frais </th>
+            <th>Prise en charge par labo</th>
+            <th>Credit</th>
+            <th>Commentaire</th>
+            <th>Statut</th>
+            <th>Date enregistré</th>
         </tr>
     </thead>
     <tbody id="list_travel">

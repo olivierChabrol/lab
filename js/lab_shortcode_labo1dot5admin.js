@@ -57,8 +57,6 @@ function loadTableContent(limitM,limitN,userId,orderBy) {
 			$.each(response.data, function(i,item) {     //i?
 				let tr = $('<tr />');
 				let td1 = $('<td />');
-				let checkbox = $('<input />').attr("type","checkbox").attr("name","checkbox");
-				td1.append(checkbox);
 				tr.append(td1);
 				let td2 = $('<td />').attr("id", "travel_id"+item["travel_id"]).html(item["travel_id"]);
 				tr.append(td2);
