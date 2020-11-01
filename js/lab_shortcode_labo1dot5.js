@@ -59,7 +59,7 @@ function addNewTransporationLine(elm){
 
 function removeTransporationLine(elm)
 {
-  var msg="supprimer ce trajet?"
+  var msg="supprimer ce trajet?";
   if (confirm(msg)==true){
     $(elm).parent().parent().parent().remove();
   }
@@ -93,39 +93,43 @@ $(function () {
   });
   
   $('#validate').on('click', function(){
-    var cost_cover=document.getElementsByName("cost_cover[]");
-    var str="";
-    for(i=0;i<cost_cover.length;i++){
-      if (cost_cover[i].checked){
-        str=str + cost_cover[i].value + "_";
+    var msg="Valider votre demende de mission?";
+    if (confirm(msg)==true){
+      var cost_cover=document.getElementsByName("cost_cover[]");
+      var str="";
+      for(i=0;i<cost_cover.length;i++){
+        if (cost_cover[i].checked){
+          str=str + cost_cover[i].value + "_";
+        }
       }
-    }
-    data = {
-      "action": 'lab_labo1.5_save_mission',
-      "length" : varCount,
-    }
+      var user_name=$("#user_firstname").val() + " " + $("#user_lastname").val();
+      data = {
+        "action": 'lab_labo1.5_save_mission',
+        "length" : varCount,
+      }
 
-    data["mission_motif"]=$("#mission_motif").val();
-    data["mission_cost"]=$("#mission_cost").val();
-    data["cost_cover"]=str;
-    data["mission_credit"]=$("#mission_credit").val();
-    data["mission_comment"]=$("#mission_comment").val();
+      data["mission_motif"]=$("#mission_motif").val();
+      data["mission_cost"]=$("#mission_cost").val();
+      data["cost_cover"]=str;
+      data["mission_credit"]=$("#mission_credit").val();
+      data["mission_comment"]=$("#mission_comment").val();
+      data["user_name"]=user_name;
+      for(i = 0; i <= varCount;i++){
+        data["country_from"+i] = $("#country_from"+i).val();
+        data["from"+i] = $("#travel_from"+i).val();
+        data["country_to"+i] = $("#country_to"+i).val();
+        data["to"+i] = $("#travel_to"+i).val();
+        data["travel_date"+i] = $("#travel_date"+i).val();
+        data["means"+i] = $("#means"+i).val();
+        data["nb_person"+i] = $("#nb_person"+i).val();
+        data["go_back"+i] = $("#go_back"+i).val();
+      }
 
-    for(i = 0; i <= varCount;i++){
-      data["country_from"+i] = $("#country_from"+i).val();
-      data["from"+i] = $("#travel_from"+i).val();
-      data["country_to"+i] = $("#country_to"+i).val();
-      data["to"+i] = $("#travel_to"+i).val();
-      data["travel_date"+i] = $("#travel_date"+i).val();
-      data["means"+i] = $("#means"+i).val();
-      data["nb_person"+i] = $("#nb_person"+i).val();
-      data["go_back"+i] = $("#go_back"+i).val();
-    }
-
-    jQuery.post(LAB.ajaxurl, data, function(response) {
-      if (response.success) {
-      console.log("OK succeful");}
+      jQuery.post(LAB.ajaxurl, data, function(response) {
+        if (response.success) {
+        console.log("OK succeful");}
     });
+  }
   });
 
   $("#country_from0").countrySelect({

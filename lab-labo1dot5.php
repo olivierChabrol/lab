@@ -26,10 +26,9 @@ function lab_labo1dot5_save_mission(){
     $date_submit = date('Y-m-d H:m:s',time());
     $user_id = get_current_user_id();
     $sql = "SELECT max(mission_id) AS maxMissionId FROM `".$wpdb->prefix."lab_labo1dot5_mission`";
-    //wp_send_json_success( "SQL : " . $sql );
-    //return;
+
     $mission_id = $wpdb->get_results($sql);
-    //var_dump($mission_id);
+
     if(!isset($mission_id) || $mission_id == NULL)
     {
         $mission_id = 0;
@@ -39,7 +38,8 @@ function lab_labo1dot5_save_mission(){
     }
     $mission_id += 1;
 
-    $wpdb->insert($wpdb->prefix.'lab_labo1dot5_mission',array("mission_id"=>$mission_id,"user_id"=>$user_id,"mission_motif"=>$_POST["mission_motif"],
+    $wpdb->insert($wpdb->prefix.'lab_labo1dot5_mission',array("mission_id"=>$mission_id,"user_id"=>$user_id,
+                                                              "user_name"=>$_POST["user_name"],"mission_motif"=>$_POST["mission_motif"],
                                                               "mission_cost"=>$_POST["mission_cost"],"cost_cover"=>$_POST["cost_cover"],
                                                               "mission_credit"=>$_POST["mission_credit"],"mission_comment"=>$_POST["mission_comment"],
                                                               "statut"=>"novalid", "date_submit"=>$date_submit));
@@ -65,20 +65,19 @@ function lab_labo1dot5_save_mission(){
 }
 
 //Les functions pour la page admin
-function lab_labo1dot5_get(){
+function lab_labo1dot5_get_mission(){
     global $wpdb;
-    $limitM=$_POST["limitM"];
-    $limitN=$_POST["limitN"];
-    $userId=$_POST["user_id"];
-    $orderBy=$_POST["orderBy"];
+    $limitM = $_POST["limitM"];
+    $limitN = $_POST["limitN"];
+    $userId = $_POST["user_id"];
+    $orderBy = $_POST["orderBy"];
 
-    $sql = "SELECT m.*,t.* 
-            FROM `".$wpdb->prefix."lab_labo1dot5_mission` AS m
-            JOIN `".$wpdb->prefix."lab_labo1dot5_trajet`  AS t ON m.`mission_id`=t.`mission_id`";
+    $sql = "SELECT *
+            FROM `".$wpdb->prefix."lab_labo1dot5_mission` AS lbm";
 
     if ($userId != "")
     {
-        $sql .= " WHERE lbhis.`user_id` = $userId"; 
+        $sql .= " WHERE lbm.`user_id` = $userId"; 
     };
 
     if ($orderBy != "")
@@ -91,32 +90,93 @@ function lab_labo1dot5_get(){
     wp_send_json_success( $results ); 
 }
 
+function lab_labo1dot5_get_trajet(){
+    global $wpdb;
+    $mission_id = $_POST["mission_id"];
+
+    $sql = "SELECT *
+            FROM `".$wpdb->prefix."lab_labo1dot5_trajet` WHERE mission_id=$mission_id";
+    
+    $results = $wpdb->get_results($sql);  
+    wp_send_json_success( $results ); 
+
+}
+
 function lab_labo1dot5_getRowNum_ajax(){
     wp_send_json_success( lab_labo1dot5_getRowNum() ); 
 }
 
 function lab_labo1dot5_getRowNum(){
     global $wpdb;
-    $sql = "SELECT COUNT(*) FROM `".$wpdb->prefix."lab_labo1dot5`";
+    $sql = "SELECT COUNT(*) FROM `".$wpdb->prefix."lab_labo1dot5_mission`";
      
     $results = $wpdb->get_results($sql);  
     return $results;
 }
 
+function lab_labo1dot5_admin_modify_mission(){
 
-function lab_labo1dot5_saveadmin(){
     $data = "";
     global $wpdb;
 
-    date_default_timezone_set('Europe/Paris');
-    $date_motif = date('Y-m-d H:m:s',time());
-    $user_id = get_current_user_id();
+    $wpdb->update($wpdb->prefix.'lab_labo1dot5_mission',array("mission_motif"=>$_POST["mission_motif"],
+                                                              "mission_cost"=>$_POST["mission_cost"],"cost_cover"=>$_POST["cost_cover"],
+                                                              "mission_credit"=>$_POST["mission_credit"],"mission_comment"=>$_POST["mission_comment"],
+                                                              "statut"=>$_POST["mission_statut"]),
+                                                        array("mission_id"=>$_POST["mission_id"]));
+    wp_send_json_success($data);                                                 
+}
+function lab_labo1dot5_admin_del_travel(){
+
+    $data = "";
+    global $wpdb;
+
+    $travel_id = $_POST["travel_id"];
+    $mission_id = $_POST["mission_id"];
+
+    $sql = "DELETE FROM `".$wpdb->prefix."lab_labo1dot5_trajet` WHERE travel_id = $travel_id AND mission_id = $mission_id" ;
+     
+    $results = $wpdb->get_results($sql);  
+    wp_send_json_success( $results ); 
+}
+
+function lab_labo1dot5_admin_del_mission(){
+
+    $data = "";
+    global $wpdb;
+
+    $mission_id = $_POST["mission_id"];
+
+    $sql = "DELETE FROM `".$wpdb->prefix."lab_labo1dot5_trajet` WHERE mission_id = $mission_id" ;
+    $sql2 = "DELETE FROM `".$wpdb->prefix."lab_labo1dot5_mission` WHERE mission_id = $mission_id" ;
+    $results = $wpdb->get_results($sql);  
+    $results2 = $wpdb->get_results($sq2);  
+    wp_send_json_success( $results ); 
+}
+
+function lab_labo1dot5_admin_modify_travel(){
+
+    $data = "";
+    global $wpdb;
+
+    $wpdb->update($wpdb->prefix.'lab_labo1dot5_trajet', array("travel_from"=>$_POST['travel_from'],  "means"=>$_POST['means'],
+                                                       "travel_to"  =>$_POST['travel_to']   , "country_from"=>$_POST['country_from'],
+                                                       "country_to" =>$_POST['country_to'],   "go_back"     =>$_POST['go_back'],
+                                                       "travel_date"=>$_POST['travel_date'],"nb_person"=>$_POST['nb_person']),
+                                                 array("mission_id"=>$_POST['mission_id'],"travel_id"=>$_POST['travel_id'])); 
     
-    $sql = "SELECT max(travel_id) AS maxTravelId FROM `".$wpdb->prefix."lab_labo1dot5_historic`";
-    //wp_send_json_success( "SQL : " . $sql );
-    //return;
+    wp_send_json_success($data); 
+}
+
+function lab_labo1dot5_admin_add_New_travel(){
+
+    $data = "";
+    global $wpdb;
+    $mission_id = $_POST['mission_id'];
+    $sql = "SELECT max(travel_id) AS maxTravelId FROM `".$wpdb->prefix."lab_labo1dot5_trajet` WHERE mission_id = $mission_id";
+
     $travel_id = $wpdb->get_results($sql);
-    //var_dump($travel_id);
+
     if(!isset($travel_id) || $travel_id == NULL)
     {
         $travel_id = 0;
@@ -126,45 +186,12 @@ function lab_labo1dot5_saveadmin(){
     }
     $travel_id += 1;
 
-    $wpdb->insert($wpdb->prefix.'lab_labo1dot5_historic',array("travel_id"=>$travel_id,"user_id"=>$user_id));
-    $wpdb->insert($wpdb->prefix.'lab_labo1dot5', array("travel_from"=>$_POST['travel_from'],  "means"=>$_POST['means'],
-                                                       "travel_to"  =>$_POST['travel_to']        , "country_from"=>$_POST['country_from'],
-                                                       "country_to" =>$_POST['country_to'], "go_back"     =>$_POST['go_back'],
-                                                       "travel_date"=>$_POST['travel_date'],"travel_id"   =>$travel_id,
-                                                       "status"=>$_POST['status']));
-    
-    wp_send_json_success( $data ); 
-   
-}
-
-function lab_labo1dot5_deleteadmin(){
-
-    $data = "";
-    global $wpdb;
-    $travel_id = $_POST['travel_id'];
-    $travel_idint = intval($travel_id);
-
-    $sql1 = "DELETE FROM `".$wpdb->prefix."lab_labo1dot5` WHERE travel_id=$travel_idint " ;
-    $sql2 = "DELETE FROM `".$wpdb->prefix."lab_labo1dot5_historic` WHERE travel_id=$travel_idint " ;
-     
-    $results1 = $wpdb->get_results($sql1);  
-    $results2 = $wpdb->get_results($sql2); 
-    wp_send_json_success( $results1 ); 
-    wp_send_json_success( $results2 ); 
-}
-
-function lab_labo1dot5_updateadmin(){
-
-    $data = "";
-    global $wpdb;
-    $travel_id = $_POST['travel_id'];
-    $travel_idint = intval($travel_id);
-
-    $wpdb->update($wpdb->prefix.'lab_labo1dot5', array("travel_from"=>$_POST['travel_from'],  "means"=>$_POST['means'],
+    $wpdb->insert($wpdb->prefix.'lab_labo1dot5_trajet', array("travel_from"=>$_POST['travel_from'],  "means"=>$_POST['means'],
                                                        "travel_to"  =>$_POST['travel_to']   , "country_from"=>$_POST['country_from'],
                                                        "country_to" =>$_POST['country_to'],   "go_back"     =>$_POST['go_back'],
-                                                       "travel_date"=>$_POST['travel_date'],  "status"=>$_POST['status']),
-                                                 array("travel_id"=>$travel_idint)); 
+                                                       "travel_date"=>$_POST['travel_date'],"nb_person"=>$_POST['nb_person'],
+                                                       "mission_id"=>$mission_id,"travel_id"=>$travel_id)); 
     
     wp_send_json_success($data); 
 }
+

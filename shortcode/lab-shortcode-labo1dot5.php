@@ -98,15 +98,15 @@ function lab_labo1_5($args){
             <td>
                 <select id="means0" name="means0" class="form-control">
                 <option value="">Choisissez une option</option>
-                <option value="avion">Avion</option>
-                <option value="train">Train</option>
-                <option value="voiture personnelle">Voiture personnelle</option>
-                <option value="taxi">Taxi</option>
-                <option value="bus">Bus</option>
-                <option value="tramway">Tramway</option>
-                <option value="rer">RER</option>
-                <option value="metro">Métro</option>
-                <option value="ferry">Ferry</option>
+                <option value="Avion">Avion</option>
+                <option value="Train">Train</option>
+                <option value="Voiture personnelle">Voiture personnelle</option>
+                <option value="Taxi">Taxi</option>
+                <option value="Bus">Bus</option>
+                <option value="Tramway">Tramway</option>
+                <option value="RER">RER</option>
+                <option value="Metro">Métro</option>
+                <option value="Ferry">Ferry</option>
                 </select>
             </td>
         </tr>
