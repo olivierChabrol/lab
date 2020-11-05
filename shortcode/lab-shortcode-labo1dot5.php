@@ -1,11 +1,136 @@
 <?php
-/*
- * File Name: lab-shortcode-invitation.php
- * Description: shortcode pour afficher un formulaire de création d'invitation
- * Authors: Ivan Ivanov, Lucas Urgenti
- * Version: 1.2
- */
-function lab_labo1_5($args) {
+
+function lab_labo1_5($args){
+    ?>
+    <h5><b>Informations personnelles et missions</b></h5>
+    <br>
+    <table class="table" id="info_person">
+        <tr>
+            <th>Prénom</th>
+            <td><input type="text" id="user_firstname" class="form-control" value=""/></td>
+            <th>Nom</th>
+            <td><input type="text" id="user_lastname" class="form-control" value=""/></td>
+        </tr>
+        <tr>
+            <th>Email<span class="lab_form_required_star">*</span></th>
+            <td><input type="text" id="user_email" class="form-control" value=""/></td>
+            <th>Group</th>
+            <td><input type="text" id="user_group" class="form-control" value=""/></td>
+        </tr> 
+        <tr>
+            <th>Motif</th>
+            <td><select id="mission_motif" class="form-control">
+                <option value="Etude terrain">Etude terrain</option>
+                <option value="Colloque-Congrès">Colloque-Congrès</option>
+                <option value="Séminaire">Séminaire</option>
+                <option value="Enseignement">Enseignement</option>
+                <option value="Collaboration">Collaboration</option>
+                <option value="Visite">Visite</option>
+                <option value="Administration de la recherche">Administration de la recherche</option>
+                <option value="Autre">Autre</option>
+                </select>
+            </td>
+            <th>Frais</th>
+            <td><select id="mission_cost" class="form-control">
+                <option value="Avec frais">Avec frais</option>
+                <option value="Sans frais">Sans frais</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <th colspan="4">Prise en charge par le labo (après accord du responsable des crédits):
+            <br>
+            <br>
+            <input type="checkbox" value="transport" name="cost_cover[]">&nbsp;Transport&nbsp;&nbsp;&nbsp;
+            <input type="checkbox" value="hebergement" name="cost_cover[]">&nbsp;Hébergement&nbsp;&nbsp;&nbsp;
+            <input type="checkbox" value="repas"  name="cost_cover[]">&nbsp;Repas&nbsp;&nbsp;&nbsp;
+            <input type="checkbox" value="inscription"  name="cost_cover[]">&nbsp;Inscription
+            </th>
+        </tr>
+        </tr>
+            <tr>
+            <th colspan="4">Frais annexes :&nbsp;&nbsp;&nbsp;
+            <br>
+            <br>
+            <input type="checkbox" value="parking" name="cost_cover[]">&nbsp;Parking&nbsp;&nbsp;&nbsp;
+            <input type="checkbox" value="transportcommun" name="cost_cover[]">&nbsp;Transport en commun&nbsp;&nbsp;&nbsp;
+            <input type="checkbox" value="taxi" name="cost_cover[]">&nbsp;Taxi&nbsp;&nbsp;&nbsp;
+            </th>
+        </tr>
+        <tr>
+            <th colspan="2">Préciser sur quels crédits</th>
+            <td colspan="2">
+                <select id="mission_credit" class="form-control">
+                <option value="Credits group">Crédits group</option>
+                <option value="ANR">ANR</option>
+                <option value="Contrat de recherche">Contrat de recherche</option>
+                <option value="Autre">Autre</option>
+                </select>
+            </td>
+        <tr>
+            <td style="height:100px" colspan="4" >
+            <textarea style="width:100%;height:100%;" class="form-control"id="mission_comment" placeholder="Comentaire"></textarea>
+            </td>
+        </tr>
+    </table>
+    <h5><b>Remplir les trajets</b></h5>
+    <br>
+    <table class="table" id="trajet0">
+        <tr>
+            <th colspan="4">Trajet N°1</th>
+        </tr>
+        <tr>
+            <th>Pays de départ<span class="lab_form_required_star"> *</span></th>
+            <td><input type="text" id="country_from0" name="country_from0" class="form-control"/></td>
+            <th>Ville de départ<span class="lab_form_required_star"> *</span></th>
+            <td><input type="text" id="travel_from0" name="travel_from0" class="form-control"/></td>
+        </tr>
+        <tr>
+            <th>Pays d'arrivee<span class="lab_form_required_star"> *</span></th>
+            <td><input type="text" id="country_to0" name="country_to0" class="form-control"/></td>
+            <th>Ville d'arrivee<span class="lab_form_required_star"> *</span></th>
+            <td><input type="text" id="travel_to0" name="travel_to0" class="form-control"/></td>
+        </tr>
+        <tr>
+            <th>Date de départ<span class="lab_form_required_star"> *</span></th>
+            <td><input type="date" id="travel_date0" name="travel_date0" class="form-control"/></td>
+            <th>Mode de transport<span class="lab_form_required_star"> *</span></th>
+            <td>
+                <select id="means0" name="means0" class="form-control">
+                <option value="">Choisissez une option</option>
+                <option value="Avion">Avion</option>
+                <option value="Train">Train</option>
+                <option value="Voiture personnelle">Voiture personnelle</option>
+                <option value="Taxi">Taxi</option>
+                <option value="Bus">Bus</option>
+                <option value="Tramway">Tramway</option>
+                <option value="RER">RER</option>
+                <option value="Metro">Métro</option>
+                <option value="Ferry">Ferry</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <th>Nb de personne</th>
+            <td><input type="text" id="nb_person0" class="form-control" placeholder="en cas voiture ou taxi" /></td>
+            <th>Un trajet aller/retour?<span class="lab_form_required_star"> *</span></th>
+            <td>
+                <select id="go_back0" class="form-control">
+                <option value="oui">Oui</option>
+                <option value="non">Non</option>
+                </select>
+            </td>
+        </tr>
+    </table>
+    <input type="button" value="Ajouter un trajet"  class="btn btn-success" id="addVar"/>
+    <br>
+    <br>
+    <input type="button" value="Valide"  class="btn btn-success" id="validate"/>
+<?php
+}
+
+function lab_labo1_5_old($args) {
+
     $param = shortcode_atts(array(
         'hostpage' => 0 //0 pour invité, 1 pour invitant/responsable
         ),
@@ -24,7 +149,8 @@ function lab_labo1_5($args) {
             $invitation=lab_invitations_getByToken($token);
             $charges = json_decode($invitation->charges);
             if (!isset($invitation)) {
-                return esc_html__("Token d'invitation invalide",'lab');
+                //return esc_html__("Token d'invitation invalide",'lab');
+                return esc_html__("Test Hongda",'lab');
             }
             $guest = lab_invitations_getGuest($invitation->guest_id);
             $host = new labUser($invitation->host_id);

@@ -108,4 +108,37 @@ if ($do == "presentOfTheWeek")
     //$writer->save('hello world.xlsx');
     $writer->save( "php://output" );
 
+} 
+else if ($do == "labo1.5")
+{   
+    ob_end_clean();
+    $sql = "SELECT * FROM `".$wpdb->prefix."lab_labo1dot5_trajet`";
+    $results = $wpdb->get_results($sql);
+    $line = 1;
+
+    $spreadsheet = new Spreadsheet();
+    $sheet = $spreadsheet->getActiveSheet();
+    $sheet->setCellValue('A1',"N°Mission");
+    $sheet->setCellValue('B1',"Pays de départ");
+    $sheet->setCellValue('C1',"Ville de départ");
+    $sheet->setCellValue('D1',"Pays d\'arrive");
+    $sheet->setCellValue('E1',"Ville d\'arrive");
+    $sheet->setCellValue('F1',"Moyen transport");
+    $sheet->setCellValue('G1',"Aller/Retour");
+    $sheet->setCellValue('H1',"Nb personne");
+
+    foreach ($results as $b){
+    $line++;
+    $sheet->setCellValue('A'.$line, $b->mission_id);
+    $sheet->setCellValue('B'.$line, $b->country_from);
+    $sheet->setCellValue('C'.$line, $b->travel_from);
+    $sheet->setCellValue('D'.$line, $b->country_to);
+    $sheet->setCellValue('E'.$line, $b->travel_to);
+    $sheet->setCellValue('F'.$line, $b->means);
+    $sheet->setCellValue('G'.$line, $b->go_back);
+    $sheet->setCellValue('H'.$line, $b->nb_person);
+    }
+
+    $writer = new Xlsx($spreadsheet);
+    $writer->save('php://output');
 }
