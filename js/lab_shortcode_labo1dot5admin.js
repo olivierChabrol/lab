@@ -1,5 +1,5 @@
 var limitM=0;
-var limitN=5;
+var limitN=10;
 var userId="";
 var orderBy="";
 
@@ -20,7 +20,9 @@ var totalPage;
 	$.post(LAB.ajaxurl, data, function(response) {
 		if (response.success) {
 			rowNum=Object.values(response.data[0]);
-			totalPage = Math.ceil(rowNum/5); // 5 lignes par page
+			console.log("rowNum " +rowNum);
+			totalPage = Math.ceil(rowNum/10); // 5 lignes par page
+			console.log("numPage " + totalPage);
 			let op = $('<option />').attr("value","").html("Page");
 			$("#page").append(op);
 			
@@ -35,7 +37,7 @@ var totalPage;
 function page(obj){  
 	var value = obj.options[obj.selectedIndex].value;
 	if(value!=""){
-		loadTableContent(5*(value-1),5*value,userId,orderBy);}
+		loadTableContent(10*(value-1),10*value,userId,orderBy);}
 	else
 		{loadTableContent(limitM,limitN,userId,orderBy);}
 }
@@ -168,19 +170,21 @@ function chargetrajet(obj){
 		tr1.append(th6);
 		let th7 = $('<th />').html("Date de départ");
 		tr1.append(th7);
-		let th8 = $('<th />').html("Mode de transport");
+		let th8 = $('<th />').html("Date de retour");
 		tr1.append(th8);
-		let th9 = $('<th />').html("Nb de personne");
+		let th9 = $('<th />').html("Mode de transport");
 		tr1.append(th9);
-		let th10 = $('<th />').html("Aller/Retour");
+		let th10 = $('<th />').html("Nb de personne");
 		tr1.append(th10);
-		let th11 = $('<th />').attr("colspan","2");
+		let th11 = $('<th />').html("Aller/Retour");
+		tr1.append(th11);
+		let th12 = $('<th />').attr("colspan","2");
 		let button_addTrajet = $('<input />').attr("type","button").attr("value","+").attr("class","btn btn-info btn-sm").attr("id","buttonAddTrajet" + id).attr("mission_id", id);
 		button_addTrajet.click(function() {
 			buttonAddTrajet(this);
 		});
-		th11.append(button_addTrajet);
-		tr1.append(th11);
+		th12.append(button_addTrajet);
+		tr1.append(th12);
 		$("#list_trajet" + id).append(tr1);
 		data = {
 			"action": 'lab_labo1.5_transportation_get_trajet'
@@ -230,6 +234,13 @@ function chargetrajet(obj){
 					});
 					td7.append(td7Input);
 					tr2.append(td7);
+					let td13 = $('<td />').attr("id", "travel_datereturn"+item["travel_datereturn"]).html(item["travel_datereturn"]);
+					let td13Input = $('<input />').attr("type","hidden").attr("value",item["travel_datereturn"]).attr("id","travel_InputDatereturn" + item["travel_id"]);
+					td13.dblclick(function(){
+					showTdInputTravel(this,item["travel_datereturn"],"Datereturn",item["travel_id"]);
+					});
+					td13.append(td13Input);
+					tr2.append(td13);
 					let td8 = $('<td />').attr("id", "means"+item["means"]).html(item["means"]);
 					let td8Input = $('<input />').attr("type","hidden").attr("value",item["means"]).attr("id","travel_InputMeans" + item["travel_id"]);
 					td8.dblclick(function(){
@@ -303,6 +314,10 @@ function buttonAddTrajet(obj){
 	let td7input = $('<input />').attr("type","date").attr("id","addtrajet_travel_date" + id).attr("class","form-control");
 	td7.append(td7input);
 	tr.append(td7);
+	let td12 = $('<td />');
+	let td12input = $('<input />').attr("type","date").attr("id","addtrajet_travel_datereturn" + id).attr("class","form-control");
+	td12.append(td12input);
+	tr.append(td12);
 	let td8 = $('<td />');
 	let td8select = $('<select />').attr("type","text").attr("id","addtrajet_means" + id).attr("class","form-control");
 	let td8option1 = $('<option />').attr("value","Avion").html("Avion"); 
@@ -396,7 +411,7 @@ function del_mission(obj){
 }
 
 function modify_mission(obj){
-	var r=confirm("Enregistre modifs?")
+	var r=confirm("Enregistrer les modifications?")
 	if (r==true){
 		let id = $(obj).attr("mission_id");
 		data = {
@@ -419,7 +434,7 @@ function modify_mission(obj){
 }
 
 function modify_trajet(obj){
-	var r=confirm("Enregistre modifs?")
+	var r=confirm("Enregistrer les modifications?")
 	if (r==true){
 		let id = $(obj).attr("travel_id");
 		let miid = $(obj).attr("mission_id");
@@ -433,6 +448,7 @@ function modify_trajet(obj){
 			data["country_to"] = $("#travel_InputCT" + id).val();
 			data["travel_to"] = $("#travel_InputTT" + id).val();
 			data["travel_date"] = $("#travel_InputDate" + id).val();
+			data["travel_datereturn"] = $("#travel_InputDatereturn" + id).val();
 			data["means"] = $("#travel_InputMeans" + id).val();
 			data["go_back"] = $("#travel_InputGB" + id).val();
 			data["nb_person"] = $("#travel_InputNP" + id).val();
@@ -445,7 +461,7 @@ function modify_trajet(obj){
 	}
 }
 function AddNewTrajet(obj){
-	var r=confirm("Enregistre modifs?")
+	var r=confirm("Enregistrer les modifications?")
 	if (r==true){
 		let id = $(obj).attr("mission_id");
 		data = {
@@ -457,6 +473,7 @@ function AddNewTrajet(obj){
 			data["country_to"] = $("#addtrajet_country_to" + id).val();
 			data["travel_to"] = $("#addtrajet_travel_to" + id).val();
 			data["travel_date"] = $("#addtrajet_travel_date" + id).val();
+			data["travel_datereturn"] = $("#addtrajet_travel_datereturn" + id).val();
 			data["means"] = $("#addtrajet_means" + id).val();
 			data["go_back"] = $("#addtrajet_go_back" + id).val();
 			data["nb_person"] = $("#addtrajet_nb_person" + id).val();

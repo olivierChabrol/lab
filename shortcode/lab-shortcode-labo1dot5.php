@@ -2,24 +2,26 @@
 
 function lab_labo1_5($args){
     ?>
+    <form action="javascript:validate()">
     <h5><b>Informations personnelles et missions</b></h5>
     <br>
     <table class="table" id="info_person">
         <tr>
-            <th>Prénom</th>
-            <td><input type="text" id="user_firstname" class="form-control" value=""/></td>
-            <th>Nom</th>
-            <td><input type="text" id="user_lastname" class="form-control" value=""/></td>
+            <th>Prénom<span class="lab_form_required_star"> *</span></th>
+            <td><input type="text" required id="user_firstname" class="form-control" value=""/></td>
+            <th>Nom<span class="lab_form_required_star"> *</span></th>
+            <td><input type="text" required id="user_lastname" class="form-control" value=""/></td>
         </tr>
         <tr>
-            <th>Email<span class="lab_form_required_star">*</span></th>
-            <td><input type="text" id="user_email" class="form-control" value=""/></td>
+            <th>Email<span class="lab_form_required_star"> *</span></th>
+            <td><input type="text" required id="user_email" class="form-control" value=""/></td>
             <th>Group</th>
             <td><input type="text" id="user_group" class="form-control" value=""/></td>
         </tr> 
         <tr>
-            <th>Motif</th>
-            <td><select id="mission_motif" class="form-control">
+            <th>Motif<span class="lab_form_required_star"> *</span></th>
+            <td><select id="mission_motif" required class="form-control">
+                <option value="">Choisissez une option</option>
                 <option value="Etude terrain">Etude terrain</option>
                 <option value="Colloque-Congrès">Colloque-Congrès</option>
                 <option value="Séminaire">Séminaire</option>
@@ -61,7 +63,7 @@ function lab_labo1_5($args){
             <th colspan="2">Préciser sur quels crédits</th>
             <td colspan="2">
                 <select id="mission_credit" class="form-control">
-                <option value="Credits group">Crédits group</option>
+                <option value="Crédits du groupe">Crédits du groupe</option>
                 <option value="ANR">ANR</option>
                 <option value="Contrat de recherche">Contrat de recherche</option>
                 <option value="Autre">Autre</option>
@@ -69,7 +71,7 @@ function lab_labo1_5($args){
             </td>
         <tr>
             <td style="height:100px" colspan="4" >
-            <textarea style="width:100%;height:100%;" class="form-control"id="mission_comment" placeholder="Comentaire"></textarea>
+            <textarea style="width:100%;height:100%;" class="form-control"id="mission_comment" placeholder="commentaire"></textarea>
             </td>
         </tr>
     </table>
@@ -81,22 +83,26 @@ function lab_labo1_5($args){
         </tr>
         <tr>
             <th>Pays de départ<span class="lab_form_required_star"> *</span></th>
-            <td><input type="text" id="country_from0" name="country_from0" class="form-control"/></td>
+            <td><input type="text" required id="country_from0" name="country_from0" class="form-control"/></td>
             <th>Ville de départ<span class="lab_form_required_star"> *</span></th>
-            <td><input type="text" id="travel_from0" name="travel_from0" class="form-control"/></td>
+            <td><input type="text" required id="travel_from0" name="travel_from0" class="form-control"/></td>
         </tr>
         <tr>
             <th>Pays d'arrivee<span class="lab_form_required_star"> *</span></th>
-            <td><input type="text" id="country_to0" name="country_to0" class="form-control"/></td>
+            <td><input type="text" required id="country_to0" name="country_to0" class="form-control"/></td>
             <th>Ville d'arrivee<span class="lab_form_required_star"> *</span></th>
-            <td><input type="text" id="travel_to0" name="travel_to0" class="form-control"/></td>
+            <td><input type="text" required id="travel_to0" name="travel_to0" class="form-control"/></td>
         </tr>
         <tr>
             <th>Date de départ<span class="lab_form_required_star"> *</span></th>
-            <td><input type="date" id="travel_date0" name="travel_date0" class="form-control"/></td>
+            <td><input type="date" required id="travel_date0" name="travel_date0" class="form-control"/></td>
+            <th>Date de retour</th>
+            <td><input type="date" id="travel_datereturn0" name="travel_datereturn0" class="form-control"/></td>
+        </tr>
+        <tr>
             <th>Mode de transport<span class="lab_form_required_star"> *</span></th>
             <td>
-                <select id="means0" name="means0" class="form-control">
+                <select id="means0" required name="means0" class="form-control">
                 <option value="">Choisissez une option</option>
                 <option value="Avion">Avion</option>
                 <option value="Train">Train</option>
@@ -109,23 +115,24 @@ function lab_labo1_5($args){
                 <option value="Ferry">Ferry</option>
                 </select>
             </td>
+            <th>Nb de personne</th>
+            <td><input type="text" id="nb_person0" class="form-control" placeholder="Si voiture ou taxi" /></td>
         </tr>
         <tr>
-            <th>Nb de personne</th>
-            <td><input type="text" id="nb_person0" class="form-control" placeholder="en cas voiture ou taxi" /></td>
-            <th>Un trajet aller/retour?<span class="lab_form_required_star"> *</span></th>
+        <th>Un trajet aller/retour?<span class="lab_form_required_star"> *</span></th>
             <td>
-                <select id="go_back0" class="form-control">
-                <option value="oui">Oui</option>
-                <option value="non">Non</option>
+                <select id="go_back0" required class="form-control" onchange="go_back_onchange(this)">
+                <option value="Oui">Oui</option>
+                <option value="Non">Non</option>
                 </select>
             </td>
-        </tr>
+        </tr> 
     </table>
     <input type="button" value="Ajouter un trajet"  class="btn btn-success" id="addVar"/>
     <br>
     <br>
-    <input type="button" value="Valide"  class="btn btn-success" id="validate"/>
+    <input type="submit" value="Valider votre demande"  class="btn btn-success"/>
+    </form >
 <?php
 }
 

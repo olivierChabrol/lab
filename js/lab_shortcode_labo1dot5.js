@@ -10,21 +10,25 @@ function addNewTransporationLine(elm){
   +'</tr>'
   +'      <tr>'
   +'          <th>Pays de départ<span class="lab_form_required_star"> *</span></th>'
-  +'          <td><input type="text" id="country_from'+varCount+'" name="country_from'+varCount+'" class="form-control"/></td>'
+  +'          <td><input type="text" required id="country_from'+varCount+'" name="country_from'+varCount+'" class="form-control"/></td>'
   +'          <th>Ville de départ<span class="lab_form_required_star"> *</span></th>'
-  +'          <td><input type="text" id="travel_from'+varCount+'" name="travel_from'+varCount+'" class="form-control"/></td>'
+  +'          <td><input type="text" required id="travel_from'+varCount+'" name="travel_from'+varCount+'" class="form-control"/></td>'
   +'      </tr>'
   +'      <tr>'
   +'          <th>Pays d\'arrivee<span class="lab_form_required_star"> *</span></th>'
-  +'          <td><input type="text" id="country_to'+varCount+'" name="country_to'+varCount+'" class="form-control"/></td>'
+  +'          <td><input type="text" required id="country_to'+varCount+'" name="country_to'+varCount+'" class="form-control"/></td>'
   +'          <th>Ville d\'arrivee<span class="lab_form_required_star"> *</span></th>'
-  +'          <td><input type="text" id="travel_to'+varCount+'" name="travel_to'+varCount+'" class="form-control"/></td>'
+  +'          <td><input type="text" required id="travel_to'+varCount+'" name="travel_to'+varCount+'" class="form-control"/></td>'
   +'      </tr>'
   +'      <tr>'
   +'          <th>Date de départ<span class="lab_form_required_star"> *</span></th>'
-  +'          <td><input type="date" id="travel_date'+varCount+'" name="travel_date'+varCount+'" class="form-control"/></td>'
+  +'          <td><input type="date" required id="travel_date'+varCount+'" name="travel_date'+varCount+'" class="form-control"/></td>'
+  +'          <th>Date de retour</th>'
+  +'          <td><input type="date" id="travel_datereturn'+varCount+'" name="travel_datereturn'+varCount+'" class="form-control"/></td>'
+  +'      </tr>'
+  +'      <tr>'
   +'          <th>Mode de transport<span class="lab_form_required_star"> *</span></th>'
-  +'          <td><select id="means'+varCount+'" name="means'+varCount+'" class="form-control">'
+  +'          <td><select required id="means'+varCount+'" name="means'+varCount+'" class="form-control">'
   +'              <option value="">Choisissez une option</option>'
   +'              <option value="avion">Avion</option>'
   +'              <option value="train">Train</option>'
@@ -36,16 +40,16 @@ function addNewTransporationLine(elm){
   +'              <option value="metro">Métro</option>'
   +'              <option value="ferry">Ferry</option>'
   +'              </select></td>'
-  +'      </tr>'
-  +'      <tr>'
   +'          <th>Nb de personne</th>'
   +'          <td><input type="text" id="nb_person'+varCount+'" name="nb_person'+varCount+'"class="form-control" placeholder="en cas voiture ou taxi"/></td>'
+  +'      </tr>'
+  +'<tr>'
   +'          <th>Un trajet aller/retour?<span class="lab_form_required_star"> *</span></th>'
-  +'          <td><select id="go_back'+varCount+'" name="go_back'+varCount+'"class="form-control">'
+  +'          <td><select required id="go_back'+varCount+'" name="go_back'+varCount+'"class="form-control">'
   +'              <option value="oui">Oui</option>'
   +'              <option value="non">Non</option>'
   +'              </select></td>'
-  +'      </tr>'
+  +'</tr>'
   +'  </table>'
   elm.before($node);
 
@@ -61,8 +65,52 @@ function removeTransporationLine(elm)
 {
   var msg="supprimer ce trajet?";
   if (confirm(msg)==true){
+    varCount--;
     $(elm).parent().parent().parent().remove();
   }
+}
+
+function validate(){
+  var msg="Valider votre demande de mission?";
+  if (confirm(msg)==true){
+    var cost_cover=document.getElementsByName("cost_cover[]");
+    var str="";
+    for(i=0;i<cost_cover.length;i++){
+      if (cost_cover[i].checked){
+        str=str + cost_cover[i].value + "_";
+      }
+    }
+    var user_name=$("#user_firstname").val() + " " + $("#user_lastname").val();
+    data = {
+      "action": 'lab_labo1.5_save_mission',
+      "length" : varCount,
+    }
+
+    data["mission_motif"]=$("#mission_motif").val();
+    data["mission_cost"]=$("#mission_cost").val();
+    data["cost_cover"]=str;
+    data["mission_credit"]=$("#mission_credit").val();
+    data["mission_comment"]=$("#mission_comment").val();
+    data["user_name"]=user_name;
+    for(i = 0; i <= varCount;i++){
+      data["country_from"+i] = $("#country_from"+i).val();
+      data["from"+i] = $("#travel_from"+i).val();
+      data["country_to"+i] = $("#country_to"+i).val();
+      data["to"+i] = $("#travel_to"+i).val();
+      data["travel_date"+i] = $("#travel_date"+i).val();
+      data["travel_datereturn"+i] = $("#travel_datereturn"+i).val();
+      data["means"+i] = $("#means"+i).val();
+      data["nb_person"+i] = $("#nb_person"+i).val();
+      data["go_back"+i] = $("#go_back"+i).val();
+    }
+
+    jQuery.post(LAB.ajaxurl, data, function(response) {
+      if (response.success) {
+      console.log("OK succeful");
+      alert("Votre demande a été enregistré");
+      }
+  });
+}
 }
 
 $(function () {
@@ -91,46 +139,6 @@ $(function () {
   $('#addVar').on('click', function(){
     addNewTransporationLine( $(this));
   });
-  
-  $('#validate').on('click', function(){
-    var msg="Valider votre demende de mission?";
-    if (confirm(msg)==true){
-      var cost_cover=document.getElementsByName("cost_cover[]");
-      var str="";
-      for(i=0;i<cost_cover.length;i++){
-        if (cost_cover[i].checked){
-          str=str + cost_cover[i].value + "_";
-        }
-      }
-      var user_name=$("#user_firstname").val() + " " + $("#user_lastname").val();
-      data = {
-        "action": 'lab_labo1.5_save_mission',
-        "length" : varCount,
-      }
-
-      data["mission_motif"]=$("#mission_motif").val();
-      data["mission_cost"]=$("#mission_cost").val();
-      data["cost_cover"]=str;
-      data["mission_credit"]=$("#mission_credit").val();
-      data["mission_comment"]=$("#mission_comment").val();
-      data["user_name"]=user_name;
-      for(i = 0; i <= varCount;i++){
-        data["country_from"+i] = $("#country_from"+i).val();
-        data["from"+i] = $("#travel_from"+i).val();
-        data["country_to"+i] = $("#country_to"+i).val();
-        data["to"+i] = $("#travel_to"+i).val();
-        data["travel_date"+i] = $("#travel_date"+i).val();
-        data["means"+i] = $("#means"+i).val();
-        data["nb_person"+i] = $("#nb_person"+i).val();
-        data["go_back"+i] = $("#go_back"+i).val();
-      }
-
-      jQuery.post(LAB.ajaxurl, data, function(response) {
-        if (response.success) {
-        console.log("OK succeful");}
-    });
-  }
-  });
 
   $("#country_from0").countrySelect({
     preferredCountries: ['fr', 'de', 'it', 'es', 'us'],
@@ -139,3 +147,10 @@ $(function () {
     preferredCountries: ['fr', 'de', 'it', 'es', 'us'],
   });
 });
+
+function go_back_onchange(obj){  
+	var value = obj.options[obj.selectedIndex].value;
+	if(value == "Non"){
+    addNewTransporationLine($('#addVar'));}
+  else{};
+}

@@ -42,7 +42,7 @@ function lab_labo1dot5_save_mission(){
                                                               "user_name"=>$_POST["user_name"],"mission_motif"=>$_POST["mission_motif"],
                                                               "mission_cost"=>$_POST["mission_cost"],"cost_cover"=>$_POST["cost_cover"],
                                                               "mission_credit"=>$_POST["mission_credit"],"mission_comment"=>$_POST["mission_comment"],
-                                                              "statut"=>"novalid", "date_submit"=>$date_submit));
+                                                              "statut"=>"Non validé", "date_submit"=>$date_submit));
     $travel_id = 0;
 
     foreach ($_POST as $key => $value) {
@@ -55,7 +55,7 @@ function lab_labo1dot5_save_mission(){
                 $wpdb->insert($wpdb->prefix.'lab_labo1dot5_trajet', array("mission_id"=>$mission_id, "travel_id"=>$travel_id, "country_from"=>$_POST['country_from'.$index],
                                                                           "travel_from"=>$_POST['from'.$index], "country_to"=>$_POST['country_to'.$index], "travel_to"=>$_POST['to'.$index],
                                                                           "travel_date"=>$_POST['travel_date'.$index],"means"=>$_POST['means'.$index],"go_back"=>$_POST['go_back'.$index],
-                                                                          "nb_person"=>$_POST['nb_person'.$index]
+                                                                          "nb_person"=>$_POST['nb_person'.$index],"travel_datereturn"=>$_POST['travel_datereturn'.$index]
                                                             ));
             }
         }
@@ -150,8 +150,9 @@ function lab_labo1dot5_admin_del_mission(){
     $sql = "DELETE FROM `".$wpdb->prefix."lab_labo1dot5_trajet` WHERE mission_id = $mission_id" ;
     $sql2 = "DELETE FROM `".$wpdb->prefix."lab_labo1dot5_mission` WHERE mission_id = $mission_id" ;
     $results = $wpdb->get_results($sql);  
-    $results2 = $wpdb->get_results($sq2);  
+    $results2 = $wpdb->get_results($sql2);  
     wp_send_json_success( $results ); 
+    wp_send_json_success( $results2 ); 
 }
 
 function lab_labo1dot5_admin_modify_travel(){
@@ -162,7 +163,7 @@ function lab_labo1dot5_admin_modify_travel(){
     $wpdb->update($wpdb->prefix.'lab_labo1dot5_trajet', array("travel_from"=>$_POST['travel_from'],  "means"=>$_POST['means'],
                                                        "travel_to"  =>$_POST['travel_to']   , "country_from"=>$_POST['country_from'],
                                                        "country_to" =>$_POST['country_to'],   "go_back"     =>$_POST['go_back'],
-                                                       "travel_date"=>$_POST['travel_date'],"nb_person"=>$_POST['nb_person']),
+                                                       "travel_date"=>$_POST['travel_date'],"travel_datereturn"=>$_POST['travel_datereturn'],"nb_person"=>$_POST['nb_person']),
                                                  array("mission_id"=>$_POST['mission_id'],"travel_id"=>$_POST['travel_id'])); 
     
     wp_send_json_success($data); 
@@ -189,7 +190,7 @@ function lab_labo1dot5_admin_add_New_travel(){
     $wpdb->insert($wpdb->prefix.'lab_labo1dot5_trajet', array("travel_from"=>$_POST['travel_from'],  "means"=>$_POST['means'],
                                                        "travel_to"  =>$_POST['travel_to']   , "country_from"=>$_POST['country_from'],
                                                        "country_to" =>$_POST['country_to'],   "go_back"     =>$_POST['go_back'],
-                                                       "travel_date"=>$_POST['travel_date'],"nb_person"=>$_POST['nb_person'],
+                                                       "travel_date"=>$_POST['travel_date'],"travel_datereturn"=>$_POST['travel_datereturn'],"nb_person"=>$_POST['nb_person'],
                                                        "mission_id"=>$mission_id,"travel_id"=>$travel_id)); 
     
     wp_send_json_success($data); 

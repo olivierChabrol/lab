@@ -20,26 +20,26 @@ function lab_labo1_5admin() {
                             <option value="">Tirer par défaut (N°mission)</option>
                             <option value="date_submit">Par date demendé (les anciens)</option>
                             <option value="date_submit DESC">Par date demendé (les récents)</option>
-                            <option value="statut">Par status (non valide)</option>
-                            <option value="statut DESC">Par status (valide)</option>
+                            <option value="statut">Par status (non validé)</option>
+                            <option value="statut DESC">Par status (validé)</option>
                             </select></td>
             <td colspan="2"><select id="page" class="form-control" onchange="page(this)"> </select></td>
             <td colspan="2"><a class="btn btn-info" href="/wp-content/plugins/lab/lab_export.php?do=labo1.5&filename=labo1.5.xls">
-                Export All
+                Exporter les données
             </a></td>
             <td><input type="button" id="update_mission" class="btn btn-info" value="⟳"></td>
         </tr>
         <tr>
             <th></th>
             <th>N°Mission</th>
-            <th>Nom</th>
+            <th>Prénom Nom</th>
             <th>Motif de mission</th>
             <th>Frais </th>
             <th>Prise en charge par labo</th>
             <th>Credit</th>
             <th>Commentaire</th>
             <th>Statut</th>
-            <th>Date demende</th>
+            <th>Date de demande</th>
             <th></th>
         </tr>
     </thead>
