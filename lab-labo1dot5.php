@@ -39,7 +39,7 @@ function lab_labo1dot5_save_mission(){
     $mission_id += 1;
 
     $wpdb->insert($wpdb->prefix.'lab_labo1dot5_mission',array("mission_id"=>$mission_id,"user_id"=>$user_id,
-                                                              "user_name"=>$_POST["user_name"],"mission_motif"=>$_POST["mission_motif"],
+                                                              "user_name"=>$_POST["user_name"],"mission_motif"=>$_POST["mission_motif"],"cost_estimate"=>$_POST["cost_estimate"],
                                                               "mission_cost"=>$_POST["mission_cost"],"cost_cover"=>$_POST["cost_cover"],
                                                               "mission_credit"=>$_POST["mission_credit"],"mission_comment"=>$_POST["mission_comment"],
                                                               "statut"=>"Non validé", "date_submit"=>$date_submit));
@@ -65,19 +65,40 @@ function lab_labo1dot5_save_mission(){
 }
 
 //Les functions pour la page admin
+function lab_labo1dot5_getRowNum(){
+    global $wpdb;
+    $sql = "SELECT COUNT(*) FROM `".$wpdb->prefix."lab_labo1dot5_mission`";
+     
+    $results = $wpdb->get_results($sql);  
+    wp_send_json_success( $results );
+}
+
+function lab_labo1dot5_getMissionYear(){
+    global $wpdb;
+    $sql = "SELECT DISTINCT YEAR(date_submit) AS MY FROM `".$wpdb->prefix."lab_labo1dot5_mission`";
+    $results = $wpdb->get_results($sql);
+    wp_send_json_success( $results );
+}
+
 function lab_labo1dot5_get_mission(){
     global $wpdb;
     $limitM = $_POST["limitM"];
     $limitN = $_POST["limitN"];
     $userId = $_POST["user_id"];
     $orderBy = $_POST["orderBy"];
+    $missionYear = $_POST["missionYear"];
 
     $sql = "SELECT *
-            FROM `".$wpdb->prefix."lab_labo1dot5_mission` AS lbm";
+            FROM `".$wpdb->prefix."lab_labo1dot5_mission`";
 
     if ($userId != "")
     {
-        $sql .= " WHERE lbm.`user_id` = $userId"; 
+        $sql .= " WHERE user_id = $userId"; 
+    };
+
+    if ($missionYear != "")
+    {
+        $sql .= " WHERE YEAR(date_submit) = $missionYear"; 
     };
 
     if ($orderBy != "")
@@ -106,21 +127,13 @@ function lab_labo1dot5_getRowNum_ajax(){
     wp_send_json_success( lab_labo1dot5_getRowNum() ); 
 }
 
-function lab_labo1dot5_getRowNum(){
-    global $wpdb;
-    $sql = "SELECT COUNT(*) FROM `".$wpdb->prefix."lab_labo1dot5_mission`";
-     
-    $results = $wpdb->get_results($sql);  
-    return $results;
-}
-
 function lab_labo1dot5_admin_modify_mission(){
 
     $data = "";
     global $wpdb;
 
     $wpdb->update($wpdb->prefix.'lab_labo1dot5_mission',array("mission_motif"=>$_POST["mission_motif"],
-                                                              "mission_cost"=>$_POST["mission_cost"],"cost_cover"=>$_POST["cost_cover"],
+                                                              "mission_cost"=>$_POST["mission_cost"],"cost_cover"=>$_POST["cost_cover"],"cost_estimate"=>$_POST["cost_estimate"],
                                                               "mission_credit"=>$_POST["mission_credit"],"mission_comment"=>$_POST["mission_comment"],
                                                               "statut"=>$_POST["mission_statut"]),
                                                         array("mission_id"=>$_POST["mission_id"]));

@@ -119,24 +119,26 @@ else if ($do == "labo1.5")
     $spreadsheet = new Spreadsheet();
     $sheet = $spreadsheet->getActiveSheet();
     $sheet->setCellValue('A1',"N°Mission");
-    $sheet->setCellValue('B1',"Pays de départ");
-    $sheet->setCellValue('C1',"Ville de départ");
-    $sheet->setCellValue('D1',"Pays d\'arrive");
-    $sheet->setCellValue('E1',"Ville d\'arrive");
-    $sheet->setCellValue('F1',"Moyen transport");
-    $sheet->setCellValue('G1',"Aller/Retour");
-    $sheet->setCellValue('H1',"Nb personne");
+    $sheet->setCellValue('B1',"Date de départ");
+    $sheet->setCellValue('C1',"Pays de départ");
+    $sheet->setCellValue('D1',"Ville de départ");
+    $sheet->setCellValue('E1',"Pays destination");
+    $sheet->setCellValue('F1',"Ville destination");
+    $sheet->setCellValue('G1',"Moyen transport");
+    $sheet->setCellValue('H1',"Aller/Retour");
+    $sheet->setCellValue('I1',"Nb de personnes");
 
     foreach ($results as $b){
     $line++;
     $sheet->setCellValue('A'.$line, $b->mission_id);
-    $sheet->setCellValue('B'.$line, $b->country_from);
-    $sheet->setCellValue('C'.$line, $b->travel_from);
-    $sheet->setCellValue('D'.$line, $b->country_to);
-    $sheet->setCellValue('E'.$line, $b->travel_to);
-    $sheet->setCellValue('F'.$line, $b->means);
-    $sheet->setCellValue('G'.$line, $b->go_back);
-    $sheet->setCellValue('H'.$line, $b->nb_person);
+    $sheet->setCellValue('B'.$line, $b->travel_date);
+    $sheet->setCellValue('C'.$line, $b->country_from);
+    $sheet->setCellValue('D'.$line, $b->travel_from);
+    $sheet->setCellValue('E'.$line, $b->country_to);
+    $sheet->setCellValue('F'.$line, $b->travel_to);
+    $sheet->setCellValue('G'.$line, $b->means);
+    $sheet->setCellValue('H'.$line, $b->go_back);
+    $sheet->setCellValue('I'.$line, $b->nb_person);
     }
 
     $writer = new Xlsx($spreadsheet);
