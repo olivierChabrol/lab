@@ -166,12 +166,14 @@ if (is_admin()) {
     add_action( 'wp_ajax_lab_labo1.5_save_mission', 'lab_labo1dot5_save_mission');
     add_action( 'wp_ajax_lab_labo1.5_transportation_get_mission', 'lab_labo1dot5_get_mission');
     add_action( 'wp_ajax_lab_labo1.5_transportation_get_trajet', 'lab_labo1dot5_get_trajet');
+    add_action( 'wp_ajax_lab_labo1.5_transportation_getMissionYear', 'lab_labo1dot5_getMissionYear');
     add_action( 'wp_ajax_lab_admin_modify_mission', 'lab_labo1dot5_admin_modify_mission');
     add_action( 'wp_ajax_lab_admin_modify_travel', 'lab_labo1dot5_admin_modify_travel');
     add_action( 'wp_ajax_lab_admin_add_New_travel', 'lab_labo1dot5_admin_add_New_travel');
     add_action( 'wp_ajax_lab_admin_del_travel', 'lab_labo1dot5_admin_del_travel');
     add_action( 'wp_ajax_lab_admin_del_mission', 'lab_labo1dot5_admin_del_mission');
     add_action( 'wp_ajax_lab_labo1.5_transportation_getRowNum', 'lab_labo1dot5_getRowNum_ajax');
+
 }
 // no admin
 else{

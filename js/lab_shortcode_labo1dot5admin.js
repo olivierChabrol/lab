@@ -2,12 +2,13 @@ var limitM=0;
 var limitN=10;
 var userId="";
 var orderBy="";
-
+var Year="";
 
 
 $( document ).ready(function() {
-	loadTableContent(limitM,limitN,userId,orderBy);
+	loadTableContent(limitM,limitN,userId,orderBy,Year);
 	pagenation();
+	missionYear();
 });
 
 function pagenation(){
@@ -19,7 +20,7 @@ var totalPage;
 	}
 	$.post(LAB.ajaxurl, data, function(response) {
 		if (response.success) {
-			rowNum=Object.values(response.data[0]);
+			rowNum = Object.values(response.data[0]);
 			console.log("rowNum " +rowNum);
 			totalPage = Math.ceil(rowNum/10); // 5 lignes par page
 			console.log("numPage " + totalPage);
@@ -34,16 +35,40 @@ var totalPage;
 	});
 }
 
-function page(obj){  
+function changePage(obj){  
 	var value = obj.options[obj.selectedIndex].value;
 	if(value!=""){
-		loadTableContent(10*(value-1),10*value,userId,orderBy);}
+		loadTableContent(10*(value-1),10*value,userId,orderBy,Year);}
 	else
-		{loadTableContent(limitM,limitN,userId,orderBy);}
+		{loadTableContent(limitM,limitN,userId,orderBy,Year);}
 }
 
+function missionYear(){
+	var numMissionYear;
 
-function loadTableContent(limitM,limitN,userId,orderBy) {
+	data = {
+		"action": 'lab_labo1.5_transportation_getMissionYear'
+	}
+	$.post(LAB.ajaxurl, data, function(response) {
+		if (response.success) {
+			numMissionYear = response.data.length
+			let op = $('<option />').attr("value","").html("Année");
+			$("#mission_year").append(op);
+			console.log("numYear " + Object.values(response.data[0]));
+			for(var i = 0; i < numMissionYear; i++){
+				let opI = $('<option />').attr("value",""+ Object.values(response.data[i])).html(""+Object.values(response.data[i]));
+				$("#mission_year").append(opI);
+			}
+		}
+	});
+}
+
+function changeYear(obj){
+	Year = obj.options[obj.selectedIndex].value;
+	loadTableContent(limitM,limitN,userId,orderBy,Year);
+}
+
+function loadTableContent(limitM,limitN,userId,orderBy,Year) {
 
     data = {
 		"action": 'lab_labo1.5_transportation_get_mission'
@@ -52,6 +77,7 @@ function loadTableContent(limitM,limitN,userId,orderBy) {
 	data["limitN"] = limitN;
 	data["user_id"] = userId;
 	data["orderBy"] = orderBy;
+	data["missionYear"] = Year;
 
 	    $.post(LAB.ajaxurl, data, function(response) {
 		if (response.success) {
@@ -87,6 +113,14 @@ function loadTableContent(limitM,limitN,userId,orderBy) {
 				td5.append(td5Input);
 				tr.append(td5);
 
+				let td13 = $('<td />').attr("id", "cost_estimate"+item["mission_id"]).html(item["cost_estimate"]);
+				let td13Input = $('<input />').attr("type","hidden").attr("value",item["cost_estimate"]).attr("id","mission_InputCostEstimate" + item["mission_id"]);
+				td13.dblclick(function(){
+					showTdInput(this,item["cost_estimate"],"CostEstimate",item["mission_id"]);
+				});
+				td13.append(td13Input);
+				tr.append(td13);
+
 				let td6 = $('<td />').attr("id", "cost_cover"+item["mission_id"]).html(item["cost_cover"]);
 				let td6Input = $('<input />').attr("type","hidden").attr("value",item["cost_cover"]).attr("id","mission_InputCover" + item["mission_id"]);
 				td6.dblclick(function(){
@@ -109,12 +143,13 @@ function loadTableContent(limitM,limitN,userId,orderBy) {
 				});
 				td8.append(td8Input);
 				tr.append(td8);
-				let td9 = $('<td />').attr("id", "statut"+item["mission_id"]).html(item["statut"]);
-				let td9Input = $('<input />').attr("type","hidden").attr("value",item["statut"]).attr("id","mission_InputStatut" + item["mission_id"]);
-				td9.dblclick(function(){
-					showTdInput(this,item["statut"],"Statut",item["mission_id"]);
-				});
-				td9.append(td9Input);
+				let td9 = $('<td />').attr("id", "statut"+item["mission_id"]);
+				let td9Select = $('<select />').attr("id","mission_select_statut" + item["mission_id"]).attr("class","form-control");
+				let td9Option1 = $('<option />').attr("value","1").html("Validé");
+				let td9Option2 = $('<option />').attr("value","0").html("Non validé");
+				td9Select.append(td9Option1);
+				td9Select.append(td9Option2);
+				td9.append(td9Select);
 				tr.append(td9);
 				let td10 = $('<td />').attr("id", "date_submit"+item["mission_id"]).html(item["date_submit"]);
 				tr.append(td10);
@@ -139,6 +174,7 @@ function loadTableContent(limitM,limitN,userId,orderBy) {
 				td21.append(list_trajet);
 				tr2.append(td21);
 				$("#list_mission").append(tr2);
+				$("#mission_select_statut" + item["mission_id"]).val(item["statut"]);
 			});
 		}
 	    });
@@ -147,8 +183,12 @@ function loadTableContent(limitM,limitN,userId,orderBy) {
 function showTdInput(obj,valu,type,mission_id){
 	obj.innerHTML = "<input type='text' value='"+valu+"' id='mission_Input"+type+""+mission_id+"' class='form-control'>";
 }
-function showTdInputTravel(obj,valu,type,travel_id){
-	obj.innerHTML = "<input type='text' value='"+valu+"' id='travel_Input"+type+""+travel_id+"' class='form-control'>";
+function showTdInputTravel(obj,type,valu,name,travel_id){
+	obj.innerHTML = "<input type='"+type+"' value='"+valu+"' id='travel_Input"+name+""+travel_id+"' class='form-control'>";
+	if(name=="CF"||name=="CT"){
+	$("#travel_Input" + name + travel_id).countrySelect({
+		preferredCountries: ['fr', 'de', 'it', 'es', 'us'],
+	});};
 }
 function chargetrajet(obj){
 	let id = $(obj).attr("mission_id");
@@ -202,63 +242,63 @@ function chargetrajet(obj){
 					let td3 = $('<td />').attr("id", "country_from"+item["country_from"]).html(item["country_from"]);
 					let td3Input = $('<input />').attr("type","hidden").attr("value",item["country_from"]).attr("id","travel_InputCF" + item["travel_id"]);
 					td3.dblclick(function(){
-					showTdInputTravel(this,item["country_from"],"CF",item["travel_id"]);
+					showTdInputTravel(this,"text",item["country_from"],"CF",item["travel_id"]);
 					});
 					td3.append(td3Input);
 					tr2.append(td3);
 					let td4 = $('<td />').attr("id", "travel_from"+item["travel_from"]).html(item["travel_from"]);
 					let td4Input = $('<input />').attr("type","hidden").attr("value",item["travel_from"]).attr("id","travel_InputTF" + item["travel_id"]);
 					td4.dblclick(function(){
-					showTdInputTravel(this,item["travel_from"],"TF",item["travel_id"]);
+					showTdInputTravel(this,"text",item["travel_from"],"TF",item["travel_id"]);
 					});
 					td4.append(td4Input);
 					tr2.append(td4);
 					let td5 = $('<td />').attr("id", "country_to"+item["country_to"]).html(item["country_to"]);
 					let td5Input = $('<input />').attr("type","hidden").attr("value",item["country_to"]).attr("id","travel_InputCT" + item["travel_id"]);
 					td5.dblclick(function(){
-					showTdInputTravel(this,item["country_to"],"CT",item["travel_id"]);
+					showTdInputTravel(this,"text",item["country_to"],"CT",item["travel_id"]);
 					});
 					td5.append(td5Input);
 					tr2.append(td5);
 					let td6 = $('<td />').attr("id", "travel_to"+item["travel_to"]).html(item["travel_to"]);
 					let td6Input = $('<input />').attr("type","hidden").attr("value",item["travel_to"]).attr("id","travel_InputTT" + item["travel_id"]);
 					td6.dblclick(function(){
-					showTdInputTravel(this,item["travel_to"],"TT",item["travel_id"]);
+					showTdInputTravel(this,"text",item["travel_to"],"TT",item["travel_id"]);
 					});
 					td6.append(td6Input);
 					tr2.append(td6);
 					let td7 = $('<td />').attr("id", "travel_date"+item["travel_date"]).html(item["travel_date"]);
 					let td7Input = $('<input />').attr("type","hidden").attr("value",item["travel_date"]).attr("id","travel_InputDate" + item["travel_id"]);
 					td7.dblclick(function(){
-					showTdInputTravel(this,item["travel_date"],"Date",item["travel_id"]);
+					showTdInputTravel(this,"date",item["travel_date"],"Date",item["travel_id"]);
 					});
 					td7.append(td7Input);
 					tr2.append(td7);
 					let td13 = $('<td />').attr("id", "travel_datereturn"+item["travel_datereturn"]).html(item["travel_datereturn"]);
 					let td13Input = $('<input />').attr("type","hidden").attr("value",item["travel_datereturn"]).attr("id","travel_InputDatereturn" + item["travel_id"]);
 					td13.dblclick(function(){
-					showTdInputTravel(this,item["travel_datereturn"],"Datereturn",item["travel_id"]);
+					showTdInputTravel(this,"date",item["travel_datereturn"],"Datereturn",item["travel_id"]);
 					});
 					td13.append(td13Input);
 					tr2.append(td13);
 					let td8 = $('<td />').attr("id", "means"+item["means"]).html(item["means"]);
 					let td8Input = $('<input />').attr("type","hidden").attr("value",item["means"]).attr("id","travel_InputMeans" + item["travel_id"]);
 					td8.dblclick(function(){
-					showTdInputTravel(this,item["means"],"Means",item["travel_id"]);
+					showTdInputTravel(this,"text",item["means"],"Means",item["travel_id"]);
 					});
 					td8.append(td8Input);
 					tr2.append(td8);
 					let td9 = $('<td />').attr("id", "nb_person"+item["nb_person"]).html(item["nb_person"]);
 					let td9Input = $('<input />').attr("type","hidden").attr("value",item["nb_person"]).attr("id","travel_InputNP" + item["travel_id"]);
 					td9.dblclick(function(){
-					showTdInputTravel(this,item["nb_person"],"NP",item["travel_id"]);
+					showTdInputTravel(this,"text",item["nb_person"],"NP",item["travel_id"]);
 					});
 					td9.append(td9Input);
 					tr2.append(td9);
 					let td10 = $('<td />').attr("id", "go_back"+item["go_back"]).html(item["go_back"]);
 					let td10Input = $('<input />').attr("type","hidden").attr("value",item["go_back"]).attr("id","travel_InputGB" + item["travel_id"]);
 					td10.dblclick(function(){
-					showTdInputTravel(this,item["go_back"],"GB",item["travel_id"]);
+					showTdInputTravel(this,"text",item["go_back"],"GB",item["travel_id"]);
 					});
 					td10.append(td10Input);
 					tr2.append(td10);
@@ -370,7 +410,7 @@ function buttonAddTrajet(obj){
 }
 function orderByFunction(obj){  
 	orderBy = obj.options[obj.selectedIndex].value;
-	loadTableContent(limitM,limitN,userId,orderBy);
+	loadTableContent(limitM,limitN,userId,orderBy,Year);
 }
 
 function deleteTableContent(){
@@ -405,7 +445,7 @@ function del_mission(obj){
 	jQuery.post(LAB.ajaxurl, data, function(response) {
 		if (response.success) {
 		console.log("OK succeful");
-		loadTableContent(limitM,limitN,userId,orderBy);}
+		loadTableContent(limitM,limitN,userId,orderBy,Year);}
 	  });
 	};
 }
@@ -420,14 +460,17 @@ function modify_mission(obj){
 		data["mission_id"] = id;
 		data["mission_motif"] = $("#mission_InputMotif" + id).val();
 		data["mission_cost"] = $("#mission_InputCost"+ id).val();
+		data["cost_estimate"] = $("#mission_InputCostEstimate"+ id).val();
 		data["cost_cover"] = $("#mission_InputCover"+ id).val();
 		data["mission_credit"] = $("#mission_InputCredit"+ id).val();
 		data["mission_comment"] = $("#mission_InputComment"+ id).val();
-		data["mission_statut"] = $("#mission_InputStatut"+ id).val();
+		data["mission_statut"] = $("#mission_select_statut"+ id).val();
+
 		jQuery.post(LAB.ajaxurl, data, function(response) {
 			if (response.success) {
-			console.log("OK succeful");
-			loadTableContent(limitM,limitN,userId,orderBy);}
+				alert("Votre modifications a été enregistré");
+				console.log("OK succeful");
+				loadTableContent(limitM,limitN,userId,orderBy,Year);}
 			});
 	};
 
@@ -455,8 +498,9 @@ function modify_trajet(obj){
 		
 			jQuery.post(LAB.ajaxurl, data, function(response) {
 			if (response.success) {
-			console.log("OK succeful");
-			loadTableContent(limitM,limitN,userId,orderBy);}
+				alert("Votre modifications a été enregistré");
+				console.log("OK succeful");
+				loadTableContent(limitM,limitN,userId,orderBy,Year);}
 			});
 	}
 }
@@ -481,7 +525,7 @@ function AddNewTrajet(obj){
 			jQuery.post(LAB.ajaxurl, data, function(response) {
 			if (response.success) {
 			console.log("OK succeful");
-			loadTableContent(limitM,limitN,userId,orderBy);}
+			loadTableContent(limitM,limitN,userId,orderBy,Year);}
 			});
 		}
 }
@@ -491,7 +535,7 @@ $(function () {
 		var limitN=5;
 		var userId="";
 		var orderBy="";
-		loadTableContent(limitM,limitN,userId,orderBy);
+		loadTableContent(limitM,limitN,userId,orderBy,Year);
 	});
 
 	$('#filter_user_name').autocomplete({
@@ -509,7 +553,7 @@ $(function () {
 		  userId = ui.item.user_id;
 		  event.preventDefault();
 		  $("#filter_user_name").val(firstname + " " + lastname);
-		  loadTableContent(limitM,limitN,userId,orderBy);
+		  loadTableContent(limitM,limitN,userId,orderBy,Year);
 		}
 	});
 

@@ -15,7 +15,7 @@ function lab_labo1_5($args){
         <tr>
             <th>Email<span class="lab_form_required_star"> *</span></th>
             <td><input type="text" required id="user_email" class="form-control" value=""/></td>
-            <th>Group</th>
+            <th>Groupe</th>
             <td><input type="text" id="user_group" class="form-control" value=""/></td>
         </tr> 
         <tr>
@@ -39,6 +39,8 @@ function lab_labo1_5($args){
                 </select>
             </td>
         </tr>
+    </table>
+    <table class="table" id="info_mission">
         <tr>
             <th colspan="4">Prise en charge par le labo (après accord du responsable des crédits):
             <br>
@@ -60,8 +62,8 @@ function lab_labo1_5($args){
             </th>
         </tr>
         <tr>
-            <th colspan="2">Préciser sur quels crédits</th>
-            <td colspan="2">
+            <th colspan="">Préciser sur quels crédits</th>
+            <td colspan="">
                 <select id="mission_credit" class="form-control">
                 <option value="Crédits du groupe">Crédits du groupe</option>
                 <option value="ANR">ANR</option>
@@ -69,6 +71,10 @@ function lab_labo1_5($args){
                 <option value="Autre">Autre</option>
                 </select>
             </td>
+            <th>Frais total estimé</th>
+            <td><input type="text" id="cost_estimate" class="form-control" placeholder="en €"></td>
+        </tr>
+
         <tr>
             <td style="height:100px" colspan="4" >
             <textarea style="width:100%;height:100%;" class="form-control"id="mission_comment" placeholder="commentaire"></textarea>
@@ -85,7 +91,7 @@ function lab_labo1_5($args){
             <th>Pays de départ<span class="lab_form_required_star"> *</span></th>
             <td><input type="text" required id="country_from0" name="country_from0" class="form-control"/></td>
             <th>Ville de départ<span class="lab_form_required_star"> *</span></th>
-            <td><input type="text" required id="travel_from0" name="travel_from0" class="form-control"/></td>
+            <td><input type="text" required id="travel_from0" name="travel_from0" class="form-control" value="Marseille"/></td>
         </tr>
         <tr>
             <th>Pays d'arrivee<span class="lab_form_required_star"> *</span></th>
@@ -115,7 +121,7 @@ function lab_labo1_5($args){
                 <option value="Ferry">Ferry</option>
                 </select>
             </td>
-            <th>Nb de personne</th>
+            <th>Nb de personnes</th>
             <td><input type="text" id="nb_person0" class="form-control" placeholder="Si voiture ou taxi" /></td>
         </tr>
         <tr>

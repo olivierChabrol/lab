@@ -91,6 +91,7 @@ function validate(){
     data["cost_cover"]=str;
     data["mission_credit"]=$("#mission_credit").val();
     data["mission_comment"]=$("#mission_comment").val();
+    data["cost_estimate"]=$("#cost_estimate").val();
     data["user_name"]=user_name;
     for(i = 0; i <= varCount;i++){
       data["country_from"+i] = $("#country_from"+i).val();

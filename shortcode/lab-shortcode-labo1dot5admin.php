@@ -15,6 +15,7 @@ function lab_labo1_5admin() {
 <table class="table" id="travel">
     <thead>
         <tr>
+            <td><input type="button" id="update_mission" class="btn btn-info" value="⟳"></td>
             <td colspan="3"><input type="text" id="filter_user_name" name="filter_user_name" class="form-control" placeholder="Chercher un nom"/></td>
             <td colspan="3"><select id="orderBy" name="orderBy" onchange="orderByFunction(this)" class="form-control">
                             <option value="">Tirer par défaut (N°mission)</option>
@@ -23,11 +24,11 @@ function lab_labo1_5admin() {
                             <option value="statut">Par status (non validé)</option>
                             <option value="statut DESC">Par status (validé)</option>
                             </select></td>
-            <td colspan="2"><select id="page" class="form-control" onchange="page(this)"> </select></td>
+            <td colspan="2"><select id="page" class="form-control" onchange="changePage(this)"> </select></td>
+            <td colspan="2"><select id="mission_year" class="form-control" onchange="changeYear(this)"></select></td>
             <td colspan="2"><a class="btn btn-info" href="/wp-content/plugins/lab/lab_export.php?do=labo1.5&filename=labo1.5.xls">
-                Exporter les données
+                Exporter
             </a></td>
-            <td><input type="button" id="update_mission" class="btn btn-info" value="⟳"></td>
         </tr>
         <tr>
             <th></th>
@@ -35,10 +36,11 @@ function lab_labo1_5admin() {
             <th>Prénom Nom</th>
             <th>Motif de mission</th>
             <th>Frais </th>
+            <th>Frais total estimé </th>
             <th>Prise en charge par labo</th>
-            <th>Credit</th>
+            <th>Credit&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th>
             <th>Commentaire</th>
-            <th>Statut</th>
+            <th>Statut&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th>
             <th>Date de demande</th>
             <th></th>
         </tr>
