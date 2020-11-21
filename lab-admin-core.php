@@ -1,5 +1,37 @@
 <?php
 
+function lab_admin_user_info($userId, $fields) {
+    global $wpdb;
+    $results = $wpdb->get_results( "SELECT um.*, u.user_email, u.user_url, g.group_name, g.id AS group_id FROM `".$wpdb->prefix."usermeta` AS um JOIN `".$wpdb->prefix."users` AS u ON u.id=um.user_id JOIN `".$wpdb->prefix."lab_users_groups` AS ug ON u.id=ug.user_id JOIN `".$wpdb->prefix."lab_groups` AS g ON g.id=ug.group_id WHERE (um.meta_key = 'first_name' or um.meta_key='last_name' or um.meta_key LIKE 'lab_%') and um.user_id=".$userId  );
+    $items = array();
+    $items["id"] = $userId;
+
+    foreach ( $results as $r )
+    {
+        $items['user_email'] = $r->user_email;
+        $items['user_url']   = $r->user_url;
+        $items['group_name'] = $r->group_name;
+        $items['group_id'] = $r->group_id;
+        if ($r->meta_key == 'first_name')
+            $items['first_name'] = stripslashes($r->meta_value);
+        if ($r->meta_key == 'last_name')
+            $items['last_name'] = stripslashes($r->meta_value);
+        if (beginsWith($r->meta_key, "lab_"))
+        {
+            if ($r->meta_key == 'lab_user_left') {
+                $items['lab_user_left'] = array();
+                $items['lab_user_left']['id'] = $r->umeta_id;
+                $items['lab_user_left']['value'] = $r->meta_value;
+            }
+            else
+            {
+                $items[substr($r->meta_key, 4)] = stripslashes($r->meta_value);
+            }
+        }
+    }
+    
+    return $items;
+}
 
 function lab_admin_userMetaDatas_get($userId) {
     global $wpdb;
@@ -245,6 +277,7 @@ function lab_admin_param_save($paramType, $paramName, $color = null, $paramId = 
                 //return ["success"=>false, "data"=>"LA1"];
                 $lastParamId = lab_admin_param_last_param_system_id();
                 $newId = $lastParamId + 1;
+                //return ["success"=>false, "data"=>"LA1 new ID : " . $newId ];
 
                 $oldParam = lab_admin_param_get_by_id($newId);
                 
@@ -332,6 +365,30 @@ function lab_admin_createTable_hal_keywords() {
     $wpdb->get_results($sql);
     
 }
+
+
+function lab_admin_createTable_budget_info() {
+    global $wpdb;
+    $sql = "CREATE TABLE IF NOT EXISTS `".$wpdb->prefix."lab_budget_info` (
+        `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
+        `expenditure_type` bigint NOT NULL,
+        `title` varchar(255) NOT NULL,
+        `request_date` date NOT NULL,
+        `user_id` bigint NOT NULL,
+        `info_manger_id` bigint NOT NULL,
+        `budget_manager_id` bigint NOT NULL,
+        `fund_origin` bigint NOT NULL,
+        `contract_title` varchar(255) NOT NULL,
+        `amount` float NOT NULL,
+        `order_date` date NOT NULL,
+        `delivery_date` date NOT NULL,
+        `payment_date` date NOT NULL,
+        PRIMARY KEY (`id`)
+      ) ENGINE=InnoDB";
+    $wpdb->get_results($sql);
+    
+}
+
 function lab_admin_createTable_hal_keywords_user() {
     global $wpdb;
     $sql = "CREATE TABLE IF NOT EXISTS `".$wpdb->prefix."lab_hal_keywords_user` (
@@ -435,6 +492,7 @@ function lab_admin_initTable_param() {
             (20, 1, 'ECOLE DOCTORALE', NULL, NULL),
             (21, 1, 'OUTGOING MOBILITY STATUS', NULL, NULL),
             (22, 1, 'THEMATIC', NULL, NULL),
+            (23, 1, 'BUDGET INFO TYPE', NULL, NULL),
             (NULL, 2, 'Equipe', NULL, NULL),
             (NULL, 2, 'Groupe', NULL, NULL),
             (NULL, 3, 'Clé', NULL, 'key'),
@@ -1955,6 +2013,17 @@ function drop_table($tableName) {
 }
 
 function lab_create_roles() {
+    add_role(
+        'budget_info_manager',
+        'Budget Info Manager',
+        [
+            'read'      => true
+        ]
+    );
+    $role = get_role('budget_info_manager');
+    $role ->add_cap('budget_info',true);
+    $role = get_role('administrator');
+    $role ->add_cap('budget_info',true);
     add_role(
         'key_manager',
         'Key Manager',

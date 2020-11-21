@@ -13,6 +13,8 @@
 add_action( 'wp_enqueue_scripts'  , 'wp_lab_fe_enqueues' );
 
 if (is_admin()) {
+    add_action( 'wp_ajax_lab_user_info', 'lab_admin_ajax_user_info');
+
     add_action( 'wp_ajax_lab_user_delGroup', 'lab_admin_ajax_users_group_delete');
     add_action( 'wp_ajax_lab_user_setMainThematic', 'lab_admin_ajax_users_thematic_set_main');
     add_action( 'wp_ajax_lab_admin_group_by_user', 'lab_admin_ajax_group_by_user');
@@ -161,6 +163,9 @@ if (is_admin()) {
     add_action( 'wp_ajax_lab_ldap_edit_user','lab_ldap_edit_user' );
     add_action( 'wp_ajax_lab_ldap_reconnect', 'lab_ldap_reconnect');
     add_action( 'wp_ajax_lab_admin_ldap_settings', 'lab_admin_ldap_settings');
+    // Actions pour le budget
+    add_action( 'wp_ajax_lab_admin_budget_info_create_table', 'lab_admin_createTable_budget_info');
+
     // LABO 1.5
     add_action( 'wp_ajax_lab_labo1.5_initial', 'lab_labo1dot5_initial');
     add_action( 'wp_ajax_lab_labo1.5_save_mission', 'lab_labo1dot5_save_mission');

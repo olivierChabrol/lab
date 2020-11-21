@@ -25,6 +25,7 @@ require_once("lab-admin-core.php");
 require_once("lab-admin-groups.php");
 require_once("lab-admin-params.php");
 require_once("lab-admin-keyring.php");
+require_once("lab-admin-budget.php");
 require_once("lab-actions.php");
 require_once("lab-hal-widget.php");
 require_once("lab-admin-invitations.php");
@@ -219,10 +220,12 @@ function custom_user_profile_fields( $profileuser ) {
 function wp_lab_menu()
 {
   add_menu_page('Options', 'LAB', 'edit_plugins', 'wp-lab.php', 'wp_lab_option', '', 21);
-  add_menu_page("KeyRing","KeyRing",'keyring','lab_keyring','lab_keyring','dashicons-admin-network',22);
+  add_menu_page("KeyRing"    ,"KeyRing"    ,'keyring','lab_keyring'          ,'lab_keyring'          ,'dashicons-admin-network',22);
+  add_menu_page("Budget Info","Budget Info",'keyring','lab_admin_budget_info','lab_admin_budget_info','dashicons-money-alt',23);
   //add_menu_page("LDAP Admin","LDAP Admin",'edit_plugins','lab_ldap','lab_ldap','dashicons-id-alt',23);
   add_submenu_page( 'wp-lab.php', "LDAP Admin", "LDAP Admin",'edit_plugins', 'lab_ldap', 'lab_ldap_test', 24 );
   add_submenu_page("wp-lab.php", "User Admin", "User Admin", "lab_user_manager", "lab_user", "lab_user_echo", 25);
+  //add_submenu_page("wp-lab.php","Budget",'keyring','lab_admin_budget_info','lab_admin_budget_info','dashicons-money-alt',22);
   if ( ! current_user_can('edit_plugins') ) {
     remove_menu_page('wpfastestcacheoptions');
     remove_menu_page('options-general.php');
@@ -249,6 +252,7 @@ function admin_enqueue()
   wp_enqueue_script('lab-global', plugins_url('js/lab_global.js',__FILE__), array('jqueryToastJS', 'jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog'), version_id(), false);
   wp_enqueue_script('lab-admin', plugins_url('js/lab_admin.js',__FILE__), array('lab-global','jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog'), version_id(), false);
   wp_enqueue_script('lab-keyring',plugins_url('js/lab_keyring.js',__FILE__), array('lab-global','jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog'), version_id(), true);
+  wp_enqueue_script('lab-budget',plugins_url('js/lab_budget.js',__FILE__), array('lab-global','jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog'), version_id(), true);
   //Feuille de style des interfaces d'administration WordPress :
   wp_enqueue_style('lab-admin-CSS',plugins_url('css/lab-admin.css',__FILE__));
   wp_enqueue_style('LdapCSS',plugins_url('css/lab-ldap.css',__FILE__));

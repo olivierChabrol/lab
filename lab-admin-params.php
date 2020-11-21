@@ -22,6 +22,7 @@ class AdminParams {
     public const PARAMS_USER_ECOLE_DOCTORALE = 20;
     public const PARAMS_OUTGOING_MOBILITY_STATUS = 21;
     public const PARAMS_THEMATIC = 22;
+    public const PARAMS_BUDGET_INFO_TYPE = 23;
     
 
     public static function get_params_fromId($id) {
@@ -75,6 +76,10 @@ class AdminParams {
     {
         return AdminParams::get_params_fromId(AdminParams::PARAMS_USER_ECOLE_DOCTORALE);
     }
+    public static function lab_admin_get_params_budgetInfoType()
+    {
+        return AdminParams::get_params_fromId(AdminParams::PARAMS_BUDGET_INFO_TYPE);
+    }
 
     public static function get_param_by_slug($slug)
     {
@@ -121,6 +126,9 @@ function lab_admin_get_params_groupTypes() {
 
 function lab_admin_get_params_userFunction() {
     return AdminParams::lab_admin_get_params_UserFunctions();
+}
+function lab_admin_get_params_budgetInfoType() {
+    return AdminParams::lab_admin_get_params_budgetInfoType();
 }
 function lab_admin_get_params_userLocation() {
     return AdminParams::lab_admin_get_params_userLocation();
