@@ -209,6 +209,47 @@ function lab_admin_param_clone($param)
         return false;
     }
 }
+
+/***********************************************************************************************************
+ * CONTRACT
+ ***********************************************************************************************************/
+function lab_admin_contract_save($id, $name, $start, $end, $holders, $managers) {
+    global $wpdb;
+    // new contract
+    if (!isset($id) || empty($id)) {
+        if ($wpdb->insert($wpdb->prefix.'lab_contract', array("name"=>$name,"start"=>$start,"end"=>$end))) {
+            $contractId = $wpdb->insert_id;
+            foreach ($holders as $userId) {
+                $wpdb->insert($wpdb->prefix.'lab_contract_user', array("contract_id"=>$contractId, "user_id"=>$userId,"user_type"=> 2));
+            }
+            foreach ($managers as $userId) {
+                $wpdb->insert($wpdb->prefix.'lab_contract_user', array("contract_id"=>$contractId, "user_id"=>$userId,"user_type"=> 1));
+            }
+        }
+    }
+    else
+    {
+        $wpdb->update($wpdb->prefix.'lab_contract', array("name"=>$name,"start"=>$start,"end"=>$end), array("id"=>$id));
+    }
+}
+
+function lab_admin_contract_search($contractName) {
+    global $wpdb;
+    return $wpdb->get_results("SELECT id, name as label, start, end FROM ".$wpdb->prefix."lab_contract WHERE `name`='".$contractName."'");
+}
+
+function lab_admin_contract_users_load($contractId) {
+    global $wpdb;
+    return $wpdb->get_results("SELECT cu.*,um1.meta_value AS first_name,um2.meta_value AS last_name FROM ".$wpdb->prefix."lab_contract_user AS cu JOIN `".$wpdb->prefix."usermeta` AS um1 ON um1.user_id=cu.user_id JOIN `".$wpdb->prefix."usermeta` AS um2 ON um2.user_id=cu.user_id WHERE `contract_id`=".$contractId." AND um1.meta_key='first_name' AND um2.meta_key='last_name'");
+}
+
+function lab_admin_contract_delete($contractId) {
+    global $wpdb;
+    $wpdb->delete($wpdb->prefix.'lab_contract_user', array("contract_id"=>$contractId));
+    $wpdb->delete($wpdb->prefix.'lab_contract', array("id"=>$contractId));
+    return true;
+}
+
 /***********************************************************************************************************
  * GROUP
  ***********************************************************************************************************/

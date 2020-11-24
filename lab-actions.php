@@ -80,6 +80,11 @@ if (is_admin()) {
     add_action( 'wp_ajax_lab_presence_save', 'lab_admin_presence_save_ajax');
     add_action( 'wp_ajax_lab_presence_delete', 'lab_admin_presence_delete_ajax');
     add_action( 'wp_ajax_nopriv_lab_presence_save_ext', 'lab_admin_presence_save_ext_ajax');
+    //Actions pour contract
+    add_action( 'wp_ajax_lab_admin_contract_save', 'lab_admin_contract_ajax_save');
+    add_action( 'wp_ajax_lab_admin_contract_search', 'lab_admin_contract_ajax_search');
+    add_action( 'wp_ajax_lab_admin_contract_users_load', 'lab_admin_contract_ajax_users_load');
+    add_action( "wp_ajax_lab_admin_contract_delete", "lab_admin_contract_ajax_delete");
 
     //Actions pour la gestion des params
     add_action( 'wp_ajax_param_create_table', 'lab_admin_param_create_table');

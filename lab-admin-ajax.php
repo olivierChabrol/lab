@@ -509,6 +509,36 @@ function lab_admin_test()
 }
 
 /********************************************************************************************
+ * CONTRACT 
+ ********************************************************************************************/
+function lab_admin_contract_ajax_save() {
+  $id = $_POST['id'];
+  $contractName = $_POST['name'];
+  $contractStart = $_POST['start'];
+  $contractEnd = $_POST['end'];
+  $holders  = $_POST["holders"];
+  $managers = $_POST["managers"];
+  wp_send_json_success(lab_admin_contract_save($id, $contractName, $contractStart, $contractEnd, $holders, $managers));
+}
+
+function lab_admin_contract_ajax_search() {
+  $search = $_POST['search'];
+  $contractName  = $search["term"];
+  wp_send_json_success(lab_admin_contract_search($contractName));
+}
+
+function lab_admin_contract_ajax_users_load() {
+  $contractId = $_POST['id'];
+  wp_send_json_success(lab_admin_contract_users_load($contractId));
+}
+
+function lab_admin_contract_ajax_delete() {
+  $contractId = $_POST['id'];
+  wp_send_json_success(lab_admin_contract_delete($contractId));
+
+}
+
+/********************************************************************************************
  * GROUPS
  ********************************************************************************************/
 
