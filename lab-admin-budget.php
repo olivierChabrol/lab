@@ -5,6 +5,7 @@
       $active_tab = $_GET['tab'];
     }
 ?>
+<div id="loadingAjaxGif"><img src="/wp-content/plugins/lab/loading.gif"/></div>
 <div class="wrap">
   <h1 class="wp-heading-inline"><?php esc_html_e('IT budget management','lab'); ?></h1>
   <hr class="wp-header-end">
@@ -77,10 +78,11 @@
         </tr>
         <tr>
             <td>
- <label for="lab_budget_info_budget_manager"><?php esc_html_e('Budget manager','lab') ?></label>
+              <label for="lab_budget_info_budget_manager"><?php esc_html_e('Budget manager','lab') ?></label>
             </td>
             <td>
             <input type="text" id="lab_budget_info_budget_manager" maxlength="255">
+              <span id="lab_budget_info_managers"></span>
             </td>
         </tr>
         <tr>
@@ -122,6 +124,9 @@
             <td>
  <input type="date" id="lab_budget_info_date_of_payment">
             </td>
+        </tr>
+        <tr>
+          <td scope="col"><button class="page-title-action" id="lab_budget_info_entry_create"><?php esc_html_e('Add','lab'); ?></button></td>
         </tr>
     </tbody>
 </table>

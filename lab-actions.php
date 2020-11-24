@@ -72,6 +72,9 @@ if (is_admin()) {
     add_action( 'wp_ajax_group_add_substitutes', 'group_add_substitutes');
     add_action( 'wp_ajax_list_users_groups' , 'lab_admin_list_users_groups');
     add_action( 'wp_ajax_add_users_groups' , 'lab_admin_add_users_groups');
+    add_action( 'wp_ajax_lab_group_add_manager', 'lab_admin_ajax_group_add_manager');
+    add_action( 'wp_ajax_lab_group_load_managers', 'lab_admin_ajax_group_load_managers');
+    add_action( 'wp_ajax_lab_group_delete_manager', 'lab_admin_ajax_group_delete_manager');
     //Actions pour presence
     add_action( 'wp_ajax_lab_presence_create_table', 'lab_admin_createTable_presence');
     add_action( 'wp_ajax_lab_presence_save', 'lab_admin_presence_save_ajax');
@@ -164,7 +167,8 @@ if (is_admin()) {
     add_action( 'wp_ajax_lab_ldap_reconnect', 'lab_ldap_reconnect');
     add_action( 'wp_ajax_lab_admin_ldap_settings', 'lab_admin_ldap_settings');
     // Actions pour le budget
-    add_action( 'wp_ajax_lab_admin_budget_info_create_table', 'lab_admin_createTable_budget_info');
+    //add_action( 'wp_ajax_lab_admin_budget_info_create_table', 'lab_admin_createTable_budget_info');
+    add_action( 'wp_ajax_lab_budget_info_create_tables', 'lab_ajax_admin_createTable_budget_info');
 
     // LABO 1.5
     add_action( 'wp_ajax_lab_labo1.5_initial', 'lab_labo1dot5_initial');

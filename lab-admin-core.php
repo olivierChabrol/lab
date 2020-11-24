@@ -209,6 +209,34 @@ function lab_admin_param_clone($param)
         return false;
     }
 }
+/***********************************************************************************************************
+ * GROUP
+ ***********************************************************************************************************/
+function lab_admin_group_add_manager($groupId, $userId, $userRole) {
+    global $wpdb;
+    if ($wpdb->insert($wpdb->prefix.'lab_group_manager', array("group_id"=>$groupId, "user_id"=>$userId, "manager_type"=>$userRole))) {
+        return $wpdb->insert_id;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+function lab_group_delete_manager($id)
+{
+    global $wpdb;
+    $wpdb->delete($wpdb->prefix.'lab_group_manager', array('id' => $id));
+    return true;
+}
+
+function lab_admin_group_load_managers($groupId) {
+    global $wpdb;
+    return $wpdb->get_results("SELECT gm.id,um1.meta_value AS first_name,um2.meta_value AS last_name FROM `".$wpdb->prefix."lab_group_manager` AS gm JOIN `".$wpdb->prefix."usermeta` AS um1 ON um1.user_id=gm.user_id JOIN `".$wpdb->prefix."usermeta` AS um2 ON um2.user_id=gm.user_id WHERE `group_id`=$groupId AND um1.meta_key='first_name' AND um2.meta_key='last_name'");
+
+}
+
+
 function lab_admin_param_change_id($oldId, $type, $newId)
 {
     global $wpdb;
@@ -980,6 +1008,17 @@ function lab_admin_createSubTable() {
         PRIMARY KEY(`id`),
         FOREIGN KEY(`substitute_id`) REFERENCES `".$wpdb->prefix."users`(`ID`),
         FOREIGN KEY(`group_id`) REFERENCES `".$wpdb->prefix."lab_groups`(`id`)) ENGINE = INNODB;";
+    $wpdb->get_results($sql);
+}
+
+function lab_admin_create_group_manager_table() {
+    global $wpdb;
+    $sql = "CREATE TABLE IF NOT EXISTS `".$wpdb->prefix."lab_group_manager` (
+        `id` bigint NOT NULL AUTO_INCREMENT,
+        `user_id` bigint NOT NULL,
+        `manager_type` int NOT NULL,
+        PRIMARY KEY (`id`)
+      ) ENGINE=InnoDB";
     $wpdb->get_results($sql);
 }
 
@@ -1969,6 +2008,7 @@ function create_all_tables() {
     lab_admin_initTable_param();
     lab_hal_createTable_hal();
     lab_admin_createGroupTable();
+    lab_admin_create_group_manager_table();
     lab_admin_createUserGroupTable();
     lab_admin_createUserThematicTable();
     lab_admin_createSubTable();
@@ -1978,6 +2018,7 @@ function create_all_tables() {
     lab_admin_createTable_presence();
     lab_invitations_createTables();
     lab_admin_createTable_users_historic();
+    lab_admin_createTable_budget_info();
 }
 
 function delete_all_tables() {
@@ -1999,6 +2040,7 @@ function delete_all_tables() {
     drop_table("lab_guests");
     drop_table("lab_invite_comments");
     drop_table("lab_presence");
+    drop_table("lab_budget_info");
 }
 
 /**

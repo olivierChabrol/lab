@@ -5,6 +5,7 @@
  */
 function lab_admin_tab_groups() {
   ?>
+  <div id="loadingAjaxGif"><img src="/wp-content/plugins/lab/loading.gif"/></div>
   <div>
     <label for="wp_lab_group_name"><?php esc_html_e('Nom du groupe  ','lab'); ?></label>
     <input type="text" name="wp_lab_group_name" id="wp_lab_group_name" value="" size="80"/>
@@ -38,6 +39,23 @@ function lab_admin_tab_groups() {
     <input type="text" name="wp_lab_group_url" id="wp_lab_group_url_edit" value="" size="80" placeholder="Url"/>
     
     <br />
+
+    <div> <!-- Manager -->
+      <h5><?php esc_html_e("Add manager to group",'lab') ?></h5>
+      <div>
+        <div id="lab_admin_group_managers">
+        </div>
+        <br/>
+        <input type="text"  id="lab_group_edit_add_manager" value="" size=50 placeholder="Manager"/>
+        <input type="hidden" id="lab_group_edit_add_manager_id">
+        <?php
+        //lab_html_select('lab_thematic','lab_thematic','lab_allRoles','lab_admin_thematic_load_all',null,array("value"=>0,"label"=>"--- Select thematic ---"),0);?>
+        <select id="lab_admin_group_manager_function">
+          <option value="1"><?php esc_html_e("Budget manager","lab")?></option>
+        </select>
+        <button class="btn btn-primary" id="lab_group_edit_add_manager_button"><?php esc_html_e("Add","lab")?></button>
+      </div>
+    </div>
     
     
     <br /><a href="#" class="page-title-action" id="lab_admin_group_edit_button">Save</a>

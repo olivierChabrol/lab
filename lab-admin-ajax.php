@@ -19,6 +19,15 @@ function lab_admin_ajax_user_info()
 }
 
 /********************************************************************************************
+ * BUDGET
+ ********************************************************************************************/
+function lab_ajax_admin_createTable_budget_info()
+{
+  lab_admin_createTable_budget_info();
+  wp_send_json_success();
+}
+
+/********************************************************************************************
  * THEMATIC
  ********************************************************************************************/
 
@@ -502,6 +511,36 @@ function lab_admin_test()
 /********************************************************************************************
  * GROUPS
  ********************************************************************************************/
+
+function lab_admin_ajax_group_delete_manager()
+{
+  $id = $_POST['id'];
+  if(!isset($id) || empty($id)) {
+    wp_send_json_error("No id send");
+  }
+  lab_group_delete_manager($id);
+  wp_send_json_success();
+}
+
+function lab_admin_ajax_group_add_manager()
+{
+  $groupId = $_POST['groupId'];
+  $userId = $_POST['userId'];
+  $userRole = $_POST['userRole'];
+  if (lab_admin_group_add_manager($groupId, $userId, $userRole))
+  {
+    wp_send_json_success();
+  }
+  else {
+    wp_send_json_error();
+  }
+}
+
+function lab_admin_ajax_group_load_managers() {
+  $groupId = $_POST['groupId'];
+  wp_send_json_success(lab_admin_group_load_managers($groupId));
+}
+
 /**
  * Fonction qui répond a la requete d'un recherche par nom de groupe
  */

@@ -69,6 +69,7 @@ jQuery(function($){
         $("#lab_searched_group_id").val(value);
         setinfoToGroupEditionFields(ui.item.id, ui.item.acronym, ui.item.label, ui.item.chief_id,
           ui.item.parent_group_id, ui.item.group_type, ui.item.url);
+        loadGroupManagers();
       }
   });
 
@@ -492,6 +493,77 @@ jQuery(function($){
       group_edit_saveNewSubstitute(value, jQuery("#lab_searched_group_id").val());
     }
   });
+  $("#lab_group_edit_add_manager").autocomplete({
+    minChars: 3,
+    source: function(term, suggest){
+      try { searchRequest.abort(); } catch(e){}
+      searchRequest = $.post(LAB.ajaxurl, { action: 'search_username',search: term, }, function(res) {
+        suggest(res.data);
+      });
+      },
+    select: function( event, ui ) {
+      var value = ui.item.value;
+      var label = ui.item.label;
+      event.preventDefault();
+      $("#lab_group_edit_add_manager").val(label);
+      $("#lab_group_edit_add_manager_id").val(value);
+    }
+  });
+
+  $("#lab_group_edit_add_manager_button").click(function () {
+    let groupId = $("#lab_searched_group_id").val();
+    let managerId = $("#lab_group_edit_add_manager_id").val();
+    let managerFunction = $("#lab_admin_group_manager_function").val();
+    data = {
+      'action':"lab_group_add_manager",
+      'groupId':groupId,
+      'userId':managerId,
+      'userRole':managerFunction,
+    };
+    callAjax(data, null, successfulyAddManager, null, null);
+  });
+
+  function loadGroupManagers()
+  {
+    let groupId = $("#lab_searched_group_id").val();
+    data = {
+      'action':"lab_group_load_managers",
+      'groupId':groupId
+    };
+    callAjax(data, null, displayGroupManager, null, null);
+  }
+
+  function successfulyAddManager(data) {
+    toast_success("Manager added");
+    loadGroupManagers();
+    $("#lab_group_edit_add_manager").val("");
+  }
+
+  function displayGroupManager(data) {
+    
+    $("#lab_admin_group_managers").html("");
+    $.each(data, function(i, obj) {
+      //use obj.id and obj.name here, for example:
+      //alert(obj.name);
+      let span = $('<span />').attr('class', 'badge badge-secondary user-role-badge').html(obj.first_name+" "+obj.last_name+" ");
+      let innerSpan = $('<span />').attr('class', 'lab_admin_group_delete').attr('objId', obj.id);
+      let innerI = $('<i />').attr('class', 'fas fa-trash').attr('group_id', obj.id);
+      innerSpan.append(innerI);
+      span.append(innerSpan);
+      $("#lab_admin_group_managers").append(span);
+
+      $(".lab_admin_group_delete").click(function (){
+        //console.log($(this).attr("objId"));
+        
+        data = {
+          'action':'lab_group_delete_manager',
+          'id':$(this).attr('objId'),
+        };
+        callAjax(data,"Manager remove ",loadGroupManagers,'Failed to delete manager from this group',null);
+        //*/
+      });
+    });
+  }
 
   $("#lab_createGroup_subInput").autocomplete({
     minChars: 3,
@@ -1259,6 +1331,8 @@ function resetGroupEdit()
   jQuery("#wp_lab_group_name").val("");
   jQuery("#lab_group_edit_substitutes").text("");
   jQuery("#wp_lab_group_url_edit").val("");
+  jQuery("#lab_group_edit_add_manager").val("");
+  jQuery("#lab_admin_group_managers").html("");
 }
 function clearFields(prefix,list) {
   for (i of list) {
