@@ -511,6 +511,10 @@ function lab_admin_test()
 /********************************************************************************************
  * CONTRACT 
  ********************************************************************************************/
+function lab_admin_contract_ajax_create_table() {
+  wp_send_json_success(lab_admin_contract_create_table());
+}
+
 function lab_admin_contract_ajax_save() {
   $id = $_POST['id'];
   $contractName = $_POST['name'];

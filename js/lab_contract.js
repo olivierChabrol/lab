@@ -93,6 +93,15 @@ jQuery(function($){
     $("#lab_admin_contract_delete").click(function () {
         deleteContract();
     });
+    $("#lab_admin_contract_create_table").click(function () {
+        
+        let data = {
+            'action':'lab_admin_contract_create_table'
+        }
+        callAjax(data, null, reloadPage, null, null);
+    });
+
+    
 
     function deleteContract() {
         if ($("#lab_admin_contract_id").val() != "") {

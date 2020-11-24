@@ -250,6 +250,26 @@ function lab_admin_contract_delete($contractId) {
     return true;
 }
 
+function lab_admin_contract_create_table() {
+    global $wpdb;
+    $sql = "CREATE TABLE IF NOT EXISTS `".$wpdb->prefix."lab_contract` (
+        `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
+        `name` varchar(500) NOT NULL,
+        `start` date NOT NULL,
+        `end` date NOT NULL,
+        PRIMARY KEY (`id`)
+      ) ENGINE=InnoDB";
+    $wpdb->get_results($sql);
+    $sql = "CREATE TABLE IF NOT EXISTS `".$wpdb->prefix."lab_contract_user` (
+        `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
+        `contract_id` bigint NOT NULL,
+        `user_id` bigint NOT NULL,
+        `user_type` bigint NOT NULL,
+        PRIMARY KEY (`id`)
+      ) ENGINE=InnoDB";
+    return $wpdb->get_results($sql);
+}
+
 /***********************************************************************************************************
  * GROUP
  ***********************************************************************************************************/
@@ -2060,6 +2080,7 @@ function create_all_tables() {
     lab_invitations_createTables();
     lab_admin_createTable_users_historic();
     lab_admin_createTable_budget_info();
+    lab_admin_contract_create_table();
 }
 
 function delete_all_tables() {
@@ -2082,6 +2103,8 @@ function delete_all_tables() {
     drop_table("lab_invite_comments");
     drop_table("lab_presence");
     drop_table("lab_budget_info");
+    drop_table("lab_contract");
+    drop_table("lab_contract_user");
 }
 
 /**

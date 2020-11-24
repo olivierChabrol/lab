@@ -17,11 +17,11 @@
 <?php
     if (!lab_admin_checkTable("lab_contract")) {
     echo "<p id='lab_keyring_noKeysTableWarning'>La table <em>lab_contract</em> n'a pas été trouvée dans la base, vous devez d'abord la créer ici : </p>";
-    echo '<button class="lab_keyring_create_table_keys" id="lab_budget_info_create_table">'.esc_html__('Créer la table Contrat','lab').'</button>';
+    echo '<button class="lab_keyring_create_table_keys" id="lab_admin_contract_create_table">'.esc_html__('Créer la table Contrat','lab').'</button>';
     }
     if (!lab_admin_checkTable("lab_contract_user")) {
     echo "<p id='lab_keyring_noKeysTableWarning'>La table <em>lab_contract_user</em> n'a pas été trouvée dans la base, vous devez d'abord la créer ici : </p>";
-    echo '<button class="lab_keyring_create_table_keys" id="lab_budget_info_create_table">'.esc_html__('Créer la table Contrat user','lab').'</button>';
+    echo '<button class="lab_keyring_create_table_keys" id="lab_admin_contract_create_table">'.esc_html__('Créer la table Contrat user','lab').'</button>';
     }
     if ($active_tab == 'new') {
     lab_admin_contract_new();
