@@ -23,6 +23,7 @@ class AdminParams {
     public const PARAMS_OUTGOING_MOBILITY_STATUS = 21;
     public const PARAMS_THEMATIC = 22;
     public const PARAMS_BUDGET_INFO_TYPE = 23;
+    public const PARAMS_BUDGET_FUNDS = 24;
     
 
     public static function get_params_fromId($id) {
@@ -79,6 +80,10 @@ class AdminParams {
     public static function lab_admin_get_params_budgetInfoType()
     {
         return AdminParams::get_params_fromId(AdminParams::PARAMS_BUDGET_INFO_TYPE);
+    }
+    public static function lab_admin_get_params_budgetFunds()
+    {
+        return AdminParams::get_params_fromId(AdminParams::PARAMS_BUDGET_FUNDS);
     }
 
     public static function get_param_by_slug($slug)

@@ -89,6 +89,10 @@
   }
   function lab_admin_contract_list() {
 ?>
+<table class="widefat fixed lab_keyring_table" id="lab_admin_contract_list_table">
+    <tbody id="lab_admin_contract_list_table_tbody">
+    </tbody>
+</table>
 <?php
   }
   

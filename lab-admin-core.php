@@ -211,6 +211,118 @@ function lab_admin_param_clone($param)
 }
 
 /***********************************************************************************************************
+ * BUDGET
+ ***********************************************************************************************************/
+function lab_budget_info_save_order($params) {
+    global $wpdb;
+    if (isset($params["id"])) {
+        $id = $params["id"];
+        unset($params["id"]);
+        $wpdb->update($wpdb->prefix."lab_budget_info", $params, array('id'=>$id));
+    }
+    else {
+        $wpdb->insert($wpdb->prefix."lab_budget_info", $params);
+    }
+}
+
+function lab_budget_info_delete($budgetId) {
+    global $wpdb;
+    $wpdb->delete($wpdb->prefix."lab_budget_info", array("id"=>$budgetId));
+    return true;
+}
+
+function lab_budget_info_load($budgetId, $year = null) {
+    global $wpdb;
+    $sql = "SELECT bi.* from ".$wpdb->prefix."lab_budget_info AS bi";
+    if ($budgetId != null) {
+        $sql .= " WHERE id=".$budgetId;
+    }
+    $results = $wpdb->get_results($sql);
+    $userIds = array();
+    foreach($results as $r) {
+        if(!isset($userIds[$r->user_id]) && $r->user_id != 0) {
+            $userIds[$r->user_id] = lab_admin_usermeta_names($r->user_id);
+        }
+        if(!isset($userIds[$r->info_manager_id]) && $r->info_manager_id != 0) {
+            $userIds[$r->info_manager_id] = lab_admin_usermeta_names($r->info_manager_id);
+        }
+        if(!isset($userIds[$r->budget_manager_id]) && $r->budget_manager_id != 0) {
+            $userIds[$r->budget_manager_id] = lab_admin_usermeta_names($r->budget_manager_id);
+        }
+    }
+    $data = array();
+    if ($budgetId== null) {
+        $data["results"] = $results;
+    }
+    else {
+        $data["results"] = $results[0];
+    }
+    $data["users"] = $userIds;
+    $params = array();
+    $ps = array_merge(AdminParams::lab_admin_get_params_budgetInfoType(), AdminParams::lab_admin_get_params_budgetFunds());
+    $ps = array_merge($ps, AdminParams::lab_admin_get_params_userLocation());
+    foreach($ps as $p) {
+        $params[$p->id] = $p;
+    }
+    $data["params"] = $params;
+
+
+    $contracts   = array();
+    $results = $wpdb->get_results("SELECT id,name as 'value' FROM ".$wpdb->prefix."lab_contract ORDER BY 'value'");
+    foreach($results as $r) {
+        $contracts[$r->id] = $r;
+    }
+
+    $data["contracts"] = $contracts;
+    //$data["ps"] = $ps;
+    //return $results;
+    return $data;
+}
+
+function lab_admin_budget_managers_list() {
+    global $wpdb;
+    $resultContract = $wpdb->get_results("SELECT DISTINCT cu.user_id,um1.meta_value AS first_name,um2.meta_value AS last_name FROM ".$wpdb->prefix."lab_contract_user AS cu JOIN `".$wpdb->prefix."usermeta` AS um1 ON um1.user_id=cu.user_id JOIN `".$wpdb->prefix."usermeta` AS um2 ON um2.user_id=cu.user_id WHERE cu.`user_type`=1 AND um1.meta_key='first_name' AND um2.meta_key='last_name'");
+    $resultGroup    = $wpdb->get_results("SELECT DISTINCT cu.user_id,um1.meta_value AS first_name,um2.meta_value AS last_name FROM ".$wpdb->prefix."lab_group_manager AS cu JOIN `".$wpdb->prefix."usermeta` AS um1 ON um1.user_id=cu.user_id JOIN `".$wpdb->prefix."usermeta` AS um2 ON um2.user_id=cu.user_id WHERE cu.`manager_type`=1 AND um1.meta_key='first_name' AND um2.meta_key='last_name'");
+
+    $managers = array();
+    foreach($resultContract as $contractManager) {
+        $c = new stdClass;
+        $c->id = $contractManager->user_id;
+        $c->value = $contractManager->first_name." ".$contractManager->last_name;
+        $managers[$c->id] = $c;
+    }
+    foreach($resultGroup as $groupManager) {
+        if (!isset($managers[$groupManager->user_id])) {
+            $c = new stdClass;
+            $c->id = $groupManager->user_id;
+            $c->value = $groupManager->first_name." ".$groupManager->last_name;
+            $managers[$c->id] = $c;
+        }
+    }
+    return $managers;
+}
+
+function lab_admin_budget_funds() {
+    global $wpdb;
+    $budgetFunds = AdminParams::lab_admin_get_params_budgetFunds();
+    $contracts   = $wpdb->get_results("SELECT id,name as 'value' FROM ".$wpdb->prefix."lab_contract ORDER BY 'value'");
+    $funds = array();
+    foreach($budgetFunds as $f) {
+        $c = new stdClass;
+        $c->id=$f->id;
+        $c->value=$f->value;
+        $funds[]=$c;
+    }
+    foreach($contracts as $f) {
+        $c = new stdClass;
+        $c->id=$f->id;
+        $c->value="CONTRAT ".$f->value;
+        $funds[]=$c;
+    }
+    return $funds;
+}
+
+/***********************************************************************************************************
  * CONTRACT
  ***********************************************************************************************************/
 function lab_admin_contract_save($id, $name, $start, $end, $holders, $managers) {
@@ -233,9 +345,15 @@ function lab_admin_contract_save($id, $name, $start, $end, $holders, $managers) 
     }
 }
 
+function lab_admin_contract_get_managers($contractId) {
+    global $wpdb;
+    return $wpdb->get_results("SELECT user_id FROM ".$wpdb->prefix."lab_contract_user WHERE `contract_id` = ".$contractId." AND user_type=1");
+
+}
+
 function lab_admin_contract_search($contractName) {
     global $wpdb;
-    return $wpdb->get_results("SELECT id, name as label, start, end FROM ".$wpdb->prefix."lab_contract WHERE `name`='".$contractName."'");
+    return $wpdb->get_results("SELECT id, name as label, start, end FROM ".$wpdb->prefix."lab_contract WHERE `name`LIKE '%".$contractName."%'");
 }
 
 function lab_admin_contract_users_load($contractId) {
@@ -248,6 +366,76 @@ function lab_admin_contract_delete($contractId) {
     $wpdb->delete($wpdb->prefix.'lab_contract_user', array("contract_id"=>$contractId));
     $wpdb->delete($wpdb->prefix.'lab_contract', array("id"=>$contractId));
     return true;
+}
+
+
+function lab_admin_contract_load() {
+    global $wpdb;
+    $results = $wpdb->get_results("SELECT c.*, cu.user_id, cu.user_type,um1.meta_value AS first_name, um2.meta_value AS last_name FROM `".$wpdb->prefix."lab_contract` AS c JOIN ".$wpdb->prefix."lab_contract_user AS cu ON cu.contract_id=c.id JOIN ".$wpdb->prefix."usermeta AS um1 ON um1.user_id=cu.user_id JOIN ".$wpdb->prefix."usermeta AS um2 ON um2.user_id=cu.user_id WHERE um1.meta_key='first_name' AND um2.meta_key='last_name' ");
+    $contracts = array();
+    $lastId = -1;
+    $nbLine = 0;
+    $str = "";
+    foreach ($results as $line) {
+        $nbLine++;
+        $str .= $nbLine." ".$line->name;
+        if ($lastId == -1) {
+            $str .= ' LA 1';
+            $lastId = $line->id;
+            $contracts[$lastId] = lab_admin_contract_inner_new_stdClass_contract($line);
+        } else if ($lastId != $line->id) {
+            $str .= ' LA 2';
+            $lastId = $line->id;
+            $contract = $contracts[$lastId];
+            if (!isset($contract))
+            {
+                $contracts[$lastId] = lab_admin_contract_inner_new_stdClass_contract($line);
+            }
+            else {
+                lab_admin_contract_inner_new_stdClass_add_user($line, $contracts[$lastId]);
+            }
+        } else {
+            $str .= ' LA 3';
+            $str .= 'user_type : '.$line->user_type.' last_name : '.$line->last_name;
+            lab_admin_contract_inner_new_stdClass_add_user($line, $contracts[$line->id]);
+            $str .= ' nb user manager : '.count($contracts[$line->id]->managers);
+            $str .= ' nb user holders : '.count($contracts[$line->id]->holders);
+        }
+        $str .= '<br>';
+        
+    }
+
+    return $contracts;
+    //return $str;
+}
+
+function lab_admin_contract_inner_new_stdClass_contract($line) 
+{
+    $contract = new stdClass;
+    $contract->id    = $line->id;
+    $contract->name  = $line->name;
+    $contract->start = $line->start;
+    $contract->end   = $line->end;
+    $contract->holders  = array();
+    $contract->managers = array();
+    lab_admin_contract_inner_new_stdClass_add_user($line, $contract);
+
+    return $contract;
+}
+
+function lab_admin_contract_inner_new_stdClass_add_user($line, $contract) {
+    $user = new stdClass;
+    $user->first_name = $line->first_name;
+    $user->last_name  = $line->last_name;
+    $user->id  = $line->user_id;
+
+    if ($line->user_type == 2) {
+        $contract->holders[] = $user;
+    }
+
+    if ($line->user_type == 1) { 
+        $contract->managers[] = $user;
+    }
 }
 
 function lab_admin_contract_create_table() {
@@ -268,6 +456,24 @@ function lab_admin_contract_create_table() {
         PRIMARY KEY (`id`)
       ) ENGINE=InnoDB";
     return $wpdb->get_results($sql);
+}
+
+/***********************************************************************************************************
+ * USERMETA
+ ***********************************************************************************************************/
+/**
+ * Return first_name, last_name, id of an user
+ *
+ * @param [type] $userId
+ * @return void
+ */
+function lab_admin_usermeta_names($userId) {
+    global $wpdb;
+    $results =$wpdb->get_results("SELECT um1.user_id AS id,um1.meta_value AS first_name, um2.meta_value AS last_name FROM ".$wpdb->prefix."usermeta AS um1 JOIN ".$wpdb->prefix."usermeta AS um2 ON um1.user_id=um2.user_id WHERE um1.meta_key='first_name' AND um2.meta_key='last_name' AND um1.user_id=".$userId);
+    if (count($results) == 1)
+        return $results[0];
+    else
+        return null;
 }
 
 /***********************************************************************************************************
@@ -293,7 +499,7 @@ function lab_group_delete_manager($id)
 
 function lab_admin_group_load_managers($groupId) {
     global $wpdb;
-    return $wpdb->get_results("SELECT gm.id,um1.meta_value AS first_name,um2.meta_value AS last_name FROM `".$wpdb->prefix."lab_group_manager` AS gm JOIN `".$wpdb->prefix."usermeta` AS um1 ON um1.user_id=gm.user_id JOIN `".$wpdb->prefix."usermeta` AS um2 ON um2.user_id=gm.user_id WHERE `group_id`=$groupId AND um1.meta_key='first_name' AND um2.meta_key='last_name'");
+    return $wpdb->get_results("SELECT gm.id,gm.user_id,um1.meta_value AS first_name,um2.meta_value AS last_name FROM `".$wpdb->prefix."lab_group_manager` AS gm JOIN `".$wpdb->prefix."usermeta` AS um1 ON um1.user_id=gm.user_id JOIN `".$wpdb->prefix."usermeta` AS um2 ON um2.user_id=gm.user_id WHERE `group_id`=$groupId AND um1.meta_key='first_name' AND um2.meta_key='last_name'");
 
 }
 
@@ -464,11 +670,13 @@ function lab_admin_createTable_budget_info() {
         `title` varchar(255) NOT NULL,
         `request_date` date NOT NULL,
         `user_id` bigint NOT NULL,
-        `info_manger_id` bigint NOT NULL,
+        `info_manager_id` bigint NOT NULL,
+        `site_id` bigint NOT NULL,
         `budget_manager_id` bigint NOT NULL,
         `fund_origin` bigint NOT NULL,
         `contract_title` varchar(255) NOT NULL,
         `amount` float NOT NULL,
+        `order_number` varchar(255),
         `order_date` date NOT NULL,
         `delivery_date` date NOT NULL,
         `payment_date` date NOT NULL,
@@ -2062,6 +2270,7 @@ function lab_admin_setting_reset_tables()
     delete_all_tables();
     create_all_tables();
 }
+
 
 
 function create_all_tables() {

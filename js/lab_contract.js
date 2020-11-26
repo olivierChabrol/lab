@@ -1,4 +1,8 @@
 jQuery(function($){
+
+    if ($("#lab_admin_contract_list_table").length) {
+        loadAllContracts();
+    }
     $("#lab_admin_contract_name").autocomplete({
         minLength: 3,
         source: function(term, suggest){
@@ -101,6 +105,38 @@ jQuery(function($){
         callAjax(data, null, reloadPage, null, null);
     });
 
+    function loadAllContracts() {
+        let data = {
+            'action':'lab_admin_contract_load'
+        }
+        callAjax(data, null, displayContracts, null, null);
+    }
+
+    function displayContracts(data) {
+        $.each(data, function(i, obj) {
+            let tr = $('<tr />');
+            let tdId = $('<td />').html(obj.id);
+            let tdContractName = $('<td />').html(obj.name);
+            tr.append(tdId);
+            tr.append(tdContractName);
+            let holdersStr = "";
+            $.each(obj.holders, function(i, usr) {
+                holdersStr += usr.first_name + " " + usr.last_name+", ";
+            });
+            holdersStr = holdersStr.substr(0, holdersStr.length - 2);
+            let tdContractHolders = $('<td />').html(holdersStr);
+            tr.append(tdContractHolders);
+            let managersStr = "";
+            $.each(obj.managers, function(i, usr) {
+                managersStr += usr.first_name + " " + usr.last_name+", ";
+            });
+            managersStr = managersStr.substr(0, managersStr.length - 2);
+            let tdContractManagers = $('<td />').html(managersStr);
+            tr.append(tdContractManagers);
+
+            $("#lab_admin_contract_list_table_tbody").append(tr);
+        });
+    }
     
 
     function deleteContract() {

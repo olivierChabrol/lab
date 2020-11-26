@@ -27,6 +27,31 @@ function lab_ajax_admin_createTable_budget_info()
   wp_send_json_success();
 }
 
+function lab_budget_info_ajax_delete() {
+  $budgetId = $_POST['id'];
+  wp_send_json_success(lab_budget_info_delete($budgetId));
+}
+
+
+function lab_budget_info_ajax_save_order() {
+  $res = lab_budget_info_save_order($_POST['params']); 
+  if (strlen($res)==0) {
+    wp_send_json_success();
+    return;
+  }
+  wp_send_json_error($res);
+
+}
+
+function lab_budget_info_ajax_load() {
+  $budgetId = $_POST['id'];
+  if (!isset($budgetId) || empty($budgetId)) {
+    $budgetId = null;
+  }
+  wp_send_json_success(lab_budget_info_load($budgetId));
+}
+
+
 /********************************************************************************************
  * THEMATIC
  ********************************************************************************************/
@@ -235,7 +260,7 @@ function lab_admin_search_username2()
   wp_send_json_success(lab_admin_firstname_lastname2($name));
 }
 
-function lab_admin_usermeta_names()
+function lab_admin_ajax_usermeta_names()
 {
   $search = $_POST['search'];
   $userId  = $search["term"];
@@ -511,8 +536,17 @@ function lab_admin_test()
 /********************************************************************************************
  * CONTRACT 
  ********************************************************************************************/
+
 function lab_admin_contract_ajax_create_table() {
   wp_send_json_success(lab_admin_contract_create_table());
+}
+function lab_admin_contract_ajax_get_managers() {
+  $id = $_POST['id'];
+  wp_send_json_success(lab_admin_contract_get_managers($id));
+}
+
+function lab_admin_contract_ajax_load() {
+  wp_send_json_success(lab_admin_contract_load());
 }
 
 function lab_admin_contract_ajax_save() {

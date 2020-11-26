@@ -64,7 +64,7 @@ if (is_admin()) {
     add_action( 'wp_ajax_group_root', 'lab_admin_group_createRoot');
     add_action( 'wp_ajax_delete_group', 'lab_admin_group_delete');
     add_action( 'wp_ajax_group_subs_add', 'lab_admin_group_subs_addReq');
-    add_action( 'wp_ajax_usermeta_names', 'lab_admin_usermeta_names');
+    add_action( 'wp_ajax_usermeta_names', 'lab_admin_ajax_usermeta_names');
     add_action( 'wp_ajax_usermeta_dateLeft', 'lab_admin_usermeta_dateLeft');
     add_action( 'wp_ajax_usermeta_fill_user_slug', 'lab_ajax_admin_usermeta_fill_user_slug');
     add_action( 'wp_ajax_group_load_substitutes', 'group_load_substitutes');
@@ -86,6 +86,9 @@ if (is_admin()) {
     add_action( 'wp_ajax_lab_admin_contract_users_load', 'lab_admin_contract_ajax_users_load');
     add_action( "wp_ajax_lab_admin_contract_delete", "lab_admin_contract_ajax_delete");
     add_action( "wp_ajax_lab_admin_contract_create_table", "lab_admin_contract_ajax_create_table");
+    add_action( "wp_ajax_lab_admin_contract_load", "lab_admin_contract_ajax_load");
+    add_action( "wp_ajax_lab_admin_contract_get_managers", "lab_admin_contract_ajax_get_managers");
+    add_action( "wp_ajax_lab_budget_info_save_order", "lab_budget_info_ajax_save_order");
 
     //Actions pour la gestion des params
     add_action( 'wp_ajax_param_create_table', 'lab_admin_param_create_table');
@@ -175,6 +178,8 @@ if (is_admin()) {
     // Actions pour le budget
     //add_action( 'wp_ajax_lab_admin_budget_info_create_table', 'lab_admin_createTable_budget_info');
     add_action( 'wp_ajax_lab_budget_info_create_tables', 'lab_ajax_admin_createTable_budget_info');
+    add_action( 'wp_ajax_lab_budget_info_load', 'lab_budget_info_ajax_load');
+    add_action( 'wp_ajax_lab_budget_info_delete', 'lab_budget_info_ajax_delete');
 
     // LABO 1.5
     add_action( 'wp_ajax_lab_labo1.5_initial', 'lab_labo1dot5_initial');
