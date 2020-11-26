@@ -102,8 +102,12 @@ jQuery(function($){
         let data = {
             'action':'lab_admin_contract_create_table'
         }
-        callAjax(data, null, reloadPage, null, null);
+        callAjax(data, null, reloadPageContract, null, null);
     });
+
+    function reloadPageContract(data) {
+        location.reload();
+      }
 
     function loadAllContracts() {
         let data = {
