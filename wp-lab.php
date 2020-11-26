@@ -255,7 +255,7 @@ function admin_enqueue()
   wp_enqueue_script('lab-admin', plugins_url('js/lab_admin.js',__FILE__), array('lab-global','jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog'), version_id(), false);
   wp_enqueue_script('lab-keyring',plugins_url('js/lab_keyring.js',__FILE__), array('lab-global','jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog'), version_id(), true);
   wp_enqueue_script('lab-budget',plugins_url('js/lab_budget.js',__FILE__), array('lab-global','jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog'), version_id(), true);
-  wp_enqueue_script('lab-contract',plugins_url('js/lab_contract.js',__FILE__), array('lab-global','jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog'), version_id(), true);
+  wp_enqueue_script('lab-contract',plugins_url('js/lab_contract.js',__FILE__), array('lab-global','jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog','lab-budget'), version_id(), true);
   //Feuille de style des interfaces d'administration WordPress :
   wp_enqueue_style('lab-admin-CSS',plugins_url('css/lab-admin.css',__FILE__));
   wp_enqueue_style('LdapCSS',plugins_url('css/lab-ldap.css',__FILE__));
