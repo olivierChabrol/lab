@@ -23,8 +23,6 @@
     global $wp;
     $current_url = home_url( add_query_arg( array(), $wp->request ) );
 ?>
-<h3><?php echo $current_url; ?></h3>
-<h3><?php echo get_admin_url(); ?></h3>
 <div id="loadingAjaxGif"><img src="/wp-content/plugins/lab/loading.gif"/></div>
 <div class="wrap">
   <h1 class="wp-heading-inline"><?php esc_html_e('IT budget management','lab'); ?></h1>
