@@ -1,4 +1,15 @@
 <?php
+
+  function lab_admin_budget_info_url($elements = null) {
+    $str = "";
+    if ($elements != null) {  
+      foreach($elements as $k=>$v) {
+        $str .= "&$k=$v";
+      }
+    }
+    return get_admin_url()."admin.php?page=lab_admin_budget_info".$str;
+  }
+
   function lab_admin_budget_info() {
     $active_tab = 'entry';
     if (isset($_GET['tab'])) {
@@ -8,14 +19,19 @@
     if (isset($_GET['id'])) {
       $id = $_GET['id'];
     }
+
+    global $wp;
+    $current_url = home_url( add_query_arg( array(), $wp->request ) );
 ?>
+<h3><?php echo $current_url; ?></h3>
+<h3><?php echo get_admin_url(); ?></h3>
 <div id="loadingAjaxGif"><img src="/wp-content/plugins/lab/loading.gif"/></div>
 <div class="wrap">
   <h1 class="wp-heading-inline"><?php esc_html_e('IT budget management','lab'); ?></h1>
   <hr class="wp-header-end">
   <h2 class="nav-tab-wrapper">
-    <a id="lab_keyring_default_tab_pointer" style="position: relative" class="nav-tab <?php echo $active_tab == 'entry' ? 'nav-tab-active' : ''; ?>"   href="<?php echo add_query_arg(array('tab' => 'entry')  , $_SERVER['REQUEST_URI']); ?>"><?php esc_html_e('New order','lab'); ?></a>
-    <a id="lab_keyring_default_tab_pointer" style="position: relative" class="nav-tab <?php echo $active_tab == 'historic' ? 'nav-tab-active' : ''; ?>" href="<?php echo add_query_arg(array('tab' => 'historic'), $_SERVER['REQUEST_URI']); ?>"><?php esc_html_e('Historic','lab'); ?></a>
+    <a id="lab_keyring_default_tab_pointer" style="position: relative" class="nav-tab <?php echo $active_tab == 'entry' ? 'nav-tab-active' : ''; ?>"   href="<?php echo lab_admin_budget_info_url(array('tab' => 'entry')); ?>"><?php esc_html_e('New order','lab'); ?></a>
+    <a id="lab_keyring_default_tab_pointer" style="position: relative" class="nav-tab <?php echo $active_tab == 'historic' ? 'nav-tab-active' : ''; ?>" href="<?php echo lab_admin_budget_info_url(array('tab' => 'historic')); ?>"><?php esc_html_e('Historic','lab'); ?></a>
   </h2>
 
 <?php

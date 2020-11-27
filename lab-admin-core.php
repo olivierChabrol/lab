@@ -272,6 +272,7 @@ function lab_budget_info_load($budgetId, $year = null) {
 
     $years   = array();
     $currentYear = date("Y");
+    $years[] = "";
     $years[] = $currentYear;
     foreach ($results as $r) {
         if ($r->year != null && $r->year != $currentYear && $r->year != 0) {
