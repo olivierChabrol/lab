@@ -215,7 +215,7 @@ function lab_admin_param_clone($param)
  ***********************************************************************************************************/
 function lab_budget_info_save_order($params) {
     global $wpdb;
-    if (isset($params["id"])) {
+    if (isset($params["id"]) && $params["id"] != "") {
         $id = $params["id"];
         unset($params["id"]);
         $wpdb->update($wpdb->prefix."lab_budget_info", $params, array('id'=>$id));
