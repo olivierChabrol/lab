@@ -83,7 +83,7 @@
  <label for="lab_budget_info_site_id"><?php esc_html_e('Site','lab') ?></label>
             </td>
             <td>
-            <?php lab_html_select("lab_budget_info_site_id", "lab_budget_info_site_id", "", lab_admin_get_params_userLocation, null, null, ""); ?>
+            <?php lab_html_select("lab_budget_info_site_id", "lab_budget_info_site_id", "", lab_admin_get_params_userLocation, null, array("value"=>"0","label"=>"None"), ""); ?>
             </td>
         </tr>
         <tr>
@@ -100,7 +100,7 @@
  <label for="lab_budget_info_fund_origin"><?php esc_html_e('Funding','lab') ?></label>
             </td>
             <td>
-            <?php lab_html_select("lab_budget_info_fund_origin", "lab_budget_info_fund_origin", "", lab_admin_budget_funds, null, null, ""); ?>
+            <?php lab_html_select("lab_budget_info_fund_origin", "lab_budget_info_fund_origin", "", lab_admin_budget_funds, null, array("value"=>"0","label"=>"None"), ""); ?>
             </td>
         </tr>
         <tr>
@@ -154,6 +154,7 @@
   function lab_budget_info_tab_historic()
   {
     ?>
+    <label for="lab_budget_info_filter_year"><?php esc_html_e('Year','lab'); ?></label><select id="lab_budget_info_filter_year"></select>
     <table class="widefat fixed lab_keyring_table" id="lab_admin_budget_info_list_table">
       <thead>
         <th>id</th>

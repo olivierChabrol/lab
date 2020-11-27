@@ -221,6 +221,7 @@ function lab_budget_info_save_order($params) {
         $wpdb->update($wpdb->prefix."lab_budget_info", $params, array('id'=>$id));
     }
     else {
+        $param["info_manager_id"] = get_current_user_id();
         $wpdb->insert($wpdb->prefix."lab_budget_info", $params);
     }
 }
@@ -265,6 +266,19 @@ function lab_budget_info_load($budgetId, $year = null) {
         $params[$p->id] = $p;
     }
     $data["params"] = $params;
+
+    $sql = "SELECT DISTINCT YEAR(`order_date`) AS year FROM `wp_lab_budget_info` ORDER BY `year` DESC";
+    $results = $wpdb->get_results($sql);
+
+    $years   = array();
+    $currentYear = date("Y");
+    $years[] = $currentYear;
+    foreach ($results as $r) {
+        if ($r->year != null && $r->year != $currentYear && $r->year != 0) {
+            $years[] = $r->year;
+        }
+    }
+    $data["years"] = $years;
 
 
     $contracts   = array();

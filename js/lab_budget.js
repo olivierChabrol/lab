@@ -83,26 +83,30 @@ jQuery(function($){
 
   function displayBudget(data)
   {
-        $.each(data.results, function(i, obj) {
-            let tr = $('<tr />');           
-            tr.append(createTd(obj.id));
-            tr.append(createTd(obj.request_date));
-            tr.append(createTd(obj.order_number));
-            tr.append(createTd(obj.title));
-            tr.append(displayTdParam(obj.site_id, data));
-            tr.append(displayTdUser(obj.user_id, obj, data));
-            tr.append(displayTdUser(obj.info_manager_id, obj, data));
-            tr.append(displayTdUser(obj.budget_manager_id, obj, data));
-            console.log(obj.budget_manager_id);
-            tr.append(displayTdParam(obj.fund_origin, data));
-            tr.append(createTd(formatMoney(obj.amount)));
-            tr.append(createTd(obj.order_date));
-            tr.append(createTd(obj.delivery_date));
-            tr.append(createTd(obj.payment_date));
-            tr.append(createEditButton(obj.id));
-            
-            $("#lab_admin_budget_info_list_table_tbody").append(tr);
-        });
+    $.each(data.years, function(i, obj) {
+      //let option = $('<options />').attr("value",obj).html(obj);
+      $("#lab_budget_info_filter_year").append(new Option(obj, obj));
+    });
+    $.each(data.results, function(i, obj) {
+        let tr = $('<tr />');           
+        tr.append(createTd(obj.id));
+        tr.append(createTd(obj.request_date));
+        tr.append(createTd(obj.order_number));
+        tr.append(createTd(obj.title));
+        tr.append(displayTdParam(obj.site_id, data));
+        tr.append(displayTdUser(obj.user_id, obj, data));
+        tr.append(displayTdUser(obj.info_manager_id, obj, data));
+        tr.append(displayTdUser(obj.budget_manager_id, obj, data));
+        console.log(obj.budget_manager_id);
+        tr.append(displayTdParam(obj.fund_origin, data));
+        tr.append(createTd(formatMoney(obj.amount)));
+        tr.append(createTd(obj.order_date));
+        tr.append(createTd(obj.delivery_date));
+        tr.append(createTd(obj.payment_date));
+        tr.append(createEditButton(obj.id));
+        
+        $("#lab_admin_budget_info_list_table_tbody").append(tr);
+    });
   }
 
   function createEditButton(id) {
