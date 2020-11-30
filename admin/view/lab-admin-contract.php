@@ -48,6 +48,14 @@
         </tr>
         <tr>
             <td>
+                <label for="lab_admin_contract_type"><?php esc_html_e('Contract type','lab') ?></label>
+            </td>
+            <td>
+                <?php lab_html_select("lab_admin_contract_type", "lab_admin_contract_type", "", lab_admin_get_params_contract_type, null, array("value"=>"0","label"=>"None"), ""); ?>
+            </td>
+        </tr>
+        <tr>
+            <td>
                 <label for="lab_admin_contract_start"><?php esc_html_e('Contract start','lab') ?></label>
             </td>
             <td>
@@ -83,7 +91,7 @@
             </td>
         </tr>
         <tr>
-          <td scope="col"><button class="page-title-action" id="lab_admin_contract_create"><?php esc_html_e('Add','lab'); ?></button></td>
+          <td scope="col" colpsan="2"><button class="page-title-action" id="lab_admin_contract_create"><?php esc_html_e('Add','lab'); ?></button></td>
         </tr>
 <?php
   }

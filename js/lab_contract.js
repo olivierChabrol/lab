@@ -71,6 +71,7 @@ jQuery(function($){
                 'action':'lab_admin_contract_save',
                 'id':$("#lab_admin_contract_id").val(),
                 'name':$("#lab_admin_contract_name").val(),
+                'type':$("#lab_admin_contract_type").val(),
                 'start':$("#lab_admin_contract_start").val(),
                 'end':$("#lab_admin_contract_end").val(),
             };
@@ -121,8 +122,10 @@ jQuery(function($){
             let tr = $('<tr />');
             let tdId = $('<td />').html(obj.id);
             let tdContractName = $('<td />').html(obj.name);
+            let tdContractType = $('<td />').html(obj.type);
             tr.append(tdId);
             tr.append(tdContractName);
+            tr.append(tdContractType);
             let holdersStr = "";
             $.each(obj.holders, function(i, usr) {
                 holdersStr += usr.first_name + " " + usr.last_name+", ";

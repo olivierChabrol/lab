@@ -24,6 +24,7 @@ class AdminParams {
     public const PARAMS_THEMATIC = 22;
     public const PARAMS_BUDGET_INFO_TYPE = 23;
     public const PARAMS_BUDGET_FUNDS = 24;
+    public const PARAMS_CONTRACT_TYPE = 25;
     
 
     public static function get_params_fromId($id) {
@@ -85,6 +86,10 @@ class AdminParams {
     {
         return AdminParams::get_params_fromId(AdminParams::PARAMS_BUDGET_FUNDS);
     }
+    public static function lab_admin_get_params_contractType()
+    {
+        return AdminParams::get_params_fromId(AdminParams::PARAMS_CONTRACT_TYPE);
+    }
 
     public static function get_param_by_slug($slug)
     {
@@ -137,6 +142,9 @@ function lab_admin_get_params_budgetInfoType() {
 }
 function lab_admin_get_params_userLocation() {
     return AdminParams::lab_admin_get_params_userLocation();
+}
+function lab_admin_get_params_contract_type() {
+    return AdminParams::lab_admin_get_params_contractType();
 }
 function lab_admin_get_params_userEmployer() {
     return AdminParams::lab_admin_get_params_userEmployer();

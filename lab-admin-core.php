@@ -320,7 +320,7 @@ function lab_admin_budget_managers_list() {
 function lab_admin_budget_funds() {
     global $wpdb;
     $budgetFunds = AdminParams::lab_admin_get_params_budgetFunds();
-    $contracts   = $wpdb->get_results("SELECT id,name as 'value' FROM ".$wpdb->prefix."lab_contract ORDER BY 'value'");
+    $contracts   = $wpdb->get_results("SELECT c.id,c.name as 'value',p.value AS contract_type  FROM ".$wpdb->prefix."lab_contract AS c JOIN ".$wpdb->prefix."lab_params AS p ON p.id=c.contract_type ORDER BY 'value'");
     $funds = array();
     foreach($budgetFunds as $f) {
         $c = new stdClass;
@@ -331,7 +331,7 @@ function lab_admin_budget_funds() {
     foreach($contracts as $f) {
         $c = new stdClass;
         $c->id=$f->id;
-        $c->value="CONTRAT ".$f->value;
+        $c->value="CONTRAT ".$f->contract_type." ".$f->value;
         $funds[]=$c;
     }
     return $funds;
@@ -386,7 +386,7 @@ function lab_admin_contract_delete($contractId) {
 
 function lab_admin_contract_load() {
     global $wpdb;
-    $results = $wpdb->get_results("SELECT c.*, cu.user_id, cu.user_type,um1.meta_value AS first_name, um2.meta_value AS last_name FROM `".$wpdb->prefix."lab_contract` AS c JOIN ".$wpdb->prefix."lab_contract_user AS cu ON cu.contract_id=c.id JOIN ".$wpdb->prefix."usermeta AS um1 ON um1.user_id=cu.user_id JOIN ".$wpdb->prefix."usermeta AS um2 ON um2.user_id=cu.user_id WHERE um1.meta_key='first_name' AND um2.meta_key='last_name' ");
+    $results = $wpdb->get_results("SELECT c.*,p.value AS contract_type_label, cu.user_id, cu.user_type,um1.meta_value AS first_name, um2.meta_value AS last_name FROM `".$wpdb->prefix."lab_contract` AS c JOIN ".$wpdb->prefix."lab_contract_user AS cu ON cu.contract_id=c.id JOIN ".$wpdb->prefix."usermeta AS um1 ON um1.user_id=cu.user_id JOIN ".$wpdb->prefix."usermeta AS um2 ON um2.user_id=cu.user_id JOIN ".$wpdb->prefix."lab_params AS p ON p.id=c.contract_type WHERE um1.meta_key='first_name' AND um2.meta_key='last_name' ");
     $contracts = array();
     $lastId = -1;
     $nbLine = 0;
@@ -431,6 +431,7 @@ function lab_admin_contract_inner_new_stdClass_contract($line)
     $contract->name  = $line->name;
     $contract->start = $line->start;
     $contract->end   = $line->end;
+    $contract->type   = $line->contract_type_label;
     $contract->holders  = array();
     $contract->managers = array();
     lab_admin_contract_inner_new_stdClass_add_user($line, $contract);
@@ -457,6 +458,7 @@ function lab_admin_contract_create_table() {
     global $wpdb;
     $sql = "CREATE TABLE IF NOT EXISTS `".$wpdb->prefix."lab_contract` (
         `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
+        `contract_type` bigint UNSIGNED NOT NULL,
         `name` varchar(500) NOT NULL,
         `start` date NOT NULL,
         `end` date NOT NULL,
@@ -805,6 +807,8 @@ function lab_admin_initTable_param() {
             (21, 1, 'OUTGOING MOBILITY STATUS', NULL, NULL),
             (22, 1, 'THEMATIC', NULL, NULL),
             (23, 1, 'BUDGET INFO TYPE', NULL, NULL),
+            (24, 1, 'BUDGET FUNDS', NULL, NULL),
+            (25, 1, 'CONTRACT TYPE', NULL, NULL),
             (NULL, 2, 'Equipe', NULL, NULL),
             (NULL, 2, 'Groupe', NULL, NULL),
             (NULL, 3, 'Clé', NULL, 'key'),

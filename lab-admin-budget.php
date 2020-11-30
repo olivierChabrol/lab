@@ -127,18 +127,18 @@
         </tr>
         <tr>
             <td>
- <label for="lab_budget_info_order_number"><?php esc_html_e('Order\'s Number','lab') ?></label>
-            </td>
-            <td>
- <input type="text" id="lab_budget_info_order_number" maxlength="255">
-            </td>
-        </tr>
-        <tr>
-            <td>
  <label for="lab_budget_info_order_date"><?php esc_html_e('Order\'s date','lab') ?></label>
             </td>
             <td>
  <input type="date" id="lab_budget_info_order_date">
+            </td>
+        </tr>
+        <tr>
+            <td>
+ <label for="lab_budget_info_order_number"><?php esc_html_e('Order\'s Number','lab') ?></label>
+            </td>
+            <td>
+ <input type="text" id="lab_budget_info_order_number" maxlength="255">
             </td>
         </tr>
         <tr>

@@ -247,6 +247,6 @@ jQuery(function($){
       }
       $("#lab_budget_info_managers").html(str);
       //console.log("[displayManagerInfo] managerId : " + managerId);
-      $("#lab_budget_info_manger_id").val(managerId);
+      $("#lab_budget_info_budget_manager_id").val(managerId);
     }
 });
