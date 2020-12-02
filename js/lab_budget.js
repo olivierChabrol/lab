@@ -29,6 +29,23 @@ jQuery(function($){
     }
   );
 
+  $("#lab_budget_info_amount").focusout(function () {
+    let amount = $("#lab_budget_info_amount").val();
+    if (amount == "")
+    {
+      amount = "0.0";
+    }
+    else {
+      if (amount.indexOf(",")) {
+        amount = amount.replace(",",".");
+      }
+      if (amount.indexOf(" ")) {
+        amount = amount.replace(" ","");
+      }
+    }
+    $("#lab_budget_info_amount").val(amount);
+  });
+
   $("#lab_budget_info_filter_year").change(function () {
     applyFilter();
   });
