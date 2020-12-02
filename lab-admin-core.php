@@ -275,6 +275,7 @@ function lab_budget_info_load($budgetId, $filters = null) {
             }
         }
     }
+    $sql .= " ORDER BY `request_date` DESC";
     $results = $wpdb->get_results($sql);
     $userIds = array();
     foreach($results as $r) {
