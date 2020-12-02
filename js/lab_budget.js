@@ -113,6 +113,7 @@ jQuery(function($){
     let budgetSum = {};
     let origins = [];
     let sites   = [];
+    let sumPerOrigin = {};
     $("#lab_admin_budget_info_list_table_tbody").empty();
     $("#lab_budget_info_filter_year").empty();
     $.each(data.years, function(i, obj) {
@@ -215,16 +216,38 @@ jQuery(function($){
         let amount = 0;
         if (budgetSum[origins[j]][item]) {
           amount = budgetSum[origins[j]][item];
+          if (!sumPerOrigin[origins[j]]) {
+            sumPerOrigin[origins[j]] = 0.0;
+          }
+          sumPerOrigin[origins[j]] += parseFloat(amount);
         }
         sumPerSite += amount;
         let td = $('<td />').html(formatMoney(amount));
         tr.append(td);
       }
-      td = $('<td />').html(formatMoney(sumPerSite));
+      let b = $('<b />').html(formatMoney(sumPerSite))
+      td = $('<td />').append(b);
       tr.append(td);
 
       $("#lab_admin_budget_info_sum_table_tbody").append(tr);
     });
+
+    let tr = $('<tr />');
+    let b = $('<b />').html("Total");
+    let td = $('<td />').append(b);
+    tr.append(td);
+    let sum = 0.0;
+    for (j = 0 ; j < origins.length ; j++) {
+      sum += sumPerOrigin[origins[j]];
+      let b = $('<b />').html(formatMoney(sumPerOrigin[origins[j]]));
+      let td = $('<td />').append(b);
+      tr.append(td);
+    }
+    b = $('<b />').html(formatMoney(sum));
+    td = $('<td />').append(b);
+    tr.append(td);
+    $("#lab_admin_budget_info_sum_table_tbody").append(tr);
+
   }
 
   function createEditButton(id) {
