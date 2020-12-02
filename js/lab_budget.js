@@ -29,6 +29,13 @@ jQuery(function($){
     }
   );
 
+  $("#lab_budget_info_filter_year").change(function () {
+    applyFilter();
+  });
+  $("#lab_budget_info_filter_state").change(function () {
+    applyFilter();
+  });
+
   $("#lab_budget_info_fund_origin").change(function() {
     data = {
       'action':"lab_admin_contract_get_managers",
@@ -50,6 +57,26 @@ jQuery(function($){
       saveNewOrder();
     }
   });
+
+  function applyFilter() {
+    console.log("[applyFilter]");
+    data = {
+      'action':"lab_budget_info_load",
+    };
+    if ($("#lab_budget_info_filter_year").val() != "") {
+      data["filters"] = {};
+      data["filters"]['year'] = $("#lab_budget_info_filter_year").val();
+    }
+    console.log(data);
+    if ($("#lab_budget_info_filter_state").val() != "") {
+      if (!data["filters"]) {
+        data["filters"] = {};
+      }
+      data["filters"]['state'] = $("#lab_budget_info_filter_state").val();
+    }
+    callAjax(data, null, displayBudget, null, null);
+
+  }
 
   function loadAllBudgetInfo() {
     data = {
@@ -83,29 +110,120 @@ jQuery(function($){
 
   function displayBudget(data)
   {
+    let budgetSum = {};
+    let origins = [];
+    let sites   = [];
+    $("#lab_admin_budget_info_list_table_tbody").empty();
+    $("#lab_budget_info_filter_year").empty();
     $.each(data.years, function(i, obj) {
       //let option = $('<options />').attr("value",obj).html(obj);
       $("#lab_budget_info_filter_year").append(new Option(obj, obj));
     });
+
+    if (data.filters["year"])
+    {
+      if (data.filters["year"]) {
+        $("#lab_budget_info_filter_year").val(data.filters["year"]);
+      }
+    }
     $.each(data.results, function(i, obj) {
-        let tr = $('<tr />');           
+        
+        let tr = $('<tr />');
+        if (obj.payment_date != "0000-00-00") {
+          tr.css("background-color", "#caffbf");
+        } 
+        else if (obj.delivery_date != "0000-00-00") {
+          tr.css("background-color", "#fdffb6");
+        }
+        else {
+          if (data.params[obj.fund_origin] == undefined && data.contracts[obj.fund_origin] == undefined) {
+            tr.css("background-color", "#ffadad");
+
+          }
+          else {
+            tr.css("background-color", "#ffd6a5");
+          }
+        }
         tr.append(createTd(obj.id));
         tr.append(createTd(obj.request_date));
         tr.append(createTd(obj.order_number));
         tr.append(createTd(obj.title));
         tr.append(displayTdParam(obj.site_id, data));
         tr.append(displayTdUser(obj.user_id, obj, data));
+        tr.append(displayTdGroup(obj.user_id, obj, data));
         tr.append(displayTdUser(obj.info_manager_id, obj, data));
         tr.append(displayTdUser(obj.budget_manager_id, obj, data));
-        console.log(obj.budget_manager_id);
+        //console.log(obj.budget_manager_id);
         tr.append(displayTdParam(obj.fund_origin, data));
-        tr.append(createTd(formatMoney(obj.amount)));
+        tr.append(createTdMoney(obj.amount));
         tr.append(createTd(obj.order_date));
         tr.append(createTd(obj.delivery_date));
         tr.append(createTd(obj.payment_date));
         tr.append(createEditButton(obj.id));
+
+        let fo = getFundOriginString(obj.fund_origin, data);
+        let s  = getFundOriginString(obj.site_id, data);
+        if (!budgetSum[fo]) {
+          budgetSum[fo] = {}
+          budgetSum[fo][s] = parseFloat(obj.amount);
+          //nbOriginFund += 1;
+          if(!origins.includes(fo)) {
+            origins.push(fo);
+          }
+
+          if (!sites.includes(s)) {
+            sites.push(s);
+          }
+        }
+        else {
+          if(!budgetSum[fo][s]) {
+            budgetSum[fo][s] = parseFloat(obj.amount);
+            if (!sites.includes(s)) {
+              sites.push(s);
+            }
+          }
+          else {
+            budgetSum[fo][s] += parseFloat(obj.amount);
+          }
+        }
         
         $("#lab_admin_budget_info_list_table_tbody").append(tr);
+    });
+    //console.log(budgetSum);
+    console.log(origins);
+    console.log(sites);
+    console.log(budgetSum);
+    $("#lab_admin_budget_info_sum_table_thead").empty();
+    $("#lab_admin_budget_info_sum_table_tbody").empty();
+    let th = $('<th />').html("Origine des crédits");
+    $("#lab_admin_budget_info_sum_table_thead").append(th);
+    $.each(budgetSum, function(key, value) {
+      console.log(value);
+      let th = $('<th />').html(key);
+      $("#lab_admin_budget_info_sum_table_thead").append(th);
+    });
+    th = $('<th />').html("Total");
+    $("#lab_admin_budget_info_sum_table_thead").append(th);
+
+    $.each(sites, function(i, item) {
+      let tr = $('<tr />');
+      let j = 0;
+      let td = $('<td />').html(item);
+      tr.append(td);
+      let sumPerSite = 0;
+      for (j = 0 ; j < origins.length ; j++) {
+        let amount = 0;
+        if (budgetSum[origins[j]][item]) {
+          amount = budgetSum[origins[j]][item];
+        }
+        sumPerSite += amount;
+        let td = $('<td />').html(formatMoney(amount));
+        tr.append(td);
+      }
+      td = $('<td />').html(formatMoney(sumPerSite));
+      tr.append(td);
+
+      $("#lab_admin_budget_info_sum_table_tbody").append(tr);
     });
   }
 
@@ -130,13 +248,18 @@ jQuery(function($){
     callAjax(data, null, goToHistoric, null, null);
   }
 
+  function createTdMoney(str) {
+    return $('<td />').attr("align", "right").html(formatMoney(str));
+
+  }
+
   function createTd(str)
   {
     return $('<td />').html(str);
   }
 
-  function displayTdParam(paramId, data) {
-    let f = "("+ paramId + ") ";
+  function getFundOriginString(paramId, data) {
+    let f = "Not defined";
     if (data.params[paramId] != undefined)
     {
       let param = data.params[paramId];
@@ -144,8 +267,23 @@ jQuery(function($){
     }
     else {
       let param = data.contracts[paramId];
-      f = param.value;
+      if (param) {
+        f = param.value;
+      }
+    }
+    return f;
+  }
 
+  function displayTdParam(paramId, data) {
+    return createTd(getFundOriginString(paramId, data));
+  }
+
+  function displayTdGroup(userId, obj, data) {
+    let f = "";
+    if (userId != 0 && data.users[userId] != undefined)
+    {
+      let user = data.users[userId];
+      f = user.group;
     }
     return createTd(f);
   }
@@ -161,7 +299,7 @@ jQuery(function($){
   }
 
   function formatMoney(value) {
-    return new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(value);
+    return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(value);
   }
 
   function selectManager(data) {
@@ -188,6 +326,7 @@ jQuery(function($){
       'params': params,
     };
     callAjax(data, "Order Save", goToHistoric, null, null);
+    //callAjax(data, "Order Save", null, null, null);
   }
 
   function goToHistoric(data) {

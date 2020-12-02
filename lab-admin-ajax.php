@@ -48,7 +48,11 @@ function lab_budget_info_ajax_load() {
   if (!isset($budgetId) || empty($budgetId)) {
     $budgetId = null;
   }
-  wp_send_json_success(lab_budget_info_load($budgetId));
+  $filters = $_POST['filters'];
+  if (!isset($filters) || empty($filters)) {
+    $filters = null;
+  }
+  wp_send_json_success(lab_budget_info_load($budgetId, $filters));
 }
 
 

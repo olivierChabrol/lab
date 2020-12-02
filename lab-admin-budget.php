@@ -168,7 +168,15 @@
   function lab_budget_info_tab_historic()
   {
     ?>
-    <label for="lab_budget_info_filter_year"><?php esc_html_e('Year','lab'); ?></label><select id="lab_budget_info_filter_year"></select>
+    <span>
+      <label for="lab_budget_info_filter_year"><?php esc_html_e('Year','lab'); ?></label><select id="lab_budget_info_filter_year"></select>
+      <label for="lab_budget_info_filter_state"><?php esc_html_e('Order state','lab'); ?></label><select id="lab_budget_info_filter_state"><option value=""><?php esc_html_e('All','lab'); ?></option>
+  <option value="c"><?php esc_html_e('Complete','lab'); ?></option>
+  <option value="wo"><?php esc_html_e('Waiting order','lab'); ?></option>
+  <option value="wd"><?php esc_html_e('Waiting delivery','lab'); ?></option>
+  <option value="wp"><?php esc_html_e('Waiting payment','lab'); ?></option>
+  <option value="wf"><?php esc_html_e('Waiting fund\'s origin','lab'); ?></option></select>
+    </span>
     <table class="widefat fixed lab_keyring_table" id="lab_admin_budget_info_list_table">
       <thead>
         <th>id</th>
@@ -177,6 +185,7 @@
         <th><?php esc_html_e('Command title','lab'); ?></th>
         <th><?php esc_html_e('Site','lab'); ?></th>
         <th><?php esc_html_e('For','lab'); ?></th>
+        <th><?php esc_html_e('Group','lab'); ?></th>
         <th><?php esc_html_e('Info Manager','lab'); ?></th>
         <th><?php esc_html_e('Budget Manager','lab'); ?></th>
         <th><?php esc_html_e('Funds','lab'); ?></th>
@@ -188,6 +197,13 @@
       </thead>
         <tbody id="lab_admin_budget_info_list_table_tbody">
         </tbody>
+    </table>
+    <span>Budget</span>
+    <table class="widefat fixed lab_keyring_table" id="lab_admin_budget_info_sum_table">
+      <thead id="lab_admin_budget_info_sum_table_thead">
+      </thead>
+      <tbody id="lab_admin_budget_info_sum_table_tbody">
+      </tbody>
     </table>
       <?php
   }

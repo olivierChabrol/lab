@@ -221,7 +221,7 @@ function lab_budget_info_save_order($params) {
         $wpdb->update($wpdb->prefix."lab_budget_info", $params, array('id'=>$id));
     }
     else {
-        $param["info_manager_id"] = get_current_user_id();
+        $params["info_manager_id"] = get_current_user_id();
         $wpdb->insert($wpdb->prefix."lab_budget_info", $params);
     }
 }
@@ -232,17 +232,58 @@ function lab_budget_info_delete($budgetId) {
     return true;
 }
 
-function lab_budget_info_load($budgetId, $year = null) {
+function lab_budget_info_load($budgetId, $filters = null) {
     global $wpdb;
+    $data = array();
+    $data["filters"] = array();
     $sql = "SELECT bi.* from ".$wpdb->prefix."lab_budget_info AS bi";
-    if ($budgetId != null) {
-        $sql .= " WHERE id=".$budgetId;
+    if ($budgetId != null OR $filters != null) {
+        $sql .= " WHERE ";    
+        if ($budgetId != null) {
+            $sql .= "id=".$budgetId;
+        }
+        else {
+            $nbFilter = 0;
+            foreach($filters as $key=>$value) {
+                if ($key == "year") {
+                    $sql .= "(bi.`order_date` != '0000-00-00' AND YEAR(bi.`order_date`)=".$value.")";
+                    $data["filters"]["year"] = $value;
+                }
+                else if ($key == "state") {
+                    if ($nbFilter > 0) {
+                        $sql .= " AND ";
+                    }
+                    if ($value == "c") {
+                        $sql .= "bi.`payment_date` != '0000-00-00'";
+                    }
+                    else if ($value == "wo") {
+                        $sql .= "bi.`order_date` = '0000-00-00'";
+                    }
+                    else if ($value == "wd") {
+                        $sql .= "bi.`delivery_date` = '0000-00-00'";
+                    }
+                    else if ($value == "wp") {
+                        $sql .= "bi.`payment_date` = '0000-00-00'";
+                    }
+                    else if ($value == "wf") {
+                        $sql .= "bi.`fund_origin` = 0";
+                    }
+                    $data["filters"]["state"] = $value;
+
+                }
+                $nbFilter += 1;
+            }
+        }
     }
     $results = $wpdb->get_results($sql);
     $userIds = array();
     foreach($results as $r) {
         if(!isset($userIds[$r->user_id]) && $r->user_id != 0) {
             $userIds[$r->user_id] = lab_admin_usermeta_names($r->user_id);
+            $groups = $wpdb->get_results("SELECT ug.user_id, g.acronym FROM `".$wpdb->prefix."lab_users_groups` AS ug JOIN ".$wpdb->prefix."lab_groups AS g ON g.id=ug.group_id WHERE ug.user_id=".$r->user_id);
+            if (count($groups)> 0) {
+                $userIds[$r->user_id]->group = $groups[0]->acronym;
+            }
         }
         if(!isset($userIds[$r->info_manager_id]) && $r->info_manager_id != 0) {
             $userIds[$r->info_manager_id] = lab_admin_usermeta_names($r->info_manager_id);
@@ -250,8 +291,8 @@ function lab_budget_info_load($budgetId, $year = null) {
         if(!isset($userIds[$r->budget_manager_id]) && $r->budget_manager_id != 0) {
             $userIds[$r->budget_manager_id] = lab_admin_usermeta_names($r->budget_manager_id);
         }
+
     }
-    $data = array();
     if ($budgetId== null) {
         $data["results"] = $results;
     }

@@ -162,3 +162,26 @@ input:checked + .slider:before {
     margin-left : -51px;
     margin-top : -51px;
 }
+
+#lab_budget_info_state option {
+  margin: 40px;
+  background: rgba(0, 0, 0, 0.3);
+  color: #fff;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
+}
+
+#lab_budget_info_state option[value="c"] {
+  background:#caffbf;
+}
+
+#lab_budget_info_state option[value="wo"] {
+  background: #fdffb6;
+}
+
+se#lab_budget_info_statelect option[value="wd"] {
+  background: #ffd6a5;
+}
+
+#lab_budget_info_state option[value="wp"] {
+  background: #ffadad;
+}
