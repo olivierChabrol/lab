@@ -55,6 +55,20 @@ function lab_budget_info_ajax_load() {
   wp_send_json_success(lab_budget_info_load($budgetId, $filters));
 }
 
+function budget_info_ajax_set_date() {
+  $budgetId = $_POST['id'];
+  $datefield = $_POST['field'];
+  if (!isset($budgetId) || empty($budgetId)) {
+    wp_send_json_error("No Id");
+  }
+  if (!isset($datefield) || empty($datefield)) {
+    wp_send_json_error("No Id");
+  }
+  if($datefield == "order_date" || $datefield == "delivery_date" || $datefield == "payment_date") {
+    wp_send_json_success(budget_info_ajax_date($budgetId, $datefield));
+  }
+}
+
 
 /********************************************************************************************
  * THEMATIC

@@ -232,6 +232,12 @@ function lab_budget_info_delete($budgetId) {
     return true;
 }
 
+function budget_info_ajax_date($budgetId, $datefield) {
+    global $wpdb;
+    $r = $wpdb->update($wpdb->prefix."lab_budget_info", array($datefield=>date('Y-m-d')), array('id'=>$budgetId)); 
+    return $r;
+}
+
 function lab_budget_info_load($budgetId, $filters = null) {
     global $wpdb;
     $data = array();

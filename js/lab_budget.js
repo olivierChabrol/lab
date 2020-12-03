@@ -174,9 +174,9 @@ jQuery(function($){
         //console.log(obj.budget_manager_id);
         tr.append(displayTdParam(obj.fund_origin, data));
         tr.append(createTdMoney(obj.amount));
-        tr.append(createTd(obj.order_date));
-        tr.append(createTd(obj.delivery_date));
-        tr.append(createTd(obj.payment_date));
+        tr.append(createTdDate(obj.order_date, obj.id, "order_date"));
+        tr.append(createTdDate(obj.delivery_date, obj.id, "delivery_date"));
+        tr.append(createTdDate(obj.payment_date, obj.id, "payment_date"));
         tr.append(createEditButton(obj.id));
 
         let fo = getFundOriginString(obj.fund_origin, data);
@@ -265,6 +265,38 @@ jQuery(function($){
     tr.append(td);
     $("#lab_admin_budget_info_sum_table_tbody").append(tr);
 
+  }
+
+  function createTdDate(date, budget_info_id, field) {
+    //let str = date;
+    let td = undefined;
+    if(date == "0000-00-00") {
+      //str += '<br><a href="#">set date</a>';
+      let aSetDate = $('<a />').attr("attr", "#").attr("budgetId", budget_info_id).attr("field", field).html("Set today");
+      $(aSetDate).click(function (e){
+        e.preventDefault();
+        setToday($(this).attr("budgetId"), $(aSetDate).attr("field"));
+      });
+      td = createTd(date);
+      td.append($("<br>"));
+      td.append(aSetDate);
+      //return aSetDate;
+    }
+    else {
+      td = createTd(date);
+    }
+    return td;
+  }
+
+  function setToday(budget_info_id, field) {
+    data = {
+      'action':"lab_budget_info_set_date",
+      'id': budget_info_id,
+      'field': field,
+    };
+    callAjax(data, null, loadAllBudgetInfo, null, null);
+    //console.log("[setToday] " + budget_info_id + " / " + field);
+    //callAjax(data, null, null, null, null);
   }
 
   function createEditButton(id) {

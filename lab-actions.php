@@ -180,6 +180,7 @@ if (is_admin()) {
     add_action( 'wp_ajax_lab_budget_info_create_tables', 'lab_ajax_admin_createTable_budget_info');
     add_action( 'wp_ajax_lab_budget_info_load', 'lab_budget_info_ajax_load');
     add_action( 'wp_ajax_lab_budget_info_delete', 'lab_budget_info_ajax_delete');
+    add_action( 'wp_ajax_lab_budget_info_set_date', 'budget_info_ajax_set_date');
 
     // LABO 1.5
     add_action( 'wp_ajax_lab_labo1.5_initial', 'lab_labo1dot5_initial');
