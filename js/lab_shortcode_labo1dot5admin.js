@@ -1,12 +1,13 @@
 var limitM=0;
 var limitN=10;
 var userId="";
-var orderBy="";
+var orderBy="mission_id";
 var Year="";
-
+var groupBy="";
+//var closed="";
 
 $( document ).ready(function() {
-	loadTableContent(limitM,limitN,userId,orderBy,Year);
+	loadTableContent(limitM,limitN,userId,orderBy,Year,groupBy);
 	pagenation();
 	missionYear();
 });
@@ -22,7 +23,7 @@ var totalPage;
 		if (response.success) {
 			rowNum = Object.values(response.data[0]);
 			console.log("rowNum " +rowNum);
-			totalPage = Math.ceil(rowNum/10); // 5 lignes par page
+			totalPage = Math.ceil(rowNum/10); // 10 lignes par page
 			console.log("numPage " + totalPage);
 			let op = $('<option />').attr("value","").html("Page");
 			$("#page").append(op);
@@ -38,9 +39,9 @@ var totalPage;
 function changePage(obj){  
 	var value = obj.options[obj.selectedIndex].value;
 	if(value!=""){
-		loadTableContent(10*(value-1),10*value,userId,orderBy,Year);}
+		loadTableContent(10*(value-1),10*value,userId,orderBy,Year,groupBy);}
 	else
-		{loadTableContent(limitM,limitN,userId,orderBy,Year);}
+		{loadTableContent(limitM,limitN,userId,orderBy,Year,groupBy);}
 }
 
 function missionYear(){
@@ -65,10 +66,10 @@ function missionYear(){
 
 function changeYear(obj){
 	Year = obj.options[obj.selectedIndex].value;
-	loadTableContent(limitM,limitN,userId,orderBy,Year);
+	loadTableContent(limitM,limitN,userId,orderBy,Year,groupBy);
 }
 
-function loadTableContent(limitM,limitN,userId,orderBy,Year) {
+function loadTableContent(limitM,limitN,userId,orderBy,Year,groupBy) {
 
     data = {
 		"action": 'lab_labo1.5_transportation_get_mission'
@@ -78,6 +79,8 @@ function loadTableContent(limitM,limitN,userId,orderBy,Year) {
 	data["user_id"] = userId;
 	data["orderBy"] = orderBy;
 	data["missionYear"] = Year;
+	data["groupBy"] = groupBy;
+	//data["closed"] = closed;
 
 	    $.post(LAB.ajaxurl, data, function(response) {
 		if (response.success) {
@@ -96,6 +99,8 @@ function loadTableContent(limitM,limitN,userId,orderBy,Year) {
 				tr.append(td2);
 				let td3 = $('<td />').attr("id", "user_name"+item["mission_id"]).html(item["user_name"]);
 				tr.append(td3);
+				let td14 = $('<td />').attr("id", "group_name"+item["mission_id"]).html(item["group_name"]);
+				tr.append(td14);
 
 				let td4 = $('<td />').attr("id", "mission_motif"+item["mission_id"]).html(item["mission_motif"]);
 				let td4Input = $('<input />').attr("type","hidden").attr("value",item["mission_motif"]).attr("id","mission_InputMotif" + item["mission_id"]);
@@ -121,6 +126,14 @@ function loadTableContent(limitM,limitN,userId,orderBy,Year) {
 				td13.append(td13Input);
 				tr.append(td13);
 
+				let td15 = $('<td />').attr("id", "mission_cost_max"+item["mission_id"]).html(item["mission_cost_max"]);
+				let td15Input = $('<input />').attr("type","hidden").attr("value",item["mission_cost_max"]).attr("id","mission_InputCostMax" + item["mission_id"]);
+				td15.dblclick(function(){
+					showTdInput(this,item["mission_cost_max"],"CostMax",item["mission_id"]);
+				});
+				td15.append(td15Input);
+				tr.append(td15);
+
 				let td6 = $('<td />').attr("id", "cost_cover"+item["mission_id"]).html(item["cost_cover"]);
 				let td6Input = $('<input />').attr("type","hidden").attr("value",item["cost_cover"]).attr("id","mission_InputCover" + item["mission_id"]);
 				td6.dblclick(function(){
@@ -143,14 +156,24 @@ function loadTableContent(limitM,limitN,userId,orderBy,Year) {
 				});
 				td8.append(td8Input);
 				tr.append(td8);
+
 				let td9 = $('<td />').attr("id", "statut"+item["mission_id"]);
 				let td9Select = $('<select />').attr("id","mission_select_statut" + item["mission_id"]).attr("class","form-control");
-				let td9Option1 = $('<option />').attr("value","1").html("Validé");
-				let td9Option2 = $('<option />').attr("value","0").html("Non validé");
+				let td9Option1 = $('<option />').attr("value","1").html("Oui");
+				let td9Option2 = $('<option />').attr("value","0").html("Non");
 				td9Select.append(td9Option1);
 				td9Select.append(td9Option2);
 				td9.append(td9Select);
 				tr.append(td9);
+				let td16 = $('<td />').attr("id", "closed"+item["mission_id"]);
+				let td16Select = $('<select />').attr("id","mission_select_closed" + item["mission_id"]).attr("class","form-control");
+				let td16Option1 = $('<option />').attr("value","1").html("Oui");
+				let td16Option2 = $('<option />').attr("value","0").html("Non");
+				td16Select.append(td16Option1);
+				td16Select.append(td16Option2);
+				td16.append(td16Select);
+				tr.append(td16);
+
 				let td10 = $('<td />').attr("id", "date_submit"+item["mission_id"]).html(item["date_submit"]);
 				tr.append(td10);
 				let td11 = $('<td />');
@@ -175,6 +198,7 @@ function loadTableContent(limitM,limitN,userId,orderBy,Year) {
 				tr2.append(td21);
 				$("#list_mission").append(tr2);
 				$("#mission_select_statut" + item["mission_id"]).val(item["statut"]);
+				$("#mission_select_closed" + item["mission_id"]).val(item["closed"]);
 			});
 		}
 	    });
@@ -410,8 +434,18 @@ function buttonAddTrajet(obj){
 }
 function orderByFunction(obj){  
 	orderBy = obj.options[obj.selectedIndex].value;
-	loadTableContent(limitM,limitN,userId,orderBy,Year);
+	loadTableContent(limitM,limitN,userId,orderBy,Year,groupBy);
 }
+
+function filterGroupFunction(obj){  
+	groupBy = obj.options[obj.selectedIndex].value;
+	loadTableContent(limitM,limitN,userId,orderBy,Year,groupBy);
+}
+
+/*function filterClosedFunction(obj){  
+	closed = obj.options[obj.selectedIndex].value;
+	loadTableContent(limitM,limitN,userId,orderBy,Year,groupBy);
+}*/
 
 function deleteTableContent(){
 	$("#list_mission").html("");
@@ -429,7 +463,7 @@ function delTrajet(obj){
 	jQuery.post(LAB.ajaxurl, data, function(response) {
 		if (response.success) {
 		console.log("OK succeful");
-		loadTableContent(limitM,limitN,userId,orderBy);}
+		loadTableContent(limitM,limitN,userId,orderBy,Year,groupBy);}
 	  });
 	};
 }
@@ -445,7 +479,7 @@ function del_mission(obj){
 	jQuery.post(LAB.ajaxurl, data, function(response) {
 		if (response.success) {
 		console.log("OK succeful");
-		loadTableContent(limitM,limitN,userId,orderBy,Year);}
+		loadTableContent(limitM,limitN,userId,orderBy,Year,groupBy);}
 	  });
 	};
 }
@@ -461,16 +495,17 @@ function modify_mission(obj){
 		data["mission_motif"] = $("#mission_InputMotif" + id).val();
 		data["mission_cost"] = $("#mission_InputCost"+ id).val();
 		data["cost_estimate"] = $("#mission_InputCostEstimate"+ id).val();
+		data["mission_cost_max"] = $("#mission_InputCostMax"+ id).val();
 		data["cost_cover"] = $("#mission_InputCover"+ id).val();
 		data["mission_credit"] = $("#mission_InputCredit"+ id).val();
 		data["mission_comment"] = $("#mission_InputComment"+ id).val();
 		data["mission_statut"] = $("#mission_select_statut"+ id).val();
-
+		data["mission_closed"] = $("#mission_select_closed"+ id).val();
 		jQuery.post(LAB.ajaxurl, data, function(response) {
 			if (response.success) {
 				alert("Votre modifications a été enregistré");
 				console.log("OK succeful");
-				loadTableContent(limitM,limitN,userId,orderBy,Year);}
+				loadTableContent(limitM,limitN,userId,orderBy,Year,groupBy);}
 			});
 	};
 
@@ -500,7 +535,7 @@ function modify_trajet(obj){
 			if (response.success) {
 				alert("Votre modifications a été enregistré");
 				console.log("OK succeful");
-				loadTableContent(limitM,limitN,userId,orderBy,Year);}
+				loadTableContent(limitM,limitN,userId,orderBy,Year,groupBy);}
 			});
 	}
 }
@@ -525,7 +560,7 @@ function AddNewTrajet(obj){
 			jQuery.post(LAB.ajaxurl, data, function(response) {
 			if (response.success) {
 			console.log("OK succeful");
-			loadTableContent(limitM,limitN,userId,orderBy,Year);}
+			loadTableContent(limitM,limitN,userId,orderBy,Year,groupBy);}
 			});
 		}
 }
@@ -535,7 +570,7 @@ $(function () {
 		var limitN=5;
 		var userId="";
 		var orderBy="";
-		loadTableContent(limitM,limitN,userId,orderBy,Year);
+		loadTableContent(limitM,limitN,userId,orderBy,Year,groupBy);
 	});
 
 	$('#filter_user_name').autocomplete({
@@ -553,7 +588,7 @@ $(function () {
 		  userId = ui.item.user_id;
 		  event.preventDefault();
 		  $("#filter_user_name").val(firstname + " " + lastname);
-		  loadTableContent(limitM,limitN,userId,orderBy,Year);
+		  loadTableContent(limitM,limitN,userId,orderBy,Year,groupBy);
 		}
 	});
 

@@ -42,7 +42,7 @@ function lab_labo1dot5_save_mission(){
                                                               "user_name"=>$_POST["user_name"],"mission_motif"=>$_POST["mission_motif"],"cost_estimate"=>$_POST["cost_estimate"],
                                                               "mission_cost"=>$_POST["mission_cost"],"cost_cover"=>$_POST["cost_cover"],
                                                               "mission_credit"=>$_POST["mission_credit"],"mission_comment"=>$_POST["mission_comment"],
-                                                              "statut"=>"Non validé", "date_submit"=>$date_submit));
+                                                              "statut"=>"0","closed"=>"0","date_submit"=>$date_submit));
     $travel_id = 0;
 
     foreach ($_POST as $key => $value) {
@@ -87,18 +87,32 @@ function lab_labo1dot5_get_mission(){
     $userId = $_POST["user_id"];
     $orderBy = $_POST["orderBy"];
     $missionYear = $_POST["missionYear"];
+    $groupBy = $_POST["groupBy"];
+    //$closed = $_POST["closed"];
 
-    $sql = "SELECT *
-            FROM `".$wpdb->prefix."lab_labo1dot5_mission`";
+
+    $sql = "SELECT mission.*, lg.`id` , lg.`group_name`
+            FROM (`".$wpdb->prefix."lab_labo1dot5_mission` AS mission JOIN `".$wpdb->prefix."lab_users_groups` AS ug ON mission.`user_id` = ug.`user_id`)
+            JOIN `".$wpdb->prefix."lab_groups` AS lg ON ug.`group_id` = lg.`id`";
 
     if ($userId != "")
     {
-        $sql .= " WHERE user_id = $userId"; 
+        $sql .= " WHERE mission.`user_id` = $userId"; 
     };
+
+    if ($groupBy != "")
+    {
+        $sql .= " AND lg.`id` = $groupBy"; 
+    };
+
+    /*if ($closed != "")
+    {
+        $sql .= " WHERE mission.`closed` = $closed"; 
+    };*/
 
     if ($missionYear != "")
     {
-        $sql .= " WHERE YEAR(date_submit) = $missionYear"; 
+        $sql .= " AND YEAR(date_submit) = $missionYear"; 
     };
 
     if ($orderBy != "")
@@ -134,8 +148,8 @@ function lab_labo1dot5_admin_modify_mission(){
 
     $wpdb->update($wpdb->prefix.'lab_labo1dot5_mission',array("mission_motif"=>$_POST["mission_motif"],
                                                               "mission_cost"=>$_POST["mission_cost"],"cost_cover"=>$_POST["cost_cover"],"cost_estimate"=>$_POST["cost_estimate"],
-                                                              "mission_credit"=>$_POST["mission_credit"],"mission_comment"=>$_POST["mission_comment"],
-                                                              "statut"=>$_POST["mission_statut"]),
+                                                              "mission_credit"=>$_POST["mission_credit"],"mission_comment"=>$_POST["mission_comment"],"mission_cost_max"=>$_POST["mission_cost_max"],
+                                                              "statut"=>$_POST["mission_statut"],"closed"=>$_POST["mission_closed"]),
                                                         array("mission_id"=>$_POST["mission_id"]));
     wp_send_json_success($data);                                                 
 }
