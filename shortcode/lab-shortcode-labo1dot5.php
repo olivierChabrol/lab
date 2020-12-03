@@ -8,7 +8,7 @@ function lab_labo1_5($args){
     <table class="table" id="info_person">
         <tr>
             <th>Prénom<span class="lab_form_required_star"> *</span></th>
-            <td><input type="text" required id="user_firstname" class="form-control" value=""/></td>
+            <td><input type="text" required id="user_firstname" class="form-control" value="" /></td>
             <th>Nom<span class="lab_form_required_star"> *</span></th>
             <td><input type="text" required id="user_lastname" class="form-control" value=""/></td>
         </tr>
@@ -64,20 +64,23 @@ function lab_labo1_5($args){
         <tr>
             <th colspan="">Préciser sur quels crédits</th>
             <td colspan="">
-                <select id="mission_credit" class="form-control">
+                <select id="mission_credit" class="form-control" onchange="mission_credit_onchange(this)">
                 <option value="Crédits du groupe">Crédits du groupe</option>
                 <option value="ANR">ANR</option>
                 <option value="Contrat de recherche">Contrat de recherche</option>
                 <option value="Autre">Autre</option>
                 </select>
             </td>
+        </tr>
+        <tr>
             <th>Frais total estimé</th>
             <td><input type="text" id="cost_estimate" class="form-control" placeholder="en €"></td>
+            <th>Carte de fidélité</th>
+            <td><input type="text" id="mission_card" class="form-control"></td>
         </tr>
-
         <tr>
             <td style="height:100px" colspan="4" >
-            <textarea style="width:100%;height:100%;" class="form-control"id="mission_comment" placeholder="commentaire"></textarea>
+            <textarea style="width:100%;height:100%;" class="form-control"id="mission_comment" placeholder=" Commentaire (merci d’indiquer ici votre préférence horaire)"></textarea>
             </td>
         </tr>
     </table>
@@ -89,15 +92,15 @@ function lab_labo1_5($args){
         </tr>
         <tr>
             <th>Pays de départ<span class="lab_form_required_star"> *</span></th>
-            <td><input type="text" required id="country_from0" name="country_from0" class="form-control"/></td>
+            <td><input type="text" required id="country_from0" name="country_from0" class="form-control" style="text-transform:uppercase;"/></td>
             <th>Ville de départ<span class="lab_form_required_star"> *</span></th>
-            <td><input type="text" required id="travel_from0" name="travel_from0" class="form-control" value="Marseille"/></td>
+            <td><input type="text" required id="travel_from0" name="travel_from0" class="form-control" value="MARSEILLE" style="text-transform:uppercase;"/></td>
         </tr>
         <tr>
             <th>Pays d'arrivee<span class="lab_form_required_star"> *</span></th>
-            <td><input type="text" required id="country_to0" name="country_to0" class="form-control"/></td>
+            <td><input type="text" required id="country_to0" name="country_to0" class="form-control" style="text-transform:uppercase;"/></td>
             <th>Ville d'arrivee<span class="lab_form_required_star"> *</span></th>
-            <td><input type="text" required id="travel_to0" name="travel_to0" class="form-control"/></td>
+            <td><input type="text" required id="travel_to0" name="travel_to0" class="form-control" style="text-transform:uppercase;"/></td>
         </tr>
         <tr>
             <th>Date de départ<span class="lab_form_required_star"> *</span></th>

@@ -10,15 +10,15 @@ function addNewTransporationLine(elm){
   +'</tr>'
   +'      <tr>'
   +'          <th>Pays de départ<span class="lab_form_required_star"> *</span></th>'
-  +'          <td><input type="text" required id="country_from'+varCount+'" name="country_from'+varCount+'" class="form-control"/></td>'
+  +'          <td><input type="text" required id="country_from'+varCount+'" name="country_from'+varCount+'" class="form-control" style="text-transform:uppercase;"/></td>'
   +'          <th>Ville de départ<span class="lab_form_required_star"> *</span></th>'
-  +'          <td><input type="text" required id="travel_from'+varCount+'" name="travel_from'+varCount+'" class="form-control"/></td>'
+  +'          <td><input type="text" required id="travel_from'+varCount+'" name="travel_from'+varCount+'" class="form-control" style="text-transform:uppercase;"/></td>'
   +'      </tr>'
   +'      <tr>'
   +'          <th>Pays d\'arrivee<span class="lab_form_required_star"> *</span></th>'
-  +'          <td><input type="text" required id="country_to'+varCount+'" name="country_to'+varCount+'" class="form-control"/></td>'
+  +'          <td><input type="text" required id="country_to'+varCount+'" name="country_to'+varCount+'" class="form-control" style="text-transform:uppercase;"/></td>'
   +'          <th>Ville d\'arrivee<span class="lab_form_required_star"> *</span></th>'
-  +'          <td><input type="text" required id="travel_to'+varCount+'" name="travel_to'+varCount+'" class="form-control"/></td>'
+  +'          <td><input type="text" required id="travel_to'+varCount+'" name="travel_to'+varCount+'" class="form-control" style="text-transform:uppercase;"/></td>'
   +'      </tr>'
   +'      <tr>'
   +'          <th>Date de départ<span class="lab_form_required_star"> *</span></th>'
@@ -153,5 +153,35 @@ function go_back_onchange(obj){
 	var value = obj.options[obj.selectedIndex].value;
 	if(value == "Non"){
     addNewTransporationLine($('#addVar'));}
-  else{};
+  else{}; 
+}
+
+function addNewANRContrat(elm){
+  $node =  '<th id=mission_contract_th>Choisir le nom</th>'
+          +'<td colspan="">'  
+          + '<select id="mission_contract" class="form-control">'
+          + '<option value="ANR1">ANR1</option>'
+          + '<option value="ANR2">ANR2</option>'
+          + '<option value="contrat1">Contrat1</option>'
+          + '<option value="contrat2">Contrat2</option>'
+          + '</select>'
+          + '</td>'
+      elm.parent().after($node);
+}
+function mission_credit_onchange(obj){  
+  var value = obj.options[obj.selectedIndex].value;
+	if(value == "ANR" ||value == "Contrat de recherche"){
+    if(document.getElementById("mission_contract")==null){
+    addNewANRContrat($('#mission_credit'));
+    }
+  }
+  else{
+    if(document.getElementById("mission_contract")!=null){
+      var elm1 = document.getElementById("mission_contract");
+      var elm2 = document.getElementById("mission_contract_th");
+      $(elm1).parent().remove();
+      $(elm2).remove();
+      //element.parentNode.removeChild(element);
+    }
+  }
 }

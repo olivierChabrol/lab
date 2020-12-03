@@ -36,6 +36,7 @@ require_once(LAB_DIR_PATH."shortcode/lab-shortcode-event.php");
 require_once(LAB_DIR_PATH."shortcode/lab-shortcode-invitation.php");
 require_once(LAB_DIR_PATH."shortcode/lab-shortcode-labo1dot5.php");
 require_once(LAB_DIR_PATH."shortcode/lab-shortcode-labo1dot5admin.php");
+require_once(LAB_DIR_PATH."shortcode/lab-shortcode-labo1dot5resp.php");
 require_once(LAB_DIR_PATH."shortcode/lab-shortcode-ldap.php");
 require_once(LAB_DIR_PATH."admin/view/lab-admin-tabs.php");
 require_once(LAB_DIR_PATH."admin/view/lab-admin-tab-groups.php");
@@ -122,6 +123,7 @@ add_shortcode('lab-hal', 'lab_hal');
 add_shortcode('lab-invite', 'lab_invitation');
 add_shortcode('lab-labo1dot5', 'lab_labo1_5');
 add_shortcode('lab-labo1dot5admin', 'lab_labo1_5admin');
+add_shortcode('lab-labo1dot5resp', 'lab_labo1_5resp');
 add_shortcode('lab-invite-interface','lab_invitations_interface');
 add_shortcode('lab-ldap','lab_ldap');
 
@@ -301,6 +303,7 @@ function wp_lab_fe_enqueues()
   wp_enqueue_script('lab-shortcode-present',plugins_url('js/lab_shortcode_present.js',__FILE__), array('jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog', 'lab-global', 'lab-bootstrap'), version_id(), false);
   wp_enqueue_script('lab-shortcode-labo1dot5',plugins_url('js/lab_shortcode_labo1dot5.js',__FILE__), array('jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog', 'lab-global', 'lab-bootstrap'), version_id(), false);
   wp_enqueue_script('lab-shortcode-labo1dot5admin',plugins_url('js/lab_shortcode_labo1dot5admin.js',__FILE__), array('jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog', 'lab-global', 'lab-bootstrap'), version_id(), false);
+  wp_enqueue_script('lab-shortcode-labo1dot5resp',plugins_url('js/lab_shortcode_labo1dot5resp.js',__FILE__), array('jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog', 'lab-global', 'lab-bootstrap'), version_id(), false);
 }
 
 function localize_script($domain) {
