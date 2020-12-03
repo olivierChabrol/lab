@@ -425,9 +425,10 @@ function lab_admin_history($list) {
   foreach ($list as $elem) {
     $date_begin = date_create_from_format("Y-m-d", $elem->begin);
     $date_end = isset($elem->end) ? date_create_from_format("Y-m-d", $elem->end) : NULL;
+    //var_dump($elem->end);
     $host = $elem->host_id==null ? null : new LabUser($elem->host_id);
     $out .= "<li class='lab_history_li' ".( $elem->mobility==0 ? '': "style='background-color:#".AdminParams::get_paramWithColor($elem->mobility)->color)."'>
-      <div class='lab_history_dates'><div>".strftime('%d %B %G',$date_begin->getTimestamp())."</div><div>".(isset($date_end) ? strftime('%d %B %G',$date_end->getTimestamp()) : ' ')."</div></div>
+      <div class='lab_history_dates'><div>".$elem->begin."</div><div>".(isset($date_end) ? $elem->end : ' ')."</div></div>
       <div class='lab_history_desc'>
         <div class='lab_history_topDesc'>
           <p>".($elem->mobility==0 ? "I2M" : AdminParams::get_param($elem->mobility))."</p>
