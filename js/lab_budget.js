@@ -52,6 +52,9 @@ jQuery(function($){
   $("#lab_budget_info_filter_state").change(function () {
     applyFilter();
   });
+  $("#lab_budget_info_filter_fund_origin").change(function () {
+    applyFilter();
+  });
 
   $("#lab_budget_info_fund_origin").change(function() {
     data = {
@@ -60,6 +63,7 @@ jQuery(function($){
     };
     callAjax(data, null, selectManager, null, null);
   });
+
 
   $("#lab_budget_info_create_table").click(function () {
     data = {
@@ -91,6 +95,14 @@ jQuery(function($){
       }
       data["filters"]['state'] = $("#lab_budget_info_filter_state").val();
     }
+    console.log(data);
+    if ($("#lab_budget_info_filter_fund_origin").val() != "") {
+      if (!data["filters"]) {
+        data["filters"] = {};
+      }
+      data["filters"]['funds'] = $("#lab_budget_info_filter_fund_origin").val();
+    }
+    console.log(data);
     callAjax(data, null, displayBudget, null, null);
 
   }
@@ -140,9 +152,11 @@ jQuery(function($){
 
     if (data.filters["year"])
     {
-      if (data.filters["year"]) {
         $("#lab_budget_info_filter_year").val(data.filters["year"]);
-      }
+    }
+    if (data.filters["funds"])
+    {
+        $("#lab_budget_info_filter_fund_origin").val(data.filters["funds"]);
     }
     $.each(data.results, function(i, obj) {
         
@@ -272,7 +286,7 @@ jQuery(function($){
     let td = undefined;
     if(date == "0000-00-00") {
       //str += '<br><a href="#">set date</a>';
-      let aSetDate = $('<a />').attr("attr", "#").attr("budgetId", budget_info_id).attr("field", field).html("Set today");
+      let aSetDate = $('<a />').attr("href", "#").attr("budgetId", budget_info_id).attr("field", field).html("Set today");
       $(aSetDate).click(function (e){
         e.preventDefault();
         setToday($(this).attr("budgetId"), $(aSetDate).attr("field"));

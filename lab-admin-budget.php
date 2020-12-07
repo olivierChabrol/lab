@@ -29,7 +29,7 @@
   <hr class="wp-header-end">
   <h2 class="nav-tab-wrapper">
     <a id="lab_keyring_default_tab_pointer" style="position: relative" class="nav-tab <?php echo $active_tab == 'entry' ? 'nav-tab-active' : ''; ?>"   href="<?php echo lab_admin_budget_info_url(array('tab' => 'entry')); ?>"><?php esc_html_e('New order','lab'); ?></a>
-    <a id="lab_keyring_default_tab_pointer" style="position: relative" class="nav-tab <?php echo $active_tab == 'historic' ? 'nav-tab-active' : ''; ?>" href="<?php echo lab_admin_budget_info_url(array('tab' => 'historic')); ?>"><?php esc_html_e('Historic','lab'); ?></a>
+    <a id="lab_keyring_default_tab_pointer" style="position: relative" class="nav-tab <?php echo $active_tab == 'historic' ? 'nav-tab-active' : ''; ?>" href="<?php echo lab_admin_budget_info_url(array('tab' => 'historic','year'=>date("Y"))); ?>"><?php esc_html_e('Historic','lab'); ?></a>
   </h2>
 
 <?php
@@ -176,6 +176,9 @@
   <option value="wd"><?php esc_html_e('Waiting delivery','lab'); ?></option>
   <option value="wp"><?php esc_html_e('Waiting payment','lab'); ?></option>
   <option value="wf"><?php esc_html_e('Waiting fund\'s origin','lab'); ?></option></select>
+ <label for="lab_budget_info_filter_fund_origin"><?php esc_html_e('Funding','lab') ?></label>
+<?php lab_html_select("lab_budget_info_filter_fund_origin", "lab_budget_info_filter_fund_origin", "", lab_admin_budget_funds, null, array("value"=>"","label"=>"None"), ""); ?>
+            </td>
     </span>
     <table class="widefat fixed lab_keyring_table" id="lab_admin_budget_info_list_table">
       <thead>

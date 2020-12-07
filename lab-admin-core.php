@@ -277,6 +277,14 @@ function lab_budget_info_load($budgetId, $filters = null) {
                     $data["filters"]["state"] = $value;
 
                 }
+                else if ($key == "funds") {
+                    if ($nbFilter > 0) {
+                        $sql .= " AND ";
+                    }
+                    $sql .= "bi.`fund_origin` = ".$value;
+
+                    $data["filters"]["funds"] = $value;
+                }
                 $nbFilter += 1;
             }
         }

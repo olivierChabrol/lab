@@ -175,4 +175,8 @@ function lab_admin_get_params_outgoingMobility() {
 function lab_admin_get_params_userPhdSchool() {
     return AdminParams::lab_admin_get_params_userPhdSchool();
 }
+
+function lab_admin_get_params_budget_origin_fund() {
+    return AdminParams::lab_admin_get_params_budgetFunds();
+}
 ?>
