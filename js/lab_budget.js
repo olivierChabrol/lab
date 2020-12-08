@@ -187,24 +187,39 @@ jQuery(function($){
     $.each(data.results, function(i, obj) {
         
         let tr = $('<tr />');
-        if (obj.payment_date != "0000-00-00") {
+        if (data.params[obj.fund_origin] == undefined) {
+          // red
+          tr.css("background-color", "#ffadad");
+
+        }
+        else if (obj.payment_date != "0000-00-00" && obj.delivery_date != "0000-00-00" && obj.order_date != "0000-00-00") {
+          // vert
           tr.css("background-color", "#caffbf");
         } 
-        else if (obj.delivery_date != "0000-00-00") {
-          tr.css("background-color", "#fdffb6");
-        }
-        else {
-          if (data.params[obj.fund_origin] == undefined && data.contracts[obj.fund_origin] == undefined) {
-            tr.css("background-color", "#ffadad");
-
+        else if (obj.delivery_date == "0000-00-00") {
+          if (obj.payment_date == "0000-00-00") {
+            // orange
+            tr.css("background-color", "#ffd6a5");
           }
           else {
+            // yellow
+            tr.css("background-color", "#fdffb6");
+          }
+        }
+        else if (obj.payment_date == "0000-00-00") {
+          if (obj.delivery_date == "0000-00-00") {
+            // orange
             tr.css("background-color", "#ffd6a5");
+          }
+          else {
+            // yellow
+            tr.css("background-color", "#fdffb6");
           }
         }
         tr.append(createTd(obj.id));
         tr.append(createTd(obj.request_date));
         tr.append(createTd(obj.order_number));
+        tr.append(createTd(obj.order_reference));
         tr.append(createTd(obj.title));
         tr.append(displayTdParam(obj.site_id, data));
         tr.append(displayTdUser(obj.user_id, obj, data));
@@ -419,7 +434,7 @@ jQuery(function($){
   }
 
   function getFields() {
-    return ['expenditure_type', 'title', 'request_date', 'site_id', 'user_id', 'budget_manager_id', 'fund_origin', 'amount', 'order_number', 'order_date', 'delivery_date', 'payment_date'];
+    return ['expenditure_type', 'title', 'request_date', 'site_id', 'user_id', 'budget_manager_id', 'fund_origin', 'amount', 'order_number', 'order_date', 'delivery_date', 'payment_date', 'order_reference'];
   }
 
   function saveNewOrder() {

@@ -143,6 +143,14 @@
         </tr>
         <tr>
             <td>
+ <label for="lab_budget_info_order_reference"><?php esc_html_e('Order\'s reference','lab') ?></label>
+            </td>
+            <td>
+ <input type="text" id="lab_budget_info_order_reference" maxlength="255">
+            </td>
+        </tr>
+        <tr>
+            <td>
  <label for="lab_budget_info_delivery_date"><?php esc_html_e('Date of delivery','lab') ?></label>
             </td>
             <td>
@@ -158,7 +166,7 @@
             </td>
         </tr>
         <tr>
-          <td scope="col" colspan="2"><button class="page-title-action" id="lab_budget_info_entry_create"><?php esc_html_e('Add','lab'); ?></button></td>
+          <td scope="col" colspan="2"><button class="page-title-action" id="lab_budget_info_entry_create"><?php esc_html_e('Save','lab'); ?></button></td>
         </tr>
     </tbody>
 </table>
@@ -195,6 +203,7 @@
         <th>id</th>
         <th><?php esc_html_e('Request date','lab'); ?></th>
         <th><?php esc_html_e('Command Number','lab'); ?></th>
+        <th><?php esc_html_e('Command Reference','lab'); ?></th>
         <th><?php esc_html_e('Command title','lab'); ?></th>
         <th><?php esc_html_e('Site','lab'); ?></th>
         <th><?php esc_html_e('For','lab'); ?></th>

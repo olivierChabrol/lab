@@ -289,7 +289,7 @@ function lab_budget_info_load($budgetId, $filters = null) {
                     if ($nbFilter > 0) {
                         $sql .= " AND ";
                     }
-                    $sql .= "bi.`order_number` LIKE '%".$value."%'";
+                    $sql .= "(bi.`order_number` LIKE '%".$value."%' OR bi.`order_reference` LIKE '%".$value."%')";
 
                     $data["filters"]["command_number"] = $value;
                 }
@@ -775,6 +775,7 @@ function lab_admin_createTable_budget_info() {
         `contract_title` varchar(255) NOT NULL,
         `amount` float NOT NULL,
         `order_number` varchar(255),
+        `order_reference` varchar(255),
         `order_date` date NOT NULL,
         `delivery_date` date NOT NULL,
         `payment_date` date NOT NULL,
