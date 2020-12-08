@@ -285,6 +285,14 @@ function lab_budget_info_load($budgetId, $filters = null) {
 
                     $data["filters"]["funds"] = $value;
                 }
+                else if ($key == "command_number") {
+                    if ($nbFilter > 0) {
+                        $sql .= " AND ";
+                    }
+                    $sql .= "bi.`order_number` LIKE '%".$value."%'";
+
+                    $data["filters"]["command_number"] = $value;
+                }
                 $nbFilter += 1;
             }
         }
@@ -328,7 +336,8 @@ function lab_budget_info_load($budgetId, $filters = null) {
 
     $years   = array();
     $currentYear = date("Y");
-    $years[] = "";
+    //$years[] = "";
+    //$years[] = esc_html("Year", "lab");
     $years[] = $currentYear;
     foreach ($results as $r) {
         if ($r->year != null && $r->year != $currentYear && $r->year != 0) {

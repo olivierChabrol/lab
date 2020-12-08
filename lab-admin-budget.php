@@ -168,18 +168,26 @@
   function lab_budget_info_tab_historic()
   {
     ?>
-    <span>
-      <label for="lab_budget_info_filter_year"><?php esc_html_e('Year','lab'); ?></label><select id="lab_budget_info_filter_year"></select>
-      <label for="lab_budget_info_filter_state"><?php esc_html_e('Order state','lab'); ?></label><select id="lab_budget_info_filter_state"><option value=""><?php esc_html_e('All','lab'); ?></option>
+    <div class="wrap">
+    <h1 class="wp-heading-inline"><?php esc_html_e('Computer commands','lab'); ?></h1>
+    <h2 class='screen-reader-text'>Filtrer la liste des commandes</h2>
+    <p class="search-box">
+    <div class="tablenav top">
+    <div class="alignleft actions bulkactions">
+    <select id="lab_budget_info_filter_year"></select>
+    <select id="lab_budget_info_filter_state"><option value=""><?php esc_html_e('All','lab'); ?></option>
   <option value="c"><?php esc_html_e('Complete','lab'); ?></option>
   <option value="wo"><?php esc_html_e('Waiting order','lab'); ?></option>
   <option value="wd"><?php esc_html_e('Waiting delivery','lab'); ?></option>
   <option value="wp"><?php esc_html_e('Waiting payment','lab'); ?></option>
   <option value="wf"><?php esc_html_e('Waiting fund\'s origin','lab'); ?></option></select>
- <label for="lab_budget_info_filter_fund_origin"><?php esc_html_e('Funding','lab') ?></label>
-<?php lab_html_select("lab_budget_info_filter_fund_origin", "lab_budget_info_filter_fund_origin", "", lab_admin_budget_funds, null, array("value"=>"","label"=>"None"), ""); ?>
-            </td>
-    </span>
+  
+<?php lab_html_select("lab_budget_info_filter_fund_origin", "lab_budget_info_filter_fund_origin", "", lab_admin_budget_funds, null, array("value"=>"","label"=>"".esc_html('Funding','lab')), ""); ?>
+<label class="screen-reader-text" for="post-search-input"><?php esc_html_e('Search command Number','lab'); ?>:</label>
+  <input type="text" id="lab_budget_info_filter_command_number" placeholder="<?php esc_html_e('Command Number','lab'); ?>"></input>
+  </div></div>
+  <br class="clear">
+    </p>
     <table class="widefat fixed lab_keyring_table" id="lab_admin_budget_info_list_table">
       <thead>
         <th>id</th>
@@ -208,5 +216,6 @@
       <tbody id="lab_admin_budget_info_sum_table_tbody">
       </tbody>
     </table>
+    </div>
       <?php
   }

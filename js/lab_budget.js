@@ -1,3 +1,6 @@
+/* globals global 25 03 2020 */
+//const { __, _x, _n, sprintf } = wp.i18n;
+
 jQuery(function($){
 
   if ($("#lab_admin_budget_info_list_table").length) {
@@ -7,6 +10,11 @@ jQuery(function($){
     if ($("#lab_budget_info_id").length && $("#lab_budget_info_id").val() != "") {
       loadBudgetInfo();
     }
+  });
+
+  $("#lab_budget_info_filter_command_number").keyup(function (e) {
+    //console.log($("#lab_budget_info_filter_command_number").val());
+    applyFilter();
   });
 
   $("#lab_budget_info_user").autocomplete({
@@ -80,7 +88,6 @@ jQuery(function($){
   });
 
   function applyFilter() {
-    console.log("[applyFilter]");
     data = {
       'action':"lab_budget_info_load",
     };
@@ -101,6 +108,13 @@ jQuery(function($){
         data["filters"] = {};
       }
       data["filters"]['funds'] = $("#lab_budget_info_filter_fund_origin").val();
+    }
+    console.log(data);
+    if ($("#lab_budget_info_filter_command_number").val() != "") {
+      if (!data["filters"]) {
+        data["filters"] = {};
+      }
+      data["filters"]['command_number'] = $("#lab_budget_info_filter_command_number").val();
     }
     console.log(data);
     callAjax(data, null, displayBudget, null, null);
@@ -145,6 +159,7 @@ jQuery(function($){
     let sumPerOrigin = {};
     $("#lab_admin_budget_info_list_table_tbody").empty();
     $("#lab_budget_info_filter_year").empty();
+    $("#lab_budget_info_filter_year").append(new Option(__("Year",'lab'),""));
     $.each(data.years, function(i, obj) {
       //let option = $('<options />').attr("value",obj).html(obj);
       $("#lab_budget_info_filter_year").append(new Option(obj, obj));
