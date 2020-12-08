@@ -12,10 +12,6 @@ jQuery(function($){
     }
   });
 
-  $("#lab_budget_info_filter_command_number").keyup(function (e) {
-    //console.log($("#lab_budget_info_filter_command_number").val());
-    applyFilter();
-  });
 
   $("#lab_budget_info_user").autocomplete({
       minChars: 2,
@@ -54,6 +50,12 @@ jQuery(function($){
     $("#lab_budget_info_amount").val(amount);
   });
 
+  /**
+   * Filter
+   */
+  $("#lab_budget_info_filter_order_number").keyup(function (e) {
+    applyFilter();
+  });
   $("#lab_budget_info_filter_year").change(function () {
     applyFilter();
   });
@@ -61,6 +63,12 @@ jQuery(function($){
     applyFilter();
   });
   $("#lab_budget_info_filter_fund_origin").change(function () {
+    applyFilter();
+  });
+  $("#lab_budget_info_filter_site").change(function () {
+    applyFilter();
+  });
+  $("#lab_budget_info_filter_budget_manager").change(function () {
     applyFilter();
   });
 
@@ -91,32 +99,35 @@ jQuery(function($){
     data = {
       'action':"lab_budget_info_load",
     };
-    if ($("#lab_budget_info_filter_year").val() != "") {
-      data["filters"] = {};
-      data["filters"]['year'] = $("#lab_budget_info_filter_year").val();
+    let filterFields = ["year", "state", "fund_origin", "order_number", "site", "budget_manager"];
+    for (let i = 0; i < filterFields.length ; i++) {
+      let filter = filterFields[i];
+      if ($("#lab_budget_info_filter_" + filter).val() != "") {
+        data["filters"] = {};
+        data["filters"][filter] = $("#lab_budget_info_filter_"+filter).val();
+      }
+
     }
-    console.log(data);
+/*
     if ($("#lab_budget_info_filter_state").val() != "") {
       if (!data["filters"]) {
         data["filters"] = {};
       }
       data["filters"]['state'] = $("#lab_budget_info_filter_state").val();
     }
-    console.log(data);
     if ($("#lab_budget_info_filter_fund_origin").val() != "") {
       if (!data["filters"]) {
         data["filters"] = {};
       }
       data["filters"]['funds'] = $("#lab_budget_info_filter_fund_origin").val();
     }
-    console.log(data);
     if ($("#lab_budget_info_filter_command_number").val() != "") {
       if (!data["filters"]) {
         data["filters"] = {};
       }
       data["filters"]['command_number'] = $("#lab_budget_info_filter_command_number").val();
     }
-    console.log(data);
+    //*/
     callAjax(data, null, displayBudget, null, null);
 
   }

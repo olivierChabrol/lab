@@ -277,21 +277,37 @@ function lab_budget_info_load($budgetId, $filters = null) {
                     $data["filters"]["state"] = $value;
 
                 }
-                else if ($key == "funds") {
+                else if ($key == "fund_origin") {
                     if ($nbFilter > 0) {
                         $sql .= " AND ";
                     }
                     $sql .= "bi.`fund_origin` = ".$value;
 
-                    $data["filters"]["funds"] = $value;
+                    $data["filters"]["fund_origin"] = $value;
                 }
-                else if ($key == "command_number") {
+                else if ($key == "order_number") {
                     if ($nbFilter > 0) {
                         $sql .= " AND ";
                     }
                     $sql .= "bi.`order_number` LIKE '%".$value."%'";
 
                     $data["filters"]["command_number"] = $value;
+                }
+                else if ($key == "site") {
+                    if ($nbFilter > 0) {
+                        $sql .= " AND ";
+                    }
+                    $sql .= "bi.`site_id` LIKE '%".$value."%'";
+
+                    $data["filters"]["site"] = $value;
+                }
+                else if ($key == "budget_manager") {
+                    if ($nbFilter > 0) {
+                        $sql .= " AND ";
+                    }
+                    $sql .= "bi.`budget_manager_id` LIKE '%".$value."%'";
+
+                    $data["filters"]["budget_manager"] = $value;
                 }
                 $nbFilter += 1;
             }
