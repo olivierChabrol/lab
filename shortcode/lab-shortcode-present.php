@@ -270,7 +270,7 @@ function lab_present_choice($param) {
         <h3>".esc_html__("Je serai présent·e", "lab")."</h3>
             <div class=\"input-group mb-3\">Rejoindre un groupe de travail : ".
             //lab_html_select_str("workGroupFollow", "workGroupFollow", "", get_workgroup_of_the_week, $startDay, array("label"=>"None","value"=>""), null, array("id"=>"id", "value"=>"name"))."</div>
-            lab_html_select_str("workGroupFollow", "workGroupFollow", "", getWorgroups, $startDay, array("label"=>"None","value"=>""), null, null, array("date"=>"date", "hour_start"=>"hour_start", "hour_end"=>"hour_end", "name"=>"name", "site"=>"site")).
+            lab_html_select_str("workGroupFollow", "workGroupFollow", "", "getWorgroups", $startDay, array("label"=>"None","value"=>""), null, null, array("date"=>"date", "hour_start"=>"hour_start", "hour_end"=>"hour_end", "name"=>"name", "site"=>"site")).
             "</div>
             <div class=\"input-group mb-3\">
             <input id='userId' name='userId' type='hidden' value='" . get_current_user_id() . "' />
@@ -287,7 +287,7 @@ function lab_present_choice($param) {
             <input type='time' name='hour-close' id='hour-close' min='07:00' max='20:00' required class='form-control'/>
             <div id='messErr_hour-close' class='invalid-feedback'></div>
             <label for='site-selected'>".esc_html__("sur le site", "lab")."</label>
-            " . lab_html_select_str("siteId", "siteName", "custom-select", lab_admin_list_site) . "</div>
+            " . lab_html_select_str("siteId", "siteName", "custom-select", "lab_admin_list_site") . "</div>
             <div class=\"input-group mb-3\" id=\"divNewWorkingGroup\">Créer un groupe de travail : <input type='text' id='workGroupName' class='form-control'/></div>
             <div class=\"input-group mb-3\">
             <div class=\"form-group\">
@@ -448,7 +448,7 @@ function editDiv()
                     <label for="hour-close">'.esc_html("to", "lab").'</label>
                     <input type="time" id="lab_presence_edit_hour-close" min="07:00" max="20:00"/>
                     <div class="input-group mb-3">
-                        <label for="site-selected">'.esc_html("on the site", "lab").'</label>'. lab_html_select_str("lab_presence_edit_siteId", "siteName", "custom-select", lab_admin_list_site).'
+                        <label for="site-selected">'.esc_html("on the site", "lab").'</label>'. lab_html_select_str("lab_presence_edit_siteId", "siteName", "custom-select", "lab_admin_list_site").'
                     </div>
                     <div class="input-group mb-3">
                         <div class="form-group">

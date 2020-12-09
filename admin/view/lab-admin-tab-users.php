@@ -54,7 +54,7 @@ function lab_admin_tab_user() {
           <label for="lab_user_function"><?php esc_html_e('User function','lab') ?></label>
         </td>
         <td>
-          <?php lab_html_select("lab_user_function", "lab_user_function", "", lab_admin_get_params_userFunction, null, array("value"=>"","label"=>"None"), ""); ?>
+          <?php lab_html_select("lab_user_function", "lab_user_function", "", "lab_admin_get_params_userFunction", null, array("value"=>"","label"=>"None"), ""); ?>
         </td>
       </tr>
       <tr>
@@ -62,7 +62,7 @@ function lab_admin_tab_user() {
           <label for="lab_user_employer"><?php esc_html_e('Employer','lab') ?></label>
         </td>
         <td>
-          <?php lab_html_select("lab_user_employer", "lab_user_employer", "", lab_admin_get_params_userEmployer, null, array("value"=>"","label"=>"None"), ""); ?>
+          <?php lab_html_select("lab_user_employer", "lab_user_employer", "", "lab_admin_get_params_userEmployer", null, array("value"=>"","label"=>"None"), ""); ?>
         </td>
       </tr>
       <tr>
@@ -70,7 +70,7 @@ function lab_admin_tab_user() {
           <label for="lab_user_funding"><?php esc_html_e('Funding','lab') ?></label>
         </td>
         <td>
-          <?php lab_html_select("lab_user_funding", "lab_user_funding", "", lab_admin_get_params_userFunding, null, array("value"=>"","label"=>"None"), ""); ?>
+          <?php lab_html_select("lab_user_funding", "lab_user_funding", "", "lab_admin_get_params_userFunding", null, array("value"=>"","label"=>"None"), ""); ?>
         </td>
       </tr>
       <tr>
@@ -78,7 +78,7 @@ function lab_admin_tab_user() {
           <label for="lab_user_location"><?php esc_html_e('User Location','lab') ?></label>
         </td>
         <td>
-          <?php lab_html_select("lab_user_location", "lab_user_location", "", lab_admin_get_params_userLocation, null, array("value"=>"","label"=>"None"), ""); ?>
+          <?php lab_html_select("lab_user_location", "lab_user_location", "", "lab_admin_get_params_userLocation", null, array("value"=>"","label"=>"None"), ""); ?>
         </td>
       </tr>
       <tr>
@@ -110,7 +110,7 @@ function lab_admin_tab_user() {
           <label for="lab_user_section_cn"><?php esc_html_e('Section CN','lab') ?></label>
         </td>
         <td>
-          <?php lab_html_select("lab_user_section_cn", "lab_user_section_cn", "", lab_admin_get_params_userSectionCn, null, array("value"=>"","label"=>"None"), ""); ?>
+          <?php lab_html_select("lab_user_section_cn", "lab_user_section_cn", "", "lab_admin_get_params_userSectionCn", null, array("value"=>"","label"=>"None"), ""); ?>
         </td>
       </tr>
       <tr>
@@ -118,7 +118,7 @@ function lab_admin_tab_user() {
           <label for="lab_user_section_cnu"><?php esc_html_e('Section CNU','lab') ?></label>
         </td>
         <td>
-          <?php lab_html_select("lab_user_section_cnu", "lab_user_section_cnu", "", lab_admin_get_params_userSectionCnu, null, array("value"=>"","label"=>"None"), ""); ?>
+          <?php lab_html_select("lab_user_section_cnu", "lab_user_section_cnu", "", "lab_admin_get_params_userSectionCnu", null, array("value"=>"","label"=>"None"), ""); ?>
         </td>
       </tr>
       <tr>
@@ -144,7 +144,7 @@ function lab_admin_tab_user() {
           <label for="lab_user_phd_school"><?php esc_html_e('PHD school','lab') ?></label>
         </td>
         <td>
-        <?php lab_html_select("lab_user_phd_school", "lab_user_phd_school", "", lab_admin_get_params_userPhdSchool, null, array("value"=>"","label"=>"None"), ""); ?>
+        <?php lab_html_select("lab_user_phd_school", "lab_user_phd_school", "", "lab_admin_get_params_userPhdSchool", null, array("value"=>"","label"=>"None"), ""); ?>
         </td>
       </tr>
       <tr>

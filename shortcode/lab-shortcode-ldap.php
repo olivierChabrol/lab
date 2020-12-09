@@ -41,7 +41,7 @@ function lab_ldap($args=null) {
 
     $ldapStr .= '<div id="lab_pages">'.lab_ldap_pagination(1,1).'</div></div>
     <div class="p-2"> <br/><br/></div>';
-    ldap_close($lc);
+    //ldap_close($lc);
     
     $ldapStr .= '<div class="p-2"><h3>' . esc_html("Chercher une personne dans LDAP", "lab") .'</h3>
         <form action="" method="post">
@@ -51,7 +51,7 @@ function lab_ldap($args=null) {
             <input type="submit" value="Envoyer">
         </form></br>';
     
-    $mail = $_POST['mailLdap'];
+    //$mail = $_POST['mailLdap'];
     if (isset($mail)) {
         $ldapObj = LAB_LDAP::getInstance();
         $ldapStr .= '<h5>Résultat de la recherche pour ' . $mail . '</h5>

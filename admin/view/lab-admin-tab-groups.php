@@ -31,9 +31,9 @@ function lab_admin_tab_groups() {
     <br /><br />
     <input type="hidden" id="lab_searched_chief_id" name="lab_searched_chief_id" />
     <label for="wp_lab_group_parent_edit"><?php esc_html_e("Modifier le groupe parent",'lab'); ?> :</label>
-    <?php lab_html_select("wp_lab_group_parent_edit", "wp_lab_group_parent", "", lab_admin_group_select_group, "group_name", array("value"=>0,"label"=>"None")); ?>
+    <?php lab_html_select("wp_lab_group_parent_edit", "wp_lab_group_parent", "", "lab_admin_group_select_group", "group_name", array("value"=>0,"label"=>"None")); ?>
     <label for="wp_lab_group_type_edit"><?php esc_html_e("Modifier le type",'lab'); ?> :</label>
-    <?php lab_html_select("wp_lab_group_type_edit", "wp_lab_group_type", "", lab_admin_get_params_groupTypes); ?>
+    <?php lab_html_select("wp_lab_group_type_edit", "wp_lab_group_type", "", "lab_admin_get_params_groupTypes"); ?>
     <br /></br />
     <label for="wp_lab_group_url_edit"><?php esc_html_e("Page web du groupe",'lab');?> :</label>
     <input type="text" name="wp_lab_group_url" id="wp_lab_group_url_edit" value="" size="80" placeholder="Url"/>
@@ -78,13 +78,13 @@ function lab_admin_tab_groups() {
     <tr class="form-field">
       <th scope="row"><label for="lab_createGroup_parentGroup"><?php esc_html_e("Groupe parent",'lab'); ?> :</label></th>
       <td>
-        <?php lab_html_select("lab_createGroup_parent", "lab_createGroup_parent", "", lab_admin_group_select_group, "acronym", array("value"=>0,"label"=>"None")); ?>
+        <?php lab_html_select("lab_createGroup_parent", "lab_createGroup_parent", "", "lab_admin_group_select_group", "acronym", array("value"=>0,"label"=>"None")); ?>
       </td>
     </tr>
     <tr class="form-field">
       <th scope="row"><label for="lab_createGroup_type"><?php esc_html_e("Type",'lab'); ?> :</label></th>
       <td>
-      <?php lab_html_select("lab_createGroup_type", "lab_createGroup_Type", "", lab_admin_get_params_groupTypes); ?>
+      <?php lab_html_select("lab_createGroup_type", "lab_createGroup_Type", "", "lab_admin_get_params_groupTypes"); ?>
       </td>
     </tr>
     <tr class="form-field">

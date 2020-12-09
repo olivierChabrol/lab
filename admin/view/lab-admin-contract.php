@@ -51,7 +51,7 @@
                 <label for="lab_admin_contract_type"><?php esc_html_e('Contract type','lab') ?></label>
             </td>
             <td>
-                <?php lab_html_select("lab_admin_contract_type", "lab_admin_contract_type", "", lab_admin_get_params_contract_type, null, array("value"=>"0","label"=>"None"), ""); ?>
+                <?php lab_html_select("lab_admin_contract_type", "lab_admin_contract_type", "", "lab_admin_get_params_contract_type", null, array("value"=>"0","label"=>"None"), ""); ?>
             </td>
         </tr>
         <tr>
