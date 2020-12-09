@@ -187,7 +187,8 @@ jQuery(function($){
     $.each(data.results, function(i, obj) {
         
         let tr = $('<tr />');
-        if (data.params[obj.fund_origin] == undefined) {
+        //if (data.params[obj.fund_origin] == undefined) {
+        if (searchInParams(obj.fund_origin, data) == undefined) {
           // red
           tr.css("background-color", "#ffadad");
 
@@ -385,8 +386,8 @@ jQuery(function($){
     return $('<td />').html(str);
   }
 
-  function getFundOriginString(paramId, data) {
-    let f = "Not defined";
+  function searchInParams(paramId, data) {
+    let f = undefined;
     if (data.params[paramId] != undefined)
     {
       let param = data.params[paramId];
@@ -397,6 +398,14 @@ jQuery(function($){
       if (param) {
         f = param.value;
       }
+    }
+    return f;
+  }
+
+  function getFundOriginString(paramId, data) {
+    let f = searchInParams(paramId, data);
+    if (f == undefined) {
+      f = "Not defined";
     }
     return f;
   }

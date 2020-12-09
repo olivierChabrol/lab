@@ -62,7 +62,7 @@
  <label for="lab_budget_info_expenditure_type"><?php esc_html_e('Expenditure type','lab') ?></label>
             </td>
             <td>
-<?php lab_html_select("lab_budget_info_expenditure_type", "lab_budget_info_expenditure_type", "", lab_admin_get_params_budgetInfoType, null, array("value"=>"","label"=>"None"), ""); ?>
+<?php lab_html_select("lab_budget_info_expenditure_type", "lab_budget_info_expenditure_type", "", "lab_admin_get_params_budgetInfoType", null, array("value"=>"","label"=>"None"), ""); ?>
             </td>
         </tr>
         <tr>
@@ -97,7 +97,7 @@
  <label for="lab_budget_info_site_id"><?php esc_html_e('Site','lab') ?></label>
             </td>
             <td>
-            <?php lab_html_select("lab_budget_info_site_id", "lab_budget_info_site_id", "", lab_admin_get_params_userLocation, null, array("value"=>"0","label"=>"None"), ""); ?>
+            <?php lab_html_select("lab_budget_info_site_id", "lab_budget_info_site_id", "", "lab_admin_get_params_userLocation", null, array("value"=>"0","label"=>"None"), ""); ?>
             </td>
         </tr>
         <tr>
@@ -105,7 +105,7 @@
               <label for="lab_budget_info_budget_manager_id"><?php esc_html_e('Budget manager','lab') ?></label>
             </td>
             <td>
-            <?php lab_html_select("lab_budget_info_budget_manager_id", "lab_budget_info_budget_manager_id", "", lab_admin_budget_managers_list, null, null, ""); ?>
+            <?php lab_html_select("lab_budget_info_budget_manager_id", "lab_budget_info_budget_manager_id", "", "lab_admin_budget_managers_list", null, null, ""); ?>
               <span id="lab_budget_info_managers"></span>
             </td>
         </tr>
@@ -114,7 +114,7 @@
  <label for="lab_budget_info_fund_origin"><?php esc_html_e('Funding','lab') ?></label>
             </td>
             <td>
-            <?php lab_html_select("lab_budget_info_fund_origin", "lab_budget_info_fund_origin", "", lab_admin_budget_funds, null, array("value"=>"0","label"=>"None"), ""); ?>
+            <?php lab_html_select("lab_budget_info_fund_origin", "lab_budget_info_fund_origin", "", "lab_admin_budget_funds", null, array("value"=>"0","label"=>"None"), ""); ?>
             </td>
         </tr>
         <tr>
