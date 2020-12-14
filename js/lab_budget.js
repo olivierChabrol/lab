@@ -157,11 +157,13 @@ jQuery(function($){
       $("#lab_budget_info_"+element).val(data.results[element]);
       //console.log("set #lab_budget_info_"+element+" : " + data.results[element]);
     }
-    let u = data.users[data.results["user_id"]];
-    if(isset(u)) {
-      $("#lab_budget_info_user").val(u.first_name+" "+u.last_name);
+    console.log(data.results["user_id"]);
+    if(data.results["user_id"] != 0) {
+      let u = data.users[data.results["user_id"]];
+      if(u) {
+        $("#lab_budget_info_user").val(u.first_name+" "+u.last_name);
+      }
     }
-    
   }
 
   function displayBudget(data)
