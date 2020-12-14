@@ -158,7 +158,9 @@ jQuery(function($){
       //console.log("set #lab_budget_info_"+element+" : " + data.results[element]);
     }
     let u = data.users[data.results["user_id"]];
-    $("#lab_budget_info_user").val(u.first_name+" "+u.last_name);
+    if(isset(u)) {
+      $("#lab_budget_info_user").val(u.first_name+" "+u.last_name);
+    }
     
   }
 
