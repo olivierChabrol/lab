@@ -557,6 +557,29 @@ function lab_admin_contract_create_table() {
 }
 
 /***********************************************************************************************************
+ * MISSION
+ ***********************************************************************************************************/
+
+function lab_admin_mission_create_table() {
+    global $wpdb;
+    $sql = "CREATE TABLE IF NOT EXISTS `".$wpdb->prefix."lab_mission_route` (
+        `id` bigint NOT NULL,
+        `mission_id` bigint NOT NULL,
+        `country_from` varchar(100) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+        `travel_from` varchar(100) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+        `country_to` varchar(100) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+        `travel_to` varchar(100) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+        `travel_date` datetime NOT NULL,
+        `means_of_locomotion` bigint NOT NULL,
+        `round_trip` BOOLEAN NOT NULL,
+        `nb_person` int NOT NULL,
+        `carbon_footprint` int NOT NULL,
+        `travel_datereturn` datetime NOT NULL
+    ) ENGINE=InnoDB";
+    return $wpdb->get_results($sql);
+}
+
+/***********************************************************************************************************
  * USERMETA
  ***********************************************************************************************************/
 /**
@@ -2391,6 +2414,7 @@ function create_all_tables() {
     lab_admin_createTable_users_historic();
     lab_admin_createTable_budget_info();
     lab_admin_contract_create_table();
+    lab_admin_mission_create_table();
 }
 
 function delete_all_tables() {
@@ -2415,6 +2439,7 @@ function delete_all_tables() {
     drop_table("lab_budget_info");
     drop_table("lab_contract");
     drop_table("lab_contract_user");
+    drop_table("lab_mission_route");
 }
 
 /**

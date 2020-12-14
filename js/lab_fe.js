@@ -2,8 +2,10 @@
 const { __, _x, _n, sprintf } = wp.i18n;
 
 /*** DIRECTORY ***/ 
+var travels = [];
 
 jQuery(function($){
+
   $("#lab-directory-group-id").on('change', function() {
     loadDirectory();
   });
@@ -303,6 +305,238 @@ function lab_profile_edit(user_id,phone,url,bio,color,hal_id,hal_name) {
 }
 
 /******************************* ShortCode Guest Invitation *******************************/
+
+function getEditTravelField() {
+  return ["dateGoTo", "timeGoTo", "countryFrom", "cityFrom", "countryTo", "cityTo", "mean", "cost", "ref", "rt", "dateReturn", "timeReturn"];
+}
+
+function saveTravelModification(id) {
+  console.log("[saveTravelModification] " + id);
+  let fields = getEditTravelField();
+  let f = {};
+  for (let i = 0 ; i < fields.length ; i++) {
+    f[fields[i]] = $("#lab_mission_edit_travel_div_" + fields[i]).val();
+  }
+  if (travelExist(id)) {
+    editTravelTd(id);
+  }
+  else {
+    addTravelTd(id, f);
+  }
+}
+
+function travelExist(id) {
+  return travels.includes(id);
+}
+
+function addTravelId(id) {
+  travels.push(id);  
+}
+
+function deleteTravelId(id) {
+  console.log(travels);
+  travels.splice($.inArray(id,y) ,1 );
+  console.log(travels);
+}
+
+function getNewTravelId() {
+  console.log("[getNewTravelId]");
+  let max = 0;
+  for (let i = 0 ; i < travels.length ; i++) {
+    if (travels[i] > max) {
+      max = travels[i];
+    }
+  }
+  console.log(max + 1);
+  return max + 1;
+}
+
+function okHtmlField() {
+  return '<i class="fa fa-check" aria-hidden="true" style="color: SpringGreen;"></i>';
+}
+function notOkHtmlField() {
+  return '<i class="fa fa-times" aria-hidden="true" style="color: Tomato;"></i>';
+}
+
+function editTravelTd(id) {
+  console.log("[editTravelTd] " + id);
+  let fields = getEditTravelField();
+  for (let i = 0 ; i < fields.length ; i++) {
+    let fieldId = "#travel_" + fields[i] + "_" + id;
+    let val = "";
+    if(fields[i].startsWith("country")) {
+      val = $("#lab_mission_edit_travel_div_" + fields[i]).countrySelect("getSelectedCountryData")['iso2'];
+      $(fieldId).empty();
+      $(fieldId).attr("value", val);
+      $(fieldId).append(createCountryDiv(val));
+      //.html($("#lab_mission_edit_travel_div_" + fields[i]).countrySelect("getSelectedCountryData")['iso2']);
+      //console.log("[editTravelTd] " + fields[i] + " " + val);
+    }
+    else if (fields[i] == "rt") {
+      val = $('#lab_mission_edit_travel_div_rt').is(":checked");
+      let valDisplay = notOkHtmlField();
+      //console.log("[editTravelTd] " + fields[i] + " " + val);
+      if(val) {
+        valDisplay = okHtmlField();
+      }
+      $(fieldId).html(valDisplay);
+    }
+    else 
+    {
+      val = $("#lab_mission_edit_travel_div_" + fields[i]).val();
+
+      //console.log("[editTravelTd] " + fields[i] + " " + );
+      if (fields[i] == "cost") {
+        $(fieldId).html(formatMoneyValue(val));
+      } 
+      else 
+      {
+        $(fieldId).html(val);
+      }
+    }
+    $(fieldId).attr("value", val);
+  }
+}
+
+function emptyTravelDivFields() {
+  let fields = getEditTravelField();
+  for (let i = 0 ; i < fields.length ; i++) {
+    $("#lab_mission_edit_travel_div_" + fields[i]).val("");
+  }
+  $("#lab_mission_edit_travel_div_countryFrom" ).val("France");
+  $("#lab_mission_edit_travel_div_countryTo" ).val("France");
+}
+
+function editTravelDiv(id) {
+  console.log("[editTravelDiv] id : " + id);
+  let fields = getEditTravelField();
+  for (let i = 0 ; i < fields.length ; i++) {
+    let fieldId = "#travel_" + fields[i] + "_" + id;
+    if ($(fieldId).length > 0) {
+      let val = $(fieldId).html();
+      //console.log("[editTravelDiv] fieldId (" + fieldId + ") = " + val);
+      if(fields[i].startsWith("country")) {
+        val = $(fieldId).attr("value");
+        $("#lab_mission_edit_travel_div_" + fields[i]).countrySelect("selectCountry", val);
+      }
+      else 
+      {
+        if (fields[i] == "cost") {
+          val = $(fieldId).attr("value");
+        }
+        $("#lab_mission_edit_travel_div_" + fields[i]).val(val);
+      }
+    }
+    else {
+      console.log("[editTravelDiv] fieldId (" + fieldId + ")  NO VALUE ");
+    }
+  }
+  $("#lab_mission_edit_travel_save_button").attr("travelId", id);
+  $("#lab_mission_edit_travel_div").show();
+}
+
+function deleteTravelTr(id) {
+  $("#lab_mission_table_tr_"+id).remove();
+  deleteTravelId(id);
+}
+
+function addTravelTd(id, fields) {
+  addTravel(id, fields["dateGoTo"],fields["timeGoTo"], fields["countryFrom"], fields["cityFrom"], fields["countryTo"], fields["cityTo"], fields["mean"], fields["cost"], fields["ref"], fields["rt"], fields["dateReturn"], fields["timeReturn"]);
+}
+
+function addTravel(id, dateGoTo, timeGoTo, countryFrom, from, countryTo, to, mean, cost, ref, rt, dateReturn, timeReturn) {
+  addTravelId(id);
+  let tr = $("<tr/>").attr("id","lab_mission_table_tr_"+id);
+  createTravelTdToTr(tr, id, "dateGoTo", dateGoTo);
+  createTravelTdToTr(tr, id, "timeGoTo", timeGoTo);
+  createTravelCountryTdToTr(tr, id, "countryFrom", countryFrom.toLowerCase());
+  createTravelTdToTr(tr, id, "cityFrom", from);
+  createTravelCountryTdToTr(tr, id, "countryTo", countryTo.toLowerCase());
+  createTravelTdToTr(tr, id, "cityTo", to);
+  createTravelTdToTr(tr, id, "mean", mean);
+  createTravelCostTdToTr(tr, id, "cost", cost);
+  createTravelTdToTr(tr, id, "ref", ref);
+  console.log("ar : " + rt);
+  createTravelBooleanField(tr, id, "rt", rt);
+  createTravelTdToTr(tr, id, "dateReturn", dateReturn);
+  createTravelTdToTr(tr, id, "timeReturn", timeReturn);
+  let tdEdit = $("<td/>").attr("class", "pointer").attr("travelId",id).html('<i class="fa fa-pencil"  aria-hidden="true" travelId="'+id+'"></i>');
+  let tdDel  = $("<td/>").attr("class", "pointer").attr("travelId",id).html('<i class="fa fa-trash-o" aria-hidden="true" travelId="'+id+'"></i>');
+  let tdAdd  = $("<td/>").attr("class", "pointer").attr("travelId",id).html('<i class="fa fa-plus" aria-hidden="true" travelId="'+id+'"></i>');
+  tr.append(tdEdit);
+  tr.append(tdDel);
+  tr.append(tdAdd);
+
+  tdEdit.click(function (e) {
+    editTravelDiv($(this).attr("travelId"));
+  });
+  tdAdd.click(function (e) {
+    emptyTravelDivFields();
+    editTravelDiv(getNewTravelId());
+  });
+  tdDel.click(function (e) {
+    deleteTravelTr($(this).attr("travelId"));
+  });
+  $("#lab_mission_travels_table_tbody").append(tr);
+}
+
+function createTravelBooleanField(tr, id, fieldName, value) {
+  let displayValue = notOkHtmlField();
+  if(value) {
+    displayValue = okHtmlField();
+  }
+  createTravelTdToTr(tr, id, fieldName, displayValue, value);
+}
+
+function createCountryDiv(value) {
+  let divSelectedFlag = $("<div/>").addClass("country-select selected-flag");
+  let div = $("<div/>").addClass("flag "+value);
+  divSelectedFlag.append(div);
+  return divSelectedFlag;
+}
+
+function createTravelCountryTdToTr(tr, id, fieldName, value) {
+  let td = $("<td/>").attr("id","travel_" + fieldName + "_" + id).attr("value", value);
+  td.append(createCountryDiv(value));
+  tr.append(td);
+}
+
+function formatMoneyValue(value) {
+  return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(value);
+}
+
+function createTravelCostTdToTr(tr, id, fieldName, value) {
+  createTravelTdToTr(tr, id, fieldName, formatMoneyValue(value), value);
+}
+
+function createTravelTdToTr(tr, id, fieldName, value, realValue = undefined) {
+  let td = $("<td/>").attr("id","travel_" + fieldName + "_" + id).html(value);
+  if (realValue != undefined) {
+    td.attr("value", realValue);
+  }
+  tr.append(td);
+}
+
+function addEmptyTravel(id) {
+  let today = new Date();
+  let dd = String(today.getDate()).padStart(2, '0');
+  let mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+  let yyyy = today.getFullYear();
+
+  let h = today.getHours();
+  let m = today.getMinutes();
+  if (h < 10) {
+    h = "0"+h;
+  }
+  
+  if (parseInt(m) < 10) {
+    m = "0"+m;
+  }
+  
+
+  addTravel(id, yyyy+"-"+mm+"-"+dd, h+":"+m, "FR","Marseille", "FR", "Paris", "Train", 0.0, "", false, "0000-00-00", "00:00");
+}
+
 function LABLoadInvitation() {
   //Plug-in international phone : https://github.com/jackocnr/intl-tel-input 
   var inputTel = document.querySelector("input[type=tel]");
@@ -311,6 +545,47 @@ function LABLoadInvitation() {
     initialCountry: "fr"
   }));
   jQuery(function($) {
+    addEmptyTravel("0");
+    $("#inviteDiv").hide();
+    $("#lab_mission_edit_travel_div").hide();
+    $("#returnSpanDate").hide();
+    $("#lab_mission_edit_travel_div_rt").change(function(e) {
+      if ($('#lab_mission_edit_travel_div_rt').is(":checked"))
+      {
+        if($("#lab_mission_edit_travel_div_dateReturn").val() == "") {
+          $("#lab_mission_edit_travel_div_dateReturn").val($("#lab_mission_edit_travel_div_dateGoTo").val());
+          $("#lab_mission_edit_travel_div_timeReturn").val($("#lab_mission_edit_travel_div_timeGoTo").val());
+        }
+        $("#returnSpanDate").show();
+      }
+      else {
+        $("#returnSpanDate").hide();
+      }
+    });
+
+    $("#addTravel").click(function(e) {
+      emptyTravelDivFields();
+      editTravelDiv(getNewTravelId());
+    });
+
+    $("#lab_mission_edit_travel_save_button").click(function(e) {
+      $("#lab_mission_edit_travel_div").hide();
+      saveTravelModification($("#lab_mission_edit_travel_save_button").attr("travelId"));
+    });
+
+    $(".lab_fe_modal_close").click(function(e) {
+      $("#lab_mission_edit_travel_div").hide();
+    });
+
+    $("#lab_mission").change(function (e) {
+      if($("#lab_mission").val() == 250) {
+        $("#inviteDiv").show();
+      }
+      else{
+        $("#inviteDiv").hide();
+      }
+    });
+
     $("#invitationForm h2").click(function() {
       if ( $("#invitationForm").attr("wrapped")=="true" ) {
         $("#invitationForm form").slideDown();
@@ -350,6 +625,14 @@ function LABLoadInvitation() {
     }); 
     //Plug-in country selector : https://github.com/mrmarkfrench/country-select-js
     $("#residence_country").countrySelect({
+      defaultCountry: "fr",
+      preferredCountries: ['fr', 'de', 'it', 'es', 'us'],
+    });
+    $("#lab_mission_edit_travel_div_countryFrom").countrySelect({
+      defaultCountry: "fr",
+      preferredCountries: ['fr', 'de', 'it', 'es', 'us'],
+    });
+    $("#lab_mission_edit_travel_div_countryTo").countrySelect({
       defaultCountry: "fr",
       preferredCountries: ['fr', 'de', 'it', 'es', 'us'],
     });

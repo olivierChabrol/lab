@@ -264,15 +264,15 @@ jQuery(function($){
         $("#lab_admin_budget_info_list_table_tbody").append(tr);
     });
     //console.log(budgetSum);
-    console.log(origins);
-    console.log(sites);
-    console.log(budgetSum);
+    //console.log(origins);
+    //console.log(sites);
+    //console.log(budgetSum);
     $("#lab_admin_budget_info_sum_table_thead").empty();
     $("#lab_admin_budget_info_sum_table_tbody").empty();
     let th = $('<th />').html("Origine des crédits");
     $("#lab_admin_budget_info_sum_table_thead").append(th);
     $.each(budgetSum, function(key, value) {
-      console.log(value);
+      //console.log(value);
       let th = $('<th />').html(key);
       $("#lab_admin_budget_info_sum_table_thead").append(th);
     });
@@ -357,7 +357,14 @@ jQuery(function($){
 
   function createEditButton(id) {
     let url = window.location.href;
-    url = url.substr(0, url.lastIndexOf("tab=")) + "tab=entry&id="+id;
+    console.log(url);
+    if (url.indexOf("&") != -1) 
+    {
+      url = (""+url).substr(0, url.indexOf("&"));
+    }
+    url  += "&tab=entry&id="+id;
+    
+    console.log("->"+url);
     let aEdit = $('<a />').attr("class", "page-title-action lab_keyring_key_edit").attr("href",url).attr("budgetId", id).html("edit");
     let aDel = $('<a />').attr("class", "page-title-action lab_budget_info_delete").attr("budgetId", id).html("X");
 

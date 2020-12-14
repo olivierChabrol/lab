@@ -123,6 +123,7 @@ add_shortcode('lab-event-of-the-year', 'lab_event_of_the_year');
 add_shortcode('lab-incoming-event', 'lab_incoming_event');
 add_shortcode('lab-hal', 'lab_hal');
 add_shortcode('lab-invite', 'lab_invitation');
+add_shortcode('lab-mission', 'lab_mission');
 add_shortcode('lab-labo1dot5', 'lab_labo1_5');
 add_shortcode('lab-labo1dot5admin', 'lab_labo1_5admin');
 add_shortcode('lab-labo1dot5resp', 'lab_labo1_5resp');
@@ -285,6 +286,7 @@ function wp_lab_fe_enqueues()
 {
   //wp_deregister_script('jquery');
 	//wp_enqueue_script('jquery', plugins_url('js/jquery-3.5.1.min.js',__FILE__), array(), version_id(), false);
+  wp_enqueue_style('labCSS',plugins_url('css/lab.css',__FILE__));
   wp_enqueue_style('jqueryToastCSS',plugins_url('css/jquery.toast.css',__FILE__), version_id(), false);
   wp_enqueue_script('jqueryToastJS',plugins_url('js/jquery.toast.js',__FILE__), array('jquery'),version_id(),false);
   wp_enqueue_script('jquery-ui-1.12.1-js', plugins_url('js/jquery-ui.min.js',__FILE__), array('jquery'), version_id(), false);
@@ -309,9 +311,9 @@ function wp_lab_fe_enqueues()
   wp_enqueue_script('lab-global', plugins_url('js/lab_global.js',__FILE__), array('jqueryToastJS', 'jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog'), version_id(), false);
   wp_enqueue_script('lab-bootstrap', plugins_url('js/bootstrap.min.js',__FILE__), array('jquery'), version_id(), true);
   wp_enqueue_script('lab-shortcode-present',plugins_url('js/lab_shortcode_present.js',__FILE__), array('jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog', 'lab-global', 'lab-bootstrap'), version_id(), false);
-  wp_enqueue_script('lab-shortcode-labo1dot5',plugins_url('js/lab_shortcode_labo1dot5.js',__FILE__), array('jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog', 'lab-global', 'lab-bootstrap'), version_id(), false);
-  wp_enqueue_script('lab-shortcode-labo1dot5admin',plugins_url('js/lab_shortcode_labo1dot5admin.js',__FILE__), array('jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog', 'lab-global', 'lab-bootstrap'), version_id(), false);
-  wp_enqueue_script('lab-shortcode-labo1dot5resp',plugins_url('js/lab_shortcode_labo1dot5resp.js',__FILE__), array('jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog', 'lab-global', 'lab-bootstrap'), version_id(), false);
+  //wp_enqueue_script('lab-shortcode-labo1dot5',plugins_url('js/lab_shortcode_labo1dot5.js',__FILE__), array('jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog', 'lab-global', 'lab-bootstrap'), version_id(), false);
+  //wp_enqueue_script('lab-shortcode-labo1dot5admin',plugins_url('js/lab_shortcode_labo1dot5admin.js',__FILE__), array('jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog', 'lab-global', 'lab-bootstrap'), version_id(), false);
+  //wp_enqueue_script('lab-shortcode-labo1dot5resp',plugins_url('js/lab_shortcode_labo1dot5resp.js',__FILE__), array('jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog', 'lab-global', 'lab-bootstrap'), version_id(), false);
 }
 
 function localize_script($domain) {

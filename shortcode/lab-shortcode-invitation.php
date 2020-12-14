@@ -2,9 +2,366 @@
 /*
  * File Name: lab-shortcode-invitation.php
  * Description: shortcode pour afficher un formulaire de création d'invitation
- * Authors: Ivan Ivanov, Lucas Urgenti
+ * Authors: Ivan IVANOV, Lucas URGENTI, Olivier CHABROL
  * Version: 1.2
  */
+
+function lab_mission($args) {
+    $param = shortcode_atts(array(
+        'hostpage' => 0 //0 pour invité, 1 pour invitant/responsable
+        ),
+        $args, 
+        "lab-invitation"
+    );
+    global $wp;
+    $invitationStr ='';
+    $url = $wp->request;
+    $host = null;
+    if ( $param['hostpage'] ) {
+        if ( ! isset(explode("/",$url)[1])) { //Aucun token, donc l'invitant crée lui-même une nouvelle invitation
+            $token='0';
+            $host = new labUser(get_current_user_id());
+        } else {//Token fournit, récupère les informations existantes
+            $token = explode("/",$url)[1];
+            $invitation=lab_invitations_getByToken($token);
+            //var_dump($invitation);
+            $charges = json_decode($invitation->charges);
+            if (!isset($invitation)) {
+                return esc_html__("Token d'invitation invalide",'lab');
+            }
+            $guest = lab_invitations_getGuest($invitation->guest_id);
+            //var_dump($guest);
+            $host = new labUser($invitation->host_id);
+            //Qui modifie, l'invitant ou le responsable ?
+            $isChief = isset($invitation->host_group_id) ? get_current_user_id()==(int)lab_admin_get_chief_byGroup($invitation->host_group_id): false;
+            if ( $isChief ) {
+                $invitationStr .= '<p><i>Vous pouvez modifier cette invitation en tant que responsable de groupe</i></p>';
+                $invitationStr .= '<p><i>Statut de l\'invitation : </i>'.lab_invitations_getStatusName($invitation->status).'</p>';
+                
+            } else if ( get_current_user_id()==$invitation->host_id ) { 
+                $invitationStr .= '<p><i>Vous pouvez modifier cette invitation en tant qu\'invitant</i></p>';
+                $invitationStr .= '<p><i>Statut de l\'invitation : </i>'.lab_invitations_getStatusName($invitation->status).'</p>';
+            } else {
+                die('Vous ne pouvez pas modifier cette invitation');
+            }
+        }
+    } else {
+        $host = isset(explode("/",$url)[1]) ? new labUser(lab_profile_getID(explode("/",$url)[1])) : 0 ;
+        if ($host == 0) {
+            $host = new labUser(get_current_user_id());
+        }
+    }
+    $newForm = (!$param['hostpage'] || $token=='0') ? 1 : 0 ; //Le formulaire est-il nouveau ? Si non, remplit les champs avec les infos existantes
+    $invitationStr = '<div id="invitationForm" hostForm='.$param['hostpage'].' token="'.(($param['hostpage'] && strlen($token)>1) ? $token : '').'" newForm='.$newForm.'>
+                      <h2>'.esc_html__("Formulaire","lab").'<i class="fas fa-arrow-up"></i></h2>'.$invitationStr;
+    $invitationStr .= '
+        <form action="javascript:formAction()">
+        <h3>'.esc_html__("Informations personnelles","lab").'</h3>
+
+        <div class="lab_invite_field">
+            <input type="text" required id="lab_hostname" name="lab_hostname" host_id="'.($host==null ? '' : $host->id.'" value="'.$host->first_name.' '.$host->last_name).'">
+        </div>
+        <div class="lab_invite_field">
+            <label for="lab_mission">'.esc_html__("Reason for the mission","lab").'<span class="lab_form_required_star"> *</span></label>
+            <select id="lab_mission" name="lab_mission">';
+    foreach(AdminParams::get_params_fromId(AdminParams::PARAMS_MISSION_ID) as $missionparam)
+    {
+        $selectedGroup = "";
+        if(isset($invitation)) {
+            $selectedGroup = ($invitation->mission_objective==$missionparam->value)?'selected="selected"':"";
+        } 
+        else {
+            $selectedGroup = ($missionparam->value == "Mission" ? 'selected="selected"':"");
+        }
+        $invitationStr .= '<option value="'.$missionparam->id.'" '.$selectedGroup.'>'.esc_html__($missionparam->value,"lab")                                                                                                                                                                                      .'</option>';
+    }
+    $invitationStr .= '</select>
+            <input style="display:none" type="text" id="lab_mission_other" value="'.(!$newForm ? $invitation->mission_objective : '').'">
+            <p style="display:none" id="lab_mission_other_desc">'.esc_html__("Précisez la nature de votre mission ici.","lab").'</p>
+        </div>
+        <div id="inviteDiv">
+        <hr>
+        <h3>'.esc_html__("Informations de l'invité","lab").'</h3>
+        <div class="lab_invite_field">
+            <label for="lab_email">'.esc_html__("Email","lab").'<span class="lab_form_required_star"> *</span></label>
+            <input type="email" required id="lab_email" guest_id="" name="lab_email"value="'.(!$newForm ? $guest->email : '').'">
+        </div>
+        <div class="lab_invite_row" id="lab_fullname">
+            <div class="lab_invite_field">
+                <label for="lab_firstname">'.esc_html__("Prénom","lab").'<span class="lab_form_required_star"> *</span></label>
+                <input type="text" required id="lab_firstname" name="lab_firstname" guest_id="'.(!$newForm ? $guest->id : '').'" value="'.(!$newForm ? $guest->first_name : '').'">
+            </div>
+            <div class="lab_invite_field">
+                <label for="lab_lastname">'.esc_html__("Nom","lab").'<span class="lab_form_required_star"> *</span></label>
+                <input type="text" required id="lab_lastname" name="lab_lastname" value="'.(!$newForm ? $guest->last_name : '').'">
+            </div>
+        </div>
+        <div id="lab_phone_country">
+            <div class="lab_invite_field">
+                <label for="lab_phone">'.esc_html__("Numéro de téléphone","lab").'</label>
+                <input type="tel" id="lab_phone" phoneval="'.(!$newForm ? $guest->phone : '').'">
+            </div>
+            <div class="lab_invite_field">
+                <label for="guest_language">'.esc_html__("Language","lab").'<span class="lab_form_required_star"> *</span></label>
+                <input type="text" required id="guest_language" name="guest_language" countryCode="'.(!$newForm ? $guest->language : '').'">
+            </div>
+            <div class="lab_invite_row" id="lab_residence">
+                <div class="lab_invite_field">
+                    <label for="residence_city">'.esc_html__("City of residence","lab").'</label>
+                    <input type="text" required id="residence_city" name="residence_city" value="'.(!$newForm ? $guest->residence_city : '').'">
+                </div>
+                <div class="lab_invite_field">
+                    <label for="residence_country">'.esc_html__("Country of residence","lab").'</label>
+                    <input type="text" required id="residence_country" name="residence_country" countryCode="'.(!$newForm ? $guest->residence_country : '').'">
+                </div>
+            </div>
+        </div>
+        <div class="lab_invite_row">
+            <input type="checkbox" id="lab_hostel" name="lab_hostel" ';
+
+        if($param['hostpage'] && $invitation->needs_hostel == 1)
+        {
+            $invitationStr .= 'checked';
+        }
+            
+        $invitationStr .=
+            '>
+            <label for="lab_hostel">'.esc_html__("Besoin d'un hôtel","lab").'</label>
+        </div>
+        </div><!-- end invite div -->
+        <hr>
+        <h3>'.esc_html__("Moyen de transport","lab").'</h3>
+        <div id="lab_mission_mean_travel">
+            <input type="hidden" id="lab_mission_travels" value="">
+            <table id="lab_mission_travels_table" class="table">
+                <thead>
+                    <td colspan="2">Date</td>
+                    <td colspan="2">From</td>
+                    <td colspan="2">To</td>
+                    <td>Mean</td>
+                    <td>Cost</td>
+                    <td>Ref</td>
+                    <td>RT</td>
+                    <td colspan="2">Date retour si AR</td>
+                    <td colspan="2"><i id="addTravel" class="fa fa-plus pointer" aria-hidden="true" title="Add travel"></i></td>
+                </thead>
+                <tbody id="lab_mission_travels_table_tbody"/>
+            </table>
+        </div>
+        <div id="lab_mission_edit_travel_div" class="lab_fe_modal">
+            <div class="lab_fe_modal-content">
+                <span class="lab_fe_modal_close">&times;</span>
+                <label for="lab_mission_edit_travel_div_dateGoTo">'.esc_html__("Date de départ","lab").'</label>
+                <input type="date" id="lab_mission_edit_travel_div_dateGoTo">
+                <input type="time" step="60" id="lab_mission_edit_travel_div_timeGoTo" name="lab_arrival_time" value="">
+                <br/>
+                <label for="lab_mission_edit_travel_div_countryFrom">'.esc_html__("City departure","lab").'</label>
+                <input type="text" id="lab_mission_edit_travel_div_countryFrom"  countryCode="FR">
+                <input type="text" id="lab_mission_edit_travel_div_cityFrom" value="">
+                <br/>
+                <label for="lab_mission_edit_travel_div_countryTo">'.esc_html__("City arrival","lab").'</label>
+                <input type="text" id="lab_mission_edit_travel_div_countryTo"  countryCode="FR">
+                <input type="text" id="lab_mission_edit_travel_div_cityTo" value="">
+                <br/>
+                <label for="lab_mission_edit_travel_div_mean">'.esc_html__("Mean of transport","lab").'</label>
+                <select id="lab_mission_edit_travel_div_mean" value="">
+                    <option value="car">'.esc_html__("Voiture","lab").'</option>
+                    <option value="train">'.esc_html__("Train","lab").'</option>
+                    <option value="plane">'.esc_html__("Avion","lab").'</option>
+                    <option value="bus">'.esc_html__("Car","lab").'</option>
+                    <option value="none">'.esc_html__("Aucun","lab").'</option>
+                    <option value="other">'.esc_html__("Autre","lab").'</option>
+                </select>
+                <br/>
+                <label for="lab_mission_edit_travel_div_ref">'.esc_html__("Travel reference","lab").'</label>
+                <input type="text" id="lab_mission_edit_travel_div_ref" >
+                <br/>
+                <label for="lab_mission_edit_travel_div_cost">'.esc_html__("Estimated cost","lab").'</label>
+                <input type="text" id="lab_mission_edit_travel_div_cost" >
+                <br/>
+                <label for="lab_mission_edit_travel_div_rt">'.esc_html__("Round trip","lab").'</label>
+                <input type="checkbox" id="lab_mission_edit_travel_div_rt" >
+                <br/>
+                <span id="returnSpanDate">
+                    <label for="lab_mission_edit_travel_div_dateReturn">'.esc_html__("Date de retour","lab").'</label>
+                    <input type="date" id="lab_mission_edit_travel_div_dateReturn">
+                    <input type="time" step="60" id="lab_mission_edit_travel_div_timeReturn" value="">
+
+                </span>
+                <br/>
+                <label for="lab_mission_edit_travel_carbon_footprint">'.esc_html__("Carbon footprint","lab").'</label>
+                <input type="text" id="lab_mission_edit_travel_carbon_footprint" >
+                <br/>
+                <button id="lab_mission_edit_travel_save_button" travelId="">Save</button>
+            </div>
+        </div>
+        <!--
+        <div id="lab_mean_travel" class="lab_invite_row">
+            <div class="lab_invite_field">
+                <label for="lab_transport_to">'.esc_html__("Vers l'I2M","lab").'</label>
+                <select id="lab_transport_to" name="lab_transport_to" value="'.(!$newForm ? $invitation->travel_mean_to : '').'">
+                <option value="">'.esc_html__("Choisissez une option","lab").'</option>
+                    <option value="car">'.esc_html__("Voiture","lab").'</option>
+                    <option value="train">'.esc_html__("Train","lab").'</option>
+                    <option value="plane">'.esc_html__("Avion","lab").'</option>
+                    <option value="bus">'.esc_html__("Car","lab").'</option>
+                    <option value="none">'.esc_html__("Aucun","lab").'</option>
+                    <option value="other">'.esc_html__("Autre","lab").'</option>
+                </select>
+                <input hidden type="text" id="lab_transport_to_other" value="'.(!$newForm ? $invitation->travel_mean_to : '').'">
+                <p>'.esc_html__("Moyen de transport depuis votre domicile vers notre laboratoire","lab").'</p>
+                <label for="forward_start_station">'.esc_html__("Departure station name","lab").'</label>
+                <input type="text" id="forward_start_station" value="'.(!$newForm ? $invitation->forward_start_station : '').'">
+                <label for="lab_cost_to">'.esc_html__("Coût estimé du trajet","lab").' :</label>
+                <input type="number" min=0 step="0.1" id="lab_cost_to" '.(!$newForm ? 'value="'.$charges->travel_to.'"' : '').' name="lab_cost_to" placeholder="'.esc_html__("en €",'lab').'"/>
+                <p>'.esc_html__("À ne remplir que si l'I2M devra vous défrayer ce trajet.",'lab').'</p>
+                <label for="forward_travel_reference">'.esc_html__("Forward travel reference","lab").'</label>
+                <input type="text" id="forward_travel_reference" placeholder="'.esc_html__("Fight number, train reference, ...","lab").'" value="'.(!$newForm ? $invitation->forward_travel_reference : '').'">
+            </div>
+            <div class="lab_invite_field">
+                <label for="lab_transport_from">'.esc_html__("Depuis l'I2M","lab").'</label>
+                <select id="lab_transport_from" name="lab_transport_from" value="'.(!$newForm ? $invitation->travel_mean_from : '').'">
+                    <option value="">'.esc_html__("Choisissez une option","lab").'</option>
+                    <option value="car">'.esc_html__("Voiture","lab").'</option>
+                    <option value="train">'.esc_html__("Train","lab").'</option>
+                    <option value="plane">'.esc_html__("Avion","lab").'</option>
+                    <option value="bus">'.esc_html__("Car","lab").'</option>
+                    <option value="none">'.esc_html__("Aucun","lab").'</option>
+                    <option value="other">'.esc_html__("Autre","lab").'</option>
+                </select>
+                <input hidden type="text" id="lab_transport_from_other" value="'.(!$newForm ? $invitation->travel_mean_from : '').'">
+                <p>'.esc_html__("Moyen de transport depuis notre laboratoire vers votre domicile","lab").'</p>
+                <label for="return_end_station">'.esc_html__("Arrival station name","lab").'</label>
+                <input type="text" id="return_end_station"  value="'.(!$newForm ? $invitation->return_end_station : '').'">
+                <label for="lab_cost_from">'.esc_html__("Coût estimé du trajet","lab").' :</label>
+                <input type="number" min=0 step="0.1" id="lab_cost_from" '.(!$newForm ? 'value="'.$charges->travel_from.'"' : '').' name="lab_cost_from" placeholder="'.esc_html__("en €",'lab').'"/>
+                <p>'.esc_html__("À ne remplir que si l'I2M devra vous défrayer ce trajet.",'lab').'</p>
+                <label for="return_travel_reference">'.esc_html__("Return travel reference","lab").'</label>
+                <input type="text" id="return_travel_reference" placeholder="'.esc_html__("Fight number, train reference, ...","lab").'" value="'.(!$newForm ? $invitation->return_travel_reference : '').'">
+            </div>
+        </div> 
+        <div id="lab_date" class="lab_invite_row">
+            <div class="lab_invite_field" >
+                <label for="lab_arrival">'.esc_html__("Date d'arrivée","lab").'</label>
+                <input type="date" id="lab_arrival" name="lab_arrival" value="'.(!$newForm ? explode(" ",$invitation->start_date)[0] : '').'">
+                <input type="time" step="60" id="lab_arrival_time" name="lab_arrival_time" value="'.(!$newForm ? explode(" ",$invitation->start_date)[1] : '').'">
+                <p>'.esc_html__("Précisez la date de réservation du voyage, l'heure est quand vous quittez votre domicile","lab").'</p>
+            </div>
+            <div class="lab_invite_field">
+                <label for="lab_departure">'.esc_html__("Date de départ","lab").'</label>
+                <input type="date" id="lab_departure" name="lab_departure" value="'.(!$newForm ? explode(" ",$invitation->end_date)[0] : '').'">
+                <input type="time" step="60" id="lab_departure_time" name="lab_departure_time" value="'.(!$newForm ? explode(" ",$invitation->end_date)[1] : '').'">
+                <p>'.esc_html__("Précisez la date de réservation du voyage, l'heure est quand vous quittez le labo","lab").'</p>
+            </div>
+        </div>
+        <h3>'.esc_html__("Autres frais","lab").'</h3>
+        <p>'.esc_html__("Précisez les frais qui devront être pris en charge par l'I2M.",'lab').'</p>
+        <div class="lab_invite_row">
+            <div class="lab_invite_field">
+            <label for="lab_cost_hostel">'.esc_html__("Hôtel","lab").' :</label>
+                <input type="number" min=0 step="0.1" id="lab_cost_hostel" '.(!$newForm ? 'value="'.$charges->hostel.'"' : '').' name="lab_cost_hostel" placeholder="'.esc_html__("en €",'lab').'"/>
+                <label for="lab_cost_meals">'.esc_html__("Repas","lab").' :</label>
+                <input type="number" min=0 step="0.1" id="lab_cost_meals" name="lab_cost_meals" '.(!$newForm ? 'value="'.$charges->meals.'"' : '').' placeholder="'.esc_html__("en €",'lab').'"/>
+            </div>
+            <div class="lab_invite_field">
+                <label for="lab_cost_taxi">'.esc_html__("Taxi","lab").' :</label>
+                <input type="number" min=0 step="0.1" id="lab_cost_taxi" name="lab_cost_taxi" '.(!$newForm ? 'value="'.$charges->taxi.'"' : '').' placeholder="'.esc_html__("en €",'lab').'"/>
+                <label for="lab_cost_other">'.esc_html__("Autre","lab").' :</label>
+                <input type="number" min=0 step="0.1" id="lab_cost_other" name="lab_cost_other" '.(!$newForm ? 'value="'.$charges->other.'"' : '').' placeholder="'.esc_html__("en €",'lab').'"/>
+            </div>
+        </div>
+        -->
+        <hr>';
+        if ( $newForm ) {// Affiche le champ pour ajouter un commentaire lors de la création
+            $invitationStr .= 
+            '<div class="lab_invite_field">
+                <label for="lab_form_comment">'.esc_html__("Commentaire",'lab').'</label>
+                <textarea row="1" id="lab_form_comment" name="lab_form_comment"></textarea>
+                <p>'.esc_html__("(par exemple vos numéros de carte de fidélité à utiliser lors de la réservation de vos voyages + la date d'expiration si nécessaire)",'lab').'</p>
+        </div>';
+        }
+        if ( $param["hostpage"] ) {//Affiche les champs supplémentaires, pour les responsables/invitants.
+            $invitationStr .=
+
+            '<h3>'.esc_html__("Champs pour l'invitant : ","lab").'</h3>
+            <div class="lab_invite_row">
+                <div class="lab_invite_field">
+                    <label for="lab_group_name">'.esc_html__("Nom du groupe","lab").'<span class="lab_form_required_star"> *</span></label>
+                    <select required id="lab_group_name" name="lab_group_name">';
+                    
+                foreach ($host->groups as $g)
+                {
+                    $selectedGroup = ($invitation->host_group_id==$g->id)?'selected="selected"':"";
+                    $invitationStr .= '<option value="'.$g->id.'" '.$selectedGroup.'>'.$g->group_name.'</option>';
+                }
+
+                $invitationStr .=
+                    '</select>
+                </div>
+                <div class="lab_invite_field">
+                    <label for="lab_credit">'.esc_html__("Origine des crédits","lab").'<span class="lab_form_required_star"> *</span></label>
+                    <select required id="lab_credit" name="lab_credit">
+                        <option value="">'.esc_html__("Choisissez une option","lab").'</option>';
+                    foreach(AdminParams::get_params_fromId(AdminParams::PARAMS_FUNDING_ID) as $creditparam)
+                    {
+                        $selectedGroup = ($invitation->funding_source==$creditparam->id)?'selected="selected"':"";
+                    $invitationStr .= 
+                        '<option value="'.$creditparam->id.'" '.$selectedGroup.'>'.esc_html__($creditparam->value,"lab").'</option>';
+                    }
+                    $invitationStr .=
+                        '<option value="other">'.esc_html__("Autre","lab").'</option>
+                    </select>
+                    <input style="display:none" type="text" id="lab_credit_other" value="'.(!$newForm ? $invitation->funding_source : '').'">
+                    <p style="display:none" id="lab_credit_other_desc">'.esc_html__("Précisez l'origine de crédit ici.","lab").'</p>
+                </div>
+            </div>
+            <div class="lab_invite_field">
+                    <label for="lab_research_contrat">'.esc_html__("Contrats de recherche","lab").'</label>
+                    <input type="text" id="lab_research_contrat" name="lab_research_contrat" value="'.(!$newForm ? $invitation->research_contract : '').'">
+            </div>
+            <div class="lab_invite_row">
+                <div class="lab_invite_field">
+                    <label for="lab_estimated_cost">'.esc_html__("Coût estimé (en €)","lab").'</label>
+                    <input type="text" id="lab_estimated_cost" value="'.(!$newForm ? $invitation->estimated_cost : '').'">
+                    <p>'.esc_html__("À remplir par l'invitant : coût estimé du défraiement ","lab").'</p>
+                </div>
+                <div class="lab_invite_field">
+                    <label for="lab_maximum_cost">'.esc_html__("Coût maximum (en €)","lab").'</label>
+                    <input type="text" id="lab_maximum_cost" value="'.(!$newForm ? $invitation->maximum_cost : '').'">
+                    <p>'.esc_html__("À remplir par le responsable : budget maximal allouable à cette invitation ","lab").'</p>
+                </div>
+            </div>';
+            if ($isChief) {
+                $invitationStr .= '<div class="lab_invite_field">
+                <input '.($invitation->status>10 ? 'disabled' : '').' type="submit" value="'.esc_html__("Enregistrer","lab").'">
+                </div>'.($invitation->status>10 ? '<i>'.esc_html__("Cette invitation est déjà à l'étape suivante, pour la modifier, vous devez la renvoyer (via le bouton ci-dessous)",'lab').'</i>' : '').
+                '</form></div>
+                <div class="lab_invite_row lab_send_manager"><p class="lab_invite_field">Cliquez ici pour valider la demande et la transmettre au pôle budget :</p><button id="lab_send_manager">'.esc_html__("Envoyer à l'administration",'lab').'</button></div>';
+            } else {
+                $invitationStr .= '<div class="lab_invite_field">
+                <input '.($invitation->status>1 ? 'disabled' : '').' type="submit" value="'.esc_html__("Enregistrer","lab").'">
+                </div>'.($invitation->status>1 ? '<i>'.esc_html__("Cette invitation est déjà à l'étape suivante, pour la modifier, vous devez la renvoyer (via le bouton ci-dessous)",'lab').'</i>' : '').
+                '</form></div>
+                <div class="lab_invite_row lab_send_group_chief"><p class="lab_invite_field">Cliquez ici pour compléter la demande et la transmettre au responsable du groupe :</p><button id="lab_send_group_chief">'.esc_html__("Envoyer au responsable",'lab').'</button></div>';
+            }
+        }
+        else {
+            $invitationStr .= '<div class="lab_invite_field">
+            <input type="submit" value="'.esc_html__("Valider","lab").'">
+        </div>';
+        }
+        if (!$newForm) {
+            $currentUser = lab_admin_userMetaDatas_get(get_current_user_id());
+            $invitationStr .= '
+        <div id="lab_invitationComments">
+            <h2>Commentaires <i class="fas fa-arrow-up"></i></h2>
+                '.lab_inviteComments($token).'
+                '.lab_newComments($currentUser,$token).'
+        </div><!-- end div lab_invitationComments -->';
+        }
+    return $invitationStr;
+}
+
 function lab_invitation($args) {
     $param = shortcode_atts(array(
         'hostpage' => 0 //0 pour invité, 1 pour invitant/responsable
