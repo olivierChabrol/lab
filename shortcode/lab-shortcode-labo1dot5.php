@@ -5,7 +5,7 @@ function lab_labo1_5($args){
     <form action="javascript:validate()">
     <h5><b>Informations personnelles et missions</b></h5>
     <br>
-    <table class="table" id="info_person">
+    <table class="table" id="mission_info">
         <tr>
             <th>Prénom<span class="lab_form_required_star"> *</span></th>
             <td><input type="text" required id="user_firstname" class="form-control" value="" /></td>
@@ -92,15 +92,15 @@ function lab_labo1_5($args){
         </tr>
         <tr>
             <th>Pays de départ<span class="lab_form_required_star"> *</span></th>
-            <td><input type="text" required id="country_from0" name="country_from0" class="form-control" style="text-transform:uppercase;"/></td>
+            <td><input type="text" required id="country_from0" name="country_from0" class="form-control" onkeyup="toUpperCase(this)"/></td>
             <th>Ville de départ<span class="lab_form_required_star"> *</span></th>
-            <td><input type="text" required id="travel_from0" name="travel_from0" class="form-control" value="MARSEILLE" style="text-transform:uppercase;"/></td>
+            <td><input type="text" required id="travel_from0" name="travel_from0" class="form-control" value="MARSEILLE" onkeyup="toUpperCase(this)"/></td>
         </tr>
         <tr>
-            <th>Pays d'arrivee<span class="lab_form_required_star"> *</span></th>
-            <td><input type="text" required id="country_to0" name="country_to0" class="form-control" style="text-transform:uppercase;"/></td>
+            <th>Pays d'arrivé<span class="lab_form_required_star"> *</span></th>
+            <td><input type="text" required id="country_to0" name="country_to0" class="form-control" onkeyup="toUpperCase(this)"/></td>
             <th>Ville d'arrivee<span class="lab_form_required_star"> *</span></th>
-            <td><input type="text" required id="travel_to0" name="travel_to0" class="form-control" style="text-transform:uppercase;"/></td>
+            <td><input type="text" required id="travel_to0" name="travel_to0" class="form-control" onkeyup="toUpperCase(this)"/></td>
         </tr>
         <tr>
             <th>Date de départ<span class="lab_form_required_star"> *</span></th>

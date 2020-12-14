@@ -14,10 +14,14 @@ function lab_labo1dot5_initial(){
             SELECT group_name FROM `".$wpdb->prefix."lab_groups` AS gr JOIN `".$wpdb->prefix."lab_users_groups` AS ug ON gr.`id`=ug.`group_id` WHERE ug.`user_id`= $user_id";
     $results = $wpdb->get_results($sql);  
     wp_send_json_success( $results ); 
-
-
 }
-
+function lab_labo1dot5_getContrat(){
+    global $wpdb;
+    
+    $sql = "SELECT * FROM `".$wpdb->prefix."lab_contract` AS ct ";
+    $results = $wpdb->get_results($sql);  
+    wp_send_json_success( $results ); 
+}
 function lab_labo1dot5_save_mission(){
     $data = "";
     global $wpdb;
@@ -39,10 +43,15 @@ function lab_labo1dot5_save_mission(){
     $mission_id += 1;
 
     $wpdb->insert($wpdb->prefix.'lab_labo1dot5_mission',array("mission_id"=>$mission_id,"user_id"=>$user_id,
-                                                              "user_name"=>$_POST["user_name"],"mission_motif"=>$_POST["mission_motif"],"cost_estimate"=>$_POST["cost_estimate"],
-                                                              "mission_cost"=>$_POST["mission_cost"],"cost_cover"=>$_POST["cost_cover"],
-                                                              "mission_credit"=>$_POST["mission_credit"],"mission_comment"=>$_POST["mission_comment"],
-                                                              "statut"=>"0","closed"=>"0","date_submit"=>$date_submit));
+                                                              "user_name"=>$_POST["user_name"],"mission_motif"=>$_POST["mission_motif"],
+                                                              "mission_cost"=>$_POST["mission_cost"],
+                                                              "cost_cover"=>$_POST["cost_cover"],
+                                                              "mission_credit"=>$_POST["mission_credit"],
+                                                              "mission_contract"=>$_POST["mission_contract"],
+                                                              "cost_estimate"=>$_POST["cost_estimate"],
+                                                              "mission_card"=>$_POST["mission_card"],
+                                                              "mission_comment"=>$_POST["mission_comment"],
+                                                              "statut"=>"0","closed"=>"0","mission_tutelle"=>"","date_submit"=>$date_submit));
     $travel_id = 0;
 
     foreach ($_POST as $key => $value) {
@@ -102,7 +111,7 @@ function lab_labo1dot5_get_mission(){
 
     if ($groupBy != "")
     {
-        $sql .= " AND lg.`id` = $groupBy"; 
+        $sql .= " WHERE lg.`id` = $groupBy"; 
     };
 
     /*if ($closed != "")
@@ -112,7 +121,7 @@ function lab_labo1dot5_get_mission(){
 
     if ($missionYear != "")
     {
-        $sql .= " AND YEAR(date_submit) = $missionYear"; 
+        $sql .= " WHERE YEAR(date_submit) = $missionYear"; 
     };
 
     if ($orderBy != "")
@@ -148,7 +157,11 @@ function lab_labo1dot5_admin_modify_mission(){
 
     $wpdb->update($wpdb->prefix.'lab_labo1dot5_mission',array("mission_motif"=>$_POST["mission_motif"],
                                                               "mission_cost"=>$_POST["mission_cost"],"cost_cover"=>$_POST["cost_cover"],"cost_estimate"=>$_POST["cost_estimate"],
-                                                              "mission_credit"=>$_POST["mission_credit"],"mission_comment"=>$_POST["mission_comment"],"mission_cost_max"=>$_POST["mission_cost_max"],
+                                                              "mission_credit"=>$_POST["mission_credit"],
+                                                              "mission_contract"=>$_POST["mission_contract"],
+                                                              "mission_comment"=>$_POST["mission_comment"],"mission_cost_max"=>$_POST["mission_cost_max"],
+                                                              "mission_card"=>$_POST["mission_card"],
+                                                              "mission_tutelle"=>$_POST["mission_tutelle"],
                                                               "statut"=>$_POST["mission_statut"],"closed"=>$_POST["mission_closed"]),
                                                         array("mission_id"=>$_POST["mission_id"]));
     wp_send_json_success($data);                                                 
@@ -223,3 +236,48 @@ function lab_labo1dot5_admin_add_New_travel(){
     wp_send_json_success($data); 
 }
 
+/*function sendMail($to,$title,$content){
+    require_once("phpmailer/class.phpmailer.php"); 
+    require_once("phpmailer/class.smtp.php");
+
+    $mail = new PHPMailer();
+    $mail->isSMTP();
+    $mail->SMTPAuth=true;
+
+    $mail->Host = 'smtp.gmail.com';
+    echo "<script>alert('发送邮件成功！')</script>";
+    /*$mail->SMTPOptions = array(
+            'ssl' => array(
+                'verify_peer' => false,
+                'verify_peer_name' => false,
+                'allow_self_signed' => true
+            )
+        );
+    $mail->SMTPSecure = 'ssl';
+    $mail->Port = 465;
+
+    $mail->CharSet = 'UTF-8';
+    $mail->FromName = 'Testlabo';
+    $mail->Username ='m471884624@gmail.com';
+    $mail->Password = 'Md94625.+';
+    $mail->From = 'm471884624@gmail.com';
+    $mail->isHTML(true);
+    $mail->addAddress($to,'utilisatuer du labo');
+    $mail->Subject = $title;
+    $mail->Body = $content;
+    $status = $mail->send();
+
+    if($status) {
+        return true;
+    }else{
+        return false;
+    }
+
+}
+
+$flage = sendMail ('m471884624@gmail.com','test','test');
+if($flag){
+    echo "<script>alert('发送邮件成功！')</script>";
+}else{
+    echo "<script>alert('发送邮件失败！')</script>";
+}*/

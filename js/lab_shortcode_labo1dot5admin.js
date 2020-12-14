@@ -1,8 +1,9 @@
+var myDate = new Date();
 var limitM=0;
 var limitN=10;
 var userId="";
 var orderBy="mission_id";
-var Year="";
+var Year=myDate.getFullYear();
 var groupBy="";
 //var closed="";
 
@@ -59,6 +60,7 @@ function missionYear(){
 			for(var i = 0; i < numMissionYear; i++){
 				let opI = $('<option />').attr("value",""+ Object.values(response.data[i])).html(""+Object.values(response.data[i]));
 				$("#mission_year").append(opI);
+				$("#mission_year").val(Year);
 			}
 		}
 	});
@@ -149,6 +151,15 @@ function loadTableContent(limitM,limitN,userId,orderBy,Year,groupBy) {
 				});
 				td7.append(td7Input);
 				tr.append(td7);
+				
+				let td17 = $('<td />').attr("id", "mission_contract"+item["mission_id"]).html(item["mission_contract"]);
+				let td17Input = $('<input />').attr("type","hidden").attr("value",item["mission_contract"]).attr("id","mission_InputContract" + item["mission_id"]);
+				td17.dblclick(function(){
+					showTdInput(this,item["mission_contract"],"Contract",item["mission_id"]);
+				});
+				td17.append(td17Input);
+				tr.append(td17);
+
 				let td8 = $('<td />').attr("id", "mission_comment"+item["mission_id"]).html(item["mission_comment"]);
 				let td8Input = $('<input />').attr("type","hidden").attr("value",item["mission_comment"]).attr("id","mission_InputComment" + item["mission_id"]);
 				td8.dblclick(function(){
@@ -156,6 +167,22 @@ function loadTableContent(limitM,limitN,userId,orderBy,Year,groupBy) {
 				});
 				td8.append(td8Input);
 				tr.append(td8);
+				
+				let td18 = $('<td />').attr("id", "mission_card"+item["mission_id"]).html(item["mission_card"]);
+				let td18Input = $('<input />').attr("type","hidden").attr("value",item["mission_card"]).attr("id","mission_InputCard" + item["mission_id"]);
+				td18.dblclick(function(){
+					showTdInput(this,item["mission_card"],"Card",item["mission_id"]);
+				});
+				td18.append(td18Input);
+				tr.append(td18);
+
+				let td19 = $('<td />').attr("id", "mission_tutelle"+item["mission_id"]).html(item["mission_tutelle"]);
+				let td19Input = $('<input />').attr("type","hidden").attr("value",item["mission_tutelle"]).attr("id","mission_InputTutelle" + item["mission_id"]);
+				td19.dblclick(function(){
+					showTdInput(this,item["mission_tutelle"],"Tutelle",item["mission_id"]);
+				});
+				td19.append(td19Input);
+				tr.append(td19);
 
 				let td9 = $('<td />').attr("id", "statut"+item["mission_id"]);
 				let td9Select = $('<select />').attr("id","mission_select_statut" + item["mission_id"]).attr("class","form-control");
@@ -261,75 +288,80 @@ function chargetrajet(obj){
 					let tr2 = $('<tr />');
 					let td1 = $('<td />');
 					tr2.append(td1);
-					let td2 = $('<td />').attr("id", "travel_id"+item["travel_id"]).html(item["travel_id"]);
+					let td2 = $('<td />').attr("id", "travel_id"+item["mission_id"]+item["travel_id"]).html(item["travel_id"]);
 					tr2.append(td2);
-					let td3 = $('<td />').attr("id", "country_from"+item["country_from"]).html(item["country_from"]);
-					let td3Input = $('<input />').attr("type","hidden").attr("value",item["country_from"]).attr("id","travel_InputCF" + item["travel_id"]);
+					let td3 = $('<td />').attr("id", "country_from"+item["mission_id"]+item["travel_id"]).html(item["country_from"]);
+					let td3Input = $('<input />').attr("type","hidden").attr("value",item["country_from"]).attr("id","travel_InputCF" +item["mission_id"] + item["travel_id"]);
 					td3.dblclick(function(){
-					showTdInputTravel(this,"text",item["country_from"],"CF",item["travel_id"]);
+					showTdInputTravel(this,"text",item["country_from"],"CF",item["mission_id"]+item["travel_id"]);
 					});
 					td3.append(td3Input);
 					tr2.append(td3);
-					let td4 = $('<td />').attr("id", "travel_from"+item["travel_from"]).html(item["travel_from"]);
-					let td4Input = $('<input />').attr("type","hidden").attr("value",item["travel_from"]).attr("id","travel_InputTF" + item["travel_id"]);
+					let td4 = $('<td />').attr("id", "travel_from"+item["mission_id"]+item["travel_id"]).html(item["travel_from"]);
+					let td4Input = $('<input />').attr("type","hidden").attr("value",item["travel_from"]).attr("id","travel_InputTF" +item["mission_id"]+ item["travel_id"]);
 					td4.dblclick(function(){
-					showTdInputTravel(this,"text",item["travel_from"],"TF",item["travel_id"]);
+					showTdInputTravel(this,"text",item["travel_from"],"TF",item["mission_id"]+item["travel_id"]);
 					});
 					td4.append(td4Input);
 					tr2.append(td4);
-					let td5 = $('<td />').attr("id", "country_to"+item["country_to"]).html(item["country_to"]);
-					let td5Input = $('<input />').attr("type","hidden").attr("value",item["country_to"]).attr("id","travel_InputCT" + item["travel_id"]);
+					let td5 = $('<td />').attr("id", "country_to"+item["mission_id"]+item["travel_id"]).html(item["country_to"]);
+					let td5Input = $('<input />').attr("type","hidden").attr("value",item["country_to"]).attr("id","travel_InputCT" +item["mission_id"]+ item["travel_id"]);
 					td5.dblclick(function(){
-					showTdInputTravel(this,"text",item["country_to"],"CT",item["travel_id"]);
+					showTdInputTravel(this,"text",item["country_to"],"CT",item["mission_id"]+item["travel_id"]);
 					});
 					td5.append(td5Input);
 					tr2.append(td5);
-					let td6 = $('<td />').attr("id", "travel_to"+item["travel_to"]).html(item["travel_to"]);
-					let td6Input = $('<input />').attr("type","hidden").attr("value",item["travel_to"]).attr("id","travel_InputTT" + item["travel_id"]);
+					let td6 = $('<td />').attr("id", "travel_to"+item["mission_id"]+item["travel_id"]).html(item["travel_to"]);
+					let td6Input = $('<input />').attr("type","hidden").attr("value",item["travel_to"]).attr("id","travel_InputTT" +item["mission_id"]+ item["travel_id"]);
 					td6.dblclick(function(){
-					showTdInputTravel(this,"text",item["travel_to"],"TT",item["travel_id"]);
+					showTdInputTravel(this,"text",item["travel_to"],"TT",item["mission_id"]+item["travel_id"]);
 					});
 					td6.append(td6Input);
 					tr2.append(td6);
-					let td7 = $('<td />').attr("id", "travel_date"+item["travel_date"]).html(item["travel_date"]);
-					let td7Input = $('<input />').attr("type","hidden").attr("value",item["travel_date"]).attr("id","travel_InputDate" + item["travel_id"]);
+					let td7 = $('<td />').attr("id", "travel_date"+item["mission_id"]+item["travel_id"]).html(item["travel_date"]);
+					let td7Input = $('<input />').attr("type","hidden").attr("value",item["travel_date"]).attr("id","travel_InputDate"+item["mission_id"] + item["travel_id"]);
 					td7.dblclick(function(){
-					showTdInputTravel(this,"date",item["travel_date"],"Date",item["travel_id"]);
+					showTdInputTravel(this,"date",item["travel_date"],"Date",item["mission_id"]+item["travel_id"]);
 					});
 					td7.append(td7Input);
 					tr2.append(td7);
-					let td13 = $('<td />').attr("id", "travel_datereturn"+item["travel_datereturn"]).html(item["travel_datereturn"]);
-					let td13Input = $('<input />').attr("type","hidden").attr("value",item["travel_datereturn"]).attr("id","travel_InputDatereturn" + item["travel_id"]);
+					let td13 = $('<td />').attr("id", "travel_datereturn"+item["mission_id"]+item["travel_id"]).html(item["travel_datereturn"]);
+					let td13Input = $('<input />').attr("type","hidden").attr("value",item["travel_datereturn"]).attr("id","travel_InputDatereturn" +item["mission_id"]+ item["travel_id"]);
 					td13.dblclick(function(){
-					showTdInputTravel(this,"date",item["travel_datereturn"],"Datereturn",item["travel_id"]);
+					showTdInputTravel(this,"date",item["travel_datereturn"],"Datereturn",item["mission_id"]+item["travel_id"]);
 					});
 					td13.append(td13Input);
 					tr2.append(td13);
-					let td8 = $('<td />').attr("id", "means"+item["means"]).html(item["means"]);
-					let td8Input = $('<input />').attr("type","hidden").attr("value",item["means"]).attr("id","travel_InputMeans" + item["travel_id"]);
+					let td8 = $('<td />').attr("id", "means"+item["mission_id"]+item["travel_id"]).html(item["means"]);
+					let td8Input = $('<input />').attr("type","hidden").attr("value",item["means"]).attr("id","travel_InputMeans" +item["mission_id"]+ item["travel_id"]);
 					td8.dblclick(function(){
-					showTdInputTravel(this,"text",item["means"],"Means",item["travel_id"]);
+					showTdInputTravel(this,"text",item["means"],"Means",item["mission_id"]+item["travel_id"]);
 					});
 					td8.append(td8Input);
 					tr2.append(td8);
-					let td9 = $('<td />').attr("id", "nb_person"+item["nb_person"]).html(item["nb_person"]);
-					let td9Input = $('<input />').attr("type","hidden").attr("value",item["nb_person"]).attr("id","travel_InputNP" + item["travel_id"]);
+					let td9 = $('<td />').attr("id", "nb_person"+item["mission_id"]+item["travel_id"]).html(item["nb_person"]);
+					let td9Input = $('<input />').attr("type","hidden").attr("value",item["nb_person"]).attr("id","travel_InputNP" +item["mission_id"]+ item["travel_id"]);
 					td9.dblclick(function(){
-					showTdInputTravel(this,"text",item["nb_person"],"NP",item["travel_id"]);
+					showTdInputTravel(this,"text",item["nb_person"],"NP",item["mission_id"]+item["travel_id"]);
 					});
 					td9.append(td9Input);
 					tr2.append(td9);
-					let td10 = $('<td />').attr("id", "go_back"+item["go_back"]).html(item["go_back"]);
-					let td10Input = $('<input />').attr("type","hidden").attr("value",item["go_back"]).attr("id","travel_InputGB" + item["travel_id"]);
+					let td10 = $('<td />').attr("id", "go_back"+item["mission_id"]+item["travel_id"]).html(item["go_back"]);
+					let td10Input = $('<input />').attr("type","hidden").attr("value",item["go_back"]).attr("id","travel_InputGB" +item["mission_id"]+ item["travel_id"]);
 					td10.dblclick(function(){
-					showTdInputTravel(this,"text",item["go_back"],"GB",item["travel_id"]);
+					showTdInputTravel(this,"text",item["go_back"],"GB",item["mission_id"]+item["travel_id"]);
 					});
 					td10.append(td10Input);
 					tr2.append(td10);
 					let td11 = $('<td />');
 					let td12 = $('<td />');
+					let td14 = $('<td />');
+					let button_copy = $('<input />').attr("type","button").attr("value","copier").attr("class","btn btn-info btn-sm").attr("mission_id",item["mission_id"]).attr("travel_id", item["travel_id"]).attr("id", "copy_trajet" + item["travel_id"]);
 					let button_motify = $('<input />').attr("type","button").attr("value","➔").attr("class","btn btn-success btn-sm").attr("mission_id",item["mission_id"]).attr("travel_id", item["travel_id"]).attr("id", "modify_trajet" + item["travel_id"]);
 					let button_del = $('<input />').attr("type","button").attr("value","✘").attr("class","btn btn-danger btn-sm").attr("mission_id",item["mission_id"]).attr("travel_id", item["travel_id"]).attr("id", "del_trajet" + item["travel_id"]);
+					button_copy.click(function() {
+						copy_trajet(this);
+					});
 					button_motify.click(function() {
 						modify_trajet(this);
 					});
@@ -338,8 +370,10 @@ function chargetrajet(obj){
 					})
 					td11.append(button_motify);
 					td12.append(button_del);
+					td14.append(button_copy);
 					tr2.append(td11);
 					tr2.append(td12);
+					tr2.append(td14);
 					$("#list_trajet" + id).append(tr2);
 			});
 		}
@@ -498,7 +532,10 @@ function modify_mission(obj){
 		data["mission_cost_max"] = $("#mission_InputCostMax"+ id).val();
 		data["cost_cover"] = $("#mission_InputCover"+ id).val();
 		data["mission_credit"] = $("#mission_InputCredit"+ id).val();
+		data["mission_contract"] = $("#mission_InputContract"+ id).val();
 		data["mission_comment"] = $("#mission_InputComment"+ id).val();
+		data["mission_card"] = $("#mission_InputCard"+ id).val();
+		data["mission_tutelle"] = $("#mission_InputTutelle"+ id).val();
 		data["mission_statut"] = $("#mission_select_statut"+ id).val();
 		data["mission_closed"] = $("#mission_select_closed"+ id).val();
 		jQuery.post(LAB.ajaxurl, data, function(response) {
@@ -510,7 +547,18 @@ function modify_mission(obj){
 	};
 
 }
-
+function copy_trajet(obj){
+	let id = $(obj).attr("travel_id");
+	let miid = $(obj).attr("mission_id");
+	let clipBoardContent=$("#travel_InputTF" +miid+ id).val()+"/"+$("#travel_InputTT" +miid+ id).val()+" "+$("#travel_InputMeans" +miid+ id).val()+" "+$("#travel_InputGB" +miid+ id).val();
+	let aux = document.createElement("input");
+	aux.setAttribute("value", clipBoardContent);
+	document.body.appendChild(aux); 
+    aux.select();
+    document.execCommand("copy"); 
+	document.body.removeChild(aux);
+	console.log("copyright "+clipBoardContent);
+}
 function modify_trajet(obj){
 	var r=confirm("Enregistrer les modifications?")
 	if (r==true){
@@ -521,15 +569,15 @@ function modify_trajet(obj){
 			}
 			data["travel_id"] = id;
 			data["mission_id"] = miid;
-			data["country_from"] = $("#travel_InputCF" + id).val();
-			data["travel_from"] = $("#travel_InputTF" + id).val();
-			data["country_to"] = $("#travel_InputCT" + id).val();
-			data["travel_to"] = $("#travel_InputTT" + id).val();
-			data["travel_date"] = $("#travel_InputDate" + id).val();
-			data["travel_datereturn"] = $("#travel_InputDatereturn" + id).val();
-			data["means"] = $("#travel_InputMeans" + id).val();
-			data["go_back"] = $("#travel_InputGB" + id).val();
-			data["nb_person"] = $("#travel_InputNP" + id).val();
+			data["country_from"] = $("#travel_InputCF" +miid+ id).val();
+			data["travel_from"] = $("#travel_InputTF" +miid+ id).val();
+			data["country_to"] = $("#travel_InputCT" +miid+ id).val();
+			data["travel_to"] = $("#travel_InputTT" +miid+ id).val();
+			data["travel_date"] = $("#travel_InputDate" +miid+ id).val();
+			data["travel_datereturn"] = $("#travel_InputDatereturn" +miid+ id).val();
+			data["means"] = $("#travel_InputMeans" +miid+ id).val();
+			data["go_back"] = $("#travel_InputGB" +miid+ id).val();
+			data["nb_person"] = $("#travel_InputNP" +miid+ id).val();
 		
 			jQuery.post(LAB.ajaxurl, data, function(response) {
 			if (response.success) {
@@ -566,11 +614,14 @@ function AddNewTrajet(obj){
 }
 $(function () {
 	$('#update_mission').on('click',function(){
-		var limitM=0;
-		var limitN=5;
-		var userId="";
-		var orderBy="";
+		limitM=0;
+		limitN=10;
+		userId="";
+		orderBy="mission_id";
+		Year=myDate.getFullYear();
+		groupBy="";
 		loadTableContent(limitM,limitN,userId,orderBy,Year,groupBy);
+		$("#mission_year").val(Year);
 	});
 
 	$('#filter_user_name').autocomplete({

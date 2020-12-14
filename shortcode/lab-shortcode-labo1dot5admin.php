@@ -18,7 +18,7 @@ function lab_labo1_5admin() {
             <td><input type="button" id="update_mission" class="btn btn-info" value="⟳"></td>
             <td colspan="1"><select id="page" class="form-control" onchange="changePage(this)"> </select></td>
             <td colspan="2"><input type="text" id="filter_user_name" name="filter_user_name" class="form-control" placeholder="Chercher un nom"/></td>
-            <td colspan="2"><select id="filter_group" name="filter_group" onchange="filterGroupFunction(this)" class="form-control">
+            <td colspan="3"><select id="filter_group" name="filter_group" onchange="filterGroupFunction(this)" class="form-control">
                 <option value="">Filtrer groupe</option>
                 <option value="2">Analyse Appliquée</option>
                 <option value="3">Arithmétique, Géométrie, Logique et Représe...</option>
@@ -64,7 +64,10 @@ function lab_labo1_5admin() {
             <th>Frais total maximum </th>
             <th>Prise en charge par labo</th>
             <th>Credit&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th>
+            <th>Nom du ANR ou Contrat</th>
             <th>Commentaire</th>
+            <th>Carte de fidélité</th>
+            <th>Tutelle</th>
             <th>Statut Accord&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th>
             <th>Clôture&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th>
             <th>Date de demande</th>

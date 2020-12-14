@@ -10,15 +10,15 @@ function addNewTransporationLine(elm){
   +'</tr>'
   +'      <tr>'
   +'          <th>Pays de départ<span class="lab_form_required_star"> *</span></th>'
-  +'          <td><input type="text" required id="country_from'+varCount+'" name="country_from'+varCount+'" class="form-control" style="text-transform:uppercase;"/></td>'
+  +'          <td><input type="text" required id="country_from'+varCount+'" name="country_from'+varCount+'" class="form-control" onkeyup="toUpperCase(this)"/></td>'
   +'          <th>Ville de départ<span class="lab_form_required_star"> *</span></th>'
-  +'          <td><input type="text" required id="travel_from'+varCount+'" name="travel_from'+varCount+'" class="form-control" style="text-transform:uppercase;"/></td>'
+  +'          <td><input type="text" required id="travel_from'+varCount+'" name="travel_from'+varCount+'" class="form-control" onkeyup="toUpperCase(this)"/></td>'
   +'      </tr>'
   +'      <tr>'
   +'          <th>Pays d\'arrivee<span class="lab_form_required_star"> *</span></th>'
-  +'          <td><input type="text" required id="country_to'+varCount+'" name="country_to'+varCount+'" class="form-control" style="text-transform:uppercase;"/></td>'
+  +'          <td><input type="text" required id="country_to'+varCount+'" name="country_to'+varCount+'" class="form-control" onkeyup="toUpperCase(this)"/></td>'
   +'          <th>Ville d\'arrivee<span class="lab_form_required_star"> *</span></th>'
-  +'          <td><input type="text" required id="travel_to'+varCount+'" name="travel_to'+varCount+'" class="form-control" style="text-transform:uppercase;"/></td>'
+  +'          <td><input type="text" required id="travel_to'+varCount+'" name="travel_to'+varCount+'" class="form-control" onkeyup="toUpperCase(this)"/></td>'
   +'      </tr>'
   +'      <tr>'
   +'          <th>Date de départ<span class="lab_form_required_star"> *</span></th>'
@@ -46,8 +46,8 @@ function addNewTransporationLine(elm){
   +'<tr>'
   +'          <th>Un trajet aller/retour?<span class="lab_form_required_star"> *</span></th>'
   +'          <td><select required id="go_back'+varCount+'" name="go_back'+varCount+'"class="form-control">'
-  +'              <option value="oui">Oui</option>'
-  +'              <option value="non">Non</option>'
+  +'              <option value="Oui">Oui</option>'
+  +'              <option value="Non">Non</option>'
   +'              </select></td>'
   +'</tr>'
   +'  </table>'
@@ -90,8 +90,12 @@ function validate(){
     data["mission_cost"]=$("#mission_cost").val();
     data["cost_cover"]=str;
     data["mission_credit"]=$("#mission_credit").val();
-    data["mission_comment"]=$("#mission_comment").val();
+    if(document.getElementById("mission_contract")!=null){
+      data["mission_contract"]=$("#mission_contract").val();
+    }else{data["mission_contract"]="";}
     data["cost_estimate"]=$("#cost_estimate").val();
+    data["mission_card"]=$("#mission_card").val();
+    data["mission_comment"]=$("#mission_comment").val();
     data["user_name"]=user_name;
     for(i = 0; i <= varCount;i++){
       data["country_from"+i] = $("#country_from"+i).val();
@@ -157,16 +161,24 @@ function go_back_onchange(obj){
 }
 
 function addNewANRContrat(elm){
-  $node =  '<th id=mission_contract_th>Choisir le nom</th>'
-          +'<td colspan="">'  
-          + '<select id="mission_contract" class="form-control">'
-          + '<option value="ANR1">ANR1</option>'
-          + '<option value="ANR2">ANR2</option>'
-          + '<option value="contrat1">Contrat1</option>'
-          + '<option value="contrat2">Contrat2</option>'
-          + '</select>'
-          + '</td>'
-      elm.parent().after($node);
+  data = {
+		"action": 'lab_labo1.5_get_Contrat'
+  }
+  $.post(LAB.ajaxurl, data, function(response) {
+    if (response.success) {
+      console.log("list_contract_complete")
+      let td = $('<td/>');
+      let select = $('<select />').attr("id","mission_contract" ).attr("class","form-control").prop("required",true);
+      /*let option0 = $('<option />').attr("value","").html("Choisir un nom");
+      select.append(option0);*/
+      td.append(select);
+      $.each(response.data, function(i,item) {
+        let option = $('<option />').attr("value",item["name"]).html(item["name"]);
+        select.append(option);
+      });
+      elm.parent().after(td);
+    }
+  });
 }
 function mission_credit_onchange(obj){  
   var value = obj.options[obj.selectedIndex].value;
@@ -178,10 +190,12 @@ function mission_credit_onchange(obj){
   else{
     if(document.getElementById("mission_contract")!=null){
       var elm1 = document.getElementById("mission_contract");
-      var elm2 = document.getElementById("mission_contract_th");
       $(elm1).parent().remove();
-      $(elm2).remove();
-      //element.parentNode.removeChild(element);
     }
   }
 }
+
+function toUpperCase(obj)
+ {
+ obj.value = obj.value.toUpperCase()
+ }

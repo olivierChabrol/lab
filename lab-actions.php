@@ -160,6 +160,7 @@ if (is_admin()) {
     add_action( 'wp_ajax_lab_admin_del_travel', 'lab_labo1dot5_admin_del_travel');
     add_action( 'wp_ajax_lab_admin_del_mission', 'lab_labo1dot5_admin_del_mission');
     add_action( 'wp_ajax_lab_labo1.5_transportation_getRowNum', 'lab_labo1dot5_getRowNum_ajax');
+    add_action( 'wp_ajax_lab_labo1.5_get_Contrat', 'lab_labo1dot5_getContrat');
 
 }
 // no admin
