@@ -178,6 +178,8 @@ class LabRewriteRules {
       $newRules = $newRule + $newRules;
       $newRule = array('invite/(.+)$' => 'index.php?pagename=invite');
       $newRules = $newRule + $newRules;
+      $newRule = array('mission/(.+)$' => 'index.php?pagename=mission');
+      $newRules = $newRule + $newRules;
       return $newRules;
   }
   function flush_rewrite_rules() {

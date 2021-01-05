@@ -560,6 +560,35 @@ function lab_admin_contract_create_table() {
  * MISSION
  ***********************************************************************************************************/
 
+function lab_mission_save($missionId, $travels) {
+    global $wpdb;
+
+    foreach ($travels as $travel) {
+        $a = array();
+        $a["mission_id"] = $missionId;
+        $a["country_from"] = $travel["countryFrom"];
+        $a["travel_from"] = $travel["cityFrom"];
+        $a["country_to"] = $travel["countryTo"];
+        $a["travel_to"] = $travel["cityTo"];
+        $a["travel_date"] = $travel["dateGoTo"]." ".$travel["timeGoTo"].":00";
+        $a["means_of_locomotion"] = $travel["mean"];
+        $a["estimated_cost"] = $travel["cost"];
+        $a["round_trip"] = ($travel["rt"]=="false"?0:1);
+        $a["reference"] = $travel["ref"];
+        $a["nb_person"] = 1;
+        $a["carbon_footprint"] = $travel["carbon_footprint"];
+        $a["travel_datereturn"] = $travel["dateReturn"]." ".$travel["timeReturn"].":00";
+        $wpdb->insert($wpdb->prefix.'lab_mission_route', $a);
+    }
+}
+
+function lab_mission_load_travels($missionId) {
+    global $wpdb;
+    $results =$wpdb->get_results("SELECT * FROM `".$wpdb->prefix."lab_mission_route` WHERE mission_id=".$missionId);
+
+    return $results;
+}
+
 function lab_admin_mission_create_table() {
     global $wpdb;
     $sql = "CREATE TABLE IF NOT EXISTS `".$wpdb->prefix."lab_mission_route` (

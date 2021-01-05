@@ -1197,6 +1197,8 @@ function lab_invitations_createTables_Req() {
   }
   return;
 }
+
+
 function lab_invitations_new() {
   $fields = $_POST['fields'];
   $guest = array (
@@ -1208,6 +1210,7 @@ function lab_invitations_new() {
     'residence_country'=> $fields['guest_residence_country'],
     'residence_city'=> $fields['guest_residence_city'],
   );
+  $travels = $fields["travels"];
   do {//Génère un token jusqu'à ce qu'il soit unique (on sait jamais)
     $token = bin2hex(random_bytes(10));
   } while ( lab_invitations_getByToken($token)!=NULL );
@@ -1225,28 +1228,36 @@ function lab_invitations_new() {
   } else {
     $invite['guest_id']=lab_invitations_createGuest($guest);
   }
-  foreach (['host_group_id','host_id', 'estimated_cost', 'mission_objective','start_date','end_date','travel_mean_to','travel_mean_from','funding_source','research_contract'] as $champ) {
+  foreach (['host_group_id','host_id', 'estimated_cost', 'mission_objective','funding_source','research_contract'] as $champ) {
     $invite[$champ]=$fields[$champ];
   }
   $invite["charges"]=json_encode($fields["charges"]);
-  $invite_id = lab_invitations_createInvite($invite);
-  if (!is_numeric ($invite_id))
+  $missionId = lab_invitations_createInvite($invite);
+  if (!is_numeric ($missionId))
   {
-    wp_send_json_error($invite_id);
+    wp_send_json_error($missionId);
   }
+  $invite["id"] = $missionId;
+  lab_mission_save($missionId, $travels);
   if (strlen($fields['comment'])>0) {
     lab_invitations_addComment(array(
       'content'=> $fields['comment'],
       'timestamp'=> $timeStamp,
       'author'=>$fields['guest_firstName'].' '.$fields['guest_lastName'],
-      'invite_id'=>$invite_id
+      'invite_id'=>$missionId
     )); 
   }
   $html = '<p>'.esc_html__("Votre demande a bien été prise en compte",'lab').'</p>';
-  $html .= "<hr><h5>e-mail envoyé à l'invité : </h5>";
-  $html .= lab_invitations_mail(1,$guest,$invite);
-  $html .= "<hr><h5>e-mail envoyé à l'invitant : </h5>";
-  $html .= lab_invitations_mail(5,$guest,$invite);
+  if($fields['mission_objective'] != 251) {
+    $html .= "<hr><h5>e-mail envoyé à l'invité : </h5>";
+    $html .= lab_invitations_mail(1,$guest,$invite);
+    $html .= "<hr><h5>e-mail envoyé à l'invitant : </h5>";
+    $html .= lab_invitations_mail(5,$guest,$invite);
+  }
+  else{
+    $html .= "<hr><h5>e-mail envoyé au responsable : </h5>";
+    $html .= lab_invitations_mail(2,$guest,$invite);
+  }
   wp_send_json_success($html);
 }
 function lab_invitations_edit() {
