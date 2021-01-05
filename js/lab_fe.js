@@ -691,7 +691,8 @@ function LABLoadInvitation() {
     });
 
     $("#lab_mission").change(function (e) {
-      if($("#lab_mission").val() == 250) {
+      console.log($("#lab_mission option:selected" ).text());
+      if($("#lab_mission option:selected" ).text() == "Invitation") {
         $("#inviteDiv").show();
       }
       else{
