@@ -3,13 +3,24 @@ const { __, _x, _n, sprintf } = wp.i18n;
 
 jQuery(function($){
   var searchRequest;
-  loadExistingKeys();
+  //loadExistingKeys();
 
+
+  $("#lab_user_country").countrySelect({
+    defaultCountry: "fr",
+    preferredCountries: ['fr', 'de', 'it', 'es', 'us'],
+  });
 
   if ($("#lab_ldapListBody")!=null && $("#lab_ldapListBody").length) {
     console.log("DANS lab_ldapListBody");
     LABLoadLDAPList();
   }
+
+
+  $("#lab_user_button_correct_missing_usermetaDataFields").click(function () { 
+    correctUserMetadaField($("#lab_user_search_id").val());
+  });
+
 
   if(!$("#lab_user_left").is(':checked')) {
     $("#lab_user_left_date").prop("disabled", true);
@@ -58,6 +69,7 @@ jQuery(function($){
         $("#lab_searched_group_id").val(value);
         setinfoToGroupEditionFields(ui.item.id, ui.item.acronym, ui.item.label, ui.item.chief_id,
           ui.item.parent_group_id, ui.item.group_type, ui.item.url);
+        loadGroupManagers();
       }
   });
 
@@ -132,10 +144,15 @@ jQuery(function($){
       var value = ui.item.value;
       event.preventDefault();
       $("#lab_user_search").val(label);
+
+      $("#lab_user_id").html(value);
       $("#lab_user_search_id").val(value);
       callbUser(value, loadUserMetaData);
       loadUserHistory();
       loadUserRoles();
+      loaduserThematic();
+      loaduserGroup();
+      loadMissingMetaData(value);
       return false;
     }
   });
@@ -188,13 +205,6 @@ jQuery(function($){
    check_metaKey_exist();
     //if ($("#usermetadata_key_all").)
   });
-
-  $("#lab_settings_button_addKey_complete").click(function() {
-    var key = $('#usermetadata_key_complete').val();
-    var value = $('#usermetadata_value_complete').val();
-    completeMetakeys(key, value);
-  });
-
   $("#lab_settings_button_addKey_all").click(function() {
     var key = $('#usermetadata_key_all').val();
     var value = $('#usermetadata_value_all').val();
@@ -205,8 +215,45 @@ jQuery(function($){
     deleteMetaKeys(key);
   });
 
-  $("#lab_user_button_save_left").click(function() {
-    saveUserLeft($("#lab_user_left_date").val(), $("#lab_user_left").is(":checked"), $("#lab_user_location").val(), $("#lab_user_function").val(), $("#lab_user_office_number").val(), $("#lab_user_office_floor").val(), $("#lab_user_employer").val(), $("#lab_user_funding").val(), $("#lab_user_firstname").val(), $("#lab_user_lastname").val(), $("#lab_user_section_cn").val(), $("#lab_user_section_cnu").val());
+  $("#lab_admin_correct_slug_name").click(function() {
+    
+    data = {
+      'action':"usermeta_fill_user_slug",
+      'userId':$("#lab_user_search_id").val(),
+    };
+    callAjax(data, __("User slug  successfuly modify",'lab'), reloadCurrentUser, __("Failed to modify user slug name"), null);
+    //alert("data" + data);
+  });
+
+  $("#lab_user_button_user_save").click(function() {
+    let fields = ["lab_user_slug"];
+    let data = [];
+    for(const elm of fields)
+    {
+      data[elm] = $("#"+elm).val();
+    }
+    saveUser($("#lab_user_left_date").val(), 
+                $("#lab_user_left").is(":checked"), 
+                $("#lab_user_location").val(), 
+                $("#lab_user_function").val(), 
+                $("#lab_user_office_number").val(), 
+                $("#lab_user_office_floor").val(), 
+                $("#lab_user_employer").val(), 
+                $("#lab_user_funding").val(), 
+                $("#lab_user_firstname").val(), 
+                $("#lab_user_lastname").val(), 
+                $("#lab_user_section_cn").val(), 
+                $("#lab_user_section_cnu").val(), 
+                $("#lab_user_phone").val(), 
+                $("#lab_user_email").val(), 
+                $("#lab_user_url").val(), 
+                $("#lab_user_thesis_title").val(), 
+                $("#lab_user_hdr_title").val(), 
+                $("#lab_user_phd_school").val(), 
+                $("#lab_user_sex").val(), 
+                $("#lab_user_country").countrySelect("getSelectedCountryData")['iso2'],
+                $("#lab_user_hdr_date").val(), 
+                $("#lab_user_thesis_date").val(), data)
   });
 
   $("#lab_user_button_delete").click(function() {
@@ -310,11 +357,19 @@ jQuery(function($){
       {
         color = "#" + color;
       }
+      $("#wp_lab_param_slug_edit").val(ui.item.slug);
       $("#wp_lab_param_color_edit").val(color);
       $("#wp_lab_param_color_edit").css("background-color", color);
       loadEditParam(value, ui.item.type, value);
       return false;
     }
+  });
+
+  $("#lab_tab_param_correct_all_user_slug_name").click(function() {
+    var data = {
+      'action' : 'correct_all_user_slug',
+    };
+    callAjax(data, "All user slug corrected", null, null, null);
   });
 
   $('#lab_tab_param_create_table').click(function(){
@@ -333,11 +388,11 @@ jQuery(function($){
   });
 
   $("#lab_tab_param_save").click(function(){
-    saveParam(null, jQuery("#wp_lab_param_type").val(), jQuery("#wp_lab_param_value").val(), jQuery("#wp_lab_param_color").val(), jQuery("#wp_lab_param_shift_param").val(), load_params_type_after_new_param);
+    saveParam(null, jQuery("#wp_lab_param_type").val(), jQuery("#wp_lab_param_value").val(), jQuery("#wp_lab_param_slug").val(), jQuery("#wp_lab_param_color").val(), isCheck("#wp_lab_param_shift_param"), load_params_type_after_new_param);
   });
 
   $("#lab_tab_param_save_edit").click(function(){
-    saveParam(jQuery("#wp_lab_param_id").val(), jQuery("#wp_lab_param_type_edit").val(), jQuery("#lab_param_value_search").val(), jQuery("#wp_lab_param_color_edit").val(), false, resetParamEditFields);
+    saveParam(jQuery("#wp_lab_param_id").val(), jQuery("#wp_lab_param_type_edit").val(), jQuery("#lab_param_value_search").val(), jQuery("#wp_lab_param_slug_edit").val(), jQuery("#wp_lab_param_color_edit").val(), false, resetParamEditFields);
   });
 
   $("#lab_tab_param_delete_edit").click(function(){
@@ -438,6 +493,77 @@ jQuery(function($){
       group_edit_saveNewSubstitute(value, jQuery("#lab_searched_group_id").val());
     }
   });
+  $("#lab_group_edit_add_manager").autocomplete({
+    minChars: 3,
+    source: function(term, suggest){
+      try { searchRequest.abort(); } catch(e){}
+      searchRequest = $.post(LAB.ajaxurl, { action: 'search_username',search: term, }, function(res) {
+        suggest(res.data);
+      });
+      },
+    select: function( event, ui ) {
+      var value = ui.item.value;
+      var label = ui.item.label;
+      event.preventDefault();
+      $("#lab_group_edit_add_manager").val(label);
+      $("#lab_group_edit_add_manager_id").val(value);
+    }
+  });
+
+  $("#lab_group_edit_add_manager_button").click(function () {
+    let groupId = $("#lab_searched_group_id").val();
+    let managerId = $("#lab_group_edit_add_manager_id").val();
+    let managerFunction = $("#lab_admin_group_manager_function").val();
+    data = {
+      'action':"lab_group_add_manager",
+      'groupId':groupId,
+      'userId':managerId,
+      'userRole':managerFunction,
+    };
+    callAjax(data, null, successfulyAddManager, null, null);
+  });
+
+  function loadGroupManagers()
+  {
+    let groupId = $("#lab_searched_group_id").val();
+    data = {
+      'action':"lab_group_load_managers",
+      'groupId':groupId
+    };
+    callAjax(data, null, displayGroupManager, null, null);
+  }
+
+  function successfulyAddManager(data) {
+    toast_success("Manager added");
+    loadGroupManagers();
+    $("#lab_group_edit_add_manager").val("");
+  }
+
+  function displayGroupManager(data) {
+    
+    $("#lab_admin_group_managers").html("");
+    $.each(data, function(i, obj) {
+      //use obj.id and obj.name here, for example:
+      //alert(obj.name);
+      let span = $('<span />').attr('class', 'badge badge-secondary user-role-badge').html(obj.first_name+" "+obj.last_name+" ");
+      let innerSpan = $('<span />').attr('class', 'lab_admin_group_delete').attr('objId', obj.id);
+      let innerI = $('<i />').attr('class', 'fas fa-trash').attr('group_id', obj.id);
+      innerSpan.append(innerI);
+      span.append(innerSpan);
+      $("#lab_admin_group_managers").append(span);
+
+      $(".lab_admin_group_delete").click(function (){
+        //console.log($(this).attr("objId"));
+        
+        data = {
+          'action':'lab_group_delete_manager',
+          'id':$(this).attr('objId'),
+        };
+        callAjax(data,"Manager remove ",loadGroupManagers,'Failed to delete manager from this group',null);
+        //*/
+      });
+    });
+  }
 
   $("#lab_createGroup_subInput").autocomplete({
     minChars: 3,
@@ -533,6 +659,10 @@ jQuery(function($){
   $("#lab_all_users").click(function() 
   {
     reset_and_load_groups_users(!$("#lab_all_users").is(':checked'),  !$("#lab_no_users_left").is(':checked'));
+
+    if ($("#usermetadata_keys") != null && $("#usermetadata_keys").length) {
+      console.log("[lab_admin.js] settings tab");
+    }
   });
 
   $("#lab_no_users_left").click(function()
@@ -542,7 +672,13 @@ jQuery(function($){
 
   $(document).ready(function()
   {
-    reset_and_load_groups_users(!$("#lab_all_users").is(':checked'), !$("#lab_no_users_left").is(':checked'));
+    if ($("#list_users") != null && $("#list_users").length > 0) {
+      reset_and_load_groups_users(!$("#lab_all_users").is(':checked'), !$("#lab_no_users_left").is(':checked'));
+    }
+    if ($("#usermetadata_keys") != null && $("#usermetadata_keys").length > 0) {
+      console.log("[lab_admin.js][ready] usermetadata_keys present");
+      loadExistingKeys();
+    }
   });
 
 
@@ -658,13 +794,33 @@ jQuery(function($){
     e.preventDefault();
     lab_addHistoric(true,$(this).attr('entry_id'));
   });
-  $("#lab_admin_add_role").click(function () { 
+  $("#lab_admin_add_role").click(function (e) {
+    e.preventDefault();
     data = {
       'action':'lab_user_addRole',
       'user_id': $("#lab_user_search_id").val(),
       'role': $("#lab_allRoles").val()
     }
     callAjax(data,"Succès",loadUserRoles,"Erreur",null);
+   });
+   $("#lab_admin_add_thematic").click(function (e) {
+     e.preventDefault();
+     data = {
+       'action':'lab_user_addThematic',
+       'user_id': $("#lab_user_search_id").val(),
+       'thematic_id': $("#lab_thematic").val()
+     }
+     callAjax(data,"Succès",loaduserThematic,"Erreur",null);
+    });
+
+   $("#lab_admin_add_group").click(function (e) {
+    e.preventDefault();
+    data = {
+      'action':'lab_user_addGroup',
+      'user_id': $("#lab_user_search_id").val(),
+      'group_id': $("#lab_group").val()
+    }
+    callAjax(data,"Succès",loaduserGroup,"Erreur",null);
    })
 });
 
@@ -717,7 +873,13 @@ function setinfoToGroupEditionFields(groupId, acronym, groupName, chiefId, paren
   jQuery('#wp_lab_group_name_edit').val(groupName);
   jQuery('#lab_searched_chief_id').val(chiefId);
   jQuery('#wp_lab_group_chief_edit').val(callbUser(chiefId, loadUserName));
-  jQuery('#wp_lab_group_parent_edit').val(parent_group_id);
+  if (parent_group_id == null)
+  {
+    jQuery('#wp_lab_group_parent_edit').val('0');
+  }
+  else {
+    jQuery('#wp_lab_group_parent_edit').val(parent_group_id);
+  }
   jQuery('#wp_lab_group_url_edit').val(url)
 
   jQuery('#wp_lab_group_type_edit').val(group_type);
@@ -810,21 +972,29 @@ function createGroup(params) {
   });
 }
 
+function isCheck(elmId) {
+  if (jQuery(elmId).is(":checked")) {
+    return true;
+  }
+  return false;
+  
+}
+
 function load_params_type_after_new_param() {
-  jQuery("#wp_lab_param_value").val("");
-  jQuery("#wp_lab_param_color").val("");
-  jQuery("#wp_lab_param_color").css("background-color","#FFFFFF");
-  jQuery("#wp_lab_param_shift_param").prop("checked", false);;
+  resetParamFields();
   load_params_type('#wp_lab_param_type');
 }
 
-function saveParam(paramId, paramType, paramValue, paramColor, paramShift ,callAfterComplete) {
+function saveParam(paramId, paramType, paramValue, paramSlug, paramColor, paramshift, callAfterComplete) {
+  //console.log("paramshift : " + paramshift);
+  //return;
   var data = {
     'action' : 'save_param',
     'type' : paramType,
     'value' : paramValue,
+    'slug' : paramSlug,
     'color' : paramColor,
-    'shift' : paramShift,
+    'shift' : paramshift,
   };
   if (paramId != null) {
     data = {
@@ -832,8 +1002,9 @@ function saveParam(paramId, paramType, paramValue, paramColor, paramShift ,callA
       'id' : paramId,
       'type' : paramType,
       'value' : paramValue,
+      'slug' : paramSlug,
       'color' : paramColor,
-      'shift' : paramShift,
+      'shift' : paramshift,
     };
   }
   callAjax(data, "Param " + paramValue + " successfully created", callAfterComplete, null, null);
@@ -850,6 +1021,7 @@ function paramDelete(paramId) {
   };
   jQuery.post(LAB.ajaxurl, data, function(response) {
     if(response.success) {
+      resetParamFields();
       load_params_type('#wp_lab_param_type', null);
       toast_success("Param deleted succesfully");
     }
@@ -859,10 +1031,17 @@ function paramDelete(paramId) {
   });
 }
 
+function resetParamFields() {
+  jQuery("#wp_lab_param_value").val("");
+  jQuery("#wp_lab_param_slug").val("");
+  jQuery("#wp_lab_param_color").val("");
+  jQuery("#wp_lab_param_color").css("background-color","#FFFFFF");
+}
 function resetParamEditFields() {
   jQuery("#wp_lab_param_id").val("");
   jQuery("#lab_param_value_search").val("");
   jQuery("#wp_lab_param_color_edit").val("");
+  jQuery("#wp_lab_param_slug_edit").val("");
   jQuery("#wp_lab_param_color_edit").css("background-color","#FFFFFF");
 }
 
@@ -923,7 +1102,7 @@ function saveUserMetaData(userId, date, isChecked, location, userFunction) {
 
 }
 
-function saveUserLeft(date, isChecked, location, userFunction, userOfficeNumber, userOfficeFloor, employer, funding, firstname, lastname, sectionCn, sectionCnu) {
+function saveUser(date, isChecked, location, userFunction, userOfficeNumber, userOfficeFloor, employer, funding, firstname, lastname, sectionCn, sectionCnu, phone, email, url, thesisTitle, hdrTitle, phdSchool, user_sex, userCountry, user_hdr_date, user_thesis_date, datas) {
   var c = isChecked?date:null;
   var data = {
                'action' : 'update_user_metadata',
@@ -938,13 +1117,31 @@ function saveUserLeft(date, isChecked, location, userFunction, userOfficeNumber,
                'firstname' : firstname,
                'lastname' : lastname,
                'sectionCn' : sectionCn,
-               'sectionCnu' : sectionCnu
+               'phone' : phone,
+               'sectionCnu' : sectionCnu,
+               'email' : email,
+               'url' : url,
+               'thesisTitle' : thesisTitle,
+               'hdrTitle' : hdrTitle,
+               'phdSchool' : phdSchool,
+               'user_country' : userCountry,
+               'user_sex' : user_sex,
+               'user_hdr_date' : user_hdr_date,
+               'user_thesis_date' : user_thesis_date,
   };
+  console.log(datas);
+  for ( let key in datas)
+  {
+    console.log(key+"/"+datas[key]);
+    data[key] = datas[key];
+  }
+  console.log(data);
   callAjax(data, "User saved", resetUserTabFields, "Failed to save user", null);
 }
 function resetUserTabFields()
 {
   jQuery("#lab_user_search").val("");
+  jQuery("#lab_user_id").html("");
   jQuery("#lab_user_search_id").val("");
   jQuery("#lab_user_left").prop("checked", false);
   jQuery("#lab_user_left_date").val("");
@@ -954,12 +1151,24 @@ function resetUserTabFields()
   jQuery("#lab_user_office_floor").val("");
   jQuery("#lab_user_firstname").val("");
   jQuery("#lab_user_lastname").val("");
+  jQuery("#lab_user_slug").val("");
   jQuery("#lab_user_function").val("");
   jQuery("#lab_user_employer").val("");
   jQuery("#lab_user_funding").val("");
   jQuery("#lab_user_phone").val("");
   jQuery("#lab_user_section_cn").val("");
   jQuery("#lab_user_section_cnu").val("");
+  jQuery("#lab_user_email").val("");
+  jQuery("#lab_user_url").val("");
+  jQuery("#lab_user_thesis_title").val("");
+  jQuery("#lab_user_hdr_title").val("");
+  jQuery("#lab_user_phd_school").val("");
+  jQuery("#lab_user_sex").val("");
+  jQuery("#lab_user_country").countrySelect("selectCountry","fr");
+  jQuery("#lab_user_hdr_date").val("YYYY-mm-dd");
+  jQuery("#lab_user_thesis_date").val("YYYY-mm-dd");
+  document.forms['lab_admin_historic'].reset();
+  jQuery("#lab_admin_historic").hide();
 }
 
 function load_usermeta_dateLeft() {
@@ -968,6 +1177,11 @@ function load_usermeta_dateLeft() {
     'search[term]' : userId
   };
   callAjax(data, null, loadUserMetaData, null, null);
+}
+
+function reloadCurrentUser()
+{
+  callbUser(jQuery("#lab_user_search_id").val(), loadUserMetaData);
 }
 
 function callbUser(userId, callback) { // function with callback to operate with userId
@@ -989,48 +1203,52 @@ function loadUserName(response) {
 function loadUserMetaData(response) {
   if(response.data) {
     resetUserMetaFields();
-    jQuery("#lab_user_firstname").val(response.data["first_name"]["value"]);
-    jQuery("#lab_user_lastname").val(response.data["last_name"]["value"]);
-    jQuery("#lab_usermeta_id").val(response.data["lab_user_left"]["id"]);
+
+    setField("#lab_user_firstname", response.data["first_name"]);
+    setField("#lab_user_lastname", response.data["last_name"]);
+    setField("#lab_user_email", response.data["user_email"]);
+    setField("#lab_user_url", response.data["user_url"]);
+    setField("#lab_user_slug", response.data["user_slug"]);
+
+    setField("#lab_user_thesis_title", response.data["user_thesis_title"]);
+    setField("#lab_user_hdr_title" , response.data["user_hdr_title"]);
+    setField("#lab_user_hdr_date"  , response.data["user_hdr_date"]);
+    setField("#lab_user_phd_school", response.data["user_phd_school"]);
+    //console.log("[lab_admin.js] [loadUserMetaData ]: "+ response.data["user_thesis_date"]);
+    setField("#lab_user_thesis_date"  , response.data["user_thesis_date"]);
+
+    $country = response.data["user_country"];
+    console.log($country);
+    if ($country == null || $country == "")
+    {
+      $country = "fr";
+    }
+    //console.log($country);
+    jQuery("#lab_user_country").countrySelect("selectCountry",$country);
+    //setField("#lab_user_country", $country);
+    console.log("[lab_admin.js][loadUserMetaData] user_sex : " + response.data["user_sex"]);
+    setField("#lab_user_sex", response.data["user_sex"]);
+    setField("#lab_user_function", response.data["user_function"]);
+    setField("#lab_user_funding", response.data["user_funding"]);
+    setField("#lab_user_employer", response.data["user_employer"]);
+    setField("#lab_user_location", response.data["user_location"]);
+    setField("#lab_user_office_floor", response.data["user_office_floor"]);
+    setField("#lab_user_office_number", response.data["user_office_number"]);
+    setField("#lab_user_phone", response.data["user_phone"]);
+
+    if (response.data["lab_user_left"]) {
+      jQuery("#lab_usermeta_id").val(response.data["lab_user_left"]["id"]);
+    }
     if (response.data["lab_user_left"]["value"] != null) {
       jQuery("#lab_user_left").prop("checked", true);
       jQuery("#lab_user_left_date").prop("disabled", false);
       jQuery("#lab_user_left_date").val(response.data["lab_user_left"]["value"]);
     } else {
 	    jQuery("#lab_user_left").prop("checked", false);
+      jQuery("#lab_user_left_date").val("YYY-mm-dd");
       jQuery("#lab_user_left_date").prop("disabled", true);
       jQuery("#lab_user_left_date").val("");
     }
-
-    if (response.data["user_function"] != null) {
-      jQuery("#lab_user_function").val(response.data["user_function"]);
-    }
-    if (response.data["user_funding"] != null) {
-      jQuery("#lab_user_funding").val(response.data["user_funding"]);
-    }
-    if (response.data["user_employer"] != null) {
-      jQuery("#lab_user_employer").val(response.data["user_employer"]);
-    }
-    if (response.data["user_location"] != null) {
-      jQuery("#lab_user_location").val(response.data["user_location"]);
-    }
-    if (response.data["user_office_floor"] != null) {
-      jQuery("#lab_user_office_floor").val(response.data["user_office_floor"]);
-    }
-    if (response.data["user_office_number"] != null) {
-      jQuery("#lab_user_office_number").val(response.data["user_office_number"]);
-    }
-    if (response.data["user_phone"] != null) {
-      jQuery("#lab_user_phone").val(response.data["user_phone"]);
-    }
-    if (response.data["user_section_cn"] != null) {
-      jQuery("#lab_user_section_cn").val(response.data["user_section_cn"]);
-    }
-    if (response.data["user_section_cnu"] != null) {
-      jQuery("#lab_user_section_cnu").val(response.data["user_section_cnu"]);
-    }
-    setField("#lab_user_firstname", response.data["first_name"]);
-    setField("#lab_user_lastname", response.data["last_name"]);
   }
   else
   {
@@ -1113,6 +1331,8 @@ function resetGroupEdit()
   jQuery("#wp_lab_group_name").val("");
   jQuery("#lab_group_edit_substitutes").text("");
   jQuery("#wp_lab_group_url_edit").val("");
+  jQuery("#lab_group_edit_add_manager").val("");
+  jQuery("#lab_admin_group_managers").html("");
 }
 function clearFields(prefix,list) {
   for (i of list) {
@@ -1137,15 +1357,6 @@ function loadExistingKeysFields(data) {
   }
 }
 
-function completeMetakeys(key, value) {
-  var data = {
-    'action' : 'complete_new_metakeys',
-    'key' : key,
-    'value' : value
-  };
-  console.log(data);
-  callAjax(data, "key " + key + " added for all users without it", resetUserMetaFields, "Error when saving key '" + key + "'", null);
-}
 function createMetakeys(key, value) {
   var data = {
     'action' : 'add_new_metakeys',
@@ -1160,7 +1371,7 @@ function deleteMetaKeys(key) {
     'action' : 'delete_metakey',
     'key' : key
   };
-  callAjax(data, "MetaKey delete for all user", loadExistingKeysFields, "failed to delete key '" + key + "'", null);
+  callAjax(data, "MetaKey delete for all user", loadExistingKeys, "failed to delete key '" + key + "'", null);
 }
 function correctUMFields() {
   var data = {
@@ -1204,31 +1415,6 @@ function enabledAddKeyAllButton(data) {
   jQuery("#lab_settings_button_addKey_all").prop("disabled",false);
 }
 
-function callAjax(data, successMessage, callBackSuccess = null, errorMessage, callBackError = null) {
-  jQuery.post(LAB.ajaxurl, data, function(response) {
-    if (response.success) {
-      if (successMessage != null) {
-        toast_success(successMessage);
-      }
-      if (callBackSuccess != null) {
-        callBackSuccess(response.data);
-      }
-    }
-    else {
-      if (errorMessage != null) {
-        toast_error(errorMessage);
-      } 
-      else {
-        if (response.data) {
-          toast_error(response.data);
-        }
-      }
-      if (callBackError != null) {
-        callBackError(response.data);
-      }
-    }
-    });
-}
 
 function loadHalJson(userId) {
   var data = {
@@ -1279,6 +1465,7 @@ function loadUserHistory() {
               $("#lab_historic_end").val(response.data['end']);
               $("#lab_historic_function option[value="+response.data['function']+"]").prop('selected','true');
               $("#lab_historic_mobility option[value="+response.data['mobility']+"]").prop('selected','true');
+              $("#lab_historic_mobility_status option[value="+response.data['mobility_status']+"]").prop('selected','true');
               $("#lab_historic_host").attr('host_id',response.data['host_id']);
               callbUser(response.data['host_id'],loadHostNames);
             }
@@ -1429,7 +1616,8 @@ function lab_addHistoric(update,entry_id=null) {
       'begin': $("#lab_historic_start").val(),
       'end': $("#lab_historic_end").val(),
       'function': $("#lab_historic_function").val(),
-      'mobility': $("#lab_historic_mobility").val()
+      'mobility': $("#lab_historic_mobility").val(),
+      'mobility_status': $("#lab_historic_mobility_status").val()
     }
     if ($("#lab_historic_host").attr('host_id')!=null && $("#lab_historic_host").attr('host_id').length) {
       data['host_id']=$("#lab_historic_host").attr('host_id');
@@ -1452,6 +1640,105 @@ function lab_addHistoric(update,entry_id=null) {
     });
   });
 }
+
+function loadMissingMetaData(userId)
+{
+  callAjax({'action':'missing_user_metadata','id':userId}, null, displayMissingMetaData, null, hideMissingMetaData);
+}
+
+function correctUserMetadaField(userId)
+{
+  callAjax({'action':'correct_user_metadatas','id':userId}, "Data corrected", null, "Failed to correct metadata fields", null);
+}
+
+function displayMissingMetaData(data)
+{
+  jQuery('missingUserMetaDataContent').empty();
+  var list = jQuery('<ul/>').appendTo('#missingUserMetaDataContent');
+  for (var i = 0; i < data.length; i++) {
+    // New <li> elements are created here and added to the <ul> element.
+    list.append('<li>'+data[i]+'</li>');
+  }
+}
+function hideMissingMetaData(data)
+{
+  $("#missingUserMetaData").hide();
+}
+
+function loaduserGroup() {
+  jQuery(function ($) {
+    $.post(LAB.ajaxurl,{'action':'lab_admin_group_by_user','user_id':$("#lab_user_search_id").val()},function (response) {
+      if (response.success) {
+        $("#lab_admin_user_group").html("");
+        $.each(response.data, function(i, obj) {
+          //use obj.id and obj.name here, for example:
+          //alert(obj.name);
+          let span = $('<span />').attr('class', 'badge badge-secondary user-role-badge').html(obj.name+" ");
+          let innerSpan = $('<span />').attr('class', 'lab_group_delete').attr('group_id', obj.id);
+          let innerI = $('<i />').attr('class', 'fas fa-trash').attr('group_id', obj.id);
+          innerSpan.append(innerI);
+          span.append(innerSpan);
+          $("#lab_admin_user_group").append(span);
+        });
+        //$("#lab_admin_user_thematics").html(response.data);
+        //<span class='lab_role_delete' user_id='".$user_id."' role='".$value->id."'><i class='fas fa-trash'></i></span></span>
+        $(".lab_group_delete").click(function (){
+          data = {
+            'action':'lab_user_delGroup',
+            'group_id':$(this).attr('group_id'),
+          };
+          callAjax(data,"Group "+$(this).attr('role')+" delete !",loaduserGroup,'Failed to delete group',null);
+        });
+      }
+    })
+  });
+}
+function loaduserThematic() {
+  jQuery(function ($) {
+    $.post(LAB.ajaxurl,{'action':'lab_user_getThematics_by_user','user_id':$("#lab_user_search_id").val()},function (response) {
+      if (response.success) {
+        $("#lab_admin_user_thematics").html("");
+        $.each(response.data, function(i, obj) {
+          //use obj.id and obj.name here, for example:
+          //alert(obj.name);
+          let span = $('<span />').attr('class', 'badge badge-secondary user-role-badge').html(obj.name+" ");
+          let innerSpan = $('<span />').attr('class', 'lab_thematic_delete').attr('thematic_id', obj.id);
+          let thematicCssClass = 'lab_thematic_order';
+          if (obj.main == "1") {
+            thematicCssClass += " lab_thematic_main";
+          }
+          let innerSpanMain = $('<span />').attr('class', thematicCssClass).attr('thematic_id', obj.id).attr('thematic_value', obj.main);
+          let innerI = $('<i />').attr('class', 'fas fa-trash').attr('thematic_id', obj.id);
+          let innerIMain = $('<i />').attr('class', 'fa fa-star').attr('thematic_id', obj.id);
+          innerSpan.append(innerI);
+          innerSpanMain.append(innerIMain);
+          span.append(innerSpan);
+          span.append(innerSpanMain);
+          $("#lab_admin_user_thematics").append(span);
+        });
+        //$("#lab_admin_user_thematics").html(response.data);
+        //<span class='lab_role_delete' user_id='".$user_id."' role='".$value->id."'><i class='fas fa-trash'></i></span></span>
+        $(".lab_thematic_delete").click(function (){
+          data = {
+            'action':'lab_user_delThematic',
+            'thematic_id':$(this).attr('thematic_id'),
+          };
+          callAjax(data,"Thematic "+$(this).attr('role')+" delete !",loaduserThematic,'Failed to delete thematic',null);
+        });
+        $(".lab_thematic_order").click(function (){
+          data = {
+            'action':'lab_user_setMainThematic',
+            'thematic_id':$(this).attr('thematic_id'),
+            'thematic_value':$(this).attr('thematic_value'),
+          };
+          console.log(data);
+          callAjax(data,"Thematic "+$(this).parent().text()+" set as main",loaduserThematic,'Failed to set main thematic',null);
+        });
+      }
+    })
+  });
+}
+
 function loadUserRoles() {
   jQuery(function ($) {
     $.post(LAB.ajaxurl,{'action':'lab_user_getRoles','user_id':$("#lab_user_search_id").val()},function (response) {
@@ -1468,4 +1755,22 @@ function loadUserRoles() {
       }
     })
   })
+}
+function lab_admin_ldap_settings() {
+  jQuery(function ($) {
+    data = {
+      'action': 'lab_admin_ldap_settings',
+      'enable': [$("#lab_admin_tab_ldap_enable").prop('checked').toString(), $("#lab_admin_tab_ldap_enable").attr('param_id').length > 0 ? $("#lab_admin_tab_ldap_enable").attr('param_id') : null],
+      'host': [$("#lab_admin_tab_ldap_host").val(), $("#lab_admin_tab_ldap_host").attr('param_id').length > 0 ? $("#lab_admin_tab_ldap_host").attr('param_id') : null],
+      'token': [$("#lab_admin_tab_ldap_token").val(), $("#lab_admin_tab_ldap_token").attr('param_id').length > 0 ? $("#lab_admin_tab_ldap_token").attr('param_id') : null],
+      'base': [$("#lab_admin_tab_ldap_base").val(), $("#lab_admin_tab_ldap_base").attr('param_id').length > 0 ? $("#lab_admin_tab_ldap_base").attr('param_id') : null],
+      'login': [$("#lab_admin_tab_ldap_login").val(), $("#lab_admin_tab_ldap_login").attr('param_id').length > 0 ? $("#lab_admin_tab_ldap_login").attr('param_id') : null],
+      'password': [$("#lab_admin_tab_ldap_pass").val(), $("#lab_admin_tab_ldap_pass").attr('param_id').length > 0 ? $("#lab_admin_tab_ldap_pass").attr('param_id') : null],
+      'tls': [$("#lab_admin_tab_ldap_tls").prop('checked').toString(), $("#lab_admin_tab_ldap_tls").attr('param_id').length > 0 ? $("#lab_admin_tab_ldap_tls").attr('param_id') : null],
+    }
+    callAjax(data,__('Paramètres mis à jour','lab'),lab_admin_reload_ldap_settings,__('Erreur lors de la mise à jour des paramètres'),null);
+  });
+}
+function lab_admin_reload_ldap_settings(data) {
+  document.querySelector('#lab_admin_ldap_tab').outerHTML=data;
 }

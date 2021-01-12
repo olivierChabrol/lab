@@ -9,14 +9,14 @@
 function lab_admin_tab_user() {
 ?>
 <div style="display:flex; flex-wrap:wrap;">
-  <form>
+  <form name="lab_admin_user_form">
     <table class="form-table" role="presentation">
       <tr class="user-rich-editing-wrap">
         <th scope="row">
           <label for="lab_user_name"><?php esc_html_e('Nom de l\'utilisateur','lab') ?></label>
         </th>
         <td>
-          <input type="text"   id="lab_user_search"    value="" /><br>
+          <input type="text"   id="lab_user_search"    value="" /><b>&nbsp;<span id="lab_user_id"></span></b><br>
           <input type="hidden" id="lab_user_search_id" value="" /><br>
         </td>
       </tr>
@@ -26,6 +26,27 @@ function lab_admin_tab_user() {
         </td>
         <td>
           <input type="text" id="lab_user_lastname" value=""  placeholder="<?php esc_html_e('Last name','lab') ?>"/>
+          <select id="lab_user_sex">
+            <option value=""><?php esc_html_e('Sex','lab') ?></option>
+            <option value="F">Feminin</option>
+            <option value="M">Masculin</option>
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2">
+          <input type="text" id="lab_user_slug" value="" size="40" placeholder="<?php esc_html_e('User slug','lab') ?>" disabled/>
+          <a href="#" class="page-title-action" id="lab_admin_correct_slug_name"><?php esc_html_e("Correct slug name","lab")?></a>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2">
+        <input type="text" id="lab_user_email" value="" size="40" placeholder="<?php esc_html_e('Email','lab') ?>"/> &nbsp <input type="text" id="lab_user_country">
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2">
+        <input type="text" id="lab_user_url" value="" size="40" placeholder="<?php esc_html_e('URL','lab') ?>"/>
         </td>
       </tr>
       <tr>
@@ -33,7 +54,7 @@ function lab_admin_tab_user() {
           <label for="lab_user_function"><?php esc_html_e('User function','lab') ?></label>
         </td>
         <td>
-          <?php lab_html_select("lab_user_function", "lab_user_function", "", lab_admin_get_params_userFunction, null, array("value"=>"","label"=>"None"), ""); ?>
+          <?php lab_html_select("lab_user_function", "lab_user_function", "", "lab_admin_get_params_userFunction", null, array("value"=>"","label"=>"None"), ""); ?>
         </td>
       </tr>
       <tr>
@@ -41,7 +62,7 @@ function lab_admin_tab_user() {
           <label for="lab_user_employer"><?php esc_html_e('Employer','lab') ?></label>
         </td>
         <td>
-          <?php lab_html_select("lab_user_employer", "lab_user_employer", "", lab_admin_get_params_userEmployer, null, array("value"=>"","label"=>"None"), ""); ?>
+          <?php lab_html_select("lab_user_employer", "lab_user_employer", "", "lab_admin_get_params_userEmployer", null, array("value"=>"","label"=>"None"), ""); ?>
         </td>
       </tr>
       <tr>
@@ -49,7 +70,7 @@ function lab_admin_tab_user() {
           <label for="lab_user_funding"><?php esc_html_e('Funding','lab') ?></label>
         </td>
         <td>
-          <?php lab_html_select("lab_user_funding", "lab_user_funding", "", lab_admin_get_params_userFunding, null, array("value"=>"","label"=>"None"), ""); ?>
+          <?php lab_html_select("lab_user_funding", "lab_user_funding", "", "lab_admin_get_params_userFunding", null, array("value"=>"","label"=>"None"), ""); ?>
         </td>
       </tr>
       <tr>
@@ -57,7 +78,7 @@ function lab_admin_tab_user() {
           <label for="lab_user_location"><?php esc_html_e('User Location','lab') ?></label>
         </td>
         <td>
-          <?php lab_html_select("lab_user_location", "lab_user_location", "", lab_admin_get_params_userLocation, null, array("value"=>"","label"=>"None"), ""); ?>
+          <?php lab_html_select("lab_user_location", "lab_user_location", "", "lab_admin_get_params_userLocation", null, array("value"=>"","label"=>"None"), ""); ?>
         </td>
       </tr>
       <tr>
@@ -89,7 +110,7 @@ function lab_admin_tab_user() {
           <label for="lab_user_section_cn"><?php esc_html_e('Section CN','lab') ?></label>
         </td>
         <td>
-          <?php lab_html_select("lab_user_section_cn", "lab_user_section_cn", "", lab_admin_get_params_userSectionCn, null, array("value"=>"","label"=>"None"), ""); ?>
+          <?php lab_html_select("lab_user_section_cn", "lab_user_section_cn", "", "lab_admin_get_params_userSectionCn", null, array("value"=>"","label"=>"None"), ""); ?>
         </td>
       </tr>
       <tr>
@@ -97,7 +118,33 @@ function lab_admin_tab_user() {
           <label for="lab_user_section_cnu"><?php esc_html_e('Section CNU','lab') ?></label>
         </td>
         <td>
-          <?php lab_html_select("lab_user_section_cnu", "lab_user_section_cnu", "", lab_admin_get_params_userSectionCnu, null, array("value"=>"","label"=>"None"), ""); ?>
+          <?php lab_html_select("lab_user_section_cnu", "lab_user_section_cnu", "", "lab_admin_get_params_userSectionCnu", null, array("value"=>"","label"=>"None"), ""); ?>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label for="lab_user_thesis_title"><?php esc_html_e('Thesis title','lab') ?></label>
+        </td>
+        <td>
+        <input type="text" id="lab_user_thesis_title"/>
+        <input type="date" id="lab_user_thesis_date"/>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label for="lab_user_hdr_title"><?php esc_html_e('HDR title','lab') ?></label>
+        </td>
+        <td>
+        <input type="text" id="lab_user_hdr_title"/>
+        <input type="date" id="lab_user_hdr_date"/>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label for="lab_user_phd_school"><?php esc_html_e('PHD school','lab') ?></label>
+        </td>
+        <td>
+        <?php lab_html_select("lab_user_phd_school", "lab_user_phd_school", "", "lab_admin_get_params_userPhdSchool", null, array("value"=>"","label"=>"None"), ""); ?>
         </td>
       </tr>
       <tr>
@@ -111,11 +158,34 @@ function lab_admin_tab_user() {
       </tr>
       <tr>
         <td colspan="2">
-          <a href="#" class="page-title-action" id="lab_user_button_save_left"><?php esc_html_e('Modifier le statut de l\'utilisateur','lab') ?></a>
+          <a href="#" class="page-title-action" id="lab_user_button_user_save"><?php esc_html_e('Modifier le statut de l\'utilisateur','lab') ?></a>
           <a href="#" class="page-title-action" id="lab_user_button_delete"><?php esc_html_e('Delete user','lab') ?></a>
         </td>
       </tr>
     </table>
+
+    <div> <!-- Group -->
+      <h5><?php esc_html_e("Add Group to user",'lab') ?></h5>
+      <div>
+        <div id="lab_admin_user_group">
+        </div>
+        <br/>
+        <?php
+        lab_html_select('lab_group','lab_group','lab_allRoles','lab_admin_group_load_all',null,array("value"=>0,"label"=>"--- Select Group ---"),0);?>
+        <button class="btn btn-primary" id="lab_admin_add_group"><?php esc_html_e("Add","lab")?></button>
+      </div>
+    </div>
+    <div> <!-- Thematics -->
+      <h5><?php esc_html_e("Add thematic to user",'lab') ?></h5>
+      <div>
+        <div id="lab_admin_user_thematics">
+        </div>
+        <br/>
+        <?php
+        lab_html_select('lab_thematic','lab_thematic','lab_allRoles','lab_admin_thematic_load_all',null,array("value"=>0,"label"=>"--- Select thematic ---"),0);?>
+        <button class="btn btn-primary" id="lab_admin_add_thematic"><?php esc_html_e("Add","lab")?></button>
+      </div>
+    </div>
     <div> <!-- Rôles -->
       <h5><?php esc_html_e("Affecter des rôles à l'utilisateur",'lab') ?></h5>
       <div>
@@ -124,7 +194,7 @@ function lab_admin_tab_user() {
         <br/>
         <?php
         lab_html_select('lab_allRoles','lab_allRoles','lab_allRoles','lab_get_all_roles',null,array("value"=>0,"label"=>"--- Sélectionnez un rôle ---"),0);?>
-        <button class="btn btn-primary" id="lab_admin_add_role"><?php esc_html_e("Ajouter","lab")?></button>
+        <button class="btn btn-primary" id="lab_admin_add_role"><?php esc_html_e("Add","lab")?></button>
       </div>
     </div>
   </form>
@@ -200,6 +270,19 @@ function lab_admin_tab_user() {
       </tr>
       <tr>
         <th>
+          <label for="lab_historic_mobility_status"><?php esc_html_e('Outgoing mobility status','lab') ?> : </label>
+        </th>
+        <td>
+          <?php lab_html_select("lab_historic_mobility_status",
+                                "lab_historic_mobility_status",
+                                '',
+                                'lab_admin_get_params_outgoingMobilityStatus',
+                                AdminParams::PARAMS_OUTGOING_MOBILITY_STATUS,
+                                array("value"=>0,"label"=>"None"),0); ?>
+        </td>
+      </tr>
+      <tr>
+        <th>
           <label for="lab_historic_host"><?php esc_html_e('Hôte','lab') ?> : </label>
         </th>
         <td>
@@ -215,37 +298,17 @@ function lab_admin_tab_user() {
           </div>
         </td>
       </tr>
+      <tr>
+          <td scope="row" colspan="2">
+              <div id="missingUserMetaData">
+                  <h4>Missing Fields :</h4>
+                  <div id="missingUserMetaDataContent"></div>
+                  <a href="#" class="page-title-action" id="lab_user_button_correct_missing_usermetaDataFields"><?php esc_html_e('Correct missing metadata','lab') ?></a>
+              </div>
+          </td>
+      </tr>
     </table>
   </form>
-</div>
-<br/>
-<div>
-  <h3><?php esc_html_e('Affecter des utilisateurs à des groupes','lab') ?></h3>
-
-  <label for="lab_all_users"><b><?php esc_html_e('Afficher aussi les personnes qui ont déjà un groupe', 'lab') ?></b></label>
-  <input type="checkbox" id="lab_all_users"/><br/>
-  <label for="lab_no_users_left"><b><?php esc_html_e('Afficher aussi les utilisateurs qui ont quitté l\'Institut','lab') ?></b></label>
-  <input type="checkbox" id="lab_no_users_left"/>
-  <br/><br/>
-
-  <div style="display:flex;">
-    
-    <!-- CHOIX USER -->
-
-    <div style='float: left; margin-right:50px;'>
-                          <label for='users'><?php esc_html_e('Choisissez une ou plusieurs personne(s) à affecter :','lab') ?>
-                          </label><br/><br/>
-    <select id='list_users' name='users[]' multiple style='height:300px;'></select></div>
-    
-    <!-- CHOIX GROUP -->
-
-    <div style='float: right; margin-left:50px'>
-                          <label for='groups'><?php esc_html_e('Choisissez le ou les groupe(s) au(x)quel(s) vous allez affecter des personnes :', 'lab') ?>
-                          </label><br/><br/>
-    <select id='list_groups' name='groups[]' multiple style='height:150px;'></select></div>
-
-  </div>
-  <button style='margin-top:10px;' id='lab_add_users_groups'><?php esc_html_e('envoyer','lab') ?></button>
 </div>
 <hr/>
 <div id="ldap_menu_flex" style="display:flex; flex-wrap:wrap;">
@@ -334,6 +397,25 @@ function lab_admin_tab_user() {
 <?php
 }
 
+
+function lab_admin_history_fields($elem) {
+  if ($elem == null) {
+    return null;
+  }
+  //var_dump($elem->begin);
+  $histoObj = new StdClass();
+  $histoObj->begin = date_create_from_format("Y-m-d", $elem->begin);
+  $histoObj->end   = isset($elem->end) ? date_create_from_format("Y-m-d", $elem->end) : NULL;
+  
+  $host = $elem->host_id==null ? null : new LabUser($elem->host_id);
+  $histoObj->host  = $host==null ? null : $host->first_name . ' ' . $host->last_name;
+  $histoObj->function = $elem->function;
+  $histoObj->mobility        = $elem->mobility!=0?AdminParams::get_param($elem->mobility):null;
+  $histoObj->mobility_status = $elem->mobility_status!=0?AdminParams::get_param($elem->mobility_status):null;
+  //*/
+  return $histoObj;
+}
+
 /**
  * @param array $list : id, ext, begin, end, host_id, function
  * @return string HTML results
@@ -343,9 +425,10 @@ function lab_admin_history($list) {
   foreach ($list as $elem) {
     $date_begin = date_create_from_format("Y-m-d", $elem->begin);
     $date_end = isset($elem->end) ? date_create_from_format("Y-m-d", $elem->end) : NULL;
+    //var_dump($elem->end);
     $host = $elem->host_id==null ? null : new LabUser($elem->host_id);
     $out .= "<li class='lab_history_li' ".( $elem->mobility==0 ? '': "style='background-color:#".AdminParams::get_paramWithColor($elem->mobility)->color)."'>
-      <div class='lab_history_dates'><div>".strftime('%d %B %G',$date_begin->getTimestamp())."</div><div>".(isset($date_end) ? strftime('%d %B %G',$date_end->getTimestamp()) : ' ')."</div></div>
+      <div class='lab_history_dates'><div>".$elem->begin."</div><div>".(isset($date_end) ? $elem->end : ' ')."</div></div>
       <div class='lab_history_desc'>
         <div class='lab_history_topDesc'>
           <p>".($elem->mobility==0 ? "I2M" : AdminParams::get_param($elem->mobility))."</p>
@@ -353,7 +436,7 @@ function lab_admin_history($list) {
         </div>
         <h5>· ".AdminParams::get_param($elem->function)."</h5>
       </div>
-      <div class='lab_history_actions'><a class='lab_history_edit' entry_id=$elem->id href='#'>🖊</a><a class='lab_history_edit_delete' entry_id=$elem->id href='#'>❌</a></div>
+      <div class='lab_history_actions'><a class='lab_history_edit' entry_id=\"$elem->id\" href=\"#\"><i class=\"fas fa-pen\"></i></a><a class='lab_history_edit_delete' entry_id=\"$elem->id\" href='#'><i class=\"fas fa-trash\"></i></a></div>
     </li>";
   }
   return $out;
@@ -366,7 +449,7 @@ function lab_admin_user_roles($user_id) {
     $out = '';
     foreach ($all_roles as $value) {
       if (in_array($value->id, $userRoles)) {
-        $out .= "<span class='badge badge-secondary user-role-badge'>".$value->value." <span class='lab_role_delete' user_id='".$user_id."' role='".$value->id."'>❌</span></span>";
+        $out .= "<span class='badge badge-secondary user-role-badge'>".$value->value." <span class='lab_role_delete' user_id='".$user_id."' role='".$value->id."'><i class='fas fa-trash'></i></span></span>";
       }
     }
   } else {

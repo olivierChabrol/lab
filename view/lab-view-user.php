@@ -161,6 +161,13 @@ function lab_user($args=null)
                 </form>
             </tr>
             <tr>
+                <th>
+                    <label>'. esc_html__('Thematic','lab').' : </label>
+                </th>
+                <td><div id="user_thematics"></div>
+                </td>
+            </tr>
+            <tr>
                 <td colspan="2">
                 <a href="#" class="page-title-action" id="lab_user_button_save_left">'. esc_html__('Modifier le statut de l\'utilisateur','lab') .'</a>
                 </td>

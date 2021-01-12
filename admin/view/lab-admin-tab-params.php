@@ -29,6 +29,10 @@ function lab_admin_tab_params() {
       <td><input type="text" id="wp_lab_param_value"></td><td>&nbsp;</td>
     </tr>
     <tr>
+      <td><label for="wp_lab_param_slug"><?php esc_html_e("Param slug", "lab") ?></label></td>
+      <td><input type="text" id="wp_lab_param_slug"></td><td>&nbsp;</td>
+    </tr>
+    <tr>
       <td><label for="wp_lab_param_color"><?php esc_html_e("Param color", "lab") ?></label></td>
       <td><input type="text" id="wp_lab_param_color"></td>
       <td>
@@ -63,6 +67,10 @@ function lab_admin_tab_params() {
           <tr>
             <td><input type="hidden" id="wp_lab_param_id"><label for="wp_lab_param_type_edit"><?php esc_html_e("Param type", "lab") ?></label></td>
             <td colpsan="2"><select id="wp_lab_param_type_edit"></select></td>
+          </tr>
+          <tr>
+            <td><label for="wp_lab_param_type_edit"><?php esc_html_e("Param slug", "lab") ?></label></td>
+            <td colpsan="2"><input type="text" id="wp_lab_param_slug_edit"></td>
           </tr>
           <tr>
             <td><label for="wp_lab_param_color_edit"><?php esc_html_e("Param color", "lab") ?></label></td>

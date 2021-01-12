@@ -271,6 +271,7 @@ function lab_ldap_new_WPUser($lastname,$firstname,$email,$password,$uid) {
       'display_name'=>$firstname." ".$lastname,
       'role'=>'subscriber');
     $user_id = wp_insert_user($userData);
+    lab_admin_add_new_user_metadata($user_id);
     $sql = "INSERT INTO ".$wpdb->prefix."usermeta 
         (`user_id`, `meta_key`, `meta_value`) VALUES
         ($user_id, 'mo_ldap_user_dn', 'uid=$uid,ou=accounts,".$ldap->getBase()."');";
@@ -294,6 +295,8 @@ function lab_ldap_addUser($ldap_obj, $first_name, $last_name,$email,$password,$u
     $info["loginshell"]="/bin/bash";
     $info["uid"]=$uid;
     $info["displayname"] = "$first_name $last_name";
+    $info["givenName"] = $first_name;
+    
     $info["sn"] = $last_name;
     $info["mail"]=$email;
     $info["uidnumber"]=3000+$ldap_obj->countResults($ldap_obj->searchAccounts());

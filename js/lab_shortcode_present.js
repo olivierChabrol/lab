@@ -4,6 +4,36 @@ jQuery(function($){
                         color: green;
                       }`;
     document.head.appendChild(style);
+
+    $("#workGroupFollow").change(function() {
+        if ($(this).val() != "") {
+            
+            setDay($( "#workGroupFollow option:selected" ).attr("date"), $( "#workGroupFollow option:selected" ).attr("hour_start"), $( "#workGroupFollow option:selected" ).attr("hour_end"));
+            $("#siteId").val($( "#workGroupFollow option:selected" ).attr("site"));
+            $("#comment").val(__("I participate in the working group","lab") + " " + $( "#workGroupFollow option:selected" ).attr("name"));
+            $("#divNewWorkingGroup").hide();
+        }
+        else
+        {
+            $("#divNewWorkingGroup").show();
+            resetFields();
+        }
+    });
+    $("#workGroupFollowExt").change(function() {
+        console.log("Change workGroupFollowExt");
+        if ($(this).val() != "") {
+            
+            setDayExt($( "#workGroupFollowExt option:selected" ).attr("date"), $( "#workGroupFollowExt option:selected" ).attr("hour_start"), $( "#workGroupFollowExt option:selected" ).attr("hour_end"));
+            $("#lab_presence_ext_new_siteId").val($( "#workGroupFollowExt option:selected" ).attr("site"));
+            $("#lab_presence_ext_new_comment").val(__("I participate in the working group","lab") + " " + $( "#workGroupFollowExt option:selected" ).attr("name"));
+            $("#divNewWorkingGroup").hide();
+        }
+        else
+        {
+            $("#divNewWorkingGroup").show();
+            resetFields();
+        }
+    });
   
     $(".icon-edit").click(function() {
         let editable = $(this).parents('tr').find('.edit');
@@ -59,36 +89,13 @@ jQuery(function($){
     });
     $("#lab_presence_button_save").click(function() {
 
-        if ($("#comment").val()=="") {
+        if ($("#comment").attr("mandatory") != "false" && $("#comment").val()=="") {
             toast_error(__("Reason of your attendance is require", "lab"));
             $("#comment").focus();
             return;
         }
-         /*
-        $('#datetimePicker').datetimepicker();
-        $('#meetingForm').bootstrapValidator({
-            feedbackIcons: {
-                valid: 'glyphicon glyphicon-ok',
-                invalid: 'glyphicon glyphicon-remove',
-                validating: 'glyphicon glyphicon-refresh'
-            },
-            fields: {
-                meeting: {
-                    validators: {
-                        date: {
-                            format: 'MM/DD/YYYY h:m A',
-                            message: 'The value is not a valid date'
-                        }
-                    }
-                }
-            }
-        });
-        $('#datetimePicker').on('dp.change dp.show', function(e) {
-            $('#meetingForm').bootstrapValidator('revalidateField', 'meeting');
-        });*/
-
         if (checkPresenceInputs('date-open', 'hour-open', 'hour-close')) {
-            savePresence(null, $("#userId").val(), $("#date-open").val(), $("#hour-open").val(), $("#hour-close").val(), $("#siteId").val(), $("#comment").val(), 0);
+            savePresence(null, $("#userId").val(), $("#date-open").val(), $("#hour-open").val(), $("#hour-close").val(), $("#siteId").val(), $("#comment").val(), 0, $("#workGroupName").val(), $("#workGroupFollow").val() );
         }
     });
 
@@ -159,12 +166,52 @@ jQuery(function($){
         }
         $.post(LAB.ajaxurl, data, function(response) {
           if (response.success) {
+            resetFields();
             //$("#invitationForm")[0].outerHTML=response.data;
             window.location.reload(false); 
           }
         });
     });
 });
+
+function resetFields()
+{
+    /*
+    $("#date-open").val("YYYY-MM-DD");
+    $("#hour-open").val("--:--");
+    $("#hour-close").val("--:--");
+    //*/
+
+    $('input[type="date"]').val('');
+    $('input[type="time"]').val('');
+    $('#siteId').val('');
+    $('#comment').val('');
+    $("#workGroupFollow").val("");
+    $("#workGroupName").val("");
+}
+function resetExtFields()
+{
+    $('input[type="date"]').val('');
+    $('input[type="time"]').val('');
+    $('#lab_presence_ext_new_siteId').val('');
+    $('#lab_presence_ext_new_comment').val('');
+    $("#workGroupFollow").val("");
+    $("#workGroupName").val("");
+}
+
+function setDayExt(date, start, end)
+{
+    $("#lab_presence_ext_new_date_open").val(date);
+    $("#lab_presence_ext_new_hour_open").val(start);
+    $("#lab_presence_ext_new_hour_close").val(end);
+}
+
+function setDay(date, start, end)
+{
+    $("#date-open").val(date);
+    $("#hour-open").val(start);
+    $("#hour-close").val(end);
+}
 
 /**
  * convertie un string de format hh:: en minutes hh*60+mm
@@ -174,7 +221,7 @@ jQuery(function($){
 function stringHourToMinutes(str)
 {
     let temps = str.split(':');
-    return ((temps[0] * 60) + temps[1]);
+    return ((parseInt(temps[0]) * 60) + parseInt(temps[1]));
 }
 
 function checkPresenceInputs(dateElm, openElm, closeElm) {
@@ -194,10 +241,14 @@ function checkPresenceInputs(dateElm, openElm, closeElm) {
     let debut = stringHourToMinutes(valueHourOpen);
     let fin   = stringHourToMinutes(valueHourClose);
 
-    console.log("pour la date du " + valueDate + " commençant à " + valueHourOpen + " et finissant à " + valueHourClose);
+    let checkHours = debut < fin;
+    console.log(" DEB : " + debut);
+    console.log(" FIN : " + fin);
+    console.log("pour la date du " + valueDate + " commençant à " + valueHourOpen + " ("+debut+") et finissant à " + valueHourClose + " ("+fin+") checkHours : " + checkHours);
    
+    
+
     let checkDate = Date.parse(valueDate);
-    let checkHours = fin > debut;
     let retour = true;
 
     if (!checkDate)
@@ -245,6 +296,7 @@ function saveExternaluser() {
     let hClose    = $("#lab_presence_ext_new_hour_close").val();
     let comment   = $("#lab_presence_ext_new_comment").val().replace(/\"/g,"”").replace(/\'/g,"’");
     let siteId    = $("#lab_presence_ext_new_siteId").val();
+    let worgroupFollow =  $("#workGroupFollowExt").val();
     var data = {
         'action' : 'lab_presence_save_ext',
         firstName :         firstName,
@@ -254,11 +306,13 @@ function saveExternaluser() {
         hourOpen : hOpen,
         hourClose :   hClose,
         siteId :       siteId,
-        comment: comment
+        comment: comment,
+        worgroupFollow: worgroupFollow,
     };
     console.log(data);
     $.post(LAB.ajaxurl, data, function(response) {
         if (response.success) {
+            resetExtFields();
             //window.location.reload(false); 
             console.log("[saveExternaluser]" + response.data);
             window.location.reload(false); 
@@ -266,7 +320,7 @@ function saveExternaluser() {
     });
 }
 
-function savePresence(idPresence, userId, date, opening, closing, site, comment = "", external = "") {
+function savePresence(idPresence, userId, date, opening, closing, site, comment = "", external = "", workgroup="",worgroupFollow="") {
     /*
     console.log("[savePresence] idPresence : '" + idPresence + "'");
     console.log("[savePresence] userId : '" + userId + "'");
@@ -285,14 +339,13 @@ function savePresence(idPresence, userId, date, opening, closing, site, comment 
         hourClose :   closing,
         siteId :       site,
         external :       external,
+        workgroup :       workgroup,
+        worgroupFollow :       worgroupFollow,
         comment: comment.replace(/\"/g,"”").replace(/\'/g,"’")
     };
     $.post(LAB.ajaxurl, data, function(response) {
         if (response.success) {
-            $('input[type="date"]').val('');
-            $('input[type="time"]').val('');
-            $('#siteId').val('');
-            $('#comment').val('');
+            resetFields();
             window.location.reload(false);
         }
         else {

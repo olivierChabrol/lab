@@ -1,50 +1,63 @@
 <?php
 
-
-
-function lab_admin_username_get($userId) {
+function lab_admin_user_info($userId, $fields) {
     global $wpdb;
-    $results = $wpdb->get_results( "SELECT * FROM `".$wpdb->prefix."usermeta` WHERE (meta_key = 'first_name' or meta_key='last_name' or meta_key LIKE 'lab_%') and user_id=".$userId  );
+    $results = $wpdb->get_results( "SELECT um.*, u.user_email, u.user_url, g.group_name, g.id AS group_id FROM `".$wpdb->prefix."usermeta` AS um JOIN `".$wpdb->prefix."users` AS u ON u.id=um.user_id JOIN `".$wpdb->prefix."lab_users_groups` AS ug ON u.id=ug.user_id JOIN `".$wpdb->prefix."lab_groups` AS g ON g.id=ug.group_id WHERE (um.meta_key = 'first_name' or um.meta_key='last_name' or um.meta_key LIKE 'lab_%') and um.user_id=".$userId  );
     $items = array();
     $items["id"] = $userId;
 
     foreach ( $results as $r )
     {
+        $items['user_email'] = $r->user_email;
+        $items['user_url']   = $r->user_url;
+        $items['group_name'] = $r->group_name;
+        $items['group_id'] = $r->group_id;
         if ($r->meta_key == 'first_name')
-            $items['first_name'] = $r->meta_value;
+            $items['first_name'] = stripslashes($r->meta_value);
         if ($r->meta_key == 'last_name')
-            $items['last_name'] = $r->meta_value;
-        if ($r->meta_key == 'lab_user_left') {
-            $items['lab_user_left'] = array();
-            $items['lab_user_left']['id'] = $r->umeta_id;
-            $items['lab_user_left']['value'] = $r->meta_value;
+            $items['last_name'] = stripslashes($r->meta_value);
+        if (beginsWith($r->meta_key, "lab_"))
+        {
+            if ($r->meta_key == 'lab_user_left') {
+                $items['lab_user_left'] = array();
+                $items['lab_user_left']['id'] = $r->umeta_id;
+                $items['lab_user_left']['value'] = $r->meta_value;
+            }
+            else
+            {
+                $items[substr($r->meta_key, 4)] = stripslashes($r->meta_value);
+            }
         }
-        if ($r->meta_key == 'lab_user_function') {
-            $items['user_function'] = $r->meta_value;
-        }
-        if ($r->meta_key == 'lab_user_employer') {
-            $items['user_employer'] = $r->meta_value;
-        }
-        if ($r->meta_key == 'lab_user_phone') {
-            $items['user_phone'] = $r->meta_value;
-        }
-        if ($r->meta_key == 'lab_user_location') {
-            $items['user_location'] = $r->meta_value;
-        }
-        if ($r->meta_key == 'lab_user_office_number') {
-            $items['user_office_number'] = $r->meta_value;
-        }
-        if ($r->meta_key == 'lab_user_office_floor') {
-            $items['user_office_floor'] = $r->meta_value;
-        }
-        if ($r->meta_key == 'lab_user_funding') {
-            $items['user_funding'] = $r->meta_value;
-        }
-        if ($r->meta_key == 'lab_user_section_cn') {
-            $items['user_section_cn'] = $r->meta_value;
-        }
-        if ($r->meta_key == 'lab_user_section_cnu') {
-            $items['user_section_cnu'] = $r->meta_value;
+    }
+    
+    return $items;
+}
+
+function lab_admin_userMetaDatas_get($userId) {
+    global $wpdb;
+    $results = $wpdb->get_results( "SELECT um.*, u.user_email, u.user_url FROM `".$wpdb->prefix."usermeta` AS um JOIN `".$wpdb->prefix."users` AS u ON u.id=um.user_id WHERE (um.meta_key = 'first_name' or um.meta_key='last_name' or um.meta_key LIKE 'lab_%') and um.user_id=".$userId  );
+    $items = array();
+    $items["id"] = $userId;
+
+    foreach ( $results as $r )
+    {
+        $items['user_email'] = $r->user_email;
+        $items['user_url']   = $r->user_url;
+        if ($r->meta_key == 'first_name')
+            $items['first_name'] = stripslashes($r->meta_value);
+        if ($r->meta_key == 'last_name')
+            $items['last_name'] = stripslashes($r->meta_value);
+        if (beginsWith($r->meta_key, "lab_"))
+        {
+            if ($r->meta_key == 'lab_user_left') {
+                $items['lab_user_left'] = array();
+                $items['lab_user_left']['id'] = $r->umeta_id;
+                $items['lab_user_left']['value'] = $r->meta_value;
+            }
+            else
+            {
+                $items[substr($r->meta_key, 4)] = stripslashes($r->meta_value);
+            }
         }
     }
     
@@ -55,6 +68,7 @@ function lab_admin_get_userLogin($user_id) {
     $sql = "SELECT `user_login` FROM `".$wpdb->prefix."users` WHERE ID=$user_id";
     return $wpdb->get_var($sql);
 }
+
 function lab_admin_loadUserHistory($user_id) {
     global $wpdb;
     $sql = "SELECT * from `".$wpdb->prefix."lab_users_historic` WHERE `user_id`=$user_id ORDER BY `begin` ASC";
@@ -65,21 +79,46 @@ function lab_admin_loadUserHistory($user_id) {
         return lab_admin_history($res);
     }
 }
+function lab_admin_load_lastUserHistory($user_id) {
+    global $wpdb;
+    $sql = "SELECT * from `".$wpdb->prefix."lab_users_historic` WHERE `user_id`=$user_id ORDER BY `begin` DESC LIMIT 1";
+    $res = $wpdb->get_results($sql);
+    return lab_admin_history_fields($res[0]);
+}
 /**
  * @param array $fields ('user_id'=>$user_id,
  *                        'ext'=>$end,
  *                        'begin'=>$begin,
  *                        'end'=>$end,
  *                        'mobility'=>$mobility,
+ *                        'mobility_status'=>$mobility_status,
  *                        'host_id'=>$host_id,
  *                        'function'=>$function)
  */
 function lab_admin_add_historic($fields) {
     global $wpdb;
-    return $wpdb->insert($wpdb->prefix.'lab_users_historic',$fields);
+    $wpdb->insert($wpdb->prefix.'lab_users_historic',$fields);
+    $insertId = $wpdb->insert_id;
+    $histos = lab_admin_historic_get_historics_ordered_by_date($fields["user_id"]);
+    $hSize = count($histos);
+    // set user left to the last historic end date defined
+    if ($hSize > 0 )
+    {
+        lab_userMetaData_save_key($fields["user_id"], "user_left", $histos[$hSize - 1]->end);
+        lab_userMetaData_save_key($fields["user_id"], "user_function", $histos[$hSize - 1]->function);
+    }
+    return true;
 }
 function lab_admin_historic_delete($entry_id) {
     global $wpdb;
+    $histo = lab_admin_historic_get($entry_id);
+    $date_user_left = is_user_left($histo->user_id);
+    //return $date_user_left;
+    if ($date_user_left != null && $histo->end == $date_user_left)
+    {
+        lab_userMetaData_save_key($histo->user_id, "user_left", null);
+        lab_userMetaData_save_key($histo->user_id, "user_function", $histos[$hSize - 1]->function);
+    }
     return $wpdb->delete($wpdb->prefix."lab_users_historic",array('id'=>$entry_id));
 }
 function lab_admin_historic_get($entry_id) {
@@ -88,7 +127,30 @@ function lab_admin_historic_get($entry_id) {
 }
 function lab_admin_historic_update($entry_id,$fields) {
     global $wpdb;
-    return $wpdb->update($wpdb->prefix."lab_users_historic",$fields,array('id'=>$entry_id));
+    $wpdb->update($wpdb->prefix."lab_users_historic",$fields,array('id'=>$entry_id));
+    $histos = lab_admin_historic_get_historics_ordered_by_date($fields["user_id"]);
+    $hSize = count($histos);
+    
+    // set user left to the last historic end date defined
+    if ($hSize > 0 )
+    {
+        lab_userMetaData_save_key($fields["user_id"], "user_left", $histos[$hSize - 1]->end);
+        lab_userMetaData_save_key($fields["user_id"], "user_function", $histos[$hSize - 1]->function);
+    }
+    return true;
+}
+
+/**
+ * Return all historics of the user orderby date end
+ *
+ * @param [type] $userId
+ * @return void
+ */
+function lab_admin_historic_get_historics_ordered_by_date($userId)
+{
+    global $wpdb;
+    $sql = "SELECT * FROM ".$wpdb->prefix."lab_users_historic WHERE user_id=".$userId."  ORDER BY `end` DESC ";
+    return $wpdb->get_results($sql);
 }
 
 function lab_get_all_roles() {
@@ -147,6 +209,496 @@ function lab_admin_param_clone($param)
         return false;
     }
 }
+
+/***********************************************************************************************************
+ * BUDGET
+ ***********************************************************************************************************/
+function lab_budget_info_save_order($params) {
+    global $wpdb;
+    if (isset($params["id"]) && $params["id"] != "") {
+        $id = $params["id"];
+        unset($params["id"]);
+        $wpdb->update($wpdb->prefix."lab_budget_info", $params, array('id'=>$id));
+    }
+    else {
+        $params["info_manager_id"] = get_current_user_id();
+        $wpdb->insert($wpdb->prefix."lab_budget_info", $params);
+    }
+}
+
+function lab_budget_info_delete($budgetId) {
+    global $wpdb;
+    $wpdb->delete($wpdb->prefix."lab_budget_info", array("id"=>$budgetId));
+    return true;
+}
+
+function budget_info_ajax_date($budgetId, $datefield) {
+    global $wpdb;
+    $r = $wpdb->update($wpdb->prefix."lab_budget_info", array($datefield=>date('Y-m-d')), array('id'=>$budgetId)); 
+    return $r;
+}
+
+function lab_budget_info_load($budgetId, $filters = null) {
+    global $wpdb;
+    $data = array();
+    $data["filters"] = array();
+    $sql = "SELECT bi.* from ".$wpdb->prefix."lab_budget_info AS bi";
+    if ($budgetId != null OR $filters != null) {
+        $sql .= " WHERE ";    
+        if ($budgetId != null) {
+            $sql .= "id=".$budgetId;
+        }
+        else {
+            $nbFilter = 0;
+            foreach($filters as $key=>$value) {
+                if ($key == "year") {
+                    $sql .= "(bi.`order_date` != '0000-00-00' AND YEAR(bi.`order_date`)=".$value.")";
+                    $data["filters"]["year"] = $value;
+                }
+                else if ($key == "state") {
+                    if ($nbFilter > 0) {
+                        $sql .= " AND ";
+                    }
+                    if ($value == "c") {
+                        $sql .= "bi.`payment_date` != '0000-00-00'";
+                    }
+                    else if ($value == "wo") {
+                        $sql .= "bi.`order_date` = '0000-00-00'";
+                    }
+                    else if ($value == "wd") {
+                        $sql .= "bi.`delivery_date` = '0000-00-00'";
+                    }
+                    else if ($value == "wp") {
+                        $sql .= "bi.`payment_date` = '0000-00-00'";
+                    }
+                    else if ($value == "wf") {
+                        $sql .= "bi.`fund_origin` = 0";
+                    }
+                    $data["filters"]["state"] = $value;
+
+                }
+                else if ($key == "fund_origin") {
+                    if ($nbFilter > 0) {
+                        $sql .= " AND ";
+                    }
+                    $sql .= "bi.`fund_origin` = ".$value;
+
+                    $data["filters"]["fund_origin"] = $value;
+                }
+                else if ($key == "order_number") {
+                    if ($nbFilter > 0) {
+                        $sql .= " AND ";
+                    }
+                    $sql .= "(bi.`order_number` LIKE '%".$value."%' OR bi.`order_reference` LIKE '%".$value."%')";
+
+                    $data["filters"]["command_number"] = $value;
+                }
+                else if ($key == "site") {
+                    if ($nbFilter > 0) {
+                        $sql .= " AND ";
+                    }
+                    $sql .= "bi.`site_id` LIKE '%".$value."%'";
+
+                    $data["filters"]["site"] = $value;
+                }
+                else if ($key == "budget_manager") {
+                    if ($nbFilter > 0) {
+                        $sql .= " AND ";
+                    }
+                    $sql .= "bi.`budget_manager_id` LIKE '%".$value."%'";
+
+                    $data["filters"]["budget_manager"] = $value;
+                }
+                $nbFilter += 1;
+            }
+        }
+    }
+    $sql .= " ORDER BY `request_date` DESC";
+    $results = $wpdb->get_results($sql);
+    $userIds = array();
+    foreach($results as $r) {
+        if(!isset($userIds[$r->user_id]) && $r->user_id != 0) {
+            $userIds[$r->user_id] = lab_admin_usermeta_names($r->user_id);
+            $groups = $wpdb->get_results("SELECT ug.user_id, g.acronym FROM `".$wpdb->prefix."lab_users_groups` AS ug JOIN ".$wpdb->prefix."lab_groups AS g ON g.id=ug.group_id WHERE ug.user_id=".$r->user_id);
+            if (count($groups)> 0) {
+                $userIds[$r->user_id]->group = $groups[0]->acronym;
+            }
+        }
+        if(!isset($userIds[$r->info_manager_id]) && $r->info_manager_id != 0) {
+            $userIds[$r->info_manager_id] = lab_admin_usermeta_names($r->info_manager_id);
+        }
+        if(!isset($userIds[$r->budget_manager_id]) && $r->budget_manager_id != 0) {
+            $userIds[$r->budget_manager_id] = lab_admin_usermeta_names($r->budget_manager_id);
+        }
+
+    }
+    if ($budgetId== null) {
+        $data["results"] = $results;
+    }
+    else {
+        $data["results"] = $results[0];
+    }
+    $data["users"] = $userIds;
+    $params = array();
+    $ps = array_merge(AdminParams::lab_admin_get_params_budgetInfoType(), AdminParams::lab_admin_get_params_budgetFunds());
+    $ps = array_merge($ps, AdminParams::lab_admin_get_params_userLocation());
+    foreach($ps as $p) {
+        $params[$p->id] = $p;
+    }
+    $data["params"] = $params;
+
+    $sql = "SELECT DISTINCT YEAR(`order_date`) AS year FROM `wp_lab_budget_info` ORDER BY `year` DESC";
+    $results = $wpdb->get_results($sql);
+
+    $years   = array();
+    $currentYear = date("Y");
+    //$years[] = "";
+    //$years[] = esc_html("Year", "lab");
+    $years[] = $currentYear;
+    foreach ($results as $r) {
+        if ($r->year != null && $r->year != $currentYear && $r->year != 0) {
+            $years[] = $r->year;
+        }
+    }
+    $data["years"] = $years;
+
+
+    $contracts   = array();
+    $results = $wpdb->get_results("SELECT id,name as 'value' FROM ".$wpdb->prefix."lab_contract ORDER BY 'value'");
+    foreach($results as $r) {
+        $contracts[$r->id] = $r;
+    }
+
+    $data["contracts"] = $contracts;
+    //$data["ps"] = $ps;
+    //return $results;
+    return $data;
+}
+
+function lab_admin_budget_managers_list() {
+    global $wpdb;
+    $resultContract = $wpdb->get_results("SELECT DISTINCT cu.user_id,um1.meta_value AS first_name,um2.meta_value AS last_name FROM ".$wpdb->prefix."lab_contract_user AS cu JOIN `".$wpdb->prefix."usermeta` AS um1 ON um1.user_id=cu.user_id JOIN `".$wpdb->prefix."usermeta` AS um2 ON um2.user_id=cu.user_id WHERE cu.`user_type`=1 AND um1.meta_key='first_name' AND um2.meta_key='last_name'");
+    $resultGroup    = $wpdb->get_results("SELECT DISTINCT cu.user_id,um1.meta_value AS first_name,um2.meta_value AS last_name FROM ".$wpdb->prefix."lab_group_manager AS cu JOIN `".$wpdb->prefix."usermeta` AS um1 ON um1.user_id=cu.user_id JOIN `".$wpdb->prefix."usermeta` AS um2 ON um2.user_id=cu.user_id WHERE cu.`manager_type`=1 AND um1.meta_key='first_name' AND um2.meta_key='last_name'");
+
+    $managers = array();
+    foreach($resultContract as $contractManager) {
+        $c = new stdClass;
+        $c->id = $contractManager->user_id;
+        $c->value = $contractManager->first_name." ".$contractManager->last_name;
+        $managers[$c->id] = $c;
+    }
+    foreach($resultGroup as $groupManager) {
+        if (!isset($managers[$groupManager->user_id])) {
+            $c = new stdClass;
+            $c->id = $groupManager->user_id;
+            $c->value = $groupManager->first_name." ".$groupManager->last_name;
+            $managers[$c->id] = $c;
+        }
+    }
+    return $managers;
+}
+
+function lab_admin_budget_funds() {
+    global $wpdb;
+    $budgetFunds = AdminParams::lab_admin_get_params_budgetFunds();
+    $contracts   = $wpdb->get_results("SELECT c.id,c.name as 'value',p.value AS contract_type  FROM ".$wpdb->prefix."lab_contract AS c JOIN ".$wpdb->prefix."lab_params AS p ON p.id=c.contract_type ORDER BY 'value'");
+    $funds = array();
+    foreach($budgetFunds as $f) {
+        $c = new stdClass;
+        $c->id=$f->id;
+        $c->value=$f->value;
+        $funds[]=$c;
+    }
+    foreach($contracts as $f) {
+        $c = new stdClass;
+        $c->id=$f->id;
+        $c->value="CONTRAT ".$f->contract_type." ".$f->value;
+        $funds[]=$c;
+    }
+    return $funds;
+}
+
+/***********************************************************************************************************
+ * CONTRACT
+ ***********************************************************************************************************/
+function lab_admin_contract_save($id, $name, $start, $end, $holders, $managers) {
+    global $wpdb;
+    // new contract
+    if (!isset($id) || empty($id)) {
+        if ($wpdb->insert($wpdb->prefix.'lab_contract', array("name"=>$name,"start"=>$start,"end"=>$end))) {
+            $contractId = $wpdb->insert_id;
+            foreach ($holders as $userId) {
+                $wpdb->insert($wpdb->prefix.'lab_contract_user', array("contract_id"=>$contractId, "user_id"=>$userId,"user_type"=> 2));
+            }
+            foreach ($managers as $userId) {
+                $wpdb->insert($wpdb->prefix.'lab_contract_user', array("contract_id"=>$contractId, "user_id"=>$userId,"user_type"=> 1));
+            }
+        }
+    }
+    else
+    {
+        $wpdb->update($wpdb->prefix.'lab_contract', array("name"=>$name,"start"=>$start,"end"=>$end), array("id"=>$id));
+    }
+}
+
+function lab_admin_contract_get_managers($contractId) {
+    global $wpdb;
+    return $wpdb->get_results("SELECT user_id FROM ".$wpdb->prefix."lab_contract_user WHERE `contract_id` = ".$contractId." AND user_type=1");
+
+}
+
+function lab_admin_contract_search($contractName) {
+    global $wpdb;
+    return $wpdb->get_results("SELECT id, name as label, start, end FROM ".$wpdb->prefix."lab_contract WHERE `name`LIKE '%".$contractName."%'");
+}
+
+function lab_admin_contract_users_load($contractId) {
+    global $wpdb;
+    return $wpdb->get_results("SELECT cu.*,um1.meta_value AS first_name,um2.meta_value AS last_name FROM ".$wpdb->prefix."lab_contract_user AS cu JOIN `".$wpdb->prefix."usermeta` AS um1 ON um1.user_id=cu.user_id JOIN `".$wpdb->prefix."usermeta` AS um2 ON um2.user_id=cu.user_id WHERE `contract_id`=".$contractId." AND um1.meta_key='first_name' AND um2.meta_key='last_name'");
+}
+
+function lab_admin_contract_delete($contractId) {
+    global $wpdb;
+    $wpdb->delete($wpdb->prefix.'lab_contract_user', array("contract_id"=>$contractId));
+    $wpdb->delete($wpdb->prefix.'lab_contract', array("id"=>$contractId));
+    return true;
+}
+
+
+function lab_admin_contract_load() {
+    global $wpdb;
+    $results = $wpdb->get_results("SELECT c.*,p.value AS contract_type_label, cu.user_id, cu.user_type,um1.meta_value AS first_name, um2.meta_value AS last_name FROM `".$wpdb->prefix."lab_contract` AS c JOIN ".$wpdb->prefix."lab_contract_user AS cu ON cu.contract_id=c.id JOIN ".$wpdb->prefix."usermeta AS um1 ON um1.user_id=cu.user_id JOIN ".$wpdb->prefix."usermeta AS um2 ON um2.user_id=cu.user_id JOIN ".$wpdb->prefix."lab_params AS p ON p.id=c.contract_type WHERE um1.meta_key='first_name' AND um2.meta_key='last_name' ");
+    $contracts = array();
+    $lastId = -1;
+    $nbLine = 0;
+    $str = "";
+    foreach ($results as $line) {
+        $nbLine++;
+        $str .= $nbLine." ".$line->name;
+        if ($lastId == -1) {
+            $str .= ' LA 1';
+            $lastId = $line->id;
+            $contracts[$lastId] = lab_admin_contract_inner_new_stdClass_contract($line);
+        } else if ($lastId != $line->id) {
+            $str .= ' LA 2';
+            $lastId = $line->id;
+            $contract = $contracts[$lastId];
+            if (!isset($contract))
+            {
+                $contracts[$lastId] = lab_admin_contract_inner_new_stdClass_contract($line);
+            }
+            else {
+                lab_admin_contract_inner_new_stdClass_add_user($line, $contracts[$lastId]);
+            }
+        } else {
+            $str .= ' LA 3';
+            $str .= 'user_type : '.$line->user_type.' last_name : '.$line->last_name;
+            lab_admin_contract_inner_new_stdClass_add_user($line, $contracts[$line->id]);
+            $str .= ' nb user manager : '.count($contracts[$line->id]->managers);
+            $str .= ' nb user holders : '.count($contracts[$line->id]->holders);
+        }
+        $str .= '<br>';
+        
+    }
+
+    return $contracts;
+    //return $str;
+}
+
+function lab_admin_contract_inner_new_stdClass_contract($line) 
+{
+    $contract = new stdClass;
+    $contract->id    = $line->id;
+    $contract->name  = $line->name;
+    $contract->start = $line->start;
+    $contract->end   = $line->end;
+    $contract->type   = $line->contract_type_label;
+    $contract->holders  = array();
+    $contract->managers = array();
+    lab_admin_contract_inner_new_stdClass_add_user($line, $contract);
+
+    return $contract;
+}
+
+function lab_admin_contract_inner_new_stdClass_add_user($line, $contract) {
+    $user = new stdClass;
+    $user->first_name = $line->first_name;
+    $user->last_name  = $line->last_name;
+    $user->id  = $line->user_id;
+
+    if ($line->user_type == 2) {
+        $contract->holders[] = $user;
+    }
+
+    if ($line->user_type == 1) { 
+        $contract->managers[] = $user;
+    }
+}
+
+function lab_admin_contract_create_table() {
+    global $wpdb;
+    $sql = "CREATE TABLE IF NOT EXISTS `".$wpdb->prefix."lab_contract` (
+        `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
+        `contract_type` bigint UNSIGNED NOT NULL,
+        `name` varchar(500) NOT NULL,
+        `start` date NOT NULL,
+        `end` date NOT NULL,
+        PRIMARY KEY (`id`)
+      ) ENGINE=InnoDB";
+    $wpdb->get_results($sql);
+    $sql = "CREATE TABLE IF NOT EXISTS `".$wpdb->prefix."lab_contract_user` (
+        `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
+        `contract_id` bigint NOT NULL,
+        `user_id` bigint NOT NULL,
+        `user_type` bigint NOT NULL,
+        PRIMARY KEY (`id`)
+      ) ENGINE=InnoDB";
+    return $wpdb->get_results($sql);
+}
+
+/***********************************************************************************************************
+ * MISSION
+ ***********************************************************************************************************/
+
+function lab_mission_save($missionId, $travels) {
+    foreach ($travels as $travel) {
+        $travel['missionId'] = $missionId;
+        lab_mission_save_travel($travel);
+    }
+}
+
+function lab_mission_remap_fields($fields) {
+    $a = array();
+    $a["mission_id"] = $fields["missionId"];
+    $a["country_from"] = $fields["countryFrom"];
+    $a["travel_from"] = $fields["cityFrom"];
+    $a["country_to"] = $fields["countryTo"];
+    $a["travel_to"] = $fields["cityTo"];
+    $a["travel_date"] = $fields["dateGoTo"]." ".$fields["timeGoTo"].":00";
+    $a["means_of_locomotion"] = $fields["mean"];
+    $a["estimated_cost"] = $fields["cost"];
+    $a["round_trip"] = $fields["rt"]; //($fields["rt"]=="false"?0:1);
+    $a["reference"] = $fields["ref"];
+    $a["nb_person"] = $fields["nb_person"];
+    $a["carbon_footprint"] = $fields["carbon_footprint"];
+    if($a["round_trip"] == 0) {
+        $a["travel_datereturn"] = NULL;
+    }
+    else {
+        $a["travel_datereturn"] = $fields["dateReturn"]." ".$fields["timeReturn"].":00";
+    }
+    return $a;
+}
+
+function lab_mission_save_travel($travel, $remap=True) {
+    global $wpdb;
+    $a = null;
+    if ($remap) { 
+        $b = array(); 
+        $a = lab_mission_remap_fields($travel);
+        $b[] = $travel;
+        $b[] = $a;  
+        return $b;
+    }
+    else {
+        $a = $travel;
+    }
+    $wpdb->insert($wpdb->prefix.'lab_mission_route', $a);
+    return $wpdb->insert_id;
+}
+
+function lab_mission_load_travels($missionId) {
+    global $wpdb;
+    $results =$wpdb->get_results("SELECT * FROM `".$wpdb->prefix."lab_mission_route` WHERE mission_id=".$missionId);
+
+    return $results;
+}
+
+function lab_mission_delete_travel($id) {
+    global $wpdb;
+    $wpdb->delete($wpdb->prefix.'lab_mission_route', array('id' => $id));
+}
+
+function lab_mission_update_travel($travelId, $travelFields){
+    global $wpdb;
+    if (isset($travelId) && !empty($travelId)) {
+        $wpdb->update($wpdb->prefix.'lab_mission_route', $travelFields, array('id' => $travelId));
+        return $travelFields;
+    }
+    else {
+        return lab_mission_save_travel($travelFields, False);
+    }
+}
+
+function lab_admin_mission_create_table() {
+    global $wpdb;
+    $sql = "CREATE TABLE IF NOT EXISTS `".$wpdb->prefix."lab_mission_route` (
+        `id` bigint NOT NULL AUTO_INCREMENT,
+        `mission_id` bigint NOT NULL,
+        `country_from` varchar(100) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+        `travel_from` varchar(100) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+        `country_to` varchar(100) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+        `travel_to` varchar(100) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+        `travel_date` datetime NOT NULL,
+        `means_of_locomotion` bigint NOT NULL,
+        `round_trip` BOOLEAN NOT NULL,
+        `nb_person` int NOT NULL,
+        `carbon_footprint` int NOT NULL,
+        `travel_datereturn` datetime,
+        `estimated_cost` float NOT NULL,
+        `real_cost float` NOT NULL,
+        `reference varchar(255)` COLLATE utf8_bin NOT NULL,
+        PRIMARY KEY (id)
+    ) ENGINE=InnoDB";
+    return $wpdb->get_results($sql);
+}
+
+/***********************************************************************************************************
+ * USERMETA
+ ***********************************************************************************************************/
+/**
+ * Return first_name, last_name, id of an user
+ *
+ * @param [type] $userId
+ * @return void
+ */
+function lab_admin_usermeta_names($userId) {
+    global $wpdb;
+    $results =$wpdb->get_results("SELECT um1.user_id AS id,um1.meta_value AS first_name, um2.meta_value AS last_name FROM ".$wpdb->prefix."usermeta AS um1 JOIN ".$wpdb->prefix."usermeta AS um2 ON um1.user_id=um2.user_id WHERE um1.meta_key='first_name' AND um2.meta_key='last_name' AND um1.user_id=".$userId);
+    if (count($results) == 1)
+        return $results[0];
+    else
+        return null;
+}
+
+/***********************************************************************************************************
+ * GROUP
+ ***********************************************************************************************************/
+function lab_admin_group_add_manager($groupId, $userId, $userRole) {
+    global $wpdb;
+    if ($wpdb->insert($wpdb->prefix.'lab_group_manager', array("group_id"=>$groupId, "user_id"=>$userId, "manager_type"=>$userRole))) {
+        return $wpdb->insert_id;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+function lab_group_delete_manager($id)
+{
+    global $wpdb;
+    $wpdb->delete($wpdb->prefix.'lab_group_manager', array('id' => $id));
+    return true;
+}
+
+function lab_admin_group_load_managers($groupId) {
+    global $wpdb;
+    return $wpdb->get_results("SELECT gm.id,gm.user_id,um1.meta_value AS first_name,um2.meta_value AS last_name FROM `".$wpdb->prefix."lab_group_manager` AS gm JOIN `".$wpdb->prefix."usermeta` AS um1 ON um1.user_id=gm.user_id JOIN `".$wpdb->prefix."usermeta` AS um2 ON um2.user_id=gm.user_id WHERE `group_id`=$groupId AND um1.meta_key='first_name' AND um2.meta_key='last_name'");
+
+}
+
+
 function lab_admin_param_change_id($oldId, $type, $newId)
 {
     global $wpdb;
@@ -167,6 +719,7 @@ function lab_admin_param_change_id($oldId, $type, $newId)
     else if ($type == AdminParams::PARAMS_USER_FUNCTION_ID)
     {
         $wpdb->update($wpdb->prefix.'usermeta', array("meta_value"=>$newId), array("meta_value"=>$oldId, "meta_key"=>"lab_user_function"));
+        $wpdb->update($wpdb->prefix.'lab_users_historic', array("function"=>$newId), array("function"=>$oldId));
     }
     else if ($type == AdminParams::PARAMS_MISSION_ID)
     {
@@ -184,8 +737,9 @@ function lab_admin_param_change_id($oldId, $type, $newId)
     }
 }
 
-function lab_admin_param_save($paramType, $paramName, $color = null, $paramId = null, $shift = null)
+function lab_admin_param_save($paramType, $paramName, $color = null, $paramId = null, $shift = null, $paramSlug = null)
 {
+    //return ["success"=>false, "data"=>(" paramId : ".$paramId." type : ".$paramType." value : ".$paramName." slug : ".$paramSlug." color : ".$color." shift : ".$shift)];
     global $wpdb;
     if ($type == -1) {
       $type = 0;
@@ -204,31 +758,38 @@ function lab_admin_param_save($paramType, $paramName, $color = null, $paramId = 
     {
         //return "count > 0 : ".lab_admin_param_exist($paramType, $paramName);
         if (lab_admin_param_exist($paramType, $paramName)) {
-            return false;
+            return ["success"=>false,"data"=>sprintf(__("A param key with '%1s' and type %1s already exist in db", "lab"), $paramName,AdminParams::get_param($paramType))];
+        } else if (strpos($paramSlug, " ") > 0) {
+            return ["success"=>false,"data"=>sprintf(__("Can't have space in param slug name '%1s'", "lab"), $paramSlug)];
         } else {
             // case of new param
-            if ($shift != null && $shift == 'on' && $paramType == AdminParams::PARAMS_ID) {
+            if ($shift != null && $shift == 'true' && $paramType == AdminParams::PARAMS_ID) {
+                //return ["success"=>false, "data"=>"LA1"];
                 $lastParamId = lab_admin_param_last_param_system_id();
                 $newId = $lastParamId + 1;
+                //return ["success"=>false, "data"=>"LA1 new ID : " . $newId ];
 
                 $oldParam = lab_admin_param_get_by_id($newId);
                 
                 $cloneId  = lab_admin_param_clone($oldParam);
                 lab_admin_param_change_id($oldParam->id, $oldParam->type_param, $cloneId);
-                $wpdb->update($wpdb->prefix.'lab_params', array("type_param"=>AdminParams::PARAMS_ID, "value"=>$paramName, "color"=>$color), array("id"=>$newId));
+                $wpdb->update($wpdb->prefix.'lab_params', array("type_param"=>AdminParams::PARAMS_ID, "value"=>$paramName,"slug"=>$paramSlug, "color"=>$color), array("id"=>$newId));
                 return $cloneId;
             }
             else {
-                $wpdb->insert($wpdb->prefix.'lab_params', array("type_param"=>$paramType, "value"=>$paramName, "color"=>$color));
+                //return ["success"=>false, "data"=>"LA2"];
+                //return ["success"=>false, "data"=>(" paramId : ".$paramId." type : ".$paramType." value : ".$paramName." slug : ".$paramSlug." color : ".$color." shift : ".$shift)];
+                $wpdb->insert($wpdb->prefix.'lab_params', array("slug"=>$paramSlug,"type_param"=>$paramType, "value"=>$paramName, "color"=>$color));
                 return $wpdb->insert_id;
             }
-
+            //*/
             
         }
     }
     else
     {
-        $wpdb->update($wpdb->prefix.'lab_params', array("type_param"=>$paramType, "value"=>$paramName, "color"=>$color), array("id"=>$paramId));
+        //return ["success"=>false, "data"=>(" paramId : ".$paramId." type : ".$paramType." value : ".$paramName." slug : ".$paramSlug." color : ".$color." shift : ".$shift)];
+        $wpdb->update($wpdb->prefix.'lab_params', array("type_param"=>$paramType, "value"=>$paramName, "slug"=>$paramSlug, "color"=>$color), array("id"=>$paramId));
         return $paramId;
     }
 }
@@ -294,6 +855,33 @@ function lab_admin_createTable_hal_keywords() {
     $wpdb->get_results($sql);
     
 }
+
+
+function lab_admin_createTable_budget_info() {
+    global $wpdb;
+    $sql = "CREATE TABLE IF NOT EXISTS `".$wpdb->prefix."lab_budget_info` (
+        `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
+        `expenditure_type` bigint NOT NULL,
+        `title` varchar(255) NOT NULL,
+        `request_date` date NOT NULL,
+        `user_id` bigint NOT NULL,
+        `info_manager_id` bigint NOT NULL,
+        `site_id` bigint NOT NULL,
+        `budget_manager_id` bigint NOT NULL,
+        `fund_origin` bigint NOT NULL,
+        `contract_title` varchar(255) NOT NULL,
+        `amount` float NOT NULL,
+        `order_number` varchar(255),
+        `order_reference` varchar(255),
+        `order_date` date NOT NULL,
+        `delivery_date` date NOT NULL,
+        `payment_date` date NOT NULL,
+        PRIMARY KEY (`id`)
+      ) ENGINE=InnoDB";
+    $wpdb->get_results($sql);
+    
+}
+
 function lab_admin_createTable_hal_keywords_user() {
     global $wpdb;
     $sql = "CREATE TABLE IF NOT EXISTS `".$wpdb->prefix."lab_hal_keywords_user` (
@@ -315,6 +903,7 @@ function lab_admin_createTable_users_historic() {
         `begin` date NOT NULL,
         `end` date NULL,
         `mobility` bigint UNSIGNED NOT NULL DEFAULT 0,
+        `mobility_status` bigint UNSIGNED NOT NULL DEFAULT 0,
         `host_id` bigint UNSIGNED NULL COMMENT 'link with a user',
         `function` bigint UNSIGNED NOT NULL COMMENT 'link with parameter lab_user_function',
         PRIMARY KEY (`id`)
@@ -329,6 +918,7 @@ function lab_admin_createTable_param() {
         `type_param` bigint UNSIGNED NOT NULL,
         `value` varchar(45) DEFAULT NULL,
         `color` varchar(8) DEFAULT NULL,
+        `slug` varchar(8) DEFAULT NULL,
         PRIMARY KEY (`id`)
       ) ENGINE=InnoDB";
     $wpdb->get_results($sql);
@@ -346,40 +936,73 @@ function lab_admin_createTable_presence() {
         `external` tinyint(1) NOT NULL DEFAULT '0',
         PRIMARY KEY (`id`)
       ) ENGINE=InnoDB;";
+    $wpdb->get_results($sql);
+    $sql = "CREATE TABLE IF NOT EXISTS `".$wpdb->prefix."lab_presence_users_workgroup` (
+        `id` bigint NOT NULL AUTO_INCREMENT,
+        `workgroup_id` bigint NOT NULL,
+        `user_id` bigint NOT NULL,
+        `external` tinyint(1) NOT NULL DEFAULT '0',
+        PRIMARY KEY (`id`)
+    ) ENGINE=InnoDB;";
+    $wpdb->get_results($sql);
+    $sql = "CREATE TABLE IF NOT EXISTS `".$wpdb->prefix."lab_presence_workgroup` (
+        `id` bigint NOT NULL AUTO_INCREMENT, 
+        `name` varchar(200) NOT NULL, 
+        `owner_id` bigint NOT NULL, 
+        `max` int NOT NULL, 
+        `date` date NOT NULL DEFAULT '2020-06-05', 
+        `hour_start` varchar(5) NOT NULL DEFAULT '08:00', 
+        `hour_end` varchar(5) NOT NULL DEFAULT '09:00', 
+        `presency_id` bigint NOT NULL, 
+        PRIMARY KEY (`id`) ) ENGINE=InnoDB;";
     return $wpdb->get_results($sql);
+
 }
 
 function lab_admin_initTable_param() {
     global $wpdb;
     $wpdb->query("DELETE FROM ".$wpdb->prefix."lab_params WHERE ID < 7");
-    $sql = "INSERT INTO `".$wpdb->prefix."lab_params` (`id`, `type_param`, `value`, `color`) VALUES
-            (1, 1, 'PARAM', NULL),
-            (2, 1, 'GROUP TYPE', NULL),
-            (3, 1, 'KEY TYPE', NULL),
-            (4, 1, 'SITE', NULL),
-            (5, 1, 'USER FUNCTION', NULL),
-            (6, 1, 'MISSION', NULL),
-            (7, 1, 'FUNDING', NULL),
-            (8, 1, 'EMPLOYER', NULL),            
-            (9, 1, 'LDAP TOKEN', NULL),
-            (10, 1, 'LDAP HOST', NULL),
-            (11, 1, 'LDAP BASE', NULL),
-            (12, 1, 'LDAP LOGIN', NULL),
-            (13, 1, 'LDAP PASSWORD', NULL),
-            (14, 1, 'LDAP TLS', NULL),
-            (15, 1, 'LDAP ENABLE', NULL),
-            (16, 1, 'OUTGOING MOBILITY', NULL),
-            (NULL, 2, 'Equipe', NULL),
-            (NULL, 2, 'Groupe', NULL),
-            (NULL, 3, 'Clé', NULL),
-            (NULL, 3, 'Badge', NULL),
-            (NULL, 4, 'Luminy', '067BC2'),
-            (NULL, 4, 'Saint-Charles', 'F75C03'),
-            (NULL, 4, 'CMI', '04A777'),
-            (NULL, 6, 'Séminaire', NULL),
-            (NULL, 7, 'CNRS', NULL),
-            (NULL, 7, 'AMU', NULL),
-            (NULL, 7, 'ECM', NULL);";
+    $sql = "INSERT INTO `".$wpdb->prefix."lab_params` (`id`, `type_param`, `value`, `color`, `slug`) VALUES
+            (1, 1, 'PARAM', NULL, NULL),
+            (2, 1, 'GROUP TYPE', NULL, NULL),
+            (3, 1, 'KEY TYPE', NULL, NULL),
+            (4, 1, 'SITE', NULL, NULL),
+            (5, 1, 'USER FUNCTION', NULL, NULL),
+            (6, 1, 'MISSION', NULL, NULL),
+            (7, 1, 'FUNDING', NULL, NULL),
+            (8, 1, 'EMPLOYER', NULL, NULL),            
+            (9, 1, 'LDAP TOKEN', NULL, NULL),
+            (10, 1, 'LDAP HOST', NULL, NULL),
+            (11, 1, 'LDAP BASE', NULL, NULL),
+            (12, 1, 'LDAP LOGIN', NULL, NULL),
+            (13, 1, 'LDAP PASSWORD', NULL, NULL),
+            (14, 1, 'LDAP TLS', NULL, NULL),
+            (15, 1, 'LDAP ENABLE', NULL, NULL),
+            (16, 1, 'USER SECTION CN', NULL, NULL),
+            (17, 1, 'USER SECTION CNU', NULL, NULL),
+            (18, 1, 'OUTGOING MOBILITY', NULL, NULL),
+            (19, 1, 'KEY STATE', NULL, NULL),
+            (20, 1, 'ECOLE DOCTORALE', NULL, NULL),
+            (21, 1, 'OUTGOING MOBILITY STATUS', NULL, NULL),
+            (22, 1, 'THEMATIC', NULL, NULL),
+            (23, 1, 'BUDGET INFO TYPE', NULL, NULL),
+            (24, 1, 'BUDGET FUNDS', NULL, NULL),
+            (25, 1, 'CONTRACT TYPE', NULL, NULL),
+            (NULL, 2, 'Equipe', NULL, NULL),
+            (NULL, 2, 'Groupe', NULL, NULL),
+            (NULL, 3, 'Clé', NULL, 'key'),
+            (NULL, 3, 'Badge', NULL, 'badge'),
+            (NULL, 4, 'Luminy', '067BC2', NULL),
+            (NULL, 4, 'Saint-Charles', 'F75C03', NULL),
+            (NULL, 4, 'CMI', '04A777', NULL),
+            (NULL, 6, 'Séminaire', NULL, NULL),
+            (NULL, 7, 'CNRS', NULL, NULL),
+            (NULL, 7, 'AMU', NULL, NULL),
+            (NULL, 7, 'ECM', NULL, NULL),
+            (NULL, 15, 'false', NULL, NULL),
+            (NULL, 19, 'OK', NULL, NULL),
+            (NULL, 19, 'LOST', NULL, NULL),
+            (NULL, 19, 'BROKEN', NULL, NULL);";
     $wpdb->get_results($sql);
 }
 
@@ -407,6 +1030,18 @@ function lab_admin_getSite($sideId)
     return $wpdb->get_results($sql)[0]->value;
 }
 
+function lab_admin_user_get_employer($userId)
+{
+    global $wpdb;
+    $sql = "SELECT p.value FROM `".$wpdb->prefix."usermeta` AS um JOIN `".$wpdb->prefix."lab_params` AS p ON um.meta_value=p.id WHERE um.meta_key='lab_user_employer' AND um.user_id=".$userId;
+    $r = $wpdb->get_results($sql);
+    if (count($r) > 0)
+    {
+        return $r[0]->value;
+    }
+    return null;
+}
+
 /**
  * Return presence of all user order by user_id, start_hour
  *
@@ -416,7 +1051,7 @@ function lab_admin_getSite($sideId)
  */
 function lab_admin_list_present_user($startDate, $endDate) {
     global $wpdb;
-    $sql = "SELECT lp.id, lp.user_id, lp.hour_start, lp.hour_end, lp.site as site_id, lp.comment as comment, p.value as site, um1.meta_value as first_name, um2.meta_value as last_name, um4.meta_value as office, um5.meta_value as floor FROM `".$wpdb->prefix."lab_presence` AS lp JOIN ".$wpdb->prefix."lab_params as p ON p.id=lp.site JOIN ".$wpdb->prefix."usermeta AS um1 ON um1.user_id=lp.user_id JOIN ".$wpdb->prefix."usermeta AS um2 ON um2.user_id=lp.user_id JOIN ".$wpdb->prefix."usermeta AS um3 ON um3.user_id=lp.user_id JOIN ".$wpdb->prefix."usermeta AS um4 ON um4.user_id=lp.user_id JOIN ".$wpdb->prefix."usermeta AS um5 ON um5.user_id=lp.user_id WHERE lp.external=0 AND (lp.`hour_start` BETWEEN '".date("Y-m-d", $startDate)." 00:00:00' AND '".date("Y-m-d", $endDate)." 23:59:59') AND um1.meta_key='first_name' AND um2.meta_key='last_name' AND um3.meta_key='lab_user_location' AND um4.meta_key='lab_user_office_number' AND um5.meta_key='lab_user_office_floor' ORDER BY lp.user_id, lp.`hour_start`";
+    $sql = "SELECT lp.id, lp.user_id, lp.hour_start, lp.hour_end, lp.site as site_id, lp.comment as comment, p.value as site, um1.meta_value as first_name, um2.meta_value as last_name, um4.meta_value as office, um5.meta_value as floor, wg.name as wg_name, wg.id as wg_id, wg.owner_id as wg_user_id FROM `".$wpdb->prefix."lab_presence` AS lp JOIN ".$wpdb->prefix."lab_params as p ON p.id=lp.site JOIN ".$wpdb->prefix."usermeta AS um1 ON um1.user_id=lp.user_id JOIN ".$wpdb->prefix."usermeta AS um2 ON um2.user_id=lp.user_id JOIN ".$wpdb->prefix."usermeta AS um3 ON um3.user_id=lp.user_id JOIN ".$wpdb->prefix."usermeta AS um4 ON um4.user_id=lp.user_id JOIN ".$wpdb->prefix."usermeta AS um5 ON um5.user_id=lp.user_id LEFT JOIN wp_lab_presence_workgroup as wg on wg.presency_id=lp.id WHERE lp.external=0 AND (lp.`hour_start` BETWEEN '".date("Y-m-d", $startDate)." 00:00:00' AND '".date("Y-m-d", $endDate)." 23:59:59') AND um1.meta_key='first_name' AND um2.meta_key='last_name' AND um3.meta_key='lab_user_location' AND um4.meta_key='lab_user_office_number' AND um5.meta_key='lab_user_office_floor' ORDER BY lp.user_id, lp.`hour_start`";
     $registredUser = $wpdb->get_results($sql);
     $sql = "SELECT lp.id, lp.user_id, lp.hour_start, lp.hour_end, lp.site as site_id, lp.comment as comment, p.value as site, lug.first_name as first_name, lug.last_name as last_name FROM `".$wpdb->prefix."lab_presence` AS lp JOIN ".$wpdb->prefix."lab_params as p ON p.id=lp.site JOIN ".$wpdb->prefix."lab_guests AS lug ON lug.id=lp.user_id WHERE lp.external=1 AND (lp.`hour_start` BETWEEN '".date("Y-m-d", $startDate)." 00:00:00' AND '".date("Y-m-d", $endDate)." 23:59:59') ORDER BY lp.user_id, lp.`hour_start`";
     //return $wpdb->get_results($sql);
@@ -594,6 +1229,13 @@ function lab_admin_initTable_usermeta()
     lab_userMetaData_create_metaKeys("user_section_cnu", "");
     lab_userMetaData_create_metaKeys("user_slug", null);
     lab_userMetaData_create_metaKeys("user_position", null);
+    lab_userMetaData_create_metaKeys("user_thesis_title", null);
+    lab_userMetaData_create_metaKeys("user_hdr_title", null);
+    lab_userMetaData_create_metaKeys("user_thesis_date", null);
+    lab_userMetaData_create_metaKeys("user_hdr_date", null);
+    lab_userMetaData_create_metaKeys("user_phd_school", null);
+    lab_userMetaData_create_metaKeys("user_sex", null);
+    lab_userMetaData_create_metaKeys("user_country", null);
     lab_admin_usermeta_fill_hal_name();
     lab_admin_usermeta_fill_user_slug();
     lab_admin_createSocial();
@@ -606,6 +1248,7 @@ function lab_admin_add_new_user_metadata($userId)
     lab_userMetaData_save_key($userId, "profile_bg_color", "#F2F2F2");
     lab_userMetaData_save_key($userId, "user_employer", "");
     lab_userMetaData_save_key($userId, "user_function", "");
+    lab_userMetaData_save_key($userId, "user_sex", "");
     lab_userMetaData_save_key($userId, "user_funding", "");
     lab_userMetaData_save_key($userId, "user_left", null);
     lab_userMetaData_save_key($userId, "user_location", "");
@@ -616,9 +1259,55 @@ function lab_admin_add_new_user_metadata($userId)
     lab_userMetaData_save_key($userId, "user_section_cnu", "");
     lab_userMetaData_save_key($userId, "user_slug", null);
     lab_userMetaData_save_key($userId, "user_position", null);
+    lab_userMetaData_save_key($userId, "user_thesis_title", null);
+    lab_userMetaData_save_key($userId, "user_hdr_title", null);
+    lab_userMetaData_save_key($userId, "user_phd_school", null);
+    lab_userMetaData_save_key($userId, "user_thesis_date", null);
+    lab_userMetaData_save_key($userId, "user_hdr_date", null);
+    lab_userMetaData_save_key($userId, "user_country", null);
     lab_admin_usermeta_fill_hal_name($userId);
     lab_admin_usermeta_fill_user_slug($userId);
     lab_admin_createSocial($userId);
+}
+
+function correct_missing_usermeta_data($userId)
+{
+    $missingFields = check_missing_usermeta_data($userId);
+
+    foreach($missingFields as $field)
+    {
+        if ($field == "hal_id" || $field == "hal_name" || $field == "user_left" || $field == "user_slug" || $field == "user_position")
+        {
+            lab_userMetaData_save_key($userId, $field, null);
+            if ($field == "hal_name")
+            {
+                lab_admin_usermeta_fill_hal_name($userId);
+            }
+            if ($field == "user_slug")
+            {
+                lab_admin_usermeta_fill_user_slug($userId);
+            }
+        }
+        else
+        {
+            lab_userMetaData_save_key($userId, $field, "");
+        }
+    }
+
+}
+
+function check_missing_usermeta_data($userId)
+{
+    $labFields = array("hal_id", "hal_name", "profile_bg_color", "user_employer", "user_sex", "user_function", "user_funding", "user_left", "user_location", "user_office_floor", "user_office_number", "user_phone", "user_section_cn", "user_section_cnu", "user_slug", "user_thesis_title", "user_thesis_date", "user_hdr_title", "user_hdr_date", "user_phd_school", "user_country");
+    $missings = array();
+    foreach($labFields as $field)
+    {
+        if (userMetaData_exist_metakey_for_user($field, $userId) === false)
+        {
+            $missings[] = $field;
+        }
+    }
+    return $missings;
 }
 
 function lab_admin_complete_missing_user_metadata()
@@ -658,10 +1347,44 @@ function lab_admin_checkTable($tableName) {
  * GROUPS
  ********************************************************************************************/
 
+function lab_admin_group_load_all()
+{
+    global $wpdb;
+    $sql = "SELECT group_name AS value,id FROM `".$wpdb->prefix."lab_groups`;";
+    $results = $wpdb->get_results($sql);
+    $items = array();
+    foreach ( $results as $r )
+    {
+      array_push($items,$r);
+    }
+    return $items;
+}
+
+function lab_admin_group_by_user($userId)
+{
+    $results = lab_group_get_user_groups($userId);
+    $groups = [];
+    foreach($results as $r)
+    {
+        $group = new \stdClass();
+        $group->id = $r->id; 
+        $group->name = $r->group_name;
+        $groups[] = $group;
+    }
+    return $groups;
+}
+
+function lab_admin_group_get_user_groups_delete($groupId)
+{
+    global $wpdb;
+    $wpdb->delete($wpdb->prefix.'lab_users_groups', array('id' => $groupId));
+    return true;
+
+}
 function lab_group_get_user_groups($userId)
 {
     global $wpdb;
-    return $wpdb->get_results("SELECT lg.group_name, lg.url
+    return $wpdb->get_results("SELECT lg.group_name, lg.url, lug.id
                                 FROM `".$wpdb->prefix."lab_users_groups` as lug 
                                 JOIN `".$wpdb->prefix."lab_groups` AS lg ON lg.id=lug.group_id 
                                 WHERE lug.`user_id`=".$userId);
@@ -716,6 +1439,18 @@ function lab_admin_createUserGroupTable()
     $wpdb->get_results($sql);
 }
 
+function lab_admin_createUserThematicTable()
+{
+    global $wpdb;
+    $sql = "CREATE TABLE IF NOT EXISTS `".$wpdb->prefix."lab_users_thematic` (
+        `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
+        `user_id` bigint UNSIGNED NOT NULL,
+        `thematic_id_id` bigint UNSIGNED NOT NULL,
+        PRIMARY KEY(`id`)
+      ) ENGINE=InnoDB;";
+    $wpdb->get_results($sql);
+}
+
 function lab_admin_createGroupTable() {
     global $wpdb;
     $sql = "CREATE TABLE IF NOT EXISTS `".$wpdb->prefix."lab_groups`(
@@ -740,6 +1475,17 @@ function lab_admin_createSubTable() {
         PRIMARY KEY(`id`),
         FOREIGN KEY(`substitute_id`) REFERENCES `".$wpdb->prefix."users`(`ID`),
         FOREIGN KEY(`group_id`) REFERENCES `".$wpdb->prefix."lab_groups`(`id`)) ENGINE = INNODB;";
+    $wpdb->get_results($sql);
+}
+
+function lab_admin_create_group_manager_table() {
+    global $wpdb;
+    $sql = "CREATE TABLE IF NOT EXISTS `".$wpdb->prefix."lab_group_manager` (
+        `id` bigint NOT NULL AUTO_INCREMENT,
+        `user_id` bigint NOT NULL,
+        `manager_type` int NOT NULL,
+        PRIMARY KEY (`id`)
+      ) ENGINE=InnoDB";
     $wpdb->get_results($sql);
 }
 
@@ -851,6 +1597,7 @@ function lab_keyring_createTable_keys() {
         `site` text,
         `commentary` text,
         `available` boolean NOT NULL DEFAULT TRUE,
+        `state` int NOT NULL COMMENT 'etat de la clef, perdue, cassée, volée'
         PRIMARY KEY(`id`)
         ) ENGINE=INNODB;";
     $wpdb->get_results($sql);
@@ -873,6 +1620,7 @@ function lab_keyring_createTable_loans() {
       ) ENGINE=InnoDB;";
     $wpdb->get_results($sql);
 }
+
 function lab_keyring_create_key($params) {
     $params['commentary'] = strlen($params['commentary']) ? $params['commentary'] : NULL ;
     global $wpdb;
@@ -882,11 +1630,27 @@ function lab_keyring_create_key($params) {
         $params
         )
     ) {
-        return;
+        return $wpdb->insert_id;
     } else {
         return $wpdb -> last_error;
     }
 }
+
+function lab_keyring_default_key_state()
+{
+    global $wpdb;
+    $keyStates = AdminParams::lab_admin_get_params_keyStates();
+    $min = 1000000;
+    foreach($keyStates as $r)
+    {
+        if ($r->id < $min)
+        {
+            $min = $r->id;
+        }
+    }
+    return $min;
+}
+
 function lab_keyring_create_loan($params) {
     $params['commentary'] = strlen($params['commentary']) ? $params['commentary'] : NULL ;
     $params['end_date'] = strlen($params['end_date']) ? $params['end_date'] : NULL ;
@@ -920,10 +1684,28 @@ function lab_keyring_search_byWord($word,$limit,$page) {
     );
     return $res;
 }
+
+/*
+function lab_keyring_find_key($id)
+{
+    global $wpdb;
+    $sql = "SELECT * from `".$wpdb->prefix."lab_keys` WHERE `id` =".$id;
+    return $wpdb->get_row($sql);
+
+}
+//*/
+
+function lab_keyring_search_by_key_number($keyType, $keyNumber)
+{
+    global $wpdb;
+    $sql = "SELECT * from `".$wpdb->prefix."lab_keys` WHERE `number` LIKE '%".$keyNumber."%' AND `type`='".$keyType."';";
+    return $wpdb->get_results($sql);
+    //return $sql;
+}
+
 function lab_keyring_search_key($id) {
     global $wpdb;
-    $sql = "SELECT * from `".$wpdb->prefix."lab_keys`
-            WHERE `id`=".$id.";";
+    $sql = "SELECT * from `".$wpdb->prefix."lab_keys` WHERE `id`=".$id.";";
     return $wpdb->get_results($sql);
 }
 function lab_keyring_edit_key($id,$fields) {
@@ -1004,7 +1786,15 @@ function lab_keyring_end_loan($loan_id,$end_date, $key_id) {
 }
 function lab_keyring_find_oldLoans($field, $id) {
     global $wpdb;
-    $sql = "SELECT * from `".$wpdb->prefix."lab_key_loans` WHERE `".$field."`=".$id." ORDER BY `start_date` DESC";
+    $sql = "";
+    if(empty($id)) 
+    {
+        $sql = "SELECT * from `".$wpdb->prefix."lab_key_loans` ORDER BY `start_date` DESC";
+    }
+    else
+    {
+        $sql = "SELECT * from `".$wpdb->prefix."lab_key_loans` WHERE `".$field."`=".$id." ORDER BY `start_date` DESC";
+    }
     return $wpdb->get_results($sql);
 }
 function lab_keyring_get_loan($id) {
@@ -1128,6 +1918,13 @@ function userMetaData_delete_metakeys($metadataKey) {
     return $wpdb->delete($wpdb->prefix.'usermeta', array("meta_key"=>$metadataKey));
 }
 
+/**
+ * Return usermeta data id, false if this usermetadata does not exist
+ *
+ * @param [type] $metadataKey
+ * @param [type] $userId
+ * @return Return usermeta data id, false if this usermetadata does not exist
+ */
 function userMetaData_exist_metakey_for_user($metadataKey, $userId) {
     if (substr($metadataKey, 0, strlen(LAB_META_PREFIX)) !== LAB_META_PREFIX) {
         $metadataKey = LAB_META_PREFIX.$metadataKey;
@@ -1226,6 +2023,12 @@ function lab_hal_getPublication_by_group($groups, $year = null)
 
 function lab_hal_get_publication($userId, $year = null) {
     global $wpdb;
+    
+    if(!isset($userId) || $userId == null || empty($userId))
+    {
+        return null;
+    }
+    //*/
     $sql = "SELECT lh.* FROM `".$wpdb->prefix."lab_hal` as lh JOIN `".$wpdb->prefix."lab_hal_users` AS lhu ON lhu.hal_id=lh.id WHERE lhu.user_id=".$userId;
     
     if ($year != null)
@@ -1233,6 +2036,7 @@ function lab_hal_get_publication($userId, $year = null) {
         $sql .= " AND `producedDate_tdate` >= '".$year."-01-01'  AND `producedDate_tdate` <= '".$year."-12-31'";
     }
     $sql .= " ORDER BY `lh`.`producedDate_tdate` DESC";
+    //return $sql;
     return $wpdb->get_results($sql);
 }
 
@@ -1249,6 +2053,13 @@ function format_spaced_string($s) {
     return $s;
 }
 
+function replaceAccent($str)
+{
+    $search  = array('À', 'Á', 'Â', 'Ã', 'Ä', 'Å', 'Ç', 'È', 'É', 'Ê', 'Ë', 'Ì', 'Í', 'Î', 'Ï', 'Ò', 'Ó', 'Ô', 'Õ', 'Ö', 'Ù', 'Ú', 'Û', 'Ü', 'Ý', 'à', 'á', 'â', 'ã', 'ä', 'å', 'ç', 'è', 'é', 'ê', 'ë', 'ì', 'í', 'î', 'ï', 'ð', 'ò', 'ó', 'ô', 'õ', 'ö', 'ù', 'ú', 'û', 'ü', 'ý', 'ÿ');
+	$replace = array('A', 'A', 'A', 'A', 'A', 'A', 'C', 'E', 'E', 'E', 'E', 'I', 'I', 'I', 'I', 'O', 'O', 'O', 'O', 'O', 'U', 'U', 'U', 'U', 'Y', 'a', 'a', 'a', 'a', 'a', 'a', 'c', 'e', 'e', 'e', 'e', 'i', 'i', 'i', 'i', 'o', 'o', 'o', 'o', 'o', 'o', 'u', 'u', 'u', 'u', 'y', 'y');
+	return str_replace($search, $replace, $str);
+}
+
 /**
  * Format user firstname and lastname to slug format (noSpace,fistname.lastName)
  *
@@ -1261,6 +2072,8 @@ function usermeta_format_name_to_slug($f, $l) {
     $l = strtolower($l);
     $f = format_spaced_string($f);
     $l = format_spaced_string($l);
+    $f = replaceAccent($f);
+    $l = replaceAccent($l);
     return $f.".".$l;
 }
 
@@ -1373,7 +2186,7 @@ function get_hal_url_1($userId) {
             //return "https://api.archives-ouvertes.fr/search/?q=*:*&fq=authIdHal_s:(".$hal_id.")&fl=docid,citationFull_s,producedDate_tdate,uri_s,title_s,journalTitle_s&sort=producedDate_tdate+desc&wt=json&json.nl=arrarr";
             //return "https://api.archives-ouvertes.fr/search/?q=*:*&fq=authIdHal_s:(".$hal_id.")&group=true&group.field=docType_s&group.limit=1000&&fl=docid,citationFull_s,producedDate_tdate,uri_s,title_s,journalTitle_s&facet.field=fr_domainAllCodeLabel_fs&facet.field=keyword_s&facet.field=journalIdTitle_fs&facet.field=producedDateY_i&facet.field=authIdLastNameFirstName_fs&facet.field=instStructIdName_fs&facet.field=labStructIdName_fs&facet.field=deptStructIdName_fs&facet.field=rteamStructIdName_fs&facet.mincount=1&facet=true&wt=json&json.nl=arrarr";
             //return "https://api.archives-ouvertes.fr/search/?q=*:*&fq=authIdHal_s:(".$hal_id.")&fl=docid,citationFull_s,producedDate_tdate,uri_s,title_s,journalTitle_s&facet.field=fr_domainAllCodeLabel_fs&facet.field=keyword_s&facet.mincount=1&facet=true&wt=json&json.nl=arrarr";
-            return "https://api.archives-ouvertes.fr/search/hal/?omitHeader=true&wt=json&q=authIdHal_s:(".$hal_name.")&sort=producedDate_tdate+desc&fq=NOT+instance_s%3Asfo&fq=NOT+instance_s%3Adumas&fq=NOT+instance_s%3Amemsic&fq=NOT+instance_s%3Ahceres&fq=NOT+%28docType_s%3A%28THESE+OR+HDR%29+AND+submitType_s%3A%28notice+OR+annex%29%29&fq=NOT+docType_s%3A%28MEM+OR+PRESCONF+OR+MINUTES+OR+NOTE+OR+SYNTHESE+OR+OTHERREPORT+OR+REPACT+OR+BOOKREPORT%29&fq=NOT+status_i%3A111&defType=edismax&rows=1000&fl=halId_s%2Curi_s%2CdocType_s%2CdoiId_s%2CnntId_s%2Ctitle_s%2CsubTitle_s%2CauthFullName_s%2CproducedDate_s%2CjournalTitle_s%2CjournalPublisher_s%2Cvolume_s%2Cnumber_s%2Cpage_s%2CconferenceTitle_s%2CconferenceStartDate_s%2Ccountry_s%2Clanguage_s%2CinPress_bool%2Cdocid%2CjournalTitle_s%2CcitationFull_s%2Ckeyword_s%2CstructCode_s&sort=score+desc";
+            return "https://api.archives-ouvertes.fr/search/hal/?omitHeader=true&wt=json&q=authIdHal_s:(".$hal_id.")&sort=producedDate_tdate+desc&fq=NOT+instance_s%3Asfo&fq=NOT+instance_s%3Adumas&fq=NOT+instance_s%3Amemsic&fq=NOT+instance_s%3Ahceres&fq=NOT+%28docType_s%3A%28THESE+OR+HDR%29+AND+submitType_s%3A%28notice+OR+annex%29%29&fq=NOT+docType_s%3A%28MEM+OR+PRESCONF+OR+MINUTES+OR+NOTE+OR+SYNTHESE+OR+OTHERREPORT+OR+REPACT+OR+BOOKREPORT%29&fq=NOT+status_i%3A111&defType=edismax&rows=1000&fl=halId_s%2Curi_s%2CdocType_s%2CdoiId_s%2CnntId_s%2Ctitle_s%2CsubTitle_s%2CauthFullName_s%2CproducedDate_s%2CjournalTitle_s%2CjournalPublisher_s%2Cvolume_s%2Cnumber_s%2Cpage_s%2CconferenceTitle_s%2CconferenceStartDate_s%2Ccountry_s%2Clanguage_s%2CinPress_bool%2Cdocid%2CjournalTitle_s%2CcitationFull_s%2Ckeyword_s%2CstructCode_s&sort=score+desc";
         }
         else {
             return "https://api.archives-ouvertes.fr/search/hal/?omitHeader=true&wt=json&q=authLastNameFirstName_s:%22".$hal_name."%22&sort=producedDate_tdate+desc&fq=NOT+instance_s%3Asfo&fq=NOT+instance_s%3Adumas&fq=NOT+instance_s%3Amemsic&fq=NOT+instance_s%3Ahceres&fq=NOT+%28docType_s%3A%28THESE+OR+HDR%29+AND+submitType_s%3A%28notice+OR+annex%29%29&fq=NOT+docType_s%3A%28MEM+OR+PRESCONF+OR+MINUTES+OR+NOTE+OR+SYNTHESE+OR+OTHERREPORT+OR+REPACT+OR+BOOKREPORT%29&fq=NOT+status_i%3A111&defType=edismax&rows=1000&fl=halId_s%2Curi_s%2CdocType_s%2CdoiId_s%2CnntId_s%2Ctitle_s%2CsubTitle_s%2CauthFullName_s%2CproducedDate_s%2CjournalTitle_s%2CjournalPublisher_s%2Cvolume_s%2Cnumber_s%2Cpage_s%2CconferenceTitle_s%2CconferenceStartDate_s%2Ccountry_s%2Clanguage_s%2CinPress_bool%2Cdocid%2CjournalTitle_s%2CcitationFull_s%2Ckeyword_s%2CstructCode_s&sort=score+desc";
@@ -1657,12 +2470,15 @@ function lab_admin_setting_reset_tables()
 }
 
 
+
 function create_all_tables() {
     lab_admin_createTable_param();
     lab_admin_initTable_param();
     lab_hal_createTable_hal();
     lab_admin_createGroupTable();
+    lab_admin_create_group_manager_table();
     lab_admin_createUserGroupTable();
+    lab_admin_createUserThematicTable();
     lab_admin_createSubTable();
     lab_keyring_createTable_keys();
     lab_keyring_createTable_loans();
@@ -1670,6 +2486,9 @@ function create_all_tables() {
     lab_admin_createTable_presence();
     lab_invitations_createTables();
     lab_admin_createTable_users_historic();
+    lab_admin_createTable_budget_info();
+    lab_admin_contract_create_table();
+    lab_admin_mission_create_table();
 }
 
 function delete_all_tables() {
@@ -1691,6 +2510,10 @@ function delete_all_tables() {
     drop_table("lab_guests");
     drop_table("lab_invite_comments");
     drop_table("lab_presence");
+    drop_table("lab_budget_info");
+    drop_table("lab_contract");
+    drop_table("lab_contract_user");
+    drop_table("lab_mission_route");
 }
 
 /**
@@ -1705,6 +2528,17 @@ function drop_table($tableName) {
 }
 
 function lab_create_roles() {
+    add_role(
+        'budget_info_manager',
+        'Budget Info Manager',
+        [
+            'read'      => true
+        ]
+    );
+    $role = get_role('budget_info_manager');
+    $role ->add_cap('budget_info',true);
+    $role = get_role('administrator');
+    $role ->add_cap('budget_info',true);
     add_role(
         'key_manager',
         'Key Manager',
@@ -1792,7 +2626,7 @@ function checkAddPresency($userId, $dateOpen, $dateEnd)
  * @return array("success"=>true, "data"=>null);
  */
 function lab_admin_presence_save($id, $userId, $dateOpen, $dateEnd, $siteId, $comment, $external=0) {
-    //return array("success"=>false, "data"=>"\$external : " + $external);
+    //return array("success"=>false, "data"=>"\$id : ".$id." \$dateOpen : " . $dateOpen . " \$dateEnd : " . $dateEnd);
     global $wpdb;
     if ($id == null) {
         $wpdb->insert($wpdb->prefix."lab_presence", array("user_id"=>$userId, "hour_start"=>$dateOpen, "hour_end"=>$dateEnd, "site"=>$siteId, "comment"=>$comment, "external"=>$external));
@@ -1807,18 +2641,106 @@ function lab_admin_presence_save($id, $userId, $dateOpen, $dateEnd, $siteId, $co
         }
         
     }
-    return array("success"=>true, "data"=>null);
+    return array("success"=>true, "data"=>$wpdb->insert_id);
 }
-
 function lab_admin_presence_delete($presenceId, $userId) {
     global $wpdb;
     if (current_user_can('administrator')) {
+        workgroup_delete_by_presenceId($presenceId);
         return $wpdb->delete($wpdb->prefix."lab_presence", array("id"=>$presenceId));
     } 
     else {
+        workgroup_delete_by_presenceId($presenceId);
         return $wpdb->delete($wpdb->prefix."lab_presence", array("id"=>$presenceId,"user_id"=>$userId));
     }
 }
+
+function save_new_workgroup($name, $day, $owner, $hourStart, $hourEnd, $max, $presencyId = -1)
+{
+    global $wpdb;
+    $wpdb->insert($wpdb->prefix."lab_presence_workgroup",array("name"=>$name, "date"=>date('Y-m-d', $day), "owner_id"=>$owner, "max"=>$max, "hour_start"=>$hourStart, "hour_end"=>$hourEnd, "presency_id"=> $presencyId));
+    $id = $wpdb->insert_id;
+    save_workgroup_follow($id, $owner);
+    return $id;
+    //$wpdb->insert($wpdb->prefix."lab_presence_users_workgroup",array("workgroup_id"=>$wpdb->insert_id, "user_id"=>$owner));
+}
+function save_workgroup_follow($groupId, $userId, $external = 0)
+{
+    global $wpdb;
+    //$wpdb->insert($wpdb->prefix."lab_presence_workgroup",array("name"=>$name, "date"=>date('Y-m-d', $day), "owner_id"=>$owner, "max"=>$max));
+    $wpdb->insert($wpdb->prefix."lab_presence_users_workgroup",array("workgroup_id"=>$groupId, "external"=>$external, "user_id"=>$userId));
+}
+
+function workgroup_update_presencyId($workgroupId, $presencyId, $external = 0)
+{
+    global $wpdb;
+    $wpdb->update($wpdb->prefix."lab_presence_workgroup", array("presency_id"=>$presencyId), array("id"=>$workgroupId));
+}
+
+function workgroup_delete_by_presenceId($presencyId)
+{
+    global $wpdb;
+    $sql = "SELECT id FROM ".$wpdb->prefix."lab_presence_workgroup WHERE presency_id=".$presencyId;
+    $rs = $wpdb->get_results($sql);
+    foreach($rs as $r)
+    {
+        workgroup_delete($r->id);
+    }
+}
+
+function workgroup_users_list($groupId)
+{
+    global $wpdb;
+    $sql = "SELECT lpuw.user_id,um1.meta_value AS last_name,um2.meta_value AS first_name FROM `".$wpdb->prefix."lab_presence_users_workgroup` AS lpuw LEFT JOIN ".$wpdb->prefix."usermeta AS um1 ON um1.user_id=lpuw.user_id LEFT JOIN ".$wpdb->prefix."usermeta AS um2 ON um2.user_id=lpuw.user_id WHERE workgroup_id=".$groupId." AND external=0 AND um1.meta_key='last_name' AND um2.meta_key='first_name'";
+    $rs = $wpdb->get_results($sql);
+    $sql = "SELECT lpuw.user_id,g.first_name AS first_name,g.last_name AS last_name FROM `".$wpdb->prefix."lab_presence_users_workgroup` AS lpuw LEFT JOIN ".$wpdb->prefix."lab_guests AS g ON g.id=lpuw.user_id WHERE workgroup_id=".$groupId." AND external=1";
+    $rs1 = $wpdb->get_results($sql);
+    return array_merge($rs, $rs1);
+}
+
+function workgroup_users_count($groupId)
+{
+    global $wpdb;
+    $sql = "SELECT count(*) AS c FROM `".$wpdb->prefix."lab_presence_users_workgroup` WHERE workgroup_id=".$groupId;
+    $rs = $wpdb->get_results($sql);
+    return $rs[0]->c;
+}
+
+function workgroup_delete($groupId)
+{
+    global $wpdb;
+    $wpdb->delete($wpdb->prefix."lab_presence_workgroup", array("id"=>$groupId));
+    $wpdb->delete($wpdb->prefix."lab_presence_users_workgroup", array("workgroup_id"=>$groupId));
+}
+
+function workgroup_get($groupId)
+{
+    global $wpdb;
+    $sql = "SELECT * FROM ".$wpdb->prefix."lab_presence_workgroup WHERE id = ".$groupId;
+    return $wpdb->get_results($sql)[0];
+}
+
+function load_workgroup_follow($groupId)
+{
+    global $wpdb;
+    $sql = "SELECT * FROM ".$wpdb->prefix."lab_presence_users_workgroup WHERE workgroup_id = ".$groupId;
+    return $wpdb->get_results($sql);
+}
+
+function get_workgroup_of_the_week($day)
+{
+    global $wpdb;
+    $startDayOfTheWeek = getFirstDayOfTheWeek($day);
+    $lastDayOfTheWeek  = strtotime("+5 days", $startDayOfTheWeek);
+    $sql = "SELECT wg.*,p.site, param.value AS site_name FROM ".$wpdb->prefix."lab_presence_workgroup AS wg JOIN ".$wpdb->prefix."lab_presence AS p ON p.id = wg.presency_id JOIN ".$wpdb->prefix."lab_params AS param ON param.id = p.site WHERE date >= '".date('Y-m-d', $startDayOfTheWeek)."' AND date <= '".date('Y-m-d', $lastDayOfTheWeek)."'";
+    //return $sql;
+    return $wpdb->get_results($sql);
+}
+
+/**************************************************************************************************************************************
+ * PRESENCE
+ *************************************************************************************************************************************/
+
 
 /**************************************************************************************************************************************
  * UTILS
@@ -1840,4 +2762,17 @@ function startsWith ($string, $startString)
 { 
     $len = strlen($startString); 
     return (substr($string, 0, $len) === $startString); 
-} 
+}
+
+function getFirstDayOfTheWeek($dateObj) {
+    $dayofweek = date('w', $dateObj);
+    //echo $dayofweek."<br>";
+    // if sunday
+    if ($dayofweek < 1) {
+        return strtotime('-6 days', $dateObj);
+    }
+    else {
+        $aStr = '-'.($dayofweek-1).' days';
+        return strtotime($aStr, $dateObj);
+    }
+}

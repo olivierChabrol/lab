@@ -3,11 +3,158 @@
 include 'lab-admin-core.php';
 include 'lib/vendor/autoload.php';
 require_once("lab-admin-params.php");
+require_once("core/lab_thematic.php");
 
 use AdminParams as AdminParams;
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+
+
+function lab_admin_ajax_user_info()
+{
+  $userId = $_POST['userId'];
+  $fields = $_POST['fields'];
+  wp_send_json_success(lab_admin_user_info($userId, $fields));
+}
+
+/********************************************************************************************
+ * BUDGET
+ ********************************************************************************************/
+function lab_ajax_admin_createTable_budget_info()
+{
+  lab_admin_createTable_budget_info();
+  wp_send_json_success();
+}
+
+function lab_budget_info_ajax_delete() {
+  $budgetId = $_POST['id'];
+  wp_send_json_success(lab_budget_info_delete($budgetId));
+}
+
+
+function lab_budget_info_ajax_save_order() {
+  $res = lab_budget_info_save_order($_POST['params']); 
+  if (strlen($res)==0) {
+    wp_send_json_success();
+    return;
+  }
+  wp_send_json_error($res);
+
+}
+
+function lab_budget_info_ajax_load() {
+  $budgetId = $_POST['id'];
+  if (!isset($budgetId) || empty($budgetId)) {
+    $budgetId = null;
+  }
+  $filters = $_POST['filters'];
+  if (!isset($filters) || empty($filters)) {
+    $filters = null;
+  }
+  wp_send_json_success(lab_budget_info_load($budgetId, $filters));
+}
+
+function budget_info_ajax_set_date() {
+  $budgetId = $_POST['id'];
+  $datefield = $_POST['field'];
+  if (!isset($budgetId) || empty($budgetId)) {
+    wp_send_json_error("No Id");
+  }
+  if (!isset($datefield) || empty($datefield)) {
+    wp_send_json_error("No Id");
+  }
+  if($datefield == "order_date" || $datefield == "delivery_date" || $datefield == "payment_date") {
+    wp_send_json_success(budget_info_ajax_date($budgetId, $datefield));
+  }
+}
+
+
+/********************************************************************************************
+ * THEMATIC
+ ********************************************************************************************/
+
+function canModifyThematic($userId)
+{
+  if ($userId == get_current_user_id())
+  {
+    return true;
+  }
+  else
+  {
+    return current_user_can('edit_users');
+  }
+}
+
+function ajax_thematic_fe_add()
+{
+  $userId = $_POST['user_id'];
+  $thematic_id = $_POST['thematic_id'];
+  if (canModifyThematic($userId)) {
+    wp_send_json_success( lab_admin_thematic_add_to_user($userId, $thematic_id));
+    return;
+  }
+  else{
+    wp_send_json_error("Cant modify this user");
+  }
+}
+
+function ajax_thematic_fe_del()
+{
+  $userId = $_POST['user_id'];
+  if (canModifyThematic($userId)) {
+    $thematic_id = $_POST['thematic_id'];
+    wp_send_json_success( lab_admin_thematic_delete($thematic_id));
+    return;
+  }
+  else
+  {
+    wp_send_json_error("Cant modify this user");
+  }
+}
+function ajax_thematic_fe_get()
+{
+  $userId = $_POST['user_id'];
+  wp_send_json_success( lab_admin_thematic_get_thematics_by_user($userId));
+}
+
+function ajax_thematic_get_thematics_by_user()
+{
+  $userId = $_POST['user_id'];
+  wp_send_json_success( lab_admin_thematic_get_thematics_by_user($userId));
+  return;
+}
+
+function lab_user_delThematic()
+{
+  $thematic_id = $_POST['thematic_id'];
+  wp_send_json_success( lab_admin_thematic_delete($thematic_id));
+  return;
+}
+
+function lab_admin_ajax_users_thematic_set_main()
+{
+  $thematic_id = $_POST['thematic_id'];
+  $value = $_POST['thematic_value'];
+  $r = lab_admin_thematic_set_main($thematic_id, $value);
+  if($r)
+  {
+    wp_send_json_success($r);
+  }
+  else
+  {
+    wp_send_json_error();
+  }
+}
+
+function ajax_thematic_add()
+{
+  $userId = $_POST['user_id'];
+  $thematic_id = $_POST['thematic_id'];
+  wp_send_json_success( lab_admin_thematic_add_to_user($userId, $thematic_id));
+  return;
+
+}
 
 /**
  * Fonction qui répond à la requete ajax de recherche d'evenement
@@ -41,10 +188,11 @@ function lab_admin_param_create_table() {
 
 function lab_admin_ajax_param_save() {
   $paramId = $_POST['id'];
-  $type  = $_POST['type'];
-  $value = $_POST['value'];
-  $color = $_POST['color'];
-  $shift = $_POST['shift'];
+  $type    = $_POST['type'];
+  $value   = $_POST['value'];
+  $slug    = $_POST['slug'];
+  $color   = $_POST['color'];
+  $shift   = $_POST['shift'];
   if (!isset($paramId) || $paramId == "")
   {
     $paramId = null;
@@ -54,16 +202,21 @@ function lab_admin_ajax_param_save() {
   {
     $shift = null;
   }
+  if (!isset($slug) || $slug == "")
+  {
+    $slug = null;
+  }
   
-    
-  $ok = lab_admin_param_save($type, $value, $color, $paramId, $shift);
-  wp_send_json_success($ok);
-  if ($ok) {
-    wp_send_json_success($ok);
+  //wp_send_json_error(" paramId : ".$paramId." type : ".$type." value : ".$value." slug : ".$slug." color : ".$color." shift : ".$shift);
+  $ok = lab_admin_param_save($type, $value, $color, $paramId, $shift, $slug);
+  //wp_send_json_success($ok);
+  if ($ok["success"] !== false) {
+    wp_send_json_success($ok["success"]);
   }
   else
   {
-    wp_send_json_error(sprintf(__("A param key with '%1s' already exist in db", "lab"), $value));
+   // wp_send_json_error(sprintf(__("A param key with '%1s' already exist in db", "lab"), $value));
+   wp_send_json_error($ok["data"]);
   }
 }
 
@@ -102,7 +255,7 @@ function lab_admin_param_search_value() {
     $items = array();
   
     foreach ($results as $r) {
-      $items[] = array("label" => $r->value, "value" => $r->id, "type"=>$r->type_param, "color"=>$r->color);
+      $items[] = array("label" => $r->value, "value" => $r->id, "type"=>$r->type_param, "color"=>$r->color, "slug"=>$r->slug);
     }
     wp_send_json_success($items);
   }
@@ -125,16 +278,36 @@ function lab_admin_search_username2()
   wp_send_json_success(lab_admin_firstname_lastname2($name));
 }
 
-function lab_admin_usermeta_names()
+function lab_admin_ajax_usermeta_names()
 {
   $search = $_POST['search'];
   $userId  = $search["term"];
-  wp_send_json_success(lab_admin_username_get($userId));
+  wp_send_json_success(lab_admin_userMetaDatas_get($userId));
 }
 function lab_admin_usermeta_update_phone()
 {
   wp_send_json_success(lab_usermeta_copy_existing_phone());
 }
+
+function lab_admin_correct_user_metadatas()
+{
+  $userId = $_POST['id'];
+  if (isset($userId) && !empty($userId))
+  {
+    wp_send_json_success(correct_missing_usermeta_data($userId));
+  }
+  else
+  {
+    
+  }
+}
+
+function lab_admin_check_missing_usermeta_data()
+{
+  $userId = $_POST['id'];
+  wp_send_json_success(check_missing_usermeta_data($userId));
+}
+
 /********************************************************************************************
  * EVENT
  ********************************************************************************************/
@@ -261,11 +434,20 @@ function lab_admin_update_user_metadata()
   $phone            = $_POST["phone"];
   $userSectionCn    = $_POST["sectionCn"];
   $userSectionCnu   = $_POST["sectionCnu"];
-  lab_usermeta_update($userId, $dateLeft, $userFunction, $userLocation, $officeNumber, $officeFloor, $userEmployer, $phone, $userFunding, $firstname, $lastname, $userSectionCn, $userSectionCnu);
-  wp_send_json_success("");
+  $userThesisTitle  = $_POST["thesisTitle"];
+  $userHdrTitle     = $_POST["hdrTitle"];
+  $userPhdSchool    = $_POST["phdSchool"];
+  $email            = $_POST["email"];
+  $url              = $_POST["url"];
+  $user_country     = $_POST["user_country"];
+  $user_sex         = $_POST["user_sex"];
+  $user_hdr_date    = $_POST["user_hdr_date"];
+  $user_thesis_date = $_POST["user_thesis_date"];
+  lab_usermeta_update($userId, $dateLeft, $userFunction, $userLocation, $officeNumber, $officeFloor, $userEmployer, $phone, $userFunding, $firstname, $lastname, $userSectionCn, $userSectionCnu, $email, $url, $userThesisTitle, $userHdrTitle, $userPhdSchool, $user_country, $user_sex, $user_thesis_date, $user_hdr_date);
+  wp_send_json_success($user_thesis_date);
 }
 
-function lab_usermeta_update($userId, $left, $userFunction, $userLocation, $officeNumber, $officeFloor, $userEmployer, $user_phone, $userFunding, $firstname, $lastname, $userSectionCn, $userSectionCnu)
+function lab_usermeta_update($userId, $left, $userFunction, $userLocation, $officeNumber, $officeFloor, $userEmployer, $user_phone, $userFunding, $firstname, $lastname, $userSectionCn, $userSectionCnu, $email = null, $url = null, $userThesisTitle = null, $userHdrTitle = null, $userPhdSchool = null, $userCountry = null, $userSex = null, $user_thesis_date = null, $user_hdr_date = null)
 {
   global $wpdb;
   $sql = "";
@@ -279,17 +461,33 @@ function lab_usermeta_update($userId, $left, $userFunction, $userLocation, $offi
   }
   $sql = $wpdb->prepare($sql);
   $wpdb->query($sql);
-  $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$userFunction),array("user_id"=>$userId, "meta_key"=>"lab_user_function"));
-  $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$userLocation),array("user_id"=>$userId, "meta_key"=>"lab_user_location"));
-  $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$officeNumber),array("user_id"=>$userId, "meta_key"=>"lab_user_office_number"));
-  $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$officeFloor),array("user_id"=>$userId, "meta_key"=>"lab_user_office_floor"));
-  $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$userEmployer),array("user_id"=>$userId, "meta_key"=>"lab_user_employer"));
-  $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$user_phone),array("user_id"=>$userId, "meta_key"=>"lab_user_phone"));
-  $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$userFunding),array("user_id"=>$userId, "meta_key"=>"lab_user_funding"));
-  $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$firstname),array("user_id"=>$userId, "meta_key"=>"first_name"));
-  $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$lastname),array("user_id"=>$userId, "meta_key"=>"last_name"));
-  $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$userSectionCn),array("user_id"=>$userId, "meta_key"=>"lab_user_section_cn"));
-  $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$userSectionCnu),array("user_id"=>$userId, "meta_key"=>"lab_user_section_cnu"));
+  $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$userFunction)    , array("user_id"=>$userId, "meta_key"=>"lab_user_function"));
+  $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$userLocation)    , array("user_id"=>$userId, "meta_key"=>"lab_user_location"));
+  $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$officeNumber)    , array("user_id"=>$userId, "meta_key"=>"lab_user_office_number"));
+  $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$officeFloor)     , array("user_id"=>$userId, "meta_key"=>"lab_user_office_floor"));
+  $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$userEmployer)    , array("user_id"=>$userId, "meta_key"=>"lab_user_employer"));
+  $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$user_phone)      , array("user_id"=>$userId, "meta_key"=>"lab_user_phone"));
+  $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$userFunding)     , array("user_id"=>$userId, "meta_key"=>"lab_user_funding"));
+  $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$firstname)       , array("user_id"=>$userId, "meta_key"=>"first_name"));
+  $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$lastname)        , array("user_id"=>$userId, "meta_key"=>"last_name"));
+  $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$userSectionCn)   , array("user_id"=>$userId, "meta_key"=>"lab_user_section_cn"));
+  $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$userSectionCnu)  , array("user_id"=>$userId, "meta_key"=>"lab_user_section_cnu"));
+  $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$userThesisTitle) , array("user_id"=>$userId, "meta_key"=>"lab_user_thesis_title"));
+  $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$userHdrTitle)    , array("user_id"=>$userId, "meta_key"=>"lab_user_hdr_title"));
+  $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$userPhdSchool)   , array("user_id"=>$userId, "meta_key"=>"lab_user_phd_school"));
+  $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$userCountry)     , array("user_id"=>$userId, "meta_key"=>"lab_user_country"));
+  $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$userSex)         , array("user_id"=>$userId, "meta_key"=>"lab_user_sex"));
+  $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$user_hdr_date)   , array("user_id"=>$userId, "meta_key"=>"lab_user_hdr_date"));
+  $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$user_thesis_date), array("user_id"=>$userId, "meta_key"=>"lab_user_thesis_date"));
+
+  if ($email != null)
+  {
+    $wpdb->update($wpdb->prefix."users", array("user_email"=>$email),array("ID"=>$userId));
+  }
+  if ($url != null)
+  {
+    $wpdb->update($wpdb->prefix."users", array("user_url"=>$url),array("ID"=>$userId));
+  }
 }
 
 function lab_usermeta_update_lab_left_key($usermetaId, $left)
@@ -349,13 +547,86 @@ function lab_changeLocale($locale) {
 }
 function lab_admin_test()
 { 
-  wp_send_json_success("oui");
+  wp_send_json_success(lab_admin_thematic_load_all());
   return;
+}
+
+/********************************************************************************************
+ * CONTRACT 
+ ********************************************************************************************/
+
+function lab_admin_contract_ajax_create_table() {
+  wp_send_json_success(lab_admin_contract_create_table());
+}
+function lab_admin_contract_ajax_get_managers() {
+  $id = $_POST['id'];
+  wp_send_json_success(lab_admin_contract_get_managers($id));
+}
+
+function lab_admin_contract_ajax_load() {
+  wp_send_json_success(lab_admin_contract_load());
+}
+
+function lab_admin_contract_ajax_save() {
+  $id = $_POST['id'];
+  $contractName = $_POST['name'];
+  $contractStart = $_POST['start'];
+  $contractEnd = $_POST['end'];
+  $holders  = $_POST["holders"];
+  $managers = $_POST["managers"];
+  wp_send_json_success(lab_admin_contract_save($id, $contractName, $contractStart, $contractEnd, $holders, $managers));
+}
+
+function lab_admin_contract_ajax_search() {
+  $search = $_POST['search'];
+  $contractName  = $search["term"];
+  wp_send_json_success(lab_admin_contract_search($contractName));
+}
+
+function lab_admin_contract_ajax_users_load() {
+  $contractId = $_POST['id'];
+  wp_send_json_success(lab_admin_contract_users_load($contractId));
+}
+
+function lab_admin_contract_ajax_delete() {
+  $contractId = $_POST['id'];
+  wp_send_json_success(lab_admin_contract_delete($contractId));
+
 }
 
 /********************************************************************************************
  * GROUPS
  ********************************************************************************************/
+
+function lab_admin_ajax_group_delete_manager()
+{
+  $id = $_POST['id'];
+  if(!isset($id) || empty($id)) {
+    wp_send_json_error("No id send");
+  }
+  lab_group_delete_manager($id);
+  wp_send_json_success();
+}
+
+function lab_admin_ajax_group_add_manager()
+{
+  $groupId = $_POST['groupId'];
+  $userId = $_POST['userId'];
+  $userRole = $_POST['userRole'];
+  if (lab_admin_group_add_manager($groupId, $userId, $userRole))
+  {
+    wp_send_json_success();
+  }
+  else {
+    wp_send_json_error();
+  }
+}
+
+function lab_admin_ajax_group_load_managers() {
+  $groupId = $_POST['groupId'];
+  wp_send_json_success(lab_admin_group_load_managers($groupId));
+}
+
 /**
  * Fonction qui répond a la requete d'un recherche par nom de groupe
  */
@@ -375,6 +646,46 @@ function lab_admin_group_search() {
   wp_send_json_success( $items ); 
 }
 
+/**
+ * get all the groups by user
+ *
+ * @param [type] $userId
+ * @return void
+ */
+function lab_admin_ajax_group_by_user($userId)
+{
+  $userId = $_POST['user_id'];
+  if(!isset($userId) || $userId == "")
+  {
+    wp_send_json_error("[lab_admin_ajax_group_by_user] No user defined");
+  }
+  $results = lab_group_get_user_groups($userId);
+  $groups = [];
+  foreach($results as $r)
+  {
+      $group = new \stdClass();
+      $group->id = $r->id; 
+      $group->name = $r->group_name;
+      $groups[] = $group;
+  }
+  wp_send_json_success( $groups);
+}
+
+function lab_admin_ajax_users_group_delete()
+{
+  $groupId = $_POST['group_id'];
+  lab_admin_group_get_user_groups_delete($groupId);
+  wp_send_json_success();
+}
+
+function lab_admin_ajax_group_add()
+{
+  $userId = $_POST['user_id'];
+  $groupId = $_POST['group_id'];
+  lab_admin_users_groups_add_user($userId, $groupId);
+  wp_send_json_success();
+}
+
 function lab_admin_group_delete(){
   $group_id = $_POST['id'];
   lab_admin_delete_group($group_id);
@@ -389,13 +700,22 @@ function lab_group_editGroup() {
   $parent = $_POST['parent'];
   $type = $_POST['group_type'];
   $url = delete_http_and_domain($_POST['url']);
+  if (!isset($parent) || $parent == '' || $parent == '0')
+  {
+    $parent = 'NULL';
+  }
+  else
+  {
+    $parent = "'".$parent."'";
+  }
   
   global $wpdb;
   $sql = "UPDATE `".$wpdb->prefix."lab_groups` SET `group_name` = '$groupName', `acronym` = '$acronym',
-  `chief_id` = '$chiefId', `group_type` = '$type', `parent_group_id` = '$parent', `url`='$url'
+  `chief_id` = '$chiefId', `group_type` = '$type', `parent_group_id` = $parent, `url`='$url'
     WHERE id= '$id';";
 
   wp_send_json_success($wpdb->get_results($sql));
+  //wp_send_json_success($sql);
 }
 function group_delete_substitutes() 
 {
@@ -415,10 +735,11 @@ function group_add_substitutes()
 
 function group_load_substitutes()
 {
+  global $wpdb;
   $id = $_POST['id'];
   $sql = "SELECT lgs.id AS id, um1.meta_value AS last_name, um2.meta_value AS first_name FROM `".$wpdb->prefix."lab_group_substitutes`  AS lgs JOIN `".$wpdb->prefix."usermeta` AS um1 ON um1.user_id=lgs.substitute_id JOIN `".$wpdb->prefix."usermeta` AS um2 ON um2.user_id=lgs.substitute_id WHERE lgs.`group_id`=33 AND um1.meta_key='last_name' AND um2.meta_key='first_name'";
   //$sql = "SELECT lgs.id AS id, um1.meta_value AS last_name, um2.meta_value AS first_name FROM `".$wpdb->prefix."lab_group_substitutes` AS lgs JOIN `".$wpdb->prefix."usermeta` AS um1 ON um1.user_id=lgs.substitute_id JOIN `".$wpdb->prefix."usermeta AS um2 ON um2.user_id=lgs.substitute_id WHERE lgs.`group_id`=33 AND um1.meta_key='last_name' AND um2.meta_key='first_name'";
-  global $wpdb;
+  
   $results = $wpdb->get_results($sql);
   $items = array();
   foreach ( $results as $r )
@@ -647,7 +968,13 @@ function lab_ajax_userMeta_um_correction() {
 }
 
 function lab_ajax_admin_usermeta_fill_user_slug() {
-  wp_send_json_success(lab_admin_usermeta_fill_user_slug());
+  if (isset($_POST['userId'])) {
+    wp_send_json_success(lab_admin_usermeta_fill_user_slug($_POST['userId']));
+  }
+  else
+  {
+    wp_send_json_success(lab_admin_usermeta_fill_user_slug());
+  }
 }
 
 /********************************************************************************************
@@ -673,6 +1000,85 @@ function lab_ajax_delete_hal_table() {
   delete_hal_table();
   wp_send_json_success("Hal table deleted");
 }
+/**********************************************************************************************
+ * KEYRING
+ **********************************************************************************************/
+function lab_keyring_find_key() {
+  $keyId = $_POST['id'];
+
+  wp_send_json_success(lab_keyring_search_key($keyId));
+}
+
+function lab_keyring_search_key_number() {
+  $type = $_POST['type'];
+  $search = $_POST['search'];
+  $keyNumber = $search['term'];
+  $keys = lab_keyring_search_by_key_number($type, $keyNumber);
+
+
+  $items = array();
+
+  foreach ($keys as $r) {
+    $items[] = array(label => $r->number, value => $r->id);
+  }
+  wp_send_json_success($items);
+}
+
+
+function lab_keyring_save_loans()
+{
+  $userId = $_POST["userId"];
+  if (!isset($userId) || empty($userId))
+  {
+    wp_send_json_error("No user selected");
+  }
+  $keyNumber = $_POST["keyNumber"];
+  if (!isset($keyNumber) || empty($keyNumber))
+  {
+    wp_send_json_error("No keys number contact admin");
+  }
+  $keyNumber = intval($keyNumber);
+  $keyFields = ["type","number","brand","site","office","commentary"];
+  $ret = "RETOUR\n";
+  $ret .= "keyNumber : " . $keyNumber;
+  
+  for ($i = 0 ; $i < $keyNumber ; $i++)
+  {
+    $keyId = $_POST["key_id".$i];
+    $ret .= " i:" .$i. " keyId :".$keyId." ";
+    if ($keyId == -1)
+    {
+      $param = array();
+      for( $f = 0 ; $f < sizeof($keyFields) ; $f++)
+      {
+        $param[$keyFields[$f]] = $_POST["key_".$keyFields[$f].$i];
+      }
+      $param["available"]=0;
+      $param["state"]= lab_keyring_default_key_state();
+      $keyId = lab_keyring_create_key($param);
+      //$ret .= $
+      //$ret .= $param;
+      $ret .= " min state : ". $param["state"];
+      $ret .= " Clef ". $keyId ." create";
+    }
+    else
+    {
+      lab_keyring_setKeyAvailable($keyId, 0);
+    }
+    $loanParams = array();
+    $loanParams["referent_id"] = get_current_user_id();
+    $loanParams["start_date"] = date("Y-m-d");
+    $loanParams["user_id"] = $userId;
+    $loanParams["key_id"] = $keyId;
+    $loanParams["commentary"] = $_POST["key_commentary".$i];
+    $resLoan = lab_keyring_create_loan($loanParams);
+    if (strlen($res)!=0) {
+      wp_send_json_error("LOAN : ".$res);
+    }
+  }
+  wp_send_json_success($ret);
+}
+
 function lab_keyring_create_loanReq() {
   $params = $_POST['params'];
   $res = lab_keyring_create_loan($params);
@@ -715,7 +1121,7 @@ function lab_keyring_find_oldLoansReq() {
     $res = lab_keyring_find_oldLoans('user_id',$_POST['user_id']);
   } 
   if (count($res)==0) {
-    wp_send_json_error("<tr><td colspan='9'>No loans found</td></tr>");
+    wp_send_json_error("<tr><td colspan='9'>".__('Aucun prêt trouvé','lab')."</td></tr>");
     return;
   } else {
     wp_send_json_success(lab_keyringtableFromLoansList($res));
@@ -726,7 +1132,7 @@ function lab_keyring_find_oldLoansReq() {
 function lab_keyring_search_current_loans_Req() {
   $res = lab_keyring_search_current_loans($_POST["user"],$_POST["page"],$_POST["limit"]);
   if (count($res)==0) {
-    wp_send_json_error("<tr><td colspan='9'>No loans found</td></tr>");
+    wp_send_json_error("<tr><td colspan='9'>".__('Aucun prêt trouvé','lab')."</td></tr>");
     return;
   } else {
     $html = lab_keyringtableFromLoansList($res['items']);
@@ -791,6 +1197,26 @@ function lab_invitations_createTables_Req() {
   }
   return;
 }
+
+function lab_travels_ajax_load() {
+  $missionId = $_POST['id'];
+  wp_send_json_success(lab_mission_load_travels($missionId));
+}
+
+function lab_travel_ajax_delete() {
+  $travelId = $_POST['id'];
+  wp_send_json_success(lab_mission_delete_travel($travelId));
+}
+
+function lab_travel_ajax_save() {
+  $travelId  = $_POST['travelId'];
+  
+  $travelFields = lab_mission_remap_fields($_POST);
+  
+  wp_send_json_success(lab_mission_update_travel($travelId, $travelFields));
+  //wp_send_json_success($travelFields);
+}
+
 function lab_invitations_new() {
   $fields = $_POST['fields'];
   $guest = array (
@@ -798,8 +1224,11 @@ function lab_invitations_new() {
     'last_name'=> $fields['guest_lastName'],
     'email'=> $fields['guest_email'],
     'phone'=> $fields['guest_phone'],
-    'country'=> $fields['guest_country']
+    'language'=> $fields['guest_country'],
+    'residence_country'=> $fields['guest_residence_country'],
+    'residence_city'=> $fields['guest_residence_city'],
   );
+  $travels = $fields["travels"];
   do {//Génère un token jusqu'à ce qu'il soit unique (on sait jamais)
     $token = bin2hex(random_bytes(10));
   } while ( lab_invitations_getByToken($token)!=NULL );
@@ -817,24 +1246,36 @@ function lab_invitations_new() {
   } else {
     $invite['guest_id']=lab_invitations_createGuest($guest);
   }
-  foreach (['host_group_id','host_id', 'estimated_cost', 'mission_objective','start_date','end_date','travel_mean_to','travel_mean_from','funding_source','research_contract'] as $champ) {
+  foreach (['host_group_id','host_id', 'estimated_cost', 'mission_objective','funding_source','research_contract'] as $champ) {
     $invite[$champ]=$fields[$champ];
   }
   $invite["charges"]=json_encode($fields["charges"]);
-  $invite_id = lab_invitations_createInvite($invite);
+  $missionId = lab_invitations_createInvite($invite);
+  if (!is_numeric ($missionId))
+  {
+    wp_send_json_error($missionId);
+  }
+  $invite["id"] = $missionId;
+  lab_mission_save($missionId, $travels);
   if (strlen($fields['comment'])>0) {
     lab_invitations_addComment(array(
       'content'=> $fields['comment'],
       'timestamp'=> $timeStamp,
       'author'=>$fields['guest_firstName'].' '.$fields['guest_lastName'],
-      'invite_id'=>$invite_id
+      'invite_id'=>$missionId
     )); 
   }
   $html = '<p>'.esc_html__("Votre demande a bien été prise en compte",'lab').'</p>';
-  $html .= "<hr><h5>e-mail envoyé à l'invité : </h5>";
-  $html .= lab_invitations_mail(1,$guest,$invite);
-  $html .= "<hr><h5>e-mail envoyé à l'invitant : </h5>";
-  $html .= lab_invitations_mail(5,$guest,$invite);
+  if($fields['mission_objective'] != 251) {
+    $html .= "<hr><h5>e-mail envoyé à l'invité : </h5>";
+    $html .= lab_invitations_mail(1,$guest,$invite);
+    $html .= "<hr><h5>e-mail envoyé à l'invitant : </h5>";
+    $html .= lab_invitations_mail(5,$guest,$invite);
+  }
+  else{
+    $html .= "<hr><h5>e-mail envoyé au responsable : </h5>";
+    $html .= lab_invitations_mail(2,$guest,$invite);
+  }
   wp_send_json_success($html);
 }
 function lab_invitations_edit() {
@@ -845,7 +1286,9 @@ function lab_invitations_edit() {
       'last_name'=> $fields['guest_lastName'],
       'email'=> $fields['guest_email'],
       'phone'=> $fields['guest_phone'],
-      'country'=> $fields['guest_country']
+      'language'=> $fields['guest_language'],
+      'residence_country'=> $fields['guest_residence_country'],
+      'residence_city'=> $fields['guest_residence_city'],
     );
     lab_invitations_editGuest($fields['guest_id'],$guest);
     date_default_timezone_set("Europe/Paris");
@@ -854,7 +1297,7 @@ function lab_invitations_edit() {
       'needs_hostel'=>$fields['needs_hostel']=='true' ? 1 : 0,
       'completion_time' => $timeStamp
     );
-    foreach (['host_group_id', 'estimated_cost', 'maximum_cost', 'host_id','mission_objective','start_date','end_date','travel_mean_to','travel_mean_from','funding_source','research_contract'] as $champ) {
+    foreach (['host_group_id', 'estimated_cost', 'maximum_cost', 'host_id','mission_objective','start_date','end_date','travel_mean_to','travel_mean_from','funding_source','research_contract','forward_start_station','return_end_station','forward_travel_reference','return_travel_reference'] as $champ) {
       $invite[$champ]=$fields[$champ];
     }
     $invite["charges"]=json_encode($fields["charges"]);
@@ -898,7 +1341,7 @@ function lab_invitations_validate() {
 }
 // Invitation prise en charge
 function lab_invitations_assume() {
-  $user = lab_admin_username_get(get_current_user_id());
+  $user = lab_admin_userMetaDatas_get(get_current_user_id());
   $token = $_POST['token'];
   date_default_timezone_set("Europe/Paris");
   $timeStamp=date("Y-m-d H:i:s",time());
@@ -1019,7 +1462,7 @@ function lab_invitations_summary() {
 function lab_invitations_comments(){
   $token = $_POST['token'];
   $string = lab_inviteComments($token);
-  $string .= lab_newComments(lab_admin_username_get(get_current_user_id()), $token);
+  $string .= lab_newComments(lab_admin_userMetaDatas_get(get_current_user_id()), $token);
   wp_send_json_success($string);
 }
 
@@ -1030,7 +1473,9 @@ function lab_invitations_realCost() {
 function lab_invitations_add_realCost() {
   $token = $_POST['token'];
   $param = $_POST['value'];
-  lab_invitations_editInvitation($token,array('real_cost'=>$param));
+  $forward_carbon_footprint = $_POST['forward_carbon_footprint'];
+  $return_carbon_footprint = $_POST['return_carbon_footprint'];
+  lab_invitations_editInvitation($token,array('real_cost'=>$param, 'return_carbon_footprint'=>$return_carbon_footprint, 'forward_carbon_footprint' => $forward_carbon_footprint));
   wp_send_json_success();
 }
 function lab_invitations_guestInfo() {
@@ -1061,6 +1506,7 @@ function lab_admin_presence_save_ext_ajax()
   $siteId    = $_POST['siteId'];
   $comment   = $_POST['comment'];
   $external  = $_POST['external'];
+  $worgroupFollow  = $_POST['worgroupFollow'];
 
 
   $str = $_POST;
@@ -1072,7 +1518,9 @@ function lab_admin_presence_save_ext_ajax()
       'last_name'=> $lastName,
       'email'=> $email,
       'phone'=> "",
-      'country'=> "FR"
+      'language'=> "FR",
+      'residence_country'=>"",
+      'residence_city'=>""
     );
     $guestId = lab_invitations_createGuest($guest);
   } else {
@@ -1085,10 +1533,35 @@ function lab_admin_presence_save_ext_ajax()
   $str .= "siteId  :".$siteId."\n"; 
   $str .= "comment  :".$comment."\n"; 
 
-  if (lab_admin_presence_save(null, $guestId, $date." ".$hourOpen, $date." ".$hourClose, $siteId, $comment, 1)) {
-    wp_send_json_success($str);
-  } else {
-    wp_send_json_error($str);
+  if ($worgroupFollow != "")
+  {
+    $canInsert = check_can_follow_workgroup($worgroupFollow,$guestId, 1);
+    //wp_send_json_error("canInsert : ". $canInsert["success"]);
+    if ($canInsert["success"]) {
+
+      $res = lab_admin_presence_save(null, $guestId, $date." ".$hourOpen, $date." ".$hourClose, $siteId, $comment, 1);
+      if ($res["success"]) 
+      {
+        save_workgroup_follow($worgroupFollow, $guestId, 1);
+        wp_send_json_success($str);
+      }
+      else 
+      {
+        wp_send_json_error($res["data"]." str :".$str);
+      }
+    }
+    else
+    {
+      wp_send_json_error("[105]"+ $canInsert["data"]);
+    }
+  }
+  else
+  {
+    if (lab_admin_presence_save(null, $guestId, $date." ".$hourOpen, $date." ".$hourClose, $siteId, $comment, 1)) {
+      wp_send_json_success($str);
+    } else {
+      wp_send_json_error($str);
+    }
   }
 }
 
@@ -1108,22 +1581,31 @@ function lab_admin_presence_save_ajax()
   $siteId    = $_POST['siteId'];
   $comment   = $_POST['comment'];
   $external   = $_POST['external'];
+  $workgroup   = $_POST['workgroup'];
+  $worgroupFollow   = $_POST['worgroupFollow'];
 
   if (!isset($external) || $external == null || $external== "")
   {
     $external = null;
+  }
+  if (!isset($workgroup) || $workgroup == "" || empty($workgroup))
+  {
+    $workgroup = null;
+  }
+  if (!isset($worgroupFollow) || $worgroupFollow == null || $worgroupFollow== "")
+  {
+    $worgroupFollow = null;
   }
  
   if (!isset($userId)) {
     $userId= $currentUserId;
   }
  
-
   if (!current_user_can('administrator'))
   {
     // not admin and a user send
     if ($userId != $currentUserId) {
-      wp_send_json_error(esc_html("Can only modify your own presency", "lab"));
+      wp_send_json_error("[10-3]"+ esc_html("Can only modify your own presency", "lab"));
 
     }
   }
@@ -1133,19 +1615,20 @@ function lab_admin_presence_save_ajax()
 
   if (nonWorkingDay($newDateStart))
   {
-    wp_send_json_error(sprintf(esc_html__("%s is a non wordking day", "lab"), $dateOpen));
+    wp_send_json_error("[10-2]"+ sprintf(esc_html__("%s is a non wordking day", "lab"), $dateOpen));
     return;
   }
 
   if ($presenceId == null)
   {
+    //wp_send_json_error("DEBUG presenceId == null");
     //wp_send_json_error("presenceId != null");
     //return;
     $sameDay = lab_admin_present_not_same_half_day($userId, $newDateStart, $newDateEnd, $presenceId);
     //wp_send_json_error($sameDay);
     //return;
     if (!$sameDay["success"]) {
-      wp_send_json_error($sameDay["data"]);
+      wp_send_json_error("[10-1]"+ $sameDay["data"]);
       return;
     }
 
@@ -1156,7 +1639,7 @@ function lab_admin_presence_save_ajax()
     {
       $siteLabel = lab_admin_getSite($r[0]->site);
       $errMsg = sprintf(__("Your are already present in %s the %s between %s and %s"), $siteLabel, date("Y-m-d", strtotime($r[0]->hour_start)), date("H:i", strtotime($r[0]->hour_start)), date("H:i", strtotime($r[0]->hour_end)));
-      wp_send_json_error($errMsg);
+      wp_send_json_error("[100]"+ $errMsg);
       return;
     }
   }
@@ -1179,7 +1662,7 @@ function lab_admin_presence_save_ajax()
         if ($newHourStart < $storeHourEnd) {
           $siteLabel = lab_admin_getSite($p->site);
           $errMsg = sprintf(__("Your new schedules overlap to an existing one : %s the %s between %s and %s"), $siteLabel, date("Y-m-d", $storeDateStart), date("H:i", $storeDateStart), date("H:i", $storeDateEnd));
-          wp_send_json_error($errMsg);
+          wp_send_json_error("[101]"+ $errMsg);
           return;
         }
       }
@@ -1188,7 +1671,7 @@ function lab_admin_presence_save_ajax()
         if ($newHourEnd > $storeHourStart) {
           $siteLabel = lab_admin_getSite($p->site);
           $errMsg = sprintf(__("Your new schedules overlap to an existing one : %s the %s between %s and %s"), $siteLabel, date("Y-m-d", $storeDateStart), date("H:i", $storeDateStart), date("H:i", $storeDateEnd));
-          wp_send_json_error($errMsg);
+          wp_send_json_error("[102]"+ $errMsg);
           return;
         }
       }
@@ -1198,7 +1681,7 @@ function lab_admin_presence_save_ajax()
       {
         if ($newHourStart < 13) {
           $errMsg = sprintf(esc_html("(modify existing schedule) Apologize, we only manage a presency by half day, your already present in the morning of %s"), date("Y-m-d", strtotime($r[0]->hour_start)));
-          wp_send_json_error($errMsg);
+          wp_send_json_error("[103]"+ $errMsg);
           return;
         }
       }
@@ -1206,20 +1689,77 @@ function lab_admin_presence_save_ajax()
       {
         if ($storeHourEnd >= 13 && $newHourEnd >= 13) {
           $errMsg = sprintf(esc_html("(modify existing schedule) Apologize, we only manage a presency by half day, your already present in the afternoon of %s"), date("Y-m-d", strtotime($r[0]->hour_start)));
-          wp_send_json_error($errMsg);
+          wp_send_json_error("[104]"+ $errMsg);
           return;
         }
       }
     }
   }
-  $res = lab_admin_presence_save($presenceId, $userId, $dateOpen." ".$hourOpen, $dateOpen." ".$hourClose, $siteId, $comment, $external);
-  //wp_send_json_error($res);
+  if ($workgroup != null)
+  {
+    $wgId = save_new_workgroup($workgroup, $newDateStart, $userId, $hourOpen, $hourClose, 10);
+    $res = lab_admin_presence_save($presenceId, $userId, $dateOpen." ".$hourOpen, $dateOpen." ".$hourClose, $siteId, $comment, $external);
+    workgroup_update_presencyId($wgId, $res["data"]);
+  }
+  else if ($worgroupFollow != null)
+  {
+    $canInsert = check_can_follow_workgroup($worgroupFollow,$userId);
+    if ($canInsert["success"]) {
+
+      $res = lab_admin_presence_save($presenceId, $userId, $dateOpen." ".$hourOpen, $dateOpen." ".$hourClose, $siteId, $comment, $external);
+      save_workgroup_follow($worgroupFollow, $userId);
+    }
+    else
+    {
+      wp_send_json_error("[105]"+ $canInsert["data"]);
+    }
+  }
+  else
+  {
+    $res = lab_admin_presence_save($presenceId, $userId, $dateOpen." ".$hourOpen, $dateOpen." ".$hourClose, $siteId, $comment, $external);
+   // wp_send_json_error("DEBUG * else");
+  }
+  
   if ($res["success"]) {
     wp_send_json_success();
   } else {
-    wp_send_json_error($res["data"]);
+    wp_send_json_error("[106]"+ $res["data"]);
   }
+}
 
+/**
+ * Check if user is not already present in the group et don't exceed max group number
+ *
+ * @param [type] $workgroupId
+ * @param [type] $userId
+ * @param integer $external
+ * @return void
+ */
+function check_can_follow_workgroup($workgroupId, $userId, $external=0)
+{
+  $workGroup = workgroup_get($workgroupId);
+  //return ["success"=>false,"data"=>$workGroup];
+  $usersFolloginGroup = load_workgroup_follow($workgroupId);
+  if (count($usersFolloginGroup) + 1 > intval($workGroup->max))
+  {
+    return ["success"=>false,"data"=>"Exceed maximum group capacity (".$workGroup->max.")"];
+  }
+  else
+  {
+    $alreadyPresent = false;
+    foreach($usersFolloginGroup as $user)
+    {
+      if ($user->user_id == $userId && $external == $user->external)
+      {
+        $alreadyPresent = true;
+      }
+    }
+    if ($alreadyPresent)
+    {
+      return ["success"=>false,"data"=>"User already present in workgroup"];
+    }
+  }
+  return ["success"=>true,"data"=>""];
 }
 
 function lab_admin_presence_update_ajax() {
@@ -1245,7 +1785,7 @@ function lab_ldap_list_update() {
   $itemPerPage = isset($_POST['value']) ? $_POST['value'] : '5' ;
   $page = isset($_POST['page']) ? $_POST['page'] : '1' ;
 
-  $ldap_obj = LAB_LDAP::getInstance(AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_URL)[0]->value,
+  $ldap_obj = LAB_LDAP::getInstance(AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_HOST)[0]->value,
                         AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_BASE)[0]->value,
                         AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_LOGIN)[0]->value,
                         AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_PASSWORD)[0]->value,
@@ -1259,7 +1799,7 @@ function lab_ldap_list_update() {
   for($i = $pageVar; $i < ($itemPerPage+$pageVar) && $i < $count; $i++)
   {
     $ldapResult .= '<tr><td>'. $ldap_obj->getEntries($result,$i, 'cn').'</td>
-                        <td><button class="">Détails</button>
+                        <td><button id="lab_ldap_detail_button_'.$ldap_obj->getEntries($result,$i, 'uid').'">Détails</button>
                             <span id="eraseLdap" class="fas fa-trash-alt" style="cursor: pointer;"></span>
                             <span id="editLdap" 
                               uid="'.$ldap_obj->getEntries($result,$i,'uid').'"
@@ -1275,7 +1815,7 @@ function lab_ldap_list_update() {
   wp_send_json_success(array($count,$ldapResult,$page));
 }
 function lab_ldap_add_user() {
-  $ldap_obj = LAB_LDAP::getInstance(AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_URL)[0]->value,
+  $ldap_obj = LAB_LDAP::getInstance(AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_HOST)[0]->value,
                         AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_BASE)[0]->value,
                         AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_LOGIN)[0]->value,
                         AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_PASSWORD)[0]->value,
@@ -1296,7 +1836,7 @@ function lab_ldap_add_user() {
     $ldapRes = lab_ldap_addUser($ldap_obj, $_POST['first_name'],$_POST['last_name'],$_POST['email'],$_POST['password'],$_POST['uid'],$_POST['organization']);
     if ($ldapRes == 0 ) {
       if ($_POST['addToWP'] == 'true') {
-        $wpRes = lab_ldap_new_WPUser(strtoupper($_POST["last_name"]),$results["first_name"],$_POST['email'],$_POST['password'],$_POST['uid']);
+        $wpRes = lab_ldap_new_WPUser(strtoupper($_POST["last_name"]),$_POST["first_name"],$_POST['email'],$_POST['password'],$_POST['uid']);
         if ($wpRes==true) {
           wp_send_json_success();
         } else {
@@ -1311,7 +1851,7 @@ function lab_ldap_add_user() {
   }
 }
 function lab_ldap_amu_lookup() {
-  $url = "http://".AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_URL)[0]->value."/getAMUUser.php?token=".AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_TOKEN)[0]->value."&query=".$_POST['query'];
+  $url = "http://".AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_HOST)[0]->value."/getAMUUser.php?token=".AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_TOKEN)[0]->value."&query=".$_POST['query'];
   // create curl resource
   $ch = curl_init();
   // set url
@@ -1343,7 +1883,7 @@ function lab_ldap_edit_user() {
   {
     wp_send_json_error("No UID");
   }
-  $ldap = LAB_LDAP::getInstance(AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_URL)[0]->value,
+  $ldap = LAB_LDAP::getInstance(AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_HOST)[0]->value,
                         AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_BASE)[0]->value,
                         AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_LOGIN)[0]->value,
                         AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_PASSWORD)[0]->value,
@@ -1361,7 +1901,7 @@ function lab_admin_get_userLogin_Req() {
 }
 function lab_ldap_user_details() {
   $uid = $_POST['uid'];
-  $ldap = LAB_LDAP::getInstance(AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_URL)[0]->value,
+  $ldap = LAB_LDAP::getInstance(AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_HOST)[0]->value,
                         AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_BASE)[0]->value,
                         AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_LOGIN)[0]->value,
                         AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_PASSWORD)[0]->value,
@@ -1406,7 +1946,7 @@ function lab_ldap_delete_userReq() {
 
   if (lab_admin_param_is_ldap_enable())
   {
-    $ldap = LAB_LDAP::getInstance(AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_URL)[0]->value,
+    $ldap = LAB_LDAP::getInstance(AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_HOST)[0]->value,
                           AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_BASE)[0]->value,
                           AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_LOGIN)[0]->value,
                           AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_PASSWORD)[0]->value,
@@ -1427,7 +1967,7 @@ function lab_ldap_delete_userReq() {
 function lab_ldap_reconnect() {
   if (lab_admin_param_is_ldap_enable())
   {
-    $ldap = LAB_LDAP::getInstance(AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_URL)[0]->value,
+    $ldap = LAB_LDAP::getInstance(AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_HOST)[0]->value,
                           AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_BASE)[0]->value,
                           AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_LOGIN)[0]->value,
                           AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_PASSWORD)[0]->value,
@@ -1471,6 +2011,7 @@ function lab_historic_add() {
     'begin'=>$_POST['begin'],
     'end'=>(strlen($_POST['end'])>1 ? $_POST['end'] : NULL),
     'mobility'=>$_POST['mobility'],
+    'mobility_status'=>$_POST['mobility_status'],
     'host_id'=>$_POST['host_id'],
     'function'=>$_POST['function'],
   ));
@@ -1483,6 +2024,7 @@ function lab_historic_add() {
 }
 
 function lab_historic_delete() {
+  //wp_send_json_error(lab_admin_historic_delete($_POST['entry_id']));
   if (lab_admin_historic_delete($_POST['entry_id'])===false) {
     global $wpdb;
     wp_send_json_error($wpdb->last_error);
@@ -1506,6 +2048,7 @@ function lab_historic_update() {
     'begin'=>$_POST['begin'],
     'end'=>(strlen($_POST['end'])>1 ? $_POST['end'] : NULL),
     'mobility'=>$_POST['mobility'],
+    'mobility_status'=>$_POST['mobility_status'],
     'host_id'=>$_POST['host_id'],
     'function'=>$_POST['function']));
   if ($res === false) {
@@ -1539,4 +2082,23 @@ function lab_user_delRole() {
   } else {
     wp_send_json_error();
   }
+}
+function lab_admin_ldap_settings() {
+  $associations = array(
+    'host'=>AdminParams::PARAMS_LDAP_HOST,
+    'enable'=>AdminParams::PARAMS_LDAP_ENABLE,
+    'token'=>AdminParams::PARAMS_LDAP_TOKEN,
+    'base'=>AdminParams::PARAMS_LDAP_BASE,
+    'login'=>AdminParams::PARAMS_LDAP_LOGIN,
+    'password'=>AdminParams::PARAMS_LDAP_PASSWORD,
+    'tls'=>AdminParams::PARAMS_LDAP_TLS
+  );
+  foreach ($associations as $key => $value) {
+    if (strlen($_POST[$key][0])>0) {
+      if (lab_admin_param_save($value, $_POST[$key][0],'000001',($_POST[$key][1])===false, null)) {
+        wp_send_json_error();
+      }
+    }
+  }
+  wp_send_json_success(lab_admin_tab_ldap());
 }

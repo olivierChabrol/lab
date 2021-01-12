@@ -18,17 +18,34 @@ We reuse code from :
 
 [lab-directory] Display all user in lab
 
-[lab-directory] display-left-user=false Display only user present in lab (not declare as left)
+[lab-directory] include-left-user=true Include left user of the lab (declare as left), false as default
 
-[lab-directory display-left-user=true] Display only left user
+[lab-directory include-left-user=true] Include left user of the lab (declare as left)
+
+[lab-directory only-left-user=true] Display only left user of the lab (declare as left)
+
+[lab-directory function=PR,DR] Display only user with the lab_user_function slug parameter
+
+[lab-directory debug=true] Display debug info
 
 [lab-directory group=AA] Display user associated to a group (the acronym group is use) with alphabet letters for search
 
 [lab-directory group=AA all-group=true] Display user associated to a group (the acronym group is use) without alphabet letters for search
 
+[lab-users-thematic] Display user by research thematic's    
+
 ### Profile
 [lab-profile]
 ### Event
-[lab-old-event]
+[lab-old-event {slug=slugname} {year=2020}] Display past events for a given year (optional)
+#### Use
+To search a category OR another category :
+* slug='categoryName1, categoryName2...'
+
+To search a category AND another category :
+* slug='categoryName1+categoryName2...'
+
+You can add as more category as you want but there must be at least one.
+
 ### HAL
 [lab-hal group=AA] Display hal records associated to a group (the acronym group is use)

@@ -6,3 +6,44 @@
 #p-2-list {
     min-width: 475px; 
 }
+/*Pagination*/
+
+#pagination-digg {
+    padding:0;
+    margin-bottom:2em;
+    display:flex;
+  }
+   
+  #pagination-digg li {
+    font-size:0.75em;
+    border:solid 1px #9aafe5;
+    margin-right:2px;
+    color:#0e509e;
+    cursor: pointer;
+    display:block;
+    padding:3px 6px;
+  }
+  #pagination-digg #active {
+    background:#2e6ab1;
+    color:#FFFFFF;
+    font-weight:bold;
+    display:block;
+    float:left;
+    cursor: default;
+    padding:4px 6px;
+  }
+  #pagination-digg #active:hover {
+    border:solid 1px #9aafe5;
+  }
+  #pagination-digg .gris {
+    cursor: default;
+    color: gray;
+    border:solid 1px gray;
+  }
+  #pagination-digg .gris:hover {
+    border:solid 1px gray;
+  }
+  #pagination-digg li:hover
+  {
+    border:solid 1px #0e509e;
+  }

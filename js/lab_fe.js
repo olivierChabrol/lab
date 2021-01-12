@@ -2,17 +2,34 @@
 const { __, _x, _n, sprintf } = wp.i18n;
 
 /*** DIRECTORY ***/ 
+var travels = [];
+var meansOfTransport = new Array();
+var meansOfTransportReverse = new Array();
 
 jQuery(function($){
+
   $("#lab-directory-group-id").on('change', function() {
-    $("#groupSearch").val($(this).val());
-    letter = $("#letterSearch").val();
-    group = $("#groupSearch").val();
-    href = "/linstitut/annuaire/";
+    loadDirectory();
+  });
+  $("#lab-directory-thematic").on('change', function() {
+    loadDirectory();
+  });
+
+  function loadDirectory()
+  {
+    let letter = $("#letterSearch").val();
+    let group = $("#lab-directory-group-id").val();
+    let thematic = $("#lab-directory-thematic").val();
+    href = "/linstitut/annuaire/?letter=%";
+    /*
     if (letter != "") {
       href += "?letter="+letter;
     }
-    if (group != "") {
+    else{
+      href += "?letter=%"
+    }
+    //*/
+    if (group != "0") {
       if (letter != "") {
         href += "&";
       } else {
@@ -20,8 +37,16 @@ jQuery(function($){
       }
       href += "group="+group;
     }
+    if (thematic != "0") {
+      if (letter != "" || group != "") {
+        href += "&";
+      } else {
+        href += "?";
+      }
+      href += "thematic="+thematic;
+    }
     window.location.href = href;
-  });
+  }
 
   $("[id^=delete_presence_]").each(function() {
     $(this).click(function() {
@@ -32,6 +57,21 @@ jQuery(function($){
       //console.log(id);
       deletePresence(id);
     })
+  });
+
+  addDeleteThematicListener();
+
+  $("#lab_fe_add_thematic").click(function() {
+    data = {
+      'action': 'lab_fe_thematic_add',
+      'thematic_id': $("#lab_fe_thematic").val(),
+      'user_id' : $("#userId").val()
+    };
+    $.post(LAB.ajaxurl,data,function(response){
+      if (response.success) {
+        deleteThematics();
+      }
+    });
   });
 
   $("#lab-table-directory tr").click(function() {
@@ -56,6 +96,7 @@ jQuery(function($){
       var firstname  = ui.item.firstname; // first name
       var lastname = ui.item.lastname; // last name
       var userslug = ui.item.userslug;
+      let userId =  ui.item.user_id;
       window.location.href = "/user/" + userslug;
       event.preventDefault();
       $("#lab_directory_user_name").val(firstname + " " + lastname);
@@ -63,6 +104,79 @@ jQuery(function($){
   });
 
 });
+
+function addDeleteThematicListener() {
+  $(".delete_thematic").click(function() {
+    data = {
+      'action': 'lab_fe_thematic_del',
+      'thematic_id': $(this).attr("thematic_id"),
+      'user_id' : $("#userId").val()
+    };
+    $.post(LAB.ajaxurl,data,function(response){
+      if (response.success) {
+        deleteThematics();
+      }
+    });
+  });
+}
+
+function addChangeMainThematicListener() {
+  $(".lab_thematic_order").click(function() {
+    data = {
+      'action': 'lab_fe_thematic_togle_main',
+      'thematic_id': $(this).attr("thematic_id"),
+      'thematic_value': $(this).attr("thematic_value"),
+      'user_id' : $("#userId").val()
+    };
+    $.post(LAB.ajaxurl,data,function(response){
+      if (response.success) {
+        deleteThematics();
+      }
+    });
+  });
+}
+
+function loadThematics() {
+  data = {
+    'action': 'lab_fe_thematic_get',
+    'user_id': $("#userId").val()
+  };
+  $.post(LAB.ajaxurl,data,function(response){
+    if (response.success) {
+      console.log("[loadThematics]] success");
+      jQuery.each(response.data, function (index, value){
+        console.log("[loadThematics] value : " + value["name"]);
+        let li = $('<li />').html('*'+value["name"]);
+
+        let thematicCssClass = 'lab_thematic_order';
+        if (value["main"] == "1") {
+          thematicCssClass += " lab_thematic_main";
+        }
+        let innerSpanStar = $('<span />').attr('class', thematicCssClass).attr('thematic_id', value['id']).attr('thematic_value', value["main"]);
+        let innerIStar = $('<i />').attr('class', 'fas fa-star').attr('thematic_id', value['id']).attr("title",__('Change main thematic','lab'));
+        innerSpanStar.append(innerIStar);
+        li.append(innerSpanStar);
+        
+        let innerSpanDelete = $('<span />').attr('class', 'lab_profile_edit delete_thematic').attr('thematic_id', value['id']);
+        let innerI = $('<i />').attr('class', 'fas fa-trash').attr('thematic_id', value['id']).attr("title",__('Delete thematic','lab'));
+        innerSpanDelete.append(innerI);
+        li.append(innerSpanDelete);
+
+        $("#lab_profile_thematics").append(li);
+        //li += '&nbsp;<span class="lab_profile_edit delete_thematic" thematic_id="' + value['id'] + '"><i thematic_id="' + value['id'] + '" class="fa fa-trash"></i></span>';
+        
+        $('.delete_thematic').show();
+      }); 
+      addDeleteThematicListener();
+      addChangeMainThematicListener();
+    }
+  });
+}
+
+function deleteThematics(){
+  $("#lab_profile_thematics").empty();
+  loadThematics();
+}
 
 /******************************* ShortCode Profile *******************************/
 function LABloadProfile() {
@@ -98,6 +212,7 @@ function LABloadProfile() {
     $(".entry-title").text("Profil de "+$('#lab_profile_name_span').text().replace("• "," "))
     //Fonction d'édition du profil
     $("#lab_profile_edit").click( function() {
+      deleteThematics();
       //Cache le bouton d'édition et les champs actuels
       $(this).hide();
       $(".lab_current").hide();
@@ -121,14 +236,17 @@ function LABloadProfile() {
         $("#lab_alert").html(_('Votre biographie est trop longue (max 200 caractères)','lab'));
       }
       else{
+        
         //Cache tous les champs de modification
         $(".lab_profile_edit").hide();
         $("#lab_confirm_change").hide();
+        
         //Cache les icônes des réseaux non définis
         $(".lab_profile_social[href='']").hide();
         //Affiche le bouton modifier et les champs actuels
         $("#lab_profile_edit").show();
         $(".lab_current").show();
+        
         //Remplit le tableau socials avec les réseaux sociaux modifiés ^^
         socials={};
         $(".lab_profile_social[modified=true]").each(function() {
@@ -143,6 +261,7 @@ function LABloadProfile() {
                          $("#lab_profile_edit_halID").val(),
                          $("#lab_profile_edit_halName").val(),
                          socials);
+                         //*/
       }
     });
     $(".lab_profile_social").each(function (index) {
@@ -188,6 +307,439 @@ function lab_profile_edit(user_id,phone,url,bio,color,hal_id,hal_name) {
 }
 
 /******************************* ShortCode Guest Invitation *******************************/
+
+function getEditTravelField() {
+  return ["dateGoTo", "timeGoTo", "countryFrom", "cityFrom", "countryTo", "cityTo", "mean", "cost", "ref", "rt", "dateReturn", "timeReturn", "carbon_footprint", "nb_person", "travelId"];
+}
+
+function loadMeanOfTransportMap() {
+  // load only once, store it inside the global variable meansOfTransport
+  if (meansOfTransport.length == 0) {
+    $("#lab_mission_edit_travel_div_mean option").each(function()
+    {
+      meansOfTransport[$(this).val()] = $(this).html();
+      meansOfTransportReverse[$(this).html()] = $(this).val();
+    });
+  }
+}
+
+/**
+ * Get means of transport inside the options of the #lab_mission_edit_travel_div_mean select
+ */
+function listMeanOfTransport() {
+  loadMeanOfTransportMap();
+  return meansOfTransport;
+}
+
+function getMeanOfTransportCode(mean) {
+  loadMeanOfTransportMap();
+  return meansOfTransportReverse[mean];
+}
+
+function saveTravelModification(id) {
+  console.log("[saveTravelModification] " + id);
+  let f = {};
+  let val = "";
+  let fields = getEditTravelField();
+
+  for (let i = 0 ; i < fields.length ; i++) {
+    if(fields[i].startsWith("country")) {
+      val = $("#lab_mission_edit_travel_div_" + fields[i]).countrySelect("getSelectedCountryData")['iso2'];
+    }
+    /*else if (fields[i] == "rt") {
+      val = ""+$('#lab_mission_edit_travel_div_rt').is(":checked");
+    }*/
+    else if (fields[i] == "rt") {
+      if($('#lab_mission_edit_travel_div_rt').is(":checked")) {
+        val = 1;
+      }
+      else {
+        val = 0
+      }
+    }
+    else {
+      val = $("#lab_mission_edit_travel_div_" + fields[i]).val();
+    }
+    console.log("[saveTravelModification] " +fields[i] + " '" + val + "'");
+    f[fields[i]] = val;
+  }
+  //console.log(f);
+  //console.log(listMeanOfTransport());
+
+  if (travelExist(id)) {
+    editTravelTd(id, f);
+  }
+  else {
+    addTravel(id, f);
+  }
+
+  // if edit existing mission with travels 
+  if ($("#lab_mission_token").length && $("#lab_mission_token").val() != 0) {
+    let fields = getEditTravelField();
+    data = {
+      'action' : 'lab_travel_save',
+      'missionId' : $("#lab_mission_id").val(),
+      /*'travelId' : $("#lab_mission_edit_travel_div_travelId").attr("tv"),*/
+    }
+    let val = "";
+    for (let i = 0 ; i < fields.length ; i++) {
+      if(fields[i].startsWith("country")) {
+        val = $("#lab_mission_edit_travel_div_" + fields[i]).countrySelect("getSelectedCountryData")['iso2'];
+      }
+      /*else if (fields[i] == "rt") {
+        val = ""+$('#lab_mission_edit_travel_div_rt').is(":checked");
+      }*/
+      else if (fields[i] == "rt") {
+        if($('#lab_mission_edit_travel_div_rt').is(":checked")) {
+          val = 1;
+        }
+        else {
+          val = 0
+        }
+      }
+      else {
+        val = $("#lab_mission_edit_travel_div_" + fields[i]).val();
+      }
+      data[fields[i]] = val;
+    }
+    callAjax(data, "Travel updated", null, null, null);
+  }
+}
+
+function displayTravels(data) {
+
+  $.each(data, function (i, obj){
+
+    let strToGo = obj.travel_date.split(' ');
+    if(obj.travel_datereturn != null) {
+      var strReturn = obj.travel_datereturn.split(' ');
+    }
+    else {
+      var strReturn = "";
+    }
+    let fields = {};
+    fields["dateGoTo"]    = strToGo[0];
+    fields["timeGoTo"]    = strToGo[1];
+    fields["countryFrom"] = obj.country_from;
+    fields["cityFrom"]    = obj.travel_from;
+    fields["countryTo"]   = obj.country_to;
+    fields["cityTo"]      = obj.travel_to;
+    fields["mean"]        = obj.means_of_locomotion;
+    fields["cost"]        = obj.estimated_cost;
+    fields["ref"]         = obj.reference;
+    fields["carbon_footprint"] = obj.carbon_footprint;
+    fields["rt"]          = obj.round_trip;
+    fields["dateReturn"]  = strReturn[0];
+    fields["timeReturn"]  = strReturn[1];
+    fields["nb_person"]   = obj.nb_person;
+    fields["travelId"]    = obj.id;
+    addTravel(obj.id, fields);
+  });
+}
+
+function travelExist(id) {
+  return travels.includes(id);
+}
+
+function addTravelId(id) {
+  travels.push(id);  
+}
+
+function deleteTravelId(id) {
+  console.log(travels);
+  travels.splice($.inArray(id,y) ,1 );
+  console.log(travels);
+}
+
+function getNewTravelId() {
+  console.log("[getNewTravelId]");
+  let max = 0;
+  for (let i = 0 ; i < travels.length ; i++) {
+    if (travels[i] > max) {
+      max = parseInt(travels[i]);
+    }
+  }
+  console.log(max + 1);
+  return max + 1;
+}
+
+function okHtmlField() {
+  return '<i class="fa fa-check" aria-hidden="true" style="color: SpringGreen;"></i>';
+}
+function notOkHtmlField() {
+  return '<i class="fa fa-times" aria-hidden="true" style="color: Tomato;"></i>';
+}
+
+function editTravelTd(id, fieldsVal) {
+  console.log("[editTravelTd] " + id);
+  let fields = getEditTravelField();
+  for (let i = 0 ; i < fields.length ; i++) {
+    let fieldId = "#travel_" + fields[i] + "_" + id;
+    let val = fieldsVal[fields[i]];
+    console.log("[editTravelTd] " + fieldId + " = '" + val + "'");
+
+    if(fields[i].startsWith("country")) {
+      $(fieldId).empty();
+      $(fieldId).append(createCountryDiv(val));
+    }
+    else if (fields[i] == "rt") {
+      let valDisplay = notOkHtmlField();
+      if(val == "1") {
+        valDisplay = okHtmlField();
+      }
+      $(fieldId).html(valDisplay);
+    }
+    else 
+    {
+      if (fields[i] == "cost") {
+        $(fieldId).html(formatMoneyValue(val));
+      } 
+      else if (fields[i] == "travelId") {
+        $(fieldId).val(val);
+      } 
+      else 
+      {
+        $(fieldId).html(val);
+      }
+    }
+    $(fieldId).attr("tv", val);
+  }
+}
+
+function emptyTravelDivFields() {
+  $("#lab_mission_edit_travel_div_cityFrom" ).val(" ");
+  $("#lab_mission_edit_travel_div_cityTo" ).val(" ");
+  $("#lab_mission_edit_travel_div_dateGoTo" ).val(nowDay());
+  $("#lab_mission_edit_travel_div_timeGoTo" ).val(nowHour());
+  $("#lab_mission_edit_travel_div_dateReturn" ).val($("#lab_mission_edit_travel_div_dateGoTo" ).val());
+  $("#lab_mission_edit_travel_div_timeReturn" ).val($("#lab_mission_edit_travel_div_timeGoTo" ).val());
+  $("#lab_mission_edit_travel_div_ref" ).val(" ");
+  $("#lab_mission_edit_travel_div_rt" ).val("false");
+  $("#lab_mission_edit_travel_div_mean" ).val(getMeanOfTransportCode("Train"));
+  $("#lab_mission_edit_travel_div_cost" ).val(0);
+  $("#lab_mission_edit_travel_div_countryFrom" ).countrySelect("setCountry", "France");
+  $("#lab_mission_edit_travel_div_countryTo" ).countrySelect("setCountry", "France");
+  $("#lab_mission_edit_travel_div_carbon_footprint" ).val(" ");
+  $("#lab_mission_edit_travel_div_nb_person" ).val("1");
+}
+
+function getTravel(id) {
+  let fields = getEditTravelField();
+  let travel = {};
+  for (let i = 0 ; i < fields.length ; i++) {
+    let fieldId = "#travel_" + fields[i] + "_" + id;
+    //console.log("getTravel[" + id + "] " + fields[i] + " " +  $(fieldId).attr("tv"));
+    travel[fields[i]] = $(fieldId).attr("tv");
+  }
+  return travel;
+}
+
+function editTravelDiv(id) {
+  console.log("[editTravelDiv] id : " + id);
+  let fields = getEditTravelField();
+  console.log(fields)
+  for (let i = 0 ; i < fields.length ; i++) {
+    let fieldId = "#travel_" + fields[i] + "_" + id;
+    console.log("[editTravelDiv] id : " + fieldId + " " + $(fieldId).length);
+    if ($(fieldId).length > 0) {
+      let val = $(fieldId).html();
+      //console.log("[editTravelDiv] fieldId (" + fieldId + ") = " + val);
+      if(fields[i].startsWith("country")) {
+        val = $(fieldId).attr("tv");
+        $("#lab_mission_edit_travel_div_" + fields[i]).countrySelect("selectCountry", val);
+      }
+      else if(fields[i] == "rt") {
+        if($(fieldId).attr("tv") == 1) {
+          $("#lab_mission_edit_travel_div_rt").prop("checked", true);
+          $("#returnSpanDate").show();
+        }
+        else {
+          $("#lab_mission_edit_travel_div_rt").prop("checked", false);
+          $("#returnSpanDate").hide();
+        }
+      }
+      /*else if (fields[i] == "travelId") {
+        val = $(fieldId).val();
+        console.log("[editTravelDiv] #lab_mission_edit_travel_div_" + fields[i] + " = '" + val + "'");
+        $("#lab_mission_edit_travel_div_" + fields[i]).val(val);
+      }*/
+      else 
+      {
+        if (fields[i] == "cost" || fields[i] == "travelId" || fields[i] == "carbon_footprint" || fields[i] == "nb_person" || fields[i] == "mean") {
+          val = $(fieldId).attr("tv");
+        }
+        console.log("[editTravelDiv] #lab_mission_edit_travel_div_" + fields[i] + " = '" + val + "'");
+        $("#lab_mission_edit_travel_div_" + fields[i]).val(val);
+      }
+    }
+    else {
+      console.log("[editTravelDiv] fieldId (" + fieldId + ")  NO VALUE ");
+    }
+  }
+  $("#lab_mission_edit_travel_save_button").attr("travelId", id);
+  $("#lab_mission_edit_travel_div").show();
+}
+
+function deleteTravelTr(id) {
+  $("#lab_mission_table_tr_"+id).remove();
+
+  if ($("#lab_mission_token").length && $("#lab_mission_token").val() != 0) {
+    data = {
+      'action' : 'lab_travel_delete',
+      'id' : id,
+    }
+    callAjax(data, "Travel deleted", null, null, null);
+  }
+  deleteTravelId(id);
+}
+
+function addTravel(id, fields) {
+  addTravelId(id);
+  let tr = $("<tr/>").attr("id","lab_mission_table_tr_"+id);
+  createDefaultTdToTr(tr, id, "dateGoTo", fields);
+  createDefaultTdToTr(tr, id, "timeGoTo", fields);
+  createTravelCountryTdToTr(tr, id, "countryFrom", fields);
+  createDefaultTdToTr(tr, id, "cityFrom", fields);
+  createTravelCountryTdToTr(tr, id, "countryTo", fields);
+  createDefaultTdToTr(tr, id, "cityTo", fields);
+  createSelectTdToTr(tr, id, "mean", fields, listMeanOfTransport());
+  createTravelCostTdToTr(tr, id, "cost", fields);
+  createDefaultTdToTr(tr, id, "ref", fields);
+  createTravelBooleanField(tr, id, "rt", fields);
+  createDefaultTdToTr(tr, id, "dateReturn", fields);
+  createDefaultTdToTr(tr, id, "timeReturn", fields);
+  let tdEdit = $("<td/>").attr("class", "pointer").attr("travelId",id).html('<i class="fa fa-pencil"  aria-hidden="true" travelId="'+id+'"></i>');
+  let tdDel  = $("<td/>").attr("class", "pointer").attr("travelId",id).html('<i class="fa fa-trash-o" aria-hidden="true" travelId="'+id+'"></i>');
+  let tdAdd  = $("<td/>").attr("class", "pointer").attr("travelId",id).html('<i class="fa fa-plus" aria-hidden="true" travelId="'+id+'"></i>');
+  tr.append(tdEdit);
+  tr.append(tdDel);
+  tr.append(tdAdd);
+  createTravelHiddenField(tdEdit, id, "carbon_footprint", fields);
+  createTravelHiddenField(tdEdit, id, "nb_person", fields);
+  createTravelHiddenField(tdEdit, id, "travelId", fields);
+
+  tdEdit.click(function (e) {
+    editTravelDiv($(this).attr("travelId"));
+  });
+
+  tdAdd.click(function (e) {
+    emptyTravelDivFields();
+    editTravelDiv(getNewTravelId());
+  });
+  tdDel.click(function (e) {
+    deleteTravelTr($(this).attr("travelId"));
+  });
+  $("#lab_mission_travels_table_tbody").append(tr);
+}
+
+function createTravelHiddenField(td, id, fieldName, fields) {
+  //console.log("[createTravelHiddenField] " + fieldName + " value : '" + value + "'");
+  let hi = $("<input/>").attr('type','hidden').attr("id", "travel_" + fieldName + "_" + id).attr("tv", fields[fieldName]);
+  hi.val(fields[fieldName]);
+  td.append(hi);
+}
+
+function createTravelBooleanField(tr, id, fieldName, fields) {
+  let displayValue = notOkHtmlField();
+  //if(fields[fieldName] === true || fields[fieldName] == "true") {
+  if(fields[fieldName] == "1"){
+    displayValue = okHtmlField();
+  }
+  createTravelTdToTr(tr, id, fieldName, displayValue, fields[fieldName]);
+}
+
+function createCountryDiv(value) {
+  let divSelectedFlag = $("<div/>").addClass("country-select selected-flag");
+  let div = $("<div/>").addClass("flag "+value);
+  divSelectedFlag.append(div);
+  return divSelectedFlag;
+}
+
+function createTravelCountryTdToTr(tr, id, fieldName, fields) {
+  createTravelTdToTr(tr, id, fieldName, createCountryDiv(fields[fieldName]), fields[fieldName]);
+}
+
+function formatMoneyValue(value) {
+  return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(value);
+}
+
+function createTravelCostTdToTr(tr, id, fieldName, fields) {
+  createTravelTdToTr(tr, id, fieldName, formatMoneyValue(fields[fieldName]), fields[fieldName]);
+}
+
+function createSelectTdToTr(tr, id, fieldName, fields, displayMap) {
+  console.log("[createSelectTdToTr]");
+  console.log(displayMap);
+  console.log(fields[fieldName]);
+  console.log(displayMap[fields[fieldName]]);
+  createTravelTdToTr(tr, id, fieldName, displayMap[fields[fieldName]], fields[fieldName]);
+}
+
+function createDefaultTdToTr(tr, id, fieldName, fields) {
+  createTravelTdToTr(tr, id, fieldName, fields[fieldName], fields[fieldName]);
+}
+
+function createTravelTdToTr(tr, id, fieldName, displayVal, val) {
+  let td = $("<td/>").attr("id","travel_" + fieldName + "_" + id).html(displayVal);
+  if (val) {
+    td.attr("tv", val);
+  }
+  tr.append(td);
+}
+
+function nowDay() {
+  let today = new Date();
+  let dd = String(today.getDate()).padStart(2, '0');
+  let mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+  let yyyy = today.getFullYear();
+  return yyyy+"-"+mm+"-"+dd;
+}
+function nowHour() {
+  let today = new Date();
+  let h = today.getHours();
+  let m = today.getMinutes();
+
+  if (h < 10) {
+    h = "0"+h;
+  }
+
+  if (parseInt(m) < 10) {
+    m = "0"+m;
+  }
+
+  return h+":"+m;
+}
+
+function addEmptyTravel(id) {  
+  console.log("[addEmptyTravel]" + id);
+  fields = {};
+  fields["dateGoTo"]    = nowDay();
+  fields["timeGoTo"]    = nowHour();
+  fields["countryFrom"] = "fr";
+  fields["cityFrom"]    = "Marseille";
+  fields["countryTo"]   = "fr";
+  fields["cityTo"]      = "Paris";
+  fields["mean"]        = getMeanOfTransportCode("Train");
+  fields["cost"]        = "0";
+  fields["ref"]         = " ";
+  fields["carbon_footprint"]         = "";
+  fields["rt"]          = "false";
+  fields["dateReturn"]  = "0000-00-00";
+  fields["timeReturn"]  = "00:00";
+  fields["nb_person"]   = "1";
+  fields["travelId"]    = "-1";
+  console.log("[addEmptyTravel] " + id);
+  console.log(fields);
+  addTravel(id, fields);
+}
+
+function createFieldObj(val, displayVal) {
+  let obj = new Object();
+  obj.displayVal = displayVal;
+  obj.val = val;
+  return obj;
+}
+
 function LABLoadInvitation() {
   //Plug-in international phone : https://github.com/jackocnr/intl-tel-input 
   var inputTel = document.querySelector("input[type=tel]");
@@ -195,7 +747,79 @@ function LABLoadInvitation() {
     // utilsScript: "utils.js", //Inutile car utils JS chargé en dépendance
     initialCountry: "fr"
   }));
+  console.log("[LABLoadInvitation]");
+  //console.log($("#lab_mission_token").val());
   jQuery(function($) {
+    if ($("#lab_mission_token").length && $("#lab_mission_token").val() != 0) {
+      data = {
+        'action' : 'lab_travels_load',
+        'id' : $("#lab_mission_id").val(),
+      }
+      callAjax(data, null, displayTravels, null, null);
+    }
+    else {
+      addEmptyTravel("0");
+    }
+    console.log("[LABLoadInvitation] LA1");
+    $("#inviteDiv").hide();
+    $("#lab_mission_edit_travel_div").hide();
+    $("#returnSpanDate").hide();
+    $("#lab_mission_edit_travel_div_rt").change(function(e) {
+      if ($('#lab_mission_edit_travel_div_rt').is(":checked"))
+      {
+        if($("#lab_mission_edit_travel_div_dateReturn").val() == "") {
+          $("#lab_mission_edit_travel_div_dateReturn").val($("#lab_mission_edit_travel_div_dateGoTo").val());
+          $("#lab_mission_edit_travel_div_timeReturn").val($("#lab_mission_edit_travel_div_timeGoTo").val());
+        }
+        $("#returnSpanDate").show();
+      }
+      else {
+        $("#returnSpanDate").hide();
+      }
+    });
+
+    $("#addTravel").click(function(e) {
+      emptyTravelDivFields();
+      editTravelDiv(getNewTravelId());
+    });
+
+    $("#lab_mission_validate").click(function(e) {
+      console.log("[$(#lab_mission_validate).click]");
+      invitation_submit(function() {
+        return;
+      });
+      //*/
+      /*
+      let travelsFields = [];
+      for (let i = 0 ; i < travels.length ; i++) {
+        travelsFields.push(getTravel(travels[i]));
+      }
+      //*/
+    });
+
+    $("#lab_mission_edit_travel_save_button").click(function(e) {
+      $("#lab_mission_edit_travel_div").hide();
+      saveTravelModification($("#lab_mission_edit_travel_save_button").attr("travelId"));
+    });
+
+    $(".lab_fe_modal_close").click(function(e) {
+      $("#lab_mission_edit_travel_div").hide();
+    });
+
+    if ($("#lab_mission option:selected" ).text() == "Invitation") {
+      $("#inviteDiv").show();
+    }
+
+    $("#lab_mission").change(function (e) {
+      console.log($("#lab_mission option:selected" ).text());
+      if($("#lab_mission option:selected" ).text() == "Invitation") {
+        $("#inviteDiv").show();
+      }
+      else{
+        $("#inviteDiv").hide();
+      }
+    });
+
     $("#invitationForm h2").click(function() {
       if ( $("#invitationForm").attr("wrapped")=="true" ) {
         $("#invitationForm form").slideDown();
@@ -225,19 +849,37 @@ function LABLoadInvitation() {
           $("#lab_firstname").val(response.data['first_name']);
           $("#lab_lastname").val(response.data['last_name']);
           iti.setNumber(response.data["phone"]);
-          $("#lab_country").countrySelect("selectCountry",response.data['country']);
+          $("#residence_country").countrySelect("selectCountry",response.data['residence_country']);
+          $("#residence_city").val(response.data['country']);
+          $("#lab_language").countrySelect("selectCountry",response.data['language']);
         } else {
           $(this).attr('guest_id','');
         }
       });
     }); 
     //Plug-in country selector : https://github.com/mrmarkfrench/country-select-js
-    $("#lab_country").countrySelect({
+    $("#residence_country").countrySelect({
       defaultCountry: "fr",
       preferredCountries: ['fr', 'de', 'it', 'es', 'us'],
     });
-    if ($("#lab_country").attr('countryCode')!="") {
-      $("#lab_country").countrySelect("selectCountry",$("#lab_country").attr('countryCode'));
+    $("#lab_mission_edit_travel_div_countryFrom").countrySelect({
+      defaultCountry: "fr",
+      preferredCountries: ['fr', 'de', 'it', 'es', 'us'],
+    });
+    $("#lab_mission_edit_travel_div_countryTo").countrySelect({
+      defaultCountry: "fr",
+      preferredCountries: ['fr', 'de', 'it', 'es', 'us'],
+    });
+    if ($("#residence_country").attr('countryCode')!="") {
+      $("#residence_country").countrySelect("selectCountry",$("#residence_country").attr('countryCode'));
+    }
+    //Plug-in country selector : https://github.com/mrmarkfrench/country-select-js
+    $("#guest_language").countrySelect({
+      defaultCountry: "fr",
+      preferredCountries: ['fr', 'de', 'it', 'es', 'us'],
+    });
+    if ($("#guest_language").attr('countryCode')!="") {
+      $("#guest_language").countrySelect("selectCountry",$("#guest_language").attr('countryCode'));
     }
     $("#lab_phone").keyup(function() {
       if ( !iti.isValidNumber() && iti.getValidationError()!=0) {
@@ -359,6 +1001,7 @@ function LABLoadInvitation() {
     $("#lab_send_group_chief").click(function() {
       if ($("#invitationForm").prop('submited')==null) {
         if (document.querySelector("#invitationForm form").checkValidity()) {
+          console.log("[$(#lab_send_group_chief).click]");
           invitation_submit(function () {
             data = {
               'action': 'lab_invitations_complete',
@@ -393,6 +1036,7 @@ function LABLoadInvitation() {
     $("#lab_send_manager").click(function() {
       if ($("#invitationForm").prop('submited')==null) {
         if (document.querySelector("#invitationForm form").checkValidity()) {
+          console.log("[$(#lab_send_manager).click]");
           invitation_submit(function() {
             data = {
               'action': 'lab_invitations_validate',
@@ -424,15 +1068,18 @@ function LABLoadInvitation() {
     });
   });
 }
+console.log("[LA]");
 if (document.querySelector("#invitationForm")!=null) {
   LABLoadInvitation();
 }
 function formAction() {
+  console.log("[formAction]");
   invitation_submit(function() {
     return;
   });
 }
 function invitation_submit(callback) {
+  console.log("[invitation_submit]");
   //document.querySelector("#primary-menu").scrollIntoView({behavior:"smooth"}); à faire correspondre au nouveau thème
   regex=/\"/g;
   jQuery(function($) {
@@ -445,20 +1092,25 @@ function invitation_submit(callback) {
       'taxi': $("#lab_cost_taxi").val()=='' ? null : $("#lab_cost_taxi").val(),
       'other': $("#lab_cost_other").val()=='' ? null : $("#lab_cost_other").val(),
     }
+
+    let travelsFields = [];
+    for (let i = 0 ; i < travels.length ; i++) {
+      travelsFields.push(getTravel(travels[i]));
+    }
+
     fields = {
       'guest_firstName': $("#lab_firstname").val(),
       'guest_lastName': $("#lab_lastname").val(),
       'guest_email': $("#lab_email").val(),
       'guest_phone': $("#lab_phone").attr('phoneval'),
-      'guest_country': $("#lab_country").countrySelect("getSelectedCountryData")['iso2'],
-      'host_id': $("#lab_hostname").attr('host_id'),
+      'guest_language': $("#guest_language").countrySelect("getSelectedCountryData")['iso2'],
+      'guest_residence_country': $("#residence_country").countrySelect("getSelectedCountryData")['iso2'],
+      'guest_residence_city': $("#residence_city").val(),
+      'host_id': $("#lab_hostname").attr('host_id'),      
       'mission_objective': $("#lab_mission").val()=="other" ? $("#lab_mission_other").val().replace(regex,"”").replace(/\'/g,"’") : $("#lab_mission").val(),
       'needs_hostel' : $("#lab_hostel").prop('checked'),
-      'travel_mean_from':  $("#lab_transport_from").val()=="other" ? $("#lab_transport_from_other").val() : $("#lab_transport_from").val(),
-      'travel_mean_to':  $("#lab_transport_to").val()=="other" ? $("#lab_transport_to_other").val() : $("#lab_transport_to").val(),
-      'start_date': $("#lab_arrival").val()+" "+$("#lab_arrival_time").val(),
-      'end_date': $("#lab_departure").val()+" "+$("#lab_departure_time").val(),
-      'charges': charges
+      'charges': charges,
+      'travels': travelsFields,
     }
     if ($("#lab_email").attr('guest_id').length) {
       fields['guest_id'] = $("#lab_email").attr('guest_id');
@@ -603,6 +1255,19 @@ function lab_updatePrefGroups() {
     });
   });
 }
+
+function displayLoadingGif()
+{
+  //jQuery("#loadingAjaxGif").show();
+  $("#loadingAjaxGif").addClass('show');
+}
+
+function hideLoadingGif()
+{
+  //jQuery("#loadingAjaxGif").hide();
+  $("#loadingAjaxGif").removeClass('show');
+}
+
 function lab_update_invitesList() {
   jQuery(function($) {
     statuses =[];
@@ -619,6 +1284,7 @@ function lab_update_invitesList() {
       status: statuses,
       year: $("#lab_filter_year").val(),
     };
+    displayLoadingGif();
     switch ($("#lab_invite_list").attr('view')) {
       case 'admin':
         group_ids = [];
@@ -634,6 +1300,7 @@ function lab_update_invitesList() {
           pages = Math.ceil(response.data[0]/data['value']);
           currentPage = data['page']<=pages ? data['page'] : pages;
           lab_pagination(pages,currentPage);
+          hideLoadingGif();
           //Affecte les fonctions aux actions
           $(".lab_invite_showDetail").click(function(){
             $("#lab_invite_realCost_input").attr('token',$(this).attr('token'));
@@ -641,40 +1308,49 @@ function lab_update_invitesList() {
             //Descend jusqu'à la partie "details"
             document.querySelector("#lab_invite_detail_title").scrollIntoView({behavior:"smooth"});
             //Récupère les commentaires
+            displayLoadingGif();
             $.post(LAB.ajaxurl,{
               action : 'lab_invitations_comments',
               token : $(this).attr('token')
               },
               function (response) {
-                $("#lab_invite_droite").html(response.data)
+                $("#lab_invite_droite").html(response.data);
+                hideLoadingGif();
               }
             );
+            displayLoadingGif();
             //Récupère le résumé
             $.post(LAB.ajaxurl,{
               action : 'lab_invitations_summary',
               token : $(this).attr('token')
               },
               function (response) {
-                $("#lab_invite_summary").html(response.data)
+                $("#lab_invite_summary").html(response.data);
+                hideLoadingGif();
               }
             );
             $("#lab_invite_budget").show();
+
+            displayLoadingGif();
             jQuery.post(LAB.ajaxurl,{
               action : 'lab_invitations_realCost',
               token : $(this).attr('token')
               },
               function (response) {
                 $("#lab_invite_realCost").html(response.data+"€");
+                hideLoadingGif();
               }
             );
           });
           $(".lab_invite_takeCharge").click(function() {
+            displayLoadingGif();
             jQuery.post(LAB.ajaxurl,{
               action : 'lab_invitations_assume',
               token : $(this).attr('token')
               },
               function (response) {
-                lab_update_invitesList()
+                lab_update_invitesList();
+                hideLoadingGif();
               }
             );
           });
@@ -683,12 +1359,22 @@ function lab_update_invitesList() {
       case 'chief':
         data['action'] = 'lab_invitations_chiefList_update';
         data['group_id']= $("#lab_groupSelect").val();
-        $.post(LAB.ajaxurl,data, function(response) {
-          $("#lab_invitesListBody").html(response.data[1]);
-          pages = Math.ceil(response.data[0]/data['value']);
-          currentPage = data['page']<=pages ? data['page'] : pages;
-          lab_pagination(pages,currentPage);
-        });
+        console.log($("#lab_groupSelect").val());
+        console.log(data['group_id']);
+        if (data['group_id'] != null)
+        {
+          console.log("data['group_id'] != null");
+          $.post(LAB.ajaxurl,data, function(response) {
+            $("#lab_invitesListBody").html(response.data[1]);
+            pages = Math.ceil(response.data[0]/data['value']);
+            currentPage = data['page']<=pages ? data['page'] : pages;
+            lab_pagination(pages,currentPage);
+            hideLoadingGif();
+          });
+        }
+        else{
+          hideLoadingGif();
+        }
       break;
       case 'host':
         data['action'] = 'lab_invitations_hostList_update';
@@ -697,6 +1383,7 @@ function lab_update_invitesList() {
           pages = Math.ceil(response.data[0]/data['value']);
           currentPage = data['page']<=pages ? data['page'] : pages;
           lab_pagination(pages,currentPage);
+          hideLoadingGif();
         });
         break;
     }
@@ -706,6 +1393,8 @@ function lab_submitRealCost() {
   data = {
     'action':'lab_invitations_add_realCost',
     'value' : $("#lab_invite_realCost_input").val(),
+    'forward_carbon_footprint' : $("#forward_carbon_footprint").val(),
+    'return_carbon_footprint' : $("#return_carbon_footprint").val(),
     'token' : $("#lab_invite_realCost_input").attr("token")
   }
   jQuery.post(LAB.ajaxurl,data,

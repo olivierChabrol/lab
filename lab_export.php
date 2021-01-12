@@ -60,13 +60,14 @@ if ($do == "presentOfTheWeek")
     $sheet = $spreadsheet->getActiveSheet();
     $sheet->setCellValue('A1', 'Prénom');
     $sheet->setCellValue('B1', 'Nom');
-    $sheet->setCellValue('C1', 'Site');
-    $sheet->setCellValue('D1', 'Etage');
-    $sheet->setCellValue('E1', 'Bureau');
-    $sheet->setCellValue('F1', 'Date');
-    $sheet->setCellValue('G1', 'Arrivé');
-    $sheet->setCellValue('H1', 'Départ');
-    $sheet->setCellValue('I1', 'Motif');
+    $sheet->setCellValue('C1', 'Employeur');
+    $sheet->setCellValue('D1', 'Site');
+    $sheet->setCellValue('E1', 'Etage');
+    $sheet->setCellValue('F1', 'Bureau');
+    $sheet->setCellValue('G1', 'Date');
+    $sheet->setCellValue('H1', 'Arrivé');
+    $sheet->setCellValue('I1', 'Départ');
+    $sheet->setCellValue('J1', 'Motif');
     $line = 1;
     $listSite = lab_admin_list_site();
     
@@ -84,15 +85,16 @@ if ($do == "presentOfTheWeek")
                     $line++;
                     $sheet->setCellValue('A'.$line, $user->first_name);
                     $sheet->setCellValue('B'.$line, $user->last_name);
-                    $sheet->setCellValue('C'.$line, $user->site);
+                    $sheet->setCellValue('C'.$line, lab_admin_user_get_employer($user->user_id));    
+                    $sheet->setCellValue('D'.$line, $user->site);
                     if(isset($user->office)) {
-                        $sheet->setCellValue('D'.$line, $user->office);
-                        $sheet->setCellValue('E'.$line, $user->floor);
+                        $sheet->setCellValue('E'.$line, $user->office);
+                        $sheet->setCellValue('F'.$line, $user->floor);
                     }
-                    $sheet->setCellValue('F'.$line, date("d-m-Y",$currentDay));
-                    $sheet->setCellValue('G'.$line, date("H:i",$user->hour_start));
-                    $sheet->setCellValue('H'.$line, date("H:i",$user->hour_end));
-                    $sheet->setCellValue('I'.$line, $user->comment);
+                    $sheet->setCellValue('G'.$line, date("d-m-Y",$currentDay));
+                    $sheet->setCellValue('H'.$line, date("H:i",$user->hour_start));
+                    $sheet->setCellValue('I'.$line, date("H:i",$user->hour_end));
+                    $sheet->setCellValue('J'.$line, $user->comment);
                 }
                 //*/
             }
@@ -106,4 +108,39 @@ if ($do == "presentOfTheWeek")
     //$writer->save('hello world.xlsx');
     $writer->save( "php://output" );
 
+} 
+else if ($do == "labo1.5")
+{   
+    ob_end_clean();
+    $sql = "SELECT * FROM `".$wpdb->prefix."lab_labo1dot5_trajet`";
+    $results = $wpdb->get_results($sql);
+    $line = 1;
+
+    $spreadsheet = new Spreadsheet();
+    $sheet = $spreadsheet->getActiveSheet();
+    $sheet->setCellValue('A1',"N°Mission");
+    $sheet->setCellValue('B1',"Date de départ");
+    $sheet->setCellValue('C1',"Pays de départ");
+    $sheet->setCellValue('D1',"Ville de départ");
+    $sheet->setCellValue('E1',"Pays destination");
+    $sheet->setCellValue('F1',"Ville destination");
+    $sheet->setCellValue('G1',"Moyen transport");
+    $sheet->setCellValue('H1',"Aller/Retour");
+    $sheet->setCellValue('I1',"Nb de personnes");
+
+    foreach ($results as $b){
+    $line++;
+    $sheet->setCellValue('A'.$line, $b->mission_id);
+    $sheet->setCellValue('B'.$line, $b->travel_date);
+    $sheet->setCellValue('C'.$line, $b->country_from);
+    $sheet->setCellValue('D'.$line, $b->travel_from);
+    $sheet->setCellValue('E'.$line, $b->country_to);
+    $sheet->setCellValue('F'.$line, $b->travel_to);
+    $sheet->setCellValue('G'.$line, $b->means);
+    $sheet->setCellValue('H'.$line, $b->go_back);
+    $sheet->setCellValue('I'.$line, $b->nb_person);
+    }
+
+    $writer = new Xlsx($spreadsheet);
+    $writer->save('php://output');
 }

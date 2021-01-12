@@ -1,4 +1,59 @@
 
+function displayLoadingGif()
+{
+  //jQuery("#loadingAjaxGif").show();
+  jQuery("#loadingAjaxGif").addClass('show');
+}
+
+function hideLoadingGif()
+{
+  //jQuery("#loadingAjaxGif").hide();
+  jQuery("#loadingAjaxGif").removeClass('show');
+}
+
+function callAjax(data, successMessage, callBackSuccess = null, errorMessage, callBackError = null) {
+  let candisplayLoadingGif = false;
+  if (jQuery("#loadingAjaxGif").length) {
+    candisplayLoadingGif = true;
+  }
+  if (candisplayLoadingGif) 
+  {
+    displayLoadingGif();
+  }
+  jQuery.post(LAB.ajaxurl, data, function(response) {
+    if (response.success) {
+      if (candisplayLoadingGif) 
+      {
+        hideLoadingGif();
+      }
+      if (successMessage != null) {
+        toast_success(successMessage);
+      }
+      if (callBackSuccess != null) {
+        callBackSuccess(response.data);
+      }
+    }
+    else {
+      if (candisplayLoadingGif) 
+      {
+        hideLoadingGif();
+      }
+
+      if (errorMessage != null) {
+        toast_error(errorMessage);
+      } 
+      else {
+        if (response.data) {
+          toast_error(response.data);
+        }
+      }
+      if (callBackError != null) {
+        callBackError(response.data);
+      }
+    }
+    });
+}
+
 // Notifications "toast" affichant une erreur ou un succès lors de la requête de création de groupe.
 function toast_error(message) {
   jQuery.toast({

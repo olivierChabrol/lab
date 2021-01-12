@@ -60,9 +60,128 @@
     padding: 0.5em 1em;
     margin-right: 1em;
 }
-.lab_role_delete {
+.lab_role_delete, .lab_group_delete, .lab_thematic_delete, .lab_thematic_order{
     cursor:pointer;
 }
+.lab_thematic_main {
+  color: gold;
+}
+
 .form-table td, .form-table th {
     padding:10px;
+}
+
+ /* The switch - the box around the slider */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 4em;
+  height: 2em;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 1.6em;
+  width: 1.6em;
+  left: 0.3em;
+  bottom: 0.2em;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(1.8em);
+  -ms-transform: translateX(1.8em);
+  transform: translateX(1.8em);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 2em;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+} 
+
+#loadingAjaxGif
+{
+    display : none;
+}
+#loadingAjaxGif.show
+{
+    display : block;
+    position : fixed;
+    z-index: 100;
+    opacity : 0.4;
+    background-repeat : no-repeat;
+    background-position : center;
+    left : 0;
+    bottom : 0;
+    right : 0;
+    top : 0;
+}
+#loadingAjaxGif.show
+{
+    left : 50%;
+    top : 50%;
+    position : absolute;
+    z-index : 101;
+    width : 102px;
+    height : 102px;
+    margin-left : -51px;
+    margin-top : -51px;
+}
+
+#lab_budget_info_state option {
+  margin: 40px;
+  background: rgba(0, 0, 0, 0.3);
+  color: #fff;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
+}
+
+#lab_budget_info_state option[value="c"] {
+  background:#caffbf;
+}
+
+#lab_budget_info_state option[value="wo"] {
+  background: #fdffb6;
+}
+
+se#lab_budget_info_statelect option[value="wd"] {
+  background: #ffd6a5;
+}
+
+#lab_budget_info_state option[value="wp"] {
+  background: #ffadad;
 }

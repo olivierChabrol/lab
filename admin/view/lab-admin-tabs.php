@@ -43,7 +43,7 @@ function wp_lab_option()
           } else if ($active_tab == 'settings') {
             lab_admin_tab_settings();
           } else if ($active_tab == 'ldap') {
-            lab_admin_tab_ldap();
+            echo lab_admin_tab_ldap();
           } else {
             lab_admin_tab_seminaire();
           }

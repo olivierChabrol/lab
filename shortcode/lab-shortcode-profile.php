@@ -16,8 +16,8 @@ function lab_profile($id=0) {
 	}
 	$is_current_user = $user->id == get_current_user_id() ? true : false; 
 	$HalID_URL = "https://api.archives-ouvertes.fr/search/?q=*:*&fq=authIdHal_s:(".$user->hal_id.")&fl=docid,citationFull_s,producedDate_tdate,uri_s,title_s,journalTitle_s&sort=producedDate_tdate+desc&wt=xml";
-	$HalName_URL = "https://api.archives-ouvertes.fr/search/?q=authLastNameFirstName_s:%22".$user->hal_name."%22&fl=docid,citationFull_s,producedDate_tdate,uri_s,title_s,journalTitle_s&sort=producedDate_tdate+desc&wt=xml";
-	$editIcons = '<div id="lab_profile_icons" class="lab_profile_edit">
+	$HalName_URL = "https://api.archives-ouvertes.fr/search/I2M/?q=authLastNameFirstName_s:%22".$user->hal_name."%22&fl=docid,citationFull_s,producedDate_tdate,uri_s,title_s,journalTitle_s&sort=producedDate_tdate+desc&wt=xml";
+	$editIcons = '<div id="lab_profile_icons">
 					<i title="'.esc_html__("Modifier la couleur d'arrière plan","lab").'" style="display:none" id="lab_profile_colorpicker" class="fas fa-fill-drip lab_profile_edit"></i>
 					<i id="lab_profile_edit" title="'.esc_html__('Modifier le profil','lab').'" class="fas fa-user-edit"></i> 
 					<i style="display:none" class="fas fa-user-check" title="'.esc_html__('Valider les changements','lab').'" id="lab_confirm_change" user_id="'.$user->id.'"></i>
@@ -40,8 +40,57 @@ function lab_profile($id=0) {
 					<span class="lab_current">'.(strlen($user->hal_name) ? '<i>'.esc_html__('Votre nom HAL','lab').' : </i>'.$user->hal_name : '<i>'.esc_html__('Vous n\'avez pas défini votre nom HAL','lab').'</i>').'</span>
 					<input style="display:none;" type="text" class="lab_profile_edit" id="lab_profile_edit_halName" placeholder="'.esc_html__('Nom HAL','lab').'" value="' . $user->hal_name .'"/><a id="lab_profile_testHal_name" target="_blank" style="display:none" class="lab_profile_edit" href="'.$HalName_URL.'">'.esc_html__('Tester sur HAL','lab').'</a>
 				  </p>';
+	$metaDatas = "";
+	if (isset($user->funding) && !empty($user->funding))
+	{
+		$metaDatas .='<p id="lab_profile_funding"><span class="lab_current">'.esc_html__('Funding','lab').' : '.$user->funding.'</span></p>';
+	}
+	if (isset($user->sectionCn) && !empty($user->sectionCn))
+	{
+		$metaDatas .='<p id="lab_profile_section_cn"><span class="lab_current">'.esc_html__('Section CN','lab').' : '.$user->sectionCn.'</span></p>';
+	}
+	if (isset($user->sectionCnu) && !empty($user->sectionCnu))
+	{
+		$metaDatas .='<p id="lab_profile_section_cnu"><span class="lab_current">'.esc_html__('Section CNU','lab').' : '.$user->sectionCnu.'</span></p>';
+	}
+	if (isset($user->thesisTitle) && !empty($user->thesisTitle))
+	{
+		$metaDatas .='<p id="lab_profile_thesis_title"><span class="lab_current">'.esc_html__('Thesis','lab').' : '.$user->thesisTitle.'</span></p>';
+	}
+	if (isset($user->phdSchool) && !empty($user->phdSchool))
+	{
+		$metaDatas .='<p id="lab_profile_php_school"><span class="lab_current">'.esc_html__('PHD School','lab').' : '.$user->phdSchool.'</span></p>';
+	}
+	if (isset($user->hdrTitle) && !empty($user->hdrTitle))
+	{
+		$metaDatas .='<p id="lab_profile_hdr_title"><span class="lab_current">'.esc_html__('HDR','lab').' : '.$user->hdrTitle.'</span></p>';
+	}
+	if ($user->historics != null && isset($user->historics))
+	{
+		$lastHisto = $user->historics;
+		//var_dump($lastHisto);
+		$metaDatas .='<p id="lab_profile_historic"><span class="lab_current">'.esc_html('Mobility','lab')." ".esc_html('Begin','lab').' : '.strftime('%d %B %G',$lastHisto->begin->getTimestamp()).' - '.
+		($lastHisto->end == null?esc_html__('present','lab'):esc_html('End','lab').' : '.strftime('%d %B %G',$lastHisto->end->getTimestamp())).' • '.AdminParams::get_param($lastHisto->function);
+		if ($lastHisto->host) {
+			$metaDatas .= " ".esc_html('Host','lab')." : " .$lastHisto->host;
+		}
+		if ($lastHisto->mobility) {
+			$metaDatas .= "<br>".esc_html('Mobility','lab')." : " .$lastHisto->mobility;
+			if ($lastHisto->mobility_status) {
+				$metaDatas .= " " .$lastHisto->mobility_status;
+			}
+		}
+		else
+		{$metaDatas .= "<br>".esc_html('Mobility','lab')." : " .$lastHisto->mobility_status;
+
+		}
+		$metaDatas .='</span></p>';
+	}
+	  
+	  				  
 	$profileStr = '
-    <div id="lab_profile_card" bg-color="'.$user->bg_color.'">
+	<div id="lab_profile_card" bg-color="'.$user->bg_color.'">
+		<input type="hidden" id="userId" value="'.$user->id.'"/>
 		<div id="lab_pic_name">
 			<div>
 				<img src="'.$user->gravatar.'" id="lab_avatar"></img>'
@@ -64,7 +113,7 @@ function lab_profile($id=0) {
 						<span class="lab_current">'.$user->print_phone().'</span>'
 						.($is_current_user || current_user_can('edit_users') ? '<input style="display:none;" type="text" class="lab_profile_edit" id="lab_profile_edit_phone" placeholder="Numéro de téléphone" value="' . $user->phone .'"/>' : '').
 					'</p>'
-					.($is_current_user || current_user_can('edit_users') ? $editSocial.$halFields : '').'
+					.($is_current_user || current_user_can('edit_users') ? $editSocial.$metaDatas.$halFields : '').'
 				</div>
 			</div>
 		</div>
@@ -78,7 +127,7 @@ function lab_profile($id=0) {
 		<div id="lab_profile_keywords">
 			'.$user->print_keywords().'
 		</div>
-	</div>';
+		<hr/><div id="lab_profile_thematics_div">'.esc_html__("User Thematic(s) : ", "lab").$user->print_thematics().'</div><hr/></div>';
     return $profileStr;
 }
 /*** CLASS LABUSER ***/
@@ -102,6 +151,12 @@ class labUser {
 	public $hal_id;
 	public $social;
 	public $keywords;
+	public $funding;
+	public $sectionCn;
+	public $sectionCnu;
+	public $thesisTitle;
+	public $hdrTitle;
+	public $phdSchool;
 
 	function __construct($id) {
 		$this -> id = $id;
@@ -110,6 +165,15 @@ class labUser {
 		$this -> location    = lab_profile_get_param_metaKey($id,'lab_user_location', AdminParams::PARAMS_SITE_ID);
 		$this -> function    = lab_profile_get_param_metaKey($id,'lab_user_function', AdminParams::PARAMS_USER_FUNCTION_ID);
 		$this -> affiliation = lab_profile_get_param_metaKey($id,'lab_user_employer', AdminParams::PARAMS_EMPLOYER);
+		$this -> funding     = lab_profile_get_param_metaKey($id,'lab_user_funding', AdminParams::PARAMS_FUNDING_ID);
+		$this -> sectionCn   = lab_profile_get_param_metaKey($id,'lab_user_section_cn', AdminParams::PARAMS_USER_SECTION_CN);
+		$this -> sectionCnu  = lab_profile_get_param_metaKey($id,'lab_user_section_cnu', AdminParams::PARAMS_USER_SECTION_CNU);
+		$this -> historics   = lab_admin_load_lastUserHistory($id);
+		$this -> thesisTitle = stripslashes(lab_profile_get_metaKey($id,'lab_user_thesis_title'));
+		//$this -> thesisTitle = lab_profile_get_metaKey($id,'lab_user_thesis_title');
+		$this -> hdrTitle    = stripslashes(lab_profile_get_metaKey($id,'lab_user_hdr_title'));
+		$this -> phdSchool   = lab_profile_get_param_metaKey($id,'lab_user_phd_school', AdminParams::PARAMS_USER_ECOLE_DOCTORALE);
+
 		$this -> office      = lab_profile_get_metaKey($id,'lab_user_office_number');
 		$this -> officeFloor = lab_profile_get_metaKey($id,'lab_user_office_floor');
 		$temp 				 = lab_profile_get_Info($id);
@@ -119,6 +183,7 @@ class labUser {
 		$this -> phone 		 = lab_profile_get_metaKey($id,'lab_user_phone');
 		$this -> description = lab_profile_get_metaKey($id,'description');
 		$this -> groups 	 = lab_profile_get_Groups($id);
+		$this -> thematics 	 = lab_admin_thematic_get_thematics_by_user($id);
 		$Gravmail 			 = trim($this->email);
 		$Gravmail 			 = strtolower($Gravmail); 
 		$this -> gravatar 	 = "https://www.gravatar.com/avatar/".md5($Gravmail)."?s=160&d=mp";
@@ -155,6 +220,31 @@ class labUser {
 		foreach ($this->groups as $g) {
 			$output .= "<li><a href=\"$g->url\" target=\"_blank\"> $g->acronym • $g->group_name </a></li>";
 		}
+		return $output;
+	}
+	public function print_thematics() {
+		$output .= "";
+		if (count($this->thematics)==0) 
+		{ 
+			$output .= "<i>".esc_html__("None","lab")."</i>";
+		}
+		else {
+			$output .= '<ul id="lab_profile_thematics">';
+			foreach ($this->thematics as $g) {
+				$output .= "<li>".$g->name;
+				if ($g->main == 1)
+				{
+					$output .= '<span class="lab_thematic_main"><i class="fa fa-star"></i></span>';
+				}
+				//$output .= ($is_current_user || current_user_can('edit_users')) ? '&nbsp;<span class="lab_profile_edit delete_thematic" thematic_id="'.$g->id.'"><i thematic_id="'.$g->id.'" class="fa fa-trash"></i></span>':'';
+
+				$output .= "</li>";
+			}
+			$output .= '</ul>';
+		}
+		$output .= '<div id="lab_profile_thematic_add_div" class="lab_profile_edit">';
+		$output .= lab_html_select_str('lab_fe_thematic','lab_fe_thematic','lab_profile_edit','lab_admin_thematic_load_all',null,array("value"=>0,"label"=>"--- Select thematic ---"),0);
+        $output .= '<button class="btn btn-primary lab_profile_edit" id="lab_fe_add_thematic">'.esc_html__("Add","lab").'</button></div>';
 		return $output;
 	}
 	public function print_keywords() {
@@ -204,7 +294,7 @@ function lab_profile_get_param_metaKey($id,$key, $paramType) {
 }
 function lab_profile_get_keywords($id) {
 	global $wpdb;
-	$sql = "SELECT value FROM `".$wpdb->prefix."lab_hal_keywords` AS kw JOIN `".$wpdb->prefix."lab_hal_keywords_user` AS kwU ON kwU.keyword_id = kw.id WHERE kwU.user_id = ".$id." ORDER BY number DESC LIMIT 5;";
+	$sql = "SELECT value FROM `".$wpdb->prefix."lab_hal_keywords` AS kw JOIN `".$wpdb->prefix."lab_hal_keywords_user` AS kwU ON kwU.keyword_id = kw.id WHERE kwU.user_id = ".$id." ORDER BY number DESC LIMIT 7;";
 	return $wpdb->get_results($sql);
 }
 // Fonctions utilisées par une fonction Ajax Externe

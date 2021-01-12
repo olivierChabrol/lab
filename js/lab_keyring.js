@@ -1,5 +1,63 @@
 jQuery(function($){
   //$.getScript("lab_global.js");
+  $("#lab_keyring_entry_user").autocomplete({
+      minChars: 2,
+      source: function(term, suggest){
+        try { searchRequest.abort(); } catch(e){}
+        searchRequest = $.post(LAB.ajaxurl, { action: 'search_username2',search: term, },
+        function(res) {
+          suggest(res.data);
+        });
+      },
+      select: function( event, ui ) {
+        var firstname  = ui.item.firstname; // first name
+        var lastname = ui.item.lastname; // last name
+        var userslug = ui.item.userslug;
+        let userId =  ui.item.user_id;
+        $("#lab_keyring_entry_user_id").val(userId);
+      }
+    }
+  );
+
+  $("[id^=lab_keyring_entry_number").autocomplete({
+    minChars: 2,
+    source: function(term, suggest){
+      try { searchRequest.abort(); } catch(e){}
+      let index = $(this.element).attr("index");
+      //alert("index :" + index);
+      data = { action: 'keyring_search_key_number', type: $("#lab_keyring_entry_type_"+index).val(), search: term,};
+      searchRequest = $.post(LAB.ajaxurl, data,
+      function(res) {
+        suggest(res.data);
+      });
+    },
+    select: function( event, ui ) {
+      let index = $(this).attr("index");
+      $("#lab_keyring_entry_key_id"+index).val(ui.item.value);
+      loadKeyInfo($("#lab_keyring_entry_key_id"+index).val(), index);
+      //alert(ui.item.id);
+    }
+  });
+
+  function loadKeyInfo(keyId, index)
+  {
+    data = { action: 'keyring_find_key', id: keyId,};
+    
+    jQuery.post(LAB.ajaxurl, data, function(response) {
+      if (response.success) {
+          toast_success(__("Clef chargée",'lab'));
+          let key = response.data[0];
+          $("#lab_keyring_entry_number"+index).val(key.number);
+          $("#lab_keyring_entry_office"+index).val(key.office);
+          $("#lab_keyring_entry_brand"+index).val(key.brand);
+          $("#lab_keyring_entry_site"+index).val(key.site);
+          $("#lab_keyring_entry_commentary"+index).val(key.commentary);
+          return;
+      }
+    });
+  }
+  //*/
+
   $("#lab_keyring_create_table_keys").click(function () {
       var data = {
       'action' : 'keyring_table_keys',
@@ -26,6 +84,53 @@ jQuery(function($){
       toast_error(__("Erreur lors de la création de la table",'lab')+" : "+response);
       });
   });
+  $("#lab_keyring_entry_create").click(function () {
+    let userId = $("#lab_keyring_entry_user_id").val();
+    let keyNumber = parseInt($("#lab_keyring_entry_number").val());
+    let data = {action: "keyring_save_loans"};
+
+    data['userId'] = userId;
+    data['keyNumber'] = keyNumber;
+    for (let i = 0 ; i < keyNumber ; i++)
+    {
+      let keyId = $("#lab_keyring_entry_key_id"+i).val();
+      // add existing Key
+      if (keyId != "")
+      {
+        data['key_id'+i] = keyId;
+      }
+      // add new Key
+      else
+      {
+        data['key_id'+i] = -1;
+        data['key_type'+i]   = $("#lab_keyring_entry_type_"+i).val();
+        data['key_number'+i] = $("#lab_keyring_entry_number"+i).val();
+        data['key_office'+i] = $("#lab_keyring_entry_office"+i).val();
+        data['key_brand'+i]  = $("#lab_keyring_entry_brand"+i).val();
+        data['key_site'+i]   = $("#lab_keyring_entry_site"+i).val();
+        data['key_commentary'+i] = $("#lab_keyring_entry_commentary"+i).val();
+      }
+    }
+
+    callAjax(data, null, clearEntryField, null, null);
+  });
+
+  function clearEntryField()
+  {
+    $("#lab_keyring_entry_user").val("");
+    $("#lab_keyring_entry_user_id").val("");
+    let keyNumber = parseInt($("#lab_keyring_entry_number").val());
+    for (let i = 0 ; i < keyNumber ; i++)
+    {
+      $("#lab_keyring_entry_number"+i).val("");
+      $("#lab_keyring_entry_key_id"+i).val("");
+      $("#lab_keyring_entry_office"+i).val("");
+      $("#lab_keyring_entry_brand"+i).val("");
+      $("#lab_keyring_entry_commentary"+i).val("");
+      $("#lab_keyring_entry_site"+i).val("");
+    }
+  }
+
   $("#lab_keyring_newKey_create").click(function () {
       let params=Object();
       for (i of ['type','number','office','brand','site']) {
@@ -37,7 +142,8 @@ jQuery(function($){
       $("#lab_keyring_newKey_"+i).css("border-color","#0071a1");
       params[i] = $("#lab_keyring_newKey_"+i).val();
       }
-      params["commentary"] = $("#lab_keyring_newKey_commentary").val();
+      regex=/\"/g;
+      params["commentary"] = $("#lab_keyring_newKey_commentary").val().replace(regex,"”").replace(/\'/g,"’");
       createKey(params);
       clearFields("lab_keyring_newKey_",['number','office','brand','commentary']);
   });
@@ -165,8 +271,9 @@ jQuery(function($){
           $("#lab_keyring_edit_"+i).css("border-color","#0071a1");
       }
       }
-      for (i of ['type','number','office','brand','site','commentary']) {
-      fields[i] = $("#lab_keyring_edit_"+i).val();
+      regex=/\"/g;
+      for (i of ['type','number','office','brand','site','state','commentary']) {
+      fields[i] = $("#lab_keyring_edit_"+i).val().replace(regex,"”").replace(/\'/g,"’");
       }
       data = {
       'action': 'keyring_edit_key',
@@ -276,8 +383,9 @@ jQuery(function($){
         $("#lab_keyring_loanform_"+i).css("border-color","");
     }
     }
+    regex=/\"/g;
     for (i of ['commentary', 'start_date','end_date']) {
-    params[i] = $("#lab_keyring_loanform_"+i).val();
+    params[i] = $("#lab_keyring_loanform_"+i).val().replace(regex,"”").replace(/\'/g,"’");
     }
     params["referent_id"] = $("#lab_keyring_loanform_referent").attr("referent_id");
     params["key_id"] = $("#lab_keyring_loanform_key_id").text();
@@ -288,8 +396,9 @@ jQuery(function($){
   });
   $("#lab_keyring_loanform_edit").click(function () { 
       params={};
+      regex=/\"/g;
       for (i of ['commentary', 'start_date','end_date']) {
-      params[i] = $("#lab_keyring_loanform_"+i).val();
+      params[i] = $("#lab_keyring_loanform_"+i).val().replace(regex,"”").replace(/\'/g,"’");
       }
       params["referent_id"] = $("#lab_keyring_loanform_referent").attr("referent_id");
       params["key_id"] = $("#lab_keyring_loanform_key_id").text();
@@ -555,7 +664,7 @@ function oldLoans(id) {
     'action': 'keyring_find_old_loans'
   };
   //Selon l'onglet, affiche l'historique des prêts pour la clé ou pour l'utilisateur :
-  (getUrlVars()['tab'].split("#")[0] == 'default') ? data['key_id'] = id : data['user_id']= id;
+  (getUrlVars()['tab'] == null || getUrlVars()['tab'].split("#")[0] == 'default') ? data['key_id'] = id : data['user_id']= id;
   jQuery.post(ajaxurl, data, function(response) {
     jQuery(".lab_keyring_loansList")[0].innerHTML=response.data;
   });

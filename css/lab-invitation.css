@@ -258,3 +258,32 @@ div[wrapped=true] h2:hover .fa-arrow-up {
 {
   border:solid 1px #0e509e;
 }
+
+#loadingAjaxGif
+{
+    display : none;
+}
+#loadingAjaxGif.show
+{
+    display : block;
+    position : fixed;
+    z-index: 100;
+    opacity : 0.4;
+    background-repeat : no-repeat;
+    background-position : center;
+    left : 0;
+    bottom : 0;
+    right : 0;
+    top : 0;
+}
+#loadingAjaxGif.show
+{
+    left : 50%;
+    top : 50%;
+    position : absolute;
+    z-index : 101;
+    width : 102px;
+    height : 102px;
+    margin-left : -51px;
+    margin-top : -51px;
+}

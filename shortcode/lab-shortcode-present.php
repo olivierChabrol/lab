@@ -16,14 +16,21 @@
 
 function lab_present_select($param) {
     $param = shortcode_atts(array(
-        'allow-external' => get_option('lab-incoming-event')
+        'allow-external' => get_option('lab-incoming-event'),
+        'debug' => get_option('lab-incoming-event')
         ),
         $param, 
         "lab-present-select"
     );
+    $debug = false;
     $externalUserAllowed = false;
+
     if (isset($param['allow-external']) && $param['allow-external'] == "true") {
         $externalUserAllowed = true;
+    }
+
+    if (isset($param['debug']) && $param['debug'] == "true") {
+        $debug = true;
     }
     $str = "";
     //$str.= "\$param['allow-external'] : ".$param['allow-external']." \ $externalUserAllowed : ". $externalUserAllowed."<br>";
@@ -48,13 +55,30 @@ function lab_present_select($param) {
         $user->hour_start = strtotime($user->hour_start);
         $user->hour_end   = strtotime($user->hour_end);
 
-        if ($userId == 0 || $userId != $user->user_id) {
+        if (isset($user->wg_name) && $user->wg_name != null)
+        {
+            $user->users = workgroup_users_list($user->wg_id);
+            //$user->nbUsers = workgroup_users_count($user->wg_id);
+            $users["<b>".stripslashes($user->wg_name) . "</b><br>" . $user->first_name." ".strtoupper($user->last_name)][date('d', $user->hour_start)][] = $user;
+
+        }
+        else if ($userId == 0 || $userId != $user->user_id) 
+        {
             $userId = $user->user_id;
-            $users[$user->first_name." ".$user->last_name][date('d', $user->hour_start)][] = $user;
+            $user->users = null;
+            $user->nbUsers = null;
+            $users[$user->first_name." ".strtoupper($user->last_name)][date('d', $user->hour_start)][] = $user;
         }
         else if ($userId == $user->user_id) {
-            $users[$user->first_name." ".$user->last_name][date('d', $user->hour_start)][] = $user;
+            $user->users = null;
+            $user->nbUsers = null;
+            $users[$user->first_name." ".strtoupper($user->last_name)][date('d', $user->hour_start)][] = $user;
         }
+    }
+
+    if($debug)
+    {
+        var_dump($users);
     }
 
     global $wp;
@@ -143,17 +167,16 @@ function lab_present_select($param) {
                     if (date('H', $hours->hour_start) < 13) {
                         // presence toute la journée
                         if (date('H', $hours->hour_end) >= 13) {
-                            $sum[$hours->site_id][$i*2] = $sum[$i*2] + 1;
-                            $sum[$hours->site_id][$i*2+1] = $sum[$i*2+1] + 1;
-                            $str .= td($hours->hour_start,$hours->hour_end,$hours->site_id, false,"style=\"background-color:#".$colors[$hours->site_id].";color:white;\"", $hours->user_id, $hours->id, true, $hours->comment);
+                            $sum[$hours->site_id][$i*2]   += $sum[$i*2] + 1;
+                            $sum[$hours->site_id][$i*2+1] += $sum[$i*2+1] + 1;
+                            $str .= td($hours->hour_start,$hours->hour_end,$hours->site_id, false,"style=\"background-color:#".$colors[$hours->site_id].";color:white;\"", $hours->user_id, $hours->id, true, $hours->comment, $hours->users);
                             //$str .= td($hours->hour_end,null,false,"style=\"background-color:#".$colors[$hours->site_id].";color:white;\"", $hours->user_id, $hours->id);
                             $nb = 2; 
                         }
                         // presence le matin
                         else {
-                            $str .= td($hours->hour_start, $hours->hour_end,$hours->site_id, false,"style=\"background-color:#".$colors[$hours->site_id].";color:white;\"", $hours->user_id, $hours->id,false, $hours->comment);
+                            $str .= td($hours->hour_start, $hours->hour_end,$hours->site_id, false,"style=\"background-color:#".$colors[$hours->site_id].";color:white;\"", $hours->user_id, $hours->id,false, $hours->comment, $hours->users);
                             $sum[$hours->site_id][$i*2] += 1;
-                            //$str .= td(null, null, true);
                         }
                     }
                     // presence l'aprem
@@ -162,7 +185,7 @@ function lab_present_select($param) {
                             $str .= td(null, null, null, true);
                             $nb++;
                         }
-                        $str .= td($hours->hour_start, $hours->hour_end, $hours->site_id, false, "style=\"background-color:#".$colors[$hours->site_id].";color:white;\"", $hours->user_id, $hours->id,false, $hours->comment);
+                        $str .= td($hours->hour_start, $hours->hour_end, $hours->site_id, false, "style=\"background-color:#".$colors[$hours->site_id].";color:white;\"", $hours->user_id, $hours->id,false, $hours->comment, $hours->users);
                         $sum[$hours->site_id][$i*2+1] += 1;
                     }
                     $nb++;
@@ -191,7 +214,7 @@ function lab_present_select($param) {
     }
     $str .= "</tbody></table>";
     if (!is_user_logged_in() && $externalUserAllowed) {
-        $str .=  newUserDiv();
+        $str .=  newUserDiv($startDay);
     }
     return $str;
 }
@@ -204,20 +227,51 @@ function getDay($dayInt, $dayInMonth, $year = 0) {
     return $dayInt;
 }
 
+function getWorgroups($day)
+{
+    $ar = get_workgroup_of_the_week($day);
+    $r = array();
+    foreach($ar as $a)
+    {
+        $obj = new stdClass();
+        $obj->value = $a->name . " ".$a->site_name." (" . $a->date . "  ". $a->hour_start." - ".$a->hour_end.")";
+        $obj->id = $a->id;
+        $obj->name = $a->name;
+        $obj->date = $a->date;
+        $obj->hour_start = $a->hour_start;
+        $obj->hour_end   = $a->hour_end;
+        $obj->site = $a->site;
+        $obj->site_name = $a->site_name;
+        $r[] = $obj;
+    }
+    //var_dump($r);
+    return $r;
+}
+
 function lab_present_choice($param) {
     if (!is_user_logged_in())
     {
         return "";
     }
     $param = shortcode_atts(array(
+        'comment-mandatory' => get_option('lab-incoming-event')
         ),
         $param, 
         "lab-present-choice"
     );
     $startDay = getStartDate();
+    $commentMandatory = "true";
+
+    if (isset($param['comment-mandatory']) && $param['comment-mandatory'] == "false") {
+        $commentMandatory = "false";
+    }
 
     $choiceStr = "<br/><hr><div>
         <h3>".esc_html__("Je serai présent·e", "lab")."</h3>
+            <div class=\"input-group mb-3\">Rejoindre un groupe de travail : ".
+            //lab_html_select_str("workGroupFollow", "workGroupFollow", "", get_workgroup_of_the_week, $startDay, array("label"=>"None","value"=>""), null, array("id"=>"id", "value"=>"name"))."</div>
+            lab_html_select_str("workGroupFollow", "workGroupFollow", "", "getWorgroups", $startDay, array("label"=>"None","value"=>""), null, null, array("date"=>"date", "hour_start"=>"hour_start", "hour_end"=>"hour_end", "name"=>"name", "site"=>"site")).
+            "</div>
             <div class=\"input-group mb-3\">
             <input id='userId' name='userId' type='hidden' value='" . get_current_user_id() . "' />
             <input id=\"external\" type=\"hidden\"  val=\"0\"/>
@@ -233,11 +287,12 @@ function lab_present_choice($param) {
             <input type='time' name='hour-close' id='hour-close' min='07:00' max='20:00' required class='form-control'/>
             <div id='messErr_hour-close' class='invalid-feedback'></div>
             <label for='site-selected'>".esc_html__("sur le site", "lab")."</label>
-            " . lab_html_select_str("siteId", "siteName", "custom-select", lab_admin_list_site) . "</div>
+            " . lab_html_select_str("siteId", "siteName", "custom-select", "lab_admin_list_site") . "</div>
+            <div class=\"input-group mb-3\" id=\"divNewWorkingGroup\">Créer un groupe de travail : <input type='text' id='workGroupName' class='form-control'/></div>
             <div class=\"input-group mb-3\">
             <div class=\"form-group\">
                 <label for='comment'>".esc_html__("Commentaire", "lab")."</label>
-                <textarea id=\"comment\" rows=\"4\" cols=\"50\" class=\"form-control rounded-0\" maxlength=\"200\" placeholder=\"200 caractères maximum\"></textarea>
+                <textarea id=\"comment\" rows=\"4\" mandatory=\"".$commentMandatory."\" cols=\"50\" class=\"form-control rounded-0\" maxlength=\"200\" placeholder=\"200 caractères maximum\"></textarea>
             </div>
             </div>
             <button class=\"btn btn-success\" id=\"lab_presence_button_save\">".esc_html__("Sauvegarder", "lab")."</button>
@@ -309,7 +364,7 @@ function lab_present_choice($param) {
  *
  * @return void
  */
-function newUserDiv()
+function newUserDiv($startDay)
 {
     $str = 
     '<div id="lab_presence_external_user_dialog" class="modal fade">
@@ -334,6 +389,10 @@ function newUserDiv()
                         <label for="date-lab_presence_ext_new_user_email">'.esc_html("E-mail", "lab").'</label>
                         <input type="email" class="form-control" id="lab_presence_ext_new_user_email" aria-describedby="emailHelp" placeholder="Enter email (mandatory)">
                     </div>
+                    <div class=\"input-group mb-3\">Rejoindre un groupe de travail : '.
+                    //lab_html_select_str("workGroupFollow", "workGroupFollow", "", get_workgroup_of_the_week, $startDay, array("label"=>"None","value"=>""), null, array("id"=>"id", "value"=>"name"))."</div>
+                    lab_html_select_str("workGroupFollowExt", "workGroupFollowExt", "", getWorgroups, $startDay, array("label"=>"None","value"=>""), null, null, array("date"=>"date", "hour_start"=>"hour_start", "hour_end"=>"hour_end", "name"=>"name", "site"=>"site")).
+                    '</div>
                     <small id="emailHelp" class="form-text text-muted">We\'ll never share your email with anyone else.</small>
                     <div class="h-divider"></div>
                     <label for="date-open">'.esc_html("From", "lab").'</label>
@@ -389,7 +448,7 @@ function editDiv()
                     <label for="hour-close">'.esc_html("to", "lab").'</label>
                     <input type="time" id="lab_presence_edit_hour-close" min="07:00" max="20:00"/>
                     <div class="input-group mb-3">
-                        <label for="site-selected">'.esc_html("on the site", "lab").'</label>'. lab_html_select_str("lab_presence_edit_siteId", "siteName", "custom-select", lab_admin_list_site).'
+                        <label for="site-selected">'.esc_html("on the site", "lab").'</label>'. lab_html_select_str("lab_presence_edit_siteId", "siteName", "custom-select", "lab_admin_list_site").'
                     </div>
                     <div class="input-group mb-3">
                         <div class="form-group">
@@ -447,22 +506,12 @@ function getStartDate()
     if (isset( $_GET["date"] ) && !empty( $_GET["date"] ) ) {
         $date = $_GET["date"];
     }
-    $str = "";
     $dateObj = strtotime("now");
 
     if ($date != null) {
         $dateObj = strtotime($date);
     }
-    $dayofweek = date('w', $dateObj);
-    //echo $dayofweek."<br>";
-    // if sunday
-    if ($dayofweek < 1) {
-        return strtotime('-6 days', $dateObj);
-    }
-    else {
-        $aStr = '-'.($dayofweek-1).' days';
-        return strtotime($aStr, $dateObj);
-    }
+    return getFirstDayOfTheWeek($dateObj);
 }
 
 /**
@@ -478,11 +527,29 @@ function getStartDate()
  * @param [type] $comment
  * @return void
  */
-function td($dateStart = null, $dateEnd = null, $siteId = null, $empty = false, $site = null, $userId = null, $presenceId=null, $allDay = false, $comment= null) {
+function td($dateStart = null, $dateEnd = null, $siteId = null, $empty = false, $site = null, $userId = null, $presenceId=null, $allDay = false, $comment= null, $workgroupUsers = null) {
     if ($empty) {
         $str .= "<td >&nbsp;</td>";
     } else {
         $canDelete = '';
+        $userList = "";
+
+        if ($workgroupUsers != null)
+        {
+            foreach($workgroupUsers as $wgU)
+            {
+                $userList .= $wgU->last_name." ".$wgU->first_name."\n";
+            }
+            if ($comment == null)
+            {
+                $comment = "";
+            }
+            else
+            {
+                $comment .= "\n";
+            }
+            $comment .= "Participants :\n".$userList;
+        }
         
         if ($userId != null && $presenceId != null) {
             
@@ -491,7 +558,19 @@ function td($dateStart = null, $dateEnd = null, $siteId = null, $empty = false, 
             $colSpan = "";
 
             if ($admin || $userId == $currentUserId) {
-                $canDelete = ' class="canDelete" userId="'.$userId.'" presenceId="'.$presenceId.'" ';
+                $canDelete = ' class="';
+                if ($workgroupUsers != null)
+                {
+                    $canDelete .='userNumber ';
+                }
+                $canDelete .= 'canDelete" userId="'.$userId.'" presenceId="'.$presenceId.'" ';
+            }
+            else
+            {
+                if ($workgroupUsers != null)
+                {
+                    $canDelete .=' class="userNumber" ';
+                }
             }
             if ($allDay) {
                 $colSpan = " colspan=\"2\" ";
@@ -507,8 +586,18 @@ function td($dateStart = null, $dateEnd = null, $siteId = null, $empty = false, 
         $siteId   = " siteId=\"".$siteId."\"";
         $hourStart = " hourStart=\"".date("H:i", $dateStart)."\"";
         $hourEnd   = " hourEnd=\"".date("H:i", $dateEnd)."\"";
+        $userNumber = "";
+        if ($workgroupUsers != null)
+        {
+            $userNumber .= " userNumber=\"".count($workgroupUsers)."\"";
+        }
 
-        $str .= '<td '.$canDelete.' '.($site!=null?$site:'').$colSpan.$tdId.$date.$title.$siteId.$hourStart.$hourEnd.'><div class="wrapper"><div class="actions"'.$actionId.'><div title="Update" '.$editId.' class="floatLeft iconset_16px"><i class="fas fa-pen fa-xs"></i></div><div title="delete" '.$deleteId.' class="floatLeft iconset_16px"><i class="fas fa-trash fa-xs"></i></div></div><div class="gal_name">'.date('H:i', $dateStart);
+        $str .= '<td '.$canDelete.' '.($site!=null?$site:'').$colSpan.$tdId.$date.$title.$siteId.$hourStart.$hourEnd.$userNumber.'>';
+        if ($workgroupUsers != null)
+        {
+            $str .= '<div class="usersWg" title="'.$userList.'"><b>'.count($workgroupUsers).'</b> <i class="fas fa-users fa-xs"></i></div>';
+        }
+        $str .= '<div class="wrapper"><div class="actions"'.$actionId.'><div title="Update" '.$editId.' class="floatLeft iconset_16px"><i class="fas fa-pen fa-xs"></i></div><div title="delete" '.$deleteId.' class="floatLeft iconset_16px"><i class="fas fa-trash fa-xs"></i></div></div><div class="gal_name">'.date('H:i', $dateStart);
         if ($dateEnd != null) {
             $str .= " - ".date('H:i', $dateEnd);
         }

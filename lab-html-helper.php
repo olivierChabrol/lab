@@ -1,4 +1,6 @@
 <?php
+require_once("lab-admin-params.php");
+
 /**
  * Generate HTML <select> field
  * @param String $htmlId : id of the select
@@ -8,13 +10,14 @@
  * @param String $fctArgs : function to call arguments
  * @param String $defaultValue : add an default <option> in the select, must be this form : ex. : array("value"=>0,"label"=>"None")
  * @param String $selectedValue $selectedValue
+ * @param String $attrMapping mapping to add attribute [attributeName=>objectFieldName]
  */
-function lab_html_select($htmlId, $htmlName, $htmlClass, $fctCallback, $fctArgs = null, $defaultValue = null, $selectedValue = null) {
-    echo lab_html_select_str($htmlId, $htmlName, $htmlClass, $fctCallback, $fctArgs, $defaultValue, $selectedValue);
+function lab_html_select($htmlId, $htmlName, $htmlClass, $fctCallback, $fctArgs = null, $defaultValue = null, $selectedValue = null, $attrMapping = null) {
+    echo lab_html_select_str($htmlId, $htmlName, $htmlClass, $fctCallback, $fctArgs, $defaultValue, $selectedValue, null, $attrMapping);
 }
 
 
-function lab_html_select_str($htmlId, $htmlName, $htmlClass, $fctCallback, $fctArgs = null, $defaultValue = null, $selectedValue = null, $idValues = null) {
+function lab_html_select_str($htmlId, $htmlName, $htmlClass, $fctCallback, $fctArgs = null, $defaultValue = null, $selectedValue = null, $idValues = null, $attrMapping = null) {
     $output ='<select id="'.$htmlId.'" name="'.$htmlName.'" class="'.$htmlClass.'">';
     $results = null;
     if ($fctArgs == null) {
@@ -30,12 +33,28 @@ function lab_html_select_str($htmlId, $htmlName, $htmlClass, $fctCallback, $fctA
     }
     if ($idValues == null) {
         foreach ( $results as $r ) {
-            $output .= "<option value=\"".$r->id."\"".(($selectedValue!=null && $selectedValue==$r->id)?"selected":"").">".$r->value."</option>";
+            $output .= "<option value=\"".$r->id."\"".(($selectedValue!=null && $selectedValue==$r->id)?"selected":"");
+            if ($attrMapping != null)
+            {
+                foreach($attrMapping as $k=>$v)
+                {
+                    $output .= " ".$k."=\"".$r->{$v}."\"";
+                }
+            }
+            $output .= ">".$r->value."</option>";
         }
     }
     else {
         foreach ( $results as $r ) {
-            $output .= "<option value=\"".$r->{$idValues["id"]}."\"".(($selectedValue!=null && $selectedValue==$r->{$idValues["id"]})?"selected":"").">".$r->{$idValues["value"]}."</option>";
+            $output .= "<option value=\"".$r->{$idValues["id"]}."\"".(($selectedValue!=null && $selectedValue==$r->{$idValues["id"]})?"selected":"");
+            if ($attrMapping != null)
+            {
+                foreach($attrMapping as $k=>$v)
+                {
+                    $output .= " ".$k."=\"".$r->{$v}."\"";
+                }
+            }
+            $output .= ">".$r->{$idValues["value"]}."</option>";
         }
     }
     $output .= "</select>";
