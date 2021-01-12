@@ -19,6 +19,21 @@ function lab_admin_ajax_user_info()
 }
 
 /********************************************************************************************
+ * MISSION
+ ********************************************************************************************/
+function lab_mission_ajax_load() {
+  $missionId = $_POST['id'];
+  if (!isset($missionId) || empty($missionId)) {
+    $missionId = null;
+  }
+  $filters = $_POST['filters'];
+  if (!isset($filters) || empty($filters)) {
+    $filters = null;
+  }
+  wp_send_json_success(lab_mission_load($missionId, $filters));
+}
+
+/********************************************************************************************
  * BUDGET
  ********************************************************************************************/
 function lab_ajax_admin_createTable_budget_info()

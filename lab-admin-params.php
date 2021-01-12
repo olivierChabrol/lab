@@ -29,8 +29,8 @@ class AdminParams {
     
 
     public static function get_params_fromId($id) {
-        $sql = "SELECT value,id FROM `wp_lab_params` WHERE type_param=".$id." ORDER BY value;";
         global $wpdb;
+        $sql = "SELECT value,id FROM `".$wpdb->prefix."lab_params` WHERE type_param=".$id." ORDER BY value;";
         return $results = $wpdb->get_results($sql);
     }
 
@@ -114,11 +114,14 @@ class AdminParams {
         return $results[0];
     }
 
-    public static function get_param($id) {
+    public static function get_full_param($id) {
         global $wpdb;
         $sql = "SELECT value FROM `".$wpdb->prefix."lab_params` WHERE id=".$id." ORDER BY value;";
         $results = $wpdb->get_results($sql);
-        return $results[0]->value;
+        return $results[0];
+    }
+    public static function get_param($id) {
+        return AdminParams::get_full_param($id)->value;
     }
     public static function get_paramWithColor($id) {
         global $wpdb;

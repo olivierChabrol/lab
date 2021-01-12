@@ -41,6 +41,7 @@ require_once(LAB_DIR_PATH."shortcode/lab-shortcode-labo1dot5admin.php");
 require_once(LAB_DIR_PATH."shortcode/lab-shortcode-labo1dot5resp.php");
 require_once(LAB_DIR_PATH."shortcode/lab-shortcode-ldap.php");
 require_once(LAB_DIR_PATH."admin/view/lab-admin-tabs.php");
+require_once(LAB_DIR_PATH."admin/view/lab-admin-mission.php");
 require_once(LAB_DIR_PATH."admin/view/lab-admin-tab-groups.php");
 require_once(LAB_DIR_PATH."admin/view/lab-admin-tab-params.php");
 require_once(LAB_DIR_PATH."admin/view/lab-admin-tab-users.php");
@@ -172,8 +173,6 @@ class LabRewriteRules {
       $newRule = array('user/(.+)$' => 'index.php?pagename=user');
       $newRules = $newRule + $rules;
       $newRules = $newRule + $newRules;
-      //$newRule1 = array('linstitut/annuaire/(.+)$' => 'index.php?pagename=directory');
-      //$newRules = $newRule + $newRule1 + $rules;
       $newRule = array('invitation/(.+)$' => 'index.php?pagename=invitation');
       $newRules = $newRule + $newRules;
       $newRule = array('invite/(.+)$' => 'index.php?pagename=invite');
@@ -228,6 +227,7 @@ function wp_lab_menu()
   add_menu_page('Options'    , 'LAB'       , 'edit_plugins'      , 'wp-lab.php'          , 'wp_lab_option'       , ''                      , 21);
   add_menu_page("KeyRing"    ,"KeyRing"    ,'keyring'            , 'lab_keyring'         ,'lab_keyring'          ,'dashicons-admin-network',22);
   add_menu_page("Budget Info","Budget Info","budget_info_manager","lab_admin_budget_info","lab_admin_budget_info",'dashicons-money-alt'    ,23);
+  add_menu_page("Mission"    ,"Manage Mission", "mission_manager","lab_admin_mission_manager","lab_admin_mission_manager",'dashicons-money-alt'    ,23);
   add_submenu_page("lab_admin_budget_info", esc_html('Contract','lab'), esc_html('Contract','lab'),'edit_plugins', 'lab_admin_contract', 'lab_admin_new_contract', 24 );
   //add_menu_page("LDAP Admin","LDAP Admin",'edit_plugins','lab_ldap','lab_ldap','dashicons-id-alt',23);
   add_submenu_page( 'wp-lab.php', "LDAP Admin", "LDAP Admin",'edit_plugins', 'lab_ldap', 'lab_ldap_test', 25 );
@@ -260,6 +260,7 @@ function admin_enqueue()
   wp_enqueue_script('lab-admin', plugins_url('js/lab_admin.js',__FILE__), array('lab-global','jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog'), version_id(), false);
   wp_enqueue_script('lab-keyring',plugins_url('js/lab_keyring.js',__FILE__), array('lab-global','jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog'), version_id(), true);
   wp_enqueue_script('lab-budget',plugins_url('js/lab_budget.js',__FILE__), array('lab-global','jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog'), version_id(), true);
+  wp_enqueue_script('lab-mission',plugins_url('js/lab_mission.js',__FILE__), array('lab-global','jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog', 'lab-budget'), version_id(), true);
   wp_enqueue_script('lab-contract',plugins_url('js/lab_contract.js',__FILE__), array('lab-global','jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog','lab-budget'), version_id(), true);
   //Feuille de style des interfaces d'administration WordPress :
   wp_enqueue_style('lab-admin-CSS',plugins_url('css/lab-admin.css',__FILE__));

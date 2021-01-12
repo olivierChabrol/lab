@@ -392,11 +392,6 @@ jQuery(function($){
 
   }
 
-  function createTd(str)
-  {
-    return $('<td />').html(str);
-  }
-
   function searchInParams(paramId, data) {
     let f = undefined;
     if (data.params[paramId] != undefined)

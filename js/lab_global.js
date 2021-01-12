@@ -1,4 +1,19 @@
 
+function createTdUser(userId, data) {
+  let f = "";
+  if (userId != 0 && data.users[userId] != undefined)
+  {
+    let user = data.users[userId];
+    f = user.first_name+" "+user.last_name;
+  }
+  return createTd(f);
+}
+
+function createTd(str)
+{
+  return jQuery('<td />').html(str);
+}
+
 function displayLoadingGif()
 {
   //jQuery("#loadingAjaxGif").show();
