@@ -3,7 +3,7 @@
 Plugin Name: LAB
 Plugin URI: https://www.i2m.univ-amu.fr
 Description: Pluggin de l'I2M de gestion du labo
-Authors: Astrid BEYER, Ivan Ivanov, Lucas Argenti, Olivier CHABROL, Hongda MA
+Authors: Astrid BEYER, Ivan Ivanov, Lucas Urgenti, Olivier CHABROL, Hongda MA
 Version: 1.0
 Author URI: http://www.i2m.univ-amu.fr
 Text Domain: lab
@@ -292,12 +292,15 @@ function wp_lab_fe_enqueues()
   wp_enqueue_style('jqueryToastCSS',plugins_url('css/jquery.toast.css',__FILE__), version_id(), false);
   wp_enqueue_script('jqueryToastJS',plugins_url('js/jquery.toast.js',__FILE__), array('jquery'),version_id(),false);
   wp_enqueue_script('jquery-ui-1.12.1-js', plugins_url('js/jquery-ui.min.js',__FILE__), array('jquery'), version_id(), false);
-  wp_enqueue_script('lab-fe', plugins_url('js/lab_fe.js',__FILE__), array('jquery', 'wp-i18n'), version_id(), true);
+  wp_enqueue_script('lab-global', plugins_url('js/lab_global.js',__FILE__), array('jqueryToastJS', 'jquery'), version_id(), false);
+  wp_enqueue_script('lab-fe', plugins_url('js/lab_fe.js',__FILE__), array('jquery', 'wp-i18n', 'lab-global'), version_id(), true);
   wp_enqueue_style('profileCSS',plugins_url('css/lab-profile.css',__FILE__));
   wp_enqueue_script('SpectrumJS', plugins_url('js/spectrum.js',__FILE__), array('jquery','wp-i18n'), '1.8.0', true);
   wp_enqueue_style('SpectrumCSS',plugins_url('css/spectrum.css',__FILE__));
   
   localize_script('lab-fe');
+  localize_script('lab-global');
+  wp_set_script_translations( 'lab-global' , 'lab', dirname(__FILE__).'/lang' );
   wp_set_script_translations( 'lab-fe', 'lab', dirname(__FILE__).'/lang' );
   wp_enqueue_script('fontAwesome',"https://kit.fontawesome.com/341f99cb81.js",array(),"3.2",true);
   wp_enqueue_style('InvitationCSS',plugins_url('css/lab-invitation.css',__FILE__));

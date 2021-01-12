@@ -114,6 +114,16 @@ function lab_invitations_getByToken($token) {
   $res = $wpdb->get_results($sql);
   return $res[0];
 }
+//fonction qui récupère les trajets d'une mission à partir du token (inutilisée)
+
+/*function lab_mission_route_get($token)
+{
+  global $wpdb;
+  $sql = "SELECT * FROM `".$wpdb->prefix."lab_mission_route` WHERE 'mission_id' IN (SELECT id FROM `".$wpdb->prefix."lab_invitations` WHERE token='".$token."';";
+  $res = $wpdb->get_results($sql);
+  return $res;
+}*/
+
 /**
  * Check if guest user exist by his email
  *

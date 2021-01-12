@@ -309,7 +309,7 @@ function lab_profile_edit(user_id,phone,url,bio,color,hal_id,hal_name) {
 /******************************* ShortCode Guest Invitation *******************************/
 
 function getEditTravelField() {
-  return ["dateGoTo", "timeGoTo", "countryFrom", "cityFrom", "countryTo", "cityTo", "mean", "cost", "ref", "rt", "dateReturn", "timeReturn", "carbon_footprint", "nb_person"];
+  return ["dateGoTo", "timeGoTo", "countryFrom", "cityFrom", "countryTo", "cityTo", "mean", "cost", "ref", "rt", "dateReturn", "timeReturn", "carbon_footprint", "nb_person", "travelId"];
 }
 
 function loadMeanOfTransportMap() {
@@ -346,13 +346,21 @@ function saveTravelModification(id) {
     if(fields[i].startsWith("country")) {
       val = $("#lab_mission_edit_travel_div_" + fields[i]).countrySelect("getSelectedCountryData")['iso2'];
     }
-    else if (fields[i] == "rt") {
+    /*else if (fields[i] == "rt") {
       val = ""+$('#lab_mission_edit_travel_div_rt').is(":checked");
+    }*/
+    else if (fields[i] == "rt") {
+      if($('#lab_mission_edit_travel_div_rt').is(":checked")) {
+        val = 1;
+      }
+      else {
+        val = 0
+      }
     }
     else {
       val = $("#lab_mission_edit_travel_div_" + fields[i]).val();
     }
-    console.log(fields[i] + " '" + val + "'");
+    console.log("[saveTravelModification] " +fields[i] + " '" + val + "'");
     f[fields[i]] = val;
   }
   //console.log(f);
@@ -364,6 +372,69 @@ function saveTravelModification(id) {
   else {
     addTravel(id, f);
   }
+
+  // if edit existing mission with travels 
+  if ($("#lab_mission_token").length && $("#lab_mission_token").val() != 0) {
+    let fields = getEditTravelField();
+    data = {
+      'action' : 'lab_travel_save',
+      'missionId' : $("#lab_mission_id").val(),
+      /*'travelId' : $("#lab_mission_edit_travel_div_travelId").attr("tv"),*/
+    }
+    let val = "";
+    for (let i = 0 ; i < fields.length ; i++) {
+      if(fields[i].startsWith("country")) {
+        val = $("#lab_mission_edit_travel_div_" + fields[i]).countrySelect("getSelectedCountryData")['iso2'];
+      }
+      /*else if (fields[i] == "rt") {
+        val = ""+$('#lab_mission_edit_travel_div_rt').is(":checked");
+      }*/
+      else if (fields[i] == "rt") {
+        if($('#lab_mission_edit_travel_div_rt').is(":checked")) {
+          val = 1;
+        }
+        else {
+          val = 0
+        }
+      }
+      else {
+        val = $("#lab_mission_edit_travel_div_" + fields[i]).val();
+      }
+      data[fields[i]] = val;
+    }
+    callAjax(data, "Travel updated", null, null, null);
+  }
+}
+
+function displayTravels(data) {
+
+  $.each(data, function (i, obj){
+
+    let strToGo = obj.travel_date.split(' ');
+    if(obj.travel_datereturn != null) {
+      var strReturn = obj.travel_datereturn.split(' ');
+    }
+    else {
+      var strReturn = "";
+    }
+    let fields = {};
+    fields["dateGoTo"]    = strToGo[0];
+    fields["timeGoTo"]    = strToGo[1];
+    fields["countryFrom"] = obj.country_from;
+    fields["cityFrom"]    = obj.travel_from;
+    fields["countryTo"]   = obj.country_to;
+    fields["cityTo"]      = obj.travel_to;
+    fields["mean"]        = obj.means_of_locomotion;
+    fields["cost"]        = obj.estimated_cost;
+    fields["ref"]         = obj.reference;
+    fields["carbon_footprint"] = obj.carbon_footprint;
+    fields["rt"]          = obj.round_trip;
+    fields["dateReturn"]  = strReturn[0];
+    fields["timeReturn"]  = strReturn[1];
+    fields["nb_person"]   = obj.nb_person;
+    fields["travelId"]    = obj.id;
+    addTravel(obj.id, fields);
+  });
 }
 
 function travelExist(id) {
@@ -405,6 +476,7 @@ function editTravelTd(id, fieldsVal) {
   for (let i = 0 ; i < fields.length ; i++) {
     let fieldId = "#travel_" + fields[i] + "_" + id;
     let val = fieldsVal[fields[i]];
+    console.log("[editTravelTd] " + fieldId + " = '" + val + "'");
 
     if(fields[i].startsWith("country")) {
       $(fieldId).empty();
@@ -412,7 +484,7 @@ function editTravelTd(id, fieldsVal) {
     }
     else if (fields[i] == "rt") {
       let valDisplay = notOkHtmlField();
-      if(val) {
+      if(val == "1") {
         valDisplay = okHtmlField();
       }
       $(fieldId).html(valDisplay);
@@ -421,6 +493,9 @@ function editTravelTd(id, fieldsVal) {
     {
       if (fields[i] == "cost") {
         $(fieldId).html(formatMoneyValue(val));
+      } 
+      else if (fields[i] == "travelId") {
+        $(fieldId).val(val);
       } 
       else 
       {
@@ -462,9 +537,10 @@ function getTravel(id) {
 function editTravelDiv(id) {
   console.log("[editTravelDiv] id : " + id);
   let fields = getEditTravelField();
+  console.log(fields)
   for (let i = 0 ; i < fields.length ; i++) {
     let fieldId = "#travel_" + fields[i] + "_" + id;
-    //console.log(fieldId);
+    console.log("[editTravelDiv] id : " + fieldId + " " + $(fieldId).length);
     if ($(fieldId).length > 0) {
       let val = $(fieldId).html();
       //console.log("[editTravelDiv] fieldId (" + fieldId + ") = " + val);
@@ -472,11 +548,27 @@ function editTravelDiv(id) {
         val = $(fieldId).attr("tv");
         $("#lab_mission_edit_travel_div_" + fields[i]).countrySelect("selectCountry", val);
       }
+      else if(fields[i] == "rt") {
+        if($(fieldId).attr("tv") == 1) {
+          $("#lab_mission_edit_travel_div_rt").prop("checked", true);
+          $("#returnSpanDate").show();
+        }
+        else {
+          $("#lab_mission_edit_travel_div_rt").prop("checked", false);
+          $("#returnSpanDate").hide();
+        }
+      }
+      /*else if (fields[i] == "travelId") {
+        val = $(fieldId).val();
+        console.log("[editTravelDiv] #lab_mission_edit_travel_div_" + fields[i] + " = '" + val + "'");
+        $("#lab_mission_edit_travel_div_" + fields[i]).val(val);
+      }*/
       else 
       {
-        if (fields[i] == "cost" || fields[i] == "carbon_footprint" || fields[i] == "nb_person" || fields[i] == "mean") {
+        if (fields[i] == "cost" || fields[i] == "travelId" || fields[i] == "carbon_footprint" || fields[i] == "nb_person" || fields[i] == "mean") {
           val = $(fieldId).attr("tv");
         }
+        console.log("[editTravelDiv] #lab_mission_edit_travel_div_" + fields[i] + " = '" + val + "'");
         $("#lab_mission_edit_travel_div_" + fields[i]).val(val);
       }
     }
@@ -490,6 +582,14 @@ function editTravelDiv(id) {
 
 function deleteTravelTr(id) {
   $("#lab_mission_table_tr_"+id).remove();
+
+  if ($("#lab_mission_token").length && $("#lab_mission_token").val() != 0) {
+    data = {
+      'action' : 'lab_travel_delete',
+      'id' : id,
+    }
+    callAjax(data, "Travel deleted", null, null, null);
+  }
   deleteTravelId(id);
 }
 
@@ -516,10 +616,12 @@ function addTravel(id, fields) {
   tr.append(tdAdd);
   createTravelHiddenField(tdEdit, id, "carbon_footprint", fields);
   createTravelHiddenField(tdEdit, id, "nb_person", fields);
+  createTravelHiddenField(tdEdit, id, "travelId", fields);
 
   tdEdit.click(function (e) {
     editTravelDiv($(this).attr("travelId"));
   });
+
   tdAdd.click(function (e) {
     emptyTravelDivFields();
     editTravelDiv(getNewTravelId());
@@ -539,7 +641,8 @@ function createTravelHiddenField(td, id, fieldName, fields) {
 
 function createTravelBooleanField(tr, id, fieldName, fields) {
   let displayValue = notOkHtmlField();
-  if(fields[fieldName] === true || fields[fieldName] == "true") {
+  //if(fields[fieldName] === true || fields[fieldName] == "true") {
+  if(fields[fieldName] == "1"){
     displayValue = okHtmlField();
   }
   createTravelTdToTr(tr, id, fieldName, displayValue, fields[fieldName]);
@@ -608,6 +711,7 @@ function nowHour() {
 }
 
 function addEmptyTravel(id) {  
+  console.log("[addEmptyTravel]" + id);
   fields = {};
   fields["dateGoTo"]    = nowDay();
   fields["timeGoTo"]    = nowHour();
@@ -623,6 +727,7 @@ function addEmptyTravel(id) {
   fields["dateReturn"]  = "0000-00-00";
   fields["timeReturn"]  = "00:00";
   fields["nb_person"]   = "1";
+  fields["travelId"]    = "-1";
   console.log("[addEmptyTravel] " + id);
   console.log(fields);
   addTravel(id, fields);
@@ -643,8 +748,19 @@ function LABLoadInvitation() {
     initialCountry: "fr"
   }));
   console.log("[LABLoadInvitation]");
+  //console.log($("#lab_mission_token").val());
   jQuery(function($) {
-    addEmptyTravel("0");
+    if ($("#lab_mission_token").length && $("#lab_mission_token").val() != 0) {
+      data = {
+        'action' : 'lab_travels_load',
+        'id' : $("#lab_mission_id").val(),
+      }
+      callAjax(data, null, displayTravels, null, null);
+    }
+    else {
+      addEmptyTravel("0");
+    }
+    console.log("[LABLoadInvitation] LA1");
     $("#inviteDiv").hide();
     $("#lab_mission_edit_travel_div").hide();
     $("#returnSpanDate").hide();
@@ -668,7 +784,7 @@ function LABLoadInvitation() {
     });
 
     $("#lab_mission_validate").click(function(e) {
-      
+      console.log("[$(#lab_mission_validate).click]");
       invitation_submit(function() {
         return;
       });
@@ -689,6 +805,10 @@ function LABLoadInvitation() {
     $(".lab_fe_modal_close").click(function(e) {
       $("#lab_mission_edit_travel_div").hide();
     });
+
+    if ($("#lab_mission option:selected" ).text() == "Invitation") {
+      $("#inviteDiv").show();
+    }
 
     $("#lab_mission").change(function (e) {
       console.log($("#lab_mission option:selected" ).text());
@@ -881,6 +1001,7 @@ function LABLoadInvitation() {
     $("#lab_send_group_chief").click(function() {
       if ($("#invitationForm").prop('submited')==null) {
         if (document.querySelector("#invitationForm form").checkValidity()) {
+          console.log("[$(#lab_send_group_chief).click]");
           invitation_submit(function () {
             data = {
               'action': 'lab_invitations_complete',
@@ -915,6 +1036,7 @@ function LABLoadInvitation() {
     $("#lab_send_manager").click(function() {
       if ($("#invitationForm").prop('submited')==null) {
         if (document.querySelector("#invitationForm form").checkValidity()) {
+          console.log("[$(#lab_send_manager).click]");
           invitation_submit(function() {
             data = {
               'action': 'lab_invitations_validate',
@@ -951,6 +1073,7 @@ if (document.querySelector("#invitationForm")!=null) {
   LABLoadInvitation();
 }
 function formAction() {
+  console.log("[formAction]");
   invitation_submit(function() {
     return;
   });

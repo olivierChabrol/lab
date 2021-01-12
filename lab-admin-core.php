@@ -561,25 +561,50 @@ function lab_admin_contract_create_table() {
  ***********************************************************************************************************/
 
 function lab_mission_save($missionId, $travels) {
-    global $wpdb;
-
     foreach ($travels as $travel) {
-        $a = array();
-        $a["mission_id"] = $missionId;
-        $a["country_from"] = $travel["countryFrom"];
-        $a["travel_from"] = $travel["cityFrom"];
-        $a["country_to"] = $travel["countryTo"];
-        $a["travel_to"] = $travel["cityTo"];
-        $a["travel_date"] = $travel["dateGoTo"]." ".$travel["timeGoTo"].":00";
-        $a["means_of_locomotion"] = $travel["mean"];
-        $a["estimated_cost"] = $travel["cost"];
-        $a["round_trip"] = ($travel["rt"]=="false"?0:1);
-        $a["reference"] = $travel["ref"];
-        $a["nb_person"] = 1;
-        $a["carbon_footprint"] = $travel["carbon_footprint"];
-        $a["travel_datereturn"] = $travel["dateReturn"]." ".$travel["timeReturn"].":00";
-        $wpdb->insert($wpdb->prefix.'lab_mission_route', $a);
+        $travel['missionId'] = $missionId;
+        lab_mission_save_travel($travel);
     }
+}
+
+function lab_mission_remap_fields($fields) {
+    $a = array();
+    $a["mission_id"] = $fields["missionId"];
+    $a["country_from"] = $fields["countryFrom"];
+    $a["travel_from"] = $fields["cityFrom"];
+    $a["country_to"] = $fields["countryTo"];
+    $a["travel_to"] = $fields["cityTo"];
+    $a["travel_date"] = $fields["dateGoTo"]." ".$fields["timeGoTo"].":00";
+    $a["means_of_locomotion"] = $fields["mean"];
+    $a["estimated_cost"] = $fields["cost"];
+    $a["round_trip"] = $fields["rt"]; //($fields["rt"]=="false"?0:1);
+    $a["reference"] = $fields["ref"];
+    $a["nb_person"] = $fields["nb_person"];
+    $a["carbon_footprint"] = $fields["carbon_footprint"];
+    if($a["round_trip"] == 0) {
+        $a["travel_datereturn"] = NULL;
+    }
+    else {
+        $a["travel_datereturn"] = $fields["dateReturn"]." ".$fields["timeReturn"].":00";
+    }
+    return $a;
+}
+
+function lab_mission_save_travel($travel, $remap=True) {
+    global $wpdb;
+    $a = null;
+    if ($remap) { 
+        $b = array(); 
+        $a = lab_mission_remap_fields($travel);
+        $b[] = $travel;
+        $b[] = $a;  
+        return $b;
+    }
+    else {
+        $a = $travel;
+    }
+    $wpdb->insert($wpdb->prefix.'lab_mission_route', $a);
+    return $wpdb->insert_id;
 }
 
 function lab_mission_load_travels($missionId) {
@@ -589,10 +614,26 @@ function lab_mission_load_travels($missionId) {
     return $results;
 }
 
+function lab_mission_delete_travel($id) {
+    global $wpdb;
+    $wpdb->delete($wpdb->prefix.'lab_mission_route', array('id' => $id));
+}
+
+function lab_mission_update_travel($travelId, $travelFields){
+    global $wpdb;
+    if (isset($travelId) && !empty($travelId)) {
+        $wpdb->update($wpdb->prefix.'lab_mission_route', $travelFields, array('id' => $travelId));
+        return $travelFields;
+    }
+    else {
+        return lab_mission_save_travel($travelFields, False);
+    }
+}
+
 function lab_admin_mission_create_table() {
     global $wpdb;
     $sql = "CREATE TABLE IF NOT EXISTS `".$wpdb->prefix."lab_mission_route` (
-        `id` bigint NOT NULL,
+        `id` bigint NOT NULL AUTO_INCREMENT,
         `mission_id` bigint NOT NULL,
         `country_from` varchar(100) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
         `travel_from` varchar(100) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
@@ -603,7 +644,11 @@ function lab_admin_mission_create_table() {
         `round_trip` BOOLEAN NOT NULL,
         `nb_person` int NOT NULL,
         `carbon_footprint` int NOT NULL,
-        `travel_datereturn` datetime NOT NULL
+        `travel_datereturn` datetime,
+        `estimated_cost` float NOT NULL,
+        `real_cost float` NOT NULL,
+        `reference varchar(255)` COLLATE utf8_bin NOT NULL,
+        PRIMARY KEY (id)
     ) ENGINE=InnoDB";
     return $wpdb->get_results($sql);
 }

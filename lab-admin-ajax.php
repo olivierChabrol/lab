@@ -1198,6 +1198,24 @@ function lab_invitations_createTables_Req() {
   return;
 }
 
+function lab_travels_ajax_load() {
+  $missionId = $_POST['id'];
+  wp_send_json_success(lab_mission_load_travels($missionId));
+}
+
+function lab_travel_ajax_delete() {
+  $travelId = $_POST['id'];
+  wp_send_json_success(lab_mission_delete_travel($travelId));
+}
+
+function lab_travel_ajax_save() {
+  $travelId  = $_POST['travelId'];
+  
+  $travelFields = lab_mission_remap_fields($_POST);
+  
+  wp_send_json_success(lab_mission_update_travel($travelId, $travelFields));
+  //wp_send_json_success($travelFields);
+}
 
 function lab_invitations_new() {
   $fields = $_POST['fields'];

@@ -18,16 +18,23 @@ function lab_mission($args) {
     $url = $wp->request;
     $host = null;
     $invitationStr = "";
+    $token='0';
     if ( isset($param['hostpage']) ) {
-        if ( ! isset(explode("/",$url)[1])) { //Aucun token, donc l'invitant crée lui-même une nouvelle invitation
-            $token='0';
+        $a = explode("/",$url)[1];
+        if ( ! isset($a)) { //Aucun token, donc l'invitant crée lui-même une nouvelle invitation
             $host = new labUser(get_current_user_id());
             $invitationStr = "<h3>Pas de token</h3>";
         } else {//Token fournit, récupère les informations existantes
-            $token = explode("/",$url)[1];
-            $invitationStr = "<h3>token".$token."</h3>";
-            $invitation=lab_invitations_getByToken($token);
+            $token = $a;
+            //$travels = lab_mission_route_get($token);
+
+            $invitationStr = "<h3>token : ".$token."</h3>";
+            $invitation    = lab_invitations_getByToken($token);
+            $invitationStr .= '<input type="hidden" id="lab_mission_token" value="'.$token.'"/>';
+            $invitationStr .= '<input type="hidden" id="lab_mission_id" value="'.$invitation->id.'"/>';
+            //$travels       = 
             //var_dump($invitation);
+            
             $charges = json_decode($invitation->charges);
             if (!isset($invitation)) {
                 return esc_html__("Token d'invitation invalide",'lab');
@@ -55,7 +62,7 @@ function lab_mission($args) {
             $host = new labUser(get_current_user_id());
         }
     }
-    $newForm = (!$param['hostpage'] || $token=='0') ? 1 : 0 ; //Le formulaire est-il nouveau ? Si non, remplit les champs avec les infos existantes
+    $newForm = (/*(!$param['hostpage'] ||*/ $token=='0') ? true : false ; //Le formulaire est-il nouveau ? Si non, remplit les champs avec les infos existantes
     $invitationStr .= '<div id="invitationForm" hostForm='.$param['hostpage'].' token="'.(($param['hostpage'] && strlen($token)>1) ? $token : '').'" newForm='.$newForm.'>
                       <h2>'.esc_html__("Formulaire","lab").'<i class="fas fa-arrow-up"></i></h2>'.$invitationStr;
     $invitationStr .= '
@@ -80,29 +87,29 @@ function lab_mission($args) {
         $invitationStr .= '<option value="'.$missionparam->id.'" '.$selectedGroup.'>'.esc_html__($missionparam->value,"lab")                                                                                                                                                                                      .'</option>';
     }
     $invitationStr .= '</select>
-            <input style="display:none" type="text" id="lab_mission_other" value="'.(!$newForm ? $invitation->mission_objective : '').'">
+            <input style="display:none" type="text" id="lab_mission_other" value="'.($newForm ? '' : $invitation->mission_objective).'">
             <p style="display:none" id="lab_mission_other_desc">'.esc_html__("Précisez la nature de votre mission ici.","lab").'</p>
         </div>
         <div id="inviteDiv">
         <hr>
-        <h3>'.esc_html__("Informations de l'invité","lab").'</h3>
+        <h3>'.esc_html__("Guest Informations","lab").'</h3>
         <div class="lab_invite_field">
             <label for="lab_email">'.esc_html__("Email","lab").'<span class="lab_form_required_star"> *</span></label>
             <input type="email" required id="lab_email" guest_id="" name="lab_email"value="'.(!$newForm ? $guest->email : '').'">
         </div>
         <div class="lab_invite_row" id="lab_fullname">
             <div class="lab_invite_field">
-                <label for="lab_firstname">'.esc_html__("Prénom","lab").'<span class="lab_form_required_star"> *</span></label>
+                <label for="lab_firstname">'.esc_html__("Firstname","lab").'<span class="lab_form_required_star"> *</span></label>
                 <input type="text" required id="lab_firstname" name="lab_firstname" guest_id="'.(!$newForm ? $guest->id : '').'" value="'.(!$newForm ? $guest->first_name : '').'">
             </div>
             <div class="lab_invite_field">
-                <label for="lab_lastname">'.esc_html__("Nom","lab").'<span class="lab_form_required_star"> *</span></label>
+                <label for="lab_lastname">'.esc_html__("Lastname","lab").'<span class="lab_form_required_star"> *</span></label>
                 <input type="text" required id="lab_lastname" name="lab_lastname" value="'.(!$newForm ? $guest->last_name : '').'">
             </div>
         </div>
         <div id="lab_phone_country">
             <div class="lab_invite_field">
-                <label for="lab_phone">'.esc_html__("Numéro de téléphone","lab").'</label>
+                <label for="lab_phone">'.esc_html__("Phone Number","lab").'</label>
                 <input type="tel" id="lab_phone" phoneval="'.(!$newForm ? $guest->phone : '').'">
             </div>
             <div class="lab_invite_field">
@@ -130,11 +137,11 @@ function lab_mission($args) {
             
         $invitationStr .= 
             '>
-            <label for="lab_hostel">'.esc_html__("Besoin d'un hôtel","lab").'</label>
+            <label for="lab_hostel">'.esc_html__("Need a hostel","lab").'</label>
         </div>
         </div><!-- end invite div -->
         <hr>
-        <h3>'.esc_html__("Moyen de transport","lab").'</h3>
+        <h3>'.esc_html__("Journeys","lab").'</h3>
         <div id="lab_mission_mean_travel">
             <input type="hidden" id="lab_mission_travels" value="">
             <table id="lab_mission_travels_table" class="table">
@@ -155,7 +162,7 @@ function lab_mission($args) {
         <div id="lab_mission_edit_travel_div" class="lab_fe_modal">
             <div class="lab_fe_modal-content">
                 <span class="lab_fe_modal_close">&times;</span>
-                <label for="lab_mission_edit_travel_div_dateGoTo">'.esc_html__("Date de départ","lab").'</label>
+                <label for="lab_mission_edit_travel_div_dateGoTo">'.esc_html__("Departure date","lab").'</label>
                 <input type="date" id="lab_mission_edit_travel_div_dateGoTo">
                 <input type="time" step="60" id="lab_mission_edit_travel_div_timeGoTo" name="lab_arrival_time" value="">
                 <br/>
@@ -171,7 +178,7 @@ function lab_mission($args) {
                 $invitationStr .= lab_html_select_str("lab_mission_edit_travel_div_mean", "lab_mission_edit_travel_div_mean", "", "lab_admin_get_params_meanOfTransport", null, array("value"=>"0","label"=>"None"), "");;
                 $invitationStr .=
                 '<br/>
-                <label for="lab_mission_edit_travel_div_nb_person">'.esc_html__("number of persons","lab").'</label>
+                <label for="lab_mission_edit_travel_div_nb_person">'.esc_html__("Number of persons","lab").'</label>
                 <input type="text" id="lab_mission_edit_travel_div_nb_person" >
                 <br/>
                 <label for="lab_mission_edit_travel_div_ref">'.esc_html__("Travel reference","lab").'</label>
@@ -184,7 +191,7 @@ function lab_mission($args) {
                 <input type="checkbox" id="lab_mission_edit_travel_div_rt" >
                 <br/>
                 <span id="returnSpanDate">
-                    <label for="lab_mission_edit_travel_div_dateReturn">'.esc_html__("Date de retour","lab").'</label>
+                    <label for="lab_mission_edit_travel_div_dateReturn">'.esc_html__("Return date","lab").'</label>
                     <input type="date" id="lab_mission_edit_travel_div_dateReturn">
                     <input type="time" step="60" id="lab_mission_edit_travel_div_timeReturn" value="">
 
@@ -192,6 +199,7 @@ function lab_mission($args) {
                 <br/>
                 <label for="lab_mission_edit_travel_div_carbon_footprint">'.esc_html__("Carbon footprint","lab").'</label>
                 <input type="text" id="lab_mission_edit_travel_div_carbon_footprint" >
+                <input type="hidden" id="lab_mission_edit_travel_div_travelId" value="" >
                 <br/>
                 <button id="lab_mission_edit_travel_save_button" travelId="">Save</button>
             </div>
@@ -287,6 +295,30 @@ function lab_mission($args) {
         }
     return $invitationStr;
 }
+
+
+/*function addTravel($travel, $id) {
+
+    $stringToGo = explode (" ", $travel->travel_date);
+    $stringReturn = explode (" ", $travel->travel_datereturn);
+
+    
+
+    $html = '<tr>';
+    $html .= '<td id="travel_dateGoTo_'.$id.'">'.$stringToGo[0].'</td>';//date
+    $html .= '<td id="travel_timeGoTo_'.$id.'">'.$stringToGo[1].'</td>';// heure
+    $html .= '<td id="travel_country_from_'.$id.'">'.$travel->country_from.'</td>';
+    $html .= '<td id="travel_city_from_'.$id.'">'.$travel->city_from.'</td>';
+    $html .= '<td id="travel_country_to_'.$id.'">'.$travel->country_to.'</td>';
+    $html .= '<td id="travel_city_to_'.$id.'">'.$travel->travel_to.'</td>';
+    $html .= '<td id="travel_mean_'.$id.'">'.$travel->mean_of_locomotion.'</td>';
+    $html .= '<td id="travel_ref_'.$id.'"></td>';
+    $html .= '<td id="travel_bt_'.$id.'">'.$travel->round_trip.'</td>';
+    $html .= '<td id="travel_date_return_'.$id.'">'.$stringReturn[0].'</td>';
+    $html .= '<td id="travel_time_return_'.$id.'">'.$stringReturn[1].'</td>';
+    $html .= '</tr>';
+    return $html;
+}*/
 
 function lab_invitation($args) {
     $param = shortcode_atts(array(
