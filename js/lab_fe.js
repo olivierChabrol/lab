@@ -15,6 +15,24 @@ jQuery(function($){
     loadDirectory();
   });
 
+
+  var dateClass='.datechk';
+  var timeClass='.timechk';
+  $(document).ready(function ()
+  {
+    if (document.querySelector(dateClass).type !== 'date') {  
+      $(dateClass).datepicker({
+        dateFormat : "yy-mm-dd"
+      });
+    }
+
+    /*if(document.querySelector(timeClass).type !== 'time') {
+      $(timeClass).timepicker({
+        timeFormat : "h:mm"
+      });
+    }*/
+  });
+
   function loadDirectory()
   {
     let letter = $("#letterSearch").val();
@@ -578,6 +596,7 @@ function editTravelDiv(id) {
   }
   $("#lab_mission_edit_travel_save_button").attr("travelId", id);
   $("#lab_mission_edit_travel_div").show();
+
 }
 
 function deleteTravelTr(id) {

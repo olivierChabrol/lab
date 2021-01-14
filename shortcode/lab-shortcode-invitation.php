@@ -146,14 +146,14 @@ function lab_mission($args) {
             <input type="hidden" id="lab_mission_travels" value="">
             <table id="lab_mission_travels_table" class="table">
                 <thead>
-                    <td colspan="2">Date</td>
+                    <td colspan="2">Departure date</td>
                     <td colspan="2">From</td>
                     <td colspan="2">To</td>
                     <td>Mean</td>
                     <td>Cost</td>
                     <td>Ref</td>
                     <td>RT</td>
-                    <td colspan="2">Date retour si AR</td>
+                    <td colspan="2">Return date if RT</td>
                     <td colspan="2"><i id="addTravel" class="fa fa-plus pointer" aria-hidden="true" title="Add travel"></i></td>
                 </thead>
                 <tbody id="lab_mission_travels_table_tbody"/>
@@ -163,8 +163,8 @@ function lab_mission($args) {
             <div class="lab_fe_modal-content">
                 <span class="lab_fe_modal_close">&times;</span>
                 <label for="lab_mission_edit_travel_div_dateGoTo">'.esc_html__("Departure date","lab").'</label>
-                <input type="date" id="lab_mission_edit_travel_div_dateGoTo">
-                <input type="time" step="60" id="lab_mission_edit_travel_div_timeGoTo" name="lab_arrival_time" value="">
+                <input type="date" class="datechk" placeholder="yyyy-mm-dd" id="lab_mission_edit_travel_div_dateGoTo">
+                <input type="time" placeholder="hh:mm" step="60" id="lab_mission_edit_travel_div_timeGoTo" name="lab_arrival_time" value="">
                 <br/>
                 <label for="lab_mission_edit_travel_div_countryFrom">'.esc_html__("City departure","lab").'</label>
                 <input type="text" id="lab_mission_edit_travel_div_countryFrom"  countryCode="FR">
@@ -192,8 +192,8 @@ function lab_mission($args) {
                 <br/>
                 <span id="returnSpanDate">
                     <label for="lab_mission_edit_travel_div_dateReturn">'.esc_html__("Return date","lab").'</label>
-                    <input type="date" id="lab_mission_edit_travel_div_dateReturn">
-                    <input type="time" step="60" id="lab_mission_edit_travel_div_timeReturn" value="">
+                    <input type="date" class="datechk" id="lab_mission_edit_travel_div_dateReturn">
+                    <input type="time" placeholder="hh:mm" step="60" id="lab_mission_edit_travel_div_timeReturn" value="">
 
                 </span>
                 <br/>
