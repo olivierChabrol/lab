@@ -354,11 +354,19 @@ function getMeanOfTransportCode(mean) {
   return meansOfTransportReverse[mean];
 }
 
+/**
+ * Get fields in DIV values, and save them into the table
+ */
 function saveTravelModification(id) {
   console.log("[saveTravelModification] " + id);
   let f = {};
   let val = "";
   let fields = getEditTravelField();
+
+  data = {
+    'action' : 'lab_travel_save',
+    'missionId' : $("#lab_mission_id").val(),
+  }
 
   for (let i = 0 ; i < fields.length ; i++) {
     if(fields[i].startsWith("country")) {
@@ -368,11 +376,9 @@ function saveTravelModification(id) {
       val = ""+$('#lab_mission_edit_travel_div_rt').is(":checked");
     }*/
     else if (fields[i] == "rt") {
+      val = 0;
       if($('#lab_mission_edit_travel_div_rt').is(":checked")) {
         val = 1;
-      }
-      else {
-        val = 0
       }
     }
     else {
@@ -380,6 +386,7 @@ function saveTravelModification(id) {
     }
     console.log("[saveTravelModification] " +fields[i] + " '" + val + "'");
     f[fields[i]] = val;
+    data[fields[i]] = val;
   }
   //console.log(f);
   //console.log(listMeanOfTransport());
@@ -393,33 +400,6 @@ function saveTravelModification(id) {
 
   // if edit existing mission with travels 
   if ($("#lab_mission_token").length && $("#lab_mission_token").val() != 0) {
-    let fields = getEditTravelField();
-    data = {
-      'action' : 'lab_travel_save',
-      'missionId' : $("#lab_mission_id").val(),
-      /*'travelId' : $("#lab_mission_edit_travel_div_travelId").attr("tv"),*/
-    }
-    let val = "";
-    for (let i = 0 ; i < fields.length ; i++) {
-      if(fields[i].startsWith("country")) {
-        val = $("#lab_mission_edit_travel_div_" + fields[i]).countrySelect("getSelectedCountryData")['iso2'];
-      }
-      /*else if (fields[i] == "rt") {
-        val = ""+$('#lab_mission_edit_travel_div_rt').is(":checked");
-      }*/
-      else if (fields[i] == "rt") {
-        if($('#lab_mission_edit_travel_div_rt').is(":checked")) {
-          val = 1;
-        }
-        else {
-          val = 0
-        }
-      }
-      else {
-        val = $("#lab_mission_edit_travel_div_" + fields[i]).val();
-      }
-      data[fields[i]] = val;
-    }
     callAjax(data, "Travel updated", null, null, null);
   }
 }
@@ -539,6 +519,7 @@ function emptyTravelDivFields() {
   $("#lab_mission_edit_travel_div_countryTo" ).countrySelect("setCountry", "France");
   $("#lab_mission_edit_travel_div_carbon_footprint" ).val(" ");
   $("#lab_mission_edit_travel_div_nb_person" ).val("1");
+  $("#lab_mission_edit_travel_div_travelId" ).val("");
 }
 
 function getTravel(id) {
@@ -558,7 +539,7 @@ function editTravelDiv(id) {
   console.log(fields)
   for (let i = 0 ; i < fields.length ; i++) {
     let fieldId = "#travel_" + fields[i] + "_" + id;
-    console.log("[editTravelDiv] id : " + fieldId + " " + $(fieldId).length);
+    //console.log("[editTravelDiv] id : " + fieldId + " " + $(fieldId).length);
     if ($(fieldId).length > 0) {
       let val = $(fieldId).html();
       //console.log("[editTravelDiv] fieldId (" + fieldId + ") = " + val);
