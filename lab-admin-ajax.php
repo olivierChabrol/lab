@@ -1225,7 +1225,6 @@ function lab_travel_ajax_delete() {
 
 function lab_travel_ajax_save() {
   $travelId  = $_POST['travelId'];
-  
   $travelFields = lab_mission_remap_fields($_POST);
   
   wp_send_json_success(lab_mission_update_travel($travelId, $travelFields));

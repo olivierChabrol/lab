@@ -622,13 +622,26 @@ function lab_mission_delete_travel($id) {
 
 function lab_mission_update_travel($travelId, $travelFields){
     global $wpdb;
+    $userId = get_current_user_id();
+    $userMeta = lab_admin_usermeta_names($userId);
+    $msg = "";
+    $return = "";
     if (isset($travelId) && !empty($travelId)) {
         $wpdb->update($wpdb->prefix.'lab_mission_route', $travelFields, array('id' => $travelId));
-        return $travelFields;
+        $msg = '¤Trajet modifié';
+        $return = $travelFields;
     }
     else {
-        return lab_mission_save_travel($travelFields, False);
+        $msg = '¤Trajet ajouté';
+        $return = lab_mission_save_travel($travelFields, False);
     }
+    lab_invitations_addComment(array(
+        'content' => $msg." par " . $userMeta->first_name . " " . $userMeta->last_name,
+        'timestamp'=> date("Y-m-d H:i:s",strtotime("+1 hour")),
+        'author' => 'System',
+        'invite_id' => $travelFields["mission_id"]
+    ));
+    return $return;
 }
 
 function lab_admin_mission_create_table() {
