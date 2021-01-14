@@ -1228,7 +1228,6 @@ function lab_travel_ajax_save() {
   $travelFields = lab_mission_remap_fields($_POST);
   
   wp_send_json_success(lab_mission_update_travel($travelId, $travelFields));
-  //wp_send_json_success($travelFields);
 }
 
 function lab_invitations_new() {
