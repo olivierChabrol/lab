@@ -629,7 +629,7 @@ function lab_mission_update_travel($travelId, $travelFields){
     if (isset($travelId) && !empty($travelId)) {
         $wpdb->update($wpdb->prefix.'lab_mission_route', $travelFields, array('id' => $travelId));
         $msg = '¤Trajet modifié';
-        $return = $travelFields;
+        $return = $travelId;
     }
     else {
         $msg = '¤Trajet ajouté';

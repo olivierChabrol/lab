@@ -367,14 +367,13 @@ function saveTravelModification(id) {
     'action' : 'lab_travel_save',
     'missionId' : $("#lab_mission_id").val(),
   }
+  // just to reinject the db id inside the correct line id
+  data['jsId'] = id;
 
   for (let i = 0 ; i < fields.length ; i++) {
     if(fields[i].startsWith("country")) {
       val = $("#lab_mission_edit_travel_div_" + fields[i]).countrySelect("getSelectedCountryData")['iso2'];
     }
-    /*else if (fields[i] == "rt") {
-      val = ""+$('#lab_mission_edit_travel_div_rt').is(":checked");
-    }*/
     else if (fields[i] == "rt") {
       val = 0;
       if($('#lab_mission_edit_travel_div_rt').is(":checked")) {
@@ -388,8 +387,6 @@ function saveTravelModification(id) {
     f[fields[i]] = val;
     data[fields[i]] = val;
   }
-  //console.log(f);
-  //console.log(listMeanOfTransport());
 
   if (travelExist(id)) {
     editTravelTd(id, f);
@@ -400,8 +397,12 @@ function saveTravelModification(id) {
 
   // if edit existing mission with travels 
   if ($("#lab_mission_token").length && $("#lab_mission_token").val() != 0) {
-    callAjax(data, "Travel updated", null, null, null);
+    callAjax(data, "Travel updated", updateTravelIdFromDb, null, null);
   }
+}
+
+function updateTravelIdFromDb(data) {
+  $("#travel_travelId_" + data.jsId).attr("tv", data.id);
 }
 
 function displayTravels(data) {
