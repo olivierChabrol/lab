@@ -657,7 +657,7 @@ function lab_admin_mission_create_table() {
         `round_trip` BOOLEAN NOT NULL,
         `nb_person` int NOT NULL,
         `carbon_footprint` int NOT NULL,
-        `travel_datereturn` datetime,
+        `travel_datereturn` datetime DEFAULT NULL,
         `estimated_cost` float NOT NULL,
         `real_cost float` NOT NULL,
         `reference varchar(255)` COLLATE utf8_bin NOT NULL,
