@@ -19,6 +19,21 @@ function lab_admin_ajax_user_info()
 }
 
 /********************************************************************************************
+ * MISSION
+ ********************************************************************************************/
+function lab_mission_ajax_load() {
+  $missionId = $_POST['id'];
+  if (!isset($missionId) || empty($missionId)) {
+    $missionId = null;
+  }
+  $filters = $_POST['filters'];
+  if (!isset($filters) || empty($filters)) {
+    $filters = null;
+  }
+  wp_send_json_success(lab_mission_load($missionId, $filters));
+}
+
+/********************************************************************************************
  * BUDGET
  ********************************************************************************************/
 function lab_ajax_admin_createTable_budget_info()
@@ -1205,15 +1220,18 @@ function lab_travels_ajax_load() {
 
 function lab_travel_ajax_delete() {
   $travelId = $_POST['id'];
-  wp_send_json_success(lab_mission_delete_travel($travelId));
+  $missionId = $_POST['mission_id'];
+  wp_send_json_success(lab_mission_delete_travel($travelId, $missionId));
 }
 
 function lab_travel_ajax_save() {
   $travelId  = $_POST['travelId'];
   $travelFields = lab_mission_remap_fields($_POST);
   
-  wp_send_json_success(lab_mission_update_travel($travelId, $travelFields));
-  //wp_send_json_success($travelFields);
+  $retrun = array();
+  $retrun["id"] = lab_mission_update_travel($travelId, $travelFields);
+  $retrun["jsId"] = $_POST['jsId'];
+  wp_send_json_success($retrun);
 }
 
 function lab_invitations_new() {

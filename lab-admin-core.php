@@ -1,4 +1,5 @@
 <?php
+require_once("core/lab-admin-core-mission.php");
 
 function lab_admin_user_info($userId, $fields) {
     global $wpdb;
@@ -347,7 +348,7 @@ function lab_budget_info_load($budgetId, $filters = null) {
     }
     $data["params"] = $params;
 
-    $sql = "SELECT DISTINCT YEAR(`order_date`) AS year FROM `wp_lab_budget_info` ORDER BY `year` DESC";
+    $sql = "SELECT DISTINCT YEAR(`order_date`) AS year FROM `".$wpdb->prefix."lab_budget_info` ORDER BY `year` DESC";
     $results = $wpdb->get_results($sql);
 
     $years   = array();
@@ -614,9 +615,17 @@ function lab_mission_load_travels($missionId) {
     return $results;
 }
 
-function lab_mission_delete_travel($id) {
+function lab_mission_delete_travel($id, $missionId) {
     global $wpdb;
+    $userId = get_current_user_id();
+    $userMeta = lab_admin_usermeta_names($userId);
     $wpdb->delete($wpdb->prefix.'lab_mission_route', array('id' => $id));
+    lab_invitations_addComment(array(
+        'content' => "¤Trajet supprimé par " . $userMeta->first_name . " " . $userMeta->last_name,
+        'timestamp'=> date("Y-m-d H:i:s",strtotime("+1 hour")),
+        'author' => 'System',
+        'invite_id' => $missionId
+    ));
 }
 
 function lab_mission_update_travel($travelId, $travelFields){
@@ -628,7 +637,7 @@ function lab_mission_update_travel($travelId, $travelFields){
     if (isset($travelId) && !empty($travelId)) {
         $wpdb->update($wpdb->prefix.'lab_mission_route', $travelFields, array('id' => $travelId));
         $msg = '¤Trajet modifié';
-        $return = $travelFields;
+        $return = $travelId;
     }
     else {
         $msg = '¤Trajet ajouté';
@@ -2541,6 +2550,28 @@ function drop_table($tableName) {
 }
 
 function lab_create_roles() {
+    add_role(
+        'mission_budget_manager',
+        'Mission Budget Manager',
+        [
+            'read'      => true
+        ]
+    );
+    $role = get_role('mission_budget_manager');
+    $role ->add_cap('budget_mission',true);
+    $role = get_role('administrator');
+    $role ->add_cap('budget_mission',true);
+    add_role(
+        'mission_manager',
+        'Mission Manager',
+        [
+            'read'      => true
+        ]
+    );
+    $role = get_role('mission_manager');
+    $role ->add_cap('mission_manager',true);
+    $role = get_role('administrator');
+    $role ->add_cap('mission_manager',true);
     add_role(
         'budget_info_manager',
         'Budget Info Manager',
