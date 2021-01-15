@@ -70,7 +70,7 @@ function lab_mission($args) {
     $invitationStr .= '<div id="invitationForm" hostForm='.$param['hostpage'].' token="'.(($param['hostpage'] && strlen($token)>1) ? $token : '').'" newForm='.$newForm.'>
                       <h2>'.esc_html__("Formulaire","lab").'<i class="fas fa-arrow-up"></i></h2>'.$invitationStr;
     $invitationStr .= '
-        <form action="javascript:formAction()">
+        <!-- <form action="javascript:formAction()"> -->
         <h3>'.esc_html__("Informations personnelles","lab").'</h3>
 
         <div class="lab_invite_field">
@@ -272,13 +272,13 @@ function lab_mission($args) {
                 $invitationStr .= '<div class="lab_invite_field">
                 <input '.($invitation->status>10 ? 'disabled' : '').' type="submit" value="'.esc_html__("Enregistrer","lab").'">
                 </div>'.($invitation->status>10 ? '<i>'.esc_html__("Cette invitation est déjà à l'étape suivante, pour la modifier, vous devez la renvoyer (via le bouton ci-dessous)",'lab').'</i>' : '').
-                '</form></div>
+                '<!-- </form>--></div>
                 <div class="lab_invite_row lab_send_manager"><p class="lab_invite_field">Cliquez ici pour valider la demande et la transmettre au pôle budget :</p><button id="lab_send_manager">'.esc_html__("Envoyer à l'administration",'lab').'</button></div>';
             } else {
                 $invitationStr .= '<div class="lab_invite_field">
                 <input '.($invitation->status>1 ? 'disabled' : '').' type="submit" value="'.esc_html__("Enregistrer","lab").'">
                 </div>'.($invitation->status>1 ? '<i>'.esc_html__("Cette invitation est déjà à l'étape suivante, pour la modifier, vous devez la renvoyer (via le bouton ci-dessous)",'lab').'</i>' : '').
-                '</form></div>
+                '<!-- </form>--></div>
                 <div class="lab_invite_row lab_send_group_chief"><p class="lab_invite_field">Cliquez ici pour compléter la demande et la transmettre au responsable du groupe :</p><button id="lab_send_group_chief">'.esc_html__("Envoyer au responsable",'lab').'</button></div>';
             }
         }
@@ -835,7 +835,14 @@ function lab_invitations_mail($type=1, $guest, $invite) {
             $date = date_create_from_format("Y-m-d H:i:s", $invite["creation_time"]);
             $content = "<p><i>".strftime('%A %d %B %G - %H:%M',$date->getTimestamp())."</i></p>";
             $content .= "<p>".esc_html__("Une demande d'invitation à l'I2M vous a été transmise.",'lab')."<br>"
-            .esc_html__("Vous pouvez la modifier en suivant",'lab')." <a href='".get_site_url()."/invite/".$invite['token']."/'>".esc_html__('ce lien','lab')."</a>.</p>";
+            .esc_html__("Vous pouvez la modifier en suivant",'lab')." <a href='".get_site_url()."";
+            if($invite["mission_objective"] == "255") {
+                $content .= "" . "/invitation/". "";
+            }
+            else {
+                $content .= "" . "/mission/". "";
+            }
+            $content .= "" . $invite['token']."/'>".esc_html__('ce lien','lab')."</a>.</p>";
             $content .= lab_InviteForm('',$guest,$invite);
             break;
         case 10: //Envoi du mail au responsable du groupe une fois la demande complétée
@@ -845,7 +852,14 @@ function lab_invitations_mail($type=1, $guest, $invite) {
             $date = date_create_from_format("Y-m-d H:i:s", $invite["completion_time"]);
             $content = "<p><i>".strftime('%A %d %B %G - %H:%M',$date->getTimestamp())."</i></p>";
             $content .= "<p>".esc_html__("Une demande d'invitation à l'I2M a été complétée.",'lab')."<br>"
-            .esc_html__("Vous pouvez la consulter en suivant",'lab')." <a href='".get_site_url()."/invite/".$invite['token']."/'>".esc_html__('ce lien','lab')."</a><br>
+            .esc_html__("Vous pouvez la consulter en suivant",'lab')." <a href='".get_site_url()."";
+            if($invite["mission_objective"] == "255") {
+                $content .= "" . "/invitation/". "";
+            }
+            else {
+                $content .= "" . "/mission/". "";
+            }
+            $content .= "" . $invite['token']."/'>".esc_html__('ce lien','lab')."</a><br>
             et modifier les informations si besoin. Vous pouvez ensuite la valider pour la transmettre au pôle budget.</p>";
             $content .= lab_InviteForm('host',$guest,$invite);
             break;

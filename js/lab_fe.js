@@ -428,7 +428,7 @@ function displayTravels(data) {
     fields["timeReturn"]  = strReturn[1];
     fields["nb_person"]   = obj.nb_person;
     fields["travelId"]    = obj.id;
-    addTravel(getNewTravelId(), fields);
+    addTravel(getNewTravelId(), fields, obj.mission_id);
   });
 }
 
@@ -577,11 +577,13 @@ function editTravelDiv(id) {
 
 }
 
-function deleteTravelTr(id) {
+function deleteTravelTr(id, mission_id) {
+
   if ($("#lab_mission_token").length && $("#lab_mission_token").val() != 0) {
     data = {
       'action' : 'lab_travel_delete',
       'id' : $("#travel_travelId_" + id).attr("tv"),
+      'mission_id' : mission_id
     }
     callAjax(data, "Travel deleted", null, null, null);
     $("#lab_mission_table_tr_"+id).remove();
@@ -592,7 +594,7 @@ function deleteTravelTr(id) {
   deleteTravelId(id);
 }
 
-function addTravel(id, fields) {
+function addTravel(id, fields, mission_id) {
   addTravelId(id);
   let tr = $("<tr/>").attr("id","lab_mission_table_tr_"+id);
   createDefaultTdToTr(tr, id, "dateGoTo", fields);
@@ -608,7 +610,10 @@ function addTravel(id, fields) {
   createDefaultTdToTr(tr, id, "dateReturn", fields);
   createDefaultTdToTr(tr, id, "timeReturn", fields);
   let tdEdit = $("<td/>").attr("class", "pointer").attr("travelId",id).html('<i class="fa fa-pencil"  aria-hidden="true" travelId="'+id+'"></i>');
-  let tdDel  = $("<td/>").attr("class", "pointer").attr("travelId",id).html('<i class="fa fa-trash-o" aria-hidden="true" travelId="'+id+'"></i>');
+  let tdDel  = $("<td/>").attr("class", "pointer").attr({
+    "travelId" : id,
+    "missionId" : mission_id
+  }).html('<i class="fa fa-trash-o" aria-hidden="true" travelId="'+id+'"></i>');
   let tdAdd  = $("<td/>").attr("class", "pointer").attr("travelId",id).html('<i class="fa fa-plus" aria-hidden="true" travelId="'+id+'"></i>');
   tr.append(tdEdit);
   tr.append(tdDel);
@@ -626,7 +631,7 @@ function addTravel(id, fields) {
     editTravelDiv(getNewTravelId());
   });
   tdDel.click(function (e) {
-    deleteTravelTr($(this).attr("travelId"));
+    deleteTravelTr($(this).attr("travelId"), $(this).attr("missionId"));
   });
   $("#lab_mission_travels_table_tbody").append(tr);
 }

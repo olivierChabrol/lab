@@ -615,9 +615,17 @@ function lab_mission_load_travels($missionId) {
     return $results;
 }
 
-function lab_mission_delete_travel($id) {
+function lab_mission_delete_travel($id, $missionId) {
     global $wpdb;
+    $userId = get_current_user_id();
+    $userMeta = lab_admin_usermeta_names($userId);
     $wpdb->delete($wpdb->prefix.'lab_mission_route', array('id' => $id));
+    lab_invitations_addComment(array(
+        'content' => "¤Trajet supprimé par " . $userMeta->first_name . " " . $userMeta->last_name,
+        'timestamp'=> date("Y-m-d H:i:s",strtotime("+1 hour")),
+        'author' => 'System',
+        'invite_id' => $missionId
+    ));
 }
 
 function lab_mission_update_travel($travelId, $travelFields){

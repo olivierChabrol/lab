@@ -1220,16 +1220,16 @@ function lab_travels_ajax_load() {
 
 function lab_travel_ajax_delete() {
   $travelId = $_POST['id'];
-  wp_send_json_success(lab_mission_delete_travel($travelId));
+  $missionId = $_POST['mission_id'];
+  wp_send_json_success(lab_mission_delete_travel($travelId, $missionId));
 }
 
 function lab_travel_ajax_save() {
   $travelId  = $_POST['travelId'];
   $travelFields = lab_mission_remap_fields($_POST);
   
-  $id = lab_mission_update_travel($travelId, $travelFields);
   $retrun = array();
-  $retrun["id"] = $id;
+  $retrun["id"] = lab_mission_update_travel($travelId, $travelFields);
   $retrun["jsId"] = $_POST['jsId'];
   wp_send_json_success($retrun);
 }
