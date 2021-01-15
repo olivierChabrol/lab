@@ -25,6 +25,7 @@ jQuery(function($){
         dateFormat : "yy-mm-dd"
       });
     }
+    hideShowInvitationDiv();
   });
 
   function loadDirectory()
@@ -428,7 +429,7 @@ function displayTravels(data) {
     fields["timeReturn"]  = strReturn[1];
     fields["nb_person"]   = obj.nb_person;
     fields["travelId"]    = obj.id;
-    addTravel(getNewTravelId(), fields, obj.mission_id);
+    addTravel(getNewTravelId(), fields, obj.id, obj.mission_id);
   });
 }
 
@@ -579,6 +580,8 @@ function editTravelDiv(id) {
 
 function deleteTravelTr(id, mission_id) {
 
+  console.log("[deleteTravelTr] " + id);
+
   if ($("#lab_mission_token").length && $("#lab_mission_token").val() != 0) {
     data = {
       'action' : 'lab_travel_delete',
@@ -594,7 +597,7 @@ function deleteTravelTr(id, mission_id) {
   deleteTravelId(id);
 }
 
-function addTravel(id, fields, mission_id) {
+function addTravel(id, fields, travelId, mission_id) {
   addTravelId(id);
   let tr = $("<tr/>").attr("id","lab_mission_table_tr_"+id);
   createDefaultTdToTr(tr, id, "dateGoTo", fields);
@@ -611,7 +614,8 @@ function addTravel(id, fields, mission_id) {
   createDefaultTdToTr(tr, id, "timeReturn", fields);
   let tdEdit = $("<td/>").attr("class", "pointer").attr("travelId",id).html('<i class="fa fa-pencil"  aria-hidden="true" travelId="'+id+'"></i>');
   let tdDel  = $("<td/>").attr("class", "pointer").attr({
-    "travelId" : id,
+    "id" : id,
+    "travelId" : travelId,
     "missionId" : mission_id
   }).html('<i class="fa fa-trash-o" aria-hidden="true" travelId="'+id+'"></i>');
   let tdAdd  = $("<td/>").attr("class", "pointer").attr("travelId",id).html('<i class="fa fa-plus" aria-hidden="true" travelId="'+id+'"></i>');
@@ -631,7 +635,7 @@ function addTravel(id, fields, mission_id) {
     editTravelDiv(getNewTravelId());
   });
   tdDel.click(function (e) {
-    deleteTravelTr($(this).attr("travelId"), $(this).attr("missionId"));
+    deleteTravelTr($(this).attr("id"), $(this).attr("missionId"));
   });
   $("#lab_mission_travels_table_tbody").append(tr);
 }
@@ -744,6 +748,16 @@ function createFieldObj(val, displayVal) {
   return obj;
 }
 
+function hideShowInvitationDiv() {
+  if($("#lab_mission option:selected" ).text() == "Invitation") {
+    $("#inviteDiv").show();
+  }
+  else{
+    $("#inviteDiv").hide();
+  }
+  
+}
+
 function LABLoadInvitation() {
   //Plug-in international phone : https://github.com/jackocnr/intl-tel-input 
   var inputTel = document.querySelector("input[type=tel]");
@@ -815,13 +829,18 @@ function LABLoadInvitation() {
 
     $("#lab_mission").change(function (e) {
       console.log($("#lab_mission option:selected" ).text());
+      hideShowInvitationDiv();
+    });
+
+    /*function hideShowInvitationDiv() {
       if($("#lab_mission option:selected" ).text() == "Invitation") {
         $("#inviteDiv").show();
       }
       else{
         $("#inviteDiv").hide();
       }
-    });
+      
+    }*/
 
     $("#invitationForm h2").click(function() {
       if ( $("#invitationForm").attr("wrapped")=="true" ) {
