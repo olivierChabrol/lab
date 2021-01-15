@@ -1101,7 +1101,7 @@ function formAction() {
   });
 }
 function invitation_submit(callback) {
-  console.log("[invitation_submit]");
+  console.log("[invitation_submit]" + travels);
   //document.querySelector("#primary-menu").scrollIntoView({behavior:"smooth"}); à faire correspondre au nouveau thème
   regex=/\"/g;
   jQuery(function($) {
@@ -1119,7 +1119,7 @@ function invitation_submit(callback) {
     for (let i = 0 ; i < travels.length ; i++) {
       travelsFields.push(getTravel(travels[i]));
     }
-
+    console.log("SALUT " + travelsFields[0]);
     fields = {
       'guest_firstName': $("#lab_firstname").val(),
       'guest_lastName': $("#lab_lastname").val(),
