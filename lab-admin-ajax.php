@@ -1274,6 +1274,7 @@ function lab_invitations_new() {
   }
   $invite["id"] = $missionId;
   lab_mission_save($missionId, $travels);
+  
   if (strlen($fields['comment'])>0) {
     lab_invitations_addComment(array(
       'content'=> $fields['comment'],

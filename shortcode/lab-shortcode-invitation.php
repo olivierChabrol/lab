@@ -77,7 +77,7 @@ function lab_mission($args) {
             <input type="text" required id="lab_hostname" name="lab_hostname" host_id="'.($host==null ? '' : $host->id.'" value="'.$host->first_name.' '.$host->last_name).'">
         </div>
         <div class="lab_invite_field">
-            <label for="lab_mission">'.esc_html__("Reason for the mission","lab").'<span class="lab_form_required_star"> *</span>'.$invitation->mission_objective.'</label>
+            <label for="lab_mission">'.esc_html__("Reason for the mission","lab").'<span class="lab_form_required_star">
             <select id="lab_mission" name="lab_mission">';
     foreach(AdminParams::get_params_fromId(AdminParams::PARAMS_MISSION_ID) as $missionparam)
     {
@@ -284,8 +284,7 @@ function lab_mission($args) {
         }
         else {
             $invitationStr .= '<div class="lab_invite_field">
-            <input type="submit" value="'.esc_html__("Valider","lab").'">
-            <button id="lab_mission_validate">Validate</button>
+            <button id="lab_mission_validate">'.esc_html__("Submit","lab").'</button>
         </div>';
         }
         if (!$newForm) {

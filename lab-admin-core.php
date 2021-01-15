@@ -562,10 +562,12 @@ function lab_admin_contract_create_table() {
  ***********************************************************************************************************/
 
 function lab_mission_save($missionId, $travels) {
+    $t = null;
     foreach ($travels as $travel) {
         $travel['missionId'] = $missionId;
-        lab_mission_save_travel($travel);
+        $t = lab_mission_save_travel($travel);
     }
+    return $t;
 }
 
 function lab_mission_remap_fields($fields) {
@@ -595,15 +597,12 @@ function lab_mission_save_travel($travel, $remap=True) {
     global $wpdb;
     $a = null;
     if ($remap) { 
-        $b = array(); 
         $a = lab_mission_remap_fields($travel);
-        $b[] = $travel;
-        $b[] = $a;  
-        return $b;
     }
     else {
         $a = $travel;
     }
+    
     $wpdb->insert($wpdb->prefix.'lab_mission_route', $a);
     return $wpdb->insert_id;
 }
