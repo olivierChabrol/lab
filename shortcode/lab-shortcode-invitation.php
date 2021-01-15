@@ -20,7 +20,11 @@ function lab_mission($args) {
     $invitationStr = "";
     $token='0';
     if ( isset($param['hostpage']) ) {
-        $a = explode("/",$url)[1];
+        $explode = explode("/",$url);
+        $a = null;
+        if (count($explode) > 1) {
+            $a = explode("/",$url)[1];
+        }
         if ( ! isset($a)) { //Aucun token, donc l'invitant crée lui-même une nouvelle invitation
             $host = new labUser(get_current_user_id());
             $invitationStr = "<h3>Pas de token</h3>";

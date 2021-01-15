@@ -25,12 +25,6 @@ jQuery(function($){
         dateFormat : "yy-mm-dd"
       });
     }
-
-    /*if(document.querySelector(timeClass).type !== 'time') {
-      $(timeClass).timepicker({
-        timeFormat : "h:mm"
-      });
-    }*/
   });
 
   function loadDirectory()
@@ -324,7 +318,9 @@ function lab_profile_edit(user_id,phone,url,bio,color,hal_id,hal_name) {
   });
 }
 
-/******************************* ShortCode Guest Invitation *******************************/
+/**************************************************************************************************************************************************************
+ * MISSION
+ **************************************************************************************************************************************************************/
 
 function getEditTravelField() {
   return ["dateGoTo", "timeGoTo", "countryFrom", "cityFrom", "countryTo", "cityTo", "mean", "cost", "ref", "rt", "dateReturn", "timeReturn", "carbon_footprint", "nb_person", "travelId"];
@@ -432,7 +428,7 @@ function displayTravels(data) {
     fields["timeReturn"]  = strReturn[1];
     fields["nb_person"]   = obj.nb_person;
     fields["travelId"]    = obj.id;
-    addTravel(obj.id, fields);
+    addTravel(getNewTravelId(), fields);
   });
 }
 
@@ -446,7 +442,7 @@ function addTravelId(id) {
 
 function deleteTravelId(id) {
   console.log(travels);
-  travels.splice($.inArray(id,y) ,1 );
+  travels.splice($.inArray(id,travels) ,1 );
   console.log(travels);
 }
 
@@ -582,14 +578,16 @@ function editTravelDiv(id) {
 }
 
 function deleteTravelTr(id) {
-  $("#lab_mission_table_tr_"+id).remove();
-
   if ($("#lab_mission_token").length && $("#lab_mission_token").val() != 0) {
     data = {
       'action' : 'lab_travel_delete',
-      'id' : id,
+      'id' : $("#travel_travelId_" + id).attr("tv"),
     }
     callAjax(data, "Travel deleted", null, null, null);
+    $("#lab_mission_table_tr_"+id).remove();
+  }
+  else {
+    $("#lab_mission_table_tr_"+id).remove();
   }
   deleteTravelId(id);
 }
@@ -761,7 +759,6 @@ function LABLoadInvitation() {
     else {
       addEmptyTravel("0");
     }
-    console.log("[LABLoadInvitation] LA1");
     $("#inviteDiv").hide();
     $("#lab_mission_edit_travel_div").hide();
     $("#returnSpanDate").hide();
