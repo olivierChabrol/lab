@@ -70,6 +70,9 @@ jQuery(function($){
     tr.append(createTd(mission.id));
     tr.append(createTd(mission.creation_time));
     tr.append(createTdUser(mission.host_id, data));
+    tr.append(createTd(mission.site));
+    tr.append(createTd(mission.group));
+    tr.append(createTdUser(mission.manager_id, data));
     tr.append(createTdParam(mission.mission_objective, data));
     tr.append(createEditButton(mission.id));
     return tr;

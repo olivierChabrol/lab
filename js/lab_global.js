@@ -1,12 +1,16 @@
 
 function createTdUser(userId, data) {
+  return createTd(getUserNames(userId, data));
+}
+
+function getUserNames(userId, data) {
   let f = "";
   if (userId != 0 && data.users[userId] != undefined)
   {
     let user = data.users[userId];
     f = user.first_name+" "+user.last_name;
   }
-  return createTd(f);
+  return f;
 }
 
 function createTd(str)

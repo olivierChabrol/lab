@@ -202,7 +202,11 @@
         <th>id</th>
         <th><?php esc_html_e('Request date','lab'); ?></th>
         <th><?php esc_html_e('User','lab'); ?></th>
+        <th><?php esc_html_e('Site','lab'); ?></th>
+        <th><?php esc_html_e('Group','lab'); ?></th>
+        <th><?php esc_html_e('Budget manager','lab'); ?></th>
         <th><?php esc_html_e('Mission Type','lab'); ?></th>
+        <th><?php esc_html_e('Action','lab'); ?></th>
         <th>&nbsp;</th>
       </thead>
         <tbody id="lab_admin_mission_list_table_tbody">
