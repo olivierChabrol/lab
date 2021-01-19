@@ -389,7 +389,8 @@ function saveTravelModification(id) {
     editTravelTd(id, f);
   }
   else {
-    addTravel(id, f);
+    console.log("[saveTravelModification] " + $("lab_mission_edit_travel_div_trId").val());
+    addTravel(id, f, null, null, $("#lab_mission_edit_travel_div_trId").val());
   }
 
   // if edit existing mission with travels 
@@ -459,6 +460,16 @@ function getNewTravelId() {
   return max + 1;
 }
 
+/*function incrNbRowBelow(val) {
+  let lastRow = getNewTravelId() - 1;
+  let travelsList = {};
+  for(let i = val + 1 ; i <= lastRow ; i++) {
+    travelsList[i] = getTravel(i);
+    //travels[i]["travelId"] = travels[i]["travelId"] + 1;
+    console.log("OUI " + travels[i]["travelId"]);
+  }
+}*/
+
 function okHtmlField() {
   return '<i class="fa fa-check" aria-hidden="true" style="color: SpringGreen;"></i>';
 }
@@ -507,8 +518,8 @@ function emptyTravelDivFields() {
   $("#lab_mission_edit_travel_div_cityTo" ).val(" ");
   $("#lab_mission_edit_travel_div_dateGoTo" ).val(nowDay());
   $("#lab_mission_edit_travel_div_timeGoTo" ).val(nowHour());
-  $("#lab_mission_edit_travel_div_dateReturn" ).val($("#lab_mission_edit_travel_div_dateGoTo" ).val());
-  $("#lab_mission_edit_travel_div_timeReturn" ).val($("#lab_mission_edit_travel_div_timeGoTo" ).val());
+  $("#lab_mission_edit_travel_div_dateReturn" ).val(null);
+  $("#lab_mission_edit_travel_div_timeReturn" ).val(null);
   $("#lab_mission_edit_travel_div_ref" ).val(" ");
   $("#lab_mission_edit_travel_div_rt" ).val("false");
   $("#lab_mission_edit_travel_div_mean" ).val(getMeanOfTransportCode("Train"));
@@ -531,8 +542,9 @@ function getTravel(id) {
   return travel;
 }
 
-function editTravelDiv(id) {
-  console.log("[editTravelDiv] id : " + id);
+function editTravelDiv(id, trId) {
+  $("#lab_mission_edit_travel_div_trId").val(trId);
+  console.log("[editTravelDiv] id : " + id + "/" + trId);
   let fields = getEditTravelField();
   console.log(fields)
   for (let i = 0 ; i < fields.length ; i++) {
@@ -597,7 +609,8 @@ function deleteTravelTr(id, mission_id) {
   deleteTravelId(id);
 }
 
-function addTravel(id, fields, travelId, mission_id) {
+function addTravel(id, fields, travelId, mission_id, trId = null) {
+  console.log("[AddTravel] " + trId);
   addTravelId(id);
   let tr = $("<tr/>").attr("id","lab_mission_table_tr_"+id);
   createDefaultTdToTr(tr, id, "dateGoTo", fields);
@@ -618,7 +631,7 @@ function addTravel(id, fields, travelId, mission_id) {
     "travelId" : travelId,
     "missionId" : mission_id
   }).html('<i class="fa fa-trash-o" aria-hidden="true" travelId="'+id+'"></i>');
-  let tdAdd  = $("<td/>").attr("class", "pointer").attr("travelId",id).html('<i class="fa fa-plus" aria-hidden="true" travelId="'+id+'"></i>');
+  let tdAdd  = $("<td/>").attr("id", "addTravelRow_" + id).attr("class", "pointer").attr("travelId",id).html('<i class="fa fa-plus" aria-hidden="true" travelId="'+id+'"></i>');
   tr.append(tdEdit);
   tr.append(tdDel);
   tr.append(tdAdd);
@@ -630,14 +643,46 @@ function addTravel(id, fields, travelId, mission_id) {
     editTravelDiv($(this).attr("travelId"));
   });
 
+  let append = true;
+
   tdAdd.click(function (e) {
     emptyTravelDivFields();
-    editTravelDiv(getNewTravelId());
+    let tdAddId = $(this).attr("id");
+    let tdId = tdAddId.substring(tdAddId.indexOf('_') + 1);
+    console.log(tdId);
+    editTravelDiv(getNewTravelId(), tdId);
+    append = true;
   });
   tdDel.click(function (e) {
     deleteTravelTr($(this).attr("id"), $(this).attr("missionId"));
   });
-  $("#lab_mission_travels_table_tbody").append(tr);
+  console.log("[AddTravel]");
+  if(trId) {
+    console.log("[Insert After]");
+    tr.insertAfter($("#lab_mission_table_tr_" + trId));
+  }
+  else {
+    $("#lab_mission_travels_table_tbody").append(tr);
+  }
+
+  var travelsTr;
+  travelsTr = document.querySelectorAll("#lab_mission_travels_table_tbody>tr");
+  travelDateGoTo = travelsTr[0].querySelector("td").textContent;
+  //console.log(travelDateGoTo);
+  //console.log(travelsTr);
+  //console.log(travelsTr[0]);
+  var tri = [].slice.call(travelsTr).sort(sortByDateTime);
+  //console.log(tri);
+
+  $("#lab_mission_travels_table_tbody").append(tri);
+}
+
+function sortByDateTime(a, b) {
+  
+  let dateA = new Date(a.querySelector("td").textContent + " " + a.querySelectorAll("td")[1].textContent);
+  let dateB = new Date(b.querySelector("td").textContent + " " + b.querySelectorAll("td")[1].textContent);
+  let dateDiff = dateA - dateB;
+  return dateDiff;
 }
 
 function createTravelHiddenField(td, id, fieldName, fields) {
@@ -732,13 +777,13 @@ function addEmptyTravel(id) {
   fields["ref"]         = " ";
   fields["carbon_footprint"]         = "";
   fields["rt"]          = "false";
-  fields["dateReturn"]  = "0000-00-00";
-  fields["timeReturn"]  = "00:00";
+  fields["dateReturn"]  = null;
+  fields["timeReturn"]  = null;
   fields["nb_person"]   = "1";
   fields["travelId"]    = "-1";
   console.log("[addEmptyTravel] " + id);
   console.log(fields);
-  addTravel(id, fields);
+  addTravel(id, fields, null, null);
 }
 
 function createFieldObj(val, displayVal) {

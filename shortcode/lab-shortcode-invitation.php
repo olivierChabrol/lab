@@ -204,6 +204,7 @@ function lab_mission($args) {
                 <label for="lab_mission_edit_travel_div_carbon_footprint">'.esc_html__("Carbon footprint","lab").'</label>
                 <input type="text" id="lab_mission_edit_travel_div_carbon_footprint" >
                 <input type="hidden" id="lab_mission_edit_travel_div_travelId" value="" >
+                <input type="hidden" id="lab_mission_edit_travel_div_trId" value="" >
                 <br/>
                 <button id="lab_mission_edit_travel_save_button" travelId="">Save</button>
             </div>
