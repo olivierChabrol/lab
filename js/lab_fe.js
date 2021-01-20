@@ -386,7 +386,9 @@ function saveTravelModification(id) {
   }
 
   if (travelExist(id)) {
+    console.log("[saveTravelModification] [travel exist]");
     editTravelTd(id, f);
+    sortTravelsByDate();
   }
   else {
     console.log("[saveTravelModification] " + $("lab_mission_edit_travel_div_trId").val());
@@ -435,6 +437,7 @@ function displayTravels(data) {
 }
 
 function travelExist(id) {
+  id = parseInt(id);
   return travels.includes(id);
 }
 
@@ -585,6 +588,7 @@ function editTravelDiv(id, trId) {
       console.log("[editTravelDiv] fieldId (" + fieldId + ")  NO VALUE ");
     }
   }
+  console.log(travels);
   $("#lab_mission_edit_travel_save_button").attr("travelId", id);
   $("#lab_mission_edit_travel_div").show();
 
@@ -631,10 +635,10 @@ function addTravel(id, fields, travelId, mission_id, trId = null) {
     "travelId" : travelId,
     "missionId" : mission_id
   }).html('<i class="fa fa-trash-o" aria-hidden="true" travelId="'+id+'"></i>');
-  let tdAdd  = $("<td/>").attr("id", "addTravelRow_" + id).attr("class", "pointer").attr("travelId",id).html('<i class="fa fa-plus" aria-hidden="true" travelId="'+id+'"></i>');
+  //let tdAdd  = $("<td/>").attr("id", "addTravelRow_" + id).attr("class", "pointer").attr("travelId",id).html('<i class="fa fa-plus" aria-hidden="true" travelId="'+id+'"></i>');
   tr.append(tdEdit);
   tr.append(tdDel);
-  tr.append(tdAdd);
+  //tr.append(tdAdd);
   createTravelHiddenField(tdEdit, id, "carbon_footprint", fields);
   createTravelHiddenField(tdEdit, id, "nb_person", fields);
   createTravelHiddenField(tdEdit, id, "travelId", fields);
@@ -645,34 +649,29 @@ function addTravel(id, fields, travelId, mission_id, trId = null) {
 
   let append = true;
 
-  tdAdd.click(function (e) {
+  /*tdAdd.click(function (e) {
     emptyTravelDivFields();
     let tdAddId = $(this).attr("id");
     let tdId = tdAddId.substring(tdAddId.indexOf('_') + 1);
     console.log(tdId);
     editTravelDiv(getNewTravelId(), tdId);
     append = true;
-  });
+  });*/
   tdDel.click(function (e) {
     deleteTravelTr($(this).attr("id"), $(this).attr("missionId"));
   });
   console.log("[AddTravel]");
-  if(trId) {
-    console.log("[Insert After]");
-    tr.insertAfter($("#lab_mission_table_tr_" + trId));
-  }
-  else {
-    $("#lab_mission_travels_table_tbody").append(tr);
-  }
+  
+  $("#lab_mission_travels_table_tbody").append(tr);
 
+  sortTravelsByDate()
+}
+
+function sortTravelsByDate() {
   var travelsTr;
   travelsTr = document.querySelectorAll("#lab_mission_travels_table_tbody>tr");
   travelDateGoTo = travelsTr[0].querySelector("td").textContent;
-  //console.log(travelDateGoTo);
-  //console.log(travelsTr);
-  //console.log(travelsTr[0]);
   var tri = [].slice.call(travelsTr).sort(sortByDateTime);
-  //console.log(tri);
 
   $("#lab_mission_travels_table_tbody").append(tri);
 }
