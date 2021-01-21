@@ -562,7 +562,8 @@ function lab_changeLocale($locale) {
 }
 function lab_admin_test()
 { 
-  wp_send_json_success(lab_admin_thematic_load_all());
+  //wp_send_json_success(get_current_user_id());
+  wp_send_json_success(lab_group_get_user_group(get_current_user_id()));
   return;
 }
 
@@ -1263,6 +1264,11 @@ function lab_invitations_new() {
   } else {
     $invite['guest_id']=lab_invitations_createGuest($guest);
   }
+  if(!isset($fields['host_group_id'])) {
+    $hostGroupId = lab_group_get_user_group($fields['host_id']);
+    $fields['host_group_id'] = $hostGroupId;
+  }
+
   foreach (['host_group_id','host_id', 'estimated_cost', 'mission_objective','funding_source','research_contract'] as $champ) {
     $invite[$champ]=$fields[$champ];
   }

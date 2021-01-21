@@ -561,6 +561,7 @@ function lab_admin_contract_create_table() {
  * MISSION
  ***********************************************************************************************************/
 
+
 function lab_mission_save($missionId, $travels) {
     $t = null;
     foreach ($travels as $travel) {
@@ -706,6 +707,32 @@ function lab_admin_group_add_manager($groupId, $userId, $userRole) {
     }
 }
 
+/**
+ * Get the favorite group of a user, 
+ *
+ * @param bigint $userId
+ * @return groupeId of the favorite user, the first one otherwise, -1 otherwise
+ */
+function lab_group_get_user_group($userId) {
+    global $wpdb;
+    $sql = "SELECT group_id, favorite FROM ".$wpdb->prefix."lab_users_groups WHERE user_id=".$userId;
+    //return $sql;
+    $results = $wpdb->get_results($sql);
+    $groupId = -1;
+    if (count($results) > 0) {        
+        foreach ($results as $group) {
+            if ($group->favorite == 1) {
+                $groupId = $group->group_id;
+            }
+        }
+        // if no favorite group defined, take the first one
+        if ($groupId == -1) {
+            $groupId = $results[0]->group_id;
+        }
+    }
+    return $groupId;
+}
+
 function lab_group_delete_manager($id)
 {
     global $wpdb;
@@ -719,6 +746,9 @@ function lab_admin_group_load_managers($groupId) {
 
 }
 
+/***********************************************************************************************************
+ * PARAM
+ ***********************************************************************************************************/
 
 function lab_admin_param_change_id($oldId, $type, $newId)
 {
@@ -1455,6 +1485,7 @@ function lab_admin_createUserGroupTable()
         `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
         `group_id` bigint UNSIGNED NOT NULL,
         `user_id` bigint UNSIGNED NOT NULL,
+        `favorite` int UNSIGNED NOT NULL,
         PRIMARY KEY(`id`)
       ) ENGINE=InnoDB;";
     $wpdb->get_results($sql);

@@ -14,16 +14,17 @@ function lab_mission_load($missionToken, $filters = null) {
     global $wpdb;
     $data = array();
     $data["filters"] = array();
-    //$sql = "SELECT m.* from ".$wpdb->prefix."lab_invitations AS m";
-    $sql = "SELECT m.*,param.value AS site FROM `".$wpdb->prefix."lab_invitations` as m 
-    JOIN ".$wpdb->prefix."usermeta AS site ON site.user_id = m.host_id 
-    JOIN ".$wpdb->prefix."lab_params AS param ON param.id = site.meta_value
-   WHERE site.meta_key='lab_user_location'";
+    
+    $select = "SELECT m.*,param.value AS site ";
+    $from = " FROM `".$wpdb->prefix."lab_invitations` as m"; 
+    $join = " JOIN ".$wpdb->prefix."usermeta AS site ON site.user_id = m.host_id 
+    JOIN ".$wpdb->prefix."lab_params AS param ON param.id = site.meta_value";
+    $where = " WHERE site.meta_key='lab_user_location'";
     if ($missionToken != null OR $filters != null) {
-        $sql .= " AND ";
+        $where .= " AND ";
           
         if ($missionToken != null) {
-            $sql .= "token='".$missionToken."'";
+            $where .= "token='".$missionToken."'";
         }
         else {
 
@@ -31,23 +32,40 @@ function lab_mission_load($missionToken, $filters = null) {
             foreach($filters as $key=>$value) {
                 if ($key == "year") {
                     if ($nbFilter > 0) {
-                        $sql .= " AND ";
+                        $where .= " AND ";
                     }
-                    $sql .= "YEAR(m.`creation_time`)=".$value."";
+                    $where .= "YEAR(m.`creation_time`)=".$value."";
                     $data["filters"]["year"] = $value;
+                }
+                if ($key == "site") {
+                    if ($nbFilter > 0) {
+                        $where .= " AND ";
+                    }
+                    $where .= "YEAR(m.`creation_time`)=".$value."";
+                    $data["filters"]["year"] = $value;
+                }
+                else if ($key == "budget_manager") {
+                    if ($nbFilter > 0) {
+                        $where .= " AND ";
+                    }
+                    $select .= ", gm.user_id as manager_id";
+                    $join .= " JOIN ".$wpdb->prefix."lab_group_manager AS gm ON gm.group_id = m.host_group_id";
+                    $where .= "gm.manager_type=1 AND gm.user_id=".$value."";
+                    $data["filters"]["budget_manager"] = $value;
                 }
                 else if ($key == "state") {
                     if ($nbFilter > 0) {
-                        $sql .= " AND ";
+                        $where .= " AND ";
                     }
-                    $sql .= "m.status=".lab_mission_status_to_value($value)."";
+                    $where .= "m.status=".lab_mission_status_to_value($value)."";
                     $data["filters"]["state"] = $value;
                 }
                 $nbFilter += 1;
             }
         }
     }
-    $sql .= " ORDER BY m.`creation_time` DESC";
+    $order = " ORDER BY m.`creation_time` DESC";
+    $sql = $select. $from .$join. $where. $order;
     $results = $wpdb->get_results($sql);
 
     // load user info

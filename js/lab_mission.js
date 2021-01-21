@@ -9,6 +9,12 @@ jQuery(function($){
   $("#lab_mission_filter_state").change(function () {
     applyFilter();
   });
+  $("#lab_mission_filter_budget_manager").change(function () {
+    applyFilter();
+  });
+  $("#lab_mission_filter_site").change(function () {
+    applyFilter();
+  });
 
   if ($("#lab_admin_mission_list_table").length) {
     loadMissions();
@@ -17,7 +23,7 @@ jQuery(function($){
   function applyFilter() {
     let action        = "lab_mission_load";
     let filterPattern = "lab_mission_filter_";
-    let filterFields  = ["year","state"];
+    let filterFields  = ["year","state", "budget_manager", "site"];
     let callBackFct   = displayMission;
 
     data = {
@@ -74,28 +80,25 @@ jQuery(function($){
     tr.append(createTd(mission.group));
     tr.append(createTdUser(mission.manager_id, data));
     tr.append(createTdParam(mission.mission_objective, data));
-    tr.append(createEditButton(mission.id));
+    tr.append(createEditButton(mission.id, mission.token));
     return tr;
   }
 
-  function createEditButton(id) {
+  function createEditButton(id, token) {
     let url = window.location.href;
-    //console.log(url);
-    if (url.indexOf("&") != -1) 
-    {
-      url = (""+url).substr(0, url.indexOf("&"));
-    }
-    url  += "&tab=entry&id="+id;
+    url = window.location.origin
+    url += "/mission/"+token+"/";
     
     //console.log("->"+url);
     let aEdit = $('<a />').attr("class", "page-title-action lab_keyring_key_edit").attr("href",url).attr("missionId", id).html("edit");
+    //let aEdit = $('<a />').attr("class", "page-title-action lab_keyring_key_edit").attr("missionId", id).html("edit");
     let aDel = $('<a />').attr("class", "page-title-action lab_budget_info_delete").attr("missionId", id).html("X");
 
     $(aDel).click(function (){
       deleteMission($(this).attr("missionId"));
     });
 
-    return $('<td />').attr("class", "lab_keyring_icon").append(aEdit).append(aDel);
+    return $('<td />').attr("class", "lab_keyring_icon").append(aEdit).append(aDel);   
   }
 
   function deleteMission(missionId) {

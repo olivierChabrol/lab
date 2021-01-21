@@ -175,6 +175,8 @@
 
   function lab_mission_tab_historic()
   {
+    $user = wp_get_current_user();
+    $roles = $user->roles;
     ?>
     <div class="wrap">
     <h1 class="wp-heading-inline"><?php esc_html_e('Missions','lab'); ?></h1>
@@ -190,8 +192,8 @@
       <option value="wmv"><?php esc_html_e('Waiting manager validation','lab'); ?></option>
     </select>
   
-<?php lab_html_select("lab_budget_info_filter_site", "lab_budget_info_filter_site", "", "lab_admin_get_params_userLocation", null, array("value"=>"","label"=>"".esc_html('Site','lab')), ""); ?>
-<?php lab_html_select("lab_budget_info_filter_budget_manager", "lab_budget_info_filter_budget_manager", "", "lab_admin_budget_managers_list", null, array("value"=>"","label"=>"".esc_html('Budget manager','lab')), ""); ?>
+<?php lab_html_select("lab_mission_filter_site", "lab_budget_info_filter_site", "", "lab_admin_get_params_userLocation", null, array("value"=>"","label"=>"".esc_html('Site','lab')), ""); ?>
+<?php lab_html_select("lab_mission_filter_budget_manager", "lab_budget_info_filter_budget_manager", "", "lab_admin_budget_managers_list", null, array("value"=>"","label"=>"".esc_html('Budget manager','lab')), ""); ?>
 <label class="screen-reader-text" for="post-search-input"><?php esc_html_e('Search command Number','lab'); ?>:</label>
   <input type="text" id="lab_budget_info_filter_order_number" placeholder="<?php esc_html_e('Command Number','lab'); ?>"></input>
   </div></div>
