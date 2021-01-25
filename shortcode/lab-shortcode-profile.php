@@ -47,11 +47,11 @@ function lab_profile($id=0) {
 	}
 	if (isset($user->sectionCn) && !empty($user->sectionCn))
 	{
-		$metaDatas .='<p id="lab_profile_section_cn"><span class="lab_current">'.esc_html__('Section CN','lab').' : '.$user->sectionCn.'</span></p>';
+		$metaDatas .='<p id="lab_profile_section_cn"><span class="lab_current">'.esc_html__('CN Section','lab').' : '.$user->sectionCn.'</span></p>';
 	}
 	if (isset($user->sectionCnu) && !empty($user->sectionCnu))
 	{
-		$metaDatas .='<p id="lab_profile_section_cnu"><span class="lab_current">'.esc_html__('Section CNU','lab').' : '.$user->sectionCnu.'</span></p>';
+		$metaDatas .='<p id="lab_profile_section_cnu"><span class="lab_current">'.esc_html__('CNU Section','lab').' : '.$user->sectionCnu.'</span></p>';
 	}
 	if (isset($user->thesisTitle) && !empty($user->thesisTitle))
 	{
