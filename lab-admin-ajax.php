@@ -30,7 +30,22 @@ function lab_mission_ajax_load() {
   if (!isset($filters) || empty($filters)) {
     $filters = null;
   }
-  wp_send_json_success(lab_mission_load($missionId, $filters));
+  $groupIds = $_POST['groupIds'];
+  if (!isset($groupIds) || empty($groupIds) || count($groupIds) == 0) {
+    $groupIds = null;
+  }
+  //wp_send_json_success($groupIds);
+  wp_send_json_success(lab_mission_load($missionId, $filters, $groupIds));
+}
+
+function lab_mission_ajax_delete() {
+  $missionId = $_POST['id'];
+  if (!isset($missionId) || empty($missionId)) {
+    wp_send_json_success();
+  }
+  else {
+    wp_send_json_success(lab_mission_delete($missionId));
+  }
 }
 
 /********************************************************************************************

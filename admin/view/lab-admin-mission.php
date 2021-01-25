@@ -177,8 +177,35 @@
   {
     $user = wp_get_current_user();
     $roles = $user->roles;
+    $isAdministrator = False;
+    $isManager       = False;
+    $isGroupLeader   = False;
+    $groupLeaderIds  = array();
+    $groupManagerIds = array();
+    foreach($roles as $role) {
+      if ($role == "administrator")
+      {
+        $isAdministrator = True;
+      }
+    }
+    if (!$isAdministrator) {
+      $groupManagerIds = lab_admin_group_get_groups_of_manager(get_current_user_id());
+      $groupLeaderIds  = lab_admin_group_get_groups_of_leader(get_current_user_id());
+      $isManager = count($groupManagerIds) > 0;
+      $isGroupLeader = count($groupLeaderIds) > 0;
+      echo ("isManager :" . $isManager . "<br>");
+      echo ("isGroupLeader :" . $isGroupLeader . "<br>");
+    }
     ?>
     <div class="wrap">
+    <?php
+      if($isGroupLeader) {
+        echo '<input type="hidden" id="lab_mission_group_leader" value="'.urlencode(json_encode ($groupLeaderIds)).'">';
+      }
+      if($isManager) {
+        echo '<input type="hidden" id="lab_mission_group_manager" value="'.urlencode(json_encode ($groupManagerIds)).'">';
+      }
+    ?>
     <h1 class="wp-heading-inline"><?php esc_html_e('Missions','lab'); ?></h1>
     <h2 class='screen-reader-text'>Filtrer la liste des commandes</h2>
     <p class="search-box">
@@ -209,11 +236,18 @@
         <th><?php esc_html_e('Budget manager','lab'); ?></th>
         <th><?php esc_html_e('Mission Type','lab'); ?></th>
         <th><?php esc_html_e('Action','lab'); ?></th>
-        <th>&nbsp;</th>
       </thead>
         <tbody id="lab_admin_mission_list_table_tbody">
         </tbody>
     </table>
+    </div> 
+    <div id="lab_mission_delete_dialog" class="modal">
+      <p><?php esc_html_e('Voulez-vous vraiment supprimer cette mission ?','lab');?></p>
+      <input type="hidden" id="lab_mission_delete_dialog_mission_id" value="">
+      <div id="lab_mission_delete_dialog_options">
+        <a href="#" rel="modal:close"><?php esc_html_e('Annuler','lab')?></a>
+        <a href="#" rel="modal:close" id="lab_mission_delete_confirm" keyid=""><?php esc_html_e('Confirmer','lab'); ?></a>
+      </div>
     </div>
       <?php
   }

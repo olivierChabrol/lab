@@ -9,17 +9,40 @@ function lab_mission_status_to_value($missionStatus) {
     $status["w"] = 1;
     return $status[$missionStatus];
 }
+    
+function lab_mission_delete($missionId) {
+    global $wpdb;
+    $wpdb->delete($wpdb->prefix."lab_invite_comments", array('invite_id' => $missionId));
+    $wpdb->delete($wpdb->prefix.'lab_invitations', array('id' => $missionId));
+    $wpdb->delete($wpdb->prefix.'lab_mission_route', array('mission_id' => $missionId));
+    return true;
+}
 
-function lab_mission_load($missionToken, $filters = null) {
+function lab_mission_load($missionToken, $filters = null, $groupIds = null) {
     global $wpdb;
     $data = array();
     $data["filters"] = array();
+    // by default load current year
+    if ($filters == null)
+    {
+        $filters["year"] = date("Y");
+    }
     
     $select = "SELECT m.*,param.value AS site ";
     $from = " FROM `".$wpdb->prefix."lab_invitations` as m"; 
     $join = " JOIN ".$wpdb->prefix."usermeta AS site ON site.user_id = m.host_id 
     JOIN ".$wpdb->prefix."lab_params AS param ON param.id = site.meta_value";
     $where = " WHERE site.meta_key='lab_user_location'";
+    if ($groupIds != null && isset($groupIds)) {
+        $where .= " AND (";
+        foreach ($groupIds as $groupId) {
+            $where .= "m.host_group_id=";
+            $where .= $groupId;
+            $where .= " OR ";
+        }
+        $where = substr($where, 0, strlen($where) - 4);
+        $where .= ")";
+    }
     if ($missionToken != null OR $filters != null) {
         $where .= " AND ";
           

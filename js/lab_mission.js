@@ -20,6 +20,13 @@ jQuery(function($){
     loadMissions();
   }
 
+
+
+  $("#lab_mission_delete_confirm").click(function() {
+      //endLoan($(this).attr('loan_id'),$("#lab_keyring_loanform_key_id").text(),defaultTodayDate($("#lab_keyring_loanform_end_date").val()));
+      deleteMission($("#lab_mission_delete_dialog_mission_id").val());
+  });
+
   function applyFilter() {
     let action        = "lab_mission_load";
     let filterPattern = "lab_mission_filter_";
@@ -41,8 +48,17 @@ jQuery(function($){
   }
 
   function loadMissions() {
+
+    $leaderGroupIds = null;
+    if ($("#lab_mission_group_leader").length)
+    {
+      console.log(decodeURIComponent($("#lab_mission_group_leader").val()));
+      $leaderGroupIds = JSON.parse(decodeURIComponent($("#lab_mission_group_leader").val()));
+    }
+
     data = {
       'action':"lab_mission_load",
+      'groupIds': $leaderGroupIds,
     };
     callAjax(data, null, displayMission, null, null);
 
@@ -95,14 +111,23 @@ jQuery(function($){
     let aDel = $('<a />').attr("class", "page-title-action lab_budget_info_delete").attr("missionId", id).html("X");
 
     $(aDel).click(function (){
-      deleteMission($(this).attr("missionId"));
+      displayModalDeleteMission($(this).attr("missionId"));
     });
 
     return $('<td />').attr("class", "lab_keyring_icon").append(aEdit).append(aDel);   
   }
 
-  function deleteMission(missionId) {
+  function displayModalDeleteMission(missionId) {
+    $("#lab_mission_delete_dialog").modal();
+    $("#lab_mission_delete_dialog_mission_id").val(missionId);
+  }
 
+  function deleteMission(missionId) {
+    data = {
+      'action':"lab_mission_delete",
+      'id':missionId,
+    };
+    callAjax(data, null, loadMissions, null, null);
   }
 
   function searchInParams(paramId, data) {
@@ -126,6 +151,6 @@ jQuery(function($){
     if (f == undefined) {
       f = "Not defined";
     }
-    return f;
+    return createTd(f);
   }
 });

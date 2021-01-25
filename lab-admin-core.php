@@ -696,6 +696,26 @@ function lab_admin_usermeta_names($userId) {
 /***********************************************************************************************************
  * GROUP
  ***********************************************************************************************************/
+
+function lab_admin_group_get_groups_of_manager($managerId) {
+    global $wpdb;
+    $results =$wpdb->get_results("SELECT group_id FROM `".$wpdb->prefix."lab_group_manager` WHERE `user_id`=".$managerId." AND `manager_type`=1");
+    $groupIds = [];
+    foreach ($results as $r) {
+        $groupIds[] = $r->group_id;
+    }
+    return $groupIds;
+}
+function lab_admin_group_get_groups_of_leader($leaderId) {
+    global $wpdb;
+    $results =$wpdb->get_results("SELECT id FROM `".$wpdb->prefix."lab_groups` WHERE `chief_id`=".$leaderId);
+    $groupIds = [];
+    foreach ($results as $r) {
+        $groupIds[] = $r->id;
+    }
+    return $groupIds;
+}
+
 function lab_admin_group_add_manager($groupId, $userId, $userRole) {
     global $wpdb;
     if ($wpdb->insert($wpdb->prefix.'lab_group_manager', array("group_id"=>$groupId, "user_id"=>$userId, "manager_type"=>$userRole))) {
