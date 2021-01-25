@@ -295,7 +295,7 @@ function lab_labo1_5_old($args) {
                 <p>'.esc_html__("Précisez la date de réservation du voyage, l'heure est quand vous quittez votre domicile","lab").'</p>
             </div>
             <div class="lab_invite_field">
-                <label for="lab_departure">'.esc_html__("Date de départ","lab").'</label>
+                <label for="lab_departure">'.esc_html__("Departure date","lab").'</label>
                 <input type="date" id="lab_departure" name="lab_departure" value="'.(!$newForm ? explode(" ",$invitation->end_date)[0] : '').'">
                 <input type="time" step="60" id="lab_departure_time" name="lab_departure_time" value="'.(!$newForm ? explode(" ",$invitation->end_date)[1] : '').'">
                 <p>'.esc_html__("Précisez la date de réservation du voyage, l'heure est quand vous quittez le labo","lab").'</p>
@@ -332,7 +332,7 @@ function lab_labo1_5_old($args) {
             '<h3>'.esc_html__("Champs pour l'invitant : ","lab").'</h3>
             <div class="lab_invite_row">
                 <div class="lab_invite_field">
-                    <label for="lab_group_name">'.esc_html__("Nom du groupe","lab").'<span class="lab_form_required_star"> *</span></label>
+                    <label for="lab_group_name">'.esc_html__("Group name","lab").'<span class="lab_form_required_star"> *</span></label>
                     <select required id="lab_group_name" name="lab_group_name">';
                 foreach ($host->groups as $g)
                 {
@@ -490,7 +490,7 @@ function lab_labo_interface($args) {
                                     '.($param['view']!='host' ? '<th class="lab_column_name" name="host_id">'.esc_html__("Invitant","lab").'<i class="fas fa-caret-up"></i></th>' : '').
                                     '<th class="lab_column_name" name="mission_objective">'.esc_html__("Mission","lab").'<i class="fas fa-caret-up"></i></th>
                                     <th class="lab_column_name" sel="true" name="start_date" order="asc">'.esc_html__("Date d'arrivée","lab").'<i class="fas fa-caret-up"></i></th>
-                                    <th class="lab_column_name" name="end_date">'.esc_html__("Date de départ","lab").'<i class="fas fa-caret-up"></i></th>
+                                    <th class="lab_column_name" name="end_date">'.esc_html__("Departure date","lab").'<i class="fas fa-caret-up"></i></th>
                                     <th class="lab_column_name" name="status">'.esc_html__("Statut","lab").'<i class="fas fa-caret-up"></i></th>
                                     <th class="lab_column_name" name="estimated_cost">'.esc_html__("Budget estimé","lab").'<i class="fas fa-caret-up"></i></th>
                                     <th class="lab_column_name" name="maximum_cost">'.esc_html__("Budget max.","lab").'<i class="fas fa-caret-up"></i></th>
@@ -655,7 +655,7 @@ function lab_laboForm($who,$guest,$invite) {
                     <li><i>'.esc_html__("Depuis l'I2M",'lab').' : </i>'.$invite['travel_mean_from'].'</li>
                 </ul></li>
                 <li><i>'.esc_html__("Date d'arrivée",'lab').' : </i>'.$invite['start_date'].'</li>
-                <li><i>'.esc_html__("Date de départ",'lab').' : </i>'.$invite['end_date'].'</li>
+                <li><i>'.esc_html__("Departure date",'lab').' : </i>'.$invite['end_date'].'</li>
                 <li><u>'.esc_html__('Frais','lab').' : </u>'.$chargesList.'</li>';
     if($who=='host' || $who=='admin')
     {

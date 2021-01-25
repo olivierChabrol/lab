@@ -57,25 +57,25 @@ function lab_admin_tab_settings() {
   <button class="page-title-action" id="lab_createGroup_createTable_Sub">Créer la table Substitutes</button>
   <button class="page-title-action" id="lab_createGroup_createRoot">Créer groupe root</button>
   <hr/>
-  <button class="page-title-action" id="lab_presence_create_table"><?php echo esc_html__('Créer la table presence','lab'); ?></button><br>
+  <button class="page-title-action" id="lab_presence_create_table"><?php echo esc_html__('Create presence table','lab'); ?></button><br>
   <hr/>
-  <button class="page-title-action" id="lab_invite_create_tables"><?php echo esc_html__('Créer la table Invitations','lab'); ?></button>
+  <button class="page-title-action" id="lab_invite_create_tables"><?php echo esc_html__('Create invitation table','lab'); ?></button>
   <hr/>
-  <button class="page-title-action" id="lab_create_table_historic"><?php echo esc_html__('Créer la table Historic','lab'); ?></button>
+  <button class="page-title-action" id="lab_create_table_historic"><?php echo esc_html__('Create historic table','lab'); ?></button>
   <hr/>
   <button class="page-title-action" id="lab_admin_reset_db"><?php echo esc_html__('Reset DB','lab'); ?></button>
   <div id="lab_admin_setting_delete_dialog" class="modal">
       <p><?php esc_html_e('Reset LAB DB ?','lab');?></p>
       <div id="lab_admin_setting_delete_dialog_options">
-        <a href="#" rel="modal:close"><?php esc_html_e('Annuler','lab')?></a>
-        <a href="#" rel="modal:close" id="lab_admin_setting_delete_dialog_confirm" keyid=""><?php esc_html_e('Confirmer','lab'); ?></a>
+        <a href="#" rel="modal:close"><?php esc_html_e('Cancel','lab')?></a>
+        <a href="#" rel="modal:close" id="lab_admin_setting_delete_dialog_confirm" keyid=""><?php esc_html_e('Confirm','lab'); ?></a>
       </div>
     </div>
   <button class="page-title-action" id="lab_admin_role_add_keyring"><?php echo esc_html__('Add LAB roles','lab'); ?></button>
   <hr>
     <h4>Correct DB :</h4>
-  <button class="page-title-action" id="lab_settings_correct_um"><?php echo esc_html__('Corriger usermeta fields UM','lab'); ?></button>
-  <button class="page-title-action" id="lab_settings_copy_phone"><?php echo esc_html__('Copier les champs phone','lab'); ?></button>
+  <button class="page-title-action" id="lab_settings_correct_um"><?php echo esc_html__('Correct usermeta fields UM','lab'); ?></button>
+  <button class="page-title-action" id="lab_settings_copy_phone"><?php echo esc_html__('Copy phone fields','lab'); ?></button>
   <hr>
     <h4>Fill Table :</h4>
     <button class="page-title-action" id="lab_settings_button_fill_hal_name_fields"><?php echo esc_html_e('Fill HAL name','lab'); ?></button>

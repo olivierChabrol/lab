@@ -412,7 +412,7 @@ function newUserDiv($startDay)
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="close" data-dismiss="modal">'.esc_html('Annuler','lab').'</button>
+                    <button type="button" class="close" data-dismiss="modal">'.esc_html('Cancel','lab').'</button>
                     <button type="button" class="close" data-dismiss="modal" id="lab_presence_ext_new_save" keyid="">'.esc_html('Save','lab').'</button>
                 </div>
             </div>
@@ -458,7 +458,7 @@ function editDiv()
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="close" data-dismiss="modal">'.esc_html('Annuler','lab').'</button>
+                    <button type="button" class="close" data-dismiss="modal">'.esc_html('Cancel','lab').'</button>
                     <button type="button" class="close" data-dismiss="modal" id="lab_presence_edit_save" keyid="">'.esc_html('Save','lab').'</button>
                 </div>
             </div>
@@ -488,7 +488,7 @@ function deleteDiv() {
                 </div>
                 <div class="modal-footer">
                     <button type="button" id="lab_presence_del_button" class="btn btn-danger delButton" data-dismiss="modal">'. esc_html__("Oui", "lab")   .'</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">'. esc_html__("Annuler","lab").'</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">'. esc_html__("Cancel","lab").'</button>
                 </div>
             </div>
         </div>
