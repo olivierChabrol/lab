@@ -84,7 +84,10 @@ function lab_admin_load_lastUserHistory($user_id) {
     global $wpdb;
     $sql = "SELECT * from `".$wpdb->prefix."lab_users_historic` WHERE `user_id`=$user_id ORDER BY `begin` DESC LIMIT 1";
     $res = $wpdb->get_results($sql);
-    return lab_admin_history_fields($res[0]);
+    if (count($res) > 0) {
+        return lab_admin_history_fields($res[0]);
+    }
+    return null;
 }
 /**
  * @param array $fields ('user_id'=>$user_id,
