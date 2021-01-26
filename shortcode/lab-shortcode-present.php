@@ -396,7 +396,7 @@ function newUserDiv($startDay)
                     <small id="emailHelp" class="form-text text-muted">We\'ll never share your email with anyone else.</small>
                     <div class="h-divider"></div>
                     <label for="date-open">'.esc_html("From", "lab").'</label>
-                    <input type="date" id="lab_presence_ext_new_date_open" />
+                    <input type="date" id="lab_presence_ext_new_date_open" class="datechk"/>
                     <label for="hour-open"></label>
                     <input type="time" id="lab_presence_ext_new_hour_open" />
                     <label for="hour-close">'.esc_html("to", "lab").'</label>

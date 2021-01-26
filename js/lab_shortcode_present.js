@@ -4,6 +4,14 @@ jQuery(function($){
                         color: green;
                       }`;
     document.head.appendChild(style);
+    $(document).ready(function ()
+    {
+        if (document.querySelector('.datechk') != null && document.querySelector('.datechk').type !== 'date') {  
+        $('.datechk').datepicker({
+            dateFormat : "yy-mm-dd"
+        });
+        }
+    });
 
     $("#workGroupFollow").change(function() {
         if ($(this).val() != "") {
@@ -172,7 +180,6 @@ jQuery(function($){
           }
         });
     });
-});
 
 function resetFields()
 {
@@ -374,3 +381,4 @@ function deletePresence(presenceId, userId = null) {
     $("#lab_presence_del_userId").val(userId);
     $("#lab_presence_delete_dialog").modal('show');
   }
+});
