@@ -13,6 +13,17 @@ jQuery(function($){
         }
     });
 
+    $("[id^=delete_presence_]").each(function() {
+        $(this).click(function() {
+        //delete_presence_
+        var attrId = $(this).attr("id");
+        var pattern = "delete_presence_";
+        var id = attrId.substring(pattern.length, attrId.length);
+        //console.log(id);
+        deletePresence(id);
+        })
+    });
+
     $("#workGroupFollow").change(function() {
         if ($(this).val() != "") {
             
@@ -360,25 +371,25 @@ function savePresence(idPresence, userId, date, opening, closing, site, comment 
         }
     });
 }
-});
 
 function externalUserPresency() {
-    jQuery("#lab_presence_external_user_dialog").modal('show');
+    $("#lab_presence_external_user_dialog").modal('show');
 }
 
 function editPresence(presenceId, userId = null, date, hourStart, hourEnd,site,comment) {
-    jQuery("#lab_presence_edit_userId").val(userId);
-    jQuery("#lab_presence_edit_presenceId").val(presenceId);
-    jQuery("#lab_presence_edit_date-open").val(date);
-    jQuery("#lab_presence_edit_hour-open").val(hourStart);
-    jQuery("#lab_presence_edit_hour-close").val(hourEnd);
-    jQuery("#lab_presence_edit_comment").val(comment);
-    jQuery("#lab_presence_edit_siteId").val(site);
-    jQuery("#lab_presence_edit_dialog").modal('show');
+    $("#lab_presence_edit_userId").val(userId);
+    $("#lab_presence_edit_presenceId").val(presenceId);
+    $("#lab_presence_edit_date-open").val(date);
+    $("#lab_presence_edit_hour-open").val(hourStart);
+    $("#lab_presence_edit_hour-close").val(hourEnd);
+    $("#lab_presence_edit_comment").val(comment);
+    $("#lab_presence_edit_siteId").val(site);
+    $("#lab_presence_edit_dialog").modal('show');
 }
 
 function deletePresence(presenceId, userId = null) {
-    jQuery("#lab_presence_del_presenceId").val(presenceId);
-    jQuery("#lab_presence_del_userId").val(userId);
-    jQuery("#lab_presence_delete_dialog").modal('show');
+    $("#lab_presence_del_presenceId").val(presenceId);
+    $("#lab_presence_del_userId").val(userId);
+    $("#lab_presence_delete_dialog").modal('show');
   }
+});

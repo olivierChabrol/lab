@@ -441,7 +441,7 @@ function editDiv()
                     <input id="lab_presence_edit_userId" name="userId" type="hidden"/>
                     <input id="lab_presence_edit_presenceId" name="userId" type="hidden"/>
                     <label for="lab_presence_edit_date-open">'.esc_html("From", "lab").'</label>
-                    <input type="date" id="lab_presence_edit_date-open" />
+                    <input type="date" id="lab_presence_edit_date-open" class="datechk" />
                     <div id="messErr_lab_presence_edit_date" class="invalid-feedback"></div>
                     <label for="hour-open"></label>
                     <input type="time" id="lab_presence_edit_hour-open" min="07:00"  max="20:00" required />

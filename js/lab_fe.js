@@ -61,16 +61,6 @@ jQuery(function($){
     window.location.href = href;
   }
 
-  $("[id^=delete_presence_]").each(function() {
-    $(this).click(function() {
-      //delete_presence_
-      var attrId = $(this).attr("id");
-      var pattern = "delete_presence_";
-      var id = attrId.substring(pattern.length, attrId.length);
-      //console.log(id);
-      deletePresence(id);
-    })
-  });
 
   addDeleteThematicListener();
 
