@@ -1628,7 +1628,7 @@ function lab_admin_group_subs_add($groupId,$listUserId) {
 }
 function lab_admin_get_groups_byChief($chief_id) {
     global $wpdb;
-    $sql="SELECT * FROM `".$wpdb->prefix."lab_groups` WHERE `chief_id`=".$chief_id.";";
+    $sql = "SELECT * FROM `".$wpdb->prefix."lab_groups` WHERE `chief_id`=".$chief_id.";";
     return $wpdb->get_results($sql);
 }
 function lab_admin_get_chief_byGroup($group_id) {

@@ -36,6 +36,7 @@ function lab_mission($args) {
             $invitation    = lab_invitations_getByToken($token);
             $invitationStr .= '<input type="hidden" id="lab_mission_token" value="'.$token.'"/>';
             $invitationStr .= '<input type="hidden" id="lab_mission_id" value="'.$invitation->id.'"/>';
+            $budget_manager_ids = lab_group_budget_manager($invitation->host_group_id);
             //$travels       = 
             //var_dump($invitation);
             
@@ -48,6 +49,12 @@ function lab_mission($args) {
             $host = new labUser($invitation->host_id);
             //Qui modifie, l'invitant ou le responsable ?
             $isChief = isset($invitation->host_group_id) ? get_current_user_id()==(int)lab_admin_get_chief_byGroup($invitation->host_group_id): false;
+            $isManager = false;
+            foreach($budget_manager_ids as $bm) {
+                if (get_current_user_id() == $bm) {
+                    $isManager = true;
+                }
+            }
             if ( $isChief ) {
                 $invitationStr .= '<p><i>Vous pouvez modifier cette invitation en tant que responsable de groupe</i></p>';
                 $invitationStr .= '<p><i>Statut de l\'invitation : </i>'.lab_invitations_getStatusName($invitation->status).'</p>';
@@ -55,7 +62,13 @@ function lab_mission($args) {
             } else if ( get_current_user_id()==$invitation->host_id ) { 
                 $invitationStr .= '<p><i>Vous pouvez modifier cette invitation en tant qu\'invitant</i></p>';
                 $invitationStr .= '<p><i>Statut de l\'invitation : </i>'.lab_invitations_getStatusName($invitation->status).'</p>';
+            
+            } 
+            else if ( $isManager ) {
+                $invitationStr .= '<p><i>Vous pouvez modifier cette invitation en tant que responsable budget</i></p>';
+                $invitationStr .= '<p><i>Statut de l\'invitation : </i>'.lab_invitations_getStatusName($invitation->status).'</p>';
             } else {
+                var_dump($budget_manager_id->user_id);
                 die('Vous ne pouvez pas modifier cette invitation');
             }
         }

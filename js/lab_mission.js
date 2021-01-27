@@ -60,6 +60,7 @@ jQuery(function($){
       'action':"lab_mission_load",
       'groupIds': $leaderGroupIds,
     };
+    console.log(data);
     callAjax(data, null, displayMission, null, null);
 
   }
