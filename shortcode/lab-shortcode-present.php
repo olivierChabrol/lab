@@ -277,7 +277,7 @@ function lab_present_choice($param) {
             <input id=\"external\" type=\"hidden\"  val=\"0\"/>
 
             <label for='date-open'>".esc_html__("Le", "lab")."</label>
-            <input type='date' name='date-open' id='date-open' class='form-control'/>
+            <input type='date' name='date-open' id='date-open' class='form-control datechk'/>
             <div id='messErr_date-open' class='invalid-feedback'></div>
            
             <label for='hour-open'></label>
