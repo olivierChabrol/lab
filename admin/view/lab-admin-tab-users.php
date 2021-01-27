@@ -107,7 +107,7 @@ function lab_admin_tab_user() {
       </tr>
       <tr>
         <td>
-          <label for="lab_user_section_cn"><?php esc_html_e('Section CN','lab') ?></label>
+          <label for="lab_user_section_cn"><?php esc_html_e('CN Section','lab') ?></label>
         </td>
         <td>
           <?php lab_html_select("lab_user_section_cn", "lab_user_section_cn", "", "lab_admin_get_params_userSectionCn", null, array("value"=>"","label"=>"None"), ""); ?>
@@ -115,7 +115,7 @@ function lab_admin_tab_user() {
       </tr>
       <tr>
         <td>
-          <label for="lab_user_section_cnu"><?php esc_html_e('Section CNU','lab') ?></label>
+          <label for="lab_user_section_cnu"><?php esc_html_e('CNU Section','lab') ?></label>
         </td>
         <td>
           <?php lab_html_select("lab_user_section_cnu", "lab_user_section_cnu", "", "lab_admin_get_params_userSectionCnu", null, array("value"=>"","label"=>"None"), ""); ?>
@@ -152,13 +152,13 @@ function lab_admin_tab_user() {
           <label for="lab_user_left"><?php esc_html_e('Parti','lab') ?></label>
         </td>
         <td>
-          <input type="checkbox" id="lab_user_left"> <label for="lab_user_left_date"><?php esc_html_e('Date de départ','lab') ?></label><input type="date" id="lab_user_left_date">
+          <input type="checkbox" id="lab_user_left"> <label for="lab_user_left_date"><?php esc_html_e('Departure date','lab') ?></label><input type="date" id="lab_user_left_date">
           <input type="hidden" id="lab_usermeta_id">
         </td>
       </tr>
       <tr>
         <td colspan="2">
-          <a href="#" class="page-title-action" id="lab_user_button_user_save"><?php esc_html_e('Modifier le statut de l\'utilisateur','lab') ?></a>
+          <a href="#" class="page-title-action" id="lab_user_button_user_save"><?php esc_html_e('Edit user status','lab') ?></a>
           <a href="#" class="page-title-action" id="lab_user_button_delete"><?php esc_html_e('Delete user','lab') ?></a>
         </td>
       </tr>
@@ -294,7 +294,7 @@ function lab_admin_tab_user() {
           <div id="lab_historic_actions">
             <input class="btn btn-primary" type="submit" id="lab_historic_add" value="<?php esc_html_e('Ajouter','lab')?>"/>
             <button style="display:none" class="btn btn-secondary" id="lab_historic_edit"><?php esc_html_e('Modifier','lab')?></button>
-            <input type="reset" value="<?php esc_html_e('Annuler','lab')?>"/>
+            <input type="reset" value="<?php esc_html_e('Cancel','lab')?>"/>
           </div>
         </td>
       </tr>
@@ -390,8 +390,8 @@ function lab_admin_tab_user() {
   <div id="lab_historic_delete_dialog" class="modal">
     <p><?php esc_html_e('Voulez-vous vraiment supprimer cette période ?','lab');?></p>
     <div id="lab_historic_delete_dialog_options">
-      <a href="#" rel="modal:close"><?php esc_html_e('Annuler','lab')?></a>
-      <a href="#" rel="modal:close" id="lab_history_edit_delete_confirm" entry_id=""><?php esc_html_e('Confirmer','lab'); ?></a>
+      <a href="#" rel="modal:close"><?php esc_html_e('Cancel','lab')?></a>
+      <a href="#" rel="modal:close" id="lab_history_edit_delete_confirm" entry_id=""><?php esc_html_e('Confirm','lab'); ?></a>
     </div>
   </div>
 <?php

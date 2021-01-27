@@ -396,7 +396,7 @@ function newUserDiv($startDay)
                     <small id="emailHelp" class="form-text text-muted">We\'ll never share your email with anyone else.</small>
                     <div class="h-divider"></div>
                     <label for="date-open">'.esc_html("From", "lab").'</label>
-                    <input type="date" id="lab_presence_ext_new_date_open" />
+                    <input type="date" id="lab_presence_ext_new_date_open" class="datechk"/>
                     <label for="hour-open"></label>
                     <input type="time" id="lab_presence_ext_new_hour_open" />
                     <label for="hour-close">'.esc_html("to", "lab").'</label>
@@ -412,7 +412,7 @@ function newUserDiv($startDay)
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="close" data-dismiss="modal">'.esc_html('Annuler','lab').'</button>
+                    <button type="button" class="close" data-dismiss="modal">'.esc_html('Cancel','lab').'</button>
                     <button type="button" class="close" data-dismiss="modal" id="lab_presence_ext_new_save" keyid="">'.esc_html('Save','lab').'</button>
                 </div>
             </div>
@@ -441,7 +441,7 @@ function editDiv()
                     <input id="lab_presence_edit_userId" name="userId" type="hidden"/>
                     <input id="lab_presence_edit_presenceId" name="userId" type="hidden"/>
                     <label for="lab_presence_edit_date-open">'.esc_html("From", "lab").'</label>
-                    <input type="date" id="lab_presence_edit_date-open" />
+                    <input type="date" id="lab_presence_edit_date-open" class="datechk" />
                     <div id="messErr_lab_presence_edit_date" class="invalid-feedback"></div>
                     <label for="hour-open"></label>
                     <input type="time" id="lab_presence_edit_hour-open" min="07:00"  max="20:00" required />
@@ -458,7 +458,7 @@ function editDiv()
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="close" data-dismiss="modal">'.esc_html('Annuler','lab').'</button>
+                    <button type="button" class="close" data-dismiss="modal">'.esc_html('Cancel','lab').'</button>
                     <button type="button" class="close" data-dismiss="modal" id="lab_presence_edit_save" keyid="">'.esc_html('Save','lab').'</button>
                 </div>
             </div>
@@ -488,7 +488,7 @@ function deleteDiv() {
                 </div>
                 <div class="modal-footer">
                     <button type="button" id="lab_presence_del_button" class="btn btn-danger delButton" data-dismiss="modal">'. esc_html__("Oui", "lab")   .'</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">'. esc_html__("Annuler","lab").'</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">'. esc_html__("Cancel","lab").'</button>
                 </div>
             </div>
         </div>

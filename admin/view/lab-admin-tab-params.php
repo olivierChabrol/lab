@@ -92,12 +92,12 @@ function lab_admin_tab_params() {
     </table>
   </div>
   <div id="lab_admin_param_delete" class="modal">
-      <p><?php esc_html_e('delete this param ?','lab'); ?></p>
+      <p><?php esc_html_e('Delete this param ?','lab'); ?></p>
       <p><span id="lab_admin_param_modal_param_name"></span></p>
       <input type="hidden" id="lab_admin_param_modal_param_id">
       <div id="lab_keyring_delete_dialog_options">
-        <a href="#" rel="modal:close"><?php esc_html_e('Annuler','lab'); ?></a>
-        <a href="#" rel="modal:close" id="lab_admin_param_delete_confirm" keyid=""><?php esc_html_e('Confirmer','lab'); ?></a>
+        <a href="#" rel="modal:close"><?php esc_html_e('Cancel','lab'); ?></a>
+        <a href="#" rel="modal:close" id="lab_admin_param_delete_confirm" keyid=""><?php esc_html_e('Confirm','lab'); ?></a>
       </div>
     </div>
 <?php

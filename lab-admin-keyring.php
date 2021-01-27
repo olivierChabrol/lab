@@ -103,8 +103,8 @@
     <div id="lab_keyring_delete_dialog" class="modal">
       <p><?php esc_html_e('Voulez-vous vraiment supprimer cette clé ?','lab');?></p>
       <div id="lab_keyring_delete_dialog_options">
-        <a href="#" rel="modal:close"><?php esc_html_e('Annuler','lab')?></a>
-        <a href="#" rel="modal:close" id="lab_keyring_keyDelete_confirm" keyid=""><?php esc_html_e('Confirmer','lab'); ?></a>
+        <a href="#" rel="modal:close"><?php esc_html_e('Cancel','lab')?></a>
+        <a href="#" rel="modal:close" id="lab_keyring_keyDelete_confirm" keyid=""><?php esc_html_e('Confirm','lab'); ?></a>
       </div>
     </div>
     <!-- Dialogue de confirmation modal s'affichant lorsque l'utilisateur essaie de terminer un prêt -->
@@ -112,8 +112,8 @@
       <p><?php esc_html_e('Voulez-vous vraiment terminer ce prêt ?','lab'); ?></p>
       <p><?php esc_html_e('Date de rendu','lab'); ?> : <span id="lab_keyring_endLoan_date"><?php esc_html_e("Aujourd'hui",'lab') ?></span></p>
       <div id="lab_keyring_delete_dialog_options">
-        <a href="#" rel="modal:close"><?php esc_html_e('Annuler','lab'); ?></a>
-        <a href="#" rel="modal:close" id="lab_keyring_endLoan_confirm" keyid=""><?php esc_html_e('Confirmer','lab'); ?></a>
+        <a href="#" rel="modal:close"><?php esc_html_e('Cancel','lab'); ?></a>
+        <a href="#" rel="modal:close" id="lab_keyring_endLoan_confirm" keyid=""><?php esc_html_e('Confirm','lab'); ?></a>
       </div>
     </div>
     <!-- Prêts en cour -->
@@ -273,8 +273,8 @@
       <p><?php esc_html_e('Voulez-vous vraiment terminer ce prêt ?','lab'); ?></p>
       <p><?php esc_html_e('Date de rendu : ','lab'); ?><span id="lab_keyring_endLoan_date"><?php esc_html_e("Aujourd'hui",'lab') ?></span></p>
       <div id="lab_keyring_delete_dialog_options">
-        <a href="#" rel="modal:close"><?php esc_html_e('Annuler','lab'); ?></a>
-        <a href="#" rel="modal:close" id="lab_keyring_endLoan_confirm" keyid=""><?php esc_html_e('Confirmer','lab'); ?></a>
+        <a href="#" rel="modal:close"><?php esc_html_e('Cancel','lab'); ?></a>
+        <a href="#" rel="modal:close" id="lab_keyring_endLoan_confirm" keyid=""><?php esc_html_e('Confirm','lab'); ?></a>
       </div>
     </div>
     <h2><?php esc_html_e('Liste des prêts en cours','lab'); ?></h2>

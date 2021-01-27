@@ -200,8 +200,13 @@ function lab_directory($param) {
             AND um9.`meta_key`='lab_user_function'".$whereDisplayLeftUser.$whereGroup.$whereFunctionUser.$whereThematicUser;
 
     if (!$displayAllgroup) {
-        $currentLetter = $_GET["letter"];
-        if (!isset($currentLetter) || empty($currentLetter)) {
+        if (isset($_GET["letter"])) {
+            $currentLetter = $_GET["letter"];
+            if (empty($currentLetter)) {
+                $currentLetter = 'A';
+            }
+        }
+        else {
             $currentLetter = 'A';
         }
         $sql .= " AND um1.`meta_value`LIKE '$currentLetter%'"; 
@@ -243,10 +248,10 @@ function lab_directory($param) {
                 ";
         if (!$groupAsSCOption && $groupAsParameter) {
             $directoryStr .= __('Show only group', 'lab')." : ";
-            $directoryStr .= lab_html_select_str("lab-directory-group-id", "lab-directory-group-id", "", lab_admin_group_select_group, "acronym, group_name", array("value"=>0,"label"=>"None"), $group, array("id"=>"acronym", "value"=>"value"));
+            $directoryStr .= lab_html_select_str("lab-directory-group-id", "lab-directory-group-id", "", "lab_admin_group_select_group", "acronym, group_name", array("value"=>0,"label"=>"None"), $group, array("id"=>"acronym", "value"=>"value"));
         }
         $directoryStr .= "<br>";
-        $directoryStr .= lab_html_select_str("lab-directory-thematic", "lab-directory-thematic", "", lab_admin_thematic_load_all, null, array("value"=>0,"label"=>"--- Select thematic ---"),$thematic);
+        $directoryStr .= lab_html_select_str("lab-directory-thematic", "lab-directory-thematic", "", "lab_admin_thematic_load_all", null, array("value"=>0,"label"=>"--- Select thematic ---"),$thematic);
         $directoryStr .= "</div><br>"; // search field
     }
     $directoryStr .= 
@@ -291,6 +296,7 @@ function lab_directory($param) {
     }
     $directoryStr .= "</tbody></table><p>Legend</p><table class=\"table table-striped  table-hover\"><thead class=\"thead-dark\"><tr><th>Acronym</th><th>Display</th></tr></thead><tbody>";
     ksort($acronymList);
+    $i = 0;
     foreach($acronymList as $k=>$v) {
         $directoryStr .= "<tr><td>".$k."</td><td>";
         $size = count($v);
