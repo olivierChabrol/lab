@@ -114,8 +114,20 @@ function lab_invitations_getByToken($token) {
   $res = $wpdb->get_results($sql);
   return $res[0];
 }
-//fonction qui récupère les trajets d'une mission à partir du token (inutilisée)
 
+function lab_group_budget_manager($groupId) {
+  global $wpdb;
+  $sql = "SELECT user_id FROM `".$wpdb->prefix."lab_group_manager` WHERE group_id='".$groupId."' AND manager_type = 1;";
+  $res = $wpdb->get_results($sql);
+  $tab = array();
+  foreach($res as $r) {
+    $tab[] = $r->user_id;
+  }
+  return $tab;
+}
+
+
+//fonction qui récupère les trajets d'une mission à partir du token (inutilisée)
 /*function lab_mission_route_get($token)
 {
   global $wpdb;

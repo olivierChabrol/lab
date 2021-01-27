@@ -1319,6 +1319,10 @@ function lab_invitations_new() {
 }
 function lab_invitations_edit() {
   $fields = $_POST['fields'];
+  if(!isset($fields['host_group_id'])) {
+    $hostGroupId = lab_group_get_user_group($fields['host_id']);
+    $fields['host_group_id'] = $hostGroupId;
+  }
   if (get_current_user_id()==$fields['host_id'] || isset($fields['host_group_id']) && get_current_user_id()==(int)lab_admin_get_chief_byGroup($fields['host_group_id'])) {
     $guest = array (
       'first_name'=> $fields['guest_firstName'],
@@ -1336,7 +1340,7 @@ function lab_invitations_edit() {
       'needs_hostel'=>$fields['needs_hostel']=='true' ? 1 : 0,
       'completion_time' => $timeStamp
     );
-    foreach (['host_group_id', 'estimated_cost', 'maximum_cost', 'host_id','mission_objective','start_date','end_date','travel_mean_to','travel_mean_from','funding_source','research_contract','forward_start_station','return_end_station','forward_travel_reference','return_travel_reference'] as $champ) {
+    foreach (['host_group_id', 'estimated_cost', 'maximum_cost', 'host_id','mission_objective','start_date','end_date',/*'travel_mean_to','travel_mean_from',*/'funding_source','research_contract'/*,'forward_start_station','return_end_station','forward_travel_reference','return_travel_reference'*/] as $champ) {
       $invite[$champ]=$fields[$champ];
     }
     $invite["charges"]=json_encode($fields["charges"]);
