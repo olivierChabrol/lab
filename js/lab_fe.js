@@ -166,12 +166,12 @@ function loadThematics() {
           thematicCssClass += " lab_thematic_main";
         }
         let innerSpanStar = $('<span />').attr('class', thematicCssClass).attr('thematic_id', value['id']).attr('thematic_value', value["main"]);
-        let innerIStar = $('<i />').attr('class', 'fas fa-star').attr('thematic_id', value['id']).attr("title",__('Change main thematic','lab'));
+        let innerIStar = $('<i />').attr('class', 'fas fa-star').attr('thematic_id', value['id']).attr("title",__('Change main theme','lab'));
         innerSpanStar.append(innerIStar);
         li.append(innerSpanStar);
         
         let innerSpanDelete = $('<span />').attr('class', 'lab_profile_edit delete_thematic').attr('thematic_id', value['id']);
-        let innerI = $('<i />').attr('class', 'fas fa-trash').attr('thematic_id', value['id']).attr("title",__('Delete thematic','lab'));
+        let innerI = $('<i />').attr('class', 'fas fa-trash').attr('thematic_id', value['id']).attr("title",__('Delete theme','lab'));
         innerSpanDelete.append(innerI);
         li.append(innerSpanDelete);
 
@@ -246,7 +246,7 @@ function LABloadProfile() {
     $("#lab_confirm_change").click(function(){
       if ($("#lab_profile_edit_bio").val().length > 200)
       {
-        $("#lab_alert").html(_('Votre biographie est trop longue (max 200 caractères)','lab'));
+        $("#lab_alert").html(__('Your biography is too long (max 200 characters)','lab'));
       }
       else{
         
