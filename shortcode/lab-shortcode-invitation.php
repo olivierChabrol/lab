@@ -88,7 +88,33 @@ function lab_mission($args) {
 
         <div class="lab_invite_field">
             <input type="text" required id="lab_hostname" name="lab_hostname" host_id="'.($host==null ? '' : $host->id.'" value="'.$host->first_name.' '.$host->last_name).'">
-        </div>
+        </div>';
+    $groups = lab_admin_group_by_user($host->id);
+    if (count($groups) == 1) {
+        $invitationStr .= '<input type="hidden" id="lab_group_name" value="'.$groups[0]->id.'">';
+    }
+    else {
+        $invitationStr .= '<label for="lab_group_name">'.esc_html__("Group","lab").'</label>';
+        $invitationStr .= '<select id="lab_group_name">';
+        $selectedGroup = !$newForm ? $invitation->host_group_id: '';
+        foreach($groups as $group) {
+            $select = "";
+            if ($selectedGroup) {
+                if ($selectedGroup == $group->id) {
+                    $select = " selected";
+                }
+            }
+            else {
+                if($group->favorite == 1) {
+                    $select = " selected";
+                }
+            }
+            $invitationStr .= '<option value="'.$group->id.'"'.$select.'>'.$group->name.'</option>';
+        }
+        $invitationStr .= '</select>';
+
+    }
+    $invitationStr .= '
         <div class="lab_invite_field">
             <label for="lab_mission">'.esc_html__("Reason for the mission","lab").'<span class="lab_form_required_star">
             <select id="lab_mission" name="lab_mission">';

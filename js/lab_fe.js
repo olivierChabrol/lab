@@ -1,12 +1,12 @@
 /* front end 21 04 2020 */
 const { __, _x, _n, sprintf } = wp.i18n;
 
-/*** DIRECTORY ***/ 
-var travels = [];
-var meansOfTransport = new Array();
-var meansOfTransportReverse = new Array();
 
 jQuery(function($){
+  /*** DIRECTORY ***/ 
+  var travels = [];
+  var meansOfTransport = new Array();
+  var meansOfTransportReverse = new Array();
 
   $("#lab-directory-group-id").on('change', function() {
     loadDirectory();
@@ -34,14 +34,6 @@ jQuery(function($){
     let group = $("#lab-directory-group-id").val();
     let thematic = $("#lab-directory-thematic").val();
     href = "/linstitut/annuaire/?letter=%";
-    /*
-    if (letter != "") {
-      href += "?letter="+letter;
-    }
-    else{
-      href += "?letter=%"
-    }
-    //*/
     if (group != "0") {
       if (letter != "") {
         href += "&";
@@ -234,7 +226,7 @@ function LABloadProfile() {
     $("#lab_confirm_change").click(function(){
       if ($("#lab_profile_edit_bio").val().length > 200)
       {
-        $("#lab_alert").html(_('Votre biographie est trop longue (max 200 caractères)','lab'));
+        $("#lab_alert").html(__('Your biography is too long (max 200 characters)','lab'));
       }
       else{
         
@@ -378,8 +370,8 @@ function saveTravelModification(id) {
     sortTravelsByDate();
   }
   else {
-    console.log("[saveTravelModification] " + $("lab_mission_edit_travel_div_trId").val());
-    addTravel(id, f, null, null, $("#lab_mission_edit_travel_div_trId").val());
+    console.log("[saveTravelModification] [travel NEW]");
+    addTravel(id, f, null, null);
   }
 
   // if edit existing mission with travels 
@@ -424,7 +416,6 @@ function displayTravels(data) {
 }
 
 function travelExist(id) {
-  id = parseInt(id);
   return travels.includes(id);
 }
 
@@ -532,9 +523,8 @@ function getTravel(id) {
   return travel;
 }
 
-function editTravelDiv(id, trId) {
-  $("#lab_mission_edit_travel_div_trId").val(trId);
-  console.log("[editTravelDiv] id : " + id + "/" + trId);
+function editTravelDiv(id) {
+  console.log("[editTravelDiv] id : " + id);
   let fields = getEditTravelField();
   console.log(fields)
   for (let i = 0 ; i < fields.length ; i++) {
@@ -600,8 +590,8 @@ function deleteTravelTr(id, mission_id) {
   deleteTravelId(id);
 }
 
-function addTravel(id, fields, travelId, mission_id, trId = null) {
-  console.log("[AddTravel] " + trId);
+function addTravel(id, fields, travelId, mission_id) {
+  console.log("[AddTravel] ");
   addTravelId(id);
   let tr = $("<tr/>").attr("id","lab_mission_table_tr_"+id);
   createDefaultTdToTr(tr, id, "dateGoTo", fields);
@@ -622,10 +612,10 @@ function addTravel(id, fields, travelId, mission_id, trId = null) {
     "travelId" : travelId,
     "missionId" : mission_id
   }).html('<i class="fa fa-trash-o" aria-hidden="true" travelId="'+id+'"></i>');
-  //let tdAdd  = $("<td/>").attr("id", "addTravelRow_" + id).attr("class", "pointer").attr("travelId",id).html('<i class="fa fa-plus" aria-hidden="true" travelId="'+id+'"></i>');
+
   tr.append(tdEdit);
   tr.append(tdDel);
-  //tr.append(tdAdd);
+
   createTravelHiddenField(tdEdit, id, "carbon_footprint", fields);
   createTravelHiddenField(tdEdit, id, "nb_person", fields);
   createTravelHiddenField(tdEdit, id, "travelId", fields);

@@ -1443,6 +1443,7 @@ function lab_admin_group_by_user($userId)
         $group = new \stdClass();
         $group->id = $r->id; 
         $group->name = $r->group_name;
+        $group->favorite = $r->favorite;
         $groups[] = $group;
     }
     return $groups;
@@ -1458,7 +1459,7 @@ function lab_admin_group_get_user_groups_delete($groupId)
 function lab_group_get_user_groups($userId)
 {
     global $wpdb;
-    return $wpdb->get_results("SELECT lg.group_name, lg.url, lug.id
+    return $wpdb->get_results("SELECT lg.group_name, lg.url, lug.id, lug.favorite
                                 FROM `".$wpdb->prefix."lab_users_groups` as lug 
                                 JOIN `".$wpdb->prefix."lab_groups` AS lg ON lg.id=lug.group_id 
                                 WHERE lug.`user_id`=".$userId);
