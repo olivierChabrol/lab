@@ -45,7 +45,7 @@ jQuery(function($){
     
     jQuery.post(LAB.ajaxurl, data, function(response) {
       if (response.success) {
-          toast_success(__("Clef chargée",'lab'));
+          toast_success(__("Loaded key",'lab'));
           let key = response.data[0];
           $("#lab_keyring_entry_number"+index).val(key.number);
           $("#lab_keyring_entry_office"+index).val(key.office);
@@ -64,11 +64,11 @@ jQuery(function($){
       };
       jQuery.post(LAB.ajaxurl, data, function(response) {
       if (response==0) {
-          toast_success(__("Table créée avec succès",'lab'));
+          toast_success(__("Table successfully created",'lab'));
           $("#lab_keyring_noKeysTableWarning").css("display","none");
           return;
       }
-      toast_error(__("Erreur lors de la création de la table",'lab')+" : "+response);
+      toast_error(__("Error when creating the table",'lab')+" : "+response);
       });
   });
   $("#lab_keyring_create_table_loans").click(function () {
@@ -77,11 +77,11 @@ jQuery(function($){
       };
       jQuery.post(LAB.ajaxurl, data, function(response) {
       if (response==0) {
-          toast_success(__("Table créée avec succès",'lab'));
+          toast_success(__("Table successfully created",'lab'));
           $("#lab_keyring_noLoansTableWarning").css("display","none");
           return;
       }
-      toast_error(__("Erreur lors de la création de la table",'lab')+" : "+response);
+      toast_error(__("Error while creating the table",'lab')+" : "+response);
       });
   });
   $("#lab_keyring_entry_create").click(function () {
@@ -136,7 +136,7 @@ jQuery(function($){
       for (i of ['type','number','office','brand','site']) {
       if ($("#lab_keyring_newKey_"+i).val() == "") {
           $("#lab_keyring_newKey_"+i).css("border-color","#F00");
-          toast_error(__("Erreur lors de la création de la clé","lab")+" :<br/>"+__("Tous les champs requis doivent être remplis","lab"));
+          toast_error(__("Error while creating the key","lab")+" :<br/>"+__("All required fields must be filled","lab"));
           return;
       }
       $("#lab_keyring_newKey_"+i).css("border-color","#0071a1");
@@ -192,7 +192,7 @@ jQuery(function($){
                     }
                   });
                 } else {
-                  toast_error(__("Impossible de trouver le prêt correspondant à cette clé",'lab'));
+                  toast_error(__("Impossible to find the loan corresponding to this key",'lab'));
                 }
               });
             }
@@ -201,7 +201,7 @@ jQuery(function($){
           }
         }
       } else {
-        toast_error(__("Impossible de trouver les informations de cette clé",'lab'));
+        toast_error(__("Impossible to find the information for this key",'lab'));
       }
     });
   });
@@ -215,10 +215,10 @@ jQuery(function($){
     jQuery.post(LAB.ajaxurl, data, function(response) {
       if (response.success) {
         //On calcule sur combien de pages s'étalent les lignes trouvées
-        $("#lab_keyring_search_totalResults")[0].innerHTML=response.data[0]+" "+__("résultat(s)","lab")+".";
+        $("#lab_keyring_search_totalResults")[0].innerHTML=response.data[0]+" "+__("result(s)","lab")+".";
         if (response.data[0]==0) {//Aucun résultat trouvé, on cache le "next page" et on propose de créer une clé
           $("#lab_keyring_pageNav").hide();
-          $("#lab_keyring_keysList")[0].innerHTML="<tr><td colspan='9'>"+__('Aucune clé trouvée. Vous pouvez en créer une ci-dessous','lab')+" :</td></tr>";
+          $("#lab_keyring_keysList")[0].innerHTML="<tr><td colspan='9'>"+__('No keys found. You can create one below','lab')+" :</td></tr>";
           $("#lab_keyring_newKey_number").val($("#lab_keyring_keySearch").val());
         } else {
           //Combien de lignes restantes à afficher ?
@@ -265,7 +265,7 @@ jQuery(function($){
       for (i of ['number','office']) {
       if ($("#lab_keyring_edit_"+i).val() == "") {
           $("#lab_keyring_edit_"+i).css("border-color","#F00");
-          toast_error(__("Erreur lors de la modification de la clé","lab")+" :<br/>"+__("Tous les champs requis doivent être remplis","lab"));
+          toast_error(__("Error while changing the key","lab")+" :<br/>"+__("All required fields must be filled","lab"));
           return;
       } else {
           $("#lab_keyring_edit_"+i).css("border-color","#0071a1");
@@ -282,13 +282,13 @@ jQuery(function($){
       };
       jQuery.post(LAB.ajaxurl, data, function(response) {
       if (response.success) {
-          toast_success(__("Clé modifiée avec succès",'lab'));
+          toast_success(__("Key successfully modified",'lab'));
           $("#lab_keyring_keySearch").keyup();
           clearFields("lab_keyring_edit_",['number','office','brand','commentary']);
           $("#lab_keyring_editForm").hide();
           return;
       }
-      toast_error(__("Échec de modification de la clé",'lab'));
+      toast_error(__("Failed to change the key",'lab'));
       });
   });
   $("#lab_keyring_keyDelete_confirm").click(function() {
@@ -298,11 +298,11 @@ jQuery(function($){
       }
       jQuery.post(LAB.ajaxurl, data, function(response) {
       if (response.success) {
-          toast_success(__('Clé supprimée avec succès','lab'));
+          toast_success(__('Key deleted successfully','lab'));
           $("#lab_keyring_keySearch").keyup();
           return;
       }
-      toast_error(__("La clé n'a pas pu être supprimée",'lab'));
+      toast_error(__("The key could not be deleted",'lab'));
       });
   });
   $("#lab_keyring_keysPerPage").change(function () {
@@ -377,7 +377,7 @@ jQuery(function($){
     for (i of ['referent','user','start_date']) {
     if ($("#lab_keyring_loanform_"+i).val().length==0) {
         $("#lab_keyring_loanform_"+i).css("border-color","#F00");
-        toast_error(__("Impossible de créer le prêt : le formulaire n'est pas rempli correctement",'lab'));
+        toast_error(__("Impossible to create the loan: the form is not filled in correctly",'lab'));
         return;
     } else {
         $("#lab_keyring_loanform_"+i).css("border-color","");
@@ -497,11 +497,11 @@ jQuery(function($){
             showLoanManagement(true);
             (resp.data['ended']) == 0 ? $("#lab_keyring_loanform_end").show() : $("#lab_keyring_loanform_end").hide();
           } else {
-            toast_error(__('Impossible de trouver les informations de cette clé','lab'));
+            toast_error(__('Impossible to find the information for this key','lab'));
           }
         });
       } else {
-        toast_error(__("Impossible de trouver le prêt d'ID",'lab')+" : "+$(this).attr('loan_id'));
+        toast_error(__("Impossible to find the ID loan",'lab')+" : "+$(this).attr('loan_id'));
       }
     });
   });
@@ -520,11 +520,11 @@ function createKey(params) {
     }
     jQuery.post(ajaxurl, data, function(response) {
       if (response.success) {
-        toast_success(__("Clé créée avec succès",'lab'));
+        toast_success(__("Key successfully created",'lab'));
         jQuery("#lab_keyring_keySearch").keyup();
         return;
       }
-      toast_error(__("Erreur de création de clé",'lab'));
+      toast_error(__("Error while creating a key",'lab'));
     });
 }
 function createLoan(params) {
@@ -534,7 +534,7 @@ function createLoan(params) {
   }
   jQuery.post(ajaxurl, data, function(response) {
     if (response.success) {
-      toast_success(__("Prêt créé avec succès",'lab'));
+      toast_success(__("Loan successfully created",'lab'));
       jQuery(function($) {
         $("#lab_keyring_keySearch").keyup();
         allLoansLoad();
@@ -543,7 +543,7 @@ function createLoan(params) {
       hideLoanManagement(false);
       return;
     }
-    toast_error(__("Erreur de création du prêt",'lab'));
+    toast_error(__("Error while creating the loan",'lab'));
   });
 }
 function editLoan(id, params) {
@@ -554,13 +554,13 @@ function editLoan(id, params) {
   }
   jQuery.post(ajaxurl, data, function(response) {
     if (response.success) {
-      toast_success(__("Prêt modifié avec succès",'lab'));
+      toast_success(__("Loan successfully modified",'lab'));
       allLoansLoad();
       jQuery("#lab_keyring_loanSearch").change();
       hideLoanManagement(false);
       return;
     }
-    toast_error(__("Erreur de modification du prêt",'lab'));
+    toast_error(__("Loan modification error",'lab'));
   });
 }
 function endLoan(loan_id, key_id, date) {
@@ -572,7 +572,7 @@ function endLoan(loan_id, key_id, date) {
   }
   jQuery.post(ajaxurl, data, function(response) {
     if (response.success) {
-      toast_success(__("Prêt terminé avec succès",'lab'));
+      toast_success(__("Loan successfully completed",'lab'));
       hideLoanManagement(false);
       jQuery(function($){
         $("#lab_keyring_keySearch").keyup();
@@ -582,7 +582,7 @@ function endLoan(loan_id, key_id, date) {
       hideLoanManagement(false);
       return;
     }
-    toast_error(__("Erreur lors de la tentative de fin du prêt",'lab'));
+    toast_error(__("Error when trying to end the loan",'lab'));
   });
 }
 function getKeyInfo(key_id,callback) {
@@ -626,26 +626,26 @@ function loanContract(key_id) {
                     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">\
                     <link rel="stylesheet" id="KeyRingCSS-css" href="http://stage.fr/wp-content/plugins/lab/css/keyring.css?ver=5.4" media="all">\
                     <meta charset="UTF-8">\
-                    <title>'+__('Reçu de prêt','lab')+' n'+loan.data["id"]+'</title>\
+                    <title>'+__('Loan receipt','lab')+' n'+loan.data["id"]+'</title>\
                     <script>document.onkeydown = function(e) {if (e.which== 27) {window.close();}}</script>\
                   </head>\
                   <body>\
-                    <h2 id="loanContract_title">'+__('Reçu de prêt','lab')+'</h2>\
+                    <h2 id="loanContract_title">'+__('Loan receipt','lab')+'</h2>\
                     <div id="loanContract">\
                         <article>\
-                          <h4>'+__('ID du prêt','lab')+' : <u>'+loan.data["id"]+'</u></h4>\
-                          <h4>'+__('Référent','lab')+' : <u>'+referent+'</u></h4>\
-                          <p>'+__('La clé/badge numéro','lab')+' : <b>'+key.data["number"]+' </b></p>\
-                          <p>'+__('A été prêtée à','lab')+' <b>'+user+'</b></p>';
+                          <h4>'+__('Loan ID','lab')+' : <u>'+loan.data["id"]+'</u></h4>\
+                          <h4>'+__('Referent','lab')+' : <u>'+referent+'</u></h4>\
+                          <p>'+__('The key/badge number','lab')+' : <b>'+key.data["number"]+' </b></p>\
+                          <p>'+__('Has been lent to','lab')+' <b>'+user+'</b></p>';
                           start = new Date(loan.data["start_date"]).toLocaleDateString(navigator.language,{ year: 'numeric', month: 'long', day: 'numeric' });
                           end = new Date(loan.data["end_date"]).toLocaleDateString(navigator.language,{ year: 'numeric', month: 'long', day: 'numeric' })
                           output+='<p>Le <b>'+start+'</b></p>';
-                          output+=(loan.data["end_date"]===null) ? '<p>Et devra être rendue.</p>' : '<p>'+__('Et devra être rendue avant le','lab')+' <b>'+end+'</b></p>';
-                          output+=(loan.data["commentary"]===null) ? '' : '<p>'+__('Commentaire','lab')+' : <i>'+loan.data["commentary"]+'</i></p><br/>';
+                          output+=(loan.data["end_date"]===null) ? '<p>Et devra être rendue.</p>' : '<p>'+__('And must be returned before','lab')+' <b>'+end+'</b></p>';
+                          output+=(loan.data["commentary"]===null) ? '' : '<p>'+__('Comment','lab')+' : <i>'+loan.data["commentary"]+'</i></p><br/>';
                           output+='<p><u>'+__('Signature','lab')+' :</u></p>\
                         </article>';
                         output+= document.getElementById('lab_keyring_loanform_table').outerHTML;
-                      output+='</div><button onclick="window.print();">'+__('Imprimer','lab')+'</button>\
+                      output+='</div><button onclick="window.print();">'+__('Print','lab')+'</button>\
                     </body>\
                   </html>';
                   win.document.write(output);
@@ -679,7 +679,7 @@ function loans_for_user(user) {
   }
   jQuery.post(ajaxurl, data, function(response) {
     if (response.success) {
-      jQuery("#lab_keyring_search_totalResults")[0].innerHTML=response.data[0]+" "+__("résultat(s)","lab")+".";
+      jQuery("#lab_keyring_search_totalResults")[0].innerHTML=response.data[0]+" "+__("result(s)","lab")+".";
       jQuery("#lab_keyring_currentLoans")[0].innerHTML=response.data[1];
       //Nombre de pages nécessaires pour afficher tous les résultats
       nb = Math.ceil(response.data[0] / (jQuery("#lab_keyring_keysPerPage").val()=="custom" ? jQuery("#lab_keyring_keysPerPage_otherValue").val() : jQuery("#lab_keyring_keysPerPage").val()));

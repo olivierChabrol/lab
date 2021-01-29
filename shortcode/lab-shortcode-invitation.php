@@ -41,7 +41,7 @@ function lab_mission($args) {
             
             $charges = json_decode($invitation->charges);
             if (!isset($invitation)) {
-                return esc_html__("Token d'invitation invalide",'lab');
+                return esc_html__("Invalid invitation token",'lab');
             }
             $guest = lab_invitations_getGuest($invitation->guest_id);
             //var_dump($guest);
@@ -103,11 +103,11 @@ function lab_mission($args) {
         </div>
         <div class="lab_invite_row" id="lab_fullname">
             <div class="lab_invite_field">
-                <label for="lab_firstname">'.esc_html__("Firstname","lab").'<span class="lab_form_required_star"> *</span></label>
+                <label for="lab_firstname">'.esc_html__("First name","lab").'<span class="lab_form_required_star"> *</span></label>
                 <input type="text" required id="lab_firstname" name="lab_firstname" guest_id="'.(!$newForm ? $guest->id : '').'" value="'.(!$newForm ? $guest->first_name : '').'">
             </div>
             <div class="lab_invite_field">
-                <label for="lab_lastname">'.esc_html__("Lastname","lab").'<span class="lab_form_required_star"> *</span></label>
+                <label for="lab_lastname">'.esc_html__("Last name","lab").'<span class="lab_form_required_star"> *</span></label>
                 <input type="text" required id="lab_lastname" name="lab_lastname" value="'.(!$newForm ? $guest->last_name : '').'">
             </div>
         </div>

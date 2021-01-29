@@ -713,10 +713,21 @@ function lab_group_delete_manager($id)
     return true;
 }
 
-function lab_admin_group_load_managers($groupId) {
+function lab_admin_group_load_managers($groupId, $typeManager = null) {
     global $wpdb;
-    return $wpdb->get_results("SELECT gm.id,gm.user_id,um1.meta_value AS first_name,um2.meta_value AS last_name FROM `".$wpdb->prefix."lab_group_manager` AS gm JOIN `".$wpdb->prefix."usermeta` AS um1 ON um1.user_id=gm.user_id JOIN `".$wpdb->prefix."usermeta` AS um2 ON um2.user_id=gm.user_id WHERE `group_id`=$groupId AND um1.meta_key='first_name' AND um2.meta_key='last_name'");
-
+    if($typeManager == null) {
+        return $wpdb->get_results("SELECT gm.id,gm.user_id,gm.manager_type,um1.meta_value AS first_name,um2.meta_value AS last_name FROM `".$wpdb->prefix."lab_group_manager` AS gm JOIN `".$wpdb->prefix."usermeta` AS um1 ON um1.user_id=gm.user_id JOIN `".$wpdb->prefix."usermeta` AS um2 ON um2.user_id=gm.user_id WHERE `group_id`=$groupId AND um1.meta_key='first_name' AND um2.meta_key='last_name'");
+    } else {
+        return $wpdb->get_results("SELECT gm.id,gm.user_id,gm.manager_type,um1.meta_value AS first_name,um2.meta_value AS last_name 
+                                            FROM `".$wpdb->prefix."lab_group_manager` AS gm 
+                                            JOIN `".$wpdb->prefix."usermeta` AS um1 ON um1.user_id=gm.user_id 
+                                            JOIN `".$wpdb->prefix."usermeta` AS um2 ON um2.user_id=gm.user_id 
+                                            WHERE `group_id`=$groupId 
+                                                AND um1.meta_key='first_name' 
+                                                AND um2.meta_key='last_name'
+                                                AND gm.manager_type = ".$typeManager
+                                        );
+    }
 }
 
 
@@ -1421,16 +1432,11 @@ function lab_admin_delete_all_group() {
 }
 
 function lab_admin_delete_group($groupId) {
-    lab_admin_delete_group_substitutes_by_groupId($groupId);
     lab_admin_delete_users_groups_by_groupId($groupId);
     global $wpdb;
     $wpdb->delete($wpdb->prefix."lab_groups", array("id"=>$groupId));
 }
 
-function lab_admin_delete_group_substitutes_by_groupId($groupId) {
-    global $wpdb;
-    $wpdb->delete($wpdb->prefix."lab_group_substitutes", array("group_id"=>$groupId));
-}
 function lab_admin_delete_users_groups_by_groupId($groupId) {
     global $wpdb;
     $wpdb->delete($wpdb->prefix."lab_users_groups", array("group_id"=>$groupId));
@@ -1485,17 +1491,6 @@ function lab_admin_createGroupTable() {
         PRIMARY KEY(`id`),
         FOREIGN KEY(`chief_id`) REFERENCES `".$wpdb->prefix."users`(`ID`),
         FOREIGN KEY(`parent_group_id`) REFERENCES `".$wpdb->prefix."lab_groups`(`id`)) ENGINE = INNODB;";
-    $wpdb->get_results($sql);
-}
-function lab_admin_createSubTable() {
-    global $wpdb;
-    $sql = "CREATE TABLE IF NOT EXISTS `".$wpdb->prefix."lab_group_substitutes`(
-        `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-        `group_id` BIGINT UNSIGNED NOT NULL ,
-        `substitute_id` BIGINT UNSIGNED NOT NULL,
-        PRIMARY KEY(`id`),
-        FOREIGN KEY(`substitute_id`) REFERENCES `".$wpdb->prefix."users`(`ID`),
-        FOREIGN KEY(`group_id`) REFERENCES `".$wpdb->prefix."lab_groups`(`id`)) ENGINE = INNODB;";
     $wpdb->get_results($sql);
 }
 
@@ -1558,19 +1553,6 @@ function formatGroupsName($userId) {
 function lab_admin_users_groups_add_user($userId, $groupId) {
     global $wpdb;
     return $wpdb->insert($wpdb->prefix.'lab_users_groups', array("user_id"=>$userId, "group_id"=>$groupId));
-}
-
-function lab_admin_group_subs_add($groupId,$listUserId) {
-    global $wpdb;
-    $wpdb->hide_errors();
-    foreach ($listUserId as $userId) {
-        if (!$wpdb->insert($wpdb->prefix.'lab_group_substitutes', array('group_id' => $groupId, 'substitute_id' => $userId))) {
-            return $wpdb -> last_error;
-        } else {
-            lab_admin_users_groups_check_and_add_user($userId, $groupId);
-        }
-    }
-    return;
 }
 function lab_admin_get_groups_byChief($chief_id) {
     global $wpdb;
@@ -2500,7 +2482,6 @@ function create_all_tables() {
     lab_admin_create_group_manager_table();
     lab_admin_createUserGroupTable();
     lab_admin_createUserThematicTable();
-    lab_admin_createSubTable();
     lab_keyring_createTable_keys();
     lab_keyring_createTable_loans();
     lab_admin_initTable_usermeta();
@@ -2515,7 +2496,6 @@ function create_all_tables() {
 function delete_all_tables() {
     //lab_admin_delete_group(0);
     lab_admin_delete_all_group();
-    drop_table("lab_group_substitutes");
     drop_table("lab_prefered_groups");
     drop_table("lab_users_groups");
     drop_table("lab_params");

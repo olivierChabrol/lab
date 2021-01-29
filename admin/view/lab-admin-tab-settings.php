@@ -31,9 +31,6 @@ function lab_admin_tab_settings() {
   if (!lab_admin_checkTable("lab_users_groups")) {
     echo "<p id='lab_group_noSubTableWarning'>La table <em>wp_lab_users_groups</em> n'a pas été trouvée dans la base, vous devez d'abord la créer ici : </p>";
   }
-  if (!lab_admin_checkTable("lab_group_substitutes")) {
-    echo "<p id='lab_group_noSubTableWarning'>La table <em>wp_lab_group_substitutes</em> n'a pas été trouvée dans la base, vous devez d'abord la créer ici : </p>";
-  }
   if (!lab_admin_checkTable("lab_keys")) {
     echo "<p id='lab_keyring_noKeysTableWarning'>La table <em>wp_lab_keys</em> n'a pas été trouvée dans la base, vous devez d'abord la créer ici : </p>";
   }

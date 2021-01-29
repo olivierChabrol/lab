@@ -412,7 +412,7 @@ jQuery(function($){
       'action' : 'group_root',
     };
     jQuery.post(ajaxurl, data, function(response) {
-      (response.success ? toast_success(__("Groupe créé avec succès","lab")) : toast_error(__("Erreur lors de la création du groupe : ","lab")+response.data));
+      (response.success ? toast_success(__("Group successfully created","lab")) : toast_error(__("Error when creating the group : ","lab")+response.data));
     });
   });
   $('#lab_createGroup_createTable').click(function(){
@@ -545,7 +545,16 @@ jQuery(function($){
     $.each(data, function(i, obj) {
       //use obj.id and obj.name here, for example:
       //alert(obj.name);
-      let span = $('<span />').attr('class', 'badge badge-secondary user-role-badge').html(obj.first_name+" "+obj.last_name+" ");
+      var span;
+      if(obj.manager_type == 1) {
+        span = $('<span />').attr('class', 'badge badge-success user-role-badge').html(obj.first_name+" "+obj.last_name+" ");
+      } else if(obj.manager_type == 2) {
+        span = $('<span />').attr('class', 'badge badge-danger user-role-badge').html(obj.first_name+" "+obj.last_name+" ");
+      } else if(obj.manager_type == 3) {
+        span = $('<span />').attr('class', 'badge badge-warning user-role-badge').html(obj.first_name+" "+obj.last_name+" ");
+      } else {
+        span = $('<span />').attr('class', 'badge badge-secondary user-role-badge').html(obj.first_name+" "+obj.last_name+" ");
+      }
       let innerSpan = $('<span />').attr('class', 'lab_admin_group_delete').attr('objId', obj.id);
       let innerI = $('<i />').attr('class', 'fas fa-trash').attr('group_id', obj.id);
       innerSpan.append(innerI);
@@ -698,16 +707,16 @@ jQuery(function($){
       {
         if(response.success)
         {
-          toast_success(__("Le(s) membre(s) a bien été ajouté au(x) groupe(s)", "lab"));
+          toast_success(__("The member(s) has been added to the group(s)", "lab"));
           reset_and_load_groups_users($("#lab_all_users").is(':checked'), $("#lab_no_users_left").is(':checked'));
         }
         else if(response == "warning")
         {
-          toast_warn(__("Sélectionnez au moins un utilisateur et un groupe !","lab"));
+          toast_warn(__("Sélect at least one user and one group !","lab"));
         }
         else
         {
-          toast_error(__("Erreur, la requête n'a pas pu aboutir", "lab"));
+          toast_error(__("Error, the application could not be done", "lab"));
         }
       }
     )
@@ -719,10 +728,10 @@ jQuery(function($){
     createAllSocial();
   });
   $("#lab_invite_create_table_prefGroups").click(function() {
-    callAjax({"action":"invite_createTablePrefGroup"},__("Table PrefGroup créée avec succès",'lab'),null,__("Erreur lors de la création de la tables 'invitations' et 'guests'",'lab'),null);
+    callAjax({"action":"invite_createTablePrefGroup"},__("PrefGroup successfully created",'lab'),null,__("Erreur lors de la création de la tables 'invitations' et 'guests'",'lab'),null);
   });
   $("#lab_invite_create_tables").click(function() {
-    callAjax({"action":"invite_createTables"},__("Tables invitations et guests créées avec succès",'lab'),null,__("Erreur lors de la création des tables 'invitations' et 'guests'",'lab'),null);
+    callAjax({"action":"invite_createTables"},__("Invitations and guests tables successfully created",'lab'),null,__("Error when creating 'invitations' and 'guests' tables",'lab'),null);
   });
   $("#lab_admin_param_colorpicker").spectrum({
       color: $("#wp_lab_param_color").val(),
@@ -775,9 +784,9 @@ jQuery(function($){
   $("#lab_create_table_historic").click(function() {
     $.post(LAB.ajaxurl,{'action':'lab_historic_createTable'},function (response) {
       if (response.success) {
-        toast_success(__('Table créée avec succès','lab'));
+        toast_success(__('Tables successfully created','lab'));
       } else {
-        toast_error(__('Échec lors de la création de la table','lab'));
+        toast_error(__('Failed to create the table','lab'));
       }
     });
   });
@@ -786,7 +795,7 @@ jQuery(function($){
       if (response.success) {
         loadUserHistory();
       } else {
-        toast_error(__('Échec lors de la suppression<br/>')+response.data);
+        toast_error(__('Failed to delete<br/>')+response.data);
       }
     });
   });
@@ -1768,7 +1777,7 @@ function lab_admin_ldap_settings() {
       'password': [$("#lab_admin_tab_ldap_pass").val(), $("#lab_admin_tab_ldap_pass").attr('param_id').length > 0 ? $("#lab_admin_tab_ldap_pass").attr('param_id') : null],
       'tls': [$("#lab_admin_tab_ldap_tls").prop('checked').toString(), $("#lab_admin_tab_ldap_tls").attr('param_id').length > 0 ? $("#lab_admin_tab_ldap_tls").attr('param_id') : null],
     }
-    callAjax(data,__('Paramètres mis à jour','lab'),lab_admin_reload_ldap_settings,__('Erreur lors de la mise à jour des paramètres'),null);
+    callAjax(data,__('Settings updated','lab'),lab_admin_reload_ldap_settings,__('Error when updating settings'),null);
   });
 }
 function lab_admin_reload_ldap_settings(data) {

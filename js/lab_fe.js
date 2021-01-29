@@ -116,7 +116,7 @@ jQuery(function($){
     }
   });
 
-});
+
 
 function addDeleteThematicListener() {
   $(".delete_thematic").click(function() {
@@ -1512,3 +1512,5 @@ function lab_pagination(pages, currentPage) {
     }
   });
 }
+
+});
