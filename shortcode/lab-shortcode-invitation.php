@@ -94,7 +94,7 @@ function lab_mission($args) {
         $invitationStr .= '<input type="hidden" id="lab_group_name" value="'.$groups[0]->id.'">';
     }
     else {
-        $invitationStr .= '<label for="lab_group_name">'.esc_html__("Group","lab").'</label>';
+        $invitationStr .= '<div class="lab_invite_field"><label for="lab_group_name">'.esc_html__("Group","lab").'</label>';
         $invitationStr .= '<select id="lab_group_name">';
         $selectedGroup = !$newForm ? $invitation->host_group_id: '';
         foreach($groups as $group) {
@@ -111,7 +111,7 @@ function lab_mission($args) {
             }
             $invitationStr .= '<option value="'.$group->id.'"'.$select.'>'.$group->name.'</option>';
         }
-        $invitationStr .= '</select>';
+        $invitationStr .= '</select></div>';
 
     }
     $invitationStr .= '
