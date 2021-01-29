@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: \n"
+"Project-Id-Version: lab\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-01-27 17:52+0100\n"
 "PO-Revision-Date: 2021-01-27 17:54+0100\n"
@@ -557,7 +557,7 @@ msgstr "Changer thématique principale"
 msgid "Delete theme"
 msgstr "Effacer thématique"
 
-#: js/lab_fe.js:249
+#: js/lab_fe.js:237
 msgid "Votre biographie est trop longue (max 200 caractères)"
 msgstr "Votre biographie est trop longue (max 200 caractères)"
 
@@ -698,15 +698,15 @@ msgstr "Signature"
 msgid "Imprimer"
 msgstr "Imprimer"
 
-#: js/lab_shortcode_present.js:13 js/lab_shortcode_present.js:28
+#: js/lab_shortcode_present.js:32 js/lab_shortcode_present.js:47
 msgid "I participate in the working group"
 msgstr "Je participe au groupe de travail"
 
-#: js/lab_shortcode_present.js:93
+#: js/lab_shortcode_present.js:112
 msgid "Reason of your attendance is require"
 msgstr "La raison de votre présence est requise"
 
-#: lab-admin-ajax.php:257
+#: lab-admin-ajax.php:272
 msgid "Cant delete system param"
 msgstr "Impossible d'effacer un paramètre sytème"
 
@@ -744,12 +744,12 @@ msgstr ""
 msgid "%s is a no working day"
 msgstr "%s est férié"
 
-#: lab-admin-ajax.php:1659
+#: lab-admin-ajax.php:1680
 #, php-format
 msgid "Your are already present in %s the %s between %s and %s"
 msgstr "Vous êtes déjà présent au/à %s le %s entre %s et %s"
 
-#: lab-admin-ajax.php:1682 lab-admin-ajax.php:1691
+#: lab-admin-ajax.php:1703 lab-admin-ajax.php:1712
 #, php-format
 msgid ""
 "Your new schedules overlap to an existing one : %s the %s between %s and %s"
@@ -912,12 +912,12 @@ msgstr "Date de livraison"
 msgid "Payement date"
 msgstr "Date de paiement"
 
-#: lab-admin-core.php:782
+#: lab-admin-core.php:835
 #, php-format
 msgid "A param key with '%1s' and type %1s already exist in db"
 msgstr "Un paramètre avec la clef '%1s' et le type %1s existe déjà en DB"
 
-#: lab-admin-core.php:784
+#: lab-admin-core.php:837
 #, php-format
 msgid "Can't have space in param slug name '%1s'"
 msgstr "Il ne peut y avoir d'espace dans le slug du paramètre  '%1s'"
@@ -1147,7 +1147,7 @@ msgstr "Prêter"
 msgid "Voir prêt"
 msgstr "Voir prêt"
 
-#: shortcode/lab-shortcode-directory.php:236
+#: shortcode/lab-shortcode-directory.php:241
 msgid "People who have left"
 msgstr "Personnels partis"
 
@@ -1157,19 +1157,19 @@ msgstr "Personnels partis"
 msgid "Search a name"
 msgstr "Recherche par numéro de devis"
 
-#: shortcode/lab-shortcode-directory.php:245
+#: shortcode/lab-shortcode-directory.php:250
 msgid "Show only group"
 msgstr "Afficher les membres du groupe"
 
-#: shortcode/lab-shortcode-directory.php:264
+#: shortcode/lab-shortcode-directory.php:269
 msgid "Name"
 msgstr "Nom"
 
-#: shortcode/lab-shortcode-directory.php:266
+#: shortcode/lab-shortcode-directory.php:271
 msgid "Function"
 msgstr "Fonction"
 
-#: shortcode/lab-shortcode-directory.php:267
+#: shortcode/lab-shortcode-directory.php:272
 msgid "User details"
 msgstr "Coordonnées"
 
@@ -1205,7 +1205,7 @@ msgstr ""
 
 #: shortcode/lab-shortcode-invitation.php:99
 msgid "Guest Informations"
-msgstr ""
+msgstr "informations des invités"
 
 #: shortcode/lab-shortcode-invitation.php:116
 msgid "Phone Number"
@@ -1657,11 +1657,21 @@ msgstr "Emprunte carbone retour"
 msgid "Carbon footprint of the return travel ..."
 msgstr "Emprunte carbone du trajet retour..."
 
+#: shortcode/lab-shortcode-invitation.php:791
+msgid "Edit"
+msgstr ""
+
 #: shortcode/lab-shortcode-invitation.php:792
 #, fuzzy
 #| msgid "Détails"
 msgid "Details"
 msgstr "Détails"
+
+#: shortcode/lab-shortcode-invitation.php:798
+#, fuzzy
+#| msgid "Aucune invitation"
+msgid "No invitation"
+msgstr "Aucune invitation"
 
 #: shortcode/lab-shortcode-invitation.php:808
 msgid "Your invitation request to I2M"

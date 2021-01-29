@@ -186,6 +186,7 @@ if (is_admin()) {
     add_action( 'wp_ajax_lab_travels_load', 'lab_travels_ajax_load');
     add_action( 'wp_ajax_lab_travel_delete', 'lab_travel_ajax_delete');
     add_action( 'wp_ajax_lab_travel_save', 'lab_travel_ajax_save');
+    add_action( 'wp_ajax_lab_mission_delete', 'lab_mission_ajax_delete');
 
     // LABO 1.5
     add_action( 'wp_ajax_lab_labo1.5_initial', 'lab_labo1dot5_initial');

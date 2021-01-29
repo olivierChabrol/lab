@@ -84,7 +84,10 @@ function lab_admin_load_lastUserHistory($user_id) {
     global $wpdb;
     $sql = "SELECT * from `".$wpdb->prefix."lab_users_historic` WHERE `user_id`=$user_id ORDER BY `begin` DESC LIMIT 1";
     $res = $wpdb->get_results($sql);
-    return lab_admin_history_fields($res[0]);
+    if (count($res) > 0) {
+        return lab_admin_history_fields($res[0]);
+    }
+    return null;
 }
 /**
  * @param array $fields ('user_id'=>$user_id,
@@ -561,6 +564,7 @@ function lab_admin_contract_create_table() {
  * MISSION
  ***********************************************************************************************************/
 
+
 function lab_mission_save($missionId, $travels) {
     $t = null;
     foreach ($travels as $travel) {
@@ -695,6 +699,26 @@ function lab_admin_usermeta_names($userId) {
 /***********************************************************************************************************
  * GROUP
  ***********************************************************************************************************/
+
+function lab_admin_group_get_groups_of_manager($managerId) {
+    global $wpdb;
+    $results =$wpdb->get_results("SELECT group_id FROM `".$wpdb->prefix."lab_group_manager` WHERE `user_id`=".$managerId." AND `manager_type`=1");
+    $groupIds = [];
+    foreach ($results as $r) {
+        $groupIds[] = $r->group_id;
+    }
+    return $groupIds;
+}
+function lab_admin_group_get_groups_of_leader($leaderId) {
+    global $wpdb;
+    $results =$wpdb->get_results("SELECT id FROM `".$wpdb->prefix."lab_groups` WHERE `chief_id`=".$leaderId);
+    $groupIds = [];
+    foreach ($results as $r) {
+        $groupIds[] = $r->id;
+    }
+    return $groupIds;
+}
+
 function lab_admin_group_add_manager($groupId, $userId, $userRole) {
     global $wpdb;
     if ($wpdb->insert($wpdb->prefix.'lab_group_manager', array("group_id"=>$groupId, "user_id"=>$userId, "manager_type"=>$userRole))) {
@@ -704,6 +728,32 @@ function lab_admin_group_add_manager($groupId, $userId, $userRole) {
     {
         return false;
     }
+}
+
+/**
+ * Get the favorite group of a user, 
+ *
+ * @param bigint $userId
+ * @return groupeId of the favorite user, the first one otherwise, -1 otherwise
+ */
+function lab_group_get_user_group($userId) {
+    global $wpdb;
+    $sql = "SELECT group_id, favorite FROM ".$wpdb->prefix."lab_users_groups WHERE user_id=".$userId;
+    //return $sql;
+    $results = $wpdb->get_results($sql);
+    $groupId = -1;
+    if (count($results) > 0) {        
+        foreach ($results as $group) {
+            if ($group->favorite == 1) {
+                $groupId = $group->group_id;
+            }
+        }
+        // if no favorite group defined, take the first one
+        if ($groupId == -1) {
+            $groupId = $results[0]->group_id;
+        }
+    }
+    return $groupId;
 }
 
 function lab_group_delete_manager($id)
@@ -730,6 +780,9 @@ function lab_admin_group_load_managers($groupId, $typeManager = null) {
     }
 }
 
+/***********************************************************************************************************
+ * PARAM
+ ***********************************************************************************************************/
 
 function lab_admin_param_change_id($oldId, $type, $newId)
 {
@@ -1401,6 +1454,7 @@ function lab_admin_group_by_user($userId)
         $group = new \stdClass();
         $group->id = $r->id; 
         $group->name = $r->group_name;
+        $group->favorite = $r->favorite;
         $groups[] = $group;
     }
     return $groups;
@@ -1416,7 +1470,7 @@ function lab_admin_group_get_user_groups_delete($groupId)
 function lab_group_get_user_groups($userId)
 {
     global $wpdb;
-    return $wpdb->get_results("SELECT lg.group_name, lg.url, lug.id
+    return $wpdb->get_results("SELECT lg.group_name, lg.url, lug.id, lug.favorite
                                 FROM `".$wpdb->prefix."lab_users_groups` as lug 
                                 JOIN `".$wpdb->prefix."lab_groups` AS lg ON lg.id=lug.group_id 
                                 WHERE lug.`user_id`=".$userId);
@@ -1461,6 +1515,7 @@ function lab_admin_createUserGroupTable()
         `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
         `group_id` bigint UNSIGNED NOT NULL,
         `user_id` bigint UNSIGNED NOT NULL,
+        `favorite` int UNSIGNED NOT NULL,
         PRIMARY KEY(`id`)
       ) ENGINE=InnoDB;";
     $wpdb->get_results($sql);
@@ -1556,7 +1611,7 @@ function lab_admin_users_groups_add_user($userId, $groupId) {
 }
 function lab_admin_get_groups_byChief($chief_id) {
     global $wpdb;
-    $sql="SELECT * FROM `".$wpdb->prefix."lab_groups` WHERE `chief_id`=".$chief_id.";";
+    $sql = "SELECT * FROM `".$wpdb->prefix."lab_groups` WHERE `chief_id`=".$chief_id.";";
     return $wpdb->get_results($sql);
 }
 function lab_admin_get_chief_byGroup($group_id) {

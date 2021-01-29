@@ -36,6 +36,7 @@ function lab_mission($args) {
             $invitation    = lab_invitations_getByToken($token);
             $invitationStr .= '<input type="hidden" id="lab_mission_token" value="'.$token.'"/>';
             $invitationStr .= '<input type="hidden" id="lab_mission_id" value="'.$invitation->id.'"/>';
+            $budget_manager_ids = lab_group_budget_manager($invitation->host_group_id);
             //$travels       = 
             //var_dump($invitation);
             
@@ -48,6 +49,12 @@ function lab_mission($args) {
             $host = new labUser($invitation->host_id);
             //Qui modifie, l'invitant ou le responsable ?
             $isChief = isset($invitation->host_group_id) ? get_current_user_id()==(int)lab_admin_get_chief_byGroup($invitation->host_group_id): false;
+            $isManager = false;
+            foreach($budget_manager_ids as $bm) {
+                if (get_current_user_id() == $bm) {
+                    $isManager = true;
+                }
+            }
             if ( $isChief ) {
                 $invitationStr .= '<p><i>Vous pouvez modifier cette invitation en tant que responsable de groupe</i></p>';
                 $invitationStr .= '<p><i>Statut de l\'invitation : </i>'.lab_invitations_getStatusName($invitation->status).'</p>';
@@ -55,7 +62,13 @@ function lab_mission($args) {
             } else if ( get_current_user_id()==$invitation->host_id ) { 
                 $invitationStr .= '<p><i>Vous pouvez modifier cette invitation en tant qu\'invitant</i></p>';
                 $invitationStr .= '<p><i>Statut de l\'invitation : </i>'.lab_invitations_getStatusName($invitation->status).'</p>';
+            
+            } 
+            else if ( $isManager ) {
+                $invitationStr .= '<p><i>Vous pouvez modifier cette invitation en tant que responsable budget</i></p>';
+                $invitationStr .= '<p><i>Statut de l\'invitation : </i>'.lab_invitations_getStatusName($invitation->status).'</p>';
             } else {
+                var_dump($budget_manager_id->user_id);
                 die('Vous ne pouvez pas modifier cette invitation');
             }
         }
@@ -75,7 +88,33 @@ function lab_mission($args) {
 
         <div class="lab_invite_field">
             <input type="text" required id="lab_hostname" name="lab_hostname" host_id="'.($host==null ? '' : $host->id.'" value="'.$host->first_name.' '.$host->last_name).'">
-        </div>
+        </div>';
+    $groups = lab_admin_group_by_user($host->id);
+    if (count($groups) == 1) {
+        $invitationStr .= '<input type="hidden" id="lab_group_name" value="'.$groups[0]->id.'">';
+    }
+    else {
+        $invitationStr .= '<div class="lab_invite_field"><label for="lab_group_name">'.esc_html__("Group","lab").'</label>';
+        $invitationStr .= '<select id="lab_group_name">';
+        $selectedGroup = !$newForm ? $invitation->host_group_id: '';
+        foreach($groups as $group) {
+            $select = "";
+            if ($selectedGroup) {
+                if ($selectedGroup == $group->id) {
+                    $select = " selected";
+                }
+            }
+            else {
+                if($group->favorite == 1) {
+                    $select = " selected";
+                }
+            }
+            $invitationStr .= '<option value="'.$group->id.'"'.$select.'>'.$group->name.'</option>';
+        }
+        $invitationStr .= '</select></div>';
+
+    }
+    $invitationStr .= '
         <div class="lab_invite_field">
             <label for="lab_mission">'.esc_html__("Reason for the mission","lab").'<span class="lab_form_required_star">
             <select id="lab_mission" name="lab_mission">';

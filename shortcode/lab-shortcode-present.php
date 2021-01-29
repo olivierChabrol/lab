@@ -159,7 +159,7 @@ function lab_present_select($param) {
             $nwdTitle = $isNonWorkingDay?" title=\"".esc_html__("Non working day","lab")."\"":"";
             $currentDay   = strtotime('+'.$i.' days', $startDay);
             $currentDayDT = date('d', $currentDay);
-            if($v[$currentDayDT]) {
+            if(isset($v[$currentDayDT]) && $v[$currentDayDT]) {
 
                 $nb = 0;
                 // hours is ordoned
@@ -277,7 +277,7 @@ function lab_present_choice($param) {
             <input id=\"external\" type=\"hidden\"  val=\"0\"/>
 
             <label for='date-open'>".esc_html__("Le", "lab")."</label>
-            <input type='date' name='date-open' id='date-open' class='form-control'/>
+            <input type='date' name='date-open' id='date-open' class='form-control datechk'/>
             <div id='messErr_date-open' class='invalid-feedback'></div>
            
             <label for='hour-open'></label>
@@ -347,8 +347,8 @@ function lab_present_choice($param) {
                         <td class='hour-row open edit' id=\"hOpen_".$r->id."_".$r->user_id."\">". esc_html(date("H:i",   strtotime($r->hour_start))) ."</td>
                         <td class='hour-row end edit' id=\"hEnd_".$r->id."_".$r->user_id."\">" . esc_html(date("H:i", strtotime($r->hour_end)))  ."</td>
                         <td class='site-row edit' id=\"site_".$r->id."_".$r->user_id."\" siteId=\"".$r->site."\">"     . esc_html($r->value) ."</td>
-                        <td><a id=\"delete_presence_".$r->id."\"><span class='fas fa-trash'></span></a>
-                            <span class='fas fa-pen icon-edit' style='cursor: pointer;' editId=" . $r->id . " userId=" . $r->user_id . "></span>
+                        <td><a id=\"delete_presence_".$r->id."\"><span class='fas fa-trash pointer'></span></a>
+                            <span class='fas fa-pen icon-edit pointer' editId=" . $r->id . " userId=" . $r->user_id . "></span>
                         </td></tr>";
     }
     $choiceStr .= "</tbody></table></div>";
@@ -396,7 +396,7 @@ function newUserDiv($startDay)
                     <small id="emailHelp" class="form-text text-muted">We\'ll never share your email with anyone else.</small>
                     <div class="h-divider"></div>
                     <label for="date-open">'.esc_html("From", "lab").'</label>
-                    <input type="date" id="lab_presence_ext_new_date_open" />
+                    <input type="date" id="lab_presence_ext_new_date_open" class="datechk"/>
                     <label for="hour-open"></label>
                     <input type="time" id="lab_presence_ext_new_hour_open" />
                     <label for="hour-close">'.esc_html("to", "lab").'</label>
@@ -441,7 +441,7 @@ function editDiv()
                     <input id="lab_presence_edit_userId" name="userId" type="hidden"/>
                     <input id="lab_presence_edit_presenceId" name="userId" type="hidden"/>
                     <label for="lab_presence_edit_date-open">'.esc_html("From", "lab").'</label>
-                    <input type="date" id="lab_presence_edit_date-open" />
+                    <input type="date" id="lab_presence_edit_date-open" class="datechk" />
                     <div id="messErr_lab_presence_edit_date" class="invalid-feedback"></div>
                     <label for="hour-open"></label>
                     <input type="time" id="lab_presence_edit_hour-open" min="07:00"  max="20:00" required />
@@ -528,6 +528,7 @@ function getStartDate()
  * @return void
  */
 function td($dateStart = null, $dateEnd = null, $siteId = null, $empty = false, $site = null, $userId = null, $presenceId=null, $allDay = false, $comment= null, $workgroupUsers = null) {
+    $str = "";
     if ($empty) {
         $str .= "<td >&nbsp;</td>";
     } else {
@@ -597,10 +598,11 @@ function td($dateStart = null, $dateEnd = null, $siteId = null, $empty = false, 
         {
             $str .= '<div class="usersWg" title="'.$userList.'"><b>'.count($workgroupUsers).'</b> <i class="fas fa-users fa-xs"></i></div>';
         }
-        $str .= '<div class="wrapper"><div class="actions"'.$actionId.'><div title="Update" '.$editId.' class="floatLeft iconset_16px"><i class="fas fa-pen fa-xs"></i></div><div title="delete" '.$deleteId.' class="floatLeft iconset_16px"><i class="fas fa-trash fa-xs"></i></div></div><div class="gal_name">'.date('H:i', $dateStart);
+        $str .= '<div class="wrapper"><div class="actions"'.$actionId.'><div title="Update" '.$editId.' class="floatLeft iconset_16px"><i class="fas fa-pen fa-xs "></i></div><div title="delete" '.$deleteId.' class="floatLeft iconset_16px"><i class="fas fa-trash fa-xs  pointer"></i></div></div><div class="gal_name">'.date('H:i', $dateStart);
         if ($dateEnd != null) {
             $str .= " - ".date('H:i', $dateEnd);
         }
+        /*
         if ($text != null) {
             if (is_array($text)) {
                 for ($i = 0 ; $i < sizeof($text) ; $i++)
@@ -613,6 +615,7 @@ function td($dateStart = null, $dateEnd = null, $siteId = null, $empty = false, 
                 }
             }
         }
+        //*/
         $str .= '</div><div></td>';
     }
     $str .= "\n";

@@ -30,7 +30,22 @@ function lab_mission_ajax_load() {
   if (!isset($filters) || empty($filters)) {
     $filters = null;
   }
-  wp_send_json_success(lab_mission_load($missionId, $filters));
+  $groupIds = $_POST['groupIds'];
+  if (!isset($groupIds) || empty($groupIds) || count($groupIds) == 0) {
+    $groupIds = null;
+  }
+  //wp_send_json_success($groupIds);
+  wp_send_json_success(lab_mission_load($missionId, $filters, $groupIds));
+}
+
+function lab_mission_ajax_delete() {
+  $missionId = $_POST['id'];
+  if (!isset($missionId) || empty($missionId)) {
+    wp_send_json_success();
+  }
+  else {
+    wp_send_json_success(lab_mission_delete($missionId));
+  }
 }
 
 /********************************************************************************************
@@ -562,7 +577,8 @@ function lab_changeLocale($locale) {
 }
 function lab_admin_test()
 { 
-  wp_send_json_success(lab_admin_thematic_load_all());
+  //wp_send_json_success(get_current_user_id());
+  wp_send_json_success(lab_group_get_user_group(get_current_user_id()));
   return;
 }
 
@@ -1260,6 +1276,11 @@ function lab_invitations_new() {
   } else {
     $invite['guest_id']=lab_invitations_createGuest($guest);
   }
+  if(!isset($fields['host_group_id'])) {
+    $hostGroupId = lab_group_get_user_group($fields['host_id']);
+    $fields['host_group_id'] = $hostGroupId;
+  }
+
   foreach (['host_group_id','host_id', 'estimated_cost', 'mission_objective','funding_source','research_contract'] as $champ) {
     $invite[$champ]=$fields[$champ];
   }
@@ -1295,6 +1316,10 @@ function lab_invitations_new() {
 }
 function lab_invitations_edit() {
   $fields = $_POST['fields'];
+  if(!isset($fields['host_group_id'])) {
+    $hostGroupId = lab_group_get_user_group($fields['host_id']);
+    $fields['host_group_id'] = $hostGroupId;
+  }
   if (get_current_user_id()==$fields['host_id'] || isset($fields['host_group_id']) && get_current_user_id()==(int)lab_admin_get_chief_byGroup($fields['host_group_id'])) {
     $guest = array (
       'first_name'=> $fields['guest_firstName'],
@@ -1312,7 +1337,7 @@ function lab_invitations_edit() {
       'needs_hostel'=>$fields['needs_hostel']=='true' ? 1 : 0,
       'completion_time' => $timeStamp
     );
-    foreach (['host_group_id', 'estimated_cost', 'maximum_cost', 'host_id','mission_objective','start_date','end_date','travel_mean_to','travel_mean_from','funding_source','research_contract','forward_start_station','return_end_station','forward_travel_reference','return_travel_reference'] as $champ) {
+    foreach (['host_group_id', 'estimated_cost', 'maximum_cost', 'host_id','mission_objective','start_date','end_date',/*'travel_mean_to','travel_mean_from',*/'funding_source','research_contract'/*,'forward_start_station','return_end_station','forward_travel_reference','return_travel_reference'*/] as $champ) {
       $invite[$champ]=$fields[$champ];
     }
     $invite["charges"]=json_encode($fields["charges"]);

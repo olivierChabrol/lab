@@ -1,12 +1,12 @@
 /* front end 21 04 2020 */
 const { __, _x, _n, sprintf } = wp.i18n;
 
-/*** DIRECTORY ***/ 
-var travels = [];
-var meansOfTransport = new Array();
-var meansOfTransportReverse = new Array();
 
 jQuery(function($){
+  /*** DIRECTORY ***/ 
+  var travels = [];
+  var meansOfTransport = new Array();
+  var meansOfTransportReverse = new Array();
 
   $("#lab-directory-group-id").on('change', function() {
     loadDirectory();
@@ -20,7 +20,7 @@ jQuery(function($){
   var timeClass='.timechk';
   $(document).ready(function ()
   {
-    if (document.querySelector(dateClass).type !== 'date') {  
+    if (document.querySelector(dateClass) != null && document.querySelector(dateClass).type !== 'date') {  
       $(dateClass).datepicker({
         dateFormat : "yy-mm-dd"
       });
@@ -34,14 +34,6 @@ jQuery(function($){
     let group = $("#lab-directory-group-id").val();
     let thematic = $("#lab-directory-thematic").val();
     href = "/linstitut/annuaire/?letter=%";
-    /*
-    if (letter != "") {
-      href += "?letter="+letter;
-    }
-    else{
-      href += "?letter=%"
-    }
-    //*/
     if (group != "0") {
       if (letter != "") {
         href += "&";
@@ -61,16 +53,6 @@ jQuery(function($){
     window.location.href = href;
   }
 
-  $("[id^=delete_presence_]").each(function() {
-    $(this).click(function() {
-      //delete_presence_
-      var attrId = $(this).attr("id");
-      var pattern = "delete_presence_";
-      var id = attrId.substring(pattern.length, attrId.length);
-      //console.log(id);
-      deletePresence(id);
-    })
-  });
 
   addDeleteThematicListener();
 
@@ -117,79 +99,78 @@ jQuery(function($){
   });
 
 
-
-function addDeleteThematicListener() {
-  $(".delete_thematic").click(function() {
-    data = {
-      'action': 'lab_fe_thematic_del',
-      'thematic_id': $(this).attr("thematic_id"),
-      'user_id' : $("#userId").val()
-    };
-    $.post(LAB.ajaxurl,data,function(response){
-      if (response.success) {
-        deleteThematics();
-      }
-    });
-  });
-}
-
-function addChangeMainThematicListener() {
-  $(".lab_thematic_order").click(function() {
-    data = {
-      'action': 'lab_fe_thematic_togle_main',
-      'thematic_id': $(this).attr("thematic_id"),
-      'thematic_value': $(this).attr("thematic_value"),
-      'user_id' : $("#userId").val()
-    };
-    $.post(LAB.ajaxurl,data,function(response){
-      if (response.success) {
-        deleteThematics();
-      }
-    });
-  });
-}
-
-function loadThematics() {
-  data = {
-    'action': 'lab_fe_thematic_get',
-    'user_id': $("#userId").val()
-  };
-  $.post(LAB.ajaxurl,data,function(response){
-    if (response.success) {
-      console.log("[loadThematics]] success");
-      jQuery.each(response.data, function (index, value){
-        console.log("[loadThematics] value : " + value["name"]);
-        let li = $('<li />').html('*'+value["name"]);
-
-        let thematicCssClass = 'lab_thematic_order';
-        if (value["main"] == "1") {
-          thematicCssClass += " lab_thematic_main";
+  function addDeleteThematicListener() {
+    $(".delete_thematic").click(function() {
+      data = {
+        'action': 'lab_fe_thematic_del',
+        'thematic_id': $(this).attr("thematic_id"),
+        'user_id' : $("#userId").val()
+      };
+      $.post(LAB.ajaxurl,data,function(response){
+        if (response.success) {
+          deleteThematics();
         }
-        let innerSpanStar = $('<span />').attr('class', thematicCssClass).attr('thematic_id', value['id']).attr('thematic_value', value["main"]);
-        let innerIStar = $('<i />').attr('class', 'fas fa-star').attr('thematic_id', value['id']).attr("title",__('Change main theme','lab'));
-        innerSpanStar.append(innerIStar);
-        li.append(innerSpanStar);
-        
-        let innerSpanDelete = $('<span />').attr('class', 'lab_profile_edit delete_thematic').attr('thematic_id', value['id']);
-        let innerI = $('<i />').attr('class', 'fas fa-trash').attr('thematic_id', value['id']).attr("title",__('Delete theme','lab'));
-        innerSpanDelete.append(innerI);
-        li.append(innerSpanDelete);
+      });
+    });
+  }
 
-        $("#lab_profile_thematics").append(li);
-        //li += '&nbsp;<span class="lab_profile_edit delete_thematic" thematic_id="' + value['id'] + '"><i thematic_id="' + value['id'] + '" class="fa fa-trash"></i></span>';
-        
-        $('.delete_thematic').show();
-      }); 
-      addDeleteThematicListener();
-      addChangeMainThematicListener();
-    }
-  });
-}
+  function addChangeMainThematicListener() {
+    $(".lab_thematic_order").click(function() {
+      data = {
+        'action': 'lab_fe_thematic_togle_main',
+        'thematic_id': $(this).attr("thematic_id"),
+        'thematic_value': $(this).attr("thematic_value"),
+        'user_id' : $("#userId").val()
+      };
+      $.post(LAB.ajaxurl,data,function(response){
+        if (response.success) {
+          deleteThematics();
+        }
+      });
+    });
+  }
 
-function deleteThematics(){
-  $("#lab_profile_thematics").empty();
-  loadThematics();
-}
+  function loadThematics() {
+    data = {
+      'action': 'lab_fe_thematic_get',
+      'user_id': $("#userId").val()
+    };
+    $.post(LAB.ajaxurl,data,function(response){
+      if (response.success) {
+        console.log("[loadThematics]] success");
+        jQuery.each(response.data, function (index, value){
+          console.log("[loadThematics] value : " + value["name"]);
+          let li = $('<li />').html('*'+value["name"]);
+
+          let thematicCssClass = 'lab_thematic_order';
+          if (value["main"] == "1") {
+            thematicCssClass += " lab_thematic_main";
+          }
+          let innerSpanStar = $('<span />').attr('class', thematicCssClass).attr('thematic_id', value['id']).attr('thematic_value', value["main"]);
+          let innerIStar = $('<i />').attr('class', 'fas fa-star').attr('thematic_id', value['id']).attr("title",__('Change main thematic','lab'));
+          innerSpanStar.append(innerIStar);
+          li.append(innerSpanStar);
+          
+          let innerSpanDelete = $('<span />').attr('class', 'lab_profile_edit delete_thematic').attr('thematic_id', value['id']);
+          let innerI = $('<i />').attr('class', 'fas fa-trash').attr('thematic_id', value['id']).attr("title",__('Delete thematic','lab'));
+          innerSpanDelete.append(innerI);
+          li.append(innerSpanDelete);
+
+          $("#lab_profile_thematics").append(li);
+          //li += '&nbsp;<span class="lab_profile_edit delete_thematic" thematic_id="' + value['id'] + '"><i thematic_id="' + value['id'] + '" class="fa fa-trash"></i></span>';
+          
+          $('.delete_thematic').show();
+        }); 
+        addDeleteThematicListener();
+        addChangeMainThematicListener();
+      }
+    });
+  }
+
+  function deleteThematics(){
+    $("#lab_profile_thematics").empty();
+    loadThematics();
+  }
 
 /******************************* ShortCode Profile *******************************/
 function LABloadProfile() {
@@ -204,7 +185,6 @@ function LABloadProfile() {
   };
   HalID_URL = "https://api.archives-ouvertes.fr/search/?authIdHal_s:(@)&fl=docid,citationFull_s,producedDate_tdate,uri_s,title_s,journalTitle_s&sort=producedDate_tdate+desc&wt=json&json.nl=arrarr";
 	HalName_URL = "https://api.archives-ouvertes.fr/search/?q=authLastNameFirstName_s:%22@%22&fl=docid,citationFull_s,producedDate_tdate,uri_s,title_s,journalTitle_s&sort=producedDate_tdate+desc&wt=json&json.nl=arrarr";
-  jQuery(function($) {
     //Attribue la couleur de l'utilisateur à l'arrière plan
     $("#lab_profile_card").css('background-color',$("#lab_profile_card").attr('bg-color'));
     $("#lab_profile_colorpicker").spectrum({
@@ -296,7 +276,6 @@ function LABloadProfile() {
     $("#lab_profile_edit_halName").keyup(function() {
       $("#lab_profile_testHal_name").attr("href",HalName_URL.replace('@',$(this).val()));
     });
-  });
 }
 if ( jQuery( "#lab_profile_card" ).length ) {
   LABloadProfile();
@@ -391,8 +370,8 @@ function saveTravelModification(id) {
     sortTravelsByDate();
   }
   else {
-    console.log("[saveTravelModification] " + $("lab_mission_edit_travel_div_trId").val());
-    addTravel(id, f, null, null, $("#lab_mission_edit_travel_div_trId").val());
+    console.log("[saveTravelModification] [travel NEW]");
+    addTravel(id, f, null, null);
   }
 
   // if edit existing mission with travels 
@@ -437,7 +416,6 @@ function displayTravels(data) {
 }
 
 function travelExist(id) {
-  id = parseInt(id);
   return travels.includes(id);
 }
 
@@ -545,9 +523,8 @@ function getTravel(id) {
   return travel;
 }
 
-function editTravelDiv(id, trId) {
-  $("#lab_mission_edit_travel_div_trId").val(trId);
-  console.log("[editTravelDiv] id : " + id + "/" + trId);
+function editTravelDiv(id) {
+  console.log("[editTravelDiv] id : " + id);
   let fields = getEditTravelField();
   console.log(fields)
   for (let i = 0 ; i < fields.length ; i++) {
@@ -613,8 +590,8 @@ function deleteTravelTr(id, mission_id) {
   deleteTravelId(id);
 }
 
-function addTravel(id, fields, travelId, mission_id, trId = null) {
-  console.log("[AddTravel] " + trId);
+function addTravel(id, fields, travelId, mission_id) {
+  console.log("[AddTravel] ");
   addTravelId(id);
   let tr = $("<tr/>").attr("id","lab_mission_table_tr_"+id);
   createDefaultTdToTr(tr, id, "dateGoTo", fields);
@@ -635,10 +612,10 @@ function addTravel(id, fields, travelId, mission_id, trId = null) {
     "travelId" : travelId,
     "missionId" : mission_id
   }).html('<i class="fa fa-trash-o" aria-hidden="true" travelId="'+id+'"></i>');
-  //let tdAdd  = $("<td/>").attr("id", "addTravelRow_" + id).attr("class", "pointer").attr("travelId",id).html('<i class="fa fa-plus" aria-hidden="true" travelId="'+id+'"></i>');
+
   tr.append(tdEdit);
   tr.append(tdDel);
-  //tr.append(tdAdd);
+
   createTravelHiddenField(tdEdit, id, "carbon_footprint", fields);
   createTravelHiddenField(tdEdit, id, "nb_person", fields);
   createTravelHiddenField(tdEdit, id, "travelId", fields);
@@ -649,14 +626,6 @@ function addTravel(id, fields, travelId, mission_id, trId = null) {
 
   let append = true;
 
-  /*tdAdd.click(function (e) {
-    emptyTravelDivFields();
-    let tdAddId = $(this).attr("id");
-    let tdId = tdAddId.substring(tdAddId.indexOf('_') + 1);
-    console.log(tdId);
-    editTravelDiv(getNewTravelId(), tdId);
-    append = true;
-  });*/
   tdDel.click(function (e) {
     deleteTravelTr($(this).attr("id"), $(this).attr("missionId"));
   });
@@ -811,7 +780,6 @@ function LABLoadInvitation() {
   }));
   console.log("[LABLoadInvitation]");
   //console.log($("#lab_mission_token").val());
-  jQuery(function($) {
     if ($("#lab_mission_token").length && $("#lab_mission_token").val() != 0) {
       data = {
         'action' : 'lab_travels_load',
@@ -1132,9 +1100,8 @@ function LABLoadInvitation() {
         });
       }
     });
-  });
 }
-console.log("[LA]");
+
 if (document.querySelector("#invitationForm")!=null) {
   LABLoadInvitation();
 }
@@ -1148,7 +1115,6 @@ function invitation_submit(callback) {
   console.log("[invitation_submit]" + travels);
   //document.querySelector("#primary-menu").scrollIntoView({behavior:"smooth"}); à faire correspondre au nouveau thème
   regex=/\"/g;
-  jQuery(function($) {
     $("#invitationForm").prop('submited',true);
     charges = {
       'travel_to': $("#lab_cost_to").val()=='' ? null : $("#lab_cost_to").val(),
@@ -1215,7 +1181,6 @@ function invitation_submit(callback) {
         }
       });
     }
-  });
 }
 function lab_submitComment() {
   regex=/\"/g;
@@ -1335,7 +1300,6 @@ function hideLoadingGif()
 }
 
 function lab_update_invitesList() {
-  jQuery(function($) {
     statuses =[];
     $("#lab_status_filter input[type=checkbox]").each(function(){
       if ($(this).prop('checked')) {
@@ -1453,7 +1417,6 @@ function lab_update_invitesList() {
         });
         break;
     }
-  });
 }
 function lab_submitRealCost() {
   data = {

@@ -223,7 +223,7 @@ class labUser {
 		return $output;
 	}
 	public function print_thematics() {
-		$output .= "";
+		$output = "";
 		if (count($this->thematics)==0) 
 		{ 
 			$output .= "<i>".esc_html__("None","lab")."</i>";

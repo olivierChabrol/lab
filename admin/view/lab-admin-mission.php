@@ -175,8 +175,37 @@
 
   function lab_mission_tab_historic()
   {
+    $user = wp_get_current_user();
+    $roles = $user->roles;
+    $isAdministrator = False;
+    $isManager       = False;
+    $isGroupLeader   = False;
+    $groupLeaderIds  = array();
+    $groupManagerIds = array();
+    foreach($roles as $role) {
+      if ($role == "administrator")
+      {
+        $isAdministrator = True;
+      }
+    }
+    if (!$isAdministrator) {
+      $groupManagerIds = lab_admin_group_get_groups_of_manager(get_current_user_id());
+      $groupLeaderIds  = lab_admin_group_get_groups_of_leader(get_current_user_id());
+      $isManager = count($groupManagerIds) > 0;
+      $isGroupLeader = count($groupLeaderIds) > 0;
+      echo ("isManager :" . $isManager . "<br>");
+      echo ("isGroupLeader :" . $isGroupLeader . "<br>");
+    }
     ?>
     <div class="wrap">
+    <?php
+      if($isGroupLeader) {
+        echo '<input type="hidden" id="lab_mission_group_leader" value="'.urlencode(json_encode ($groupLeaderIds)).'">';
+      }
+      if($isManager) {
+        echo '<input type="hidden" id="lab_mission_group_manager" value="'.urlencode(json_encode ($groupManagerIds)).'">';
+      }
+    ?>
     <h1 class="wp-heading-inline"><?php esc_html_e('Missions','lab'); ?></h1>
     <h2 class='screen-reader-text'>Filtrer la liste des commandes</h2>
     <p class="search-box">
@@ -190,8 +219,8 @@
       <option value="wmv"><?php esc_html_e('Waiting manager validation','lab'); ?></option>
     </select>
   
-<?php lab_html_select("lab_budget_info_filter_site", "lab_budget_info_filter_site", "", "lab_admin_get_params_userLocation", null, array("value"=>"","label"=>"".esc_html('Site','lab')), ""); ?>
-<?php lab_html_select("lab_budget_info_filter_budget_manager", "lab_budget_info_filter_budget_manager", "", "lab_admin_budget_managers_list", null, array("value"=>"","label"=>"".esc_html('Budget manager','lab')), ""); ?>
+<?php lab_html_select("lab_mission_filter_site", "lab_budget_info_filter_site", "", "lab_admin_get_params_userLocation", null, array("value"=>"","label"=>"".esc_html('Site','lab')), ""); ?>
+<?php lab_html_select("lab_mission_filter_budget_manager", "lab_budget_info_filter_budget_manager", "", "lab_admin_budget_managers_list", null, array("value"=>"","label"=>"".esc_html('Budget manager','lab')), ""); ?>
 <label class="screen-reader-text" for="post-search-input"><?php esc_html_e('Search command Number','lab'); ?>:</label>
   <input type="text" id="lab_budget_info_filter_order_number" placeholder="<?php esc_html_e('Command Number','lab'); ?>"></input>
   </div></div>
@@ -202,12 +231,23 @@
         <th>id</th>
         <th><?php esc_html_e('Request date','lab'); ?></th>
         <th><?php esc_html_e('User','lab'); ?></th>
+        <th><?php esc_html_e('Site','lab'); ?></th>
+        <th><?php esc_html_e('Group','lab'); ?></th>
+        <th><?php esc_html_e('Budget manager','lab'); ?></th>
         <th><?php esc_html_e('Mission Type','lab'); ?></th>
-        <th>&nbsp;</th>
+        <th><?php esc_html_e('Action','lab'); ?></th>
       </thead>
         <tbody id="lab_admin_mission_list_table_tbody">
         </tbody>
     </table>
+    </div> 
+    <div id="lab_mission_delete_dialog" class="modal">
+      <p><?php esc_html_e('Voulez-vous vraiment supprimer cette mission ?','lab');?></p>
+      <input type="hidden" id="lab_mission_delete_dialog_mission_id" value="">
+      <div id="lab_mission_delete_dialog_options">
+        <a href="#" rel="modal:close"><?php esc_html_e('Annuler','lab')?></a>
+        <a href="#" rel="modal:close" id="lab_mission_delete_confirm" keyid=""><?php esc_html_e('Confirmer','lab'); ?></a>
+      </div>
     </div>
       <?php
   }
