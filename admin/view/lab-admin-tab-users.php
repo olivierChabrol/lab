@@ -13,7 +13,7 @@ function lab_admin_tab_user() {
     <table class="form-table" role="presentation">
       <tr class="user-rich-editing-wrap">
         <th scope="row">
-          <label for="lab_user_name"><?php esc_html_e('Nom de l\'utilisateur','lab') ?></label>
+          <label for="lab_user_name"><?php esc_html_e('User name','lab') ?></label>
         </th>
         <td>
           <input type="text"   id="lab_user_search"    value="" /><b>&nbsp;<span id="lab_user_id"></span></b><br>
@@ -27,9 +27,9 @@ function lab_admin_tab_user() {
         <td>
           <input type="text" id="lab_user_lastname" value=""  placeholder="<?php esc_html_e('Last name','lab') ?>"/>
           <select id="lab_user_sex">
-            <option value=""><?php esc_html_e('Sex','lab') ?></option>
-            <option value="F">Feminin</option>
-            <option value="M">Masculin</option>
+            <option value=""><?php esc_html_e('Gender','lab') ?></option>
+            <option value="F"><?php esc_html_e('Female','lab') ?></option>
+            <option value="M"><?php esc_html_e('Male','lab') ?></option>
           </select>
         </td>
       </tr>
@@ -149,7 +149,7 @@ function lab_admin_tab_user() {
       </tr>
       <tr>
         <td>
-          <label for="lab_user_left"><?php esc_html_e('Parti','lab') ?></label>
+          <label for="lab_user_left"><?php esc_html_e('left','lab') ?></label>
         </td>
         <td>
           <input type="checkbox" id="lab_user_left"> <label for="lab_user_left_date"><?php esc_html_e('Departure date','lab') ?></label><input type="date" id="lab_user_left_date">
@@ -187,7 +187,7 @@ function lab_admin_tab_user() {
       </div>
     </div>
     <div> <!-- Rôles -->
-      <h5><?php esc_html_e("Affecter des rôles à l'utilisateur",'lab') ?></h5>
+      <h5><?php esc_html_e("Assigning roles to the user",'lab') ?></h5>
       <div>
         <div id="lab_admin_user_roles">
         </div>
@@ -218,17 +218,17 @@ function lab_admin_tab_user() {
     </div>
   </div>
   <form style="display:none" id="lab_admin_historic" action="javascript:lab_addHistoric(false);" style="flex-grow:1;">
-    <h3><?php esc_html_e('Historique de l\'utilisateur','lab') ?></h3>
+    <h3><?php esc_html_e('User history','lab') ?></h3>
     <div>
         <ul id="lab_history_list">
           
         </ul>
     </div>
-    <h4><?php esc_html_e('Ajouter une période','lab') ?></h4>
+    <h4><?php esc_html_e('Add a period','lab') ?></h4>
     <table class="form-table" role="presentation">
       <tr>
         <th scope="row">
-          <label for="lab_historic_start"><?php esc_html_e('Date de début','lab') ?> : </label>
+          <label for="lab_historic_start"><?php esc_html_e('Start date','lab') ?> : </label>
         </th>
         <td>
           <input required type="date" id="lab_historic_start"/>
@@ -236,7 +236,7 @@ function lab_admin_tab_user() {
       </tr>
       <tr>
         <th>
-          <label for="lab_historic_end"><?php esc_html_e('Date de fin','lab') ?> : </label>
+          <label for="lab_historic_end"><?php esc_html_e('End date','lab') ?> : </label>
         </th>
         <td>
           <input type="date" id="lab_historic_end"/>
@@ -257,7 +257,7 @@ function lab_admin_tab_user() {
       </tr>
       <tr>
         <th>
-          <label for="lab_historic_mobility"><?php esc_html_e('Établissement','lab') ?> : </label>
+          <label for="lab_historic_mobility"><?php esc_html_e('Institution','lab') ?> : </label>
         </th>
         <td>
           <?php lab_html_select("lab_historic_mobility",
@@ -283,7 +283,7 @@ function lab_admin_tab_user() {
       </tr>
       <tr>
         <th>
-          <label for="lab_historic_host"><?php esc_html_e('Hôte','lab') ?> : </label>
+          <label for="lab_historic_host"><?php esc_html_e('Host','lab') ?> : </label>
         </th>
         <td>
           <input type="text" id="lab_historic_host"/>
@@ -292,8 +292,8 @@ function lab_admin_tab_user() {
       <tr>
         <td scope="row" colspan="2">
           <div id="lab_historic_actions">
-            <input class="btn btn-primary" type="submit" id="lab_historic_add" value="<?php esc_html_e('Ajouter','lab')?>"/>
-            <button style="display:none" class="btn btn-secondary" id="lab_historic_edit"><?php esc_html_e('Modifier','lab')?></button>
+            <input class="btn btn-primary" type="submit" id="lab_historic_add" value="<?php esc_html_e('Add','lab')?>"/>
+            <button style="display:none" class="btn btn-secondary" id="lab_historic_edit"><?php esc_html_e('Edit','lab')?></button>
             <input type="reset" value="<?php esc_html_e('Cancel','lab')?>"/>
           </div>
         </td>
@@ -313,11 +313,11 @@ function lab_admin_tab_user() {
 <hr/>
 <div id="ldap_menu_flex" style="display:flex; flex-wrap:wrap;">
   <form style="margin-right: 2em" id="lab_ldap_newUser" action="javascript:lab_ldap_addUser()">
-    <h3><?php esc_html_e('Ajouter un utilisateur dans l\'annuaire','lab') ?></h3>
+    <h3><?php esc_html_e('Adding a user to the directory','lab') ?></h3>
     <table class="form-table" role="presentation">
       <tr class="user-rich-editing-wrap">
         <th scope="row">
-          <label for="lab_ldap_queryAmu"><?php esc_html_e('E-Mail d\'utilisateur AMU :','lab') ?></label>
+          <label for="lab_ldap_queryAmu"><?php esc_html_e('User\'s email AMU :','lab') ?></label>
         </th>
         <td>
           <input type="email" id="lab_ldap_queryAmu"/>
@@ -325,7 +325,7 @@ function lab_admin_tab_user() {
       </tr>
       <tr class="user-rich-editing-wrap">
         <th scope="row">
-          <label for="lab_ldap_newUser_lastName"><?php esc_html_e('Nom','lab') ?><span class="lab_form_required_star"> *</span></label>
+          <label for="lab_ldap_newUser_lastName"><?php esc_html_e('Last name','lab') ?><span class="lab_form_required_star"> *</span></label>
         </th>
         <td>
           <input required type="text" id="lab_ldap_newUser_lastName"/>
@@ -333,7 +333,7 @@ function lab_admin_tab_user() {
       </tr>
       <tr class="user-rich-editing-wrap">
         <th scope="row">
-          <label for="lab_ldap_newUser_firstName"><?php esc_html_e('Prénom','lab') ?><span class="lab_form_required_star"> *</span></label>
+          <label for="lab_ldap_newUser_firstName"><?php esc_html_e('First name','lab') ?><span class="lab_form_required_star"> *</span></label>
         </th>
         <td>
           <input required type="text" id="lab_ldap_newUser_firstName"/>
@@ -341,7 +341,7 @@ function lab_admin_tab_user() {
       </tr>
       <tr class="user-rich-editing-wrap">
         <th scope="row">
-          <label for="lab_ldap_newUser_email"><?php esc_html_e('E-Mail','lab') ?><span class="lab_form_required_star"> *</span></label>
+          <label for="lab_ldap_newUser_email"><?php esc_html_e('Email','lab') ?><span class="lab_form_required_star"> *</span></label>
         </th>
         <td>
           <input required type="email" id="lab_ldap_newUser_email"/>
@@ -357,7 +357,7 @@ function lab_admin_tab_user() {
       </tr>
       <tr class="user-rich-editing-wrap">
         <th scope="row">
-          <label for="lab_ldap_newUser_pass"><?php esc_html_e('Mot de passe','lab') ?><span class="lab_form_required_star"> *</span></label>
+          <label for="lab_ldap_newUser_pass"><?php esc_html_e('Password','lab') ?><span class="lab_form_required_star"> *</span></label>
         </th>
         <td>
           <input required type="text" id="lab_ldap_newUser_pass"/>
@@ -365,7 +365,7 @@ function lab_admin_tab_user() {
       </tr>
       <tr class="user-rich-editing-wrap">
         <th scope="row">
-          <label for="lab_ldap_newUser_org"><?php esc_html_e('Organisation','lab') ?></label>
+          <label for="lab_ldap_newUser_org"><?php esc_html_e('Organization','lab') ?></label>
         </th>
         <td>
           <input type="text" id="lab_ldap_newUser_org"/>
@@ -373,7 +373,7 @@ function lab_admin_tab_user() {
       </tr>
       <tr class="user-rich-editing-wrap">
         <th scope="row">
-          <label for="lab_ldap_newUser_addToWP"><?php esc_html_e('Ajouter l\'utilisateur à WordPress','lab') ?></label>
+          <label for="lab_ldap_newUser_addToWP"><?php esc_html_e('Add user to Wordpress','lab') ?></label>
         </th>
         <td>
           <input type="checkbox" id="lab_ldap_newUser_addToWP"/>
@@ -388,7 +388,7 @@ function lab_admin_tab_user() {
   </form>
   <!-- Dialogue de confirmation modal s'affichant lorsque l'utilisateur essaie de supprimer une clé -->
   <div id="lab_historic_delete_dialog" class="modal">
-    <p><?php esc_html_e('Voulez-vous vraiment supprimer cette période ?','lab');?></p>
+    <p><?php esc_html_e('Do you really want to delete this period ?','lab');?></p>
     <div id="lab_historic_delete_dialog_options">
       <a href="#" rel="modal:close"><?php esc_html_e('Cancel','lab')?></a>
       <a href="#" rel="modal:close" id="lab_history_edit_delete_confirm" entry_id=""><?php esc_html_e('Confirm','lab'); ?></a>

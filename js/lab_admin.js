@@ -412,7 +412,7 @@ jQuery(function($){
       'action' : 'group_root',
     };
     jQuery.post(ajaxurl, data, function(response) {
-      (response.success ? toast_success(__("Groupe créé avec succès","lab")) : toast_error(__("Erreur lors de la création du groupe : ","lab")+response.data));
+      (response.success ? toast_success(__("Group successfully created","lab")) : toast_error(__("Error when creating the group : ","lab")+response.data));
     });
   });
   $('#lab_createGroup_createTable').click(function(){
@@ -475,24 +475,6 @@ jQuery(function($){
     $("#lab_createGroup_subID").attr('list','');
     $("#lab_createGroup_subsDelete").hide();
   })
-  $("#lab_group_edit_add_substitute").autocomplete({
-    minChars: 3,
-    source: function(term, suggest){
-      try { searchRequest.abort(); } catch(e){}
-      searchRequest = $.post(LAB.ajaxurl, { action: 'search_username',search: term, }, function(res) {
-        suggest(res.data);
-      });
-      },
-    select: function( event, ui ) {
-      var value = ui.item.value;
-      var label = ui.item.label;
-      event.preventDefault();
-      $("#lab_group_edit_add_substitute").val(label);
-
-      //$("#lab_group_edit_add_substitute_id").val(value);
-      group_edit_saveNewSubstitute(value, jQuery("#lab_searched_group_id").val());
-    }
-  });
   $("#lab_group_edit_add_manager").autocomplete({
     minChars: 3,
     source: function(term, suggest){
@@ -509,6 +491,25 @@ jQuery(function($){
       $("#lab_group_edit_add_manager_id").val(value);
     }
   });
+
+  $("#lab_admin_group_manager_function").css("backgroundColor", "limegreen")
+
+  $("#lab_admin_group_manager_function").children().each(function () {
+    if($(this).val() == 1) {
+      $(this).css("backgroundColor", "limegreen");
+    }
+    else if($(this).val() == 2) {
+      $(this).css("backgroundColor", "red");
+    }
+    else if($(this).val() == 3) {
+      $(this).css("backgroundColor", "gold");
+    }
+  });
+
+  $("#lab_admin_group_manager_function").change(function () {
+    var color = $('option:selected',this).css('background-color');
+    $(this).css('background-color',color); 
+  })
 
   $("#lab_group_edit_add_manager_button").click(function () {
     let groupId = $("#lab_searched_group_id").val();
@@ -545,7 +546,16 @@ jQuery(function($){
     $.each(data, function(i, obj) {
       //use obj.id and obj.name here, for example:
       //alert(obj.name);
-      let span = $('<span />').attr('class', 'badge badge-secondary user-role-badge').html(obj.first_name+" "+obj.last_name+" ");
+      var span;
+      if(obj.manager_type == 1) {
+        span = $('<span />').attr('class', 'badge badge-success user-role-badge').html(obj.first_name+" "+obj.last_name+" ");
+      } else if(obj.manager_type == 2) {
+        span = $('<span />').attr('class', 'badge badge-danger user-role-badge').html(obj.first_name+" "+obj.last_name+" ");
+      } else if(obj.manager_type == 3) {
+        span = $('<span />').attr('class', 'badge badge-warning user-role-badge').html(obj.first_name+" "+obj.last_name+" ");
+      } else {
+        span = $('<span />').attr('class', 'badge badge-secondary user-role-badge').html(obj.first_name+" "+obj.last_name+" ");
+      }
       let innerSpan = $('<span />').attr('class', 'lab_admin_group_delete').attr('objId', obj.id);
       let innerI = $('<i />').attr('class', 'fas fa-trash').attr('group_id', obj.id);
       innerSpan.append(innerI);
@@ -698,16 +708,16 @@ jQuery(function($){
       {
         if(response.success)
         {
-          toast_success(__("Le(s) membre(s) a bien été ajouté au(x) groupe(s)", "lab"));
+          toast_success(__("The member(s) has been added to the group(s)", "lab"));
           reset_and_load_groups_users($("#lab_all_users").is(':checked'), $("#lab_no_users_left").is(':checked'));
         }
         else if(response == "warning")
         {
-          toast_warn(__("Sélectionnez au moins un utilisateur et un groupe !","lab"));
+          toast_warn(__("Sélect at least one user and one group !","lab"));
         }
         else
         {
-          toast_error(__("Erreur, la requête n'a pas pu aboutir", "lab"));
+          toast_error(__("Error, the application could not be done", "lab"));
         }
       }
     )
@@ -719,10 +729,10 @@ jQuery(function($){
     createAllSocial();
   });
   $("#lab_invite_create_table_prefGroups").click(function() {
-    callAjax({"action":"invite_createTablePrefGroup"},__("Table PrefGroup créée avec succès",'lab'),null,__("Erreur lors de la création de la tables 'invitations' et 'guests'",'lab'),null);
+    callAjax({"action":"invite_createTablePrefGroup"},__("PrefGroup successfully created",'lab'),null,__("Erreur lors de la création de la tables 'invitations' et 'guests'",'lab'),null);
   });
   $("#lab_invite_create_tables").click(function() {
-    callAjax({"action":"invite_createTables"},__("Tables invitations et guests créées avec succès",'lab'),null,__("Erreur lors de la création des tables 'invitations' et 'guests'",'lab'),null);
+    callAjax({"action":"invite_createTables"},__("Invitations and guests tables successfully created",'lab'),null,__("Error when creating 'invitations' and 'guests' tables",'lab'),null);
   });
   $("#lab_admin_param_colorpicker").spectrum({
       color: $("#wp_lab_param_color").val(),
@@ -775,9 +785,9 @@ jQuery(function($){
   $("#lab_create_table_historic").click(function() {
     $.post(LAB.ajaxurl,{'action':'lab_historic_createTable'},function (response) {
       if (response.success) {
-        toast_success(__('Table créée avec succès','lab'));
+        toast_success(__('Tables successfully created','lab'));
       } else {
-        toast_error(__('Échec lors de la création de la table','lab'));
+        toast_error(__('Failed to create the table','lab'));
       }
     });
   });
@@ -786,7 +796,7 @@ jQuery(function($){
       if (response.success) {
         loadUserHistory();
       } else {
-        toast_error(__('Échec lors de la suppression<br/>')+response.data);
+        toast_error(__('Failed to delete<br/>')+response.data);
       }
     });
   });
@@ -883,58 +893,6 @@ function setinfoToGroupEditionFields(groupId, acronym, groupName, chiefId, paren
   jQuery('#wp_lab_group_url_edit').val(url)
 
   jQuery('#wp_lab_group_type_edit').val(group_type);
-  group_loadSubstitute();
-}
-
-function group_edit_deleteSubstitute(id) {
-  var data = {
-    'action' : 'group_delete_substitutes',
-    'id' : id
-  };
-  jQuery.post(LAB.ajaxurl, data, function(response) 
-  {
-    if(response.success) 
-    {
-      group_loadSubstitute();
-    }
-  });
-}
-
-function group_edit_saveNewSubstitute(userId, groupId) {
-  var data = {
-    'action' : 'group_add_substitutes',
-    'userId' : userId,
-    'groupId': groupId
-  };
-  jQuery.post(LAB.ajaxurl, data, function(response) 
-  {
-    jQuery("#lab_group_edit_substitutes").text("");
-    if(response.success) 
-    {
-      group_loadSubstitute();
-      $("#lab_group_edit_add_substitute").val("");
-    }
-  });
-}
-
-function group_loadSubstitute()
-{
-  var groupId = jQuery('#wp_lab_group_to_edit').val();
-  var data = {
-    'action' : 'group_load_substitutes',
-    'id' : groupId
-  };
-  jQuery.post(LAB.ajaxurl, data, function(response) 
-  {
-    jQuery("#lab_group_edit_substitutes").text("");
-    if(response.success) 
-    {
-      for (i = 0 ; i < response.data.length ; i++) 
-      {
-        jQuery("#lab_group_edit_substitutes").append(response.data[i]["first_name"] + " " + response.data[i]["last_name"] + " <a href=\"#\" onclick=\"group_edit_deleteSubstitute("+response.data[i]["id"]+");return false;\">delete</a>, ");
-      }
-    }
-  });
 }
 
 function createGroup(params) {
@@ -1329,7 +1287,6 @@ function resetGroupEdit()
   jQuery("#wp_lab_group_parent_edit").val("");
   jQuery("#wp_lab_group_type_edit").val("0");
   jQuery("#wp_lab_group_name").val("");
-  jQuery("#lab_group_edit_substitutes").text("");
   jQuery("#wp_lab_group_url_edit").val("");
   jQuery("#lab_group_edit_add_manager").val("");
   jQuery("#lab_admin_group_managers").html("");
@@ -1768,7 +1725,7 @@ function lab_admin_ldap_settings() {
       'password': [$("#lab_admin_tab_ldap_pass").val(), $("#lab_admin_tab_ldap_pass").attr('param_id').length > 0 ? $("#lab_admin_tab_ldap_pass").attr('param_id') : null],
       'tls': [$("#lab_admin_tab_ldap_tls").prop('checked').toString(), $("#lab_admin_tab_ldap_tls").attr('param_id').length > 0 ? $("#lab_admin_tab_ldap_tls").attr('param_id') : null],
     }
-    callAjax(data,__('Paramètres mis à jour','lab'),lab_admin_reload_ldap_settings,__('Erreur lors de la mise à jour des paramètres'),null);
+    callAjax(data,__('Settings updated','lab'),lab_admin_reload_ldap_settings,__('Error when updating settings'),null);
   });
 }
 function lab_admin_reload_ldap_settings(data) {

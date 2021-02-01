@@ -2,10 +2,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lab\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-01-26 13:42+0100\n"
-"PO-Revision-Date: 2021-01-26 13:45+0100\n"
+"POT-Creation-Date: 2021-01-27 17:52+0100\n"
+"PO-Revision-Date: 2021-01-27 17:54+0100\n"
 "Last-Translator: \n"
-"Language-Team: en\n"
+"Language-Team: \n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -14,7 +14,7 @@ msgstr ""
 "X-Poedit-Basepath: ..\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-KeywordsList: _e;esc_html_e;esc_html__;__\n"
-"X-Source-Language: fr\n"
+"X-Source-Language: en\n"
 "X-Poedit-SearchPath-0: lab-admin-keyring.php\n"
 "X-Poedit-SearchPath-1: js/lab_global.js\n"
 "X-Poedit-SearchPath-2: js/lab_keyring.js\n"
@@ -94,6 +94,7 @@ msgstr "Gestionaire budget"
 #: admin/view/lab-admin-tab-users.php:175
 #: admin/view/lab-admin-tab-users.php:186
 #: admin/view/lab-admin-tab-users.php:197
+#: admin/view/lab-admin-tab-users.php:295
 #: shortcode/lab-shortcode-profile.php:247
 msgid "Add"
 msgstr "Ajouter"
@@ -293,25 +294,35 @@ msgstr "Vider la table HAL"
 msgid "Add Meta Key"
 msgstr "Ajouter une metakey"
 
-#: admin/view/lab-admin-tab-users.php:16
-msgid "Nom de l'utilisateur"
-msgstr "Nom de l'utilisateur"
+#: admin/view/lab-admin-tab-users.php:16 lab-admin-keyring.php:41
+msgid "User name"
+msgstr "Nom"
 
-#: admin/view/lab-admin-tab-users.php:25
+#: admin/view/lab-admin-tab-users.php:25 admin/view/lab-admin-tab-users.php:336
+#: shortcode/lab-shortcode-invitation.php:106
 #: shortcode/lab-shortcode-invitation.php:380
 #: shortcode/lab-shortcode-invitation.php:951
 msgid "First name"
 msgstr "Prénom"
 
-#: admin/view/lab-admin-tab-users.php:28
+#: admin/view/lab-admin-tab-users.php:28 admin/view/lab-admin-tab-users.php:328
+#: shortcode/lab-shortcode-invitation.php:110
 #: shortcode/lab-shortcode-invitation.php:384
 #: shortcode/lab-shortcode-invitation.php:952
 msgid "Last name"
 msgstr "Nom"
 
 #: admin/view/lab-admin-tab-users.php:30
-msgid "Sex"
-msgstr "Genre"
+msgid "Gender"
+msgstr ""
+
+#: admin/view/lab-admin-tab-users.php:31
+msgid "Female"
+msgstr ""
+
+#: admin/view/lab-admin-tab-users.php:32
+msgid "Male"
+msgstr ""
 
 #: admin/view/lab-admin-tab-users.php:38
 msgid "User slug"
@@ -321,7 +332,7 @@ msgstr "Metakey user slug"
 msgid "Correct slug name"
 msgstr "Corriger les metadatas manquantes"
 
-#: admin/view/lab-admin-tab-users.php:44
+#: admin/view/lab-admin-tab-users.php:44 admin/view/lab-admin-tab-users.php:344
 #: shortcode/lab-shortcode-invitation.php:101
 #: shortcode/lab-shortcode-invitation.php:375
 #: shortcode/lab-shortcode-invitation.php:892
@@ -386,8 +397,8 @@ msgid "PHD school"
 msgstr "Ecole doctorale"
 
 #: admin/view/lab-admin-tab-users.php:152
-msgid "Parti"
-msgstr "Parti"
+msgid "left"
+msgstr ""
 
 #: admin/view/lab-admin-tab-users.php:155
 #: shortcode/lab-shortcode-invitation.php:153
@@ -418,99 +429,93 @@ msgid "Add thematic to user"
 msgstr "Ajouter une thématique à l'utilisateur"
 
 #: admin/view/lab-admin-tab-users.php:190
-msgid "Affecter des rôles à l'utilisateur"
-msgstr "Affecter des rôles à l'utilisateur"
+#, fuzzy
+#| msgid "Assign users to groups"
+msgid "Assigning roles to the user"
+msgstr "Assigner un ou plusieurs utilisateurs à un ou plusieurs groupes"
 
 #: admin/view/lab-admin-tab-users.php:211
 msgid "Keep user data in our web site ?"
 msgstr "Garder les informations des utilisateurs sur le site web?"
 
 #: admin/view/lab-admin-tab-users.php:221
-msgid "Historique de l'utilisateur"
-msgstr "Historique de l'utilisateur"
+msgid "User history"
+msgstr ""
 
 #: admin/view/lab-admin-tab-users.php:227
-msgid "Ajouter une période"
-msgstr "Ajouter une période"
+msgid "Add a period"
+msgstr ""
 
-#: admin/view/lab-admin-tab-users.php:231 lab-admin-keyring.php:407
-msgid "Date de début"
-msgstr "Date de début"
+#: admin/view/lab-admin-tab-users.php:231
+#, fuzzy
+#| msgid "Departure date"
+msgid "Start date"
+msgstr "Date de départ"
 
-#: admin/view/lab-admin-tab-users.php:239 lab-admin-keyring.php:409
-msgid "Date de fin"
-msgstr "Date de fin"
+#: admin/view/lab-admin-tab-users.php:239
+#, fuzzy
+#| msgid "Order date"
+msgid "End date"
+msgstr "Date du devis"
 
 #: admin/view/lab-admin-tab-users.php:247
 msgid "Fonction"
 msgstr "Fonction"
 
 #: admin/view/lab-admin-tab-users.php:260
-msgid "Établissement"
-msgstr "Établissement"
+msgid "Institution"
+msgstr ""
 
 #: admin/view/lab-admin-tab-users.php:273
 msgid "Outgoing mobility status"
 msgstr "Internal/external mobility"
 
 #: admin/view/lab-admin-tab-users.php:286
-msgid "Hôte"
-msgstr "Invitant"
+msgid "Host"
+msgstr ""
 
-#: admin/view/lab-admin-tab-users.php:295
-msgid "Ajouter"
-msgstr "Add"
-
-#: admin/view/lab-admin-tab-users.php:296 lab-admin-keyring.php:167
-#: lab-admin-keyring.php:215 lab-admin-keyring.php:485
-msgid "Modifier"
-msgstr "Modifier"
+#: admin/view/lab-admin-tab-users.php:296
+#: shortcode/lab-shortcode-invitation.php:791
+msgid "Edit"
+msgstr ""
 
 #: admin/view/lab-admin-tab-users.php:306
 msgid "Correct missing metadata"
 msgstr "Corriger les metadatas manquantes"
 
 #: admin/view/lab-admin-tab-users.php:316
-msgid "Ajouter un utilisateur dans l'annuaire"
-msgstr "Ajouter un utilisateur dans l'annuaire"
+msgid "Adding a user to the directory"
+msgstr ""
 
 #: admin/view/lab-admin-tab-users.php:320
-msgid "E-Mail d'utilisateur AMU :"
-msgstr "E-Mail d'utilisateur AMU :"
-
-#: admin/view/lab-admin-tab-users.php:328
-#: shortcode/lab-shortcode-invitation.php:891
-msgid "Nom"
-msgstr "Nom"
-
-#: admin/view/lab-admin-tab-users.php:336
-#: shortcode/lab-shortcode-invitation.php:890
-msgid "Prénom"
-msgstr "Prénom"
-
-#: admin/view/lab-admin-tab-users.php:344
-msgid "E-Mail"
-msgstr "E-Mail"
+#, fuzzy
+#| msgid "User details"
+msgid "User's email AMU :"
+msgstr "Coordonnées"
 
 #: admin/view/lab-admin-tab-users.php:352
 msgid "Login (uid)"
 msgstr "Login (uid)"
 
 #: admin/view/lab-admin-tab-users.php:360
-msgid "Mot de passe"
-msgstr "Mot de passe"
+msgid "Password"
+msgstr ""
 
 #: admin/view/lab-admin-tab-users.php:368
-msgid "Organisation"
+#, fuzzy
+#| msgid "Organisation"
+msgid "Organization"
 msgstr "Organisation"
 
 #: admin/view/lab-admin-tab-users.php:376
-msgid "Ajouter l'utilisateur à WordPress"
-msgstr "Ajouter l'utilisateur à WordPress"
+#, fuzzy
+#| msgid "Assign users to groups"
+msgid "Add user to Wordpress"
+msgstr "Assigner un ou plusieurs utilisateurs à un ou plusieurs groupes"
 
 #: admin/view/lab-admin-tab-users.php:391
-msgid "Voulez-vous vraiment supprimer cette période ?"
-msgstr "Voulez-vous vraiment supprimer cette période ?"
+msgid "Do you really want to delete this period ?"
+msgstr ""
 
 #: admin/view/lab-admin-tabs.php:23
 msgid "Séminaire"
@@ -540,12 +545,16 @@ msgstr "LDAP"
 msgid "Paramètres globaux"
 msgstr "Paramètres globaux"
 
-#: js/lab_fe.js:158
-msgid "Change main thematic"
+#: js/lab_fe.js:169
+#, fuzzy
+#| msgid "Change main thematic"
+msgid "Change main theme"
 msgstr "Changer thématique principale"
 
-#: js/lab_fe.js:163
-msgid "Delete thematic"
+#: js/lab_fe.js:174
+#, fuzzy
+#| msgid "Delete thematic"
+msgid "Delete theme"
 msgstr "Effacer thématique"
 
 #: js/lab_fe.js:237
@@ -701,29 +710,38 @@ msgstr "La raison de votre présence est requise"
 msgid "Cant delete system param"
 msgstr "Impossible d'effacer un paramètre sytème"
 
-#: lab-admin-ajax.php:1155 lab-admin-ajax.php:1166
-msgid "Aucun prêt trouvé"
-msgstr "Aucun prêt trouvé"
+#: lab-admin-ajax.php:1139 lab-admin-ajax.php:1150
+msgid "No loan found"
+msgstr ""
 
-#: lab-admin-ajax.php:1307
-msgid "Votre demande a bien été prise en compte"
-msgstr "Votre demande a bien été prise en compte"
+#: lab-admin-ajax.php:1286
+msgid "Your request has been taken into account"
+msgstr ""
 
-#: lab-admin-ajax.php:1344
-msgid "Votre invitation a bien été modifiée"
+#: lab-admin-ajax.php:1323
+#, fuzzy
+#| msgid "Votre invitation a bien été modifiée"
+msgid "Your invitation has been modified"
 msgstr "Votre invitation a bien été modifiée"
 
-#: lab-admin-ajax.php:1472
-msgid "Aucune invitation"
+#: lab-admin-ajax.php:1451 shortcode/lab-shortcode-invitation.php:798
+#, fuzzy
+#| msgid "Aucune invitation"
+msgid "No invitation"
 msgstr "Aucune invitation"
 
-#: lab-admin-ajax.php:1509
-msgid "indéfini"
-msgstr "indéfini"
+#: lab-admin-ajax.php:1488
+msgid "undefined"
+msgstr ""
 
-#: lab-admin-ajax.php:1657
-#, php-format
-msgid "%s is a non wordking day"
+#: lab-admin-ajax.php:1626
+msgid "Can only modify your own presency"
+msgstr ""
+
+#: lab-admin-ajax.php:1636
+#, fuzzy, php-format
+#| msgid "%s is a non wordking day"
+msgid "%s is a no working day"
 msgstr "%s est férié"
 
 #: lab-admin-ajax.php:1680
@@ -812,7 +830,7 @@ msgstr "Sauvegarder"
 msgid "Computer commands"
 msgstr "Commande informatique"
 
-#: lab-admin-budget.php:186 shortcode/lab-shortcode-directory.php:238
+#: lab-admin-budget.php:186 shortcode/lab-shortcode-directory.php:233
 #: shortcode/lab-shortcode-invitation.php:626
 msgid "All"
 msgstr "Tou·te·s"
@@ -861,7 +879,7 @@ msgstr "Intitulé de la commande"
 msgid "For"
 msgstr "Pour"
 
-#: lab-admin-budget.php:210 shortcode/lab-shortcode-directory.php:275
+#: lab-admin-budget.php:210 shortcode/lab-shortcode-directory.php:270
 #: shortcode/lab-shortcode-invitation.php:703
 msgid "Group"
 msgstr "Groupes"
@@ -927,10 +945,6 @@ msgstr "Créer la table Keys"
 #: lab-admin-keyring.php:23
 msgid "Créer la table Loans"
 msgstr "Créer la table Keys"
-
-#: lab-admin-keyring.php:41
-msgid "User name"
-msgstr "Nom"
 
 #: lab-admin-keyring.php:52 lab-admin-keyring.php:218
 msgid "Nouvelle"
@@ -1032,6 +1046,11 @@ msgstr "Page précédente"
 msgid "Page suivante"
 msgstr "Page suivante"
 
+#: lab-admin-keyring.php:167 lab-admin-keyring.php:215
+#: lab-admin-keyring.php:485
+msgid "Modifier"
+msgstr "Modifier"
+
 #: lab-admin-keyring.php:180
 msgid "numéro"
 msgstr "numéro"
@@ -1088,6 +1107,14 @@ msgstr "Afficher Reçu"
 msgid "Usager"
 msgstr "Usager"
 
+#: lab-admin-keyring.php:407
+msgid "Date de début"
+msgstr "Date de début"
+
+#: lab-admin-keyring.php:409
+msgid "Date de fin"
+msgstr "Date de fin"
+
 #: lab-admin-keyring.php:413
 msgid "Commentaire faculatif"
 msgstr "Commentaire faculatif"
@@ -1124,9 +1151,11 @@ msgstr "Voir prêt"
 msgid "People who have left"
 msgstr "Personnels partis"
 
-#: shortcode/lab-shortcode-directory.php:246
-msgid "Chercher un nom"
-msgstr "Chercher un nom"
+#: shortcode/lab-shortcode-directory.php:241
+#, fuzzy
+#| msgid "Search command Number"
+msgid "Search a name"
+msgstr "Recherche par numéro de devis"
 
 #: shortcode/lab-shortcode-directory.php:250
 msgid "Show only group"
@@ -1149,9 +1178,10 @@ msgid "I2m Week"
 msgstr "Semaine de l'I2M"
 
 #: shortcode/lab-shortcode-invitation.php:44
-#: shortcode/lab-shortcode-invitation.php:347
-msgid "Token d'invitation invalide"
-msgstr "Token d'invitation invalide"
+#, fuzzy
+#| msgid "Create invitation table"
+msgid "Invalid invitation token"
+msgstr "Créer la table invitation"
 
 #: shortcode/lab-shortcode-invitation.php:71
 #: shortcode/lab-shortcode-invitation.php:370
@@ -1160,7 +1190,7 @@ msgstr "Formulaire"
 
 #: shortcode/lab-shortcode-invitation.php:74
 msgid "Personnal informations"
-msgstr "Informations personnelles"
+msgstr ""
 
 #: shortcode/lab-shortcode-invitation.php:80
 #: shortcode/lab-shortcode-invitation.php:413
@@ -1176,14 +1206,6 @@ msgstr ""
 #: shortcode/lab-shortcode-invitation.php:99
 msgid "Guest Informations"
 msgstr "informations des invités"
-
-#: shortcode/lab-shortcode-invitation.php:106
-msgid "Firstname"
-msgstr "Prénom"
-
-#: shortcode/lab-shortcode-invitation.php:110
-msgid "Lastname"
-msgstr "Nom"
 
 #: shortcode/lab-shortcode-invitation.php:116
 msgid "Phone Number"
@@ -1380,6 +1402,10 @@ msgstr "Envoyer à l'administration"
 #| msgid "Add a co-responsible"
 msgid "Send to responsible"
 msgstr "Ajouter un co-responsable"
+
+#: shortcode/lab-shortcode-invitation.php:347
+msgid "Token d'invitation invalide"
+msgstr "Token d'invitation invalide"
 
 #: shortcode/lab-shortcode-invitation.php:373
 #: shortcode/lab-shortcode-invitation.php:888
@@ -1708,6 +1734,14 @@ msgstr ""
 msgid "Récapitulatif de la demande de mission"
 msgstr "Récapitulatif de la demande d'invitation"
 
+#: shortcode/lab-shortcode-invitation.php:890
+msgid "Prénom"
+msgstr "Prénom"
+
+#: shortcode/lab-shortcode-invitation.php:891
+msgid "Nom"
+msgstr "Nom"
+
 #: shortcode/lab-shortcode-invitation.php:909
 msgid "Travels"
 msgstr ""
@@ -2002,14 +2036,77 @@ msgstr "Thématiques scientifiques : "
 msgid "Research keywords : "
 msgstr "Rechercher mots clef : "
 
+#~ msgid "Sex"
+#~ msgstr "Genre"
+
+#~ msgid "Parti"
+#~ msgstr "Parti"
+
+#~ msgid "Affecter des rôles à l'utilisateur"
+#~ msgstr "Affecter des rôles à l'utilisateur"
+
+#~ msgid "Historique de l'utilisateur"
+#~ msgstr "Historique de l'utilisateur"
+
+#~ msgid "Ajouter une période"
+#~ msgstr "Ajouter une période"
+
+#~ msgid "Établissement"
+#~ msgstr "Établissement"
+
+#~ msgid "Hôte"
+#~ msgstr "Invitant"
+
+#~ msgid "Ajouter"
+#~ msgstr "Add"
+
+#~ msgid "Ajouter un utilisateur dans l'annuaire"
+#~ msgstr "Ajouter un utilisateur dans l'annuaire"
+
+#~ msgid "E-Mail d'utilisateur AMU :"
+#~ msgstr "E-Mail d'utilisateur AMU :"
+
+#~ msgid "E-Mail"
+#~ msgstr "E-Mail"
+
+#~ msgid "Mot de passe"
+#~ msgstr "Mot de passe"
+
+#~ msgid "Ajouter l'utilisateur à WordPress"
+#~ msgstr "Ajouter l'utilisateur à WordPress"
+
+#~ msgid "Voulez-vous vraiment supprimer cette période ?"
+#~ msgstr "Voulez-vous vraiment supprimer cette période ?"
+
+#~ msgid "Nom de l'utilisateur"
+#~ msgstr "Nom de l'utilisateur"
+
 #~ msgid "Date de départ"
 #~ msgstr "Date de départ"
 
 #~ msgid "Modifier le statut de l'utilisateur"
 #~ msgstr "Modifier le statut de l'utilisateur"
 
+#~ msgid "Aucun prêt trouvé"
+#~ msgstr "Aucun prêt trouvé"
+
+#~ msgid "Votre demande a bien été prise en compte"
+#~ msgstr "Votre demande a bien été prise en compte"
+
+#~ msgid "indéfini"
+#~ msgstr "indéfini"
+
+#~ msgid "Chercher un nom"
+#~ msgstr "Chercher un nom"
+
 #~ msgid "Précisez la nature de votre mission ici."
 #~ msgstr "Précisez la nature de votre mission ici."
+
+#~ msgid "Firstname"
+#~ msgstr "Prénom"
+
+#~ msgid "Lastname"
+#~ msgstr "Nom"
 
 #~ msgid "Champs pour l'invitant : "
 #~ msgstr "Champs pour l'invitant : "

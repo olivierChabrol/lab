@@ -748,37 +748,19 @@ function lab_group_editGroup() {
   wp_send_json_success($wpdb->get_results($sql));
   //wp_send_json_success($sql);
 }
-function group_delete_substitutes() 
-{
-  $id = $_POST['id'];
-  global $wpdb;
-  wp_send_json_success($wpdb->delete($wpdb->prefix.'lab_group_substitutes', array('id' => $id)));
-}
 
-function group_add_substitutes()
-{
-  $userId = $_POST['userId'];
-  $groupId = $_POST['groupId'];
-  global $wpdb;
-  wp_send_json_success($wpdb->insert($wpdb->prefix.'lab_group_substitutes', array('group_id'=>$groupId,'substitute_id'=>$userId)));
-
-}
-
-function group_load_substitutes()
+/*function group_load_substitutes()
 {
   global $wpdb;
   $id = $_POST['id'];
-  $sql = "SELECT lgs.id AS id, um1.meta_value AS last_name, um2.meta_value AS first_name FROM `".$wpdb->prefix."lab_group_substitutes`  AS lgs JOIN `".$wpdb->prefix."usermeta` AS um1 ON um1.user_id=lgs.substitute_id JOIN `".$wpdb->prefix."usermeta` AS um2 ON um2.user_id=lgs.substitute_id WHERE lgs.`group_id`=33 AND um1.meta_key='last_name' AND um2.meta_key='first_name'";
-  //$sql = "SELECT lgs.id AS id, um1.meta_value AS last_name, um2.meta_value AS first_name FROM `".$wpdb->prefix."lab_group_substitutes` AS lgs JOIN `".$wpdb->prefix."usermeta` AS um1 ON um1.user_id=lgs.substitute_id JOIN `".$wpdb->prefix."usermeta AS um2 ON um2.user_id=lgs.substitute_id WHERE lgs.`group_id`=33 AND um1.meta_key='last_name' AND um2.meta_key='first_name'";
-  
-  $results = $wpdb->get_results($sql);
+  $results = lab_admin_group_load_managers($id, 3);
   $items = array();
   foreach ( $results as $r )
   {
     $items[] = array(id=>$r->id, first_name=>$r->first_name, last_name=>$r->last_name, );
   }
-  wp_send_json_success( $items );
-}
+  wp_send_json_success($items);
+}*/
 
 function lab_admin_group_availableAc() {
   //Vérifie la disponibilité de l'acronyme
@@ -1152,7 +1134,7 @@ function lab_keyring_find_oldLoansReq() {
     $res = lab_keyring_find_oldLoans('user_id',$_POST['user_id']);
   } 
   if (count($res)==0) {
-    wp_send_json_error("<tr><td colspan='9'>".__('Aucun prêt trouvé','lab')."</td></tr>");
+    wp_send_json_error("<tr><td colspan='9'>".__('No loan found','lab')."</td></tr>");
     return;
   } else {
     wp_send_json_success(lab_keyringtableFromLoansList($res));
@@ -1163,7 +1145,7 @@ function lab_keyring_find_oldLoansReq() {
 function lab_keyring_search_current_loans_Req() {
   $res = lab_keyring_search_current_loans($_POST["user"],$_POST["page"],$_POST["limit"]);
   if (count($res)==0) {
-    wp_send_json_error("<tr><td colspan='9'>".__('Aucun prêt trouvé','lab')."</td></tr>");
+    wp_send_json_error("<tr><td colspan='9'>".__('No loan found','lab')."</td></tr>");
     return;
   } else {
     $html = lab_keyringtableFromLoansList($res['items']);
@@ -1311,7 +1293,7 @@ function lab_invitations_new() {
       'invite_id'=>$missionId
     )); 
   }
-  $html = '<p>'.esc_html__("Votre demande a bien été prise en compte",'lab').'</p>';
+  $html = '<p>'.esc_html__("Your request has been taken into account",'lab').'</p>';
   if($fields['mission_objective'] != 251) {
     $html .= "<hr><h5>e-mail envoyé à l'invité : </h5>";
     $html .= lab_invitations_mail(1,$guest,$invite);
@@ -1330,7 +1312,7 @@ function lab_invitations_edit() {
     $hostGroupId = lab_group_get_user_group($fields['host_id']);
     $fields['host_group_id'] = $hostGroupId;
   }
-  if (get_current_user_id()==$fields['host_id'] || isset($fields['host_group_id']) && get_current_user_id()==(int)lab_admin_get_chief_byGroup($fields['host_group_id'])) {
+  if (get_current_user_id()==$fields['host_id'] || isset($fields['host_group_id']) && get_current_user_id()==(int)lab_admin_get_manager_byGroup_andType($fields['host_group_id'], 2)->user_id || get_current_user_id()==(int)lab_admin_get_manager_byGroup_andType($fields['host_group_id'], 1)->user_id){
     $guest = array (
       'first_name'=> $fields['guest_firstName'],
       'last_name'=> $fields['guest_lastName'],
@@ -1352,7 +1334,7 @@ function lab_invitations_edit() {
     }
     $invite["charges"]=json_encode($fields["charges"]);
     lab_invitations_editInvitation($fields['token'],$invite);
-    $html = "<p>".esc_html__("Votre invitation a bien été modifiée",'lab')."<br>à $timeStamp</p>";
+    $html = "<p>".esc_html__("Your invitation has been modified",'lab')."<br>à $timeStamp</p>";
     wp_send_json_success($html);
   } else {
     wp_send_json_error('Vous n\'avez par la permission de modifier cette invitation');
@@ -1480,7 +1462,7 @@ function lab_invitations_adminList_update() {
     $list = lab_invitations_getByGroups($_POST['group_ids'],array('order'=>$order, 'sortBy'=>$sortBy,'page'=>$page,'value'=>$value, 'status'=>$statusList, 'year'=>$year));
     wp_send_json_success([$list[0],lab_invitations_interface_fromList($list[1],'admin')]);
   } else {
-    wp_send_json_error([0,"<tr><td colspan=42>".esc_html__("Aucune invitation",'lab')."</td></tr>"]);
+    wp_send_json_error([0,"<tr><td colspan=42>".esc_html__("No invitation",'lab')."</td></tr>"]);
   }
 }
 function lab_invitations_hostList_update() {
@@ -1517,7 +1499,7 @@ function lab_invitations_comments(){
 }
 
 function lab_invitations_realCost() {
-  wp_send_json_success( lab_invitations_getByToken($_POST['token'])->real_cost!=null ? lab_invitations_getByToken($_POST['token'])->real_cost : "(".esc_html__("indéfini",'lab').")");
+  wp_send_json_success( lab_invitations_getByToken($_POST['token'])->real_cost!=null ? lab_invitations_getByToken($_POST['token'])->real_cost : "(".esc_html__("undefined",'lab').")");
 }
 
 function lab_invitations_add_realCost() {
@@ -1655,7 +1637,7 @@ function lab_admin_presence_save_ajax()
   {
     // not admin and a user send
     if ($userId != $currentUserId) {
-      wp_send_json_error("[10-3]"+ esc_html("Can only modify your own presency", "lab"));
+      wp_send_json_error("[10-3]"+ esc_html__("Can only modify your own presency", "lab"));
 
     }
   }
@@ -1665,7 +1647,7 @@ function lab_admin_presence_save_ajax()
 
   if (nonWorkingDay($newDateStart))
   {
-    wp_send_json_error("[10-2]"+ sprintf(esc_html__("%s is a non wordking day", "lab"), $dateOpen));
+    wp_send_json_error("[10-2]"+ sprintf(esc_html__("%s is a no working day", "lab"), $dateOpen));
     return;
   }
 

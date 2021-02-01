@@ -22,14 +22,14 @@ function lab_admin_tab_groups() {
     <input type="text" name="wp_lab_acronym" id="wp_lab_group_acronym_edit" value="" size=10 placeholder="AA"/>
     <label for="wp_lab_group_name_edit"><?php esc_html_e("New group name",'lab'); ?> :</label>
     <input type="text" name="wp_lab_group_name" id="wp_lab_group_name_edit" value="" size=50 placeholder="Nouveau nom"/><br /><br />
-    <label for="wp_lab_group_chief_edit"><?php esc_html_e("Define another group leader",'lab'); ?> :</label>
+    <!--<label for="wp_lab_group_chief_edit"><?php/* esc_html_e("Define another group leader",'lab'); */?> :</label>
     <input required type="text" name="wp_lab_group_chief" id="wp_lab_group_chief_edit" placeholder="Group leader"/>
-    <label for="lab_group_edit_substitutes"><?php esc_html_e("Co-reponsible",'lab'); ?> : </label><span id="lab_group_edit_substitutes"></span>
+    <label for="lab_group_edit_substitutes"><?php/* esc_html_e("Co-reponsible",'lab'); */?> : </label><span id="lab_group_edit_substitutes"></span>
     <br /><br />
-    <label for="lab_group_edit_substitutes"><?php esc_html_e("Add a co-responsible",'lab'); ?> : </label><input type="text" name="lab_group_edit_add_substitute" id="lab_group_edit_add_substitute" value="" size=50 placeholder="Substitute"/>
+    <label for="lab_group_edit_substitutes"><?php/* esc_html_e("Add a co-responsible",'lab'); */?> : </label><input type="text" name="lab_group_edit_add_substitute" id="lab_group_edit_add_substitute" value="" size=50 placeholder="Substitute"/>
     <input type="hidden" id="lab_group_edit_add_substitute_id">
     <br /><br />
-    <input type="hidden" id="lab_searched_chief_id" name="lab_searched_chief_id" />
+    <input type="hidden" id="lab_searched_chief_id" name="lab_searched_chief_id" />-->
     <label for="wp_lab_group_parent_edit"><?php esc_html_e("Modify parent group",'lab'); ?> :</label>
     <?php lab_html_select("wp_lab_group_parent_edit", "wp_lab_group_parent", "", "lab_admin_group_select_group", "group_name", array("value"=>0,"label"=>"None")); ?>
     <label for="wp_lab_group_type_edit"><?php esc_html_e("Modify type",'lab'); ?> :</label>
@@ -52,6 +52,8 @@ function lab_admin_tab_groups() {
         //lab_html_select('lab_thematic','lab_thematic','lab_allRoles','lab_admin_thematic_load_all',null,array("value"=>0,"label"=>"--- Select thematic ---"),0);?>
         <select id="lab_admin_group_manager_function">
           <option value="1"><?php esc_html_e("Budget manager","lab")?></option>
+          <option value="2"><?php esc_html_e("Group leader")?></option>
+          <option value="3"><?php esc_html_e("Group substitute")?></option>
         </select>
         <button class="btn btn-primary" id="lab_group_edit_add_manager_button"><?php esc_html_e("Add","lab")?></button>
       </div>
