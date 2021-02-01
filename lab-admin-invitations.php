@@ -80,7 +80,7 @@ function lab_invitations_createGuest($params) {
       return $wpdb -> last_error;
   }
 }
-function lab_invitations_createInvite($params) {
+function lab_mission_create($params) {
   global $wpdb;
   if ( $wpdb->insert(
       $wpdb->prefix.'lab_invitations',

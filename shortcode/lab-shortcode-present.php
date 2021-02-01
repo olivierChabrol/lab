@@ -391,7 +391,7 @@ function newUserDiv($startDay)
                     </div>
                     <div class=\"input-group mb-3\">Rejoindre un groupe de travail : '.
                     //lab_html_select_str("workGroupFollow", "workGroupFollow", "", get_workgroup_of_the_week, $startDay, array("label"=>"None","value"=>""), null, array("id"=>"id", "value"=>"name"))."</div>
-                    lab_html_select_str("workGroupFollowExt", "workGroupFollowExt", "", getWorgroups, $startDay, array("label"=>"None","value"=>""), null, null, array("date"=>"date", "hour_start"=>"hour_start", "hour_end"=>"hour_end", "name"=>"name", "site"=>"site")).
+                    lab_html_select_str("workGroupFollowExt", "workGroupFollowExt", "", "getWorgroups", $startDay, array("label"=>"None","value"=>""), null, null, array("date"=>"date", "hour_start"=>"hour_start", "hour_end"=>"hour_end", "name"=>"name", "site"=>"site")).
                     '</div>
                     <small id="emailHelp" class="form-text text-muted">We\'ll never share your email with anyone else.</small>
                     <div class="h-divider"></div>
@@ -402,7 +402,7 @@ function newUserDiv($startDay)
                     <label for="hour-close">'.esc_html("to", "lab").'</label>
                     <input type="time" id="lab_presence_ext_new_hour_close" />
                     <div class="input-group mb-3">
-                        <label for="site-selected">'.esc_html("on the site", "lab").'</label>'. lab_html_select_str("lab_presence_ext_new_siteId", "siteName", "custom-select", lab_admin_list_site).'
+                        <label for="site-selected">'.esc_html("on the site", "lab").'</label>'. lab_html_select_str("lab_presence_ext_new_siteId", "siteName", "custom-select", "lab_admin_list_site").'
                     </div>
                     <div class="input-group mb-3">
                         <div class="form-group">

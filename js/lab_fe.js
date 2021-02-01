@@ -1,5 +1,7 @@
 /* front end 21 04 2020 */
-const { __, _x, _n, sprintf } = wp.i18n;
+if(!__) {
+  const { __, _x, _n, sprintf } = wp.i18n;
+}
 
 
 jQuery(function($){
@@ -762,11 +764,22 @@ function createFieldObj(val, displayVal) {
 }
 
 function hideShowInvitationDiv() {
-  if($("#lab_mission option:selected" ).text() == "Invitation") {
-    $("#inviteDiv").show();
-  }
-  else{
-    $("#inviteDiv").hide();
+  //console.log("[hideShowInvitationDiv]");
+  if($("#lab_mission").length) {
+    console.log("[hideShowInvitationDiv] lab_mission exist");
+    if($("#lab_mission").prop('type') == 'select') {
+      //console.log("[hideShowInvitationDiv] lab_mission de type select");
+      if($("#lab_mission option:selected" ).text() == "Invitation") {
+        $("#inviteDiv").show();
+      }
+      else{
+        $("#inviteDiv").hide();
+      }
+    }
+    else if($("#lab_mission").prop('type') == 'hidden') {
+      //console.log("[hideShowInvitationDiv] lab_mission de type hidden");
+      $("#inviteDiv").show();
+    }
   }
   
 }

@@ -333,6 +333,7 @@ function saveExternaluser() {
             resetExtFields();
             //window.location.reload(false); 
             console.log("[saveExternaluser]" + response.data);
+            console.log(LAB.ajaxurl);
             window.location.reload(false); 
         }
     });

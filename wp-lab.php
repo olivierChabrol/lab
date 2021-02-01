@@ -248,6 +248,7 @@ function admin_enqueue()
   wp_enqueue_style('bootstrap',plugins_url('css/bootstrap.css',__FILE__));
   //Plugin permettant d'afficher les toasts :
   wp_enqueue_style('jqueryToastCSS',plugins_url('css/jquery.toast.css',__FILE__));
+  wp_enqueue_style('InvitationCSS',plugins_url('css/lab-invitation.css',__FILE__));
   wp_enqueue_script('jqueryToastJS',plugins_url('js/jquery.toast.js',__FILE__), array('jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog'),"1.3.2",false);
 
   wp_enqueue_script('lab-global', plugins_url('js/lab_global.js',__FILE__), array('jqueryToastJS', 'jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog'), version_id(), false);
@@ -268,6 +269,10 @@ function admin_enqueue()
   wp_enqueue_script('lab-ldap', plugins_url('js/lab_ldap.js',__FILE__), array('jquery', 'wp-i18n'), version_id(), true);
   wp_enqueue_style('CountrySelectCSS',plugins_url('css/countrySelect.min.css',__FILE__));
   wp_enqueue_script('CountrySelectJS',plugins_url('js/countrySelect.min.js',__FILE__),array('jquery'),"3.5",false);
+  wp_enqueue_style('TelInputCSS',plugins_url('css/intlTelInput.min.css',__FILE__));
+  wp_enqueue_script('TelInputUtils',plugins_url('js/utils.js',__FILE__),array(),"3.4",false);
+  wp_enqueue_script('TelInputJS',plugins_url('js/intlTelInput.min.js',__FILE__),array('TelInputUtils'),"3.4",false);
+  wp_enqueue_script('lab-fe', plugins_url('js/lab_fe.js',__FILE__), array('jquery', 'wp-i18n', 'lab-global', 'TelInputJS'), version_id(), true);
   localize_script('lab-global');
   wp_set_script_translations( 'lab-global' , 'lab', dirname(__FILE__).'/lang' );
   wp_set_script_translations( 'lab-admin'  , 'lab', dirname(__FILE__).'/lang' );

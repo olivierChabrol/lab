@@ -102,9 +102,18 @@ jQuery(function($){
   }
 
   function createEditButton(id, token) {
+    /*
     let url = window.location.href;
     url = window.location.origin
     url += "/mission/"+token+"/";
+    //*/
+    let url = window.location.href;
+    console.log(url);
+    if (url.indexOf("&") != -1) 
+    {
+      url = (""+url).substr(0, url.indexOf("&"));
+    }
+    url  += "&tab=entry&token="+token;
     
     //console.log("->"+url);
     let aEdit = $('<a />').attr("class", "page-title-action lab_keyring_key_edit").attr("href",url).attr("missionId", id).html("edit");
