@@ -95,7 +95,7 @@ function lab_mission($args) {
         }
     }
     $newForm = (/*(!$param['hostpage'] ||*/ $token=='0') ? true : false ; //Le formulaire est-il nouveau ? Si non, remplit les champs avec les infos existantes
-    $invitationStr .= '<div id="missionForm" hostForm='.$param['hostpage'].' token="'.(($param['hostpage'] && strlen($token)>1) ? $token : '').'" newForm='.$newForm.'>
+    $invitationStr = '<div id="missionForm" hostForm='.$param['hostpage'].' token="'.(($param['hostpage'] && strlen($token)>1) ? $token : '').'" newForm='.$newForm.'>
                       <h2>'.esc_html__("Form","lab").'<i class="fas fa-arrow-up"></i></h2>'.$invitationStr;
     if (!$isGuest) {
         $invitationStr .= '
