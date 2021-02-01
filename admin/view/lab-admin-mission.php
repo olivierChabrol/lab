@@ -19,6 +19,10 @@
     if (isset($_GET['id'])) {
       $id = $_GET['id'];
     }
+    $token = "";
+    if (isset($_GET['token'])) {
+      $token = $_GET['token'];
+    }
 
     global $wp;
     $current_url = home_url( add_query_arg( array(), $wp->request ) );
@@ -43,7 +47,7 @@
       }
       
       if ($active_tab == 'entry') {
-        lab_mission_tab_mission();
+        lab_mission_tab_mission($token);
       } else if ($active_tab == 'historic') {
         lab_mission_tab_historic();
       } else {
@@ -51,9 +55,10 @@
       }
   }
 
-  function lab_mission_tab_mission() {
+  function lab_mission_tab_mission($token) {
     $args = array();
     $args["hostpage"] = "0";
+    $args["token"]    = $token;
     echo lab_mission($args);
   }
 

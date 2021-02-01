@@ -1624,6 +1624,20 @@ function lab_admin_get_groups_byChief($chief_id) {
                                 WHERE `user_id`=".$chief_id." AND `manager_type`=2);";
     return $wpdb->get_results($sql);
 }
+
+function lab_admin_group_get_user_info($userId, $groupId) {
+    global $wpdb;
+    $sql = "SELECT * FROM `".$wpdb->prefix."lab_group_manager` WHERE `user_id`=".$userId." AND  `group_id`=".$group_id;
+    return $wpdb->get_results($sql);
+}
+
+function lab_admin_group_is_group_leader($userId, $groupId) {
+    global $wpdb;
+    $sql = "SELECT * FROM `".$wpdb->prefix."lab_group_manager` WHERE `user_id`=".$userId." AND `group_id`=".$groupId." AND `manager_type`=2";
+    $res = $wpdb->get_results($sql);
+    return count($res) > 0;
+}
+
 function lab_admin_get_manager_byGroup_andType($group_id, $manager_type) {
     global $wpdb;
     $sql = "SELECT `user_id` FROM `".$wpdb->prefix."lab_group_manager` WHERE `group_id`=".$group_id." AND `manager_type`=".$manager_type." ;";

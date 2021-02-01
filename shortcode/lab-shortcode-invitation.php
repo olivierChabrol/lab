@@ -27,14 +27,17 @@ function lab_mission($args) {
         if (count($explode) > 1) {
             $a = explode("/",$url)[1];
         }
+        if (!isset($url) && empty($url)) {
+            $a = $args["token"];
+        }
         if ( ! isset($a)) { //Aucun token, donc l'invitant crée lui-même une nouvelle invitation
             $host = new labUser(get_current_user_id());
         } else {//Token fournit, récupère les informations existantes
             $token = $a;
             //$travels = lab_mission_route_get($token);
 
-            $invitationStr = "<h3>token : ".$token."</h3>";
-            $invitation    = lab_invitations_getByToken($token);
+            //$invitationStr .= "<h3>token : ".$token."</h3>";
+            $invitation     = lab_invitations_getByToken($token);
             $invitationStr .= '<input type="hidden" id="lab_mission_token" value="'.$token.'"/>';
             $invitationStr .= '<input type="hidden" id="lab_mission_id" value="'.$invitation->id.'"/>';
             $budget_manager_ids = lab_group_budget_manager($invitation->host_group_id);
@@ -49,7 +52,10 @@ function lab_mission($args) {
             //var_dump($guest);
             $host = new labUser($invitation->host_id);
             //Qui modifie, l'invitant ou le responsable ?
-            $isChief = isset($invitation->host_group_id) ? get_current_user_id()==(int)lab_admin_get_manager_byGroup_andType($invitation->host_group_id, 2)->user_id: false;
+            $isChief = false;
+            if (isset($invitation->host_group_id)) {
+                $isChief = lab_admin_group_is_group_leader(get_current_user_id(), $invitation->host_group_id);
+            };
             $isManager = false;
             $missionType = AdminParams::get_param($invitation->mission_objective);
             foreach($budget_manager_ids as $bm) {
@@ -89,7 +95,7 @@ function lab_mission($args) {
         }
     }
     $newForm = (/*(!$param['hostpage'] ||*/ $token=='0') ? true : false ; //Le formulaire est-il nouveau ? Si non, remplit les champs avec les infos existantes
-    $invitationStr .= '<div id="invitationForm" hostForm='.$param['hostpage'].' token="'.(($param['hostpage'] && strlen($token)>1) ? $token : '').'" newForm='.$newForm.'>
+    $invitationStr .= '<div id="missionForm" hostForm='.$param['hostpage'].' token="'.(($param['hostpage'] && strlen($token)>1) ? $token : '').'" newForm='.$newForm.'>
                       <h2>'.esc_html__("Form","lab").'<i class="fas fa-arrow-up"></i></h2>'.$invitationStr;
     if (!$isGuest) {
         $invitationStr .= '
@@ -126,7 +132,7 @@ function lab_mission($args) {
         }
         $invitationStr .= '
             <div class="lab_invite_field">
-                <label for="lab_mission">'.esc_html__("Reason for the mission","lab").'<span class="lab_form_required_star">
+                <label for="lab_mission">'.esc_html__("Reason for the mission","lab").'<span class="lab_form_required_star"/></label>
                 <select id="lab_mission" name="lab_mission">';
         foreach(AdminParams::get_params_fromId(AdminParams::PARAMS_MISSION_ID) as $missionparam)
         {
@@ -423,7 +429,7 @@ function lab_invitation($args) {
         $host = isset(explode("/",$url)[1]) ? new labUser(lab_profile_getID(explode("/",$url)[1])) : 0 ;
     }
     $newForm = (!$param['hostpage'] || $token=='0') ? 1 : 0 ; //Le formulaire est-il nouveau ? Si non, remplit les champs avec les infos existantes
-    $invitationStr = '<div id="invitationForm" hostForm='.$param['hostpage'].' token="'.(($param['hostpage'] && strlen($token)>1) ? $token : '').'" newForm='.$newForm.'>
+    $invitationStr = '<div id="missionForm" hostForm='.$param['hostpage'].' token="'.(($param['hostpage'] && strlen($token)>1) ? $token : '').'" newForm='.$newForm.'>
                       <h2>'.esc_html__("Form","lab").'<i class="fas fa-arrow-up"></i></h2>'.$invitationStr;
     $invitationStr .= '
         <form action="javascript:formAction()">
