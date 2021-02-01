@@ -711,10 +711,10 @@ function lab_admin_group_get_groups_of_manager($managerId) {
 }
 function lab_admin_group_get_groups_of_leader($leaderId) {
     global $wpdb;
-    $results =$wpdb->get_results("SELECT id FROM `".$wpdb->prefix."lab_groups` WHERE `chief_id`=".$leaderId);
+    $results =$wpdb->get_results("SELECT group_id FROM `".$wpdb->prefix."lab_group_manager` WHERE `user_id`=".$leaderId." AND manager_type=2");
     $groupIds = [];
     foreach ($results as $r) {
-        $groupIds[] = $r->id;
+        $groupIds[] = $r->group_id;
     }
     return $groupIds;
 }
@@ -1539,12 +1539,10 @@ function lab_admin_createGroupTable() {
         `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
         `acronym` varchar(20) UNIQUE,
         `group_name` varchar(255) NOT NULL,
-        `chief_id` BIGINT UNSIGNED NOT NULL,
         `group_type` TINYINT NOT NULL,
         `parent_group_id` BIGINT UNSIGNED,
         `url` varchar(255) NULL,
         PRIMARY KEY(`id`),
-        FOREIGN KEY(`chief_id`) REFERENCES `".$wpdb->prefix."users`(`ID`),
         FOREIGN KEY(`parent_group_id`) REFERENCES `".$wpdb->prefix."lab_groups`(`id`)) ENGINE = INNODB;";
     $wpdb->get_results($sql);
 }
@@ -1569,7 +1567,7 @@ function lab_admin_group_create($name,$acronym,$chief_id,$parent,$type,$url) {
         array(
             'acronym' => $acronym,
             'group_name' => stripslashes($name),
-            'chief_id' => $chief_id,
+            //'chief_id' => $chief_id,
             'group_type' => $type,
             'parent_group_id' => $parent == 0 ? NULL : $parent,
             'url' => $url
@@ -1578,6 +1576,8 @@ function lab_admin_group_create($name,$acronym,$chief_id,$parent,$type,$url) {
         $groupId = $wpdb->insert_id;
         // add chief ID to the group
         lab_admin_users_groups_check_and_add_user($chief_id, $groupId);
+        // add chief ID in manager table
+        lab_admin_add_group_manager($chief_id, $groupId, 2);
         //return "groupId :".$groupId;
     } else {
         return $wpdb -> last_error;
@@ -1591,6 +1591,11 @@ function lab_admin_users_groups_check_and_add_user($userId, $groupId) {
         return lab_admin_users_groups_add_user($userId, $groupId);
     }
     return false;
+}
+
+function lab_admin_add_group_manager($user_id, $group_id, $manager_type) {
+    global $wpdb;
+    return $wpdb->insert($wpdb->prefix.'lab_group_manager', array("group_id"=>$group_id, "user_id"=>$user_id, "manager_type"=>$manager_type));
 }
 
 function formatGroupsName($userId) {
@@ -1611,14 +1616,17 @@ function lab_admin_users_groups_add_user($userId, $groupId) {
 }
 function lab_admin_get_groups_byChief($chief_id) {
     global $wpdb;
-    $sql = "SELECT * FROM `".$wpdb->prefix."lab_groups` WHERE `chief_id`=".$chief_id.";";
+    $sql = "SELECT * 
+            FROM `".$wpdb->prefix."lab_groups` 
+            WHERE `id` IN(SELECT `group_id` 
+                                FROM `".$wpdb->prefix."lab_group_manager` 
+                                WHERE `user_id`=".$chief_id." AND `manager_type`=2);";
     return $wpdb->get_results($sql);
 }
-function lab_admin_get_chief_byGroup($group_id) {
+function lab_admin_get_manager_byGroup_andType($group_id, $manager_type) {
     global $wpdb;
-    $sql = "SELECT * FROM `".$wpdb->prefix."lab_groups` WHERE `id`=".$group_id.";";
-    $res = $wpdb->get_results($sql)[0];
-    return $res->chief_id;
+    $sql = "SELECT `user_id` FROM `".$wpdb->prefix."lab_group_manager` WHERE `group_id`=".$group_id." AND `manager_type`=".$manager_type." ;";
+    return $wpdb->get_results($sql)[0];
 }
 
 function lab_prefGroups_add($user_id, $group_id) {

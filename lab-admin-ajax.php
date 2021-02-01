@@ -748,23 +748,8 @@ function lab_group_editGroup() {
   wp_send_json_success($wpdb->get_results($sql));
   //wp_send_json_success($sql);
 }
-function group_delete_substitutes() 
-{
-  $id = $_POST['id'];
-  global $wpdb;
-  wp_send_json_success($wpdb->delete($wpdb->prefix.'lab_group_substitutes', array('id' => $id)));
-}
 
-function group_add_substitutes()
-{
-  $userId = $_POST['userId'];
-  $groupId = $_POST['groupId'];
-  global $wpdb;
-  wp_send_json_success($wpdb->insert($wpdb->prefix.'lab_group_substitutes', array('group_id'=>$groupId,'substitute_id'=>$userId)));
-
-}
-
-function group_load_substitutes()
+/*function group_load_substitutes()
 {
   global $wpdb;
   $id = $_POST['id'];
@@ -775,7 +760,7 @@ function group_load_substitutes()
     $items[] = array(id=>$r->id, first_name=>$r->first_name, last_name=>$r->last_name, );
   }
   wp_send_json_success($items);
-}
+}*/
 
 function lab_admin_group_availableAc() {
   //Vérifie la disponibilité de l'acronyme
@@ -1320,7 +1305,7 @@ function lab_invitations_edit() {
     $hostGroupId = lab_group_get_user_group($fields['host_id']);
     $fields['host_group_id'] = $hostGroupId;
   }
-  if (get_current_user_id()==$fields['host_id'] || isset($fields['host_group_id']) && get_current_user_id()==(int)lab_admin_get_chief_byGroup($fields['host_group_id'])) {
+  if (get_current_user_id()==$fields['host_id'] || isset($fields['host_group_id']) && get_current_user_id()==(int)lab_admin_get_manager_byGroup_andType($fields['host_group_id'], 2)->user_id || get_current_user_id()==(int)lab_admin_get_manager_byGroup_andType($fields['host_group_id'], 1)->user_id){
     $guest = array (
       'first_name'=> $fields['guest_firstName'],
       'last_name'=> $fields['guest_lastName'],

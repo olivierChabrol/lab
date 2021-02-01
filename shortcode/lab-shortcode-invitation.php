@@ -48,7 +48,7 @@ function lab_mission($args) {
             //var_dump($guest);
             $host = new labUser($invitation->host_id);
             //Qui modifie, l'invitant ou le responsable ?
-            $isChief = isset($invitation->host_group_id) ? get_current_user_id()==(int)lab_admin_get_chief_byGroup($invitation->host_group_id): false;
+            $isChief = isset($invitation->host_group_id) ? get_current_user_id()==(int)lab_admin_get_manager_byGroup_andType($invitation->host_group_id, 2)->user_id: false;
             $isManager = false;
             foreach($budget_manager_ids as $bm) {
                 if (get_current_user_id() == $bm) {
@@ -68,7 +68,7 @@ function lab_mission($args) {
                 $invitationStr .= '<p><i>Vous pouvez modifier cette invitation en tant que responsable budget</i></p>';
                 $invitationStr .= '<p><i>Statut de l\'invitation : </i>'.lab_invitations_getStatusName($invitation->status).'</p>';
             } else {
-                var_dump($budget_manager_id->user_id);
+                var_dump((int)lab_admin_get_manager_byGroup_andType($invitation->host_group_id)->user_id, 2);
                 die('Vous ne pouvez pas modifier cette invitation');
             }
         }
@@ -389,7 +389,7 @@ function lab_invitation($args) {
             //var_dump($guest);
             $host = new labUser($invitation->host_id);
             //Qui modifie, l'invitant ou le responsable ?
-            $isChief = isset($invitation->host_group_id) ? get_current_user_id()==(int)lab_admin_get_chief_byGroup($invitation->host_group_id): false;
+            $isChief = isset($invitation->host_group_id) ? get_current_user_id()==(int)lab_admin_get_manager_byGroup_andType($invitation->host_group_id, 2): false;
             if ( $isChief ) {
                 $invitationStr .= '<p><i>Vous pouvez modifier cette invitation en tant que responsable de groupe</i></p>';
                 $invitationStr .= '<p><i>Statut de l\'invitation : </i>'.lab_invitations_getStatusName($invitation->status).'</p>';
@@ -886,7 +886,7 @@ function lab_invitations_mail($type=1, $guest, $invite) {
             break;
         case 10: //Envoi du mail au responsable du groupe une fois la demande complétée
             $subj = esc_html__("New invitation request to I2M",'lab');
-            $chief = new LabUser(lab_admin_get_chief_byGroup($invite['host_group_id']));
+            $chief = new LabUser(lab_admin_get_manager_byGroup_andType($invite['host_group_id'], 2));
             $dest = $chief->email;
             $date = date_create_from_format("Y-m-d H:i:s", $invite["completion_time"]);
             $content = "<p><i>".strftime('%A %d %B %G - %H:%M',$date->getTimestamp())."</i></p>";
