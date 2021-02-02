@@ -1255,11 +1255,18 @@ function lab_invitations_new() {
     'creation_time' => $timeStamp,
     'status' => 1
   );
-  if (isset($fields['guest_id'])) {
-    lab_invitations_editGuest($fields['guest_id'],$guest);
-    $invite['guest_id']=$fields['guest_id'];
-  } else {
-    $invite['guest_id']=lab_invitations_createGuest($guest);
+  $missionType = AdminParams::get_param($fields['mission_objective']);
+  if($missionType == 'Invitation') 
+  {
+    if (isset($fields['guest_id'])) {
+      lab_invitations_editGuest($fields['guest_id'],$guest);
+      $invite['guest_id']=$fields['guest_id'];
+    } else {
+      $invite['guest_id']=lab_invitations_createGuest($guest);
+    }
+  }
+  else {
+    $fields['guest_id'] = 0;
   }
   if(!isset($fields['host_group_id'])) {
     $hostGroupId = lab_group_get_user_group($fields['host_id']);
@@ -1270,7 +1277,7 @@ function lab_invitations_new() {
     $invite[$champ]=$fields[$champ];
   }
   $invite["charges"]=json_encode($fields["charges"]);
-  $missionId = lab_invitations_createInvite($invite);
+  $missionId = lab_mission_create($invite);
   if (!is_numeric ($missionId))
   {
     wp_send_json_error($missionId);
@@ -1305,7 +1312,15 @@ function lab_invitations_edit() {
     $hostGroupId = lab_group_get_user_group($fields['host_id']);
     $fields['host_group_id'] = $hostGroupId;
   }
-  if (get_current_user_id()==$fields['host_id'] || isset($fields['host_group_id']) && get_current_user_id()==(int)lab_admin_get_manager_byGroup_andType($fields['host_group_id'], 2)->user_id || get_current_user_id()==(int)lab_admin_get_manager_byGroup_andType($fields['host_group_id'], 1)->user_id){
+  $currentUserId = get_current_user_id();
+  $userGroupInfo = lab_admin_group_get_user_info($currentUserId, $groupId);
+  $isManager = count($userGroupInfo) > 0;
+  foreach($userGroupInfo as $gi) {
+    $isManager = $isManager && ($gi->manager_type = 2 || $gi->manager_type = 3);
+  }
+  if ( $currentUserId == $fields['host_id'] 
+      || isset($fields['host_group_id']) 
+      && $isManager) {
     $guest = array (
       'first_name'=> $fields['guest_firstName'],
       'last_name'=> $fields['guest_lastName'],

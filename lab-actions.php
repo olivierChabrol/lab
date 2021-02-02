@@ -184,6 +184,12 @@ if (is_admin()) {
     add_action( 'wp_ajax_lab_travel_delete', 'lab_travel_ajax_delete');
     add_action( 'wp_ajax_lab_travel_save', 'lab_travel_ajax_save');
     add_action( 'wp_ajax_lab_mission_delete', 'lab_mission_ajax_delete');
+    // Actions for guest action on th MISSION
+    add_action( 'wp_ajax_nopriv_lab_mission_load', 'lab_mission_ajax_load');
+    add_action( 'wp_ajax_nopriv_lab_travels_load', 'lab_travels_ajax_load');
+    add_action( 'wp_ajax_nopriv_lab_travel_delete', 'lab_travel_ajax_delete');
+    add_action( 'wp_ajax_nopriv_lab_travel_save', 'lab_travel_ajax_save');
+    add_action( 'wp_ajax_nopriv_lab_invitations_edit','lab_invitations_edit' );
 
     // LABO 1.5
     add_action( 'wp_ajax_lab_labo1.5_initial', 'lab_labo1dot5_initial');
@@ -204,4 +210,5 @@ else{
 
     add_action( 'wp_ajax_nopriv_lab_presence_save_ext', 'lab_admin_presence_save_ext_ajax');
     add_action( 'wp_ajax_nopriv_lab_save_transportation', 'lab_labo1dot5_save');
+
 }

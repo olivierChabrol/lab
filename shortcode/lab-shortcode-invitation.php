@@ -7,6 +7,7 @@
  */
 
 function lab_mission($args) {
+    
     $param = shortcode_atts(array(
         'hostpage' => 0 //0 pour invité, 1 pour invitant/responsable
         ),
@@ -19,21 +20,24 @@ function lab_mission($args) {
     $host = null;
     $invitationStr = "";
     $token='0';
+    $isGuest   = false;
     if ( isset($param['hostpage']) ) {
         $explode = explode("/",$url);
         $a = null;
         if (count($explode) > 1) {
             $a = explode("/",$url)[1];
         }
+        if (!isset($url) && empty($url)) {
+            $a = $args["token"];
+        }
         if ( ! isset($a)) { //Aucun token, donc l'invitant crée lui-même une nouvelle invitation
             $host = new labUser(get_current_user_id());
-            $invitationStr = "<h3>Pas de token</h3>";
         } else {//Token fournit, récupère les informations existantes
             $token = $a;
             //$travels = lab_mission_route_get($token);
 
-            $invitationStr = "<h3>token : ".$token."</h3>";
-            $invitation    = lab_invitations_getByToken($token);
+            //$invitationStr .= "<h3>token : ".$token."</h3>";
+            $invitation     = lab_invitations_getByToken($token);
             $invitationStr .= '<input type="hidden" id="lab_mission_token" value="'.$token.'"/>';
             $invitationStr .= '<input type="hidden" id="lab_mission_id" value="'.$invitation->id.'"/>';
             $budget_manager_ids = lab_group_budget_manager();
@@ -48,13 +52,20 @@ function lab_mission($args) {
             //var_dump($guest);
             $host = new labUser($invitation->host_id);
             //Qui modifie, l'invitant ou le responsable ?
-            $isChief = isset($invitation->host_group_id) ? get_current_user_id()==(int)lab_admin_get_manager_byGroup_andType($invitation->host_group_id, 2)->user_id: false;
+            $isChief = false;
+            if (isset($invitation->host_group_id)) {
+                $isChief = lab_admin_group_is_group_leader(get_current_user_id(), $invitation->host_group_id);
+            };
             $isManager = false;
+            $missionType = AdminParams::get_param($invitation->mission_objective);
             foreach($budget_manager_ids as $bm) {
                 if (get_current_user_id() == $bm) {
                     $isManager = true;
                 }
             }
+            $isGuest   = !$isChief && !$isManager && $missionType == "Invitation";
+
+            
             if ( $isChief ) {
                 $invitationStr .= '<p><i>Vous pouvez modifier cette invitation en tant que responsable de groupe</i></p>';
                 $invitationStr .= '<p><i>Statut de l\'invitation : </i>'.lab_invitations_getStatusName($invitation->status).'</p>';
@@ -67,8 +78,12 @@ function lab_mission($args) {
             else if ( $isManager ) {
                 $invitationStr .= '<p><i>Vous pouvez modifier cette invitation en tant que responsable budget</i></p>';
                 $invitationStr .= '<p><i>Statut de l\'invitation : </i>'.lab_invitations_getStatusName($invitation->status).'</p>';
-            } else {
-                //var_dump((int)lab_admin_get_manager_byGroup_andType($invitation->host_group_id)->user_id, 2);
+            } 
+            //possibly the guest
+            else if ($isGuest) {
+                $invitationStr .= '<p><i>Vous pouvez modifier cette invitation en tant qu\'invité</i></p>';
+            }
+            else {
                 die('Vous ne pouvez pas modifier cette invitation');
             }
         }
@@ -80,59 +95,69 @@ function lab_mission($args) {
         }
     }
     $newForm = (/*(!$param['hostpage'] ||*/ $token=='0') ? true : false ; //Le formulaire est-il nouveau ? Si non, remplit les champs avec les infos existantes
-    $invitationStr .= '<div id="invitationForm" hostForm='.$param['hostpage'].' token="'.(($param['hostpage'] && strlen($token)>1) ? $token : '').'" newForm='.$newForm.'>
+    $invitationStr = '<div id="missionForm" hostForm='.$param['hostpage'].' token="'.(($param['hostpage'] && strlen($token)>1) ? $token : '').'" newForm='.$newForm.'>
                       <h2>'.esc_html__("Form","lab").'<i class="fas fa-arrow-up"></i></h2>'.$invitationStr;
-    $invitationStr .= '
-        <!-- <form action="javascript:formAction()"> -->
-        <h3>'.esc_html__("Personnal informations","lab").'</h3>
+    if (!$isGuest) {
+        $invitationStr .= '
+            <!-- <form action="javascript:formAction()"> -->
+            <h3>'.esc_html__("Personnal informations","lab").'</h3>
 
-        <div class="lab_invite_field">
-            <input type="text" required id="lab_hostname" name="lab_hostname" host_id="'.($host==null ? '' : $host->id.'" value="'.$host->first_name.' '.$host->last_name).'">
-        </div>';
-    $groups = lab_admin_group_by_user($host->id);
-    if (count($groups) == 1) {
-        $invitationStr .= '<input type="hidden" id="lab_group_name" value="'.$groups[0]->id.'">';
+            <div class="lab_invite_field">
+                <input type="text" required id="lab_hostname" name="lab_hostname" host_id="'.($host==null ? '' : $host->id.'" value="'.$host->first_name.' '.$host->last_name).'">
+            </div>';
+        $groups = lab_admin_group_by_user($host->id);
+        if (count($groups) == 1) {
+            $invitationStr .= '<input type="hidden" id="lab_group_name" value="'.$groups[0]->id.'">';
+        }
+        else {
+            $invitationStr .= '<div class="lab_invite_field"><label for="lab_group_name">'.esc_html__("Group","lab").'</label>';
+            $invitationStr .= '<select id="lab_group_name">';
+            $selectedGroup = !$newForm ? $invitation->host_group_id: '';
+            foreach($groups as $group) {
+                $select = "";
+                if ($selectedGroup) {
+                    if ($selectedGroup == $group->id) {
+                        $select = " selected";
+                    }
+                }
+                else {
+                    if($group->favorite == 1) {
+                        $select = " selected";
+                    }
+                }
+                $invitationStr .= '<option value="'.$group->id.'"'.$select.'>'.$group->name.'</option>';
+            }
+            $invitationStr .= '</select></div>';
+
+        }
+        $invitationStr .= '
+            <div class="lab_invite_field">
+                <label for="lab_mission">'.esc_html__("Reason for the mission","lab").'<span class="lab_form_required_star"/></label>
+                <select id="lab_mission" name="lab_mission">';
+        foreach(AdminParams::get_params_fromId(AdminParams::PARAMS_MISSION_ID) as $missionparam)
+        {
+            $selectedGroup = "";
+            if(isset($invitation)) {
+                $selectedGroup = ($invitation->mission_objective==$missionparam->value)?'selected="selected"':"";
+            } 
+            else {
+                $selectedGroup = ($missionparam->value == "Mission" ? 'selected="selected"':"");
+            }
+            $invitationStr .= '<option value="'.$missionparam->id.'" '.$selectedGroup.'>'.esc_html__($missionparam->value,"lab")                                                                                                                                                                                      .'</option>';
+        }
+        $invitationStr .= '</select>
+                <input style="display:none" type="text" id="lab_mission_other" value="'.($newForm ? '' : $invitation->mission_objective).'">
+                <p style="display:none" id="lab_mission_other_desc">'.esc_html__("Specify the nature of your mission here.","lab").'</p>
+            </div>';
     }
     else {
-        $invitationStr .= '<div class="lab_invite_field"><label for="lab_group_name">'.esc_html__("Group","lab").'</label>';
-        $invitationStr .= '<select id="lab_group_name">';
-        $selectedGroup = !$newForm ? $invitation->host_group_id: '';
-        foreach($groups as $group) {
-            $select = "";
-            if ($selectedGroup) {
-                if ($selectedGroup == $group->id) {
-                    $select = " selected";
-                }
-            }
-            else {
-                if($group->favorite == 1) {
-                    $select = " selected";
-                }
-            }
-            $invitationStr .= '<option value="'.$group->id.'"'.$select.'>'.$group->name.'</option>';
-        }
-        $invitationStr .= '</select></div>';
-
+        $invitationStr .= '<h3>'.esc_html__("Invited by","lab").' : '.$host->first_name.' '.$host->last_name.'</h3><br>'.$host->email."<br>";
+        $invitationStr .= '<div class="lab_invite_field">';
+        $invitationStr .= '</div>';
+        $invitationStr .= '<input type="hidden" id="lab_mission" value="'.($newForm ? '' : $invitation->mission_objective).'">';
     }
+    
     $invitationStr .= '
-        <div class="lab_invite_field">
-            <label for="lab_mission">'.esc_html__("Reason for the mission","lab").'<span class="lab_form_required_star">
-            <select id="lab_mission" name="lab_mission">';
-    foreach(AdminParams::get_params_fromId(AdminParams::PARAMS_MISSION_ID) as $missionparam)
-    {
-        $selectedGroup = "";
-        if(isset($invitation)) {
-            $selectedGroup = ($invitation->mission_objective==$missionparam->value)?'selected="selected"':"";
-        } 
-        else {
-            $selectedGroup = ($missionparam->value == "Mission" ? 'selected="selected"':"");
-        }
-        $invitationStr .= '<option value="'.$missionparam->id.'" '.$selectedGroup.'>'.esc_html__($missionparam->value,"lab")                                                                                                                                                                                      .'</option>';
-    }
-    $invitationStr .= '</select>
-            <input style="display:none" type="text" id="lab_mission_other" value="'.($newForm ? '' : $invitation->mission_objective).'">
-            <p style="display:none" id="lab_mission_other_desc">'.esc_html__("Specify the nature of your mission here.","lab").'</p>
-        </div>
         <div id="inviteDiv">
         <hr>
         <h3>'.esc_html__("Guest Informations","lab").'</h3>
@@ -249,14 +274,14 @@ function lab_mission($args) {
             </div>
         </div>
         <hr>';
-        if ( $newForm ) {// Affiche le champ pour ajouter un commentaire lors de la création
+        //if ( $newForm ) {// Affiche le champ pour ajouter un commentaire lors de la création
             $invitationStr .= 
             '<div class="lab_invite_field">
                 <label for="lab_form_comment">'.esc_html__("Comments",'lab').'</label>
                 <textarea row="1" id="lab_form_comment" name="lab_form_comment"></textarea>
                 <p>'.esc_html__("(par exemple vos numéros de carte de fidélité à utiliser lors de la réservation de vos voyages + la date d'expiration si nécessaire)",'lab').'</p>
         </div>';
-        }
+        //}
         if ( $param["hostpage"] ) {//Affiche les champs supplémentaires, pour les responsables/invitants.
             $invitationStr .=
 
@@ -329,12 +354,11 @@ function lab_mission($args) {
         }
         if (!$newForm) {
             $currentUser = lab_admin_userMetaDatas_get(get_current_user_id());
-            $invitationStr .= '
-        <div id="lab_invitationComments">
-            <h2>Commentaires <i class="fas fa-arrow-up"></i></h2>
-                '.lab_inviteComments($token).'
-                '.lab_newComments($currentUser,$token).'
-        </div><!-- end div lab_invitationComments -->';
+            $invitationStr .= '<div id="lab_invitationComments"><h2>Commentaires <i class="fas fa-arrow-up"></i></h2>'.lab_inviteComments($token);
+            if(!$isGuest) {
+                $invitationStr .= lab_newComments($currentUser,$token);
+            }
+            $invitationStr .= '</div><!-- end div lab_invitationComments -->';
         }
     return $invitationStr;
 }
@@ -405,7 +429,7 @@ function lab_invitation($args) {
         $host = isset(explode("/",$url)[1]) ? new labUser(lab_profile_getID(explode("/",$url)[1])) : 0 ;
     }
     $newForm = (!$param['hostpage'] || $token=='0') ? 1 : 0 ; //Le formulaire est-il nouveau ? Si non, remplit les champs avec les infos existantes
-    $invitationStr = '<div id="invitationForm" hostForm='.$param['hostpage'].' token="'.(($param['hostpage'] && strlen($token)>1) ? $token : '').'" newForm='.$newForm.'>
+    $invitationStr = '<div id="missionForm" hostForm='.$param['hostpage'].' token="'.(($param['hostpage'] && strlen($token)>1) ? $token : '').'" newForm='.$newForm.'>
                       <h2>'.esc_html__("Form","lab").'<i class="fas fa-arrow-up"></i></h2>'.$invitationStr;
     $invitationStr .= '
         <form action="javascript:formAction()">
@@ -635,12 +659,11 @@ function lab_invitation($args) {
         }
         if (!$newForm) {
             $currentUser = lab_admin_userMetaDatas_get(get_current_user_id());
-            $invitationStr .= '
-        <div id="lab_invitationComments">
-            <h2>Commentaires <i class="fas fa-arrow-up"></i></h2>
-                '.lab_inviteComments($token).'
-                '.lab_newComments($currentUser,$token).'
-        </div><!-- end div lab_invitationComments -->';
+            $invitationStr .= '<div id="lab_invitationComments"><h2>Commentaires <i class="fas fa-arrow-up"></i></h2>'.lab_inviteComments($token);
+            if(!$isGuest) {
+                $invitationStr .= lab_newComments($currentUser,$token);
+            }
+            $invitationStr .= '</div><!-- end div lab_invitationComments -->';
         }
     return $invitationStr;
 }

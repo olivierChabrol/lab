@@ -7,7 +7,7 @@
         $str .= "&$k=$v";
       }
     }
-    return get_admin_url()."admin.php?page=lab_admin_budget_mission".$str;
+    return get_admin_url()."admin.php?page=lab_admin_mission_manager".$str;
   }
 
   function lab_admin_mission_manager() {
@@ -19,6 +19,10 @@
     if (isset($_GET['id'])) {
       $id = $_GET['id'];
     }
+    $token = "";
+    if (isset($_GET['token'])) {
+      $token = $_GET['token'];
+    }
 
     global $wp;
     $current_url = home_url( add_query_arg( array(), $wp->request ) );
@@ -28,8 +32,8 @@
   <h1 class="wp-heading-inline"><?php esc_html_e('Mission management','lab'); ?></h1>
   <hr class="wp-header-end">
   <h2 class="nav-tab-wrapper">
-    <!-- <a id="lab_keyring_default_tab_pointer" style="position: relative" class="nav-tab <?php echo $active_tab == 'entry' ? 'nav-tab-active' : ''; ?>"   href="<?php echo lab_admin_budget_info_url(array('tab' => 'entry')); ?>"><?php esc_html_e('New order','lab'); ?></a> -->
-    <a id="lab_keyring_default_tab_pointer" style="position: relative" class="nav-tab <?php echo $active_tab == 'historic' ? 'nav-tab-active' : ''; ?>" href="<?php echo lab_admin_budget_info_url(array('tab' => 'historic','year'=>date("Y"))); ?>"><?php esc_html_e('Historic','lab'); ?></a>
+    <a id="lab_keyring_default_tab_pointer" style="position: relative" class="nav-tab <?php echo $active_tab == 'historic' ? 'nav-tab-active' : ''; ?>" href="<?php echo lab_admin_budget_mission_url(array('tab' => 'historic','year'=>date("Y"))); ?>"><?php esc_html_e('Historic','lab'); ?></a>
+    <a id="lab_keyring_default_tab_pointer" style="position: relative" class="nav-tab <?php echo $active_tab == 'entry' ? 'nav-tab-active' : ''; ?>"   href="<?php echo lab_admin_budget_mission_url(array('tab' => 'entry')); ?>"><?php esc_html_e('Mission','lab'); ?></a>
   </h2>
 
 <?php
@@ -43,12 +47,19 @@
       }
       
       if ($active_tab == 'entry') {
-        lab_budget_info_tab_new_order();
+        lab_mission_tab_mission($token);
       } else if ($active_tab == 'historic') {
         lab_mission_tab_historic();
       } else {
         lab_budget_info_tab_new_order();
       }
+  }
+
+  function lab_mission_tab_mission($token) {
+    $args = array();
+    $args["hostpage"] = "0";
+    $args["token"]    = $token;
+    echo lab_mission($args);
   }
 
   function lab_budget_mission_tab_new_order()

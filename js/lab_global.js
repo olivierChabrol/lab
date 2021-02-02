@@ -39,6 +39,7 @@ function callAjax(data, successMessage, callBackSuccess = null, errorMessage, ca
   {
     displayLoadingGif();
   }
+  //console.log("[callAjax] url : " + LAB.ajaxurl);
   jQuery.post(LAB.ajaxurl, data, function(response) {
     if (response.success) {
       if (candisplayLoadingGif) 
