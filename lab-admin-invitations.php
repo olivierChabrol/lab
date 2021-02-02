@@ -115,9 +115,9 @@ function lab_invitations_getByToken($token) {
   return $res[0];
 }
 
-function lab_group_budget_manager($groupId) {
+function lab_group_budget_manager() {
   global $wpdb;
-  $sql = "SELECT user_id FROM `".$wpdb->prefix."lab_group_manager` WHERE group_id='".$groupId."' AND manager_type = 1;";
+  $sql = "SELECT user_id FROM `".$wpdb->prefix."lab_group_manager` WHERE manager_type = 1;";
   $res = $wpdb->get_results($sql);
   $tab = array();
   foreach($res as $r) {
