@@ -1163,13 +1163,15 @@ function invitation_submit(callback) {
     if ($("#lab_email").attr('guest_id').length) {
       fields['guest_id'] = $("#lab_email").attr('guest_id');
     }
-    if ($("#missionForm").attr("hostForm")==1) {//La version invitant est affichée 
-      fields['research_contract']= $("#lab_research_contrat").val().replace(regex,"”").replace(/\'/g,"’");
+    if ($("#lab_mission_fund_origin").length) {
+      fields['funding_source'] = $("#lab_mission_fund_origin").val();
       fields['host_group_id'] = $("#lab_group_name").val();
-      fields['funding_source'] = $("#lab_credit").val()=="other" ? $("#lab_credit_other").val() : $("#lab_credit").val();
+    }
+    if ($("#missionForm").attr("hostForm")==1) {//La version invitant est affichée 
+      //fields['research_contract']= $("#lab_research_contrat").val().replace(regex,"”").replace(/\'/g,"’");
       fields['estimated_cost'] = $("#lab_estimated_cost").val();
       fields['maximum_cost'] = $("#lab_maximum_cost").val();
-      fields['search_contract']= $("#lab_research_contrat").val().replace(regex,"”").replace(/\'/g,"’");
+      //fields['search_contract']= $("#lab_research_contrat").val().replace(regex,"”").replace(/\'/g,"’");
     }
     if ($("#missionForm").attr("newForm")==1) {//On crée une nouvelle invitation
       fields['comment'] = $("#lab_form_comment").val().replace(regex,"”").replace(/\'/g,"’");

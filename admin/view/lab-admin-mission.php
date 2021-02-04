@@ -57,7 +57,7 @@
 
   function lab_mission_tab_mission($token) {
     $args = array();
-    $args["hostpage"] = "0";
+    $args["hostpage"] = "1";
     $args["token"]    = $token;
     echo lab_mission($args);
   }

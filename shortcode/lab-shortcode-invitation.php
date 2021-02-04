@@ -149,6 +149,13 @@ function lab_mission($args) {
                 <input style="display:none" type="text" id="lab_mission_other" value="'.($newForm ? '' : $invitation->mission_objective).'">
                 <p style="display:none" id="lab_mission_other_desc">'.esc_html__("Specify the nature of your mission here.","lab").'</p>
             </div>';
+
+        $invitationStr .= '<div class="lab_invite_field">
+        <label for="lab_mission_fund_origin">'.esc_html__("Funds","lab").'<span class="lab_form_required_star"/></label>';
+
+        $invitationStr .= lab_html_select_str("lab_mission_fund_origin", "lab_mission_fund_origin", "", "lab_admin_budget_funds", null, array("value"=>"0","label"=>"None"), ($newForm ? '' : $invitation->funding_source));
+
+        $invitationStr .= '</div>';
     }
     else {
         $invitationStr .= '<h3>'.esc_html__("Invited by","lab").' : '.$host->first_name.' '.$host->last_name.'</h3><br>'.$host->email."<br>";
@@ -163,35 +170,35 @@ function lab_mission($args) {
         <h3>'.esc_html__("Guest Informations","lab").'</h3>
         <div class="lab_invite_field">
             <label for="lab_email">'.esc_html__("Email","lab").'<span class="lab_form_required_star"> *</span></label>
-            <input type="email" required id="lab_email" guest_id="" name="lab_email"value="'.(!$newForm ? $guest->email : '').'">
+            <input type="email" required id="lab_email" guest_id="" name="lab_email"value="'.getGuestValue($newForm, $guest,'email').'">
         </div>
         <div class="lab_invite_row" id="lab_fullname">
             <div class="lab_invite_field">
                 <label for="lab_firstname">'.esc_html__("First name","lab").'<span class="lab_form_required_star"> *</span></label>
-                <input type="text" required id="lab_firstname" name="lab_firstname" guest_id="'.(!$newForm ? $guest->id : '').'" value="'.(!$newForm ? $guest->first_name : '').'">
+                <input type="text" required id="lab_firstname" name="lab_firstname" guest_id="'.getGuestValue($newForm, $guest,'id').'" value="'.getGuestValue($newForm, $guest,'first_name').'">
             </div>
             <div class="lab_invite_field">
                 <label for="lab_lastname">'.esc_html__("Last name","lab").'<span class="lab_form_required_star"> *</span></label>
-                <input type="text" required id="lab_lastname" name="lab_lastname" value="'.(!$newForm ? $guest->last_name : '').'">
+                <input type="text" required id="lab_lastname" name="lab_lastname" value="'.getGuestValue($newForm, $guest,'last_name').'">
             </div>
         </div>
         <div id="lab_phone_country">
             <div class="lab_invite_field">
                 <label for="lab_phone">'.esc_html__("Phone Number","lab").'</label>
-                <input type="tel" id="lab_phone" phoneval="'.(!$newForm ? $guest->phone : '').'">
+                <input type="tel" id="lab_phone" phoneval="'.getGuestValue($newForm, $guest,'phone').'">
             </div>
             <div class="lab_invite_field">
                 <label for="guest_language">'.esc_html__("Language","lab").'<span class="lab_form_required_star"> *</span></label>
-                <input type="text" required id="guest_language" name="guest_language" countryCode="'.(!$newForm ? $guest->language : '').'">
+                <input type="text" required id="guest_language" name="guest_language" countryCode="'.getGuestValue($newForm, $guest,'language').'">
             </div>
             <div class="lab_invite_row" id="lab_residence">
                 <div class="lab_invite_field">
                     <label for="residence_city">'.esc_html__("City of residence","lab").'</label>
-                    <input type="text" required id="residence_city" name="residence_city" value="'.(!$newForm ? $guest->residence_city : '').'">
+                    <input type="text" required id="residence_city" name="residence_city" value="'.getGuestValue($newForm, $guest,'residence_city').'">
                 </div>
                 <div class="lab_invite_field">
                     <label for="residence_country">'.esc_html__("Country of residence","lab").'</label>
-                    <input type="text" required id="residence_country" name="residence_country" countryCode="'.(!$newForm ? $guest->residence_country : '').'">
+                    <input type="text" required id="residence_country" name="residence_country" countryCode="'.getGuestValue($newForm, $guest,'residence_country').'">
                 </div>
             </div>
         </div>
@@ -436,7 +443,7 @@ function lab_invitation($args) {
         <h3>'.esc_html__("Informations personnelles","lab").'</h3>
         <div class="lab_invite_field">
             <label for="lab_email">'.esc_html__("Email","lab").'<span class="lab_form_required_star"> *</span></label>
-            <input type="email" required id="lab_email" guest_id="" name="lab_email"value="'.(!$newForm ? $guest->email : '').'">
+            <input type="email" required id="lab_email" guest_id="" name="lab_email"value="'.getGuestValue($newForm, $guest,'email').'">
         </div>
         <div class="lab_invite_row" id="lab_fullname">
             <div class="lab_invite_field">
@@ -666,6 +673,16 @@ function lab_invitation($args) {
             $invitationStr .= '</div><!-- end div lab_invitationComments -->';
         }
     return $invitationStr;
+}
+function getGuestValue($newForm, $guest, $field) {
+    if ($newForm || $guest == null) {
+        return "";
+    }
+    else if ($guest != null)
+    {
+        return $guest->$field;
+    }
+
 }
 function lab_invitations_filters() {
     $out = '<div id="lab_filter">
