@@ -40,7 +40,7 @@ function lab_mission($args) {
             $invitation     = lab_invitations_getByToken($token);
             $invitationStr .= '<input type="hidden" id="lab_mission_token" value="'.$token.'"/>';
             $invitationStr .= '<input type="hidden" id="lab_mission_id" value="'.$invitation->id.'"/>';
-            $budget_manager_ids = lab_group_budget_manager($invitation->host_group_id);
+            $budget_manager_ids = lab_group_budget_manager();
             //$travels       = 
             //var_dump($invitation);
             
@@ -285,7 +285,7 @@ function lab_mission($args) {
         if ( $param["hostpage"] ) {//Affiche les champs supplémentaires, pour les responsables/invitants.
             $invitationStr .=
 
-            '<h3>'.esc_html__("Inviting fields : ","lab").'</h3>
+            '<h3>'.esc_html__("Host fields : ","lab").'</h3>
             <div class="lab_invite_row">
                 <div class="lab_invite_field">
                     <label for="lab_group_name">'.esc_html__("Group name","lab").'<span class="lab_form_required_star"> *</span></label>
@@ -469,7 +469,7 @@ function lab_invitation($args) {
             </div>
         </div>
         <div class="lab_invite_field">
-            <label for="lab_hostname">'.esc_html__("Inviting name","lab").'<span class="lab_form_required_star"> *</span></label>
+            <label for="lab_hostname">'.esc_html__("Host name","lab").'<span class="lab_form_required_star"> *</span></label>
             <input type="text" required id="lab_hostname" name="lab_hostname" host_id="'.($host==0 ? '' : $host->id.'" value="'.$host->first_name.' '.$host->last_name).'">
         </div>
         <div class="lab_invite_field">
@@ -504,7 +504,7 @@ function lab_invitation($args) {
         </div>
         <hr>
         <h3>'.esc_html__("Mean of transport","lab").'</h3>
-        <div id="lab_mean_travel" class="lab_invite_row">
+        <div id="lab_mean_travel" class="AAlab_invite_row">
             <div class="lab_invite_field">
                 <label for="lab_transport_to">'.esc_html__("To the institute","lab").'</label>
                 <select id="lab_transport_to" name="lab_transport_to" value="'.(!$newForm ? $invitation->travel_mean_to : '').'">
@@ -590,7 +590,7 @@ function lab_invitation($args) {
         if ( $param["hostpage"] ) {//Affiche les champs supplémentaires, pour les responsables/invitants.
             $invitationStr .=
 
-            '<h3>'.esc_html__("Inviting fields : ","lab").'</h3>
+            '<h3>'.esc_html__("Host fields : ","lab").'</h3>
             <div class="lab_invite_row">
                 <div class="lab_invite_field">
                     <label for="lab_group_name">'.esc_html__("Group name","lab").'<span class="lab_form_required_star"> *</span></label>
@@ -764,7 +764,7 @@ function lab_invitations_interface($args) {
                                 <tr id="lab_list_header">'
                                     .($param['view']=='admin' ? '<th class="lab_column_name" name="host_group_id">'.esc_html__('Group','lab').'<i class="fas fa-caret-up"></i></th>' : '').
                                     '<th name="guest_id">'.esc_html__("Guest","lab").'</i></th>
-                                    '.($param['view']!='host' ? '<th class="lab_column_name" name="host_id">'.esc_html__("Inviting","lab").'<i class="fas fa-caret-up"></i></th>' : '').
+                                    '.($param['view']!='host' ? '<th class="lab_column_name" name="host_id">'.esc_html__("Host","lab").'<i class="fas fa-caret-up"></i></th>' : '').
                                     '<th class="lab_column_name" name="mission_objective">'.esc_html__("Reason for the mission","lab").'<i class="fas fa-caret-up"></i></th>
                                     <th class="lab_column_name" sel="true" name="start_date" order="asc">'.esc_html__("Arrival date","lab").'<i class="fas fa-caret-up"></i></th>
                                     <th class="lab_column_name" name="end_date">'.esc_html__("Departure date","lab").'<i class="fas fa-caret-up"></i></th>
@@ -871,7 +871,7 @@ function lab_invitations_mail($type=1, $guest, $invite) {
             $date = date_create_from_format("Y-m-d H:i:s", $invite["creation_time"]);
             $content = "<p><i>".strftime('%A %d %B %G - %H:%M',$date->getTimestamp())."</i></p>";
             //$content .= "<p>".get_locale()."</p>";
-            $content .= "<p>".esc_html__("Votre demande d'invitation a bien été prise en compte",'lab').".<br>".esc_html__("It has been forwarded to your inviting",'lab').".</p>";
+            $content .= "<p>".esc_html__("Votre demande d'invitation a bien été prise en compte",'lab').".<br>".esc_html__("It has been forwarded to your host",'lab').".</p>";
             $content .= lab_InviteForm('',$guest,$invite);
             // unload_textdomain("lab");
             // add_filter('locale','lab_invitations_switchLocale',10);
@@ -1018,7 +1018,7 @@ function lab_InviteForm($who,$guest,$invite) {
             </ul>
             <p><u>'.esc_html__("Context of the invitation",'lab').'</u>
             <ul>
-                <li><i>'.esc_html__("Inviting name",'lab').' : </i>'.$host->first_name.' '.$host->last_name.'</li>
+                <li><i>'.esc_html__("Host name",'lab').' : </i>'.$host->first_name.' '.$host->last_name.'</li>
                 <li><i>'.esc_html__("Mission objective",'lab').' : </i>'.(is_numeric($invite['mission_objective']) ? AdminParams::get_param($invite['mission_objective']) : $invite['mission_objective']).'</li>
                 <li><i>'.esc_html__("Need a hostel",'lab').' : </i>'.($invite['needs_hostel'] == 1 ? esc_html__('oui','lab') : esc_html__('non','lab')).'</li>
                 <li><i>'.esc_html__("Mean of transport",'lab').' :  </i>
