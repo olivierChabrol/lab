@@ -1286,12 +1286,25 @@ function lab_invitations_new() {
   lab_mission_save($missionId, $travels);
   
   if (strlen($fields['comment'])>0) {
-    lab_invitations_addComment(array(
-      'content'=> $fields['comment'],
-      'timestamp'=> $timeStamp,
-      'author'=>$fields['guest_firstName'].' '.$fields['guest_lastName'],
-      'invite_id'=>$missionId
-    )); 
+    if(isset($fields['guest_firstname']) && isset($fields['guest_lastname'])) {
+      lab_invitations_addComment(array(
+        'content'=> $fields['comment'],
+        'timestamp'=> $timeStamp,
+        'author_id'=> lab_invitations_getGuest_byName($fields['guest_firstname'],$fields['guest_lastname']),
+        'author_type'=> 1,
+        'invite_id'=>$missionId
+      )); 
+    }
+    else {
+      lab_invitations_addComment(array(
+        'content'=> $fields['comment'],
+        'timestamp'=> $timeStamp,
+        'author_id'=> get_current_user_id(),
+        'author_type'=> 2,
+        'invite_id'=>$missionId
+      )); 
+    }
+    
   }
   $html = '<p>'.esc_html__("Your request has been taken into account",'lab').'</p>';
   if($fields['mission_objective'] != 251) {
@@ -1312,15 +1325,22 @@ function lab_invitations_edit() {
     $hostGroupId = lab_group_get_user_group($fields['host_id']);
     $fields['host_group_id'] = $hostGroupId;
   }
+  //wp_send_json_success( $fields['host_group_id']);
   $currentUserId = get_current_user_id();
-  $userGroupInfo = lab_admin_group_get_user_info($currentUserId, $groupId);
+  $userGroupInfo = lab_admin_group_get_user_info($currentUserId, $fields['host_group_id']);
+  $userType = lab_admin_get_manager_type($currentUserId);
+  $canModify = false;
   $isManager = count($userGroupInfo) > 0;
-  foreach($userGroupInfo as $gi) {
-    $isManager = $isManager && ($gi->manager_type = 2 || $gi->manager_type = 3);
+  if(!$isManager) {
+    $canModify = $userType[0]->manager_type == 1;
   }
-  if ( $currentUserId == $fields['host_id'] 
-      || isset($fields['host_group_id']) 
-      && $isManager) {
+  else {
+    foreach($userGroupInfo as $gi) {
+      $canModify = $isManager && $gi->manager_type == 2;
+    }
+  }
+  //wp_send_json_success($userType[0]->manager_type);
+  if ( $currentUserId == $fields['host_id'] || $canModify) {
     $guest = array (
       'first_name'=> $fields['guest_firstName'],
       'last_name'=> $fields['guest_lastName'],
@@ -1361,7 +1381,8 @@ function lab_invitations_complete() {
   lab_invitations_addComment(array(
     'content'=> "¤Invitation complétée",
     'timestamp'=> $timeStamp,
-    'author'=>'System',
+    'author_id'=> 0,
+    'author_type'=> 0,
     'invite_id'=>$invite->id
   )); 
   wp_send_json_success($html);
@@ -1373,7 +1394,8 @@ function lab_invitations_validate() {
   lab_invitations_addComment(array(
     'content'=> "¤Invitation validée",
     'timestamp'=> $timeStamp,
-    'author'=>'System',
+    'author_id'=> 0,
+    'author_type'=> 0,
     'invite_id'=>lab_invitations_getByToken($token)->id
   )); 
   lab_invitations_editInvitation($token,array('status'=>20));
@@ -1388,7 +1410,8 @@ function lab_invitations_assume() {
   lab_invitations_addComment(array(
     'content'=> "¤Invitation prise en charge par ".$user['first_name']." ".$user['last_name'],
     'timestamp'=> $timeStamp,
-    'author'=>'System',
+    'author_id'=> 0,
+    'author_type'=> 0,
     'invite_id'=>lab_invitations_getByToken($token)->id
   )); 
   lab_invitations_editInvitation($token,array('status'=>30));
@@ -1397,12 +1420,14 @@ function lab_invitations_assume() {
 
 function lab_invitation_newComment() {
   $id = lab_invitations_getByToken($_POST['token'])->id;
+  $author_type = is_null(lab_invitations_getByToken($_POST['token'])->guest_id) ? 2 : 1;
   date_default_timezone_set("Europe/Paris");
   $timeStamp=date("Y-m-d H:i:s",time());
   lab_invitations_addComment(array(
     'content'=> $_POST['content'],
     'timestamp'=> $timeStamp,
-    'author'=>$_POST['author'],
+    'author_id'=>$_POST['author_id'],
+    'author_type'=> $author_type,
     'invite_id'=>$id
   )); 
   $html = lab_inviteComments($_POST['token']);

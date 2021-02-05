@@ -49,7 +49,7 @@ function lab_mission($args) {
                 return esc_html__("Invalid invitation token",'lab');
             }
             $guest = lab_invitations_getGuest($invitation->guest_id);
-            //var_dump($guest);
+            var_dump($guest);
             $host = new labUser($invitation->host_id);
             //Qui modifie, l'invitant ou le responsable ?
             $isChief = false;
@@ -67,24 +67,24 @@ function lab_mission($args) {
 
             
             if ( $isChief ) {
-                $invitationStr .= '<p><i>Vous pouvez modifier cette invitation en tant que responsable de groupe</i></p>';
-                $invitationStr .= '<p><i>Statut de l\'invitation : </i>'.lab_invitations_getStatusName($invitation->status).'</p>';
+                $invitationStr .= '<p><i>'.esc_html__('You can edit this invitation as a group leader','lab').'</i></p>';
+                $invitationStr .= '<p><i>'.esc_html__('Invitation status : ','lab').'</i>'.lab_invitations_getStatusName($invitation->status).'</p>';
                 
             } else if ( get_current_user_id()==$invitation->host_id ) { 
-                $invitationStr .= '<p><i>Vous pouvez modifier cette invitation en tant qu\'invitant</i></p>';
-                $invitationStr .= '<p><i>Statut de l\'invitation : </i>'.lab_invitations_getStatusName($invitation->status).'</p>';
+                $invitationStr .= '<p><i>'.esc_html__('You can edit this invitation as a host','lab').'</i></p>';
+                $invitationStr .= '<p><i>'.esc_html__('Invitation status : ','lab').'</i>'.lab_invitations_getStatusName($invitation->status).'</p>';
             
             } 
             else if ( $isManager ) {
-                $invitationStr .= '<p><i>Vous pouvez modifier cette invitation en tant que responsable budget</i></p>';
-                $invitationStr .= '<p><i>Statut de l\'invitation : </i>'.lab_invitations_getStatusName($invitation->status).'</p>';
+                $invitationStr .= '<p><i>'.esc_html__('You can edit this invitation as a budget manager','lab').'</i></p>';
+                $invitationStr .= '<p><i>'.esc_html__('Invitation status : ','lab').'</i>'.lab_invitations_getStatusName($invitation->status).'</p>';
             } 
             //possibly the guest
             else if ($isGuest) {
-                $invitationStr .= '<p><i>Vous pouvez modifier cette invitation en tant qu\'invité</i></p>';
+                $invitationStr .= '<p><i>'.esc_html__('You can edit this invitation as a guest','lab').'/i></p>';
             }
             else {
-                die('Vous ne pouvez pas modifier cette invitation');
+                die(esc_html__('You cannot edit this invitation','lab'));
             }
         }
     } else {
@@ -103,6 +103,7 @@ function lab_mission($args) {
             <h3>'.esc_html__("Personnal informations","lab").'</h3>
 
             <div class="lab_invite_field">
+                <label for="lab_hostname">'.esc_html__("Host name","lab").'</label>
                 <input type="text" required id="lab_hostname" name="lab_hostname" host_id="'.($host==null ? '' : $host->id.'" value="'.$host->first_name.' '.$host->last_name).'">
             </div>';
         $groups = lab_admin_group_by_user($host->id);
@@ -274,14 +275,14 @@ function lab_mission($args) {
             </div>
         </div>
         <hr>';
-        //if ( $newForm ) {// Affiche le champ pour ajouter un commentaire lors de la création
+        if ( $newForm ) {// Affiche le champ pour ajouter un commentaire lors de la création
             $invitationStr .= 
             '<div class="lab_invite_field">
                 <label for="lab_form_comment">'.esc_html__("Comments",'lab').'</label>
                 <textarea row="1" id="lab_form_comment" name="lab_form_comment"></textarea>
-                <p>'.esc_html__("(par exemple vos numéros de carte de fidélité à utiliser lors de la réservation de vos voyages + la date d'expiration si nécessaire)",'lab').'</p>
+                <p>'.esc_html__("(e.g. your loyalty card numbers to be used when booking your trips + the expiry date if required)",'lab').'</p>
         </div>';
-        //}
+        }
         if ( $param["hostpage"] ) {//Affiche les champs supplémentaires, pour les responsables/invitants.
             $invitationStr .=
 
@@ -354,7 +355,7 @@ function lab_mission($args) {
         }
         if (!$newForm) {
             $currentUser = lab_admin_userMetaDatas_get(get_current_user_id());
-            $invitationStr .= '<div id="lab_invitationComments"><h2>Commentaires <i class="fas fa-arrow-up"></i></h2>'.lab_inviteComments($token);
+            $invitationStr .= '<div id="lab_invitationComments"><h2>'.esc_html__("Comments","lab").' <i class="fas fa-arrow-up"></i></h2>'.lab_inviteComments($token);
             if(!$isGuest) {
                 $invitationStr .= lab_newComments($currentUser,$token);
             }
@@ -407,7 +408,7 @@ function lab_invitation($args) {
             //var_dump($invitation);
             $charges = json_decode($invitation->charges);
             if (!isset($invitation)) {
-                return esc_html__("Token d'invitation invalide",'lab');
+                return esc_html__("Invalid invitation token",'lab');
             }
             $guest = lab_invitations_getGuest($invitation->guest_id);
             //var_dump($guest);
@@ -415,14 +416,14 @@ function lab_invitation($args) {
             //Qui modifie, l'invitant ou le responsable ?
             $isChief = isset($invitation->host_group_id) ? get_current_user_id()==(int)lab_admin_get_manager_byGroup_andType($invitation->host_group_id, 2): false;
             if ( $isChief ) {
-                $invitationStr .= '<p><i>Vous pouvez modifier cette invitation en tant que responsable de groupe</i></p>';
-                $invitationStr .= '<p><i>Statut de l\'invitation : </i>'.lab_invitations_getStatusName($invitation->status).'</p>';
+                $invitationStr .= '<p><i>'.esc_html__('You can edit this invitation as a group leader','lab').'</i></p>';
+                $invitationStr .= '<p><i>'.esc_html__('Invitation status : ','lab').'</i>'.lab_invitations_getStatusName($invitation->status).'</p>';
                 
             } else if ( get_current_user_id()==$invitation->host_id ) { 
-                $invitationStr .= '<p><i>Vous pouvez modifier cette invitation en tant qu\'invitant</i></p>';
-                $invitationStr .= '<p><i>Statut de l\'invitation : </i>'.lab_invitations_getStatusName($invitation->status).'</p>';
+                $invitationStr .= '<p><i>'.esc_html__('You can edit this invitation as a host','lab').'</i></p>';
+                $invitationStr .= '<p><i>'.esc_html__('Invitation status : ','lab').'</i>'.lab_invitations_getStatusName($invitation->status).'</p>';
             } else {
-                die('Vous ne pouvez pas modifier cette invitation');
+                die('You cannot edit this invitation');
             }
         }
     } else {
@@ -433,7 +434,7 @@ function lab_invitation($args) {
                       <h2>'.esc_html__("Form","lab").'<i class="fas fa-arrow-up"></i></h2>'.$invitationStr;
     $invitationStr .= '
         <form action="javascript:formAction()">
-        <h3>'.esc_html__("Informations personnelles","lab").'</h3>
+        <h3>'.esc_html__("Personnal informations","lab").'</h3>
         <div class="lab_invite_field">
             <label for="lab_email">'.esc_html__("Email","lab").'<span class="lab_form_required_star"> *</span></label>
             <input type="email" required id="lab_email" guest_id="" name="lab_email"value="'.(!$newForm ? $guest->email : '').'">
@@ -1044,15 +1045,23 @@ function lab_inviteComments($token) {
     if (count($comments)> 0) {
         foreach ( $comments as $comment) {
             $date = date_create_from_format("Y-m-d H:i:s", $comment->timestamp);
+            $author = "";
+            if($comment->author_type == 0) {
+                $author = "System";
+            } else if($comment->author_type == 1) {
+                $author = lab_invitations_getGuest($comment->author_id)->first_name . " " . lab_invitations_getGuest($comment->author_id)->last_name;
+            } else {
+                $author = lab_admin_userMetaDatas_get($comment->author_id)["first_name"] . " " . lab_admin_userMetaDatas_get($comment->author_id)["last_name"];
+            }
             $out .= "<div class='lab_comment_box'>
-                        <p class='lab_comment_author".($comment->author=="System" ? ' auto' : '')."'>$comment->author</p>
+                        <p class='lab_comment_author".($author=="System" ? ' auto' : '')."'>$author</p>
                         <p class='lab_comment".(substr($comment->content,0,2)=="¤" ? ' auto' : '' )."'><i>"
                         .strftime('%d %B %G - %H:%M',$date->getTimestamp())."</i><br>"
                         .(substr($comment->content,0,2)=="¤" ? substr($comment->content,2) : $comment->content )."</p>
                     </div>";
         }
     } else {
-        $out .= '<p><i>Aucun commentaire pour cette invitation</i></p>';
+        $out .= '<p><i>'.esc_html("No comments for this invitation","lab").'</i></p>';
     }
     $out.='</div>';
     return $out;
@@ -1061,10 +1070,10 @@ function lab_newComments($currentUser, $token)
 {
     $html =     '<div token="'.$token.'" id="lab_invitation_newComment">
                     <h5>'.esc_html__("New comment",'lab').'</h5>
-                    <form action="javascript:lab_submitComment()">
-                        <label><i>'.esc_html__("Publish as",'lab')."</i> : <span id='lab_comment_name'>".$currentUser['first_name'].' '.$currentUser['last_name'].'</span></label>
+                    <form id="form_new_comment">
+                        <label><i>'.esc_html__("Publish as",'lab')."</i> : <span id='lab_comment_name' user_id='".get_current_user_id()."'>".$currentUser['first_name'].' '.$currentUser['last_name'].'</span></label>
                         <textarea row="1" cols="50" id="lab_comment" placeholder="Comment content..."></textarea>
-                        <input type="submit" value="'.esc_html__("Send comment","lab").'">
+                        <input id="button_add_comment" type="button" value="'.esc_html__("Send comment","lab").'">
                     </form>
                 </div>';
     return $html;

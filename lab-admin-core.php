@@ -626,7 +626,8 @@ function lab_mission_delete_travel($id, $missionId) {
     lab_invitations_addComment(array(
         'content' => "¤Trajet supprimé par " . $userMeta->first_name . " " . $userMeta->last_name,
         'timestamp'=> date("Y-m-d H:i:s",strtotime("+1 hour")),
-        'author' => 'System',
+        'author_id' => 0,
+        'author_type' => 0,
         'invite_id' => $missionId
     ));
 }
@@ -649,7 +650,8 @@ function lab_mission_update_travel($travelId, $travelFields){
     lab_invitations_addComment(array(
         'content' => $msg." par " . $userMeta->first_name . " " . $userMeta->last_name,
         'timestamp'=> date("Y-m-d H:i:s",strtotime("+1 hour")),
-        'author' => 'System',
+        'author_id' => 0,
+        'author_type' => 0,
         'invite_id' => $travelFields["mission_id"]
     ));
     return $return;
@@ -673,6 +675,22 @@ function lab_admin_mission_create_table() {
         `estimated_cost` float NOT NULL,
         `real_cost float` NOT NULL,
         `reference varchar(255)` COLLATE utf8_bin NOT NULL,
+        PRIMARY KEY (id)
+    ) ENGINE=InnoDB";
+    return $wpdb->get_results($sql);
+}
+
+/***********************************************************************************************************
+ * NOTIFICATION
+ ***********************************************************************************************************/
+
+function lab_admin_notification_create_table() {
+    global $wpdb;
+    $sql = "CREATE TABLE IF NOT EXISTS `".$wpdb->prefix."lab_notifs` (
+        `id` bigint NOT NULL AUTO_INCREMENT,
+        `user_id` bigint NOT NULL,
+        `invite_id` bigint NOT NULL,
+        `comment_id` bigint NOT NULL,
         PRIMARY KEY (id)
     ) ENGINE=InnoDB";
     return $wpdb->get_results($sql);
@@ -1625,9 +1643,15 @@ function lab_admin_get_groups_byChief($chief_id) {
     return $wpdb->get_results($sql);
 }
 
-function lab_admin_group_get_user_info($userId, $groupId) {
+function lab_admin_group_get_user_info($userId, $group_id) {
     global $wpdb;
-    $sql = "SELECT * FROM `".$wpdb->prefix."lab_group_manager` WHERE `user_id`=".$userId." AND  `group_id`=".$group_id;
+    $sql = "SELECT * FROM `".$wpdb->prefix."lab_group_manager` WHERE `user_id`=".$userId." AND  `group_id`=".$group_id.";";
+    return $wpdb->get_results($sql);
+}
+
+function lab_admin_get_manager_type($userId) {
+    global $wpdb;
+    $sql = "SELECT manager_type FROM `".$wpdb->prefix."lab_group_manager` WHERE `user_id`=".$userId.";";
     return $wpdb->get_results($sql);
 }
 
