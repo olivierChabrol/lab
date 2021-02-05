@@ -1357,24 +1357,33 @@ function lab_invitations_edit() {
       'needs_hostel'=>$fields['needs_hostel']=='true' ? 1 : 0,
       'completion_time' => $timeStamp
     );
-    foreach (['host_group_id', 'estimated_cost', 'maximum_cost', 'host_id','mission_objective','start_date','end_date',/*'travel_mean_to','travel_mean_from',*/'funding_source','research_contract'/*,'forward_start_station','return_end_station','forward_travel_reference','return_travel_reference'*/] as $champ) {
+    foreach (['host_group_id', 'estimated_cost', 'maximum_cost', 'host_id','mission_objective','hostel_cost','funding_source','research_contract'] as $champ) {
       $invite[$champ]=$fields[$champ];
     }
     $invite["charges"]=json_encode($fields["charges"]);
+    //wp_send_json_error($invite);
+    
     lab_invitations_editInvitation($fields['token'],$invite);
     $html = "<p>".esc_html__("Your invitation has been modified",'lab')."<br>à $timeStamp</p>";
     wp_send_json_success($html);
+    //*/
   } else {
     wp_send_json_error('Vous n\'avez par la permission de modifier cette invitation');
   }
 }
+
+
+
 function lab_invitations_complete() {
   $token = $_POST['token'];
-  lab_invitations_editInvitation($token,array('status'=>10));
+  $paramWaitingGroupLeader = AdminParams::get_param_by_slug('mswgl');
+  lab_invitations_editInvitation($token,array('status'=>$paramWaitingGroupLeader->id));
   $html = 'Un mail récapitulatif a été envoyé au responsable du groupe pour validation';
   $invite = lab_invitations_getByToken($token);
   $Iarray = json_decode(json_encode($invite), true);
-  $Garray = json_decode(json_encode(lab_invitations_getGuest($invite->guest_id)), true);
+  if ($invite->guest_id != null) {
+    $Garray = json_decode(json_encode(lab_invitations_getGuest($invite->guest_id)), true);
+  }
   $html .= lab_invitations_mail(10,$Garray,$Iarray);
   date_default_timezone_set("Europe/Paris");
   $timeStamp=date("Y-m-d H:i:s",time());

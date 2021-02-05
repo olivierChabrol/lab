@@ -156,6 +156,9 @@ function lab_invitations_guest_email_exist($email) {
   }
 }
 function lab_invitations_getGuest($id) {
+  if ($id == null) {
+    return null;
+  }
   global $wpdb;
   $sql = "SELECT * FROM `".$wpdb->prefix."lab_guests` WHERE id='".$id."';";
   $res = $wpdb->get_results($sql);

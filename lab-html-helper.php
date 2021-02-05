@@ -18,7 +18,7 @@ function lab_html_select($htmlId, $htmlName, $htmlClass, $fctCallback, $fctArgs 
 
 
 function lab_html_select_str($htmlId, $htmlName, $htmlClass, $fctCallback, $fctArgs = null, $defaultValue = null, $selectedValue = null, $idValues = null, $attrMapping = null) {
-    $output ='<select id="'.$htmlId.'" name="'.$htmlName.'" class="'.$htmlClass.'">';
+    $output ='<select id="'.$htmlId.'" name="'.$htmlName.'" class="'.$htmlClass.'" df="'.$selectedValue.'">';
     $results = null;
     if ($fctArgs == null) {
         $results = $fctCallback();

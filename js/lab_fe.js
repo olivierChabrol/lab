@@ -1046,10 +1046,10 @@ function LABLoadInvitation() {
       };
     }
     //Boutons de validation
-    $("#lab_send_group_chief").click(function() {
+    $("#lab_mission_send_group_leader").click(function() {
       if ($("#missionForm").prop('submited')==null) {
-        if (document.querySelector("#missionForm form").checkValidity()) {
-          console.log("[$(#lab_send_group_chief).click]");
+        if (true) { //document.querySelector("#missionForm form").checkValidity()) {
+          console.log("[$(#lab_mission_send_group_leader).click]");
           invitation_submit(function () {
             data = {
               'action': 'lab_invitations_complete',
@@ -1083,7 +1083,7 @@ function LABLoadInvitation() {
     });
     $("#lab_send_manager").click(function() {
       if ($("#missionForm").prop('submited')==null) {
-        if (document.querySelector("#missionForm form").checkValidity()) {
+        if (true) { //document.querySelector("#missionForm form").checkValidity()) {
           console.log("[$(#lab_send_manager).click]");
           invitation_submit(function() {
             data = {
@@ -1118,7 +1118,7 @@ function LABLoadInvitation() {
 console.log("$(\"#missionForm\").length :");
 console.log($("#missionForm").length);
 
-if ($("#missionForm").length !=null) {
+if ($("#missionForm").length > 0) {
   LABLoadInvitation();
 }
 function formAction() {
@@ -1157,19 +1157,20 @@ function invitation_submit(callback) {
       'host_id': $("#lab_hostname").attr('host_id'),      
       'mission_objective': $("#lab_mission").val()=="other" ? $("#lab_mission_other").val().replace(regex,"”").replace(/\'/g,"’") : $("#lab_mission").val(),
       'needs_hostel' : $("#lab_hostel").prop('checked'),
+      'hostel_cost' : $("#lab_mission_hostel_cost").val(),
       'charges': charges,
       'travels': travelsFields,
     }
     if ($("#lab_email").attr('guest_id').length) {
       fields['guest_id'] = $("#lab_email").attr('guest_id');
     }
-    if ($("#missionForm").attr("hostForm")==1) {//La version invitant est affichée 
-      fields['research_contract']= $("#lab_research_contrat").val().replace(regex,"”").replace(/\'/g,"’");
+    if ($("#lab_mission_fund_origin").length) {
+      fields['funding_source'] = $("#lab_mission_fund_origin").val();
       fields['host_group_id'] = $("#lab_group_name").val();
-      fields['funding_source'] = $("#lab_credit").val()=="other" ? $("#lab_credit_other").val() : $("#lab_credit").val();
+    }
+    if ($("#missionForm").attr("hostForm")==1) {//La version invitant est affichée 
       fields['estimated_cost'] = $("#lab_estimated_cost").val();
       fields['maximum_cost'] = $("#lab_maximum_cost").val();
-      fields['search_contract']= $("#lab_research_contrat").val().replace(regex,"”").replace(/\'/g,"’");
     }
     if ($("#missionForm").attr("newForm")==1) {//On crée une nouvelle invitation
       fields['comment'] = $("#lab_form_comment").val().replace(regex,"”").replace(/\'/g,"’");
@@ -1190,12 +1191,17 @@ function invitation_submit(callback) {
         'action': 'lab_invitations_edit',
         'fields': fields
       };
+      /*
       jQuery.post(LAB.ajaxurl, data, function(response) {
         if (response.success) {
           jQuery("#missionForm").html(response.data);
           callback();
         }
+        else {
+        }
       });
+      //*/
+      callAjax(data, null, callback, null, null);
     }
 }
 jQuery("#button_add_comment").click(function () {

@@ -873,10 +873,15 @@ function lab_admin_param_save($paramType, $paramName, $color = null, $paramId = 
                 //return ["success"=>false, "data"=>"LA1 new ID : " . $newId ];
 
                 $oldParam = lab_admin_param_get_by_id($newId);
-                
-                $cloneId  = lab_admin_param_clone($oldParam);
-                lab_admin_param_change_id($oldParam->id, $oldParam->type_param, $cloneId);
-                $wpdb->update($wpdb->prefix.'lab_params', array("type_param"=>AdminParams::PARAMS_ID, "value"=>$paramName,"slug"=>$paramSlug, "color"=>$color), array("id"=>$newId));
+                if ($oldParam != null)
+                {
+                    $cloneId  = lab_admin_param_clone($oldParam);
+                    lab_admin_param_change_id($oldParam->id, $oldParam->type_param, $cloneId);
+                    $wpdb->update($wpdb->prefix.'lab_params', array("type_param"=>AdminParams::PARAMS_ID, "value"=>$paramName,"slug"=>$paramSlug, "color"=>$color), array("id"=>$newId));
+                }
+                else {
+                    $wpdb->insert($wpdb->prefix.'lab_params', array("id"=>$newId, "type_param"=>AdminParams::PARAMS_ID, "value"=>$paramName,"slug"=>$paramSlug, "color"=>$color));
+                }
                 return $cloneId;
             }
             else {

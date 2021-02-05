@@ -26,12 +26,18 @@ class AdminParams {
     public const PARAMS_BUDGET_FUNDS = 24;
     public const PARAMS_CONTRACT_TYPE = 25;
     public const PARAMS_MEAN_OF_TRANSPORT = 26;
+    public const PARAMS_MISSION_STATUS = 27;
     
 
     public static function get_params_fromId($id) {
         global $wpdb;
         $sql = "SELECT value,id FROM `".$wpdb->prefix."lab_params` WHERE type_param=".$id." ORDER BY value;";
         return $results = $wpdb->get_results($sql);
+    }
+
+    public static function lab_admin_get_params_mission_status()
+    {
+        return AdminParams::get_params_fromId(AdminParams::PARAMS_MISSION_STATUS);
     }
 
     public static function lab_admin_get_params_keyStates()
@@ -102,10 +108,11 @@ class AdminParams {
         global $wpdb;
         $sql = "SELECT * FROM `".$wpdb->prefix."lab_params` WHERE slug='".$slug."'";
         $results = $wpdb->get_results($sql);
-        return $results;
+        if (count($results) == 1) {
+            return $results[0];
+        }
+        return null;
     }
-
-
 
     public static function get_param_all($id) {
         global $wpdb;
@@ -139,6 +146,9 @@ class AdminParams {
     }*/
 };
 
+function lab_admin_get_params_missionStatus() {
+    return AdminParams::lab_admin_get_params_mission_status();
+}
 function lab_admin_get_params_groupTypes() {
     return AdminParams::lab_admin_get_params_groupTypes();
 }
