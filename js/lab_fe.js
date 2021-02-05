@@ -1118,7 +1118,7 @@ function LABLoadInvitation() {
 console.log("$(\"#missionForm\").length :");
 console.log($("#missionForm").length);
 
-if ($("#missionForm").length !=null) {
+if ($("#missionForm").length > 0) {
   LABLoadInvitation();
 }
 function formAction() {
@@ -1157,6 +1157,7 @@ function invitation_submit(callback) {
       'host_id': $("#lab_hostname").attr('host_id'),      
       'mission_objective': $("#lab_mission").val()=="other" ? $("#lab_mission_other").val().replace(regex,"”").replace(/\'/g,"’") : $("#lab_mission").val(),
       'needs_hostel' : $("#lab_hostel").prop('checked'),
+      'hostel_cost' : $("#lab_mission_hostel_cost").val(),
       'charges': charges,
       'travels': travelsFields,
     }

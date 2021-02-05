@@ -94,6 +94,7 @@ function lab_mission_load($missionToken, $filters = null, $groupIds = null) {
     // load user info
     $userIds = array();
     $params = array();
+    $paramsToGet = ["mission_objective", "status"];
     foreach($results as $r) {
         if(!isset($userIds[$r->host_id]) && $r->host_id != 0) {
             $userIds[$r->host_id] = lab_admin_usermeta_names($r->host_id);
@@ -109,17 +110,13 @@ function lab_mission_load($missionToken, $filters = null, $groupIds = null) {
         $r->group = $userIds[$r->host_id]->group;
         $r->manager_id = $userIds[$r->host_id]->manager_id;
 
-        if (!isset($params[$r->mission_objective])) {
-            $params[$r->mission_objective] = AdminParams::get_full_param($r->mission_objective);
+        # get all params associated to the mission see @$paramsToGet
+        foreach($paramsToGet as $ptg) {
+            if (!isset($params[$r->$ptg])) {
+                $params[$r->$ptg] = AdminParams::get_full_param($r->$ptg);
+            }
+
         }
-        /*
-        if(!isset($userIds[$r->info_manager_id]) && $r->info_manager_id != 0) {
-            $userIds[$r->info_manager_id] = lab_admin_usermeta_names($r->info_manager_id);
-        }
-        if(!isset($userIds[$r->budget_manager_id]) && $r->budget_manager_id != 0) {
-            $userIds[$r->budget_manager_id] = lab_admin_usermeta_names($r->budget_manager_id);
-        }
-        //*/
     }
 
 

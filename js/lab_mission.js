@@ -91,6 +91,7 @@ jQuery(function($){
     let tr = $('<tr />');
     //console.log(mission);
     tr.append(createTd(mission.id));
+    tr.append(createTdParam(mission.status, data));
     tr.append(createTd(mission.creation_time));
     tr.append(createTdUser(mission.host_id, data));
     tr.append(createTd(mission.site));
