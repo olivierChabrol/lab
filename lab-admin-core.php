@@ -1632,7 +1632,7 @@ function lab_admin_get_groups_byChief($chief_id) {
 
 function lab_admin_group_get_user_info($userId, $groupId) {
     global $wpdb;
-    $sql = "SELECT * FROM `".$wpdb->prefix."lab_group_manager` WHERE `user_id`=".$userId." AND  `group_id`=".$group_id;
+    $sql = "SELECT * FROM `".$wpdb->prefix."lab_group_manager` WHERE `user_id`=".$userId." AND  `group_id`=".$groupId;
     return $wpdb->get_results($sql);
 }
 

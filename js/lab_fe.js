@@ -1046,10 +1046,10 @@ function LABLoadInvitation() {
       };
     }
     //Boutons de validation
-    $("#lab_send_group_chief").click(function() {
+    $("#lab_mission_send_group_leader").click(function() {
       if ($("#missionForm").prop('submited')==null) {
-        if (document.querySelector("#missionForm form").checkValidity()) {
-          console.log("[$(#lab_send_group_chief).click]");
+        if (true) { //document.querySelector("#missionForm form").checkValidity()) {
+          console.log("[$(#lab_mission_send_group_leader).click]");
           invitation_submit(function () {
             data = {
               'action': 'lab_invitations_complete',
@@ -1083,7 +1083,7 @@ function LABLoadInvitation() {
     });
     $("#lab_send_manager").click(function() {
       if ($("#missionForm").prop('submited')==null) {
-        if (document.querySelector("#missionForm form").checkValidity()) {
+        if (true) { //document.querySelector("#missionForm form").checkValidity()) {
           console.log("[$(#lab_send_manager).click]");
           invitation_submit(function() {
             data = {
@@ -1169,10 +1169,8 @@ function invitation_submit(callback) {
       fields['host_group_id'] = $("#lab_group_name").val();
     }
     if ($("#missionForm").attr("hostForm")==1) {//La version invitant est affichée 
-      //fields['research_contract']= $("#lab_research_contrat").val().replace(regex,"”").replace(/\'/g,"’");
       fields['estimated_cost'] = $("#lab_estimated_cost").val();
       fields['maximum_cost'] = $("#lab_maximum_cost").val();
-      //fields['search_contract']= $("#lab_research_contrat").val().replace(regex,"”").replace(/\'/g,"’");
     }
     if ($("#missionForm").attr("newForm")==1) {//On crée une nouvelle invitation
       fields['comment'] = $("#lab_form_comment").val().replace(regex,"”").replace(/\'/g,"’");
@@ -1193,12 +1191,17 @@ function invitation_submit(callback) {
         'action': 'lab_invitations_edit',
         'fields': fields
       };
+      /*
       jQuery.post(LAB.ajaxurl, data, function(response) {
         if (response.success) {
           jQuery("#missionForm").html(response.data);
           callback();
         }
+        else {
+        }
       });
+      //*/
+      callAjax(data, null, callback, null, null);
     }
 }
 function lab_submitComment() {

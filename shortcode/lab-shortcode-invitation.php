@@ -94,7 +94,7 @@ function lab_mission($args) {
             $host = new labUser(get_current_user_id());
         }
     }
-    $newForm = (/*(!$param['hostpage'] ||*/ $token=='0') ? true : false ; //Le formulaire est-il nouveau ? Si non, remplit les champs avec les infos existantes
+    $newForm = $token=='0'; //Le formulaire est-il nouveau ? Si non, remplit les champs avec les infos existantes
     $invitationStr = '<div id="missionForm" hostForm='.$param['hostpage'].' token="'.(($param['hostpage'] && strlen($token)>1) ? $token : '').'" newForm='.$newForm.'>
                       <h2>'.esc_html__("Form","lab").'<i class="fas fa-arrow-up"></i></h2>'.$invitationStr;
     if (!$isGuest) {
@@ -215,7 +215,6 @@ function lab_mission($args) {
                 <label for="lab_mission_hostel_cost">'.esc_html__("Estimated cost","lab").'</label>
                 <input type="text" id="lab_mission_hostel_cost" value="'.(!$newForm?$invitation->hostel_cost:0).'">&euro;</td>
             </div>
-            </div>
         </div>
         <hr>
         <h3>'.esc_html__("Journeys","lab").'</h3>
@@ -324,7 +323,7 @@ function lab_mission($args) {
                 <input '.($invitation->status>1 ? 'disabled' : '').' type="submit" value="'.esc_html__("Save","lab").'">
                 </div>'.($invitation->status>1 ? '<i>'.esc_html__("This invitation is already in the next step, to modify it, you must resend it (via the button below)",'lab').'</i>' : '').
                 '<!-- </form>--></div>
-                <div class="lab_invite_row lab_send_group_chief"><p class="lab_invite_field">Cliquez ici pour compléter la demande et la transmettre au responsable du groupe :</p><button id="lab_send_group_chief">'.esc_html__("Send to responsible",'lab').'</button></div>';
+                <div class="lab_invite_row lab_send_group_chief"><p class="lab_invite_field">Cliquez ici pour compléter la demande et la transmettre au responsable du groupe :</p><button id="lab_mission_send_group_leader">'.esc_html__("Send to responsible",'lab').'</button></div>';
             }
         }
         else {
