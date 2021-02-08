@@ -1204,23 +1204,24 @@ function invitation_submit(callback) {
       callAjax(data, null, callback, null, null);
     }
 }
-function lab_submitComment() {
+jQuery("#button_add_comment").click(function () {
   regex=/\"/g;
   jQuery(function ($) {
     data = {
       'action': 'lab_invitation_newComment',
       'token': $("#lab_invitation_newComment").attr("token"),
-      'author' : $("#lab_comment_name").text(),
+      'author_id' : $("#lab_comment_name").attr("user_id"),
       'content' : $("#lab_comment").val().replace(regex,"”").replace(/\'/g,"’")
     }
     jQuery.post(LAB.ajaxurl, data, function(response) {
       if (response.success) {
+        console.log(response.data);
         $("#lab_invitation_oldComments").html(response.data);
         $("#lab_comment").val('');
       }
     });
   });
-}
+});
 
 /************ Liste des invitation ***********************/ 
 function LABLoadInviteList() {

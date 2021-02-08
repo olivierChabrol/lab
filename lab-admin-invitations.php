@@ -45,7 +45,8 @@ function lab_invitations_createTables() {
   $sql = "CREATE TABLE IF NOT EXISTS `".$wpdb->prefix."lab_invite_comments` (
     `id` BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     `invite_id` BIGINT UNSIGNED,
-    `author` varchar(40),
+    `author_id` BIGINT UNSIGNED,
+    `author_type` tinyint,
     `timestamp` datetime,
     `content` text,
     FOREIGN KEY (`invite_id`) REFERENCES `".$wpdb->prefix."lab_invitations`(`id`));";
@@ -163,6 +164,12 @@ function lab_invitations_getGuest($id) {
   $res = $wpdb->get_results($sql);
   return $res[0];
 }
+function lab_invitations_getGuest_byName($firstname, $lastname) {
+  global $wpdb;
+  $sql = "SELECT * FROM `".$wpdb->prefix."lab_guests` WHERE first_name='".$firstname."' AND last_name='".$lastname."';";
+  $res = $wpdb->get_results($sql);
+  return $res[0];
+}
 function lab_invitations_getByGroup($group_id,$params=array("sortBy"=>"start_date","order"=>"DESC","page"=>"1","value"=>"5","status"=>"(1,10,20,30)","year"=>"all")) {
   $page_nb = ($params['page'] - 1) * $params['value'];
   global $wpdb;
@@ -240,7 +247,38 @@ function lab_invitations_getComments($id) {
 }
 function lab_invitations_addComment($fields) {
   global $wpdb;
-  return $wpdb->insert($wpdb->prefix."lab_invite_comments",
-  $fields);
+  $sql = $wpdb->insert($wpdb->prefix."lab_invite_comments", $fields);
+  
+  $concerned = lab_invitations_getConcernedId($fields["invite_id"]);
+  $tab_ids = array();
+  foreach($concerned as $c) {
+    $host_id = $c->host_id;
+    $guest_id = $c->guest_id;
+    $manager_id = $c->manager_id;
+    $tab_ids[$host_id] = "";
+    if(!is_null($guest_id)) {
+      $tab_ids[$guest_id] = "";
+    }
+    $tab_ids[$manager_id] = "";
+  }
+  foreach($tab_ids as $key=>$value){
+    if($fields["author_id"] != $key) {
+      lab_invitations_comment_notif($key, $fields["invite_id"], $wpdb->insert_id);
+    }
+  }
+  return $tab_ids;
+}
+function lab_invitations_comment_notif($user_id, $invite_id, $comment_id) {
+  global $wpdb;
+  return $wpdb->insert($wpdb->prefix."lab_mission_comment_notifs", array("user_id"=>$user_id, "invite_id"=>$invite_id, "comment_id"=>$comment_id));
+}
+function lab_invitations_getConcernedId($invite_id) {
+  global $wpdb;
+  $sql = "SELECT inv.host_id, inv.guest_id, m.user_id AS `manager_id`
+          FROM ".$wpdb->prefix."lab_invitations AS inv
+          JOIN wp_lab_group_manager AS m ON  m.group_id = inv.host_group_id
+          WHERE inv.id = ".$invite_id.";";
+  $res = $wpdb->get_results($sql);
+  return $res;
 }
 ?>
