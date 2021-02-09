@@ -342,97 +342,11 @@ function lab_mission($args) {
         }
     return $invitationStr;
 }
-function lab_invitation($args) {
-    $param = shortcode_atts(array(
-        'hostpage' => 0 //0 pour invité, 1 pour invitant/responsable
-        ),
-        $args, 
-        "lab-invitation"
-    );
-    global $wp;
-    $invitationStr ='';
-    $url = $wp->request;
-    if ( $param['hostpage'] ) {
-        if ( ! isset(explode("/",$url)[1])) { //Aucun token, donc l'invitant crée lui-même une nouvelle invitation
-            $token='0';
-            $host = new labUser(get_current_user_id());
-        } else {//Token fournit, récupère les informations existantes
-            $token = explode("/",$url)[1];
-            $invitation=lab_invitations_getByToken($token);
-            //var_dump($invitation);
-            $charges = json_decode($invitation->charges);
-            if (!isset($invitation)) {
-                return esc_html__("Invalid invitation token",'lab');
-            }
-            $guest = lab_invitations_getGuest($invitation->guest_id);
-            //var_dump($guest);
-            $host = new labUser($invitation->host_id);
-            //Qui modifie, l'invitant ou le responsable ?
-            $isChief = isset($invitation->host_group_id) ? get_current_user_id()==(int)lab_admin_get_manager_byGroup_andType($invitation->host_group_id, 2): false;
-            if ( $isChief ) {
-                $invitationStr .= '<p><i>'.esc_html__('You can edit this invitation as a group leader','lab').'</i></p>';
-                $invitationStr .= '<p><i>'.esc_html__('Invitation status : ','lab').'</i>'.lab_invitations_getStatusName($invitation->status).'</p>';
-                
-            } else if ( get_current_user_id()==$invitation->host_id ) { 
-                $invitationStr .= '<p><i>'.esc_html__('You can edit this invitation as a host','lab').'</i></p>';
-                $invitationStr .= '<p><i>'.esc_html__('Invitation status : ','lab').'</i>'.lab_invitations_getStatusName($invitation->status).'</p>';
-            } else {
-                die('You cannot edit this invitation');
-            }
-        }
-    } else {
-        $host = isset(explode("/",$url)[1]) ? new labUser(lab_profile_getID(explode("/",$url)[1])) : 0 ;
+function getGuestValue($newForm, $guest, $field) {
+    if ($newForm || $guest == null) {
+        return "";
     }
-    $newForm = (!$param['hostpage'] || $token=='0') ? 1 : 0 ; //Le formulaire est-il nouveau ? Si non, remplit les champs avec les infos existantes
-    $invitationStr = '<div id="missionForm" hostForm='.$param['hostpage'].' token="'.(($param['hostpage'] && strlen($token)>1) ? $token : '').'" newForm='.$newForm.'>
-                      <h2>'.esc_html__("Form","lab").'<i class="fas fa-arrow-up"></i></h2>'.$invitationStr;
-    $invitationStr .= '
-        <form action="javascript:formAction()">
-        <h3>'.esc_html__("Personnal informations","lab").'</h3>
-        <div class="lab_invite_field">
-            <label for="lab_email">'.esc_html__("Email","lab").'<span class="lab_form_required_star"> *</span></label>
-            <input type="email" required id="lab_email" guest_id="" name="lab_email"value="'.(!$newForm ? $guest->email : '').'">
-        </div>
-        <div class="lab_invite_row" id="lab_fullname">
-            <div class="lab_invite_field">
-                <label for="lab_firstname">'.esc_html__("First name","lab").'<span class="lab_form_required_star"> *</span></label>
-                <input type="text" required id="lab_firstname" name="lab_firstname" guest_id="'.(!$newForm ? $guest->id : '').'" value="'.(!$newForm ? $guest->first_name : '').'">
-            </div>
-            <div class="lab_invite_field">
-                <label for="lab_lastname">'.esc_html__("Last name","lab").'<span class="lab_form_required_star"> *</span></label>
-                <input type="text" required id="lab_lastname" name="lab_lastname" value="'.(!$newForm ? $guest->last_name : '').'">
-            </div>
-        </div>
-        <div id="lab_phone_country">
-            <div class="lab_invite_field">
-                <label for="lab_phone">'.esc_html__("Phone number","lab").'</label>
-                <input type="tel" id="lab_phone" phoneval="'.(!$newForm ? $guest->phone : '').'">
-            </div>
-            <div class="lab_invite_field">
-                <label for="guest_language">'.esc_html__("Language","lab").'<span class="lab_form_required_star"> *</span></label>
-                <input type="text" required id="guest_language" name="guest_language" countryCode="'.(!$newForm ? $guest->language : '').'">
-            </div>
-            <div class="lab_invite_row" id="lab_residence">
-                <div class="lab_invite_field">
-                    <label for="residence_city">'.esc_html__("City of residence","lab").'</label>
-                    <input type="text" required id="residence_city" name="residence_city" value="'.(!$newForm ? $guest->residence_city : '').'">
-                </div>
-                <div class="lab_invite_field">
-                    <label for="residence_country">'.esc_html__("Country of residence","lab").'</label>
-                    <input type="text" required id="residence_country" name="residence_country" countryCode="'.(!$newForm ? $guest->residence_country : '').'">
-                </div>
-            </div>
-        </div>
-        <div class="lab_invite_field">
-            <label for="lab_hostname">'.esc_html__("Host name","lab").'<span class="lab_form_required_star"> *</span></label>
-            <input type="text" required id="lab_hostname" name="lab_hostname" host_id="'.($host==0 ? '' : $host->id.'" value="'.$host->first_name.' '.$host->last_name).'">
-        </div>
-        <div class="lab_invite_field">
-            <label for="lab_mission">'.esc_html__("Reason for the mission","lab").'</label>
-            <select id="lab_mission" name="lab_mission">
-                <option value="">'.esc_html__("Select an option","lab").'</option>';
-
-    foreach(AdminParams::get_params_fromId(AdminParams::PARAMS_MISSION_ID) as $missionparam)
+    else if ($guest != null)
     {
         return $guest->$field;
     }

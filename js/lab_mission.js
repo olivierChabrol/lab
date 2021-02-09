@@ -61,6 +61,7 @@ jQuery(function($){
       'groupIds': $leaderGroupIds,
     };
     console.log(data);
+    //resetNotifsNumber(data.id);
     callAjax(data, null, displayMission, null, null);
 
   }
@@ -98,11 +99,11 @@ jQuery(function($){
     tr.append(createTd(mission.group));
     tr.append(createTdUser(mission.manager_id, data));
     tr.append(createTdParam(mission.mission_objective, data));
-    tr.append(createEditButton(mission.id, mission.token));
+    tr.append(createEditButton(mission.id, mission.token, data));
     return tr;
   }
 
-  function createEditButton(id, token) {
+  function createEditButton(id, token, data) {
     /*
     let url = window.location.href;
     url = window.location.origin
@@ -115,7 +116,11 @@ jQuery(function($){
       url = (""+url).substr(0, url.indexOf("&"));
     }
     url  += "&tab=entry&token="+token;
-    
+    let notif = data.notifs[id][0].notifs_number;
+
+    if(notif != 0) {
+      var aNotifs = $('<a />').attr("class", "page-title-action lab_mission_notifs").html(notif);
+    }
     //console.log("->"+url);
     let aEdit = $('<a />').attr("class", "page-title-action lab_keyring_key_edit").attr("href",url).attr("missionId", id).html("edit");
     //let aEdit = $('<a />').attr("class", "page-title-action lab_keyring_key_edit").attr("missionId", id).html("edit");
@@ -125,7 +130,14 @@ jQuery(function($){
       displayModalDeleteMission($(this).attr("missionId"));
     });
 
-    return $('<td />').attr("class", "lab_keyring_icon").append(aEdit).append(aDel);   
+    return $('<td />').attr("class", "lab_keyring_icon").append(aNotifs).append(aEdit).append(aDel);   
+  }
+
+  function resetNotifsNumber(missionId) {
+    data = {
+      'action':"lab_mission_resetNotifs",
+      'id':missionId
+    };
   }
 
   function displayModalDeleteMission(missionId) {

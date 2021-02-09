@@ -109,12 +109,16 @@ function lab_invitations_editInvitation($token, $params) {
     array('token' => $token)
   );
 }
-function lab_invitations_getByToken($token) {
+function lab_invitations_getByToken($token, $deleteNotif = true) {
   global $wpdb;
   $sql = "SELECT * FROM `".$wpdb->prefix."lab_invitations` WHERE token='".$token."';";
   $res = $wpdb->get_results($sql);
+  if($deleteNotif) {
+    lab_mission_resetNotifs($res[0]->id);
+  }
   return $res[0];
 }
+
 
 function lab_group_budget_manager() {
   global $wpdb;
@@ -272,13 +276,27 @@ function lab_invitations_comment_notif($user_id, $invite_id, $comment_id) {
   global $wpdb;
   return $wpdb->insert($wpdb->prefix."lab_mission_comment_notifs", array("user_id"=>$user_id, "invite_id"=>$invite_id, "comment_id"=>$comment_id));
 }
-function lab_invitations_getConcernedId($invite_id) {
+
+
+
+
+
+
+
+function lab_admin_mission_getNotifs($user_id, $mission_id) {
   global $wpdb;
-  $sql = "SELECT inv.host_id, inv.guest_id, m.user_id AS `manager_id`
-          FROM ".$wpdb->prefix."lab_invitations AS inv
-          JOIN wp_lab_group_manager AS m ON  m.group_id = inv.host_group_id
-          WHERE inv.id = ".$invite_id.";";
+  $sql = "SELECT COUNT(*) AS notifs_number FROM `".$wpdb->prefix."lab_mission_comment_notifs` WHERE `user_id`=".$user_id." AND `invite_id`=".$mission_id.";";
   $res = $wpdb->get_results($sql);
   return $res;
+}
+
+function lab_mission_resetNotifs($mission_id) {
+  $user_id = get_current_user_id();
+  lab_admin_mission_user_resetNotifs($user_id, $mission_id);
+}
+
+function lab_admin_mission_user_resetNotifs($user_id, $mission_id) {
+  global $wpdb;
+  return $wpdb->delete($wpdb->prefix."lab_mission_comment_notifs", array("user_id"=>$user_id, "invite_id"=>$mission_id));
 }
 ?>

@@ -95,7 +95,10 @@ function lab_mission_load($missionToken, $filters = null, $groupIds = null) {
     $userIds = array();
     $params = array();
     $paramsToGet = ["mission_objective", "status"];
+    $notifs = array();
+    $current_user_id = get_current_user_id();
     foreach($results as $r) {
+        $notifs[$r->id] = lab_admin_mission_getNotifs($current_user_id, $r->id);
         if(!isset($userIds[$r->host_id]) && $r->host_id != 0) {
             $userIds[$r->host_id] = lab_admin_usermeta_names($r->host_id);
             $groups = $wpdb->get_results("SELECT ug.user_id, g.acronym, gm.user_id as manager_id FROM `".$wpdb->prefix."lab_users_groups` AS ug JOIN ".$wpdb->prefix."lab_groups AS g ON g.id=ug.group_id JOIN ".$wpdb->prefix."lab_group_manager AS gm ON gm.group_id=g.id WHERE ug.user_id=".$r->host_id." AND gm.manager_type=1");
@@ -128,6 +131,7 @@ function lab_mission_load($missionToken, $filters = null, $groupIds = null) {
     }
     $data["users"] = $userIds;
     $data["params"] = $params;
+    $data["notifs"] = $notifs;
 
     $sqlYear = "SELECT DISTINCT YEAR(`creation_time`) AS year FROM `".$wpdb->prefix."lab_invitations` ORDER BY `year` DESC";
     $results = $wpdb->get_results($sqlYear);
