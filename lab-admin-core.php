@@ -2598,6 +2598,7 @@ function create_all_tables() {
     lab_admin_createTable_budget_info();
     lab_admin_contract_create_table();
     lab_admin_mission_create_table();
+    lab_admin_notification_create_table();
 }
 
 function delete_all_tables() {
@@ -2622,6 +2623,7 @@ function delete_all_tables() {
     drop_table("lab_contract");
     drop_table("lab_contract_user");
     drop_table("lab_mission_route");
+    drop_table("lab_mission_comment_notifs");
 }
 
 /**

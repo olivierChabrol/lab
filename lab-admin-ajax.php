@@ -1328,15 +1328,19 @@ function lab_invitations_edit() {
   //wp_send_json_success( $fields['host_group_id']);
   $currentUserId = get_current_user_id();
   $isHost = $currentUserId == $fields['host_id'];
-  //$userType = lab_admin_get_manager_type($currentUserId);
   $userGroupInfo = lab_admin_group_get_user_info($currentUserId, $fields['host_group_id']);
- 
+  $canModify = false;
   $isManager = count($userGroupInfo) > 0;
-
-  //wp_send_json_error("isHost : " . $isHost. " isManager : " . $isManager);
-  //wp_send_json_error($isHost, $isManager);
+  if(!$isManager) {
+    $canModify = $userType[0]->manager_type == 1;
+  }
+  else {
+    foreach($userGroupInfo as $gi) {
+      $canModify = $isManager && $gi->manager_type == 2;
+    }
+  }
   //wp_send_json_success($userType[0]->manager_type);
-  if ( $isHost || $isManager) {
+  if ( $currentUserId == $fields['host_id'] || $canModify) {
     $guest = array (
       'first_name'=> $fields['guest_firstName'],
       'last_name'=> $fields['guest_lastName'],

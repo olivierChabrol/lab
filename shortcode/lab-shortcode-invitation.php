@@ -74,8 +74,8 @@ function lab_mission($args) {
             
             } 
             else if ( $isManager ) {
-                $missionInformation .= '<p><i>'.esc_html__('You can edit this invitation as a budget manager','lab').'</i></p>';
-                $missionInformation .= '<p><i>'.esc_html__('Invitation status : ','lab').'</i>'.lab_invitations_getStatusName($invitation->status).'</p>';
+                $invitationStr .= '<p><i>'.esc_html__('You can edit this invitation as a budget manager','lab').'</i></p>';
+                $invitationStr .= '<p><i>'.esc_html__('Invitation status : ','lab').'</i>'.lab_invitations_getStatusName($invitation->status).'</p>';
             } 
             //possibly the guest
             else if ($isGuest) {
@@ -338,9 +338,6 @@ function lab_mission($args) {
             $invitationStr .= '</div><!-- end div lab_invitationComments -->';
         }
     return $invitationStr;
-}
-function lab_invitation($args) {
-    return "";
 }
 function getGuestValue($newForm, $guest, $field) {
     if ($newForm || $guest == null) {

@@ -184,6 +184,9 @@ if (is_admin()) {
     add_action( 'wp_ajax_lab_travel_delete', 'lab_travel_ajax_delete');
     add_action( 'wp_ajax_lab_travel_save', 'lab_travel_ajax_save');
     add_action( 'wp_ajax_lab_mission_delete', 'lab_mission_ajax_delete');
+    //add_action( 'wp_ajax_lab_mission_getNotifs', 'lab_mission_getNotifs');
+    //add_action( 'wp_ajax_lab_mission_resetNotifs', 'lab_mission_resetNotifs');
+    
     // Actions for guest action on th MISSION
     add_action( 'wp_ajax_nopriv_lab_mission_load', 'lab_mission_ajax_load');
     add_action( 'wp_ajax_nopriv_lab_travels_load', 'lab_travels_ajax_load');
