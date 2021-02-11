@@ -34,20 +34,18 @@ function lab_mission($args) {
             $host = new labUser(get_current_user_id());
         } else {//Token fournit, récupère les informations existantes
             $token = $a;
-            //$travels = lab_mission_route_get($token);
 
-            //$missionInformation .= "<h3>token : ".$token."</h3>";
             $invitation     = lab_invitations_getByToken($token);
+            if (!isset($invitation)) {
+                return esc_html__("Invalid invitation token",'lab');
+            }
             $missionInformation .= '<input type="hidden" id="lab_mission_token" value="'.$token.'"/>';
             $missionInformation .= '<input type="hidden" id="lab_mission_id" value="'.$invitation->id.'"/>';
             $budget_manager_ids = lab_group_budget_manager();
             
             $charges = json_decode($invitation->charges);
-            if (!isset($invitation)) {
-                return esc_html__("Invalid invitation token",'lab');
-            }
             $guest = lab_invitations_getGuest($invitation->guest_id);
-            var_dump($guest);
+
             $host = new labUser($invitation->host_id);
             //Qui modifie, l'invitant ou le responsable ?
             $isChief = false;
@@ -62,7 +60,6 @@ function lab_mission($args) {
                 }
             }
             $isGuest   = !$isChief && !$isManager && $missionType == "Invitation";
-
             
             if ( $isChief ) {
                 $missionInformation .= '<p><i>'.esc_html__('You can edit this invitation as a group leader','lab').'</i></p>';
@@ -74,8 +71,8 @@ function lab_mission($args) {
             
             } 
             else if ( $isManager ) {
-                $invitationStr .= '<p><i>'.esc_html__('You can edit this invitation as a budget manager','lab').'</i></p>';
-                $invitationStr .= '<p><i>'.esc_html__('Invitation status : ','lab').'</i>'.lab_invitations_getStatusName($invitation->status).'</p>';
+                $missionInformation .= '<p><i>'.esc_html__('You can edit this invitation as a budget manager','lab').'</i></p>';
+                $missionInformation .= '<p><i>'.esc_html__('Invitation status : ','lab').'</i>'.lab_invitations_getStatusName($invitation->status).'</p>';
             } 
             //possibly the guest
             else if ($isGuest) {
