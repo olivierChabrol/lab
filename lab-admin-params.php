@@ -127,8 +127,14 @@ class AdminParams {
         $results = $wpdb->get_results($sql);
         return $results[0];
     }
+    public static function get_param_fields($id, $field) {
+        return AdminParams::get_param_all($id)->$field;
+    }
+    public static function get_param_slug($id) {
+        return AdminParams::get_param_fields($id, "slug");
+    }
     public static function get_param($id) {
-        return AdminParams::get_full_param($id)->value;
+        return AdminParams::get_param_fields($id, "value");
     }
     public static function get_paramWithColor($id) {
         global $wpdb;
