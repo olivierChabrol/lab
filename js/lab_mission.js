@@ -117,27 +117,22 @@ jQuery(function($){
     }
     url  += "&tab=entry&token="+token;
     let notif = data.notifs[id][0].notifs_number;
-
+    let test;
     if(notif != 0) {
-      var aNotifs = $('<a />').attr("class", "page-title-action lab_mission_notifs").html(notif);
+      var span1 = $('<span />').attr("class", "lab-update-plugins count-" + notif);
+      var span2 = $('<span />').attr("class", "plugin-count").html(notif);
+      test = span1.append(span2);
     }
     //console.log("->"+url);
-    let aEdit = $('<a />').attr("class", "page-title-action lab_keyring_key_edit").attr("href",url).attr("missionId", id).html("edit");
-    //let aEdit = $('<a />').attr("class", "page-title-action lab_keyring_key_edit").attr("missionId", id).html("edit");
-    let aDel = $('<a />').attr("class", "page-title-action lab_budget_info_delete").attr("missionId", id).html("X");
+    let aEdit = $('<a />').attr("class", "lab-page-title-action lab_keyring_key_edit").attr("href",url).attr("missionId", id).html("edit");
+    //let aEdit = $('<a />').attr("class", "page-title-action lab_keyring_key_edit").attr("missionId", id).html("edit")
+    let aDel = $('<a />').attr("class", "lab-page-title-action lab_budget_info_delete").attr("missionId", id).attr("id", "lab-delete-mission-button").html("X");
 
     $(aDel).click(function (){
       displayModalDeleteMission($(this).attr("missionId"));
     });
 
-    return $('<td />').attr("class", "lab_keyring_icon").append(aNotifs).append(aEdit).append(aDel);   
-  }
-
-  function resetNotifsNumber(missionId) {
-    data = {
-      'action':"lab_mission_resetNotifs",
-      'id':missionId
-    };
+    return $('<td />').attr("class", "lab_keyring_icon").append(test).append(aEdit).append(aDel);   
   }
 
   function displayModalDeleteMission(missionId) {

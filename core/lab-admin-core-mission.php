@@ -18,6 +18,27 @@ function lab_mission_delete($missionId) {
     return true;
 }
 
+function lab_mission_take_in_charge($missionId)
+{
+  $user = lab_admin_userMetaDatas_get(get_current_user_id());
+  date_default_timezone_set("Europe/Paris");
+  $timeStamp=date("Y-m-d H:i:s",time());
+  lab_invitations_addComment(array(
+    'content'=> "¤Invitation prise en charge par ".$user['first_name']." ".$user['last_name'],
+    'timestamp'=> $timeStamp,
+    'author_id'=> 0,
+    'author_type'=> 0,
+    'invite_id'=> $missionId
+  )); 
+  lab_invitations_editInvitation($missionId,array('status'=>30));
+}
+
+function lab_mission_get_token_from_id($missionId) {
+    global $wpdb;
+    $sql = "SELECT token FROM `".$wpdb->prefix."lab_invitations` WHERE id = ".$missionId;
+    return $wpdb->get_results($sql);
+}
+
 function lab_mission_load($missionToken, $filters = null, $groupIds = null) {
     global $wpdb;
     $data = array();

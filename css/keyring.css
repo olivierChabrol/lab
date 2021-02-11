@@ -64,7 +64,8 @@
 .lab_keyring_table .lab_keyring_icon {
     font-size: 1.2em;
     padding: 0.5em 0;
-    text-align: center;
+    text-align: right;
+    padding-right: 4em;
 }
 .lab_keyring_table .lab_keyring_key_lend, #lab_keyring_newKey_create, #lab_keyring_editForm_submit {
     min-width: 4.5em;

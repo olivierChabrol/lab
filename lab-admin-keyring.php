@@ -6,21 +6,21 @@
     }
     ?>
     <div class="wrap">
-      <h1 class="wp-heading-inline"><?php esc_html_e('Gestion des clés','lab'); ?></h1>
+      <h1 class="wp-heading-inline"><?php esc_html_e('Key management','lab'); ?></h1>
       <hr class="wp-header-end">
       <h2 class="nav-tab-wrapper">
         <a id="lab_keyring_default_tab_pointer" style="position: relative" class="nav-tab <?php echo $active_tab == 'entry' ? 'nav-tab-active' : ''; ?>"   href="<?php echo add_query_arg(array('tab' => 'entry')  , $_SERVER['REQUEST_URI']); ?>"><?php esc_html_e('keyring entry','lab'); ?></a>
-        <a id="lab_keyring_default_tab_pointer" style="position: relative" class="nav-tab <?php echo $active_tab == 'default' ? 'nav-tab-active' : ''; ?>" href="<?php echo add_query_arg(array('tab' => 'default'), $_SERVER['REQUEST_URI']); ?>"><?php esc_html_e('Clés','lab'); ?></a>
-        <a id="lab_keyring_second_tab_pointer"  style="position: relative" class="nav-tab <?php echo $active_tab == 'second' ? 'nav-tab-active' : ''; ?>"  href="<?php echo add_query_arg(array('tab' => 'second') , $_SERVER['REQUEST_URI']); ?>"><?php esc_html_e('Prêts','lab'); ?></a>
+        <a id="lab_keyring_default_tab_pointer" style="position: relative" class="nav-tab <?php echo $active_tab == 'default' ? 'nav-tab-active' : ''; ?>" href="<?php echo add_query_arg(array('tab' => 'default'), $_SERVER['REQUEST_URI']); ?>"><?php esc_html_e('Key','lab'); ?></a>
+        <a id="lab_keyring_second_tab_pointer"  style="position: relative" class="nav-tab <?php echo $active_tab == 'second' ? 'nav-tab-active' : ''; ?>"  href="<?php echo add_query_arg(array('tab' => 'second') , $_SERVER['REQUEST_URI']); ?>"><?php esc_html_e('Loans','lab'); ?></a>
       </h2>
       <?php
       if (!lab_admin_checkTable("lab_keys")) {
         echo "<p id='lab_keyring_noKeysTableWarning'>La table <em>wp_lab_keys</em> n'a pas été trouvée dans la base, vous devez d'abord la créer ici : </p>";
-        echo '<button class="lab_keyring_create_table_keys" id="lab_keyring_create_table_keys">'.esc_html__('Créer la table Keys','lab').'</button>';
+        echo '<button class="lab_keyring_create_table_keys" id="lab_keyring_create_table_keys">'.esc_html__('Create table Keys','lab').'</button>';
       }
       if (!lab_admin_checkTable("lab_key_loans")) {
         echo "<p id='lab_keyring_noLoansTableWarning'>La table <em>wp_lab_key_loans</em> n'a pas été trouvée dans la base, vous devez d'abord la créer ici : </p>";
-        echo '<button class="lab_keyring_create_table_loans" id="lab_keyring_create_table_loans">'.esc_html__('Créer la table Loans','lab').'</button>';
+        echo '<button class="lab_keyring_create_table_loans" id="lab_keyring_create_table_loans">'.esc_html__('Create table Loans','lab').'</button>';
       }
       if ($active_tab == 'default') {
         lab_keyring_tab_keys();
@@ -49,7 +49,7 @@
   foreach ( $params->get_params_fromId($params::PARAMS_KEYTYPE_ID) as $r ) {
 ?>
     <tr id="lab_keyring_addKey<?php echo $i ?>">
-          <td scope="col"><?php esc_html_e('Nouvelle','lab'); ?> :</td>
+          <td scope="col"><?php esc_html_e('New','lab'); ?> :</td>
           <td scope="col"><?php print($r->value); ?><input type="hidden" id="lab_keyring_entry_type_<?php echo $i ?>" value="<?php echo $r->id?>"></td>
           <td scope="col">
             <input type="text" id="lab_keyring_entry_number<?php echo $i ?>" placeholder="123" index="<?php echo $i ?>"/>
@@ -59,7 +59,7 @@
             <input type="text" id="lab_keyring_entry_office<?php echo $i ?>" placeholder="Numero de Bureau"/>
           </td>
           <td scope="col">
-            <input type="text" id="lab_keyring_entry_brand<?php echo $i ?>" placeholder="<?php esc_html_e('Marque','lab'); ?>"/>
+            <input type="text" id="lab_keyring_entry_brand<?php echo $i ?>" placeholder="<?php esc_html_e('Brand','lab'); ?>"/>
           </td>
           <!-- 
           <?php esc_html_e('ok','lab'); ?>
@@ -79,7 +79,7 @@
             </select>
           </td>
           <td scope="col" colspan="2">
-          <input type="text" id="lab_keyring_entry_commentary<?php echo $i ?>" placeholder="<?php echo esc_html__('Commentaire','lab').'('.esc_html__('facultatif','lab').')'; ?>"/>
+          <input type="text" id="lab_keyring_entry_commentary<?php echo $i ?>" placeholder="<?php echo esc_html__('Comment','lab').'('.esc_html__('optional','lab').')'; ?>"/>
           </td>
     </tr>
   <?php
@@ -87,7 +87,7 @@
   }
   ?>
         <tr>
-          <td scope="col"><button class="page-title-action" id="lab_keyring_entry_create"><?php esc_html_e('Créer','lab'); ?></button></td>
+          <td scope="col"><button class="page-title-action" id="lab_keyring_entry_create"><?php esc_html_e('Create','lab'); ?></button></td>
         </tr>
       </tbody>
     </table>
@@ -101,7 +101,7 @@
     ?>
     <!-- Dialogue de confirmation modal s'affichant lorsque l'utilisateur essaie de supprimer une clé -->
     <div id="lab_keyring_delete_dialog" class="modal">
-      <p><?php esc_html_e('Voulez-vous vraiment supprimer cette clé ?','lab');?></p>
+      <p><?php esc_html_e('Do you really want to delete this key?','lab');?></p>
       <div id="lab_keyring_delete_dialog_options">
         <a href="#" rel="modal:close"><?php esc_html_e('Cancel','lab')?></a>
         <a href="#" rel="modal:close" id="lab_keyring_keyDelete_confirm" keyid=""><?php esc_html_e('Confirm','lab'); ?></a>

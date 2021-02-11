@@ -38,6 +38,7 @@ function lab_mission($args) {
 
             //$invitationStr .= "<h3>token : ".$token."</h3>";
             $invitation     = lab_invitations_getByToken($token);
+            //var_dump($invitation);
             $invitationStr .= '<input type="hidden" id="lab_mission_token" value="'.$token.'"/>';
             $invitationStr .= '<input type="hidden" id="lab_mission_id" value="'.$invitation->id.'"/>';
             $budget_manager_ids = lab_group_budget_manager();
