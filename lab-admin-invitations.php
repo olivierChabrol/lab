@@ -101,24 +101,32 @@ function lab_invitations_editGuest($id, $params) {
     array('id' => $id)
   );
 }
-function lab_invitations_editInvitation($token, $params) {
+function lab_invitations_editInvitation($missionId, $params) {
   global $wpdb;
   return $wpdb->update(
     $wpdb->prefix.'lab_invitations',
     $params,
-    array('token' => $token)
+    array('id' => $missionId)
   );
 }
+$var = 0;
 function lab_invitations_getByToken($token, $deleteNotif = true) {
   global $wpdb;
+  global $var;
   $sql = "SELECT * FROM `".$wpdb->prefix."lab_invitations` WHERE token='".$token."';";
   $res = $wpdb->get_results($sql);
+  $missionId = $res[0]->id;
   if($deleteNotif) {
-    lab_mission_resetNotifs($res[0]->id);
+    lab_mission_resetNotifs($missionId);
   }
+  
+  if(lab_invitations_getBudgetManager()) {
+    lab_mission_take_in_charge($missionId);
+  }
+  $var += 1;
+  $res[0]->var = $var;
   return $res[0];
 }
-
 
 function lab_group_budget_manager() {
   global $wpdb;
@@ -277,15 +285,51 @@ function lab_invitations_comment_notif($user_id, $invite_id, $comment_id) {
   return $wpdb->insert($wpdb->prefix."lab_mission_comment_notifs", array("user_id"=>$user_id, "invite_id"=>$invite_id, "comment_id"=>$comment_id));
 }
 
-
-
-
-
-
-
-function lab_admin_mission_getNotifs($user_id, $mission_id) {
+function lab_invitations_getConcernedId($invite_id) {
   global $wpdb;
-  $sql = "SELECT COUNT(*) AS notifs_number FROM `".$wpdb->prefix."lab_mission_comment_notifs` WHERE `user_id`=".$user_id." AND `invite_id`=".$mission_id.";";
+  $sql = "SELECT inv.host_id, inv.guest_id, m.user_id AS `manager_id`
+          FROM `".$wpdb->prefix."lab_invitations` AS inv
+          JOIN `".$wpdb->prefix."lab_group_manager` AS m ON  m.group_id = inv.host_group_id
+          WHERE inv.id = ".$invite_id.";";
+  $res = $wpdb->get_results($sql);
+  return $res;
+}
+
+function lab_invitations_getBudgetManager() {
+  global $wpdb;
+  $sql = "SELECT m.user_id AS `manager_id`
+          FROM `".$wpdb->prefix."lab_group_manager` AS m
+          WHERE m.manager_type = 1";
+  $res = $wpdb->get_results($sql);
+  $tab = array();
+  foreach($res as $r) {
+    $tab[] = (int)($r->manager_id);
+  }
+  return $tab;
+}
+
+function lab_invitation_is_budget_manager() {
+  global $wpdb;
+  $sql = "SELECT * 
+          FROM `".$wpdb->prefix."lab_group_manager` AS m
+          WHERE m.manager_type = 1 AND user_id = ".get_current_user_id();
+  $res = $wpdb->get_results($sql);
+  return count($res) > 0;
+}
+
+
+
+
+
+
+
+
+function lab_admin_mission_getNotifs($user_id, $mission_id = null) {
+  global $wpdb;
+  $sql = "SELECT COUNT(*) AS notifs_number FROM `".$wpdb->prefix."lab_mission_comment_notifs` WHERE `user_id`=".$user_id;
+  if($mission_id != null) {
+    $sql .= " AND `invite_id`=".$mission_id;
+  }
   $res = $wpdb->get_results($sql);
   return $res;
 }

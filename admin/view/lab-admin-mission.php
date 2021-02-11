@@ -38,8 +38,8 @@
 
 <?php
       if (!lab_admin_checkTable("lab_budget_info")) {
-        echo "<p id='lab_keyring_noKeysTableWarning'>La table <em>wp_lab_budget_info</em> n'a pas été trouvée dans la base, vous devez d'abord la créer ici : </p>";
-        echo '<button class="lab_keyring_create_table_keys" id="lab_budget_info_create_table">'.esc_html__('Créer la table Budget info','lab').'</button>';
+        echo "<p id='lab_keyring_noKeysTableWarning'>".esc_html__("The table <em>wp_lab_budget_info</em> hasn't been found in database, you must first create it here : ", "lab")."</p>";
+        echo '<button class="lab_keyring_create_table_keys" id="lab_budget_info_create_table">'.esc_html__('Create table Budget info','lab').'</button>';
       }
       if ($id != "")
       {
@@ -134,11 +134,11 @@
     </table>
     </div> 
     <div id="lab_mission_delete_dialog" class="modal">
-      <p><?php esc_html_e('Voulez-vous vraiment supprimer cette mission ?','lab');?></p>
+      <p><?php esc_html_e('Do you really want to delete this mission ?','lab');?></p>
       <input type="hidden" id="lab_mission_delete_dialog_mission_id" value="">
       <div id="lab_mission_delete_dialog_options">
-        <a href="#" rel="modal:close"><?php esc_html_e('Annuler','lab')?></a>
-        <a href="#" rel="modal:close" id="lab_mission_delete_confirm" keyid=""><?php esc_html_e('Confirmer','lab'); ?></a>
+        <a href="#" rel="modal:close"><?php esc_html_e('Cancel','lab')?></a>
+        <a href="#" rel="modal:close" id="lab_mission_delete_confirm" keyid=""><?php esc_html_e('Confirm','lab'); ?></a>
       </div>
     </div>
       <?php

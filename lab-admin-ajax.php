@@ -1411,20 +1411,10 @@ function lab_invitations_validate() {
   wp_send_json_success('La demande a été transmise à l\'administration');
 }
 // Invitation prise en charge
-function lab_invitations_assume() {
-  $user = lab_admin_userMetaDatas_get(get_current_user_id());
-  $token = $_POST['token'];
-  date_default_timezone_set("Europe/Paris");
-  $timeStamp=date("Y-m-d H:i:s",time());
-  lab_invitations_addComment(array(
-    'content'=> "¤Invitation prise en charge par ".$user['first_name']." ".$user['last_name'],
-    'timestamp'=> $timeStamp,
-    'author_id'=> 0,
-    'author_type'=> 0,
-    'invite_id'=>lab_invitations_getByToken($token)->id
-  )); 
-  lab_invitations_editInvitation($token,array('status'=>30));
-  wp_send_json_success();
+function lab_invitations_assume($token = null) {
+    $token = $_POST['token'];
+    lab_mission_take_in_charge($token);
+    wp_send_json_success();
 }
 
 function lab_invitation_newComment() {

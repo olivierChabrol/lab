@@ -185,3 +185,41 @@ se#lab_budget_info_statelect option[value="wd"] {
 #lab_budget_info_state option[value="wp"] {
   background: #ffadad;
 }
+
+.lab-update-plugins {
+  box-sizing: border-box;
+  position: relative;
+  top: 3px;
+  /*margin: 2px 2px 2px 2px;*/
+  padding: 4px;
+  min-width: 22px;
+  height: 22px;
+  border-radius: 12px;
+  background-color: #ca4a1f;
+  color: #fff;
+  font-size: 14px;
+  line-height: 1.6;
+  text-align: center;
+  /*z-index: 26;*/
+}
+
+.lab-page-title-action {
+  margin-left: 4px;
+  padding: 4px 8px;
+  position: relative;
+  top: 3px;
+  text-decoration: none;
+  border: 1px solid #0071a1;
+  border-radius: 2px;
+  text-shadow: none;
+  font-weight: 600;
+  font-size: 13px;
+  line-height: normal;
+  color: #0071a1;
+  background: white;
+  cursor: pointer;
+}
+
+.lab_keyring_icon {
+  padding-right: 100px;
+}
