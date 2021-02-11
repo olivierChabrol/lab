@@ -109,22 +109,18 @@ function lab_invitations_editInvitation($missionId, $params) {
     array('id' => $missionId)
   );
 }
-$var = 0;
+
 function lab_invitations_getByToken($token, $deleteNotif = true) {
   global $wpdb;
-  global $var;
   $sql = "SELECT * FROM `".$wpdb->prefix."lab_invitations` WHERE token='".$token."';";
   $res = $wpdb->get_results($sql);
   $missionId = $res[0]->id;
   if($deleteNotif) {
     lab_mission_resetNotifs($missionId);
   }
-  
   if(lab_invitations_getBudgetManager()) {
     lab_mission_take_in_charge($missionId);
   }
-  $var += 1;
-  $res[0]->var = $var;
   return $res[0];
 }
 

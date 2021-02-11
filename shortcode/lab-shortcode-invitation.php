@@ -7,7 +7,6 @@
  */
 
 function lab_mission($args) {
-    
     $param = shortcode_atts(array(
         'hostpage' => 0 //0 pour invité, 1 pour invitant/responsable
         ),
@@ -328,7 +327,7 @@ function lab_mission($args) {
         }
         if (!$newForm) {
             $currentUser = lab_admin_userMetaDatas_get(get_current_user_id());
-            $invitationStr .= '<div id="lab_invitationComments"><h2>'.esc_html__("Comments","lab").' <i class="fas fa-arrow-up"></i></h2>'.lab_inviteComments($token);
+            $invitationStr .= '<div id="lab_invitationComments"><h2>'.esc_html__("Comments","lab").' <i class="fas fa-arrow-up"></i></h2>'.lab_inviteComments($invitation->id);
             if(!$isGuest) {
                 $invitationStr .= lab_newComments($currentUser,$token);
             }
@@ -717,8 +716,8 @@ function lab_InviteForm($who,$guest,$invite) {
     $out .= '</ul>';
     return $out;
 }
-function lab_inviteComments($token) {
-    $comments= lab_invitations_getComments(lab_invitations_getByToken($token)->id);
+function lab_inviteComments($missionId) {
+    $comments= lab_invitations_getComments($missionId);
     $out = '<div id="lab_invitation_oldComments">';
     if (count($comments)> 0) {
         foreach ( $comments as $comment) {

@@ -18,19 +18,44 @@ function lab_mission_delete($missionId) {
     return true;
 }
 
+function lab_mission_set_status($missionId, $status) {
+    $statusCode = AdminParams::get_param_by_slug($status);
+    lab_invitations_editInvitation($missionId, array("status"=>$statusCode));
+}
+
+function lab_mission_set_budget_manager($missionId, $managerId) {
+    lab_invitations_editInvitation($missionId, array("manager_id"=>$managerId));
+}
+
+function lab_mission_get_budget_manager($missionId) {
+    global $wpdb;
+    $results = $wpdb->get_results("SELECT manager_id FROM `".$wpdb->prefix."lab_invitations` WHERE id=".$missionId);
+    if (count($results) == 1) {
+        return $results[0]->manager_id;
+    }
+    return -1;
+}
+
 function lab_mission_take_in_charge($missionId)
 {
-  $user = lab_admin_userMetaDatas_get(get_current_user_id());
-  date_default_timezone_set("Europe/Paris");
-  $timeStamp=date("Y-m-d H:i:s",time());
-  lab_invitations_addComment(array(
-    'content'=> "¤Invitation prise en charge par ".$user['first_name']." ".$user['last_name'],
-    'timestamp'=> $timeStamp,
-    'author_id'=> 0,
-    'author_type'=> 0,
-    'invite_id'=> $missionId
-  )); 
-  lab_invitations_editInvitation($missionId,array('status'=>30));
+    $currentUserId = get_current_user_id();
+    $managerId = lab_mission_get_budget_manager($missionId);
+    
+    if ($managerId == -1 || $managerId != $currentUserId) 
+    {
+        lab_mission_set_budget_manager($missionId, $currentUserId);
+        $user = lab_admin_userMetaDatas_get($currentUserId);
+        date_default_timezone_set("Europe/Paris");
+        $timeStamp=date("Y-m-d H:i:s",time());
+        lab_invitations_addComment(array(
+            'content'=> "¤Invitation prise en charge par ".$user['first_name']." ".$user['last_name'],
+            'timestamp'=> $timeStamp,
+            'author_id'=> 0,
+            'author_type'=> 0,
+            'invite_id'=> $missionId
+        )); 
+        lab_mission_set_status($missionId, "mswbm");
+    }
 }
 
 function lab_mission_get_token_from_id($missionId) {
@@ -92,9 +117,8 @@ function lab_mission_load($missionToken, $filters = null, $groupIds = null) {
                     if ($nbFilter > 0) {
                         $where .= " AND ";
                     }
-                    $select .= ", gm.user_id as manager_id";
-                    $join .= " JOIN ".$wpdb->prefix."lab_group_manager AS gm ON gm.group_id = m.host_group_id";
-                    $where .= "gm.manager_type=1 AND gm.user_id=".$value."";
+                    $select .= ", m.manager_id";
+                    $where .= "m.manager_id=".$value."";
                     $data["filters"]["budget_manager"] = $value;
                 }
                 else if ($key == "state") {
@@ -122,6 +146,7 @@ function lab_mission_load($missionToken, $filters = null, $groupIds = null) {
         $notifs[$r->id] = lab_admin_mission_getNotifs($current_user_id, $r->id);
         if(!isset($userIds[$r->host_id]) && $r->host_id != 0) {
             $userIds[$r->host_id] = lab_admin_usermeta_names($r->host_id);
+            /*
             $groups = $wpdb->get_results("SELECT ug.user_id, g.acronym, gm.user_id as manager_id FROM `".$wpdb->prefix."lab_users_groups` AS ug JOIN ".$wpdb->prefix."lab_groups AS g ON g.id=ug.group_id JOIN ".$wpdb->prefix."lab_group_manager AS gm ON gm.group_id=g.id WHERE ug.user_id=".$r->host_id." AND gm.manager_type=1");
             if (count($groups)> 0) {
                 $userIds[$r->host_id]->group = $groups[0]->acronym;
@@ -130,9 +155,13 @@ function lab_mission_load($missionToken, $filters = null, $groupIds = null) {
                     $userIds[$groups[0]->manager_id] = lab_admin_usermeta_names($groups[0]->manager_id);
                 }
             }
+            //*/
+            if ($r->manager_id != null) {
+                $userIds[$r->manager_id] = lab_admin_usermeta_names($r->manager_id);
+            }
         }
         $r->group = $userIds[$r->host_id]->group;
-        $r->manager_id = $userIds[$r->host_id]->manager_id;
+        //$r->manager_id = $userIds[$r->host_id]->manager_id;
 
         # get all params associated to the mission see @$paramsToGet
         foreach($paramsToGet as $ptg) {

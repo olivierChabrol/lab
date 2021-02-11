@@ -1410,6 +1410,13 @@ function lab_invitations_validate() {
   lab_invitations_editInvitation($token,array('status'=>20));
   wp_send_json_success('La demande a été transmise à l\'administration');
 }
+
+function lab_mission_ajax_set_manager() {
+  $missionId = $_POST['id'];
+  $managerId = $_POST['managerId'];
+  lab_invitations_edit($missionId, ["manager_id"=>$managerId]);
+}
+
 // Invitation prise en charge
 function lab_invitations_assume($token = null) {
     $token = $_POST['token'];
