@@ -16,6 +16,12 @@ jQuery(function($){
   $("#lab-directory-thematic").on('change', function() {
     loadDirectory();
   });
+  $("#lab_mission_save").click(function() {
+    invitation_submit(function() {
+      loadAdminPanel();
+      return;
+    });
+  });
 
 
   var dateClass='.datechk';
@@ -29,6 +35,10 @@ jQuery(function($){
     }
     hideShowInvitationDiv();
   });
+
+  function loadAdminPanel() {
+    window.location.href = "/wp-admin/admin.php?page=lab_admin_mission_manager";
+  }
 
   function loadDirectory()
   {
@@ -1167,6 +1177,7 @@ function invitation_submit(callback) {
     if ($("#lab_mission_fund_origin").length) {
       fields['funding_source'] = $("#lab_mission_fund_origin").val();
       fields['host_group_id'] = $("#lab_group_name").val();
+      //alert('$("#lab_group_name").val() : ' + $("#lab_group_name").val());
     }
     if ($("#missionForm").attr("hostForm")==1) {//La version invitant est affichée 
       fields['estimated_cost'] = $("#lab_estimated_cost").val();
@@ -1191,16 +1202,6 @@ function invitation_submit(callback) {
         'action': 'lab_invitations_edit',
         'fields': fields
       };
-      /*
-      jQuery.post(LAB.ajaxurl, data, function(response) {
-        if (response.success) {
-          jQuery("#missionForm").html(response.data);
-          callback();
-        }
-        else {
-        }
-      });
-      //*/
       callAjax(data, null, callback, null, null);
     }
 }

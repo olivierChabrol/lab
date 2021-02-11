@@ -1327,8 +1327,8 @@ function lab_invitations_edit() {
   }
   //wp_send_json_success( $fields['host_group_id']);
   $currentUserId = get_current_user_id();
+  $isHost = $currentUserId == $fields['host_id'];
   $userGroupInfo = lab_admin_group_get_user_info($currentUserId, $fields['host_group_id']);
-  $userType = lab_admin_get_manager_type($currentUserId);
   $canModify = false;
   $isManager = count($userGroupInfo) > 0;
   if(!$isManager) {

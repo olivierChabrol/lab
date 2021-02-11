@@ -44,6 +44,14 @@ div[wrapped=true] h2:hover .fa-arrow-up {
   display: flex;
   justify-content: center;
 }
+.lab_invite_row_left {
+  display: flex;
+  justify-content: left;
+}
+.lab_invite_row_right {
+  display: flex;
+  justify-content: right;
+}
 #invitationForm select {
   height: 2.5em;
 }

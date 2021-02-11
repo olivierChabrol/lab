@@ -15,10 +15,10 @@ function lab_mission($args) {
         "lab-invitation"
     );
     global $wp;
-    $invitationStr ='';
     $url = $wp->request;
     $host = null;
     $invitationStr = "";
+    $missionInformation = "";
     $token='0';
     $isGuest   = false;
     if ( isset($param['hostpage']) ) {
@@ -34,23 +34,18 @@ function lab_mission($args) {
             $host = new labUser(get_current_user_id());
         } else {//Token fournit, récupère les informations existantes
             $token = $a;
-            //$travels = lab_mission_route_get($token);
 
-            //$invitationStr .= "<h3>token : ".$token."</h3>";
             $invitation     = lab_invitations_getByToken($token);
-            //var_dump($invitation);
-            $invitationStr .= '<input type="hidden" id="lab_mission_token" value="'.$token.'"/>';
-            $invitationStr .= '<input type="hidden" id="lab_mission_id" value="'.$invitation->id.'"/>';
-            $budget_manager_ids = lab_group_budget_manager();
-            //$travels       = 
-            //var_dump($invitation);
-            
-            $charges = json_decode($invitation->charges);
             if (!isset($invitation)) {
                 return esc_html__("Invalid invitation token",'lab');
             }
+            $missionInformation .= '<input type="hidden" id="lab_mission_token" value="'.$token.'"/>';
+            $missionInformation .= '<input type="hidden" id="lab_mission_id" value="'.$invitation->id.'"/>';
+            $budget_manager_ids = lab_group_budget_manager();
+            
+            $charges = json_decode($invitation->charges);
             $guest = lab_invitations_getGuest($invitation->guest_id);
-            var_dump($guest);
+
             $host = new labUser($invitation->host_id);
             //Qui modifie, l'invitant ou le responsable ?
             $isChief = false;
@@ -65,39 +60,38 @@ function lab_mission($args) {
                 }
             }
             $isGuest   = !$isChief && !$isManager && $missionType == "Invitation";
-
             
             if ( $isChief ) {
-                $invitationStr .= '<p><i>'.esc_html__('You can edit this invitation as a group leader','lab').'</i></p>';
-                $invitationStr .= '<p><i>'.esc_html__('Invitation status : ','lab').'</i>'.lab_invitations_getStatusName($invitation->status).'</p>';
+                $missionInformation .= '<p><i>'.esc_html__('You can edit this invitation as a group leader','lab').'</i></p>';
+                $missionInformation .= '<p><i>'.esc_html__('Invitation status : ','lab').'</i>'.lab_invitations_getStatusName($invitation->status).'</p>';
                 
             } else if ( get_current_user_id()==$invitation->host_id ) { 
-                $invitationStr .= '<p><i>'.esc_html__('You can edit this invitation as a host','lab').'</i></p>';
-                $invitationStr .= '<p><i>'.esc_html__('Invitation status : ','lab').'</i>'.lab_invitations_getStatusName($invitation->status).'</p>';
+                $missionInformation .= '<p><i>'.esc_html__('You can edit this invitation as a host','lab').'</i></p>';
+                $missionInformation .= '<p><i>'.esc_html__('Invitation status : ','lab').'</i>'.lab_invitations_getStatusName($invitation->status).'</p>';
             
             } 
             else if ( $isManager ) {
-                $invitationStr .= '<p><i>'.esc_html__('You can edit this invitation as a budget manager','lab').'</i></p>';
-                $invitationStr .= '<p><i>'.esc_html__('Invitation status : ','lab').'</i>'.lab_invitations_getStatusName($invitation->status).'</p>';
+                $missionInformation .= '<p><i>'.esc_html__('You can edit this invitation as a budget manager','lab').'</i></p>';
+                $missionInformation .= '<p><i>'.esc_html__('Invitation status : ','lab').'</i>'.lab_invitations_getStatusName($invitation->status).'</p>';
             } 
             //possibly the guest
             else if ($isGuest) {
-                $invitationStr .= '<p><i>'.esc_html__('You can edit this invitation as a guest','lab').'/i></p>';
+                $missionInformation .= '<p><i>'.esc_html__('You can edit this invitation as a guest','lab').'/i></p>';
             }
             else {
                 die(esc_html__('You cannot edit this invitation','lab'));
             }
         }
     } else {
-        $invitationStr = "<h3>\$param['hostpage']".$param['hostpage']."</h3>";
+        $missionInformation = "<h3>\$param['hostpage']".$param['hostpage']."</h3>";
         $host = isset(explode("/",$url)[1]) ? new labUser(lab_profile_getID(explode("/",$url)[1])) : 0 ;
         if ($host == 0) {
             $host = new labUser(get_current_user_id());
         }
     }
     $newForm = $token=='0'; //Le formulaire est-il nouveau ? Si non, remplit les champs avec les infos existantes
-    $invitationStr = '<div id="missionForm" hostForm='.$param['hostpage'].' token="'.(($param['hostpage'] && strlen($token)>1) ? $token : '').'" newForm='.$newForm.'>
-                      <h2>'.esc_html__("Form","lab").'<i class="fas fa-arrow-up"></i></h2>'.$invitationStr;
+    $invitationStr = '<div id="missionForm" hostForm='.$param['hostpage'].' token="'.(($param['hostpage'] && strlen($token)>1) ? $token : '').'" newForm='.$newForm.'>';
+    $invitationStr .= '<h2>'.esc_html__("Form","lab").'<i class="fas fa-arrow-up"></i></h2>'.$missionInformation;
     if (!$isGuest) {
         $invitationStr .= '
             <!-- <form action="javascript:formAction()"> -->
@@ -290,17 +284,14 @@ function lab_mission($args) {
                 <label for="lab_form_comment">'.esc_html__("Comments",'lab').'</label>
                 <textarea row="1" id="lab_form_comment" name="lab_form_comment"></textarea>
                 <p>'.esc_html__("(e.g. your loyalty card numbers to be used when booking your trips + the expiry date if required)",'lab').'</p>
-        </div>';
+        </div><hr>';
         }
         if ( $param["hostpage"] ) {//Affiche les champs supplémentaires, pour les responsables/invitants.
-            $invitationStr .=
-
-            '<h3>'.esc_html__("Host fields : ","lab").'</h3>
-            <div class="lab_invite_row">';                    
+            $invitationStr .= '<h3>'.esc_html__("Host fields : ","lab").'</h3>
+            <div class="lab_invite_row_left">';                    
             $invitationStr .= '<div class="lab_invite_field"><label for="lab_mission_fund_origin">'.esc_html__("Funds","lab").'<span class="lab_form_required_star"/></label>';
             $invitationStr .= lab_html_select_str("lab_mission_fund_origin", "lab_mission_fund_origin", "", "lab_admin_budget_funds", null, array("value"=>"0","label"=>"None"), ($newForm ? '' : $invitation->funding_source));
             $invitationStr .= '</div>
-                </div>
             </div>
             <div class="lab_invite_row">
                 <div class="lab_invite_field">
@@ -313,20 +304,22 @@ function lab_mission($args) {
                     <input type="text" id="lab_maximum_cost" value="'.(!$newForm ? $invitation->maximum_cost : '').'">
                     <p>'.esc_html__("To be filled in by the person in charge: maximum budget allocated to this invitation ","lab").'</p>
                 </div>
-            </div>';
+            </div><!--';
             if ($isChief) {
                 $invitationStr .= '<div class="lab_invite_field">
                 <input '.($invitation->status>10 ? 'disabled' : '').' type="submit" value="'.esc_html__("Save","lab").'">
                 </div>'.($invitation->status>10 ? '<i>'.esc_html__("This invitation is already in the next step, to modify it, you must resend it (via the button below)",'lab').'</i>' : '').
-                '<!-- </form>--></div>
+                '</div>
                 <div class="lab_invite_row lab_send_manager"><p class="lab_invite_field">Cliquez ici pour valider la demande et la transmettre au pôle budget :</p><button id="lab_send_manager">'.esc_html__("Send to administration",'lab').'</button></div>';
             } else {
                 $invitationStr .= '<div class="lab_invite_field">
                 <input '.($invitation->status>1 ? 'disabled' : '').' type="submit" value="'.esc_html__("Save","lab").'">
                 </div>'.($invitation->status>1 ? '<i>'.esc_html__("This invitation is already in the next step, to modify it, you must resend it (via the button below)",'lab').'</i>' : '').
-                '<!-- </form>--></div>
+                '</div>
                 <div class="lab_invite_row lab_send_group_chief"><p class="lab_invite_field">Cliquez ici pour compléter la demande et la transmettre au responsable du groupe :</p><button id="lab_mission_send_group_leader">'.esc_html__("Send to responsible",'lab').'</button></div>';
             }
+            $invitationStr .= '-->';
+            $invitationStr .= '<div class="lab_invite_row_right"><button id="lab_mission_save" type="button" class="btn btn-success">'.esc_html__("Update",'lab').'</button></div>';
         }
         else {
             $invitationStr .= '<div class="lab_invite_field">
@@ -764,6 +757,24 @@ function lab_newComments($currentUser, $token)
     return $html;
 }
 function lab_invitations_getStatusName($status) {
+    $statusSlug = AdminParams::get_param_slug($status);
+    if ($statusSlug == "msn") {
+        return "<span style='color:#F75C03' class='lab_infoBulle' title='".esc_html__("This invitation has been created, you can now complete all the information and send it to the group leader for validation.","lab")."'>"
+            .esc_html__("Created","lab")."</span>";
+    }
+    else if ($statusSlug == "mswgl") {
+        return "<span style='color:#00c49f' class='lab_infoBulle' title='".esc_html__("This invitation has been completed, the person in charge can now validate it to send it to the budget department.","lab")."'>"
+            .esc_html__("Completed","lab")."</span>";
+    }
+    else if ($statusSlug == "mswgm") {
+        return "<span style='color:#289600' class='lab_infoBulle' title='".esc_html__("This invitation was taken care of by an administrative staff member of the budget department.","lab")."'>"
+            .esc_html__("Taken care of","lab")."</span>";
+    }
+    else if ($statusSlug == "msc") {
+        return "<span style='color:#289600' class='lab_infoBulle' title='".esc_html__("This invitation is complete.","lab")."'>"
+            .esc_html__("Complete","lab")."</span>";
+    }
+    /*
     switch ($status) {
         case 1:
             return "<span style='color:#F75C03' class='lab_infoBulle' title='".esc_html__("This invitation has been created, you can now complete all the information and send it to the group leader for validation.","lab")."'>"
@@ -785,6 +796,7 @@ function lab_invitations_getStatusName($status) {
             # code...
             break;
     }
+    //*/
 }
 function lab_invite_prefGroupsList($user_id) {
     $prefGroups = lab_invitations_getPrefGroups($user_id);
