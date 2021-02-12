@@ -120,7 +120,6 @@ function lab_event_of_the_week($param)
 {
     //First we check if there are overriding tempates in the child or parent theme
     $located = locate_template(array('plugins/lab/'.$template_name));
-    $log = "";
     if( !$located ){
         $located = apply_filters('lab_locate_template_default', $located, $template_name, $load, $the_args);
         if ( !$located && file_exists(LAB_DIR.'/templates/'.$template_name) ) {
@@ -132,7 +131,7 @@ function lab_event_of_the_week($param)
         if( is_array($the_args) ) extract($the_args);
         include($located);
     }
-    $located= $log." ".$located;
+    //$located= $located;
     return $located;
 }
 

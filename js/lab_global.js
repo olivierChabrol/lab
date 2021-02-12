@@ -1,3 +1,10 @@
+jQuery("#lab_event_submit_button").submit(function () {
+    var isValid = jQuery("#lab_event_speaker_name").val();
+    alert("isValid : " + isValid);
+    if(!isValid) {
+      e.preventDefault(); //prevent the default action
+    }
+});
 
 function createTdUser(userId, data) {
   return createTd(getUserNames(userId, data));
