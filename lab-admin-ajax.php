@@ -1330,17 +1330,34 @@ function lab_invitations_edit() {
   $isHost = $currentUserId == $fields['host_id'];
   $userGroupInfo = lab_admin_group_get_user_info($currentUserId, $fields['host_group_id']);
   $canModify = false;
-  $isManager = count($userGroupInfo) > 0;
-  if(!$isManager) {
-    $canModify = $userType[0]->manager_type == 1;
-  }
-  else {
-    foreach($userGroupInfo as $gi) {
-      $canModify = $isManager && $gi->manager_type == 2;
+  $isBudgetManager = false;
+  foreach($userGroupInfo as $gi) {
+    if(!$isBudgetManager) {
+      $isBudgetManager = $gi->manager_type == 1;
     }
   }
+  $isGroupLeader = false;
+  foreach($userGroupInfo as $gi) {
+    if(!$isGroupLeader) {
+      $isGroupLeader = $gi->manager_type == 2;
+    }
+  }
+
+  // all budget Managers can modify a mission
+  $canModify = $isBudgetManager;
+
+  // if i am the group leader 
+  if (!$canModify) {
+    $canModify = $isGroupLeader;
+  }
+
+  // if it's i am the owner of the mission
+  if (!$canModify) {
+    $canModify = $currentUserId == $fields['host_id'];
+  }
+
   //wp_send_json_success($userType[0]->manager_type);
-  if ( $currentUserId == $fields['host_id'] || $canModify) {
+  if ( $canModify) {
     $guest = array (
       'first_name'=> $fields['guest_firstName'],
       'last_name'=> $fields['guest_lastName'],
@@ -1362,8 +1379,8 @@ function lab_invitations_edit() {
     }
     $invite["charges"]=json_encode($fields["charges"]);
     //wp_send_json_error($invite);
-    
-    lab_invitations_editInvitation($fields['token'],$invite);
+    $missionId = lab_mission_get_id_by_token($fields['token']);
+    lab_invitations_editInvitation($missionId,$invite);
     $html = "<p>".esc_html__("Your invitation has been modified",'lab')."<br>à $timeStamp</p>";
     wp_send_json_success($html);
     //*/

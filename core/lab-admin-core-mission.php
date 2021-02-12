@@ -36,6 +36,16 @@ function lab_mission_get_budget_manager($missionId) {
     return -1;
 }
 
+function lab_mission_get_id_by_token($token) {
+    global $wpdb;
+    $sql = "SELECT id FROM `".$wpdb->prefix."lab_invitations` WHERE token = '".$token."'";
+    $results = $wpdb->get_results($sql);
+    if (count($results) > 0) {
+        return $results[0]->id;
+    }
+    return null;
+}
+
 function lab_mission_take_in_charge($missionId)
 {
     $currentUserId = get_current_user_id();
