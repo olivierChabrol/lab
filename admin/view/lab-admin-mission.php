@@ -27,6 +27,7 @@
     global $wp;
     $current_url = home_url( add_query_arg( array(), $wp->request ) );
 ?>
+<input type="hidden" id="lab_mission_user_id" value="<?php echo get_current_user_id(); ?>">
 <div id="loadingAjaxGif"><img src="/wp-content/plugins/lab/loading.gif"/></div>
 <div class="wrap">
   <h1 class="wp-heading-inline"><?php esc_html_e('Mission management','lab'); ?></h1>
