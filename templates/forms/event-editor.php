@@ -32,15 +32,15 @@ if( !empty($_REQUEST['success']) ){
 			<input type="text" name="event_name" id="event-name" value="<?php echo esc_attr($EM_Event->event_name,ENT_QUOTES); ?>" /><?php echo $required; ?>
 			<br />
 			<div class="event-attributes">
-				<label for="em_attributes[speaker]">Nom du speaker</label>
+				<label for="em_attributes[Speaker]">Nom du speaker</label>
 				<input type="text" id="lab_event_speaker_name" name="em_attributes[speaker]" value="">
 			</div>
 			<div class="event-attributes">
-				<label for="em_attributes[speaker_affiliation]">Affiliation</label>
+				<label for="em_attributes[Speaker_affiliation]">Affiliation</label>
 				<input type="text" name="em_attributes[speaker_affiliation]" value="">
 			</div>
 			<div class="event-attributes">
-				<label for="em_attributes[speaker_homepage]">Page internet du speaker : </label>
+				<label for="em_attributes[Speaker_homepage]">Page internet du speaker : </label>
 				<input type="text" name="em_attributes[speaker_homepage]" value="">
 			</div>
 			<?php lab_locate_template('forms/event/group.php',true); ?>
@@ -94,7 +94,6 @@ if( !empty($_REQUEST['success']) ){
                 <input type="hidden" name="data_privacy_consent" value="1">
 	</div>
 	<p class="submit">
-		<button id="lab_event_submit_button" class="button" type="button">Soumettre event</button>
 	    <?php if( empty($EM_Event->event_id) ): ?>
 	    <input type='submit' id="toto" class='button-primary' value='<?php echo esc_attr(sprintf( __('Submit %s','events-manager'), __('Event','events-manager') )); ?>' />
 	    <?php else: ?>
