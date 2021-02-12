@@ -36,12 +36,12 @@ if( !empty($_REQUEST['success']) ){
 				<input type="text" id="lab_event_speaker_name" name="em_attributes[Speaker]" value="">
 			</div>
 			<div class="event-attributes">
-				<label for="em_attributes[Speaker_affiliation]">Affiliation</label>
-				<input type="text" name="em_attributes[Speaker_affiliation]" value="">
+				<label for="em_attributes[Speaker affiliation]">Affiliation</label>
+				<input type="text" name="em_attributes[Speaker affiliation]" value="">
 			</div>
 			<div class="event-attributes">
-				<label for="em_attributes[Speaker_homepage]">Page internet du speaker : </label>
-				<input type="text" name="em_attributes[Speaker_homepage]" value="">
+				<label for="em_attributes[Speaker web site]">Page internet du speaker : </label>
+				<input type="text" name="em_attributes[Speaker web site]" value="">
 			</div>
 			<?php lab_locate_template('forms/event/group.php',true); ?>
 		</div>
