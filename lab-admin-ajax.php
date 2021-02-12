@@ -1393,8 +1393,9 @@ function lab_invitations_edit() {
 
 function lab_invitations_complete() {
   $token = $_POST['token'];
+  $missionId = lab_mission_get_id_by_token($token);
   $paramWaitingGroupLeader = AdminParams::get_param_by_slug('mswgl');
-  lab_invitations_editInvitation($token,array('status'=>$paramWaitingGroupLeader->id));
+  lab_invitations_editInvitation($missionId,array('status'=>$paramWaitingGroupLeader->id));
   $html = 'Un mail récapitulatif a été envoyé au responsable du groupe pour validation';
   $invite = lab_invitations_getByToken($token);
   $Iarray = json_decode(json_encode($invite), true);
@@ -1415,6 +1416,7 @@ function lab_invitations_complete() {
 }
 function lab_invitations_validate() {
   $token = $_POST['token'];
+  $missionId = lab_mission_get_id_by_token($token);
   date_default_timezone_set("Europe/Paris");
   $timeStamp=date("Y-m-d H:i:s",time());
   lab_invitations_addComment(array(
@@ -1422,9 +1424,9 @@ function lab_invitations_validate() {
     'timestamp'=> $timeStamp,
     'author_id'=> 0,
     'author_type'=> 0,
-    'invite_id'=>lab_invitations_getByToken($token)->id
+    'invite_id'=>$missionId
   )); 
-  lab_invitations_editInvitation($token,array('status'=>20));
+  lab_invitations_editInvitation($missionId,array('status'=>20));
   wp_send_json_success('La demande a été transmise à l\'administration');
 }
 
@@ -1561,10 +1563,11 @@ function lab_invitations_realCost() {
 
 function lab_invitations_add_realCost() {
   $token = $_POST['token'];
+  $missionId = lab_mission_get_id_by_token($token);
   $param = $_POST['value'];
   $forward_carbon_footprint = $_POST['forward_carbon_footprint'];
   $return_carbon_footprint = $_POST['return_carbon_footprint'];
-  lab_invitations_editInvitation($token,array('real_cost'=>$param, 'return_carbon_footprint'=>$return_carbon_footprint, 'forward_carbon_footprint' => $forward_carbon_footprint));
+  lab_invitations_editInvitation($missionId,array('real_cost'=>$param, 'return_carbon_footprint'=>$return_carbon_footprint, 'forward_carbon_footprint' => $forward_carbon_footprint));
   wp_send_json_success();
 }
 function lab_invitations_guestInfo() {
