@@ -54,7 +54,7 @@ function lab_mission_take_in_charge($missionId)
             'author_type'=> 0,
             'invite_id'=> $missionId
         )); 
-        lab_mission_set_status($missionId, "mswbm");
+        lab_mission_set_status($missionId, "mswgm");
     }
 }
 

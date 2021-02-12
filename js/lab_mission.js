@@ -116,23 +116,37 @@ jQuery(function($){
       url = (""+url).substr(0, url.indexOf("&"));
     }
     url  += "&tab=entry&token="+token;
-    let notif = data.notifs[id][0].notifs_number;
-    let test;
+    let notifNumber = data.notifs[id][0].notifs_number;
+    let notif;
     if(notif != 0) {
-      var span1 = $('<span />').attr("class", "lab-update-plugins count-" + notif);
-      var span2 = $('<span />').attr("class", "plugin-count").html(notif);
-      test = span1.append(span2);
+      var span1 = $('<span />').attr("class", "lab-update-plugins count-" + notifNumber);
+      var span2 = $('<span />').attr("class", "plugin-count").html(notifNumber);
+      notif = span1.append(span2);
     }
     //console.log("->"+url);
-    let aEdit = $('<a />').attr("class", "lab-page-title-action lab_keyring_key_edit").attr("href",url).attr("missionId", id).html("edit");
-    //let aEdit = $('<a />').attr("class", "page-title-action lab_keyring_key_edit").attr("missionId", id).html("edit")
+    let userId = $("#lab_mission_user_id").val();
+    let aTic = $('<a />').attr("class", "lab-page-title-action lab_mission_tic").attr("userId", userId).attr("missionId", id).html("tic");
+    let aEdit = $('<a />').attr("class", "lab-page-title-action lab_mission_edit").attr("href",url).attr("missionId", id).html("edit");
     let aDel = $('<a />').attr("class", "lab-page-title-action lab_budget_info_delete").attr("missionId", id).attr("id", "lab-delete-mission-button").html("X");
 
     $(aDel).click(function (){
       displayModalDeleteMission($(this).attr("missionId"));
     });
+    $(aTic).click(function (){
+      missionTakeInCharge($(this).attr("missionId"), $(this).attr("userId"));
+    });
 
-    return $('<td />').attr("class", "lab_keyring_icon").append(test).append(aEdit).append(aDel);   
+    return $('<td />').attr("class", "lab_keyring_icon").append(notif).append(aTic).append(aEdit).append(aDel);   
+  }
+
+  function missionTakeInCharge(missionId, userId) {
+    data = {
+      'action':"lab_mission_set_manager",
+      'id':missionId,
+      'managerId':userId,
+    };
+    callAjax(data, null, applyFilter, null, null);
+
   }
 
   function displayModalDeleteMission(missionId) {

@@ -1414,7 +1414,8 @@ function lab_invitations_validate() {
 function lab_mission_ajax_set_manager() {
   $missionId = $_POST['id'];
   $managerId = $_POST['managerId'];
-  lab_invitations_edit($missionId, ["manager_id"=>$managerId]);
+  lab_invitations_editInvitation($missionId, ["manager_id"=>$managerId]);
+  wp_send_json_success();
 }
 
 // Invitation prise en charge
