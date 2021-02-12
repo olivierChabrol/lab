@@ -78,6 +78,12 @@ function lab_mission_load($missionToken, $filters = null, $groupIds = null) {
     global $wpdb;
     $data = array();
     $data["filters"] = array();
+
+    $budgetManagerGroupIds = lab_admin_group_is_manager();
+    $leaderManagerGroupIds = lab_admin_group_is_manager(null, 2);
+    $isBudgetManager  = count($budgetManagerGroupIds) > 0;
+    $isLeaderOfAGroup = count($leaderManagerGroupIds) > 0;
+
     // by default load current year
     if ($filters == null)
     {
@@ -143,6 +149,11 @@ function lab_mission_load($missionToken, $filters = null, $groupIds = null) {
         }
     }
     $order = " ORDER BY m.`creation_time` DESC";
+    if (!$isBudgetManager) {
+        if (!$isLeaderOfAGroup) {
+            $where .= " AND m.host_id=".get_current_user_id();
+        }
+    }
     $sql = $select. $from .$join. $where. $order;
     $results = $wpdb->get_results($sql);
 

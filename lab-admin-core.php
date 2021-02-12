@@ -749,6 +749,26 @@ function lab_admin_group_add_manager($groupId, $userId, $userRole) {
 }
 
 /**
+ * Return groups where current user is the budget manager
+ *
+ * @param [int] $userId, if not provided, take get_current_user_id instead
+ * @param [int] $managerType, if not provided, take budget manager : 1
+ * @return array of group ids current user is the budget manager
+ */
+function lab_admin_group_is_manager($userId = null, $managerType = 1) {
+    global $wpdb;
+    if ($userId == null) {
+        $userId = get_current_user_id();
+    }
+    $results = $wpdb->get_results("SELECT group_id FROM `".$wpdb->prefix."lab_group_manager` WHERE `user_id`=".$userId." AND manager_type=$managerType");
+    $groupIds = [];
+    foreach ($results as $r) {
+        $groupIds[] = $r->group_id;
+    }
+    return $groupIds;
+}
+
+/**
  * Get the favorite group of a user, 
  *
  * @param bigint $userId

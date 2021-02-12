@@ -138,7 +138,7 @@ function lab_event_of_the_week($param)
 
 function lab_event($param)
 {
-  print(lab_locate_template('forms/event-editor.php',true, array('args'=>$args)));
+  print(lab_locate_template('forms/event-editor.php',true, array('args'=>$param)));
 }
 
 /***********************************************************************************************************************

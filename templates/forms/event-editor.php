@@ -31,6 +31,18 @@ if( !empty($_REQUEST['success']) ){
 		<div class="inside event-form-name">
 			<input type="text" name="event_name" id="event-name" value="<?php echo esc_attr($EM_Event->event_name,ENT_QUOTES); ?>" /><?php echo $required; ?>
 			<br />
+			<div class="event-attributes">
+				<label for="em_attributes[speaker]">Nom du speaker</label>
+				<input type="text" id="lab_event_speaker_name" name="em_attributes[speaker]" value="">
+			</div>
+			<div class="event-attributes">
+				<label for="em_attributes[speaker_affiliation]">Affiliation</label>
+				<input type="text" name="em_attributes[speaker_affiliation]" value="">
+			</div>
+			<div class="event-attributes">
+				<label for="em_attributes[speaker_homepage]">speaker_homepage</label>
+				<input type="text" name="em_attributes[speaker_homepage]" value="">
+			</div>
 			<?php lab_locate_template('forms/event/group.php',true); ?>
 		</div>
                 <div class="event-extra-details">
@@ -68,9 +80,7 @@ if( !empty($_REQUEST['success']) ){
 					<?php esc_html_e( 'Details about the event.', 'events-manager')?> <?php esc_html_e( 'HTML allowed.', 'events-manager')?>
 				<?php endif; ?>
 			</div>
-			<div class="event-extra-details">
-				<?php if(get_option('dbem_attributes_enabled')) { lab_locate_template('forms/event/attributes-public.php',true); }  ?>
-			</div>
+			
 		</div>
 		
 		<?php if( $EM_Event->can_manage('upload_event_images','upload_event_images') ): ?>
