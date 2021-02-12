@@ -118,7 +118,7 @@ jQuery(function($){
     url  += "&tab=entry&token="+token;
     let notifNumber = data.notifs[id][0].notifs_number;
     let notif;
-    if(notif != 0) {
+    if(notifNumber != 0) {
       var span1 = $('<span />').attr("class", "lab-update-plugins count-" + notifNumber);
       var span2 = $('<span />').attr("class", "plugin-count").html(notifNumber);
       notif = span1.append(span2);
