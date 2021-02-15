@@ -270,7 +270,7 @@ function lab_invitations_addComment($fields) {
     $tab_ids[$manager_id] = "";
   }
   foreach($tab_ids as $key=>$value){
-    if($fields["author_id"] != $key) {
+    if($fields["author_id"] != $key && $key != "system") {
       lab_invitations_comment_notif($key, $fields["invite_id"], $wpdb->insert_id);
     }
   }

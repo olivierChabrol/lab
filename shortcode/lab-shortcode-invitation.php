@@ -549,7 +549,7 @@ function lab_invitations_mail($type=1, $guest, $invite) {
             $date = date_create_from_format("Y-m-d H:i:s", $invite["creation_time"]);
             $content = "<p><i>".strftime('%A %d %B %G - %H:%M',$date->getTimestamp())."</i></p>";
             //$content .= "<p>".get_locale()."</p>";
-            $content .= "<p>".esc_html__("Votre demande d'invitation a bien été prise en compte",'lab').".<br>".esc_html__("It has been forwarded to your host",'lab').".</p>";
+            $content .= "<p>".esc_html__("Yoru invitation request has been taken into account",'lab').".<br>".esc_html__("It has been forwarded to your host",'lab').".</p>";
             $content .= lab_InviteForm('',$guest,$invite);
             // unload_textdomain("lab");
             // add_filter('locale','lab_invitations_switchLocale',10);
@@ -624,11 +624,11 @@ function lab_mission_summary($invite) {
         $chargesList .= "<li><i>$el : </i>$value €</li>";
     }
     $chargesList .= '</ul>';
-    $out = '<div class="lab_invite_field"><h2>'.esc_html__("Récapitulatif de la demande de mission",'lab').' : <i class="fas fa-arrow-up"></i></h2>';
-    $out .= '<p><u>'.esc_html__("Informations personnelles",'lab').' :</u></p>
+    $out = '<div class="lab_invite_field"><h2>'.esc_html__("Summary of the mission request",'lab').' : <i class="fas fa-arrow-up"></i></h2>';
+    $out .= '<p><u>'.esc_html__("Personnal informations",'lab').' :</u></p>
                 <ul>
-                <li><i>'.esc_html__("Prénom",'lab').' : </i>'.$user->first_name.'</li>
-                <li><i>'.esc_html__("Nom",'lab').' : </i>'.$user->last_name.'</li>
+                <li><i>'.esc_html__("First name",'lab').' : </i>'.$user->first_name.'</li>
+                <li><i>'.esc_html__("Last name",'lab').' : </i>'.$user->last_name.'</li>
                 <li><i>'.esc_html__("Email",'lab').' : </i>'.$user->email.'</li>
             </ul>';
     $out .= lab_mission_display_travels($travels);
@@ -698,7 +698,7 @@ function lab_InviteForm($who,$guest,$invite) {
             <ul>
                 <li><i>'.esc_html__("Host name",'lab').' : </i>'.$host->first_name.' '.$host->last_name.'</li>
                 <li><i>'.esc_html__("Mission objective",'lab').' : </i>'.(is_numeric($invite['mission_objective']) ? AdminParams::get_param($invite['mission_objective']) : $invite['mission_objective']).'</li>
-                <li><i>'.esc_html__("Need a hostel",'lab').' : </i>'.($invite['needs_hostel'] == 1 ? esc_html__('oui','lab') : esc_html__('non','lab')).'</li>
+                <li><i>'.esc_html__("Need a hostel",'lab').' : </i>'.($invite['needs_hostel'] == 1 ? esc_html__('yes','lab') : esc_html__('no','lab')).'</li>
                 <li><i>'.esc_html__("Mean of transport",'lab').' :  </i>
                 <ul>
                     <li><i>'.esc_html__("To the I2M",'lab').' : </i>'.$invite['travel_mean_to'].'</li>
@@ -773,29 +773,6 @@ function lab_invitations_getStatusName($status) {
         return "<span style='color:#289600' class='lab_infoBulle' title='".esc_html__("This invitation is complete.","lab")."'>"
             .esc_html__("Complete","lab")."</span>";
     }
-    /*
-    switch ($status) {
-        case 1:
-            return "<span style='color:#F75C03' class='lab_infoBulle' title='".esc_html__("This invitation has been created, you can now complete all the information and send it to the group leader for validation.","lab")."'>"
-            .esc_html__("Created","lab")."</span>";
-        break;
-        case 10: 
-            return "<span style='color:#00c49f' class='lab_infoBulle' title='".esc_html__("This invitation has been completed, the person in charge can now validate it to send it to the budget department.","lab")."'>"
-            .esc_html__("Completed","lab")."</span>";
-        break;
-        case 20:
-            return "<span style='color:#c00900' class='lab_infoBulle' title='".esc_html__("This invitation has been validated and sent to the budget department.","lab")."'>"
-            .esc_html__("Validated","lab")."</span>";
-        break; 
-        case 30:
-            return "<span style='color:#289600' class='lab_infoBulle' title='".esc_html__("CThis invitation was taken care of by an administrative staff member of the budget department.","lab")."'>"
-            .esc_html__("Taken care of","lab")."</span>";
-        break; 
-        default:
-            # code...
-            break;
-    }
-    //*/
 }
 function lab_invite_prefGroupsList($user_id) {
     $prefGroups = lab_invitations_getPrefGroups($user_id);
@@ -809,5 +786,4 @@ function lab_invite_prefGroupsList($user_id) {
     }
     return $out;
 }
-
 ?>
