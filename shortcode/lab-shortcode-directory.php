@@ -128,7 +128,7 @@ function lab_directory($param) {
         foreach($functions as $fct)
         {
             $params = AdminParams::get_param_by_slug($fct);
-            if (count($param) > 0)
+            if (count($params) > 0)
             {
                 foreach($params as $param)
                 {
