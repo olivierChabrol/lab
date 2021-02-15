@@ -108,7 +108,7 @@ class AdminParams {
         global $wpdb;
         $sql = "SELECT * FROM `".$wpdb->prefix."lab_params` WHERE slug='".$slug."'";
         $results = $wpdb->get_results($sql);
-        if (count($results) == 1) {
+        if (count($results) > 0) {
             return $results[0];
         }
         return null;
