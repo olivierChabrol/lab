@@ -88,7 +88,7 @@ function lab_present_select($param) {
     $str .= "<a href=\"".$current_url."/?date=".date("Y-m-d",$previousWeek)."\"><i class='fas fa-chevron-circle-left'></i></a> Semaine du  : ".date("d-m-Y",$startDay)." au ".date("d-m-Y",$endDay)." <a href=\"".$current_url."/?date=".date("Y-m-d",$nextWeek)."\"><i class='fas fa-chevron-circle-right'></i></a>";
     $str .= "&nbsp;<a href=\"/wp-content/plugins/lab/lab_export.php?do=presentOfTheWeek&filename=present.xlsx&param=".date("d-m-Y",$startDay)."\" targer=\"_export\">export</a>";
     if (!is_user_logged_in() && $externalUserAllowed) {
-        $str .=  "<div id=\"a_external_presency\" class=\"float-right\"><a href=\"#\" title=\"Add your presency\">" . esc_html("Ajouter une présence en tant qu'invité", "lab") . "<i class=\"fas fa-plus-circle fa-3x text-success\"></i></a></div>";
+        $str .=  "<div id=\"a_external_presency\" class=\"float-right\"><a href=\"#\" title=\"Add your presency\">" . esc_html("Add a presence as a host", "lab") . "<i class=\"fas fa-plus-circle fa-3x text-success\"></i></a></div>";
     }
     $listSite = lab_admin_list_site();
     $colors[] = array();
@@ -142,11 +142,11 @@ function lab_present_select($param) {
                 <thead class=\"thead-dark\">
                     <tr>
                         <th style=\"width: 16.66%\">&nbsp;</th>
-                        <th colspan=\"2\" class=\"planningHeader\">" . esc_html__("Lundi", "lab")    . " " . date("d", $datesOfTheWeek[0]) . "</th>
-                        <th colspan=\"2\" class=\"planningHeader\">" . esc_html__("Mardi", "lab")    . " " . date("d", $datesOfTheWeek[1]) . "</th>
-                        <th colspan=\"2\" class=\"planningHeader\">" . esc_html__("Mercredi", "lab") . " " . date("d", $datesOfTheWeek[2]) . "</th>
-                        <th colspan=\"2\" class=\"planningHeader\">" . esc_html__("Jeudi", "lab")    . " " . date("d", $datesOfTheWeek[3]) . "</th>
-                        <th colspan=\"2\" class=\"planningHeader\">" . esc_html__("Vendredi", "lab") . " " . date("d", $datesOfTheWeek[4]) . "</th>
+                        <th colspan=\"2\" class=\"planningHeader\">" . esc_html__("Monday", "lab")    . " " . date("d", $datesOfTheWeek[0]) . "</th>
+                        <th colspan=\"2\" class=\"planningHeader\">" . esc_html__("Tuesday", "lab")    . " " . date("d", $datesOfTheWeek[1]) . "</th>
+                        <th colspan=\"2\" class=\"planningHeader\">" . esc_html__("Wednesday", "lab") . " " . date("d", $datesOfTheWeek[2]) . "</th>
+                        <th colspan=\"2\" class=\"planningHeader\">" . esc_html__("Thursday", "lab")    . " " . date("d", $datesOfTheWeek[3]) . "</th>
+                        <th colspan=\"2\" class=\"planningHeader\">" . esc_html__("Friday", "lab") . " " . date("d", $datesOfTheWeek[4]) . "</th>
                     </tr>
                 </thead>
                 <tbody>";
@@ -267,7 +267,7 @@ function lab_present_choice($param) {
     }
 
     $choiceStr = "<br/><hr><div>
-        <h3>".esc_html__("Je serai présent·e", "lab")."</h3>
+        <h3>".esc_html__("I will be present", "lab")."</h3>
             <div class=\"input-group mb-3\">Rejoindre un groupe de travail : ".
             //lab_html_select_str("workGroupFollow", "workGroupFollow", "", get_workgroup_of_the_week, $startDay, array("label"=>"None","value"=>""), null, array("id"=>"id", "value"=>"name"))."</div>
             lab_html_select_str("workGroupFollow", "workGroupFollow", "", "getWorgroups", $startDay, array("label"=>"None","value"=>""), null, null, array("date"=>"date", "hour_start"=>"hour_start", "hour_end"=>"hour_end", "name"=>"name", "site"=>"site")).
@@ -276,26 +276,26 @@ function lab_present_choice($param) {
             <input id='userId' name='userId' type='hidden' value='" . get_current_user_id() . "' />
             <input id=\"external\" type=\"hidden\"  val=\"0\"/>
 
-            <label for='date-open'>".esc_html__("Le", "lab")."</label>
+            <label for='date-open'>".esc_html__("The", "lab")."</label>
             <input type='date' name='date-open' id='date-open' class='form-control datechk'/>
             <div id='messErr_date-open' class='invalid-feedback'></div>
            
             <label for='hour-open'></label>
             <input type='time' name='hour-open' id='hour-open' min='07:00' max='20:00' required class='form-control'/>
             <div id='messErr_hour-open' class='invalid-feedback'></div>
-            <label for='hour-close'>".esc_html__("Jusqu'à", "lab")."</label>
+            <label for='hour-close'>".esc_html__("To", "lab")."</label>
             <input type='time' name='hour-close' id='hour-close' min='07:00' max='20:00' required class='form-control'/>
             <div id='messErr_hour-close' class='invalid-feedback'></div>
-            <label for='site-selected'>".esc_html__("sur le site", "lab")."</label>
+            <label for='site-selected'>".esc_html__("on site", "lab")."</label>
             " . lab_html_select_str("siteId", "siteName", "custom-select", "lab_admin_list_site") . "</div>
             <div class=\"input-group mb-3\" id=\"divNewWorkingGroup\">Créer un groupe de travail : <input type='text' id='workGroupName' class='form-control'/></div>
             <div class=\"input-group mb-3\">
             <div class=\"form-group\">
-                <label for='comment'>".esc_html__("Commentaire", "lab")."</label>
+                <label for='comment'>".esc_html__("Comment", "lab")."</label>
                 <textarea id=\"comment\" rows=\"4\" mandatory=\"".$commentMandatory."\" cols=\"50\" class=\"form-control rounded-0\" maxlength=\"200\" placeholder=\"200 caractères maximum\"></textarea>
             </div>
             </div>
-            <button class=\"btn btn-success\" id=\"lab_presence_button_save\">".esc_html__("Sauvegarder", "lab")."</button>
+            <button class=\"btn btn-success\" id=\"lab_presence_button_save\">".esc_html__("Save", "lab")."</button>
         </div>";
 
     if (isset($_POST['envoi'])) {
@@ -315,7 +315,7 @@ function lab_present_choice($param) {
         $wpdb->insert('wp_lab_presence', $data, $format);
     }
 
-    $choiceStr .= "<div style='margin-top: 2em'><h3>".esc_html__("Je souhaite modifier une de mes présences", "lab")."</h3>";
+    $choiceStr .= "<div style='margin-top: 2em'><h3>".esc_html__("I would like to change one of my attendance", "lab")."</h3>";
 
     //requete pour connaitre les présences de l'utilisateur
     global $wpdb;
@@ -331,10 +331,10 @@ function lab_present_choice($param) {
                         <thead>
                             <tr>
                                 <th scope='col'>#</th>
-                                <th scope='col'>".esc_html__("Le", "lab")."</th>
-                                <th scope='col'>".esc_html__("De","lab")."</th>
-                                <th scope='col'>".esc_html__("Jusqu'à","lab")."</th>
-                                <th scope='col'>".esc_html__("Sur","lab")."</th>
+                                <th scope='col'>".esc_html__("The", "lab")."</th>
+                                <th scope='col'>".esc_html__("From","lab")."</th>
+                                <th scope='col'>".esc_html__("To","lab")."</th>
+                                <th scope='col'>".esc_html__("On","lab")."</th>
                                 <th scope='col'>".esc_html__("Action","lab")."</th>
                             </tr>
                         </thead>
@@ -478,16 +478,16 @@ function deleteDiv() {
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">'.esc_html__("Supprimer", "lab").'</h4>
+                    <h4 class="modal-title">'.esc_html__("Delete", "lab").'</h4>
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
                 <div class="modal-body">
                     <input id="lab_presence_del_presenceId" name="userId" type="hidden"/>
                     <input id="lab_presence_del_userId" name="userId" type="hidden"/>
-                    ' . esc_html__("Êtes vous certain·e de vouloir supprimer cette présence ?", "lab") . '
+                    ' . esc_html__("Are you sure you want to remove this presence ?", "lab") . '
                 </div>
                 <div class="modal-footer">
-                    <button type="button" id="lab_presence_del_button" class="btn btn-danger delButton" data-dismiss="modal">'. esc_html__("Oui", "lab")   .'</button>
+                    <button type="button" id="lab_presence_del_button" class="btn btn-danger delButton" data-dismiss="modal">'. esc_html__("Yes", "lab")   .'</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">'. esc_html__("Cancel","lab").'</button>
                 </div>
             </div>

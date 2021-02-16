@@ -109,17 +109,17 @@
     </div>
     <!-- Dialogue de confirmation modal s'affichant lorsque l'utilisateur essaie de terminer un prêt -->
     <div id="lab_keyring_endLoan_dialog" class="modal">
-      <p><?php esc_html_e('Voulez-vous vraiment terminer ce prêt ?','lab'); ?></p>
-      <p><?php esc_html_e('Date de rendu','lab'); ?> : <span id="lab_keyring_endLoan_date"><?php esc_html_e("Aujourd'hui",'lab') ?></span></p>
+      <p><?php esc_html_e('Do you really want to en this loan ?','lab'); ?></p>
+      <p><?php esc_html_e('Date of return','lab'); ?> : <span id="lab_keyring_endLoan_date"><?php esc_html_e("Today",'lab') ?></span></p>
       <div id="lab_keyring_delete_dialog_options">
         <a href="#" rel="modal:close"><?php esc_html_e('Cancel','lab'); ?></a>
         <a href="#" rel="modal:close" id="lab_keyring_endLoan_confirm" keyid=""><?php esc_html_e('Confirm','lab'); ?></a>
       </div>
     </div>
     <!-- Prêts en cour -->
-    <h2><?php esc_html_e('Liste des clés','lab'); ?></h2>
+    <h2><?php esc_html_e('Key list','lab'); ?></h2>
     <div id="lab_keyring_search_options">
-      <input type="text" id="lab_keyring_keySearch" placeholder="<?php esc_html_e('Rechercher une clé','lab'); ?>"/>
+      <input type="text" id="lab_keyring_keySearch" placeholder="<?php esc_html_e('Search a key','lab'); ?>"/>
       <div>
         <label><?php esc_html_e('Page','lab'); ?> :</label>
         <select id="lab_keyring_page">
@@ -127,12 +127,12 @@
         </select>
       </div>
       <div>
-        <label><?php esc_html_e('Nombre de résultats par page','lab'); ?> :</label>
+        <label><?php esc_html_e('Result number per page','lab'); ?> :</label>
         <select id="lab_keyring_keysPerPage">
           <option value="10">10</option>
           <option value="25">25</option>
           <option value="50">50</option>
-          <option value="custom"><?php esc_html_e('Autre','lab'); ?> </option>
+          <option value="custom"><?php esc_html_e('Other','lab'); ?> </option>
         </select>
         <input type="text" id="lab_keyring_keysPerPage_otherValue" style="width:5em" hidden placeholder="100"/>
       </div>
@@ -144,13 +144,13 @@
         <tr>
           <th scope="col"><?php esc_html_e('ID','lab'); ?></th>
           <th scope="col"><?php esc_html_e('Type','lab'); ?></th>
-          <th scope="col"><?php esc_html_e('Numéro','lab'); ?></th>
-          <th scope="col"><?php esc_html_e('Bureau','lab'); ?></th>
-          <th scope="col"><?php esc_html_e('Marque','lab'); ?></th>
+          <th scope="col"><?php esc_html_e('Number','lab'); ?></th>
+          <th scope="col"><?php esc_html_e('Office','lab'); ?></th>
+          <th scope="col"><?php esc_html_e('Brand','lab'); ?></th>
           <th scope="col"><?php esc_html_e('Site','lab'); ?></th>
           <th scope="col"><?php esc_html_e('State','lab'); ?></th>
-          <th scope="col"><?php esc_html_e('Commentaire','lab'); ?></th>
-          <th scope="col" class="lab_keyring_icon"><?php esc_html_e('Dispo','lab'); ?></th>
+          <th scope="col"><?php esc_html_e('Comment','lab'); ?></th>
+          <th scope="col" class="lab_keyring_icon"><?php esc_html_e('Available','lab'); ?></th>
           <th scope="col" class="lab_keyring_icon"><?php esc_html_e('Actions','lab'); ?></th>
         </tr>
       </thead>
@@ -159,12 +159,12 @@
       <tfoot>
         <tr style="display:none;" class="lab_keyring_pageNav">
           <td scope="col" class="lab_keyring_icon" colspan='9'>
-            <span class="lab_keyring_prevPage"><?php esc_html_e('Page précédente','lab'); ?> &#8656;</span>
-            <span class="lab_keyring_nextPage">&#8658; <?php esc_html_e('Page suivante','lab'); ?></span>
+            <span class="lab_keyring_prevPage"><?php esc_html_e('Previous page','lab'); ?> &#8656;</span>
+            <span class="lab_keyring_nextPage">&#8658; <?php esc_html_e('Next page','lab'); ?></span>
           </td>
         </tr>
         <tr style="display:none;" id="lab_keyring_editForm">
-        <td scope="col"><?php esc_html_e('Modifier','lab'); ?> :</td>
+        <td scope="col"><?php esc_html_e('Edit','lab'); ?> :</td>
           <td scope="col">
             <select id="lab_keyring_edit_type">
               <?php //Récupère la liste des types de clés existants
@@ -177,13 +177,13 @@
             </select>
           </td>
           <td scope="col">
-            <input type="text" id="lab_keyring_edit_number" placeholder="<?php esc_html_e('numéro','lab'); ?>"/>
+            <input type="text" id="lab_keyring_edit_number" placeholder="<?php esc_html_e('Number','lab'); ?>"/>
           </td>
           <td scope="col">
-            <input type="text" id="lab_keyring_edit_office" placeholder="<?php esc_html_e('bureau','lab'); ?>"/>
+            <input type="text" id="lab_keyring_edit_office" placeholder="<?php esc_html_e('Office','lab'); ?>"/>
           </td>
           <td scope="col">
-            <input type="text" id="lab_keyring_edit_brand" placeholder="<?php esc_html_e('Marque','lab'); ?>"/>
+            <input type="text" id="lab_keyring_edit_brand" placeholder="<?php esc_html_e('Brand','lab'); ?>"/>
           </td>
           <td scope="col">
             <select id="lab_keyring_edit_site">
@@ -210,12 +210,12 @@
             </select>
           </td>
           <td scope="col" colspan="2">
-          <input type="text" id="lab_keyring_edit_commentary" placeholder="<?php echo esc_html__('Commentaire','lab').'('.esc_html__('facultatif','lab').')'; ?>"/>
+          <input type="text" id="lab_keyring_edit_commentary" placeholder="<?php echo esc_html__('Comment','lab').'('.esc_html__('optionnal','lab').')'; ?>"/>
           </td>
-          <td scope="col"><button class="page-title-action" id="lab_keyring_editForm_submit" keyid=""><?php esc_html_e('Modifier','lab'); ?></button></td>
+          <td scope="col"><button class="page-title-action" id="lab_keyring_editForm_submit" keyid=""><?php esc_html_e('Edit','lab'); ?></button></td>
         </tr>
         <tr id="lab_keyring_newForm">
-          <td scope="col"><?php esc_html_e('Nouvelle','lab'); ?> :</td>
+          <td scope="col"><?php esc_html_e('New','lab'); ?> :</td>
           <td scope="col">
             <select id="lab_keyring_newKey_type">
               <?php //Récupère la liste des types de clés existants
@@ -235,7 +235,7 @@
             <input type="text" id="lab_keyring_newKey_office" placeholder="102A"/>
           </td>
           <td scope="col">
-            <input type="text" id="lab_keyring_newKey_brand" placeholder="<?php esc_html_e('Marque','lab'); ?>"/>
+            <input type="text" id="lab_keyring_newKey_brand" placeholder="<?php esc_html_e('Brand','lab'); ?>"/>
           </td>
           <!-- 
           <?php esc_html_e('ok','lab'); ?>
@@ -255,9 +255,9 @@
             </select>
           </td>
           <td scope="col" colspan="2">
-          <input type="text" id="lab_keyring_newKey_commentary" placeholder="<?php echo esc_html__('Commentaire','lab').'('.esc_html__('facultatif','lab').')'; ?>"/>
+          <input type="text" id="lab_keyring_newKey_commentary" placeholder="<?php echo esc_html__('Comment','lab').'('.esc_html__('optionnal','lab').')'; ?>"/>
           </td>
-          <td scope="col"><button class="page-title-action" id="lab_keyring_newKey_create"><?php esc_html_e('Créer','lab'); ?></button></td>
+          <td scope="col"><button class="page-title-action" id="lab_keyring_newKey_create"><?php esc_html_e('Create','lab'); ?></button></td>
         </tr>
       </tfoot>
     </table>
@@ -270,16 +270,16 @@
   function lab_keyring_tab_users() {
     ?>
     <div id="lab_keyring_endLoan_dialog" class="modal">
-      <p><?php esc_html_e('Voulez-vous vraiment terminer ce prêt ?','lab'); ?></p>
-      <p><?php esc_html_e('Date de rendu : ','lab'); ?><span id="lab_keyring_endLoan_date"><?php esc_html_e("Aujourd'hui",'lab') ?></span></p>
+      <p><?php esc_html_e('Do you really want to end this loan ?','lab'); ?></p>
+      <p><?php esc_html_e('Return date : ','lab'); ?><span id="lab_keyring_endLoan_date"><?php esc_html_e("Today",'lab') ?></span></p>
       <div id="lab_keyring_delete_dialog_options">
         <a href="#" rel="modal:close"><?php esc_html_e('Cancel','lab'); ?></a>
         <a href="#" rel="modal:close" id="lab_keyring_endLoan_confirm" keyid=""><?php esc_html_e('Confirm','lab'); ?></a>
       </div>
     </div>
-    <h2><?php esc_html_e('Liste des prêts en cours','lab'); ?></h2>
+    <h2><?php esc_html_e('Ongoing loan list','lab'); ?></h2>
     <div id="lab_keyring_search_options">
-      <input type="text" id="lab_keyring_loanSearch" placeholder="<?php esc_html_e('Rechercher un utilisateur','lab'); ?>"/>
+      <input type="text" id="lab_keyring_loanSearch" placeholder="<?php esc_html_e('Search a user','lab'); ?>"/>
       <div>
         <label><?php esc_html_e('Page','lab'); ?> :</label>
         <select id="lab_keyring_page">
@@ -287,12 +287,12 @@
         </select>
       </div>
       <div>
-        <label><?php esc_html_e('Nombre de résultats par page','lab'); ?> :</label>
+        <label><?php esc_html_e('Result number per page','lab'); ?> :</label>
         <select id="lab_keyring_keysPerPage">
           <option value="10">10</option>
           <option value="25">25</option>
           <option value="50">50</option>
-          <option value="custom"><?php esc_html_e('Autre','lab'); ?> :</option>
+          <option value="custom"><?php esc_html_e('other','lab'); ?> :</option>
         </select>
         <input type="text" id="lab_keyring_keysPerPage_otherValue" style="width:5em" hidden placeholder="100"/>
       </div>
@@ -309,8 +309,8 @@
         <tfoot>
           <tr style="display:none;" class="lab_keyring_pageNav">
             <td scope="col" class="lab_keyring_icon" colspan='9'>
-              <span class="lab_keyring_prevPage"><?php esc_html_e('Page précédente','lab'); ?> &#8656;</span>
-              <span class="lab_keyring_nextPage">&#8658; <?php esc_html_e('Page suivante','lab'); ?></span>
+              <span class="lab_keyring_prevPage"><?php esc_html_e('Previous page','lab'); ?> &#8656;</span>
+              <span class="lab_keyring_nextPage">&#8658; <?php esc_html_e('Next page','lab'); ?></span>
             </td>
           </tr>
         </tfoot>
@@ -326,26 +326,26 @@
     ?>
     <tr>
       <th scope="col"><?php esc_html_e('ID','lab'); ?></th>
-      <th scope="col"><?php esc_html_e('Clé','lab'); ?></th>
-      <th scope="col"><?php esc_html_e('Référent','lab'); ?></th>
-      <th scope="col"><?php esc_html_e('Utilisateur','lab'); ?></th>
-      <th scope="col"><?php esc_html_e('Début','lab'); ?></th>
-      <th scope="col"><?php esc_html_e('Échéance','lab'); ?></th>
-      <th scope="col"><?php esc_html_e('Commentaire','lab'); ?></th>
-      <th scope="col" class="lab_keyring_icon"><?php esc_html_e('Terminé','lab'); ?></th>
+      <th scope="col"><?php esc_html_e('Key','lab'); ?></th>
+      <th scope="col"><?php esc_html_e('Referent','lab'); ?></th>
+      <th scope="col"><?php esc_html_e('User','lab'); ?></th>
+      <th scope="col"><?php esc_html_e('Start','lab'); ?></th>
+      <th scope="col"><?php esc_html_e('Deadline','lab'); ?></th>
+      <th scope="col"><?php esc_html_e('Comment','lab'); ?></th>
+      <th scope="col" class="lab_keyring_icon"><?php esc_html_e('Finished','lab'); ?></th>
       <th scope="col" class="lab_keyring_icon"><?php esc_html_e('Actions','lab'); ?></th>
     </tr>
     <?php
   }
   function lab_keyring_loanForm($tab) {
     ?>
-    <h2 id="lab_keyring_loan_title"><?php esc_html_e('Gestion des prêts','lab'); ?></h2>
+    <h2 id="lab_keyring_loan_title"><?php esc_html_e('Loan management','lab'); ?></h2>
     <img id="lab_keyring_loading_gif" width="60" style="display:none" height="60" src="https://i.ya-webdesign.com/images/loading-png-gif.gif"/>
     <div class="lab_keyring_loans_management" style="display: none;">
-      <h3 style="display:none;" class="lab_keyring_loan_new"><?php esc_html_e('Nouveau prêt','lab'); ?></h3>
+      <h3 style="display:none;" class="lab_keyring_loan_new"><?php esc_html_e('New loan','lab'); ?></h3>
       <div style="display:none;" class="lab_keyring_loan_current">
-        <h3><?php esc_html_e('Prêt en cours','lab'); ?></h3>
-        <h4><button class="lab_keyring_loanContract lab_keyring_loanform_actions"><?php esc_html_e('Afficher Reçu','lab'); ?></button></h4>
+        <h3><?php esc_html_e('Ongoing loan','lab'); ?></h3>
+        <h4><button class="lab_keyring_loanContract lab_keyring_loanform_actions"><?php esc_html_e('Show receipt','lab'); ?></button></h4>
       </div>
       <div id="lab_keyring_loanform">
         <table id="lab_keyring_loanform_table">
@@ -367,15 +367,15 @@
               <td id="lab_keyring_loanform_key_id"></td>
             </tr>
             <tr>
-              <th><?php esc_html_e('Numéro','lab'); ?></th>
+              <th><?php esc_html_e('Number','lab'); ?></th>
               <td id="lab_keyring_loanform_key_number"></td>
             </tr>
             <tr>
-              <th><?php esc_html_e('Bureau','lab'); ?></th>
+              <th><?php esc_html_e('Office','lab'); ?></th>
               <td id="lab_keyring_loanform_key_office"></td>
             </tr>
             <tr>
-              <th><?php esc_html_e('Marque','lab'); ?></th>
+              <th><?php esc_html_e('Brand','lab'); ?></th>
               <td id="lab_keyring_loanform_key_brand"></td>
             </tr>
             <tr>
@@ -392,34 +392,34 @@
               </td>
             </tr>
             <tr>
-              <th><?php esc_html_e('Commentaire','lab'); ?></th>
+              <th><?php esc_html_e('Comment','lab'); ?></th>
               <td id="lab_keyring_loanform_key_commentary"></td>
             </tr>
           </tbody>
         </table>
         <div id="lab_keyring_loanform_Useroptions">
-          <label for="lab_keyring_loanform_referent"><?php esc_html_e('Référent','lab'); ?> : </label>
+          <label for="lab_keyring_loanform_referent"><?php esc_html_e('Referent','lab'); ?> : </label>
           <input id="lab_keyring_loanform_referent" type="text" default_id="<?php echo get_current_user_id();?>" default="<?php echo wp_get_current_user()->display_name;?>"/>
-          <label for="lab_keyring_loanform_user"><?php esc_html_e('Usager','lab'); ?> :</label>
+          <label for="lab_keyring_loanform_user"><?php esc_html_e('User','lab'); ?> :</label>
           <input type="text" name="lab_keyring_loanform_user" id="lab_keyring_loanform_user"/>
         </div>
         <div id="lab_keyring_loanform_dateOptions">
-          <label for="lab_keyring_loanform_start_date"><?php esc_html_e('Date de début','lab'); ?> :</label>
+          <label for="lab_keyring_loanform_start_date"><?php esc_html_e('Start date','lab'); ?> :</label>
           <input type="date" id="lab_keyring_loanform_start_date"/>
-          <label for=""><?php esc_html_e('Date de fin','lab'); ?> : <em class="lab_keyring_loan_new">(<?php esc_html_e('facultatif','lab'); ?>)</em> </label>
+          <label for=""><?php esc_html_e('End date','lab'); ?> : <em class="lab_keyring_loan_new">(<?php esc_html_e('optionnal','lab'); ?>)</em> </label>
           <input type="date" id="lab_keyring_loanform_end_date"/>
         </div>
         <div id="lab_keyring_loanform_actions">
-          <textarea id="lab_keyring_loanform_commentary" placeholder="<?php esc_html_e('Commentaire faculatif','lab'); ?>..."></textarea>
+          <textarea id="lab_keyring_loanform_commentary" placeholder="<?php esc_html_e('Optionnal comment','lab'); ?>..."></textarea>
           <label><?php esc_html_e('Actions','lab'); ?></label>
-          <button class="page-title-action lab_keyring_loanform_actions lab_keyring_loan_new" style="display:none" id="lab_keyring_loanform_create"><?php esc_html_e('Créer le prêt','lab'); ?></button>
-          <button class="page-title-action lab_keyring_loanform_actions lab_keyring_loan_current" style="display:none" id="lab_keyring_loanform_edit"><?php esc_html_e('Modifier le prêt','lab'); ?></button>
-          <button class="page-title-action lab_keyring_loanform_actions lab_keyring_loan_current" style="display:none" id="lab_keyring_loanform_end"><?php esc_html_e('Marquer comme rendu','lab'); ?></button>
+          <button class="page-title-action lab_keyring_loanform_actions lab_keyring_loan_new" style="display:none" id="lab_keyring_loanform_create"><?php esc_html_e('Create loan','lab'); ?></button>
+          <button class="page-title-action lab_keyring_loanform_actions lab_keyring_loan_current" style="display:none" id="lab_keyring_loanform_edit"><?php esc_html_e('Edit loan','lab'); ?></button>
+          <button class="page-title-action lab_keyring_loanform_actions lab_keyring_loan_current" style="display:none" id="lab_keyring_loanform_end"><?php esc_html_e('Mark as returned','lab'); ?></button>
         </div>
       </div>
     </div>
     <div id="lab_keyring_all_loans" selector="" style="display: none;">
-    <h3><?php $tab == 'default' ? esc_html_e('Historique des prêts pour cette clé','lab') : esc_html_e("Historique des prêts de l'utilisateur",'lab') ?><span id="lab_keyring_loans_title"></span> :</h3>
+    <h3><?php $tab == 'default' ? esc_html_e('Loan historic for this key','lab') : esc_html_e("User loan history",'lab') ?><span id="lab_keyring_loans_title"></span> :</h3>
     <table class="widefat fixed lab_keyring_table">
       <thead>
         <?php lab_keyring_loansHead();?>
@@ -449,8 +449,8 @@
         }
       }
       $element->available == 1 ?
-                  $output .= '<td scope="col" class="lab_keyring_icon"><span style="color:#00cf00; font-size: 2em">✓</span><a href="#lab_keyring_loan_title" class="page-title-action lab_keyring_key_lend" keyid="'.$element->id.'">'.esc_html__("Prêter",'lab').'</a></td>'
-                : $output.='<td scope="col" class="lab_keyring_icon">❌<a href="#lab_keyring_loan_title" class="page-title-action lab_keyring_key_lend" keyid="'.$element->id.'">'.esc_html__("Voir prêt",'lab').'</a></td>';
+                  $output .= '<td scope="col" class="lab_keyring_icon"><span style="color:#00cf00; font-size: 2em">✓</span><a href="#lab_keyring_loan_title" class="page-title-action lab_keyring_key_lend" keyid="'.$element->id.'">'.esc_html__("Lend",'lab').'</a></td>'
+                : $output.='<td scope="col" class="lab_keyring_icon">❌<a href="#lab_keyring_loan_title" class="page-title-action lab_keyring_key_lend" keyid="'.$element->id.'">'.esc_html__("View loan",'lab').'</a></td>';
       $output .= '<td scope="col" class="lab_keyring_icon">
                     <a class="page-title-action lab_keyring_key_edit" href="#lab_keyring_newForm" keyid="'.$element->id.'">🖊</a>
                     <a class="page-title-action lab_keyring_key_delete" href="#lab_keyring_delete_dialog" rel="modal:open" keyid="'.$element->id.'">❌</a>
@@ -482,7 +482,7 @@
         }
       }
       $output.= '<td scope="col" class="lab_keyring_icon">
-      <a class="page-title-action lab_keyring_loan_edit" href="#lab_keyring_loan_title" user_id="'.$element->user_id.'" loan_id="'.$element->id.'">🖊 '.esc_html__("Modifier","lab").'</a>
+      <a class="page-title-action lab_keyring_loan_edit" href="#lab_keyring_loan_title" user_id="'.$element->user_id.'" loan_id="'.$element->id.'">🖊 '.esc_html__("Edit","lab").'</a>
       </td>';
     }
     return $output;

@@ -191,7 +191,7 @@ function lab_labo1_5_old($args) {
                       <h2>'.esc_html__("Form","lab").'<i class="fas fa-arrow-up"></i></h2>'.$invitationStr;
     $invitationStr .= '
         <form action="javascript:formAction()">
-        <h3>'.esc_html__("Informations personnelles","lab").'</h3>
+        <h3>'.esc_html__("Personnal informations","lab").'</h3>
         <div class="lab_invite_field">
             <label for="lab_email">'.esc_html__("Email","lab").'<span class="lab_form_required_star"> *</span></label>
             <input type="email" required id="lab_email" guest_id="" name="lab_email"value="'.(!$newForm ? $guest->email : '').'">

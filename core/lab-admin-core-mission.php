@@ -49,9 +49,10 @@ function lab_mission_get_id_by_token($token) {
 function lab_mission_take_in_charge($missionId)
 {
     $currentUserId = get_current_user_id();
-    $managerId = lab_mission_get_budget_manager($missionId);
+    //$managerId = lab_mission_get_budget_manager($missionId);
+    $isManager = count(lab_admin_group_is_manager($currentUserId)) > 0;
     
-    if ($managerId == -1 || $managerId != $currentUserId) 
+    if ($isManager) 
     {
         lab_mission_set_budget_manager($missionId, $currentUserId);
         $user = lab_admin_userMetaDatas_get($currentUserId);
