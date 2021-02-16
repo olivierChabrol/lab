@@ -1396,18 +1396,6 @@ function lab_update_invitesList() {
               }
             );
           });
-          $(".lab_invite_takeCharge").click(function() {
-            displayLoadingGif();
-            jQuery.post(LAB.ajaxurl,{
-              action : 'lab_invitations_assume',
-              token : $(this).attr('token')
-              },
-              function (response) {
-                lab_update_invitesList();
-                hideLoadingGif();
-              }
-            );
-          });
         });
       break;
       case 'chief':

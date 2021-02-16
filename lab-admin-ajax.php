@@ -48,6 +48,12 @@ function lab_mission_ajax_delete() {
   }
 }
 
+function lab_mission_delete_notif() {
+  $missionId = $_POST['mission_id'];
+  lab_mission_resetNotifs($missionId);
+  wp_send_json_success();
+}
+
 /********************************************************************************************
  * BUDGET
  ********************************************************************************************/
@@ -578,7 +584,7 @@ function lab_changeLocale($locale) {
 function lab_admin_test()
 { 
   //wp_send_json_success(get_current_user_id());
-  wp_send_json_success(lab_group_get_user_group(get_current_user_id()));
+  wp_send_json_success(AdminParams::get_param_by_slug("mswgm")->id);
   return;
 }
 
@@ -1253,7 +1259,7 @@ function lab_invitations_new() {
     'token'=>$token,
     'needs_hostel'=>$fields['needs_hostel']=='true' ? 1 : 0,
     'creation_time' => $timeStamp,
-    'status' => 1
+    'status' => AdminParams::get_param_by_slug(AdminParams::MISSION_STATUS_NEW)->id
   );
   $missionType = AdminParams::get_param($fields['mission_objective']);
   if($missionType == 'Invitation') 
@@ -1273,7 +1279,7 @@ function lab_invitations_new() {
     $fields['host_group_id'] = $hostGroupId;
   }
 
-  foreach (['host_group_id','host_id', 'estimated_cost', 'mission_objective','funding_source','research_contract'] as $champ) {
+  foreach (['host_group_id','host_id', 'estimated_cost', 'hostel_cost', 'mission_objective','funding_source','research_contract'] as $champ) {
     $invite[$champ]=$fields[$champ];
   }
   $invite["charges"]=json_encode($fields["charges"]);
@@ -1356,7 +1362,7 @@ function lab_invitations_edit() {
     $canModify = $currentUserId == $fields['host_id'];
   }
 
-  //wp_send_json_success($userType[0]->manager_type);
+  //wp_send_json_error($currentUserId);
   if ( $canModify) {
     $guest = array (
       'first_name'=> $fields['guest_firstName'],
@@ -1380,8 +1386,12 @@ function lab_invitations_edit() {
     $invite["charges"]=json_encode($fields["charges"]);
     //wp_send_json_error($invite);
     $missionId = lab_mission_get_id_by_token($fields['token']);
+    if($isGroupLeader && ((float)$fields['maximum_cost']) > 0) {
+      $invite["status"] = AdminParams::get_param_by_slug(AdminParams::MISSION_STATUS_VALIDATED_GROUP_LEADER)->id;
+    }
     lab_invitations_editInvitation($missionId,$invite);
     $html = "<p>".esc_html__("Your invitation has been modified",'lab')."<br>à $timeStamp</p>";
+    
     wp_send_json_success($html);
     //*/
   } else {
@@ -1426,7 +1436,8 @@ function lab_invitations_validate() {
     'author_type'=> 0,
     'invite_id'=>$missionId
   )); 
-  lab_invitations_editInvitation($missionId,array('status'=>20));
+  //lab_invitations_editInvitation($missionId,array('status'=>20));
+  lab_mission_set_status($missionId, "mswgl");
   wp_send_json_success('La demande a été transmise à l\'administration');
 }
 
@@ -1435,13 +1446,6 @@ function lab_mission_ajax_set_manager() {
   $managerId = $_POST['managerId'];
   lab_invitations_editInvitation($missionId, ["manager_id"=>$managerId]);
   wp_send_json_success();
-}
-
-// Invitation prise en charge
-function lab_invitations_assume($token = null) {
-    $token = $_POST['token'];
-    lab_mission_take_in_charge($token);
-    wp_send_json_success();
 }
 
 function lab_invitation_newComment() {
