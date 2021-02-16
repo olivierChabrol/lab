@@ -111,6 +111,9 @@ class AdminParams {
         if (count($results) == 1) {
             return $results[0];
         }
+        else if (count($results) > 1) {
+            return $results;
+        }
         return null;
     }
 

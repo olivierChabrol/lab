@@ -125,16 +125,21 @@ function lab_directory($param) {
         //$fieldsFunctionUser = " ,pm0.value as `function`, pm0.slug as `function_slug` ";
         //$joinFunctionUser   = " JOIN `".$wpdb->prefix."usermeta` AS um9 ON um1.`user_id` = um9.`user_id` LEFT JOIN `".$wpdb->prefix."lab_params` AS pm0 ON pm0.id=um9.meta_value";
         $whereFunctionUser  = " AND (";
+        $debugFct = "";
         foreach($functions as $fct)
         {
+            $debugFct .= $fct."<br>";
             $params = AdminParams::get_param_by_slug($fct);
-            if (count($param) > 0)
+            if (count($params) > 0)
             {
                 foreach($params as $param)
                 {
+
+                    $debugFct .= "param : ".$param->id." ".$param->value." ".$param->slug."<br>";
                     $whereFunctionUser .= "um9.`meta_value` = '".$param->id."' OR ";
                 }
             }
+            $debugFct .= "<br>";
         }
         $whereFunctionUser = substr($whereFunctionUser, 0, strlen($whereFunctionUser) - 3);
         $whereFunctionUser .= ") ";
@@ -151,6 +156,7 @@ function lab_directory($param) {
     if ($debug)
     {
         //$directoryStr .= "**** LETTER :". $_GET["letter"]."<br>";
+        $directoryStr .= "**** Debuf Fct : '". $debugFct."'<br>";
         $directoryStr .= "**** onlyLeftUserParam : '". $onlyLeftUserParam."'<br>";
         $directoryStr .= "**** displayOnlyLeftUser : '". $displayOnlyLeftUser."'<br>";
         $directoryStr .= "**** includeLeftUserParam : '". $includeLeftUserParam."'<br>";

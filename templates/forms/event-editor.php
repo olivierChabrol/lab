@@ -32,16 +32,16 @@ if( !empty($_REQUEST['success']) ){
 			<input type="text" name="event_name" id="event-name" value="<?php echo esc_attr($EM_Event->event_name,ENT_QUOTES); ?>" /><?php echo $required; ?>
 			<br />
 			<div class="event-attributes">
-				<label for="em_attributes[speaker]">Nom du speaker</label>
-				<input type="text" id="lab_event_speaker_name" name="em_attributes[speaker]" value="">
+				<label for="em_attributes[Speaker]">Nom du speaker</label>
+				<input type="text" id="lab_event_speaker_name" name="em_attributes[Speaker]" value="">
 			</div>
 			<div class="event-attributes">
-				<label for="em_attributes[speaker_affiliation]">Affiliation</label>
-				<input type="text" name="em_attributes[speaker_affiliation]" value="">
+				<label for="em_attributes[Speaker affiliation]">Affiliation</label>
+				<input type="text" name="em_attributes[Speaker affiliation]" value="">
 			</div>
 			<div class="event-attributes">
-				<label for="em_attributes[speaker_homepage]">speaker_homepage</label>
-				<input type="text" name="em_attributes[speaker_homepage]" value="">
+				<label for="em_attributes[Speaker web site]">Page internet du speaker : </label>
+				<input type="text" name="em_attributes[Speaker web site]" value="">
 			</div>
 			<?php lab_locate_template('forms/event/group.php',true); ?>
 		</div>
@@ -95,9 +95,9 @@ if( !empty($_REQUEST['success']) ){
 	</div>
 	<p class="submit">
 	    <?php if( empty($EM_Event->event_id) ): ?>
-	    <input type='submit' class='button-primary' value='<?php echo esc_attr(sprintf( __('Submit %s','events-manager'), __('Event','events-manager') )); ?>' />
+	    <input type='submit' id="toto" class='button-primary' value='<?php echo esc_attr(sprintf( __('Submit %s','events-manager'), __('Event','events-manager') )); ?>' />
 	    <?php else: ?>
-	    <input type='submit' class='button-primary' value='<?php echo esc_attr(sprintf( __('Update %s','events-manager'), __('Event','events-manager') )); ?>' />
+	    <input type='submit' id="toto" class='button-primary' value='<?php echo esc_attr(sprintf( __('Update %s','events-manager'), __('Event','events-manager') )); ?>' />
 	    <?php endif; ?>
 	</p>
 	<input type="hidden" name="event_id" value="<?php echo $EM_Event->event_id; ?>" />
