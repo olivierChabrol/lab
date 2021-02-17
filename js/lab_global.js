@@ -56,7 +56,9 @@ function callAjax(data, successMessage, callBackSuccess = null, errorMessage, ca
       if (successMessage != null) {
         toast_success(successMessage);
       }
+      console.log("callBack" + response.data);
       if (callBackSuccess != null) {
+        //console.log("callBackSuccess" + callBackSuccess);
         callBackSuccess(response.data);
       }
     }
