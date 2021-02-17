@@ -20,6 +20,7 @@ function lab_mission($args) {
     $missionInformation = "";
     $token='0';
     $isGuest   = false;
+    $guest = null;
     if ( isset($param['hostpage']) ) {
         $explode = explode("/",$url);
         $a = null;
@@ -102,7 +103,13 @@ function lab_mission($args) {
             </div>';
         $groups = lab_admin_group_by_user($host->id);
         if (count($groups) == 1) {
-            $invitationStr .= '<input type="hidden" id="lab_group_name" value="'.$groups[0]->id.'">';
+            if($newForm) {
+                $invitationStr .= '<input type="hidden" id="lab_group_name" value="'.$groups[0]->id.'">';
+            }
+            else {
+                $invitationStr .= '<input type="hidden" id="lab_group_name" value="'.$invitation->host_group_id.'">';
+            }
+          
         }
         else {
             $invitationStr .= '<div class="lab_invite_field"><label for="lab_group_name">'.esc_html__("Group","lab").'</label>';

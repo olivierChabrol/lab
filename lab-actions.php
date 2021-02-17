@@ -147,7 +147,6 @@ if (is_admin()) {
     add_action( 'wp_ajax_lab_invitations_edit','lab_invitations_edit' );
     add_action( 'wp_ajax_lab_invitations_complete','lab_invitations_complete' );
     add_action( 'wp_ajax_lab_invitations_validate','lab_invitations_validate' );
-    add_action( 'wp_ajax_lab_invitations_assume','lab_invitations_assume' );
     add_action( 'wp_ajax_lab_invitation_newComment','lab_invitation_newComment' );
     add_action( 'wp_ajax_lab_prefGroups_add','lab_prefGroups_addReq' );
     add_action( 'wp_ajax_lab_prefGroups_remove','lab_prefGroups_removeReq' );
@@ -185,6 +184,7 @@ if (is_admin()) {
     add_action( 'wp_ajax_lab_travel_save', 'lab_travel_ajax_save');
     add_action( 'wp_ajax_lab_mission_delete', 'lab_mission_ajax_delete');
     add_action( 'wp_ajax_lab_mission_set_manager', 'lab_mission_ajax_set_manager');
+    add_action( 'wp_ajax_lab_mission_delete_notif', 'lab_mission_delete_notif');
     //add_action( 'wp_ajax_lab_mission_getNotifs', 'lab_mission_getNotifs');
     //add_action( 'wp_ajax_lab_mission_resetNotifs', 'lab_mission_resetNotifs');
     

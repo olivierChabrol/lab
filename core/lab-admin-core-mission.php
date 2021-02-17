@@ -19,7 +19,7 @@ function lab_mission_delete($missionId) {
 }
 
 function lab_mission_set_status($missionId, $status) {
-    $statusCode = AdminParams::get_param_by_slug($status);
+    $statusCode = AdminParams::get_param_by_slug($status)->id;
     lab_invitations_editInvitation($missionId, array("status"=>$statusCode));
 }
 
@@ -64,7 +64,7 @@ function lab_mission_take_in_charge($missionId)
             'author_id'=> 0,
             'author_type'=> 0,
             'invite_id'=> $missionId
-        )); 
+        ), $currentUserId);
         lab_mission_set_status($missionId, "mswgm");
     }
 }

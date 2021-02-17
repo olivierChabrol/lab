@@ -135,8 +135,20 @@ jQuery(function($){
     $(aTic).click(function (){
       missionTakeInCharge($(this).attr("missionId"), $(this).attr("userId"));
     });
+    $(notif).click(function (){
+      deleteNotifs(id);
+    });
 
     return $('<td />').attr("class", "lab_keyring_icon").append(notif).append(aTic).append(aEdit).append(aDel);   
+  }
+
+  function deleteNotifs(missionId) {
+    data = {
+      'action':"lab_mission_delete_notif",
+      'mission_id': missionId
+    };
+    callAjax(data, null, applyFilter, null, null);
+
   }
 
   function missionTakeInCharge(missionId, userId) {
