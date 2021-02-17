@@ -28,7 +28,10 @@ class AdminParams {
     public const PARAMS_MEAN_OF_TRANSPORT = 26;
     public const PARAMS_MISSION_STATUS = 27;
     public const MISSION_STATUS_NEW = "msn";
+    public const MISSION_COMPLETE = "msc";
+    public const MISSION_STATUS_CANCEL = "msca";
     public const MISSION_STATUS_VALIDATED_GROUP_LEADER = "msvbgl";
+    public const MISSION_STATUS_REFUSED_GROUP_LEADER = "msrbgl";
 
     public static function get_params_fromId($id) {
         global $wpdb;
