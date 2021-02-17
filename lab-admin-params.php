@@ -108,6 +108,9 @@ class AdminParams {
         return AdminParams::get_params_fromId(AdminParams::PARAMS_MEAN_OF_TRANSPORT);
     }
 
+    public static function get_param_get_id_by_slug($slug){
+        return AdminParams::get_param_by_slug($slug)->id;
+    }
 
     public static function get_param_by_slug($slug)
     {
