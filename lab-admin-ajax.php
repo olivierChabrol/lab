@@ -1404,8 +1404,8 @@ function lab_invitations_edit() {
 function lab_invitations_complete() {
   $token = $_POST['token'];
   $missionId = lab_mission_get_id_by_token($token);
-  $paramWaitingGroupLeader = AdminParams::get_param_by_slug('mswgl');
-  lab_invitations_editInvitation($missionId,array('status'=>$paramWaitingGroupLeader->id));
+$paramWaitingGroupLeader = AdminParams::get_param_by_slug(AdminParams::MISSION_STATUS_WAITING_GROUP_LEADER)->id;
+  lab_mission_set_status($missionId, $paramWaitingGroupLeader);
   $html = 'Un mail récapitulatif a été envoyé au responsable du groupe pour validation';
   $invite = lab_invitations_getByToken($token);
   $Iarray = json_decode(json_encode($invite), true);
@@ -1436,8 +1436,6 @@ function lab_invitations_validate() {
     'author_type'=> 0,
     'invite_id'=>$missionId
   )); 
-  //lab_invitations_editInvitation($missionId,array('status'=>20));
-  lab_mission_set_status($missionId, "mswgl");
   wp_send_json_success('La demande a été transmise à l\'administration');
 }
 

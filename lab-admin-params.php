@@ -29,6 +29,8 @@ class AdminParams {
     public const PARAMS_MISSION_STATUS = 27;
     public const MISSION_STATUS_NEW = "msn";
     public const MISSION_STATUS_VALIDATED_GROUP_LEADER = "msvbgl";
+    public const MISSION_STATUS_WAITING_GROUP_LEADER = "mswgl";
+    public const MISSION_STATUS_WAITING_GROUP_MANAGER = "mswgm";
 
     public static function get_params_fromId($id) {
         global $wpdb;
