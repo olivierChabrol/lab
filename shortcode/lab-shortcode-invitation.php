@@ -214,8 +214,10 @@ function lab_mission($args) {
             $invitationStr .= '>
             </div>
             <div class="lab_invite_field">
-                <label for="lab_mission_hostel_cost">'.esc_html__("Estimated cost","lab").'</label>
-                <input type="text" id="lab_mission_hostel_cost" value="'.(!$newForm?$invitation->hostel_cost:0).'">&euro;</td>
+                <label for="lab_mission_hostel_night">'.esc_html__("Number of night(s)", "lab").'</label>
+                <input type="number" id="lab_mission_hostel_night" value="'.(!$newForm?$invitation->hostel_night:1).'"></td>
+                <label for="lab_mission_hostel_cost">'.esc_html__("Estimated cost (€)","lab").'</label>
+                <input type="text" id="lab_mission_hostel_cost" value="'.(!$newForm?$invitation->hostel_cost:0).'"></td>
             </div>
         </div>
         <hr>
@@ -293,7 +295,7 @@ function lab_mission($args) {
         </div><hr>';
         }
         if ( $param["hostpage"] ) {//Affiche les champs supplémentaires, pour les responsables/invitants.
-            $invitationStr .= '<h3>'.esc_html__("Host fields : ","lab").'</h3>
+            $invitationStr .= '<h3>'.esc_html__("Leader fields : ","lab").'</h3>
             <div class="lab_invite_row_left">';                    
             $invitationStr .= '<div class="lab_invite_field"><label for="lab_mission_fund_origin">'.esc_html__("Funds","lab").'<span class="lab_form_required_star"/></label>';
             $invitationStr .= lab_html_select_str("lab_mission_fund_origin", "lab_mission_fund_origin", "", "lab_admin_budget_funds", null, array("value"=>"0","label"=>"None"), ($newForm ? '' : $invitation->funding_source));
@@ -303,7 +305,6 @@ function lab_mission($args) {
                 <div class="lab_invite_field">
                     <label for="lab_estimated_cost">'.esc_html__("Estimated cost (€)","lab").'</label>
                     <input type="text" id="lab_estimated_cost" value="'.(!$newForm ? $invitation->estimated_cost : '').'">
-                    <p>'.esc_html__("À remplir par l'invitant : coût estimé du défraiement ","lab").'</p>
                 </div>
                 <div class="lab_invite_field">
                     <label for="lab_maximum_cost">'.esc_html__("Maximum cost (€)","lab").'</label>
@@ -325,7 +326,9 @@ function lab_mission($args) {
                 <div class="lab_invite_row lab_send_group_chief"><p class="lab_invite_field">Cliquez ici pour compléter la demande et la transmettre au responsable du groupe :</p><button id="lab_mission_send_group_leader">'.esc_html__("Send to responsible",'lab').'</button></div>';
             }
             $invitationStr .= '-->';
-            $invitationStr .= '<div class="lab_invite_row_right"><button id="lab_mission_save" type="button" class="btn btn-success">'.esc_html__("Update",'lab').'</button></div>';
+            $invitationStr .= '<div class="lab_invite_row_right"><button id="lab_mission_save" type="button" class="btn btn-primary">'.esc_html__("Update",'lab').'</button>&nbsp&nbsp
+                                                                <button id="lab_mission_validate" type="button" class="btn btn-success">'.esc_html__("Validate", "lab").'</button>&nbsp&nbsp
+                                                                <button id="lab_mission_refuse" type="button" class="btn btn-danger">'.esc_html__("Refuse","lab").'</button></div>';
         }
         else {
             $invitationStr .= '<div class="lab_invite_field">

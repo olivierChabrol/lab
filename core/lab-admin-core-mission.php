@@ -65,7 +65,7 @@ function lab_mission_take_in_charge($missionId)
             'author_type'=> 0,
             'invite_id'=> $missionId
         ), $currentUserId);
-        lab_mission_set_status($missionId, "mswgm");
+        lab_mission_set_status($missionId, AdminParams::MISSION_STATUS_WAITING_GROUP_MANAGER);
     }
 }
 

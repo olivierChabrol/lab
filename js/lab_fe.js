@@ -3,13 +3,13 @@ if(typeof __ === 'undefined') {
   const { __, _x, _n, sprintf } = wp.i18n;
 }
 
-
 jQuery(function($){
   /*** DIRECTORY ***/ 
   var travels = [];
   var meansOfTransport = new Array();
   var meansOfTransportReverse = new Array();
 
+  
   $("#lab-directory-group-id").on('change', function() {
     loadDirectory();
   });
@@ -23,9 +23,24 @@ jQuery(function($){
     });
   });
 
+  $("#lab_mission_validate").click(function() {
+    data = {
+      'action': 'lab_mission_validate',
+      'mission_id': $("#lab_mission_id").val()
+    };
+    callAjax(data, null, loadAdminPanel, null, null);
+  });
+
+  $("#lab_mission_refuse").click(function() {
+    data = {
+      'action': 'lab_mission_refuse',
+      'mission_id': $("#lab_mission_id").val()
+    };
+    callAjax(data, null, loadAdminPanel, null, null);
+  });
+
 
   var dateClass='.datechk';
-  var timeClass='.timechk';
   $(document).ready(function ()
   {
     if (document.querySelector(dateClass) != null && document.querySelector(dateClass).type !== 'date') {  
@@ -35,10 +50,6 @@ jQuery(function($){
     }
     hideShowInvitationDiv();
   });
-
-  function loadAdminPanel() {
-    window.location.href = "/wp-admin/admin.php?page=lab_admin_mission_manager";
-  }
 
   function loadDirectory()
   {
@@ -375,7 +386,8 @@ function saveTravelModification(id) {
     f[fields[i]] = val;
     data[fields[i]] = val;
   }
-
+  console.log(travels);
+  console.log(id);
   if (travelExist(id)) {
     console.log("[saveTravelModification] [travel exist]");
     editTravelTd(id, f);
@@ -394,6 +406,11 @@ function saveTravelModification(id) {
 
 function updateTravelIdFromDb(data) {
   $("#travel_travelId_" + data.jsId).attr("tv", data.id);
+}
+
+function loadAdminPanel() {
+  console.log("loadAdminPanel");
+  window.location.href = "/wp-admin/admin.php?page=lab_admin_mission_manager";
 }
 
 function displayTravels(data) {
@@ -428,11 +445,11 @@ function displayTravels(data) {
 }
 
 function travelExist(id) {
-  return travels.includes(id);
+  return travels.includes(parseInt(id));
 }
 
 function addTravelId(id) {
-  travels.push(id);  
+  travels.push(parseInt(id));  
 }
 
 function deleteTravelId(id) {
