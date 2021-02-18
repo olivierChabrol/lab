@@ -588,6 +588,8 @@ function lab_mission_remap_fields($fields) {
     $a["reference"] = $fields["ref"];
     $a["nb_person"] = $fields["nb_person"];
     $a["carbon_footprint"] = $fields["carbon_footprint"];
+    $a["loyalty_card_number"] = $fileds["loyalty_card_number"];
+    $a["loyalty_card_date"] = $fields["loyalty_card_expiry_date"];
     if($a["round_trip"] == 0) {
         $a["travel_datereturn"] = NULL;
     }
@@ -671,6 +673,8 @@ function lab_admin_mission_create_table() {
         `round_trip` BOOLEAN NOT NULL,
         `nb_person` int NOT NULL,
         `carbon_footprint` int NOT NULL,
+        `loyalty_card_number` int NOT NULL,
+        `loyalty_card_expiry_date` date NOT NULL,
         `travel_datereturn` datetime DEFAULT NULL,
         `estimated_cost` float NOT NULL,
         `real_cost float` NOT NULL,
