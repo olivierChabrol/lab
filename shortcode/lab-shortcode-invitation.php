@@ -21,6 +21,7 @@ function lab_mission($args) {
     $token='0';
     $isGuest   = false;
     $guest = null;
+    $invitation = null;
     if ( isset($param['hostpage']) ) {
         $explode = explode("/",$url);
         $a = null;
@@ -100,39 +101,10 @@ function lab_mission($args) {
             <div class="lab_invite_field">
                 <label for="lab_hostname">'.esc_html__("Host name","lab").'</label>
                 <input type="text" required id="lab_hostname" name="lab_hostname" host_id="'.($host==null ? '' : $host->id.'" value="'.$host->first_name.' '.$host->last_name).'">
-            </div>';
-        $groups = lab_admin_group_by_user($host->id);
-        if (count($groups) == 1) {
-            if($newForm) {
-                $invitationStr .= '<input type="hidden" id="lab_group_name" value="'.$groups[0]->id.'">';
-            }
-            else {
-                $invitationStr .= '<input type="hidden" id="lab_group_name" value="'.$invitation->host_group_id.'">';
-            }
-          
-        }
-        else {
-            $invitationStr .= '<div class="lab_invite_field"><label for="lab_group_name">'.esc_html__("Group","lab").'</label>';
-            $invitationStr .= '<select id="lab_group_name">';
-            $selectedGroup = !$newForm ? $invitation->host_group_id: '';
-            foreach($groups as $group) {
-                $select = "";
-                if ($selectedGroup) {
-                    if ($selectedGroup == $group->id) {
-                        $select = " selected";
-                    }
-                }
-                else {
-                    if($group->favorite == 1) {
-                        $select = " selected";
-                    }
-                }
-                $invitationStr .= '<option value="'.$group->id.'"'.$select.'>'.$group->name.'</option>';
-            }
-            $invitationStr .= '</select></div>';
-
-        }
-        $invitationStr .= '
+            </div><div class="lab_invite_row_left">';
+        $invitationStr .= mission_display_userGroup($host->id, $invitation);
+        $invitationStr .= mission_user_funding($host->id, $invitation);
+        $invitationStr .= '</div>
             <div class="lab_invite_field">
                 <label for="lab_mission">'.esc_html__("Reason for the mission","lab").'<span class="lab_form_required_star"/></label>
                 <select id="lab_mission" name="lab_mission">';
@@ -343,6 +315,81 @@ function lab_mission($args) {
             }
             $invitationStr .= '</div><!-- end div lab_invitationComments -->';
         }
+    return $invitationStr;
+}
+/**
+ * Display user funding option by default it's groups, but can be an ANR, or different kind of contract
+ *
+ * @param [int] $userId
+ * @param [sql result] $mission from db
+ * @return string html
+ */
+function mission_user_funding($userId, $mission) {
+    $html = "";
+    $contracts = lab_admin_contract_get_contracts_by_user($userId);
+    $html = '<div class="lab_invite_field"><label for="lab_mission_user_funding">'.esc_html__("Fundings","lab").'</label>';
+    if (count($contracts) > 0) {
+        $html .= '<select id="lab_group_name">';
+        // @TODO changer le funding
+        $selectedFunding = $mission != null ? $mission->host_group_id: '';
+        foreach($contracts as $contract) {
+            $select = "";
+            if ($selectedFunding) {
+                if ($selectedFunding == $group->id) {
+                    $select = " selected";
+                }
+            }
+            $html .= '<option value="'.$contract->id.'"'.$select.'>'.$contract->contract_type." ".$contract->name.'</option>';
+        }
+        $html .= '</select>';
+    }
+    else {
+        $html .= '<input type="hidden" id="lab_mission_user_funding" value="0">';
+        $html .= esc_html__("Group fundings","lab");
+    }
+    $html .= '</div>';
+    return $html;
+}
+/**
+ * Display user group selection, 
+ *
+ * @param [int] $userId
+ * @param [sql result] $mission from db
+ * @return string html
+ */
+function mission_display_userGroup($userId, $mission) {
+    $newForm = $mission == null;
+    $invitationStr = '<div class="lab_invite_field"><label for="lab_group_name">'.esc_html__("Group","lab").'</label>';
+    $groups = lab_admin_group_by_user($userId);
+    if (count($groups) == 1) {
+        if($newForm) {
+            $invitationStr .= '<input type="hidden" id="lab_group_name" value="'.$groups[0]->id.'">';
+        }
+        else {
+            $invitationStr .= '<input type="hidden" id="lab_group_name" value="'.$mission->host_group_id.'">';
+        }
+        $invitationStr .= $groups[0]->name;
+    }
+    else {
+        $invitationStr .= '<select id="lab_group_name">';
+        $selectedGroup = !$newForm ? $mission->host_group_id: '';
+        foreach($groups as $group) {
+            $select = "";
+            if ($selectedGroup) {
+                if ($selectedGroup == $group->id) {
+                    $select = " selected";
+                }
+            }
+            else {
+                if($group->favorite == 1) {
+                    $select = " selected";
+                }
+            }
+            $invitationStr .= '<option value="'.$group->id.'"'.$select.'>'.$group->name.'</option>';
+        }
+        $invitationStr .= '</select>';
+    }
+    $invitationStr .= '</div>';
     return $invitationStr;
 }
 function getGuestValue($newForm, $guest, $field) {

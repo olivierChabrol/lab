@@ -1290,7 +1290,7 @@ function lab_invitations_new() {
     $fields['host_group_id'] = $hostGroupId;
   }
 
-  foreach (['host_group_id','host_id', 'estimated_cost', 'hostel_cost', 'mission_objective','funding_source','research_contract'] as $champ) {
+  foreach (['host_group_id','host_id', 'estimated_cost', 'hostel_cost', 'hostel_night', 'mission_objective','funding_source','research_contract'] as $champ) {
     $invite[$champ]=$fields[$champ];
   }
   $invite["charges"]=json_encode($fields["charges"]);
@@ -1391,7 +1391,7 @@ function lab_invitations_edit() {
       'needs_hostel'=>$fields['needs_hostel']=='true' ? 1 : 0,
       'completion_time' => $timeStamp
     );
-    foreach (['host_group_id', 'estimated_cost', 'maximum_cost', 'host_id','mission_objective','hostel_cost','funding_source','research_contract'] as $champ) {
+    foreach (['host_group_id', 'estimated_cost', 'maximum_cost', 'host_id','mission_objective','hostel_night','hostel_cost','funding_source','research_contract'] as $champ) {
       $invite[$champ]=$fields[$champ];
     }
     $invite["charges"]=json_encode($fields["charges"]);

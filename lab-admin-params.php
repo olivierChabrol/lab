@@ -34,6 +34,8 @@ class AdminParams {
     public const MISSION_STATUS_REFUSED_GROUP_LEADER = "msrbgl";
     public const MISSION_STATUS_WAITING_GROUP_LEADER = "mswgl";
     public const MISSION_STATUS_WAITING_GROUP_MANAGER = "mswgm";
+    public const CONTRACT_USER_TYPE_MANAGER = 1;
+    public const CONTRACT_USER_TYPE_OWNER = 2;
 
     public static function get_params_fromId($id) {
         global $wpdb;
