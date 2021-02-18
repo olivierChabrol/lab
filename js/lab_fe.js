@@ -540,7 +540,7 @@ function emptyTravelDivFields() {
   $("#lab_mission_edit_travel_div_countryTo" ).countrySelect("setCountry", "France");
   $("#lab_mission_edit_travel_div_carbon_footprint" ).val(" ");
   $("#lab_mission_edit_travel_div_loyalty_card_number" ).val(" ");
-  $("#lab_mission_edit_travel_div_loyalty_card_expiry_date" ).val(" ");
+  $("#lab_mission_edit_travel_div_loyalty_card_expiry_date" ).val("");
   $("#lab_mission_edit_travel_div_nb_person" ).val("1");
   $("#lab_mission_edit_travel_div_travelId" ).val("");
 }
@@ -779,8 +779,8 @@ function addEmptyTravel(id) {
   fields["cost"]        = "0";
   fields["ref"]         = " ";
   fields["carbon_footprint"]         = "";
-  fields["loyalty_card_number"] = "",
-  fields["loyalty_card_expiry_date"] = "";
+  fields["loyalty_card_number"]         = "";
+  fields["loyalty_card_expiry_date"]         = "";
   fields["rt"]          = "false";
   fields["dateReturn"]  = null;
   fields["timeReturn"]  = null;
@@ -1162,6 +1162,17 @@ function formAction() {
     return;
   });
 }
+
+function getSumCostTravels() {
+  var output = 0.0;
+  $("#lab_mission_travels_table_tbody").children("tr").each(function () {
+    output +=  parseFloat($(this).children('[id^=travel_cost_]').attr("tv"));
+  })
+  console.log("SUUUUUUUUU " + output);
+  return  output;
+}
+
+
 function invitation_submit(callback) {
   console.log("[invitation_submit]" + travels);
   //document.querySelector("#primary-menu").scrollIntoView({behavior:"smooth"}); à faire correspondre au nouveau thème
@@ -1206,7 +1217,7 @@ function invitation_submit(callback) {
       //alert('$("#lab_group_name").val() : ' + $("#lab_group_name").val());
     }
     if ($("#missionForm").attr("hostForm")==1) {//La version invitant est affichée 
-      fields['estimated_cost'] = $("#lab_estimated_cost").val();
+      fields['estimated_cost'] = parseFloat($("#lab_mission_hostel_cost").val()) + getSumCostTravels();
       fields['maximum_cost'] = $("#lab_maximum_cost").val();
     }
     if ($("#missionForm").attr("newForm")==1) {//On crée une nouvelle invitation

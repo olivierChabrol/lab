@@ -206,6 +206,8 @@ function lab_mission($args) {
                     <td>'.esc_html__("Ref","lab").'</td>
                     <td>'.esc_html__("RT","lab").'</td>
                     <td colspan="2">'.esc_html__("Return date if RT","lab").'</td>
+                    <td>'.esc_html__("Loyalty card number","lab").'</td>
+                    <td>'.esc_html__("Expiry date","lab").'</td>
                     <td colspan="2"><i id="addTravel" class="fa fa-plus pointer" aria-hidden="true" title="Add travel"></i></td>
                 </thead>
                 <tbody id="lab_mission_travels_table_tbody"/>

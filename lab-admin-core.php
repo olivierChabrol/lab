@@ -602,8 +602,8 @@ function lab_mission_remap_fields($fields) {
     $a["reference"] = $fields["ref"];
     $a["nb_person"] = $fields["nb_person"];
     $a["carbon_footprint"] = $fields["carbon_footprint"];
-    $a["loyalty_card_number"] = $fileds["loyalty_card_number"];
-    $a["loyalty_card_date"] = $fields["loyalty_card_expiry_date"];
+    $a["loyalty_card_number"] = $fields["loyalty_card_number"];
+    $a["loyalty_card_expiry_date"] = $fields["loyalty_card_expiry_date"];
     if($a["round_trip"] == 0) {
         $a["travel_datereturn"] = NULL;
     }
