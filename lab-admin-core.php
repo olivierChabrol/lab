@@ -460,6 +460,20 @@ function lab_admin_contract_get_contracts_by_user($userId) {
     return $wpdb->get_results($sql);
 }
 
+/**
+ * Get all the contracts for a specific user
+ *
+ * @return void
+ */
+function lab_admin_contract_get_all_contracts() {
+    global $wpdb;
+    $sql = "SELECT cu.*, c.contract_type as contract_type_id, p.value as contract_type, c.name, c.start, c.end  
+              FROM `".$wpdb->prefix."lab_contract_user` AS cu 
+              JOIN ".$wpdb->prefix."lab_contract AS c ON c.id = cu.contract_id 
+              JOIN ".$wpdb->prefix."lab_params as p ON p.id = c.contract_type";
+    return $wpdb->get_results($sql);
+}
+
 function lab_admin_contract_get_managers($contractId) {
     global $wpdb;
     return $wpdb->get_results("SELECT user_id FROM ".$wpdb->prefix."lab_contract_user WHERE `contract_id` = ".$contractId." AND user_type=".AdminParams::CONTRACT_USER_TYPE_MANAGER);

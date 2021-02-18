@@ -20,6 +20,7 @@ function lab_mission($args) {
     $missionInformation = "";
     $token='0';
     $isGuest   = false;
+    $isManager = false;
     $guest = null;
     $invitation = null;
     if ( isset($param['hostpage']) ) {
@@ -103,7 +104,7 @@ function lab_mission($args) {
                 <input type="text" required id="lab_hostname" name="lab_hostname" host_id="'.($host==null ? '' : $host->id.'" value="'.$host->first_name.' '.$host->last_name).'">
             </div><div class="lab_invite_row_left">';
         $invitationStr .= mission_display_userGroup($host->id, $invitation);
-        $invitationStr .= mission_user_funding($host->id, $invitation);
+        $invitationStr .= mission_user_funding($host->id, $invitation, $isManager);
         $invitationStr .= '</div>
             <div class="lab_invite_field">
                 <label for="lab_mission">'.esc_html__("Reason for the mission","lab").'<span class="lab_form_required_star"/></label>
@@ -328,20 +329,29 @@ function lab_mission($args) {
  *
  * @param [int] $userId
  * @param [sql result] $mission from db
+ * @param [inbooleant] $isBudgetManager, can be edited by the budget manager
  * @return string html
  */
-function mission_user_funding($userId, $mission) {
+function mission_user_funding($userId, $mission, $isBudgetManager) {
     $html = "";
-    $contracts = lab_admin_contract_get_contracts_by_user($userId);
+    $contracts = null;
+    if ($isBudgetManager) {
+        $contracts = lab_admin_contract_get_all_contracts();
+    }
+    else {
+        $contracts = lab_admin_contract_get_contracts_by_user($userId);
+    }
     $html = '<div class="lab_invite_field"><label for="lab_mission_user_funding">'.esc_html__("Fundings","lab").'</label>';
     if (count($contracts) > 0) {
-        $html .= '<select id="lab_group_name">';
+        $html .= '<select id="lab_mission_user_funding">';
+        $selectedFunding = $mission != null ? $mission->funding: '';
+        $select = $mission != null && $selectedFunding == 0 ? " selected": '';
+        $html .= '<option value="0"'.$select.'>'.esc_html__("Group fundings","lab").'</option>';
         // @TODO changer le funding
-        $selectedFunding = $mission != null ? $mission->host_group_id: '';
         foreach($contracts as $contract) {
             $select = "";
             if ($selectedFunding) {
-                if ($selectedFunding == $group->id) {
+                if ($selectedFunding == $contract->id) {
                     $select = " selected";
                 }
             }
