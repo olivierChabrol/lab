@@ -326,7 +326,7 @@ function lab_profile_edit(user_id,phone,url,bio,color,hal_id,hal_name) {
  **************************************************************************************************************************************************************/
 
 function getEditTravelField() {
-  return ["dateGoTo", "timeGoTo", "countryFrom", "cityFrom", "countryTo", "cityTo", "mean", "cost", "ref", "rt", "dateReturn", "timeReturn", "carbon_footprint", "nb_person", "travelId"];
+  return ["dateGoTo", "timeGoTo", "countryFrom", "cityFrom", "countryTo", "cityTo", "mean", "cost", "ref", "rt", "dateReturn", "timeReturn", "carbon_footprint", "loyalty_card_number", "loyalty_card_expiry_date", "nb_person", "travelId"];
 }
 
 function loadMeanOfTransportMap() {
@@ -435,6 +435,8 @@ function displayTravels(data) {
     fields["cost"]        = obj.estimated_cost;
     fields["ref"]         = obj.reference;
     fields["carbon_footprint"] = obj.carbon_footprint;
+    fields["loyalty_card_number"] = obj.loyalty_card_number;
+    fields["loyalty_card_expiry_date"] = obj.loyalty_card_expiry_date;
     fields["rt"]          = obj.round_trip;
     fields["dateReturn"]  = strReturn[0];
     fields["timeReturn"]  = strReturn[1];
@@ -537,6 +539,8 @@ function emptyTravelDivFields() {
   $("#lab_mission_edit_travel_div_countryFrom" ).countrySelect("setCountry", "France");
   $("#lab_mission_edit_travel_div_countryTo" ).countrySelect("setCountry", "France");
   $("#lab_mission_edit_travel_div_carbon_footprint" ).val(" ");
+  $("#lab_mission_edit_travel_div_loyalty_card_number" ).val(" ");
+  $("#lab_mission_edit_travel_div_loyalty_card_expiry_date" ).val("");
   $("#lab_mission_edit_travel_div_nb_person" ).val("1");
   $("#lab_mission_edit_travel_div_travelId" ).val("");
 }
@@ -635,6 +639,8 @@ function addTravel(id, fields, travelId, mission_id) {
   createTravelBooleanField(tr, id, "rt", fields);
   createDefaultTdToTr(tr, id, "dateReturn", fields);
   createDefaultTdToTr(tr, id, "timeReturn", fields);
+  createDefaultTdToTr(tr, id, "loyalty_card_number", fields);
+  createDefaultTdToTr(tr, id, "loyalty_card_expiry_date", fields);
   let tdEdit = $("<td/>").attr("class", "pointer").attr("travelId",id).html('<i class="fa fa-pencil"  aria-hidden="true" travelId="'+id+'"></i>');
   let tdDel  = $("<td/>").attr("class", "pointer").attr({
     "id" : id,
@@ -773,6 +779,8 @@ function addEmptyTravel(id) {
   fields["cost"]        = "0";
   fields["ref"]         = " ";
   fields["carbon_footprint"]         = "";
+  fields["loyalty_card_number"]         = "";
+  fields["loyalty_card_expiry_date"]         = "";
   fields["rt"]          = "false";
   fields["dateReturn"]  = null;
   fields["timeReturn"]  = null;
@@ -1154,6 +1162,17 @@ function formAction() {
     return;
   });
 }
+
+function getSumCostTravels() {
+  var output = 0.0;
+  $("#lab_mission_travels_table_tbody").children("tr").each(function () {
+    output +=  parseFloat($(this).children('[id^=travel_cost_]').attr("tv"));
+  })
+  console.log("SUUUUUUUUU " + output);
+  return  output;
+}
+
+
 function invitation_submit(callback) {
   console.log("[invitation_submit]" + travels);
   //document.querySelector("#primary-menu").scrollIntoView({behavior:"smooth"}); à faire correspondre au nouveau thème
@@ -1198,7 +1217,7 @@ function invitation_submit(callback) {
       //alert('$("#lab_group_name").val() : ' + $("#lab_group_name").val());
     }
     if ($("#missionForm").attr("hostForm")==1) {//La version invitant est affichée 
-      fields['estimated_cost'] = $("#lab_estimated_cost").val();
+      fields['estimated_cost'] = parseFloat($("#lab_mission_hostel_cost").val()) + getSumCostTravels();
       fields['maximum_cost'] = $("#lab_maximum_cost").val();
     }
     if ($("#missionForm").attr("newForm")==1) {//On crée une nouvelle invitation

@@ -206,6 +206,8 @@ function lab_mission($args) {
                     <td>'.esc_html__("Ref","lab").'</td>
                     <td>'.esc_html__("RT","lab").'</td>
                     <td colspan="2">'.esc_html__("Return date if RT","lab").'</td>
+                    <td>'.esc_html__("Loyalty card number","lab").'</td>
+                    <td>'.esc_html__("Expiry date","lab").'</td>
                     <td colspan="2"><i id="addTravel" class="fa fa-plus pointer" aria-hidden="true" title="Add travel"></i></td>
                 </thead>
                 <tbody id="lab_mission_travels_table_tbody"/>
@@ -226,7 +228,7 @@ function lab_mission($args) {
                 <input type="text" id="lab_mission_edit_travel_div_countryTo"  countryCode="FR">
                 <input type="text" id="lab_mission_edit_travel_div_cityTo" value="">
                 <br/>
-                <label for="lab_mission_edit_travel_div_mean">'.esc_html__("Mean of transport","lab").'</label>';
+                <label for="lab_mission_edit_travel_div_mean">'.esc_html__("Mean of transport ","lab").'</label>';
                 $invitationStr .= lab_html_select_str("lab_mission_edit_travel_div_mean", "lab_mission_edit_travel_div_mean", "", "lab_admin_get_params_meanOfTransport", null, array("value"=>"0","label"=>"None"), "");;
                 $invitationStr .=
                 '<br/>
@@ -250,7 +252,11 @@ function lab_mission($args) {
                 </span>
                 <br/>
                 <label for="lab_mission_edit_travel_div_carbon_footprint">'.esc_html__("Carbon footprint","lab").'</label>
-                <input type="text" id="lab_mission_edit_travel_div_carbon_footprint" >
+                <input type="text" id="lab_mission_edit_travel_div_carbon_footprint" ><br/>
+                <label for="lab_mission_edit_travel_div_loyalty_card_number">'.esc_html__("Loyalty card number", "lab").'</label>
+                <input type="text" id="lab_mission_edit_travel_div_loyalty_card_number" ><br/>
+                <label for="lab_mission_edit_travel_div_loyalty_card_expiry_date">'.esc_html__("Loyalty card expiry date", "lab").'</label>
+                <input type="date" class="datechk" placeholder="yyyy-mm-dd" id="lab_mission_edit_travel_div_loyalty_card_expiry_date">
                 <input type="hidden" id="lab_mission_edit_travel_div_travelId" value="" >
                 <input type="hidden" id="lab_mission_edit_travel_div_trId" value="" >
                 <br/>
