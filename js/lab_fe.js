@@ -3,7 +3,10 @@ if(typeof __ === 'undefined') {
   const { __, _x, _n, sprintf } = wp.i18n;
 }
 
+import {missionTakeInCharge} from '/js/lab_mission.js';
+
 jQuery(function($){
+
   /*** DIRECTORY ***/ 
   var travels = [];
   var meansOfTransport = new Array();
@@ -38,6 +41,14 @@ jQuery(function($){
     };
     callAjax(data, null, loadAdminPanel, null, null);
   });
+
+  $("#lab_mission_tic").click(function() {
+    missionTakeInCharge($("#lab_mission_id").val(), $("lab_comment_name").attr("user_id"));
+    invitation_submit(function() {
+      loadAdminPanel();
+      return;
+    });
+  })
 
 
   var dateClass='.datechk';

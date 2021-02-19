@@ -86,6 +86,20 @@ jQuery(function($){
     $.each(data.results, function(i, obj) {
       $("#lab_admin_mission_list_table_tbody").append(createTrMissionTableLine(obj, data));
     });
+
+    $("#lab_admin_mission_list_table_tbody").children("tr").each(function () 
+    {
+      string = $(this).children("td:nth-child(2)").html();
+      if(string.startsWith("Validate")) {
+        $(this).css("background-color", "palegreen");
+      } 
+      else if (string.startsWith("Refuse")) {
+        $(this).css("background-color", "salmon");
+      } 
+      else if (string.startsWith("Waiting")) {
+        $(this).css("background-color", "khaki");
+      }
+    })
   }
 
   function createTrMissionTableLine(mission, data) {

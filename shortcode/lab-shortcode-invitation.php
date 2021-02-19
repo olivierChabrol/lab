@@ -306,7 +306,8 @@ function lab_mission($args) {
             $invitationStr .= '-->';
             $invitationStr .= '<div class="lab_invite_row_right"><button id="lab_mission_save" type="button" class="btn btn-primary">'.esc_html__("Update",'lab').'</button>&nbsp&nbsp
                                                                 <button id="lab_mission_validate" type="button" class="btn btn-success">'.esc_html__("Validate", "lab").'</button>&nbsp&nbsp
-                                                                <button id="lab_mission_refuse" type="button" class="btn btn-danger">'.esc_html__("Refuse","lab").'</button></div>';
+                                                                <button id="lab_mission_refuse" type="button" class="btn btn-danger">'.esc_html__("Refuse","lab").'</button>&nbsp&nbsp
+                                                                <button id="lab_mission_tic" type="button" class="btn btn-info">'.esc_html__("Take in charge","lab").'</button></div>';
         }
         else {
             $invitationStr .= '<div class="lab_invite_field">
