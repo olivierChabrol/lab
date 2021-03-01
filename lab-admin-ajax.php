@@ -48,6 +48,12 @@ function lab_mission_ajax_delete() {
   }
 }
 
+function lab_mission_ajax_tic() {
+  $missionId = $_POST['mission_id'];
+  lab_mission_take_in_charge($missionId);
+  wp_send_json_success();
+}
+
 function lab_mission_delete_notif() {
   $missionId = $_POST['mission_id'];
   lab_mission_resetNotifs($missionId);

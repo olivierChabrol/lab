@@ -119,7 +119,7 @@ function lab_invitations_getByToken($token, $deleteNotif = true) {
     lab_mission_resetNotifs($missionId);
   }
   if(lab_invitations_getBudgetManager()) {
-    lab_mission_take_in_charge($missionId);
+    //lab_mission_take_in_charge($missionId);
   }
   return $res[0];
 }

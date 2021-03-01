@@ -183,7 +183,7 @@ if (is_admin()) {
     add_action( 'wp_ajax_lab_travel_delete', 'lab_travel_ajax_delete');
     add_action( 'wp_ajax_lab_travel_save', 'lab_travel_ajax_save');
     add_action( 'wp_ajax_lab_mission_delete', 'lab_mission_ajax_delete');
-    add_action( 'wp_ajax_lab_mission_set_manager', 'lab_mission_ajax_set_manager');
+    add_action( 'wp_ajax_lab_mission_tic', 'lab_mission_ajax_tic');
     add_action( 'wp_ajax_lab_mission_delete_notif', 'lab_mission_delete_notif');
     add_action( 'wp_ajax_lab_mission_validate', 'lab_mission_validate');
     add_action( 'wp_ajax_lab_mission_refuse', 'lab_mission_refuse');

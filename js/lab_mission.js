@@ -139,37 +139,27 @@ jQuery(function($){
     }
     //console.log("->"+url);
     let userId = $("#lab_mission_user_id").val();
-    let aTic = $('<a />').attr("class", "lab-page-title-action lab_mission_tic").attr("userId", userId).attr("missionId", id).html("tic");
+    //let aTic = $('<a />').attr("class", "lab-page-title-action lab_mission_tic").attr("userId", userId).attr("missionId", id).html("tic");
     let aEdit = $('<a />').attr("class", "lab-page-title-action lab_mission_edit").attr("href",url).attr("missionId", id).html("edit");
     let aDel = $('<a />').attr("class", "lab-page-title-action lab_budget_info_delete").attr("missionId", id).attr("id", "lab-delete-mission-button").html("X");
 
     $(aDel).click(function (){
       displayModalDeleteMission($(this).attr("missionId"));
     });
-    $(aTic).click(function (){
+    /*$(aTic).click(function (){
       missionTakeInCharge($(this).attr("missionId"), $(this).attr("userId"));
-    });
+    });*/
     $(notif).click(function (){
       deleteNotifs(id);
     });
 
-    return $('<td />').attr("class", "lab_keyring_icon").append(notif).append(aTic).append(aEdit).append(aDel);   
+    return $('<td />').attr("class", "lab_keyring_icon").append(notif).append(aEdit).append(aDel);   
   }
 
   function deleteNotifs(missionId) {
     data = {
       'action':"lab_mission_delete_notif",
       'mission_id': missionId
-    };
-    callAjax(data, null, applyFilter, null, null);
-
-  }
-
-  function missionTakeInCharge(missionId, userId) {
-    data = {
-      'action':"lab_mission_set_manager",
-      'id':missionId,
-      'managerId':userId,
     };
     callAjax(data, null, applyFilter, null, null);
 
