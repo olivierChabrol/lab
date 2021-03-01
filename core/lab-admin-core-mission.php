@@ -161,6 +161,7 @@ function lab_mission_load($missionToken, $filters = null, $groupIds = null) {
     // load user info
     $userIds = array();
     $params = array();
+    $groups = array();
     $paramsToGet = ["mission_objective", "status"];
     $notifs = array();
     $current_user_id = get_current_user_id();
@@ -168,23 +169,14 @@ function lab_mission_load($missionToken, $filters = null, $groupIds = null) {
         $notifs[$r->id] = lab_admin_mission_getNotifs($current_user_id, $r->id);
         if(!isset($userIds[$r->host_id]) && $r->host_id != 0) {
             $userIds[$r->host_id] = lab_admin_usermeta_names($r->host_id);
-            /*
-            $groups = $wpdb->get_results("SELECT ug.user_id, g.acronym, gm.user_id as manager_id FROM `".$wpdb->prefix."lab_users_groups` AS ug JOIN ".$wpdb->prefix."lab_groups AS g ON g.id=ug.group_id JOIN ".$wpdb->prefix."lab_group_manager AS gm ON gm.group_id=g.id WHERE ug.user_id=".$r->host_id." AND gm.manager_type=1");
-            if (count($groups)> 0) {
-                $userIds[$r->host_id]->group = $groups[0]->acronym;
-                $userIds[$r->host_id]->manager_id = $groups[0]->manager_id;
-                if(!isset($userIds[$groups[0]->manager_id]) && $groups[0]->manager_id != 0) {
-                    $userIds[$groups[0]->manager_id] = lab_admin_usermeta_names($groups[0]->manager_id);
-                }
-            }
-            //*/
-            if ($r->manager_id != null) {
-                $userIds[$r->manager_id] = lab_admin_usermeta_names($r->manager_id);
-            }
+            
+        }
+        if ($r->manager_id != null) {
+            $userIds[$r->manager_id] = lab_admin_usermeta_names($r->manager_id);
         }
         $r->group = $userIds[$r->host_id]->group;
         //$r->manager_id = $userIds[$r->host_id]->manager_id;
-
+        $groups[$r->host_group_id] = lab_admin_get_group_name($r->host_group_id);
         # get all params associated to the mission see @$paramsToGet
         foreach($paramsToGet as $ptg) {
             if (!isset($params[$r->$ptg])) {
@@ -202,6 +194,7 @@ function lab_mission_load($missionToken, $filters = null, $groupIds = null) {
         $data["results"] = $results[0];
     }
     $data["users"] = $userIds;
+    $data["groups"] = $groups;
     $data["params"] = $params;
     $data["notifs"] = $notifs;
 

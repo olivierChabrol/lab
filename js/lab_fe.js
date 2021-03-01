@@ -30,6 +30,8 @@ jQuery(function($){
       'mission_id': $("#lab_mission_id").val()
     };
     callAjax(data, null, loadAdminPanel, null, null);
+    //callAjax(data, null, null, null, null);
+
   });
 
   $("#lab_mission_refuse").click(function() {
@@ -1236,11 +1238,13 @@ function invitation_submit(callback) {
         'action': 'lab_invitations_new',
         'fields': fields
       };
+      //alert("toto");
       jQuery.post(LAB.ajaxurl, data, function(response) {
-        if (response.success) {
+        console.log(data);
+        /*if (response.success) {
           $("#missionForm").html(response.data);
           callback();
-        }
+        }*/
       });
     } else { //On met à jour l'invitation existante
       fields['guest_id']=$("#lab_firstname").attr("guest_id");
