@@ -49,7 +49,7 @@ function lab_incoming_event($param)
     {
         $listEventStr .= "<tr>";
         $listEventStr .= "<td>".esc_html($r->event_start_date)."</td>
-                          <td>".$r->speaker."</td><td><a href=\"".$url."event/".$r->event_slug."\">".$r->event_name."</a></td>";
+                          <td><span style=\"color: green\">".$r->speaker."</span></td><td><a href=\"".$url."event/".$r->event_slug."\">".$r->event_name."</a></td>";
         $listEventStr .= "</tr>";
     }
     $listEventStr .= "</table>";
