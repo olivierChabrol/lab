@@ -49,7 +49,7 @@ function lab_incoming_event($param)
     {
         $listEventStr .= "<tr>";
         $listEventStr .= "<td>".esc_html($r->event_start_date)."</td>
-                          <td><span style=\"color: green\">".$r->speaker."</span></td><td><a href=\"".$url."event/".$r->event_slug."\">".$r->event_name."</a></td>";
+                          <td><span style=\"color: mediumseagreen\">".$r->speaker."</span></td><td><a href=\"".$url."event/".$r->event_slug."\">".$r->event_name."</a></td>";
         $listEventStr .= "</tr>";
     }
     $listEventStr .= "</table>";
@@ -102,7 +102,7 @@ function lab_event_of_the_week($param)
     foreach ( $res as $r )
     {
         $content .= "<p><span style=\"color: #ff6600;\">".date_i18n("l j F Y", strtotime($r->event_start_date))."</span> ";
-        $content .= "<span style=\"color: green\"><strong>".$r->speaker."</strong></span><br>";
+        $content .= "<span style=\"color: mediumseagreen\"><strong>".$r->speaker."</strong></span><br>";
         $content .= "<span style=\"color: #000000;\"><strong>".$r->name."</strong></span><br>";
         $content .= date("H:i", strtotime($r->event_start_time))." - ".date("H:i", strtotime($r->event_end_time))." <a class=\"spip_out\" href=\"".$r->event_slug."\">".$r->event_name."</a></p>";
     }
@@ -272,7 +272,7 @@ function lab_events($eventCategory, $eventYear, $old) {
     $listEventStr = "<table>";
     $url = esc_url(home_url('/'));
     foreach ($results as $r){
-        $listEventStr .= "<tr><td>" . esc_html($r->event_start_date) . "</td><td><span style=\"color: green\">".esc_html($r->speaker)."</span></td><td><a href=\"".$url."event/".$r->event_slug."\">".$r->event_name."</a></td></tr>";
+        $listEventStr .= "<tr><td>" . esc_html($r->event_start_date) . "</td><td><span style=\"color: mediumseagreen\">".esc_html($r->speaker)."</span></td><td><a href=\"".$url."event/".$r->event_slug."\">".$r->event_name."</a></td></tr>";
     }
     $listEventStr .= "</table>";
     return $listEventStr;

@@ -34,10 +34,12 @@ if( !empty($_REQUEST['success']) ){
 			<div class="event-attributes">
 				<label for="em_attributes[Speaker]">Nom du speaker</label>
 				<input type="text" id="lab_event_speaker_name" name="em_attributes[Speaker]" value="">
+				<span id="lab_event_speaker_name_error"></span>
 			</div>
 			<div class="event-attributes">
 				<label for="em_attributes[Speaker affiliation]">Affiliation</label>
-				<input type="text" name="em_attributes[Speaker affiliation]" value="">
+				<input type="text" id="lab_event_speaker_affiliation" name="em_attributes[Speaker affiliation]" value="">
+				<span id="lab_event_speaker_affiliation_error"></span>
 			</div>
 			<div class="event-attributes">
 				<label for="em_attributes[Speaker web site]">Page internet du speaker : </label>
@@ -93,11 +95,12 @@ if( !empty($_REQUEST['success']) ){
 		
                 <input type="hidden" name="data_privacy_consent" value="1">
 	</div>
+	<button id="lav_event_submit" type="button" class="btn btn-success" ><?php echo esc_attr(sprintf( __('Submit %s','events-manager'), __('Event','events-manager') )); ?></button>
 	<p class="submit">
 	    <?php if( empty($EM_Event->event_id) ): ?>
-	    <input type='submit' id="toto" class='button-primary' value='<?php echo esc_attr(sprintf( __('Submit %s','events-manager'), __('Event','events-manager') )); ?>' />
+	    
 	    <?php else: ?>
-	    <input type='submit' id="toto" class='button-primary' value='<?php echo esc_attr(sprintf( __('Update %s','events-manager'), __('Event','events-manager') )); ?>' />
+	    <button id="toto" class='button-primary' value='<?php echo esc_attr(sprintf( __('Update %s','events-manager'), __('Event','events-manager') )); ?>' />
 	    <?php endif; ?>
 	</p>
 	<input type="hidden" name="event_id" value="<?php echo $EM_Event->event_id; ?>" />
