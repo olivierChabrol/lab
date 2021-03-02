@@ -220,6 +220,7 @@ function lab_events($eventCategory, $eventYear, $old) {
                 JOIN `wp_term_taxonomy`      AS tt".$i." ON tt".$i.".term_taxonomy_id=tr".$i.".term_taxonomy_id 
                 JOIN `wp_terms`              AS t".$i."  ON t".$i.".term_id=tt".$i.".term_id";
         }
+        $sql .= "JOIN `wp_postmeta` AS pmd ON pmd.`post_id` = p.`post_id`";
         $sql .= " WHERE (";
         for($i = 0; $i < $categorySize ; $i++)
         {
@@ -228,7 +229,7 @@ function lab_events($eventCategory, $eventYear, $old) {
                 $sql .= " AND ";
             }
         }
-        $sql .= ")" . $sqlYearCondition . $sqlCondition .
+        $sql .= ")" . $sqlYearCondition . $sqlCondition . " AND pmd.meta_key = 'Speaker' ".
             " ORDER BY `ee`.`event_start_date` DESC";
     } 
     else
