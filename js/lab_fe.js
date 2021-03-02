@@ -873,7 +873,7 @@ function LABLoadInvitation() {
       editTravelDiv(getNewTravelId());
     });
 
-    $("#lab_mission_validate").click(function(e) {
+    $("#lab_mission_submit").click(function(e) {
       console.log("[$(#lab_mission_validate).click]");
       invitation_submit(function() {
         return;

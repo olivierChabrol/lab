@@ -99,6 +99,9 @@ jQuery(function($){
       else if (string.startsWith("Waiting")) {
         $(this).css("background-color", "khaki");
       }
+      else if (string.startsWith("New")) {
+        $(this).css("background-color", "lightcyan");
+      }
     })
   }
 

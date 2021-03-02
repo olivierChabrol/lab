@@ -1351,6 +1351,9 @@ function lab_invitations_edit() {
     $hostGroupId = lab_group_get_user_group($fields['host_id']);
     $fields['host_group_id'] = $hostGroupId;
   }
+  $managerId = lab_admin_group_get_manager($fields['host_group_id']);
+  //wp_send_json_success("toto " . $managerId);
+  $fields['manager_id'] = $managerId;
   //wp_send_json_success( $fields['host_group_id']);
   $currentUserId = get_current_user_id();
   $isHost = $currentUserId == $fields['host_id'];
