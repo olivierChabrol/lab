@@ -22,13 +22,12 @@ function lab_incoming_event($param)
     $category      = explode(",", $eventCategory);
 
     /***  SQL ***/
-    $sql = "SELECT p.*
+    $sql = "SELECT p.*, pmd.meta_value as speaker
             FROM `wp_terms` AS t 
-            JOIN `wp_term_relationships` AS tr 
-                ON tr.`term_taxonomy_id`=t.`term_id` 
-            JOIN `wp_em_events` as p 
-                ON p.`post_id`=tr.`object_id` 
-            WHERE t.slug = '" . $category[0] . "'";
+            JOIN `wp_term_relationships` AS tr  ON tr.`term_taxonomy_id` = t.`term_id` 
+            JOIN `wp_em_events`          AS p   ON p.`post_id`           = tr.`object_id` 
+            JOIN `wp_postmeta`           AS pmd ON pmd.`post_id`         = p.`post_id`
+           WHERE t.slug = '" . $category[0] . "'";
     
     for($i = 1 ; $i < count($category) ; ++$i)
     {
@@ -36,6 +35,7 @@ function lab_incoming_event($param)
     }
 
     $sql .= "AND `p`.`event_end_date` >= NOW() 
+             AND pmd.meta_key AND wp_postmeta = 'Speaker'
              ORDER BY `p`.`event_start_date` 
              ASC ";
     global $wpdb;
@@ -49,7 +49,7 @@ function lab_incoming_event($param)
     {
         $listEventStr .= "<tr>";
         $listEventStr .= "<td>".esc_html($r->event_start_date)."</td>
-                          <td><a href=\"".$url."event/".$r->event_slug."\">".$r->event_name."</a></td>";
+                          <td>".$r->speaker." <a href=\"".$url."event/".$r->event_slug."\">".$r->event_name."</a></td>";
         $listEventStr .= "</tr>";
     }
     $listEventStr .= "</table>";
