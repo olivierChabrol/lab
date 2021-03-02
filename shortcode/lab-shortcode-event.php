@@ -73,12 +73,12 @@ function lab_event_of_the_week($param)
 
     $sql = "SELECT t.name, p.* 
             FROM `wp_terms` AS t 
-            JOIN `wp_term_relationships` AS tr 
-                ON tr.`term_taxonomy_id`=t.`term_id` 
-            JOIN `wp_em_events` as p 
-                ON p.`post_id`=tr.`object_id` 
+            JOIN `wp_term_relationships` AS tr  ON tr.`term_taxonomy_id`=t.`term_id` 
+            JOIN `wp_em_events`          AS p   ON p.`post_id`=tr.`object_id` 
+            JOIN `wp_postmeta`           AS pmd ON pmd.`post_id`         = p.`post_id`
             WHERE p.`event_start_date` >= '".$week_start."' 
                 AND p.`event_end_date` <= '".$week_end."' 
+                AND pmd.meta_key = 'Speaker'
             ORDER BY `p`.`event_start_date` ASC";
     global $wpdb;
     $results = $wpdb->get_results($sql);
