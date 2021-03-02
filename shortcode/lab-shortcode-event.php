@@ -35,7 +35,7 @@ function lab_incoming_event($param)
     }
 
     $sql .= "AND `p`.`event_end_date` >= NOW() 
-             AND pmd.meta_key AND wp_postmeta = 'Speaker'
+             AND pmd.meta_key = 'Speaker'
              ORDER BY `p`.`event_start_date` 
              ASC ";
     global $wpdb;
