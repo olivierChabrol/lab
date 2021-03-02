@@ -71,7 +71,7 @@ function lab_event_of_the_week($param)
     $week_start = date('Y-m-d', strtotime('-'.($day-1).' days'));
     $week_end   = date('Y-m-d', strtotime('+'.(7-$day).' days'));
 
-    $sql = "SELECT t.name, p.* 
+    $sql = "SELECT t.name, p.*, pmd.meta_value as speaker
             FROM `wp_terms` AS t 
             JOIN `wp_term_relationships` AS tr  ON tr.`term_taxonomy_id`=t.`term_id` 
             JOIN `wp_em_events`          AS p   ON p.`post_id`=tr.`object_id` 
@@ -102,6 +102,7 @@ function lab_event_of_the_week($param)
     foreach ( $res as $r )
     {
         $content .= "<p><span style=\"color: #ff6600;\">".date_i18n("l j F Y", strtotime($r->event_start_date))."</span> ";
+        $content .= "<span style=\"color: green\"><strong>".$r->speaker."</strong></span><br>";
         $content .= "<span style=\"color: #000000;\"><strong>".$r->name."</strong></span><br>";
         $content .= date("H:i", strtotime($r->event_start_time))." - ".date("H:i", strtotime($r->event_end_time))." <a class=\"spip_out\" href=\"".$r->event_slug."\">".$r->event_name."</a></p>";
     }
@@ -207,7 +208,7 @@ function lab_events($eventCategory, $eventYear, $old) {
             $sqlCondition = " AND `ee`.`event_end_date` < NOW() ";
         }
         
-        $sql = "SELECT ee.*";
+        $sql = "SELECT ee.*, pmd.meta_value as speaker";
         $categorySize = count($category);
         for ($i = 0; $i < $categorySize; $i++)
         {
@@ -248,17 +249,18 @@ function lab_events($eventCategory, $eventYear, $old) {
         }
         
         /***  SQL ***/
-        $sql = "SELECT p.* 
+        $sql = "SELECT p.*, pmd.meta_value as speaker 
                 FROM `wp_terms` AS t 
                 JOIN `wp_term_relationships` AS tr 
                     ON tr.`term_taxonomy_id`=t.`term_id` 
                 JOIN `wp_em_events` as p 
                     ON p.`post_id`=tr.`object_id`
+                JOIN `wp_postmeta` AS pmd ON pmd.`post_id` = p.`post_id`
                 WHERE (t.slug='".$category[0]."'";
         for($i = 1 ; $i < count($category) ; ++$i) {
             $sql .= " OR t.slug = '" . $category[$i] . "'";
         }
-        $sql .=     ")" . $sqlYearCondition  . $sqlCondition . "
+        $sql .=     ")" . $sqlYearCondition  . $sqlCondition . " AND pmd.meta_key = 'Speaker' 
                     ORDER BY `p`.`event_end_date` DESC ";
     } 
     //return $sql;
@@ -270,7 +272,7 @@ function lab_events($eventCategory, $eventYear, $old) {
     $listEventStr = "<table>";
     $url = esc_url(home_url('/'));
     foreach ($results as $r){
-        $listEventStr .= "<tr><td>" . esc_html($r->event_start_date) . "</td><td><a href=\"".$url."event/".$r->event_slug."\">".$r->event_name."</a></td></tr>";
+        $listEventStr .= "<tr><td>" . esc_html($r->event_start_date) . "</td><td><span style=\"color: green\">".esc_html($r->speaker)."</span></td><td><a href=\"".$url."event/".$r->event_slug."\">".$r->event_name."</a></td></tr>";
     }
     $listEventStr .= "</table>";
     return $listEventStr;
