@@ -5,6 +5,10 @@ jQuery(function($){
   var searchRequest;
   //loadExistingKeys();
 
+  $("#lab_user_co_supervision").countrySelect({
+    defaultCountry: "fr",
+    preferredCountries: ['fr', 'de', 'it', 'es', 'us'],
+  });
 
   $("#lab_user_country").countrySelect({
     defaultCountry: "fr",
@@ -226,11 +230,17 @@ jQuery(function($){
   });
 
   $("#lab_user_button_user_save").click(function() {
-    let fields = ["lab_user_slug"];
+    let fields = ["lab_user_slug", "lab_user_co_supervision"];
     let data = [];
     for(const elm of fields)
     {
-      data[elm] = $("#"+elm).val();
+      if (elm == "lab_user_co_supervision")
+      {
+        data[elm] = $("#"+elm).countrySelect("getSelectedCountryData")['iso2'];
+      }
+      else {
+        data[elm] = $("#"+elm).val();
+      }
     }
     saveUser($("#lab_user_left_date").val(), 
                 $("#lab_user_left").is(":checked"), 
@@ -249,7 +259,7 @@ jQuery(function($){
                 $("#lab_user_url").val(), 
                 $("#lab_user_thesis_title").val(), 
                 $("#lab_user_hdr_title").val(), 
-                $("#lab_user_phd_school").val(), 
+                $("#lab_user_phd_school").val(),
                 $("#lab_user_sex").val(), 
                 $("#lab_user_country").countrySelect("getSelectedCountryData")['iso2'],
                 $("#lab_user_hdr_date").val(), 
@@ -1123,10 +1133,14 @@ function resetUserTabFields()
   jQuery("#lab_user_phd_school").val("");
   jQuery("#lab_user_sex").val("");
   jQuery("#lab_user_country").countrySelect("selectCountry","fr");
+  jQuery("#lab_user_co_supervision").countrySelect("selectCountry","fr");
   jQuery("#lab_user_hdr_date").val("YYYY-mm-dd");
   jQuery("#lab_user_thesis_date").val("YYYY-mm-dd");
   document.forms['lab_admin_historic'].reset();
   jQuery("#lab_admin_historic").hide();
+  jQuery("#lab_admin_user_thematics").html("");
+  jQuery("#lab_admin_user_roles").html("");
+  jQuery("#lab_admin_user_group").html("");
 }
 
 function load_usermeta_dateLeft() {
@@ -1176,13 +1190,20 @@ function loadUserMetaData(response) {
     setField("#lab_user_thesis_date"  , response.data["user_thesis_date"]);
 
     $country = response.data["user_country"];
-    console.log($country);
+    $co_supervision_country = response.data["user_co_supervision"];
+    //console.log($country);
     if ($country == null || $country == "")
     {
       $country = "fr";
     }
-    //console.log($country);
+    if ($co_supervision_country == null || $co_supervision_country == "")
+    {
+      $co_supervision_country = "fr";
+    }
+    console.log($country);
+    console.log($co_supervision_country);
     jQuery("#lab_user_country").countrySelect("selectCountry",$country);
+    jQuery("#lab_user_co_supervision").countrySelect("selectCountry",$co_supervision_country);
     //setField("#lab_user_country", $country);
     console.log("[lab_admin.js][loadUserMetaData] user_sex : " + response.data["user_sex"]);
     setField("#lab_user_sex", response.data["user_sex"]);
@@ -1637,8 +1658,6 @@ function loaduserGroup() {
           span.append(innerSpan);
           $("#lab_admin_user_group").append(span);
         });
-        //$("#lab_admin_user_thematics").html(response.data);
-        //<span class='lab_role_delete' user_id='".$user_id."' role='".$value->id."'><i class='fas fa-trash'></i></span></span>
         $(".lab_group_delete").click(function (){
           data = {
             'action':'lab_user_delGroup',

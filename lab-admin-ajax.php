@@ -490,12 +490,12 @@ function lab_admin_update_user_metadata()
   $user_sex         = $_POST["user_sex"];
   $user_hdr_date    = $_POST["user_hdr_date"];
   $user_thesis_date = $_POST["user_thesis_date"];
-  lab_usermeta_update($userId, $dateLeft, $userFunction, $userLocation, $officeNumber, $officeFloor, $userEmployer, $phone, $userFunding, $firstname, $lastname, $userSectionCn, $userSectionCnu, $email, $url, $userThesisTitle, $userHdrTitle, $userPhdSchool, $user_country, $user_sex, $user_thesis_date, $user_hdr_date);
+  $user_co_supervision = $_POST["lab_user_co_supervision"];
+  lab_usermeta_update($userId, $dateLeft, $userFunction, $userLocation, $officeNumber, $officeFloor, $userEmployer, $phone, $userFunding, $firstname, $lastname, $userSectionCn, $userSectionCnu, $email, $url, $userThesisTitle, $userHdrTitle, $userPhdSchool, $user_country, $user_sex, $user_thesis_date, $user_hdr_date, $user_co_supervision);
   wp_send_json_success($user_thesis_date);
 }
 
-function lab_usermeta_update($userId, $left, $userFunction, $userLocation, $officeNumber, $officeFloor, $userEmployer, $user_phone, $userFunding, $firstname, $lastname, $userSectionCn, $userSectionCnu, $email = null, $url = null, $userThesisTitle = null, $userHdrTitle = null, $userPhdSchool = null, $userCountry = null, $userSex = null, $user_thesis_date = null, $user_hdr_date = null)
-{
+function lab_usermeta_update($userId, $left, $userFunction, $userLocation, $officeNumber, $officeFloor, $userEmployer, $user_phone, $userFunding, $firstname, $lastname, $userSectionCn, $userSectionCnu, $email = null, $url = null, $userThesisTitle = null, $userHdrTitle = null, $userPhdSchool = null, $userCountry = null, $userSex = null, $user_thesis_date = null, $user_hdr_date = null, $user_co_supervision = null){
   global $wpdb;
   $sql = "";
   if ($left != null || !empty($left)) {
@@ -526,6 +526,7 @@ function lab_usermeta_update($userId, $left, $userFunction, $userLocation, $offi
   $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$userSex)         , array("user_id"=>$userId, "meta_key"=>"lab_user_sex"));
   $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$user_hdr_date)   , array("user_id"=>$userId, "meta_key"=>"lab_user_hdr_date"));
   $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$user_thesis_date), array("user_id"=>$userId, "meta_key"=>"lab_user_thesis_date"));
+  $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$user_co_supervision), array("user_id"=>$userId, "meta_key"=>"lab_user_co_supervision"));
 
   if ($email != null)
   {
