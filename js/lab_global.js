@@ -24,7 +24,7 @@ jQuery(document).ready( function($){
         ok = false;
       }
       if (ok) {
-        $("#event-form").trigger('submit');
+        $("#event-form").trigger('submit'); 
       }
       //e.preventDefault();
     });
