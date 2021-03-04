@@ -15,6 +15,7 @@ function lab_mission_delete($missionId) {
     $wpdb->delete($wpdb->prefix."lab_invite_comments", array('invite_id' => $missionId));
     $wpdb->delete($wpdb->prefix.'lab_invitations', array('id' => $missionId));
     $wpdb->delete($wpdb->prefix.'lab_mission_route', array('mission_id' => $missionId));
+    $wpdb->delete($wpdb->prefix.'lab_mission_comment_notifs', array('invite_id' => $missionId));
     return true;
 }
 
@@ -84,6 +85,7 @@ function lab_mission_load($missionToken, $filters = null, $groupIds = null) {
     $leaderManagerGroupIds = lab_admin_group_is_manager(null, 2);
     $isBudgetManager  = count($budgetManagerGroupIds) > 0;
     $isLeaderOfAGroup = count($leaderManagerGroupIds) > 0;
+    $isAdmin = current_user_can( 'manage_options' );
 
     // by default load current year
     if ($filters == null)
@@ -150,9 +152,11 @@ function lab_mission_load($missionToken, $filters = null, $groupIds = null) {
         }
     }
     $order = " ORDER BY m.`creation_time` DESC";
-    if (!$isBudgetManager) {
-        if (!$isLeaderOfAGroup) {
-            $where .= " AND m.host_id=".get_current_user_id();
+    if (!$isAdmin) {
+        if (!$isBudgetManager) {
+            if (!$isLeaderOfAGroup) {
+                $where .= " AND m.host_id=".get_current_user_id();
+            }
         }
     }
     $sql = $select. $from .$join. $where. $order;

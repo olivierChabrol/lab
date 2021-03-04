@@ -71,6 +71,18 @@ function lab_mission_refuse() {
   lab_mission_set_status($missionId, AdminParams::MISSION_STATUS_REFUSED_GROUP_LEADER);
   wp_send_json_success();
 }
+
+function lab_mission_cancel() {
+  $missionId = $_POST['mission_id'];
+  lab_mission_set_status($missionId, AdminParams::MISSION_STATUS_CANCEL);
+  wp_send_json_success();
+}
+
+function lab_mission_complete() {
+  $missionId = $_POST['mission_id'];
+  lab_mission_set_status($missionId, AdminParams::MISSION_STATUS_COMPLETE);
+  wp_send_json_success();
+}
 /********************************************************************************************
  * BUDGET
  ********************************************************************************************/
@@ -1372,6 +1384,10 @@ function lab_invitations_edit() {
     }
   }
 
+  // an admin can modify a mission
+
+  $isAdmin = current_user_can('manage_options');
+
   // all budget Managers can modify a mission
   $canModify = $isBudgetManager;
 
@@ -1385,8 +1401,9 @@ function lab_invitations_edit() {
     $canModify = $currentUserId == $fields['host_id'];
   }
 
-  //wp_send_json_error($currentUserId);
-  if ( $canModify) {
+  
+  //wp_send_json_error($fields['host_group_id']);
+  if ( $canModify || $isAdmin) {
     $guest = array (
       'first_name'=> $fields['guest_firstName'],
       'last_name'=> $fields['guest_lastName'],
@@ -1481,7 +1498,7 @@ function lab_invitation_newComment() {
     'author_type'=> $author_type,
     'invite_id'=>$id
   )); 
-  $html = lab_inviteComments($_POST['token']);
+  $html = lab_inviteComments($id);
   wp_send_json_success($html);
 }
 
@@ -1577,7 +1594,8 @@ function lab_invitations_summary() {
 
 function lab_invitations_comments(){
   $token = $_POST['token'];
-  $string = lab_inviteComments($token);
+  $missionId = lab_invitations_getByToken($_POST['token'])->id;
+  $string = lab_inviteComments($missionId);
   $string .= lab_newComments(lab_admin_userMetaDatas_get(get_current_user_id()), $token);
   wp_send_json_success($string);
 }

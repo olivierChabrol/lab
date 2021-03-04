@@ -187,6 +187,8 @@ if (is_admin()) {
     add_action( 'wp_ajax_lab_mission_delete_notif', 'lab_mission_delete_notif');
     add_action( 'wp_ajax_lab_mission_validate', 'lab_mission_validate');
     add_action( 'wp_ajax_lab_mission_refuse', 'lab_mission_refuse');
+    add_action( 'wp_ajax_lab_mission_cancel', 'lab_mission_cancel');
+    add_action( 'wp_ajax_lab_mission_complete', 'lab_mission_complete');
 
     //add_action( 'wp_ajax_lab_mission_getNotifs', 'lab_mission_getNotifs');
     //add_action( 'wp_ajax_lab_mission_resetNotifs', 'lab_mission_resetNotifs');

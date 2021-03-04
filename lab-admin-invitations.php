@@ -103,6 +103,21 @@ function lab_invitations_editGuest($id, $params) {
 }
 function lab_invitations_editInvitation($missionId, $params) {
   global $wpdb;
+  $userId = get_current_user_id();
+  $userMeta = lab_admin_usermeta_names($userId);
+  $missionType = lab_admin_get_mission_type($missionId);
+  if($missionType == 255) {
+      $content = "¤Invitation";
+  } else {
+      $content = "¤Mission";
+  }
+  lab_invitations_addComment(array(
+    'content' => $content . " modifiée par " . $userMeta->first_name . " " . $userMeta->last_name,
+  'timestamp'=> date("Y-m-d H:i:s",/*strtotime("+1 hour")*/),
+    'author_id' => 0,
+    'author_type' => 0,
+    'invite_id' => $missionId
+));
   return $wpdb->update(
     $wpdb->prefix.'lab_invitations',
     $params,
@@ -332,12 +347,12 @@ function lab_invitation_is_budget_manager() {
   return count($res) > 0;
 }
 
-
-
-
-
-
-
+function lab_admin_get_mission_type($missionId) {
+  global $wpdb;
+  $sql = "SELECT mission_objective FROM `".$wpdb->prefix."lab_invitations` WHERE id=".$missionId;
+  $res = $wpdb->get_results($sql);
+  return $res;
+}
 
 function lab_admin_mission_getNotifs($user_id, $mission_id = null) {
   global $wpdb;

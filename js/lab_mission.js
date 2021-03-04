@@ -102,6 +102,14 @@ jQuery(function($){
       else if (string.startsWith("New")) {
         $(this).css("background-color", "lightcyan");
       }
+      else if (string.startsWith("Cancel")) {
+        $(this).css("background-color", "lightgrey");
+        $(this).children("td:nth-child(9)").children("a:nth-child(1)").hide();
+      }
+      else if (string.startsWith("Completed")) {
+        $(this).css("background-color", "aquamarine");
+        //$(this).children("td:nth-child(9)").children("a:nth-child(1)").hide();
+      }
     })
   }
 

@@ -24,6 +24,22 @@ jQuery(function($){
     });
   });
 
+  $("#lab_mission_cancel").click(function() {
+    data = {
+      'action': 'lab_mission_cancel',
+      'mission_id': $("#lab_mission_id").val()
+    };
+    callAjax(data, null, loadAdminPanel, null, null);
+  });
+
+  $("#lab_mission_complete").click(function() {
+    data = {
+      'action': 'lab_mission_complete',
+      'mission_id': $("#lab_mission_id").val()
+    };
+    callAjax(data, null, loadAdminPanel, null, null);
+  });
+
   $("#lab_mission_validate").click(function() {
     data = {
       'action': 'lab_mission_validate',
@@ -874,7 +890,7 @@ function LABLoadInvitation() {
     });
 
     $("#lab_mission_submit").click(function(e) {
-      console.log("[$(#lab_mission_validate).click]");
+      console.log("[$(#lab_mission_submit).click]");
       invitation_submit(function() {
         return;
       });
@@ -1241,10 +1257,10 @@ function invitation_submit(callback) {
       //alert("toto");
       jQuery.post(LAB.ajaxurl, data, function(response) {
         console.log(data);
-        /*if (response.success) {
+        if (response.success) {
           $("#missionForm").html(response.data);
           callback();
-        }*/
+        }
       });
     } else { //On met à jour l'invitation existante
       fields['guest_id']=$("#lab_firstname").attr("guest_id");
@@ -1270,6 +1286,7 @@ jQuery("#button_add_comment").click(function () {
         console.log(response.data);
         $("#lab_invitation_oldComments").html(response.data);
         $("#lab_comment").val('');
+        //callback();
       }
     });
   });

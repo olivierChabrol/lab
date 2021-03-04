@@ -54,6 +54,7 @@ function lab_mission($args) {
                 $isChief = lab_admin_group_is_group_leader(get_current_user_id(), $invitation->host_group_id);
             };
             $isManager = false;
+            $isAdmin = current_user_can( 'manage_options' );
             $missionType = AdminParams::get_param($invitation->mission_objective);
             foreach($budget_manager_ids as $bm) {
                 if (get_current_user_id() == $bm) {
@@ -66,7 +67,8 @@ function lab_mission($args) {
                 $missionInformation .= '<p><i>'.esc_html__('You can edit this invitation as a group leader','lab').'</i></p>';
                 $missionInformation .= '<p><i>'.esc_html__('Invitation status : ','lab').'</i>'.lab_invitations_getStatusName($invitation->status).'</p>';
                 
-            } else if ( get_current_user_id()==$invitation->host_id ) { 
+            }
+            else if ( get_current_user_id()==$invitation->host_id ) { 
                 $missionInformation .= '<p><i>'.esc_html__('You can edit this invitation as a host','lab').'</i></p>';
                 $missionInformation .= '<p><i>'.esc_html__('Invitation status : ','lab').'</i>'.lab_invitations_getStatusName($invitation->status).'</p>';
             
@@ -74,7 +76,11 @@ function lab_mission($args) {
             else if ( $isManager ) {
                 $missionInformation .= '<p><i>'.esc_html__('You can edit this invitation as a budget manager','lab').'</i></p>';
                 $missionInformation .= '<p><i>'.esc_html__('Invitation status : ','lab').'</i>'.lab_invitations_getStatusName($invitation->status).'</p>';
-            } 
+            }
+            else if ( $isAdmin ) {
+                $missionInformation .= '<p><i>'.esc_html__('You can edit this invitation as an administrator','lab').'</i></p>';
+                $missionInformation .= '<p><i>'.esc_html__('Invitation status : ','lab').'</i>'.lab_invitations_getStatusName($invitation->status).'</p>';
+            }
             //possibly the guest
             else if ($isGuest) {
                 $missionInformation .= '<p><i>'.esc_html__('You can edit this invitation as a guest','lab').'/i></p>';
@@ -332,7 +338,8 @@ function lab_mission($args) {
                                    <button id="lab_mission_refuse" type="button" class="btn btn-danger">'.esc_html__("Refuse","lab").'</button>';
             }
             else if($managerType == 1) {
-                $invitationStr .= '<button id="lab_mission_tic" type="button" class="btn btn-info">'.esc_html__("Take in charge","lab").'</button>';
+                $invitationStr .= '<button id="lab_mission_tic" type="button" class="btn btn-info">'.esc_html__("Take in charge","lab").'</button>&nbsp&nbsp
+                                   <button id="lab_mission_complete" type="button" class="btn btn-success">'.esc_html__("Complete","lab").'</button>';
             }
             else {
                 $invitationStr .= '<button id="lab_mission_cancel" type="button" class="btn btn-warning">'.esc_html__("Cancel","lab").'</button>';
