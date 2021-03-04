@@ -4,6 +4,10 @@
     if (isset($_GET['tab'])) {
       $active_tab = $_GET['tab'];
     }
+    $contractId = "";
+    if (isset($_GET['id'])) {
+      $contractId = $_GET['id'];
+    }
 ?>
     <div id="loadingAjaxGif"><img src="/wp-content/plugins/lab/loading.gif"/></div>
     <div class="wrap">
@@ -24,16 +28,17 @@
     echo '<button class="lab_keyring_create_table_keys" id="lab_admin_contract_create_table">'.esc_html__('Créer la table Contrat user','lab').'</button>';
     }
     if ($active_tab == 'new') {
-    lab_admin_contract_new();
+    lab_admin_contract_new($contractId);
     } else if ($active_tab == 'list') {
     lab_admin_contract_list();
     } else {
-    lab_admin_contract_new();
+    lab_admin_contract_new($contractId);
     }
   }
 
-  function lab_admin_contract_new() {
+  function lab_admin_contract_new($contractId = "") {
 ?>
+<input type="hidden" id="lab_contract_delete_dialog_contract_id" value="<?php echo $contractId; ?>">
 <table class="widefat fixed lab_keyring_table">
     <tbody>
         <tr>
@@ -91,8 +96,9 @@
             </td>
         </tr>
         <tr>
-          <td scope="col" colpsan="2"><button class="page-title-action" id="lab_admin_contract_create"><?php esc_html_e('Add','lab'); ?></button></td>
+          <td scope="col" colspan="2"><button class="page-title-action" id="lab_admin_contract_create"><?php esc_html_e('Add','lab'); ?></button></td>
         </tr>
+    </table>
 <?php
   }
   function lab_admin_contract_list() {
@@ -101,6 +107,14 @@
     <tbody id="lab_admin_contract_list_table_tbody">
     </tbody>
 </table>
+<div id="lab_contract_delete_dialog" class="modal">
+    <p><?php esc_html_e('Do you really want to delete this contract ?','lab');?></p>
+    <input type="hidden" id="lab_contract_delete_dialog_contract_id" value="">
+    <div id="lab_contract_delete_dialog_options">
+    <a href="#" rel="modal:close"><?php esc_html_e('Cancel','lab')?></a>
+    <a href="#" rel="modal:close" id="lab_contract_delete_confirm" keyid=""><?php esc_html_e('Confirm','lab'); ?></a>
+    </div>
+</div>
 <?php
   }
   

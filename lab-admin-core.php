@@ -425,11 +425,11 @@ function lab_admin_budget_funds() {
 /***********************************************************************************************************
  * CONTRACT
  ***********************************************************************************************************/
-function lab_admin_contract_save($id, $name, $start, $end, $holders, $managers) {
+function lab_admin_contract_save($id, $name, $contractType, $start, $end, $holders, $managers) {
     global $wpdb;
     // new contract
     if (!isset($id) || empty($id)) {
-        if ($wpdb->insert($wpdb->prefix.'lab_contract', array("name"=>$name,"start"=>$start,"end"=>$end))) {
+        if ($wpdb->insert($wpdb->prefix.'lab_contract', array("name"=>$name, "contract_type"=>$contractType,"start"=>$start,"end"=>$end))) {
             $contractId = $wpdb->insert_id;
             foreach ($holders as $userId) {
                 $wpdb->insert($wpdb->prefix.'lab_contract_user', array("contract_id"=>$contractId, "user_id"=>$userId,"user_type"=> 2));
@@ -438,6 +438,10 @@ function lab_admin_contract_save($id, $name, $start, $end, $holders, $managers) 
                 $wpdb->insert($wpdb->prefix.'lab_contract_user', array("contract_id"=>$contractId, "user_id"=>$userId,"user_type"=> 1));
             }
         }
+        else {
+            return $wpdb->last_error;
+        }
+        
     }
     else
     {
@@ -481,7 +485,16 @@ function lab_admin_contract_get_managers($contractId) {
 
 function lab_admin_contract_search($contractName) {
     global $wpdb;
-    return $wpdb->get_results("SELECT id, name as label, start, end FROM ".$wpdb->prefix."lab_contract WHERE `name`LIKE '%".$contractName."%'");
+    return $wpdb->get_results("SELECT id, contract_type, name as label, start, end FROM ".$wpdb->prefix."lab_contract WHERE `name` LIKE '%".$contractName."%'");
+}
+
+function lab_admin_contract_get($contractId) {
+    global $wpdb;
+    $res = $wpdb->get_results("SELECT id, contract_type, name as label, start, end FROM ".$wpdb->prefix."lab_contract WHERE `id` = ".$contractId);
+    if (count($res) == 1) {
+        return $res[0];
+    }
+    return null;
 }
 
 function lab_admin_contract_users_load($contractId) {
