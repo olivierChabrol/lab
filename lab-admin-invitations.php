@@ -106,14 +106,64 @@ function lab_invitations_editInvitation($missionId, $params) {
   $userId = get_current_user_id();
   $userMeta = lab_admin_usermeta_names($userId);
   $missionType = lab_admin_get_mission_type($missionId);
-  if($missionType == 255) {
-      $content = "¤Invitation";
-  } else {
-      $content = "¤Mission";
+
+  $currentParams = getAllTableFields("lab_invitations", $missionId, "id");
+  $currentParamsArray = json_decode(json_encode($currentParams), true);
+
+  $change = array_diff_assoc($params, $currentParamsArray);
+
+  $comment_vals = array();
+  $cpt = 0;
+
+  foreach($change as $key=>$value) {
+    switch($key) {
+      case "guest_id":
+        $comment_vals[$cpt] = esc_html__("Guest ID", "lab");
+        break;
+      case "host_id":
+        $comment_vals[$cpt] = esc_html__("Host ID", "lab");
+        break;
+      case "host_group_id":
+        $comment_vals[$cpt] = esc_html__("Host group ID", "lab");
+        break;
+      case "manager_id":
+        $comment_vals[$cpt] = esc_html__("Manager ID", "lab");
+        break;
+      case "mission_objective":
+        $comment_vals[$cpt] = esc_html__("Mission type", "lab");
+        break;
+      case "needs_hostel":
+        $comment_vals[$cpt] = esc_html__('Field "Need a hostel"', "lab");
+        break;
+      case "hostel_night":
+        $comment_vals[$cpt] = esc_html__("Number of night(s)", "lab");
+        break;
+      case "hostel_cost":
+        $comment_vals[$cpt] = esc_html__("Hostel estimated cost", "lab");
+        break;
+      case "funding_source":
+        $comment_vals[$cpt] = esc_html__("Funding source", "lab");
+        break;
+      case "maximum_cost":
+        $comment_vals[$cpt] = esc_html__("Maximum cost", "lab");
+        break;
+    }
+    $cpt++;
   }
+  $content = "¤";
+  $numItems = count($comment_vals);
+  foreach($comment_vals as $cv) {
+    if(++$i == $numItems) {
+      $content .= $cv." ";
+    }
+    else {
+      $content .= $cv.", ";
+    }
+  }  
+ 
   lab_invitations_addComment(array(
-    'content' => $content . " modifiée par " . $userMeta->first_name . " " . $userMeta->last_name,
-  'timestamp'=> date("Y-m-d H:i:s",/*strtotime("+1 hour")*/),
+    'content' => $content . esc_html__(" modified by ", "lab") . $userMeta->first_name . " " . $userMeta->last_name,
+    'timestamp'=> date("Y-m-d H:i:s",/*strtotime("+1 hour")*/),
     'author_id' => 0,
     'author_type' => 0,
     'invite_id' => $missionId

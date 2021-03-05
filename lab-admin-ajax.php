@@ -1259,10 +1259,11 @@ function lab_travel_ajax_delete() {
 
 function lab_travel_ajax_save() {
   $travelId  = $_POST['travelId'];
+  $missionId = $_POST['missionId'];
   $travelFields = lab_mission_remap_fields($_POST);
   
   $retrun = array();
-  $retrun["id"] = lab_mission_update_travel($travelId, $travelFields);
+  $retrun["id"] = lab_mission_update_travel($travelId, $travelFields, $missionId);
   $retrun["jsId"] = $_POST['jsId'];
   wp_send_json_success($retrun);
 }
