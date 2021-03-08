@@ -50,7 +50,7 @@ div[wrapped=true] h2:hover .fa-arrow-up {
 }
 .lab_invite_row_right {
   display: flex;
-  justify-content: right;
+  justify-content: left;
 }
 #invitationForm select {
   height: 2.5em;

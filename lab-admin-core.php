@@ -675,15 +675,82 @@ function lab_mission_delete_travel($id, $missionId) {
     ));
 }
 
-function lab_mission_update_travel($travelId, $travelFields){
+function lab_mission_update_travel($travelId, $travelFields, $missionId){
     global $wpdb;
     $userId = get_current_user_id();
     $userMeta = lab_admin_usermeta_names($userId);
     $msg = "";
     $return = "";
     if (isset($travelId) && !empty($travelId)) {
+
+        $currentTravels = getAllTableFields("lab_mission_route", $missionId, "mission_id");
+        $currentTravelsArray = json_decode(json_encode($currentTravels), true);
+        $change = array_diff_assoc($travelFields, $currentTravelsArray);
+
+        foreach($change as $key=>$value) {
+            switch($key) {
+              case "country_from":
+                $comment_vals[$cpt] = esc_html__("Country of origin", "lab");
+                break;
+              case "travel_from":
+                $comment_vals[$cpt] = esc_html__("City of origin", "lab");
+                break;
+              case "country_to":
+                $comment_vals[$cpt] = esc_html__("Arrival country", "lab");
+                break;
+              case "travel_to":
+                $comment_vals[$cpt] = esc_html__("Arrival city", "lab");
+                break;
+              case "travel_date":
+                $comment_vals[$cpt] = esc_html__("Date", "lab");
+                break;
+              case "means_of_locomotion":
+                $comment_vals[$cpt] = esc_html__("Mean of locomotion", "lab");
+                break;
+              case "round_trip":
+                $comment_vals[$cpt] = esc_html__('Box "Round trip"', "lab");
+                break;
+              case "nb_person":
+                $comment_vals[$cpt] = esc_html__("Number of persons", "lab");
+                break;
+              case "carbon_footprint":
+                $comment_vals[$cpt] = esc_html__("Carbon footprint", "lab");
+                break;
+              case "travel_datereturn":
+                $comment_vals[$cpt] = esc_html__("Return date", "lab");
+                break;
+              case "estimated_cost":
+                $comment_vals[$cpt] = esc_html__("Estimated cost", "lab");
+                break;
+              case "real_cost":
+                $comment_vals[$cpt] = esc_html__("Real cost", "lab");
+                break;
+              case "reference":
+                $comment_vals[$cpt] = esc_html__("Reference", "lab");
+                break;
+              case "loyalty_card_number":
+                $comment_vals[$cpt] = esc_html__("Loyalty card number", "lab");
+                break;
+              case "loyalty_card_expiry_date":
+                $comment_vals[$cpt] = esc_html__("Loyalty card expiry date", "lab");
+                break;
+            }
+            $cpt++;
+        }
+        $msg = esc_html__("¤Travel from ", "lab").substr($travelFields["travel_date"], 0, -6)." - ";
+        $numItems = count($comment_vals);
+        foreach($comment_vals as $cv) {
+            if(++$i == $numItems) {
+            $msg .= $cv." ";
+            }
+            else {
+            $msg .= $cv.", ";
+            }
+        }  
+        $msg .= esc_html("modified", "lab");
+
         $wpdb->update($wpdb->prefix.'lab_mission_route', $travelFields, array('id' => $travelId));
-        $msg = '¤Trajet modifié';
+
         $return = $travelId;
     }
     else {
@@ -691,7 +758,7 @@ function lab_mission_update_travel($travelId, $travelFields){
         $return = lab_mission_save_travel($travelFields, False);
     }
     lab_invitations_addComment(array(
-        'content' => $msg." par " . $userMeta->first_name . " " . $userMeta->last_name,
+        'content' => $msg.esc_html(" by ", "lab") . $userMeta->first_name . " " . $userMeta->last_name,
         'timestamp'=> date("Y-m-d H:i:s",strtotime("+1 hour")),
         'author_id' => 0,
         'author_type' => 0,
@@ -793,6 +860,12 @@ function lab_admin_group_add_manager($groupId, $userId, $userRole) {
     }
 }
 
+function lab_admin_get_group_name($groupId) {
+    global $wpdb;
+    $results = $wpdb->get_results("SELECT group_name FROM `".$wpdb->prefix."lab_groups` WHERE id=".$groupId);
+    return $results[0];
+}
+
 /**
  * Return groups where current user is the budget manager
  *
@@ -837,6 +910,13 @@ function lab_group_get_user_group($userId) {
         }
     }
     return $groupId;
+}
+
+function lab_admin_group_get_manager($groupId) {
+    global $wpdb;
+    $sql = "SELECT `user_id` FROM `".$wpdb->prefix."lab_group_manager` WHERE group_id=".$groupId." AND manager_type=1";
+    $results = $wpdb->get_results($sql);
+    return $results[0]->user_id;
 }
 
 function lab_group_delete_manager($id)
@@ -1715,7 +1795,7 @@ function lab_admin_get_groups_byChief($chief_id) {
 
 function lab_admin_group_get_user_info($userId, $group_id) {
     global $wpdb;
-    $sql = "SELECT * FROM `".$wpdb->prefix."lab_group_manager` WHERE `user_id`=".$userId." AND  `group_id`=".$group_id;
+    $sql = "SELECT * FROM `".$wpdb->prefix."lab_group_manager` WHERE `user_id`=".$userId." OR `group_id`=".$group_id;
     return $wpdb->get_results($sql);
 }
 
@@ -2972,4 +3052,11 @@ function getFirstDayOfTheWeek($dateObj) {
         $aStr = '-'.($dayofweek-1).' days';
         return strtotime($aStr, $dateObj);
     }
+}
+
+function getAllTableFields($table, $id, $primaryFieldName) {
+    global $wpdb;
+    $sql = "SELECT * FROM `".$wpdb->prefix.$table."` WHERE ".$primaryFieldName." = ".$id;
+    $res = $wpdb->get_results($sql);
+    return $res[0];
 }

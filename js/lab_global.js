@@ -35,12 +35,26 @@ function createTdUser(userId, data) {
   return createTd(getUserNames(userId, data));
 }
 
+function createTdGroup(groupId, data) {
+  return createTd(getGroupNames(groupId, data));
+}
+
 function getUserNames(userId, data) {
   let f = "";
   if (userId != 0 && data.users[userId] != undefined)
   {
     let user = data.users[userId];
     f = user.first_name+" "+user.last_name;
+  }
+  return f;
+}
+
+function getGroupNames(groupId, data) {
+  let f = "";
+  if (groupId != 0 && data.groups[groupId] != undefined)
+  {
+    let group = data.groups[groupId];
+    f = group.group_name;
   }
   return f;
 }

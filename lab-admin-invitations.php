@@ -103,6 +103,71 @@ function lab_invitations_editGuest($id, $params) {
 }
 function lab_invitations_editInvitation($missionId, $params) {
   global $wpdb;
+  $userId = get_current_user_id();
+  $userMeta = lab_admin_usermeta_names($userId);
+  $missionType = lab_admin_get_mission_type($missionId);
+
+  $currentParams = getAllTableFields("lab_invitations", $missionId, "id");
+  $currentParamsArray = json_decode(json_encode($currentParams), true);
+
+  $change = array_diff_assoc($params, $currentParamsArray);
+
+  $comment_vals = array();
+  $cpt = 0;
+
+  foreach($change as $key=>$value) {
+    switch($key) {
+      case "guest_id":
+        $comment_vals[$cpt] = esc_html__("Guest ID", "lab");
+        break;
+      case "host_id":
+        $comment_vals[$cpt] = esc_html__("Host ID", "lab");
+        break;
+      case "host_group_id":
+        $comment_vals[$cpt] = esc_html__("Host group ID", "lab");
+        break;
+      case "manager_id":
+        $comment_vals[$cpt] = esc_html__("Manager ID", "lab");
+        break;
+      case "mission_objective":
+        $comment_vals[$cpt] = esc_html__("Mission type", "lab");
+        break;
+      case "needs_hostel":
+        $comment_vals[$cpt] = esc_html__('Field "Need a hostel"', "lab");
+        break;
+      case "hostel_night":
+        $comment_vals[$cpt] = esc_html__("Number of night(s)", "lab");
+        break;
+      case "hostel_cost":
+        $comment_vals[$cpt] = esc_html__("Hostel estimated cost", "lab");
+        break;
+      case "funding_source":
+        $comment_vals[$cpt] = esc_html__("Funding source", "lab");
+        break;
+      case "maximum_cost":
+        $comment_vals[$cpt] = esc_html__("Maximum cost", "lab");
+        break;
+    }
+    $cpt++;
+  }
+  $content = "¤";
+  $numItems = count($comment_vals);
+  foreach($comment_vals as $cv) {
+    if(++$i == $numItems) {
+      $content .= $cv." ";
+    }
+    else {
+      $content .= $cv.", ";
+    }
+  }  
+ 
+  lab_invitations_addComment(array(
+    'content' => $content . esc_html__(" modified by ", "lab") . $userMeta->first_name . " " . $userMeta->last_name,
+    'timestamp'=> date("Y-m-d H:i:s",/*strtotime("+1 hour")*/),
+    'author_id' => 0,
+    'author_type' => 0,
+    'invite_id' => $missionId
+));
   return $wpdb->update(
     $wpdb->prefix.'lab_invitations',
     $params,
@@ -119,14 +184,14 @@ function lab_invitations_getByToken($token, $deleteNotif = true) {
     lab_mission_resetNotifs($missionId);
   }
   if(lab_invitations_getBudgetManager()) {
-    lab_mission_take_in_charge($missionId);
+    //lab_mission_take_in_charge($missionId);
   }
   return $res[0];
 }
 
-function lab_group_budget_manager() {
+function lab_group_manager($type) {
   global $wpdb;
-  $sql = "SELECT user_id FROM `".$wpdb->prefix."lab_group_manager` WHERE manager_type = 1;";
+  $sql = "SELECT user_id FROM `".$wpdb->prefix."lab_group_manager` WHERE manager_type = ".$type;
   $res = $wpdb->get_results($sql);
   $tab = array();
   foreach($res as $r) {
@@ -332,12 +397,12 @@ function lab_invitation_is_budget_manager() {
   return count($res) > 0;
 }
 
-
-
-
-
-
-
+function lab_admin_get_mission_type($missionId) {
+  global $wpdb;
+  $sql = "SELECT mission_objective FROM `".$wpdb->prefix."lab_invitations` WHERE id=".$missionId;
+  $res = $wpdb->get_results($sql);
+  return $res;
+}
 
 function lab_admin_mission_getNotifs($user_id, $mission_id = null) {
   global $wpdb;

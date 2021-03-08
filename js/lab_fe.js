@@ -4,6 +4,7 @@ if(typeof __ === 'undefined') {
 }
 
 jQuery(function($){
+
   /*** DIRECTORY ***/ 
   var travels = [];
   var meansOfTransport = new Array();
@@ -23,12 +24,30 @@ jQuery(function($){
     });
   });
 
+  $("#lab_mission_cancel").click(function() {
+    data = {
+      'action': 'lab_mission_cancel',
+      'mission_id': $("#lab_mission_id").val()
+    };
+    callAjax(data, null, loadAdminPanel, null, null);
+  });
+
+  $("#lab_mission_complete").click(function() {
+    data = {
+      'action': 'lab_mission_complete',
+      'mission_id': $("#lab_mission_id").val()
+    };
+    callAjax(data, null, loadAdminPanel, null, null);
+  });
+
   $("#lab_mission_validate").click(function() {
     data = {
       'action': 'lab_mission_validate',
       'mission_id': $("#lab_mission_id").val()
     };
     callAjax(data, null, loadAdminPanel, null, null);
+    //callAjax(data, null, null, null, null);
+
   });
 
   $("#lab_mission_refuse").click(function() {
@@ -37,6 +56,15 @@ jQuery(function($){
       'mission_id': $("#lab_mission_id").val()
     };
     callAjax(data, null, loadAdminPanel, null, null);
+  });
+  
+  $("#lab_mission_tic").click(function() {
+    data = {
+      'action':'lab_mission_tic',
+      'mission_id': $("#lab_mission_id").val()
+    };
+    callAjax(data, null, loadAdminPanel, null, null);
+
   });
 
 
@@ -861,8 +889,8 @@ function LABLoadInvitation() {
       editTravelDiv(getNewTravelId());
     });
 
-    $("#lab_mission_validate").click(function(e) {
-      console.log("[$(#lab_mission_validate).click]");
+    $("#lab_mission_submit").click(function(e) {
+      console.log("[$(#lab_mission_submit).click]");
       invitation_submit(function() {
         return;
       });
@@ -1230,7 +1258,9 @@ function invitation_submit(callback) {
         'action': 'lab_invitations_new',
         'fields': fields
       };
+      //alert("toto");
       jQuery.post(LAB.ajaxurl, data, function(response) {
+        console.log(data);
         if (response.success) {
           $("#missionForm").html(response.data);
           callback();
@@ -1260,6 +1290,7 @@ jQuery("#button_add_comment").click(function () {
         console.log(response.data);
         $("#lab_invitation_oldComments").html(response.data);
         $("#lab_comment").val('');
+        //callback();
       }
     });
   });

@@ -86,6 +86,31 @@ jQuery(function($){
     $.each(data.results, function(i, obj) {
       $("#lab_admin_mission_list_table_tbody").append(createTrMissionTableLine(obj, data));
     });
+
+    $("#lab_admin_mission_list_table_tbody").children("tr").each(function () 
+    {
+      string = $(this).children("td:nth-child(2)").html();
+      if(string.startsWith("Validate")) {
+        $(this).css("background-color", "palegreen");
+      } 
+      else if (string.startsWith("Refuse")) {
+        $(this).css("background-color", "salmon");
+      } 
+      else if (string.startsWith("Waiting")) {
+        $(this).css("background-color", "khaki");
+      }
+      else if (string.startsWith("New")) {
+        $(this).css("background-color", "lightcyan");
+      }
+      else if (string.startsWith("Cancel")) {
+        $(this).css("background-color", "lightgrey");
+        $(this).children("td:nth-child(9)").children("a:nth-child(1)").hide();
+      }
+      else if (string.startsWith("Completed")) {
+        $(this).css("background-color", "aquamarine");
+        //$(this).children("td:nth-child(9)").children("a:nth-child(1)").hide();
+      }
+    })
   }
 
   function createTrMissionTableLine(mission, data) {
@@ -96,7 +121,7 @@ jQuery(function($){
     tr.append(createTd(mission.creation_time));
     tr.append(createTdUser(mission.host_id, data));
     tr.append(createTd(mission.site));
-    tr.append(createTd(mission.group));
+    tr.append(createTdGroup(mission.host_group_id, data));
     tr.append(createTdUser(mission.manager_id, data));
     tr.append(createTdParam(mission.mission_objective, data));
     tr.append(createEditButton(mission.id, mission.token, data));
@@ -125,37 +150,27 @@ jQuery(function($){
     }
     //console.log("->"+url);
     let userId = $("#lab_mission_user_id").val();
-    let aTic = $('<a />').attr("class", "lab-page-title-action lab_mission_tic").attr("userId", userId).attr("missionId", id).html("tic");
+    //let aTic = $('<a />').attr("class", "lab-page-title-action lab_mission_tic").attr("userId", userId).attr("missionId", id).html("tic");
     let aEdit = $('<a />').attr("class", "lab-page-title-action lab_mission_edit").attr("href",url).attr("missionId", id).html("edit");
     let aDel = $('<a />').attr("class", "lab-page-title-action lab_budget_info_delete").attr("missionId", id).attr("id", "lab-delete-mission-button").html("X");
 
     $(aDel).click(function (){
       displayModalDeleteMission($(this).attr("missionId"));
     });
-    $(aTic).click(function (){
+    /*$(aTic).click(function (){
       missionTakeInCharge($(this).attr("missionId"), $(this).attr("userId"));
-    });
+    });*/
     $(notif).click(function (){
       deleteNotifs(id);
     });
 
-    return $('<td />').attr("class", "lab_keyring_icon").append(notif).append(aTic).append(aEdit).append(aDel);   
+    return $('<td />').attr("class", "lab_keyring_icon").append(notif).append(aEdit).append(aDel);   
   }
 
   function deleteNotifs(missionId) {
     data = {
       'action':"lab_mission_delete_notif",
       'mission_id': missionId
-    };
-    callAjax(data, null, applyFilter, null, null);
-
-  }
-
-  function missionTakeInCharge(missionId, userId) {
-    data = {
-      'action':"lab_mission_set_manager",
-      'id':missionId,
-      'managerId':userId,
     };
     callAjax(data, null, applyFilter, null, null);
 

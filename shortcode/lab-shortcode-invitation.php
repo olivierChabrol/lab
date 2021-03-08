@@ -43,7 +43,7 @@ function lab_mission($args) {
             }
             $missionInformation .= '<input type="hidden" id="lab_mission_token" value="'.$token.'"/>';
             $missionInformation .= '<input type="hidden" id="lab_mission_id" value="'.$invitation->id.'"/>';
-            $budget_manager_ids = lab_group_budget_manager();
+            $budget_manager_ids = lab_group_manager(1);
             
             $charges = json_decode($invitation->charges);
             $guest = lab_invitations_getGuest($invitation->guest_id);
@@ -55,6 +55,7 @@ function lab_mission($args) {
                 $isChief = lab_admin_group_is_group_leader(get_current_user_id(), $invitation->host_group_id);
             };
             $isManager = false;
+            $isAdmin = current_user_can( 'manage_options' );
             $missionType = AdminParams::get_param($invitation->mission_objective);
             foreach($budget_manager_ids as $bm) {
                 if (get_current_user_id() == $bm) {
@@ -67,7 +68,8 @@ function lab_mission($args) {
                 $missionInformation .= '<p><i>'.esc_html__('You can edit this invitation as a group leader','lab').'</i></p>';
                 $missionInformation .= '<p><i>'.esc_html__('Invitation status : ','lab').'</i>'.lab_invitations_getStatusName($invitation->status).'</p>';
                 
-            } else if ( get_current_user_id()==$invitation->host_id ) { 
+            }
+            else if ( get_current_user_id()==$invitation->host_id ) { 
                 $missionInformation .= '<p><i>'.esc_html__('You can edit this invitation as a host','lab').'</i></p>';
                 $missionInformation .= '<p><i>'.esc_html__('Invitation status : ','lab').'</i>'.lab_invitations_getStatusName($invitation->status).'</p>';
             
@@ -75,7 +77,11 @@ function lab_mission($args) {
             else if ( $isManager ) {
                 $missionInformation .= '<p><i>'.esc_html__('You can edit this invitation as a budget manager','lab').'</i></p>';
                 $missionInformation .= '<p><i>'.esc_html__('Invitation status : ','lab').'</i>'.lab_invitations_getStatusName($invitation->status).'</p>';
-            } 
+            }
+            else if ( $isAdmin ) {
+                $missionInformation .= '<p><i>'.esc_html__('You can edit this invitation as an administrator','lab').'</i></p>';
+                $missionInformation .= '<p><i>'.esc_html__('Invitation status : ','lab').'</i>'.lab_invitations_getStatusName($invitation->status).'</p>';
+            }
             //possibly the guest
             else if ($isGuest) {
                 $missionInformation .= '<p><i>'.esc_html__('You can edit this invitation as a guest','lab').'/i></p>';
@@ -305,13 +311,45 @@ function lab_mission($args) {
                 <div class="lab_invite_row lab_send_group_chief"><p class="lab_invite_field">Cliquez ici pour compléter la demande et la transmettre au responsable du groupe :</p><button id="lab_mission_send_group_leader">'.esc_html__("Send to responsible",'lab').'</button></div>';
             }
             $invitationStr .= '-->';
-            $invitationStr .= '<div class="lab_invite_row_right"><button id="lab_mission_save" type="button" class="btn btn-primary">'.esc_html__("Update",'lab').'</button>&nbsp&nbsp
-                                                                <button id="lab_mission_validate" type="button" class="btn btn-success">'.esc_html__("Validate", "lab").'</button>&nbsp&nbsp
-                                                                <button id="lab_mission_refuse" type="button" class="btn btn-danger">'.esc_html__("Refuse","lab").'</button></div>';
+            $invitationStr .= '<div class="lab_invite_row_right"><button id="lab_mission_save" type="button" class="btn btn-primary">'.esc_html__("Update",'lab').'</button>&nbsp&nbsp';
+            $managerType = 0;
+            $budget_manager_ids = lab_group_manager(1);
+            $group_leader_ids = lab_group_manager(2);
+            $substitute_ids = lab_group_manager(3);
+            foreach($budget_manager_ids as $bm) {
+                if (get_current_user_id() == $bm) {
+                    $managerType = 1;
+                }
+            }
+            if($managerType == 0) {
+                foreach($group_leader_ids as $gl) {
+                    if (get_current_user_id() == $gl) {
+                        $managerType = 2;
+                    }
+                }
+                foreach($substitute_ids as $s) {
+                    if (get_current_user_id() == $gl) {
+                        $managerType = 3;
+                    }
+                }
+            }
+
+            if($managerType == 2 || $managerType == 3) {
+                $invitationStr .= '<button id="lab_mission_validate" type="button" class="btn btn-success">'.esc_html__("Validate", "lab").'</button>&nbsp&nbsp
+                                   <button id="lab_mission_refuse" type="button" class="btn btn-danger">'.esc_html__("Refuse","lab").'</button>';
+            }
+            else if($managerType == 1) {
+                $invitationStr .= '<button id="lab_mission_tic" type="button" class="btn btn-info">'.esc_html__("Take in charge","lab").'</button>&nbsp&nbsp
+                                   <button id="lab_mission_complete" type="button" class="btn btn-success">'.esc_html__("Complete","lab").'</button>';
+            }
+            else {
+                $invitationStr .= '<button id="lab_mission_cancel" type="button" class="btn btn-warning">'.esc_html__("Cancel","lab").'</button>';
+            }
+            $invitationStr .= '</div>';                                
         }
         else {
             $invitationStr .= '<div class="lab_invite_field">
-            <button id="lab_mission_validate">'.esc_html__("Submit","lab").'</button>
+            <button id="lab_mission_submit">'.esc_html__("Submit","lab").'</button>
         </div>';
         }
         if (!$newForm) {
