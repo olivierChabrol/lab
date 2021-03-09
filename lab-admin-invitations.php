@@ -160,14 +160,16 @@ function lab_invitations_editInvitation($missionId, $params) {
       $content .= $cv.", ";
     }
   }  
- 
-  lab_invitations_addComment(array(
-    'content' => $content . esc_html__(" modified by ", "lab") . $userMeta->first_name . " " . $userMeta->last_name,
-    'timestamp'=> date("Y-m-d H:i:s",/*strtotime("+1 hour")*/),
-    'author_id' => 0,
-    'author_type' => 0,
-    'invite_id' => $missionId
-));
+  if($numItems > 0) {
+    lab_invitations_addComment(array(
+      'content' => $content . esc_html__(" modified by ", "lab") . $userMeta->first_name . " " . $userMeta->last_name,
+      'timestamp'=> date("Y-m-d H:i:s",/*strtotime("+1 hour")*/),
+      'author_id' => 0,
+      'author_type' => 0,
+      'invite_id' => $missionId
+    ));
+  }
+  
   return $wpdb->update(
     $wpdb->prefix.'lab_invitations',
     $params,

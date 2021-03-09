@@ -943,9 +943,11 @@ function LABLoadInvitation() {
     $("#lab_invitationComments h2").click(function() {
       if ( $("#lab_invitationComments").attr("wrapped")=="true" ) {
         $("#lab_invitationComments #lab_invitation_oldComments").slideDown();
+        $("#lab_invitationComments #lab_invitation_newComment").slideDown();
         $("#lab_invitationComments").attr("wrapped","false");
       } else {
         $("#lab_invitationComments #lab_invitation_oldComments").slideUp();
+        $("#lab_invitationComments #lab_invitation_newComment").slideUp();
         $("#lab_invitationComments").attr("wrapped","true");
       }
     });

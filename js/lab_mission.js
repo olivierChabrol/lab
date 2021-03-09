@@ -108,7 +108,7 @@ jQuery(function($){
       }
       else if (string.startsWith("Completed")) {
         $(this).css("background-color", "aquamarine");
-        //$(this).children("td:nth-child(9)").children("a:nth-child(1)").hide();
+        $(this).children("td:nth-child(9)").children("a:nth-child(1)").hide();
       }
     })
   }
