@@ -112,5 +112,8 @@ function lab_admin_tab_settings() {
   <label for="usermetadata_keys">Existing keys : </label>
   <select id="usermetadata_keys"></select> 
   <a href="#" class="page-title-action" id="lab_settings_button_delete_keys_all">Delete keys for all users</a>
+  <hr/>
+  <h2>Update params translation file</h2>
+  <button class="page-title-action" id="lab_settings_button_update_params_translation_file">Update file</button>
 <?php
 }

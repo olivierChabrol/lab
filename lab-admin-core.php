@@ -676,10 +676,10 @@ function lab_mission_update_travel($travelId, $travelFields, $missionId){
         if( $currentTravelsArray["travel_datereturn"] != null) {
             $currentTravelsArray["travel_datereturn"] = substr($currentTravelsArray["travel_datereturn"], 0, -3);
         }
-        
-
-        //var_dump($travelFields);
-        //return $travelFields;
+        //$allParams = getAllParamsValue();
+        //$deseriale = json_decode(json_encode($allParams), true);
+        //var_dump($deseriale[0]["value"]);
+        //return $deseriale[0]["value"];
         $change = array_diff_assoc($travelFields, $currentTravelsArray);
 
         foreach($change as $key=>$value) {
@@ -3062,4 +3062,10 @@ function getAllTableFields($table, $id, $primaryFieldName, $travelId = null) {
     $sql = "SELECT * FROM `".$wpdb->prefix.$table."` WHERE ".$primaryFieldName." = ".$id.$travelSelect;
     $res = $wpdb->get_results($sql);
     return $res[0];
+}
+
+function getAllParamsValue() {
+    global $wpdb;
+    $sql = "SELECT `value` FROM  `".$wpdb->prefix."lab_params`";
+    return $wpdb->get_results($sql);
 }

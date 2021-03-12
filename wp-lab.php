@@ -275,10 +275,12 @@ function admin_enqueue()
   wp_enqueue_script('TelInputUtils',plugins_url('js/utils.js',__FILE__),array(),"3.4",false);
   wp_enqueue_script('TelInputJS',plugins_url('js/intlTelInput.min.js',__FILE__),array('TelInputUtils'),"3.4",false);
   wp_enqueue_script('lab-fe', plugins_url('js/lab_fe.js',__FILE__), array('jquery', 'wp-i18n', 'lab-global', 'TelInputJS'), version_id(), true);
+  wp_enqueue_script('lab-mission', plugins_url('js/lab_mission.js',__FILE__), array('jquery', 'wp-i18n', 'lab-global', 'TelInputJS'), version_id(), true);
   localize_script('lab-global');
   wp_set_script_translations( 'lab-global' , 'lab', dirname(__FILE__).'/lang' );
   wp_set_script_translations( 'lab-admin'  , 'lab', dirname(__FILE__).'/lang' );
   wp_set_script_translations( 'lab-keyring', 'lab', dirname(__FILE__).'/lang' );
+  wp_set_script_translations( 'lab-mission', 'lab', dirname(__FILE__).'/lang' );
 }
 
 /**
@@ -296,14 +298,17 @@ function wp_lab_fe_enqueues()
   wp_enqueue_script('jquery-ui-1.12.1-js', plugins_url('js/jquery-ui.min.js',__FILE__), array('jquery'), version_id(), false);
   wp_enqueue_script('lab-global', plugins_url('js/lab_global.js',__FILE__), array('jqueryToastJS', 'jquery'), version_id(), false);
   wp_enqueue_script('lab-fe', plugins_url('js/lab_fe.js',__FILE__), array('jquery', 'wp-i18n', 'lab-global'), version_id(), true);
+  wp_enqueue_script('lab-mission', plugins_url('js/lab_mission.js',__FILE__), array('jquery', 'wp-i18n', 'lab-global'), version_id(), true);
   wp_enqueue_style('profileCSS',plugins_url('css/lab-profile.css',__FILE__));
   wp_enqueue_script('SpectrumJS', plugins_url('js/spectrum.js',__FILE__), array('jquery','wp-i18n'), '1.8.0', true);
   wp_enqueue_style('SpectrumCSS',plugins_url('css/spectrum.css',__FILE__));
   
   localize_script('lab-fe');
   localize_script('lab-global');
+  localize_script('lab-mission');
   wp_set_script_translations( 'lab-global' , 'lab', dirname(__FILE__).'/lang' );
   wp_set_script_translations( 'lab-fe', 'lab', dirname(__FILE__).'/lang' );
+  wp_set_script_translations( 'lab-mission', 'lab', dirname(__FILE__).'/lang' );
   wp_enqueue_script('fontAwesome',"https://kit.fontawesome.com/341f99cb81.js",array(),"3.2",true);
   wp_enqueue_style('InvitationCSS',plugins_url('css/lab-invitation.css',__FILE__));
   wp_enqueue_style('LdapCSS',plugins_url('css/lab-ldap.css',__FILE__));

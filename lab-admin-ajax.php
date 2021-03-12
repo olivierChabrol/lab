@@ -1025,6 +1025,24 @@ function lab_ajax_admin_usermeta_fill_user_slug() {
   }
 }
 
+function lab_admin_update_paramsTranslation() {
+  $allParams = getAllParamsValue();
+  $all_params = json_decode(json_encode($allParams), true);
+  $filename = "../wp-content/plugins/lab/lab-params.php";
+  $file = fopen($filename, "w");
+  if(!$file) {
+      wp_send_json_error();
+  }
+  fwrite($file, "<?php\n");
+  for($cpt = 0; $cpt < count($all_params); $cpt++) {
+      fwrite($file, "\tesc_html__('".$all_params[$cpt]["value"]."', 'lab');\n");
+  }
+  fwrite($file, "?>");
+  fclose($file);
+
+  wp_send_json_success("toto");
+}
+
 /********************************************************************************************
  * HAL10
  ********************************************************************************************/

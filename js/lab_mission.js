@@ -1,5 +1,7 @@
 /* globals global 25 03 2020 */
-//const { __, _x, _n, sprintf } = wp.i18n;
+if(typeof __ === 'undefined') {
+  const { __, _x, _n, sprintf } = wp.i18n;
+}
 
 jQuery(function($){
 
@@ -117,7 +119,7 @@ jQuery(function($){
     let tr = $('<tr />');
     //console.log(mission);
     tr.append(createTd(mission.id));
-    tr.append(createTdParam(mission.status, data));
+    tr.append(createTdParam(__(mission.status, "lab"), data));
     tr.append(createTd(mission.creation_time));
     tr.append(createTdUser(mission.host_id, data));
     tr.append(createTd(mission.site));
