@@ -71,7 +71,8 @@ jQuery(function($){
   function displayMission(data) {
     //console.log("[displayMission]");
     //console.log(data);
-
+    //var test1 = __("Plane", "lab");
+    //alert(test1);
     $("#lab_mission_filter_year").empty();
     $("#lab_mission_filter_year").append(new Option(__("Year",'lab'),""));
     $.each(data.years, function(i, obj) {
@@ -92,23 +93,23 @@ jQuery(function($){
     $("#lab_admin_mission_list_table_tbody").children("tr").each(function () 
     {
       string = $(this).children("td:nth-child(2)").html();
-      if(string.startsWith("Validate")) {
+      if(string.startsWith("Valid")) {
         $(this).css("background-color", "palegreen");
       } 
-      else if (string.startsWith("Refuse")) {
+      else if (string.startsWith("Refus")) {
         $(this).css("background-color", "salmon");
       } 
-      else if (string.startsWith("Waiting")) {
+      else if (string.startsWith("Waiting") || string.startsWith("En attente")) {
         $(this).css("background-color", "khaki");
       }
-      else if (string.startsWith("New")) {
+      else if (string.startsWith("New") || string.startsWith("Nouveau")) {
         $(this).css("background-color", "lightcyan");
       }
-      else if (string.startsWith("Cancel")) {
+      else if (string.startsWith("Cancel") || string.startsWith("Annulée")) {
         $(this).css("background-color", "lightgrey");
         $(this).children("td:nth-child(9)").children("a:nth-child(1)").hide();
       }
-      else if (string.startsWith("Completed")) {
+      else if (string.startsWith("Compl")) {
         $(this).css("background-color", "aquamarine");
         $(this).children("td:nth-child(9)").children("a:nth-child(1)").hide();
       }
@@ -119,7 +120,7 @@ jQuery(function($){
     let tr = $('<tr />');
     //console.log(mission);
     tr.append(createTd(mission.id));
-    tr.append(createTdParam(__(mission.status, "lab"), data));
+    tr.append(createTdParam(mission.status, data));
     tr.append(createTd(mission.creation_time));
     tr.append(createTdUser(mission.host_id, data));
     tr.append(createTd(mission.site));
@@ -208,9 +209,33 @@ jQuery(function($){
   }
 
   function createTdParam(paramId, data) {
-    let f = searchInParams(paramId, data);
+    let news = __("New", "lab");
+    let cancelled = __("Cancelled", "lab");
+    let validated = __("Validated by group leader", "lab");
+    let refused = __("Refused by group leader", "lab");
+    let waiting = __("Waiting group manager", "lab");
+    let completed = __("Completed", "lab");
+    let f = __(searchInParams(paramId, data),"lab");
     if (f == undefined) {
       f = "Not defined";
+    }
+    if (f == cancelled) {
+      return createTd(cancelled);
+    }
+    else if (f == news) {
+      return createTd(news);
+    }
+    else if (f == validated) {
+      return createTd(validated);
+    }
+    else if (f == refused) {
+      return createTd(refused);
+    }
+    else if (f == waiting) {
+      return createTd(waiting);
+    }
+    else if (f == completed) {
+      return createTd(completed);
     }
     return createTd(f);
   }
