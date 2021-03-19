@@ -8,7 +8,7 @@ jQuery(function($){
   $("#lab_mission_filter_year").change(function () {
     applyFilter();
   });
-  $("#lab_mission_filter_state").change(function () {
+  $("#lab_mission_filter_status").change(function () {
     applyFilter();
   });
   $("#lab_mission_filter_budget_manager").change(function () {
@@ -32,7 +32,7 @@ jQuery(function($){
   function applyFilter() {
     let action        = "lab_mission_load";
     let filterPattern = "lab_mission_filter_";
-    let filterFields  = ["year","state", "budget_manager", "site"];
+    let filterFields  = ["year","status", "budget_manager", "site"];
     let callBackFct   = displayMission;
 
     data = {

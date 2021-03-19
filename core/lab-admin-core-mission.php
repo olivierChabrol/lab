@@ -3,10 +3,12 @@
 
 function lab_mission_status_to_value($missionStatus) {
     $status = array();
-    $status["c"] = 4;
-    $status["wmv"] = 3;
-    $status["wlv"] = 2;
-    $status["w"] = 1;
+    $status["c"] = 265;
+    $status["ca"] = 268;
+    $status["wgm"] = 264;
+    $status["n"] = 261;
+    $status["vgl"] = 266;
+    $status["rgl"] = 267;
     return $status[$missionStatus];
 }
     
@@ -140,12 +142,12 @@ function lab_mission_load($missionToken, $filters = null, $groupIds = null) {
                     $where .= "m.manager_id=".$value."";
                     $data["filters"]["budget_manager"] = $value;
                 }
-                else if ($key == "state") {
+                else if ($key == "status") {
                     if ($nbFilter > 0) {
                         $where .= " AND ";
                     }
                     $where .= "m.status=".lab_mission_status_to_value($value)."";
-                    $data["filters"]["state"] = $value;
+                    $data["filters"]["status"] = $value;
                 }
                 $nbFilter += 1;
             }

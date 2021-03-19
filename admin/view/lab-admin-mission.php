@@ -105,11 +105,14 @@
     <div class="tablenav top">
     <div class="alignleft actions bulkactions">
     <select id="lab_mission_filter_year"></select>
-    <select id="lab_mission_filter_state">
+    <select id="lab_mission_filter_status">
       <option value=""><?php esc_html_e('All','lab'); ?></option>
+      <option value="n"><?php esc_html_e('New','lab'); ?></option>
       <option value="c"><?php esc_html_e('Complete','lab'); ?></option>
-      <option value="wlv"><?php esc_html_e('Waiting leader validation','lab'); ?></option>
-      <option value="wmv"><?php esc_html_e('Waiting manager validation','lab'); ?></option>
+      <option value="ca"><?php esc_html_e('Cancelled','lab'); ?></option>
+      <option value="vgl"><?php esc_html_e('Validated','lab'); ?></option>
+      <option value="rgl"><?php esc_html_e('Refused','lab'); ?></option>
+      <option value="wgm"><?php esc_html_e('Waiting group manager','lab'); ?></option>
     </select>
   
 <?php lab_html_select("lab_mission_filter_site", "lab_budget_info_filter_site", "", "lab_admin_get_params_userLocation", null, array("value"=>"","label"=>"".esc_html('Site','lab')), ""); ?>
