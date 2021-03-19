@@ -122,6 +122,7 @@ if (is_admin()) {
     add_action( 'wp_ajax_invite_createTables', 'lab_invitations_createTables_Req' );
     add_action( 'wp_ajax_lab_historic_createTable', 'lab_historic_createTable' );
     add_action( 'wp_ajax_correct_all_user_slug', 'lab_admin_usermeta_fill_user_slug');
+    add_action( 'wp_ajax_update_paramsTranslation', 'lab_admin_update_paramsTranslation');
     //Action for hal
     add_action( 'wp_ajax_hal_create_table', 'lab_ajax_hal_create_table');
     add_action( 'wp_ajax_hal_fill_hal_name', 'lab_ajax_hal_fill_fields');

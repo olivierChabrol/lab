@@ -210,7 +210,7 @@
             </select>
           </td>
           <td scope="col" colspan="2">
-          <input type="text" id="lab_keyring_edit_commentary" placeholder="<?php echo esc_html__('Comment','lab').'('.esc_html__('optionnal','lab').')'; ?>"/>
+          <input type="text" id="lab_keyring_edit_commentary" placeholder="<?php echo esc_html__('Comment','lab').'('.esc_html__('optional','lab').')'; ?>"/>
           </td>
           <td scope="col"><button class="page-title-action" id="lab_keyring_editForm_submit" keyid=""><?php esc_html_e('Edit','lab'); ?></button></td>
         </tr>
@@ -255,7 +255,7 @@
             </select>
           </td>
           <td scope="col" colspan="2">
-          <input type="text" id="lab_keyring_newKey_commentary" placeholder="<?php echo esc_html__('Comment','lab').'('.esc_html__('optionnal','lab').')'; ?>"/>
+          <input type="text" id="lab_keyring_newKey_commentary" placeholder="<?php echo esc_html__('Comment','lab').'('.esc_html__('optional','lab').')'; ?>"/>
           </td>
           <td scope="col"><button class="page-title-action" id="lab_keyring_newKey_create"><?php esc_html_e('Create','lab'); ?></button></td>
         </tr>
@@ -406,7 +406,7 @@
         <div id="lab_keyring_loanform_dateOptions">
           <label for="lab_keyring_loanform_start_date"><?php esc_html_e('Start date','lab'); ?> :</label>
           <input type="date" id="lab_keyring_loanform_start_date"/>
-          <label for=""><?php esc_html_e('End date','lab'); ?> : <em class="lab_keyring_loan_new">(<?php esc_html_e('optionnal','lab'); ?>)</em> </label>
+          <label for=""><?php esc_html_e('End date','lab'); ?> : <em class="lab_keyring_loan_new">(<?php esc_html_e('optional','lab'); ?>)</em> </label>
           <input type="date" id="lab_keyring_loanform_end_date"/>
         </div>
         <div id="lab_keyring_loanform_actions">

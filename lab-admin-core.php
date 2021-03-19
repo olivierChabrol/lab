@@ -615,6 +615,16 @@ function lab_mission_save($missionId, $travels) {
     return $t;
 }
 
+function lab_admin_null_if_empty($string) {
+    $string = trim($string);
+    if($string == "") {
+        return null;
+    }
+    else {
+        return $string;
+    }
+}
+
 function lab_mission_remap_fields($fields) {
     $a = array();
     $a["mission_id"] = $fields["missionId"];
@@ -628,11 +638,11 @@ function lab_mission_remap_fields($fields) {
     $a["round_trip"] = $fields["rt"]; //($fields["rt"]=="false"?0:1);
     $a["reference"] = $fields["ref"];
     $a["nb_person"] = $fields["nb_person"];
-    $a["carbon_footprint"] = $fields["carbon_footprint"];
-    $a["loyalty_card_number"] = $fields["loyalty_card_number"];
-    $a["loyalty_card_expiry_date"] = $fields["loyalty_card_expiry_date"];
+    $a["carbon_footprint"] = lab_admin_null_if_empty($fields["carbon_footprint"]);
+    $a["loyalty_card_number"] = lab_admin_null_if_empty($fields["loyalty_card_number"]);
+    $a["loyalty_card_expiry_date"] = lab_admin_null_if_empty($fields["loyalty_card_expiry_date"]);
     if($a["round_trip"] == 0) {
-        $a["travel_datereturn"] = NULL;
+        $a["travel_datereturn"] = null;
     }
     else {
         $a["travel_datereturn"] = $fields["dateReturn"]." ".$fields["timeReturn"].":00";
@@ -683,8 +693,20 @@ function lab_mission_update_travel($travelId, $travelFields, $missionId){
     $return = "";
     if (isset($travelId) && !empty($travelId)) {
 
-        $currentTravels = getAllTableFields("lab_mission_route", $missionId, "mission_id");
+        $currentTravels = getAllTableFields("lab_mission_route", $missionId, "mission_id", $travelId);
         $currentTravelsArray = json_decode(json_encode($currentTravels), true);
+        $travelFields["travel_date"] = substr($travelFields["travel_date"], 0, -6);
+        if($travelFields["travel_datereturn"] != null) {
+            $travelFields["travel_datereturn"] = substr($travelFields["travel_datereturn"], 0, -6);
+        }
+        $currentTravelsArray["travel_date"] = substr($currentTravelsArray["travel_date"], 0, -3);
+        if( $currentTravelsArray["travel_datereturn"] != null) {
+            $currentTravelsArray["travel_datereturn"] = substr($currentTravelsArray["travel_datereturn"], 0, -3);
+        }
+        //$allParams = getAllParamsValue();
+        //$deseriale = json_decode(json_encode($allParams), true);
+        //var_dump($deseriale[0]["value"]);
+        //return $deseriale[0]["value"];
         $change = array_diff_assoc($travelFields, $currentTravelsArray);
 
         foreach($change as $key=>$value) {
@@ -717,7 +739,9 @@ function lab_mission_update_travel($travelId, $travelFields, $missionId){
                 $comment_vals[$cpt] = esc_html__("Carbon footprint", "lab");
                 break;
               case "travel_datereturn":
-                $comment_vals[$cpt] = esc_html__("Return date", "lab");
+                if($travelFields["travel_datereturn"] != null) {
+                    $comment_vals[$cpt] = esc_html__("Return date", "lab");
+                }
                 break;
               case "estimated_cost":
                 $comment_vals[$cpt] = esc_html__("Estimated cost", "lab");
@@ -732,12 +756,14 @@ function lab_mission_update_travel($travelId, $travelFields, $missionId){
                 $comment_vals[$cpt] = esc_html__("Loyalty card number", "lab");
                 break;
               case "loyalty_card_expiry_date":
-                $comment_vals[$cpt] = esc_html__("Loyalty card expiry date", "lab");
+                if($travelFields["loyalty_card_expiry_date"] != null) {
+                    $comment_vals[$cpt] = esc_html__("Loyalty card expiry date", "lab");
+                }
                 break;
             }
             $cpt++;
         }
-        $msg = esc_html__("¤Travel from ", "lab").substr($travelFields["travel_date"], 0, -6)." - ";
+        $msg = esc_html__("¤Travel from ", "lab").$travelFields["travel_date"]." - ";
         $numItems = count($comment_vals);
         foreach($comment_vals as $cv) {
             if(++$i == $numItems) {
@@ -755,7 +781,7 @@ function lab_mission_update_travel($travelId, $travelFields, $missionId){
     }
     else {
         $msg = '¤Trajet ajouté';
-        $return = lab_mission_save_travel($travelFields, False);
+        $return = lab_mission_save_travel($travelFields, false);
     }
     lab_invitations_addComment(array(
         'content' => $msg.esc_html(" by ", "lab") . $userMeta->first_name . " " . $userMeta->last_name,
@@ -3054,9 +3080,19 @@ function getFirstDayOfTheWeek($dateObj) {
     }
 }
 
-function getAllTableFields($table, $id, $primaryFieldName) {
+function getAllTableFields($table, $id, $primaryFieldName, $travelId = null) {
     global $wpdb;
-    $sql = "SELECT * FROM `".$wpdb->prefix.$table."` WHERE ".$primaryFieldName." = ".$id;
+    $travelSelect = "";
+    if($travelId != null) {
+        $travelSelect = " AND id=".$travelId;
+    }
+    $sql = "SELECT * FROM `".$wpdb->prefix.$table."` WHERE ".$primaryFieldName." = ".$id.$travelSelect;
     $res = $wpdb->get_results($sql);
     return $res[0];
+}
+
+function getAllParamsValue() {
+    global $wpdb;
+    $sql = "SELECT `value` FROM  `".$wpdb->prefix."lab_params`";
+    return $wpdb->get_results($sql);
 }

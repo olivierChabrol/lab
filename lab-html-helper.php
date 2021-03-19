@@ -41,7 +41,7 @@ function lab_html_select_str($htmlId, $htmlName, $htmlClass, $fctCallback, $fctA
                     $output .= " ".$k."=\"".$r->{$v}."\"";
                 }
             }
-            $output .= ">".$r->value."</option>";
+            $output .= ">".esc_html__($r->value, "lab")."</option>";
         }
     }
     else {
@@ -51,10 +51,10 @@ function lab_html_select_str($htmlId, $htmlName, $htmlClass, $fctCallback, $fctA
             {
                 foreach($attrMapping as $k=>$v)
                 {
-                    $output .= " ".$k."=\"".$r->{$v}."\"";
+                    $output .= " ".$k."=\"".esc_html__($r->{$v}, "lab")."\"";
                 }
             }
-            $output .= ">".$r->{$idValues["value"]}."</option>";
+            $output .= ">".esc_html__($r->{$idValues["value"]}, "lab")."</option>";
         }
     }
     $output .= "</select>";

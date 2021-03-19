@@ -732,6 +732,9 @@ jQuery(function($){
       }
     )
   });
+  $("#lab_settings_button_update_params_translation_file").click(function() {
+    updateParamsTranslation();
+  })
   $("#lab_setting_social_delete_button").click(function() {
     deleteAllSocial();
   });
@@ -1421,6 +1424,13 @@ function createAllSocial() {
     'action': 'create_social'
   }
   callAjax(data, "All social metakeys created", null, "Failed to create social metakeys in DB", null); 
+}
+
+function updateParamsTranslation() {
+  var data = {
+    'action' : 'update_paramsTranslation',
+  }
+  callAjax(data, "File updated successfully", null, "Failed to update the file", null);
 }
 
 function loadUserHistory() {

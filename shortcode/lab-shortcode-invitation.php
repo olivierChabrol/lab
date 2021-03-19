@@ -873,16 +873,28 @@ function lab_invitations_getStatusName($status) {
             .esc_html__("Created","lab")."</span>";
     }
     else if ($statusSlug == "mswgl") {
-        return "<span style='color:#00c49f' class='lab_infoBulle' title='".esc_html__("This invitation has been completed, the person in charge can now validate it to send it to the budget department.","lab")."'>"
-            .esc_html__("Completed","lab")."</span>";
+        return "<span style='color:yellow' class='lab_infoBulle' title='".esc_html__("This invitation has been completed, the person in charge can now validate it to send it to the budget department.","lab")."'>"
+            .esc_html__("Waiting group leader","lab")."</span>";
     }
     else if ($statusSlug == "mswgm") {
-        return "<span style='color:#289600' class='lab_infoBulle' title='".esc_html__("This invitation was taken care of by an administrative staff member of the budget department.","lab")."'>"
+        return "<span style='color:yellow' class='lab_infoBulle' title='".esc_html__("This invitation was taken care of by an administrative staff member of the budget department.","lab")."'>"
             .esc_html__("Taken care of","lab")."</span>";
     }
     else if ($statusSlug == "msc") {
-        return "<span style='color:#289600' class='lab_infoBulle' title='".esc_html__("This invitation is complete.","lab")."'>"
+        return "<span style='color:cyan' class='lab_infoBulle' title='".esc_html__("This invitation is complete.","lab")."'>"
             .esc_html__("Complete","lab")."</span>";
+    }
+    else if ($statusSlug == "msvbgl") {
+        return "<span style='color:green' class='lab_infoBulle' title='".esc_html__("This invitation is complete.","lab")."'>"
+            .esc_html__("Validated by group leader","lab")."</span>";
+    }
+    else if ($statusSlug == "msrbgl") {
+        return "<span style='color:red' class='lab_infoBulle' title='".esc_html__("This invitation is complete.","lab")."'>"
+            .esc_html__("Refused by group leader","lab")."</span>";
+    }
+    else if ($statusSlug == "msca") {
+        return "<span style='color:grey' class='lab_infoBulle' title='".esc_html__("This invitation is complete.","lab")."'>"
+            .esc_html__("Cancelled","lab")."</span>";
     }
 }
 function lab_invite_prefGroupsList($user_id) {
