@@ -508,12 +508,12 @@ function lab_admin_update_user_metadata()
   $user_sex         = $_POST["user_sex"];
   $user_hdr_date    = $_POST["user_hdr_date"];
   $user_thesis_date = $_POST["user_thesis_date"];
-  lab_usermeta_update($userId, $dateLeft, $userFunction, $userLocation, $officeNumber, $officeFloor, $userEmployer, $phone, $userFunding, $firstname, $lastname, $userSectionCn, $userSectionCnu, $email, $url, $userThesisTitle, $userHdrTitle, $userPhdSchool, $user_country, $user_sex, $user_thesis_date, $user_hdr_date);
+  $user_co_supervision = $_POST["lab_user_co_supervision"];
+  lab_usermeta_update($userId, $dateLeft, $userFunction, $userLocation, $officeNumber, $officeFloor, $userEmployer, $phone, $userFunding, $firstname, $lastname, $userSectionCn, $userSectionCnu, $email, $url, $userThesisTitle, $userHdrTitle, $userPhdSchool, $user_country, $user_sex, $user_thesis_date, $user_hdr_date, $user_co_supervision);
   wp_send_json_success($user_thesis_date);
 }
 
-function lab_usermeta_update($userId, $left, $userFunction, $userLocation, $officeNumber, $officeFloor, $userEmployer, $user_phone, $userFunding, $firstname, $lastname, $userSectionCn, $userSectionCnu, $email = null, $url = null, $userThesisTitle = null, $userHdrTitle = null, $userPhdSchool = null, $userCountry = null, $userSex = null, $user_thesis_date = null, $user_hdr_date = null)
-{
+function lab_usermeta_update($userId, $left, $userFunction, $userLocation, $officeNumber, $officeFloor, $userEmployer, $user_phone, $userFunding, $firstname, $lastname, $userSectionCn, $userSectionCnu, $email = null, $url = null, $userThesisTitle = null, $userHdrTitle = null, $userPhdSchool = null, $userCountry = null, $userSex = null, $user_thesis_date = null, $user_hdr_date = null, $user_co_supervision = null){
   global $wpdb;
   $sql = "";
   if ($left != null || !empty($left)) {
@@ -544,6 +544,7 @@ function lab_usermeta_update($userId, $left, $userFunction, $userLocation, $offi
   $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$userSex)         , array("user_id"=>$userId, "meta_key"=>"lab_user_sex"));
   $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$user_hdr_date)   , array("user_id"=>$userId, "meta_key"=>"lab_user_hdr_date"));
   $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$user_thesis_date), array("user_id"=>$userId, "meta_key"=>"lab_user_thesis_date"));
+  $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$user_co_supervision), array("user_id"=>$userId, "meta_key"=>"lab_user_co_supervision"));
 
   if ($email != null)
   {
@@ -635,18 +636,25 @@ function lab_admin_contract_ajax_load() {
 
 function lab_admin_contract_ajax_save() {
   $id = $_POST['id'];
-  $contractName = $_POST['name'];
+  $contractName  = $_POST['name'];
   $contractStart = $_POST['start'];
-  $contractEnd = $_POST['end'];
-  $holders  = $_POST["holders"];
-  $managers = $_POST["managers"];
-  wp_send_json_success(lab_admin_contract_save($id, $contractName, $contractStart, $contractEnd, $holders, $managers));
+  $contractType  = $_POST['type'];
+  $contractEnd   = $_POST['end'];
+  $holders       = $_POST["holders"];
+  $managers      = $_POST["managers"];
+  wp_send_json_success(lab_admin_contract_save($id, $contractName, $contractType, $contractStart, $contractEnd, $holders, $managers));
 }
 
 function lab_admin_contract_ajax_search() {
   $search = $_POST['search'];
   $contractName  = $search["term"];
   wp_send_json_success(lab_admin_contract_search($contractName));
+}
+
+
+function lab_admin_contract_ajax_get() {
+  $contractId = $_POST['id'];
+  wp_send_json_success(lab_admin_contract_get($contractId));
 }
 
 function lab_admin_contract_ajax_users_load() {
@@ -1330,7 +1338,7 @@ function lab_invitations_new() {
   //wp_send_json_success("toto " . $managerId);
   $fields['manager_id'] = $managerId;
 
-  foreach (['host_group_id','host_id', 'manager_id', 'estimated_cost', 'hostel_cost', 'hostel_night', 'mission_objective','funding_source','research_contract'] as $champ) {
+  foreach (['host_group_id','host_id', 'estimated_cost', 'hostel_cost', 'hostel_night', 'funding' , 'mission_objective','funding_source','research_contract'] as $champ) {
     $invite[$champ]=$fields[$champ];
   }
   $invite["charges"]=json_encode($fields["charges"]);
@@ -1439,7 +1447,7 @@ function lab_invitations_edit() {
       'needs_hostel'=>$fields['needs_hostel']=='true' ? 1 : 0,
       'completion_time' => $timeStamp
     );
-    foreach (['host_group_id', 'estimated_cost', 'maximum_cost', 'host_id', 'manager_id', 'mission_objective','hostel_night','hostel_cost','funding_source','research_contract'] as $champ) {
+    foreach (['host_group_id', 'estimated_cost', 'maximum_cost', 'host_id', 'funding', 'mission_objective','hostel_night','hostel_cost','funding_source','research_contract'] as $champ) {
       $invite[$champ]=$fields[$champ];
     }
     $invite["charges"]=json_encode($fields["charges"]);
@@ -1448,6 +1456,7 @@ function lab_invitations_edit() {
     if($isGroupLeader && ((float)$fields['maximum_cost']) > 0) {
       $invite["status"] = AdminParams::get_param_by_slug(AdminParams::MISSION_STATUS_VALIDATED_GROUP_LEADER)->id;
     }
+    //wp_send_json_success($invite);
     lab_invitations_editInvitation($missionId,$invite);
     $html = "<p>".esc_html__("Your invitation has been modified",'lab')."<br>à $timeStamp</p>";
     

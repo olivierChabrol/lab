@@ -1235,9 +1235,11 @@ function invitation_submit(callback) {
       'needs_hostel' : $("#lab_hostel").prop('checked'),
       'hostel_cost' : $("#lab_mission_hostel_cost").val(),
       'hostel_night' : $("#lab_mission_hostel_night").val(),
+      'funding': $("#lab_mission_user_funding").val(),
       'charges': charges,
       'travels': travelsFields,
     }
+    console.log($("#lab_mission_user_funding").val());
     if ($("#lab_email").attr('guest_id').length) {
       fields['guest_id'] = $("#lab_email").attr('guest_id');
     }
@@ -1250,7 +1252,9 @@ function invitation_submit(callback) {
       fields['estimated_cost'] = parseFloat($("#lab_mission_hostel_cost").val()) + getSumCostTravels();
       fields['maximum_cost'] = $("#lab_maximum_cost").val();
     }
-    if ($("#missionForm").attr("newForm")==1) {//On crée une nouvelle invitation
+    //On crée une nouvelle invitation
+    if ($("#missionForm").attr("newForm")==1) 
+    {
       fields['comment'] = $("#lab_form_comment").val().replace(regex,"”").replace(/\'/g,"’");
       data = {
         'action': 'lab_invitations_new',

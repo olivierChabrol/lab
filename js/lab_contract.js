@@ -1,7 +1,10 @@
 jQuery(function($){
-
     if ($("#lab_admin_contract_list_table").length) {
         loadAllContracts();
+    }
+
+    if($("#lab_contract_delete_dialog_contract_id").length && $("#lab_contract_delete_dialog_contract_id").val() != "") {
+        loadContractById($("#lab_contract_delete_dialog_contract_id").val());
     }
     $("#lab_admin_contract_name").autocomplete({
         minLength: 3,
@@ -14,12 +17,7 @@ jQuery(function($){
         },
         select: function( event, ui ) {
           event.preventDefault();
-          $("#lab_admin_contract_id").val(ui.item.id);
-          $("#lab_admin_contract_start").val(ui.item.start);
-          $("#lab_admin_contract_end").val(ui.item.end);
-          loadContractUsers(ui.item.id);
-          //displayDeleteButton();
-          $("#lab_admin_contract_delete").prop('disabled', false);
+          displayOneContact(ui.item);
         }
     });
 
@@ -71,7 +69,7 @@ jQuery(function($){
                 'action':'lab_admin_contract_save',
                 'id':$("#lab_admin_contract_id").val(),
                 'name':$("#lab_admin_contract_name").val(),
-                'type':$("#lab_admin_contract_type").val(),
+                'contract_type':$("#lab_admin_contract_type").val(),
                 'start':$("#lab_admin_contract_start").val(),
                 'end':$("#lab_admin_contract_end").val(),
             };
@@ -95,8 +93,13 @@ jQuery(function($){
         }
     });
 
+    $("#lab_contract_delete_confirm").click(function() {
+        console.log($("#lab_contract_delete_dialog_contract_id").val());
+        deleteContract($("#lab_contract_delete_dialog_contract_id").val());
+    });
+
     $("#lab_admin_contract_delete").click(function () {
-        deleteContract();
+        deleteContract($("#lab_admin_contract_id").val());
     });
     $("#lab_admin_contract_create_table").click(function () {
         
@@ -105,6 +108,27 @@ jQuery(function($){
         }
         callAjax(data, null, reloadPageContract, null, null);
     });
+
+    function loadContractById(contractId) {
+        let data = {
+            'action':'lab_admin_contract_get',
+            'id' : contractId,
+        }
+        callAjax(data, null, displayOneContact, null, null);
+    }
+
+    function displayOneContact(data) {
+        $("#lab_admin_contract_id").val(data.id);
+          
+        $("#lab_contract_delete_dialog_contract_id").val($("#lab_admin_contract_id").val());
+        $("#lab_admin_contract_name").val(data.label);
+        $("#lab_admin_contract_type").val(data.contract_type);
+        $("#lab_admin_contract_start").val(data.start);
+        $("#lab_admin_contract_end").val(data.end);
+        loadContractUsers(data.id);
+        //displayDeleteButton();
+        $("#lab_admin_contract_delete").prop('disabled', false);
+    }
 
     function reloadPageContract(data) {
         location.reload();
@@ -118,6 +142,7 @@ jQuery(function($){
     }
 
     function displayContracts(data) {
+        $("#lab_admin_contract_list_table_tbody").empty();
         $.each(data, function(i, obj) {
             let tr = $('<tr />');
             let tdId = $('<td />').html(obj.id);
@@ -142,19 +167,45 @@ jQuery(function($){
             tr.append(tdContractManagers);
 
             $("#lab_admin_contract_list_table_tbody").append(tr);
+            tr.append(createEditContractButton(obj.id, obj));
         });
     }
-    
 
-    function deleteContract() {
-        if ($("#lab_admin_contract_id").val() != "") {
-            let data = {
-                'action':'lab_admin_contract_delete',
-                'id':$("#lab_admin_contract_id").val(),
-            }
-            callAjax(data, null, clearNewFields, null, null);
-        }
+
+  function createEditContractButton(id, data) {   
+    let url = window.location.href;
+    console.log(url);
+    if (url.indexOf("&") != -1) 
+    {
+      url = (""+url).substr(0, url.indexOf("&"));
     }
+    url  += "&tab=entry&id="+id;
+
+    //console.log("->"+url);
+    let userId = $("#lab_mission_user_id").val();
+    let aEdit = $('<a />').attr("class", "lab-page-title-action lab_mission_edit").attr("href",url).attr("contractId", id).html("edit");
+    let aDel = $('<a />').attr("class", "lab-page-title-action lab_budget_info_delete").attr("contractId", id).attr("id", "lab-delete-mission-button").html("X");
+
+    $(aDel).click(function (){
+      displayModalDeleteContract($(this).attr("contractId"));
+    });
+
+    return $('<td />').attr("class", "lab_keyring_icon").append(aEdit).append(aDel);   
+  }
+
+  function displayModalDeleteContract(missionId) {
+      console.log("[displayModalDeleteContract] missionId : " + missionId)
+    $("#lab_contract_delete_dialog").modal();
+    $("#lab_contract_delete_dialog_contract_id").val(missionId);
+  }
+
+  function deleteContract(contractId = null) {
+    data = {
+      'action':"lab_admin_contract_delete",
+      'id':contractId,
+    };
+    callAjax(data, null, loadAllContracts, null, null);
+  }
 
     function loadContractUsers(contractId) {
         let data = {

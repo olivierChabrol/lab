@@ -5,6 +5,31 @@ jQuery("#lab_event_submit_button").submit(function () {
       e.preventDefault(); //prevent the default action
     }
 });
+jQuery(document).ready( function($){
+  if ($("#lav_event_submit").length > 0) {
+    $("#lav_event_submit").click(function (){
+      let ok = true;
+      if ($("#lab_event_speaker_name").val() == "")
+      {
+        $("#lab_event_speaker_name").focus();
+        $("#lab_event_speaker_name_error").css("color", "red");
+        $("#lab_event_speaker_name_error").html("Must be set");
+        ok = false;
+      }
+      if ($("#lab_event_speaker_affiliation").val() == "")
+      {
+        $("#lab_event_speaker_affiliation").focus();
+        $("#lab_event_speaker_affiliation_error").css("color", "red");
+        $("#lab_event_speaker_affiliation_error").html("Must be set");
+        ok = false;
+      }
+      if (ok) {
+        $("#event-form").trigger('submit'); 
+      }
+      //e.preventDefault();
+    });
+  }
+});
 
 function createTdUser(userId, data) {
   return createTd(getUserNames(userId, data));

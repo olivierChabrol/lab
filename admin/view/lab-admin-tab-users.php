@@ -149,6 +149,14 @@ function lab_admin_tab_user() {
       </tr>
       <tr>
         <td>
+          <label for="lab_user_co_supervision"><?php esc_html_e('Co Supervision','lab') ?></label>
+        </td>
+        <td>
+        <?php esc_html_e('France','lab') ?> / <input type="text" id="lab_user_co_supervision">
+        </td>
+      </tr>
+      <tr>
+        <td>
           <label for="lab_user_left"><?php esc_html_e('left','lab') ?></label>
         </td>
         <td>

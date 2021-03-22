@@ -246,6 +246,9 @@ function lab_directory($param) {
         if (!$displayOnlyLeftUser) {
             $directoryStr .= "<br><a href=\"/linstitut/annuaire/personnels-partis/\">".__('People who have left', 'lab')."</a>";
         }
+        else{
+            $directoryStr .= "<br><a href=\"/linstitut/annuaire/\">".__('People present', 'lab')."</a>";
+        }
         $directoryStr .= 
             "<br>
                 <div id='user-srch' style='width:750px;' class=\"actions\">
