@@ -131,8 +131,8 @@ function lab_mission_load($missionToken, $filters = null, $groupIds = null) {
                     if ($nbFilter > 0) {
                         $where .= " AND ";
                     }
-                    $where .= "YEAR(m.`creation_time`)=".$value."";
-                    $data["filters"]["year"] = $value;
+                    $where .= "param.id =".$value."";
+                    $data["filters"]["site"] = $value;
                 }
                 else if ($key == "budget_manager") {
                     if ($nbFilter > 0) {

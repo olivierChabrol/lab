@@ -112,7 +112,7 @@
       <option value="ca"><?php esc_html_e('Cancelled','lab'); ?></option>
       <option value="vgl"><?php esc_html_e('Validated','lab'); ?></option>
       <option value="rgl"><?php esc_html_e('Refused','lab'); ?></option>
-      <option value="wgm"><?php esc_html_e('Waiting group manager','lab'); ?></option>
+      <option value="wgm"><?php esc_html_e('Waiting','lab'); ?></option>
     </select>
   
 <?php lab_html_select("lab_mission_filter_site", "lab_budget_info_filter_site", "", "lab_admin_get_params_userLocation", null, array("value"=>"","label"=>"".esc_html('Site','lab')), ""); ?>
