@@ -86,8 +86,6 @@
       $groupLeaderIds  = lab_admin_group_get_groups_of_leader(get_current_user_id());
       $isManager = count($groupManagerIds) > 0;
       $isGroupLeader = count($groupLeaderIds) > 0;
-      echo ("isManager :" . $isManager . "<br>");
-      echo ("isGroupLeader :" . $isGroupLeader . "<br>");
     }
     ?>
     <div class="wrap">

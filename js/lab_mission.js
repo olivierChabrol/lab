@@ -11,13 +11,12 @@ jQuery(function($){
   $("#lab_mission_filter_status").change(function () {
     applyFilter();
   });
-  $("#lab_mission_filter_budget_manager").change(function () {
-    applyFilter();
-  });
   $("#lab_mission_filter_site").change(function () {
     applyFilter();
   });
-
+  $("#lab_mission_filter_budget_manager").change(function () {
+    applyFilter();
+  });
   if ($("#lab_admin_mission_list_table").length) {
     loadMissions();
   }
@@ -32,16 +31,16 @@ jQuery(function($){
   function applyFilter() {
     let action        = "lab_mission_load";
     let filterPattern = "lab_mission_filter_";
-    let filterFields  = ["year","status", "budget_manager", "site"];
+    let filterFields  = ["year", "status", "site", "budget_manager"];
     let callBackFct   = displayMission;
 
     data = {
       'action': action,
     };
+    data["filters"] = {};
     for (let i = 0; i < filterFields.length ; i++) {
       let filter = filterFields[i];
       if ($("#" + filterPattern + filter).val() != "") {
-        data["filters"] = {};
         data["filters"][filter] = $("#" + filterPattern + filter).val();
       }
     }
@@ -70,11 +69,14 @@ jQuery(function($){
 
   function displayMission(data) {
     //console.log("[displayMission]");
-    //console.log(data);
+    console.log(data);
     //var test1 = __("Plane", "lab");
     //alert(test1);
     $("#lab_mission_filter_year").empty();
-    $("#lab_mission_filter_year").append(new Option(__("Year",'lab'),""));
+    $("#lab_mission_filter_year").append(new Option(__("Year",'lab'),"*"));
+    data.years.sort(function(a, b) {
+      return a - b;
+    })
     $.each(data.years, function(i, obj) {
       $("#lab_mission_filter_year").append(new Option(obj, obj));
     });

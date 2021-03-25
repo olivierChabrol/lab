@@ -121,11 +121,17 @@ function lab_mission_load($missionToken, $filters = null, $groupIds = null) {
             $nbFilter = 0;
             foreach($filters as $key=>$value) {
                 if ($key == "year") {
-                    if ($nbFilter > 0) {
-                        $where .= " AND ";
+                    if($value != "*") {
+                        if ($nbFilter > 0) {
+                            $where .= " AND ";
+                        }
+                        $where .= "YEAR(m.`creation_time`)=".$value."";
                     }
-                    $where .= "YEAR(m.`creation_time`)=".$value."";
+                    else {
+                        $where = substr($where, 0, -4);
+                    }
                     $data["filters"]["year"] = $value;
+                    
                 }
                 if ($key == "site") {
                     if ($nbFilter > 0) {
@@ -134,7 +140,7 @@ function lab_mission_load($missionToken, $filters = null, $groupIds = null) {
                     $where .= "param.id =".$value."";
                     $data["filters"]["site"] = $value;
                 }
-                else if ($key == "budget_manager") {
+                if ($key == "budget_manager") {
                     if ($nbFilter > 0) {
                         $where .= " AND ";
                     }
@@ -142,7 +148,7 @@ function lab_mission_load($missionToken, $filters = null, $groupIds = null) {
                     $where .= "m.manager_id=".$value."";
                     $data["filters"]["budget_manager"] = $value;
                 }
-                else if ($key == "status") {
+                if ($key == "status") {
                     if ($nbFilter > 0) {
                         $where .= " AND ";
                     }
