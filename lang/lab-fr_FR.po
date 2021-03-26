@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: lab\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-03-22 14:46+0100\n"
-"PO-Revision-Date: 2021-03-22 16:02+0100\n"
+"PO-Revision-Date: 2021-03-26 11:04+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -1956,11 +1956,11 @@ msgstr "Modélisation, équations liées à la biologie"
 
 #: lab-params.php:206
 msgid "Probabilities"
-msgstr ""
+msgstr "Probabilités"
 
 #: lab-params.php:207
 msgid "Singularities"
-msgstr ""
+msgstr "Singularités"
 
 #: lab-params.php:208
 msgid "Statistic"
@@ -1968,35 +1968,35 @@ msgstr "Statistiques"
 
 #: lab-params.php:209
 msgid "Measured dynamic systems"
-msgstr ""
+msgstr "Systèmes dynamiques mesurés"
 
 #: lab-params.php:210
 msgid "Geometric dynamic systems"
-msgstr ""
+msgstr "Systèmes dynamiques géométriques"
 
 #: lab-params.php:211
 msgid "Symbolic dynamic systems"
-msgstr ""
+msgstr "Systèmes dynamiques symboliques"
 
 #: lab-params.php:212
 msgid "Geometric group theory"
-msgstr ""
+msgstr "Théorie des groupes géométriques"
 
 #: lab-params.php:213
 msgid "Algebraic number theory, arithmetic geometry"
-msgstr ""
+msgstr "Théorie algébrique des nombres, géométrie arithmétique"
 
 #: lab-params.php:214
 msgid "Analytical number theory"
-msgstr ""
+msgstr "Théorie analytique des nombres"
 
 #: lab-params.php:215
 msgid "Theory of automorphic forms"
-msgstr ""
+msgstr "Théorie des formes automorphes"
 
 #: lab-params.php:216
 msgid "Operator theory"
-msgstr ""
+msgstr "Théorie des opérateurs"
 
 #: lab-params.php:217
 msgid "Representation theory"
@@ -2004,11 +2004,11 @@ msgstr "Théorie de la représentation"
 
 #: lab-params.php:218
 msgid "Topology (algebraic, low dimensional, general)"
-msgstr ""
+msgstr "Topologie (algébrique, basse dimension, générale)"
 
 #: lab-params.php:219
 msgid "Signal and image processing"
-msgstr ""
+msgstr "Traitement des signaux et des images"
 
 #: lab-params.php:220
 msgid "AMU/INSPE"
