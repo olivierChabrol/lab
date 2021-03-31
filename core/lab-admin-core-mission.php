@@ -3,10 +3,12 @@
 
 function lab_mission_status_to_value($missionStatus) {
     $status = array();
-    $status["c"] = 4;
-    $status["wmv"] = 3;
-    $status["wlv"] = 2;
-    $status["w"] = 1;
+    $status["c"] = 265;
+    $status["ca"] = 268;
+    $status["wgm"] = 264;
+    $status["n"] = 261;
+    $status["vgl"] = 266;
+    $status["rgl"] = 267;
     return $status[$missionStatus];
 }
     
@@ -119,20 +121,26 @@ function lab_mission_load($missionToken, $filters = null, $groupIds = null) {
             $nbFilter = 0;
             foreach($filters as $key=>$value) {
                 if ($key == "year") {
-                    if ($nbFilter > 0) {
-                        $where .= " AND ";
+                    if($value != "*") {
+                        if ($nbFilter > 0) {
+                            $where .= " AND ";
+                        }
+                        $where .= "YEAR(m.`creation_time`)=".$value."";
                     }
-                    $where .= "YEAR(m.`creation_time`)=".$value."";
+                    else {
+                        $where = substr($where, 0, -4);
+                    }
                     $data["filters"]["year"] = $value;
+                    
                 }
                 if ($key == "site") {
                     if ($nbFilter > 0) {
                         $where .= " AND ";
                     }
-                    $where .= "YEAR(m.`creation_time`)=".$value."";
-                    $data["filters"]["year"] = $value;
+                    $where .= "param.id =".$value."";
+                    $data["filters"]["site"] = $value;
                 }
-                else if ($key == "budget_manager") {
+                if ($key == "budget_manager") {
                     if ($nbFilter > 0) {
                         $where .= " AND ";
                     }
@@ -140,12 +148,12 @@ function lab_mission_load($missionToken, $filters = null, $groupIds = null) {
                     $where .= "m.manager_id=".$value."";
                     $data["filters"]["budget_manager"] = $value;
                 }
-                else if ($key == "state") {
+                if ($key == "status") {
                     if ($nbFilter > 0) {
                         $where .= " AND ";
                     }
                     $where .= "m.status=".lab_mission_status_to_value($value)."";
-                    $data["filters"]["state"] = $value;
+                    $data["filters"]["status"] = $value;
                 }
                 $nbFilter += 1;
             }

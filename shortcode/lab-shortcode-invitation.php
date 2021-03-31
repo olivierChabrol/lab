@@ -660,7 +660,7 @@ function lab_invitations_mail($type=1, $guest, $invite) {
             $date = date_create_from_format("Y-m-d H:i:s", $invite["creation_time"]);
             $content = "<p><i>".strftime('%A %d %B %G - %H:%M',$date->getTimestamp())."</i></p>";
             //$content .= "<p>".get_locale()."</p>";
-            $content .= "<p>".esc_html__("Yoru invitation request has been taken into account",'lab').".<br>".esc_html__("It has been forwarded to your host",'lab').".</p>";
+            $content .= "<p>".esc_html__("Your invitation request has been taken into account",'lab').".<br>".esc_html__("It has been forwarded to your host",'lab').".</p>";
             $content .= lab_InviteForm('',$guest,$invite);
             // unload_textdomain("lab");
             // add_filter('locale','lab_invitations_switchLocale',10);
