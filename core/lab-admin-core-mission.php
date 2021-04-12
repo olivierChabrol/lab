@@ -83,8 +83,8 @@ function lab_mission_load($missionToken, $filters = null, $groupIds = null) {
     $data = array();
     $data["filters"] = array();
 
-    $budgetManagerGroupIds = lab_admin_group_is_manager();
-    $leaderManagerGroupIds = lab_admin_group_is_manager(null, 2);
+    $budgetManagerGroupIds = lab_admin_group_get_manager_groups();
+    $leaderManagerGroupIds = lab_admin_group_get_manager_groups(null, 2);
     $isBudgetManager  = count($budgetManagerGroupIds) > 0;
     $isLeaderOfAGroup = count($leaderManagerGroupIds) > 0;
     $isAdmin = current_user_can( 'manage_options' );
