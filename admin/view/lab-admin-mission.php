@@ -113,10 +113,9 @@
       <option value="wgm"><?php esc_html_e('Waiting','lab'); ?></option>
     </select>
   
-<?php lab_html_select("lab_mission_filter_site", "lab_budget_info_filter_site", "", "lab_admin_get_params_userLocation", null, array("value"=>"","label"=>"".esc_html('Site','lab')), ""); ?>
-<?php lab_html_select("lab_mission_filter_budget_manager", "lab_budget_info_filter_budget_manager", "", "lab_admin_budget_managers_list", null, array("value"=>"","label"=>"".esc_html('Budget manager','lab')), ""); ?>
+<?php lab_html_select("lab_mission_filter_site", "lab_budget_info_filter_site", "", "lab_admin_get_params_userLocation", null, array("value"=>"","label"=>"".esc_html__('Site','lab')), ""); ?>
+<?php lab_html_select("lab_mission_filter_budget_manager", "lab_budget_info_filter_budget_manager", "", "lab_admin_budget_managers_list", null, array("value"=>"","label"=>"".esc_html__('Budget manager','lab')), ""); ?>
 <label class="screen-reader-text" for="post-search-input"><?php esc_html_e('Search command Number','lab'); ?>:</label>
-  <input type="text" id="lab_budget_info_filter_order_number" placeholder="<?php esc_html_e('Command Number','lab'); ?>"></input>
   </div></div>
   <br class="clear">
     </p>

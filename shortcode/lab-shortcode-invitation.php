@@ -857,7 +857,7 @@ function lab_inviteComments($missionId) {
                     </div>";
         }
     } else {
-        $out .= '<p><i>'.esc_html("No comments for this invitation","lab").'</i></p>';
+        $out .= '<p><i>'.esc_html__("No comment","lab").'</i></p>';
     }
     $out.='</div>';
     return $out;
