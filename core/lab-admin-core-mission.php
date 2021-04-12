@@ -53,7 +53,7 @@ function lab_mission_take_in_charge($missionId)
 {
     $currentUserId = get_current_user_id();
     //$managerId = lab_mission_get_budget_manager($missionId);
-    $isManager = count(lab_admin_group_is_manager($currentUserId)) > 0;
+    $isManager = lab_admin_group_is_manager($currentUserId) > 0;
     
     if ($isManager) 
     {

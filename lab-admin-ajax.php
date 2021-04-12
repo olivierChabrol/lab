@@ -1338,7 +1338,7 @@ function lab_invitations_new() {
   //wp_send_json_success("toto " . $managerId);
   $fields['manager_id'] = $managerId;
 
-  foreach (['host_group_id','host_id', 'estimated_cost', 'hostel_cost', 'hostel_night', 'funding' , 'mission_objective','funding_source','research_contract'] as $champ) {
+  foreach (['host_group_id','host_id', 'manager_id', 'estimated_cost', 'hostel_cost', 'hostel_night', 'funding' , 'mission_objective','funding_source','research_contract'] as $champ) {
     $invite[$champ]=$fields[$champ];
   }
   $invite["charges"]=json_encode($fields["charges"]);

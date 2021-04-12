@@ -480,12 +480,26 @@ function travelExist(id) {
 
 function addTravelId(id) {
   travels.push(parseInt(id));  
+  console.log(travels);
+}
+
+function arrayIndexOf(tab, id) {
+  for (let i = 0 ; i < tab.length ; i++) {
+    if (tab[i] == id) {
+      return i;
+    }
+  }
+  return -1;
 }
 
 function deleteTravelId(id) {
+  console.log("deleteTravelId " + id);
+  console.log(travels.length);
   console.log(travels);
-  travels.splice($.inArray(id,travels) ,1 );
+  console.log("inArray " + arrayIndexOf(travels, id));
+  travels.splice(arrayIndexOf(travels, id), 1);
   console.log(travels);
+  console.log("deleteTravelIdEnd " + id);
 }
 
 function getNewTravelId() {
@@ -635,8 +649,10 @@ function editTravelDiv(id) {
 function deleteTravelTr(id, mission_id) {
 
   console.log("[deleteTravelTr] " + id);
+  console.log(travels);
 
   if ($("#lab_mission_token").length && $("#lab_mission_token").val() != 0) {
+    console.log("[deleteTravelTr] " + id + " oui");
     data = {
       'action' : 'lab_travel_delete',
       'id' : $("#travel_travelId_" + id).attr("tv"),
@@ -646,6 +662,7 @@ function deleteTravelTr(id, mission_id) {
     $("#lab_mission_table_tr_"+id).remove();
   }
   else {
+    console.log("[deleteTravelTr] " + id + " non");
     $("#lab_mission_table_tr_"+id).remove();
   }
   deleteTravelId(id);
