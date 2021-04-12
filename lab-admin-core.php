@@ -804,15 +804,15 @@ function lab_admin_mission_create_table() {
         `travel_to` varchar(100) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
         `travel_date` datetime NOT NULL,
         `means_of_locomotion` bigint NOT NULL,
-        `round_trip` BOOLEAN NOT NULL,
+        `round_trip` tinyint(1) DEFAULT 0,
         `nb_person` int NOT NULL,
-        `carbon_footprint` int NOT NULL,
-        `loyalty_card_number` int NOT NULL,
-        `loyalty_card_expiry_date` date NOT NULL,
+        `carbon_footprint` varchar(20) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
         `travel_datereturn` datetime DEFAULT NULL,
         `estimated_cost` float NOT NULL,
         `real_cost float` NOT NULL,
         `reference varchar(255)` COLLATE utf8_bin NOT NULL,
+        `loyalty_car_number` varchar(50) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+        `loyalty_card_expiry_date` date DEFAULT NULL
         PRIMARY KEY (id)
     ) ENGINE=InnoDB";
     return $wpdb->get_results($sql);
@@ -899,7 +899,7 @@ function lab_admin_get_group_name($groupId) {
  * @param [int] $managerType, if not provided, take budget manager : 1
  * @return array of group ids current user is the budget manager
  */
-function lab_admin_group_is_manager($userId = null, $managerType = 1) {
+function lab_admin_group_get_manager_groups($userId = null, $managerType = 1) {
     global $wpdb;
     if ($userId == null) {
         $userId = get_current_user_id();
@@ -910,6 +910,10 @@ function lab_admin_group_is_manager($userId = null, $managerType = 1) {
         $groupIds[] = $r->group_id;
     }
     return $groupIds;
+}
+
+function lab_admin_group_is_manager($userId = null, $managerType = 1) {
+    return count(lab_admin_group_get_manager_groups($userId, $managerType));
 }
 
 /**

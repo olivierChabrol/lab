@@ -279,7 +279,10 @@ function lab_mission($args) {
                 <p>'.esc_html__("(e.g. your loyalty card numbers to be used when booking your trips + the expiry date if required)",'lab').'</p>
         </div><hr>';
         }
-        if ( $param["hostpage"] ) {//Affiche les champs supplémentaires, pour les responsables/invitants.
+        $a = lab_admin_group_is_manager(get_current_user_id(), 1);
+        $b = lab_admin_group_is_manager(get_current_user_id(), 2);
+        $c = lab_admin_group_is_manager(get_current_user_id(), 3);
+        if ($c > 0 || $a > 0 || $b > 0) {//Affiche les champs supplémentaires, pour les responsables.
             $invitationStr .= '<h3>'.esc_html__("Leader fields : ","lab").'</h3>
             <div class="lab_invite_row_left">';                    
             $invitationStr .= '<div class="lab_invite_field"><label for="lab_mission_fund_origin">'.esc_html__("Funds","lab").'<span class="lab_form_required_star"/></label>';
@@ -346,6 +349,11 @@ function lab_mission($args) {
                 $invitationStr .= '<button id="lab_mission_cancel" type="button" class="btn btn-warning">'.esc_html__("Cancel","lab").'</button>';
             }
             $invitationStr .= '</div>';                                
+        }
+        else if($param['hostpage']) {
+            $invitationStr .= '<div class="lab_invite_row_right"><button id="lab_mission_save" type="button" class="btn btn-primary">'.esc_html__("Update",'lab').'</button>&nbsp&nbsp';
+            $invitationStr .= '<button id="lab_mission_cancel" type="button" class="btn btn-warning">'.esc_html__("Cancel","lab").'</button>';
+            $invitationStr .= '</div>';   
         }
         else {
             $invitationStr .= '<div class="lab_invite_field">
