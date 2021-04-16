@@ -23,6 +23,7 @@ function lab_mission($args) {
     $isManager = false;
     $guest = null;
     $invitation = null;
+    $isChief = false;
     if ( isset($param['hostpage']) ) {
         $explode = explode("/",$url);
         $a = null;
@@ -32,7 +33,7 @@ function lab_mission($args) {
         if (!isset($url) && empty($url)) {
             $a = $args["token"];
         }
-        if ( ! isset($a)) { //Aucun token, donc l'invitant crée lui-même une nouvelle invitation
+        if ( ! isset($a) || empty($a)) { //Aucun token, donc l'invitant crée lui-même une nouvelle invitation
             $host = new labUser(get_current_user_id());
         } else {//Token fournit, récupère les informations existantes
             $token = $a;
@@ -185,7 +186,7 @@ function lab_mission($args) {
                 <label for="lab_hostel">'.esc_html__("Need a hostel","lab").'</label>
                     <input type="checkbox" id="lab_hostel" name="lab_hostel" ';
 
-            if($param['hostpage'] && $invitation->needs_hostel == 1)
+            if($param['hostpage'] && $invitation && $invitation->needs_hostel == 1)
             {
                 $invitationStr .= 'checked';
             }
@@ -308,8 +309,8 @@ function lab_mission($args) {
                 <div class="lab_invite_row lab_send_manager"><p class="lab_invite_field">Cliquez ici pour valider la demande et la transmettre au pôle budget :</p><button id="lab_send_manager">'.esc_html__("Send to administration",'lab').'</button></div>';
             } else {
                 $invitationStr .= '<div class="lab_invite_field">
-                <input '.($invitation->status>1 ? 'disabled' : '').' type="submit" value="'.esc_html__("Save","lab").'">
-                </div>'.($invitation->status>1 ? '<i>'.esc_html__("This invitation is already in the next step, to modify it, you must resend it (via the button below)",'lab').'</i>' : '').
+                <input '.($invitation && $invitation->status>1 ? 'disabled' : '').' type="submit" value="'.esc_html__("Save","lab").'">
+                </div>'.($invitation && $invitation->status>1 ? '<i>'.esc_html__("This invitation is already in the next step, to modify it, you must resend it (via the button below)",'lab').'</i>' : '').
                 '</div>
                 <div class="lab_invite_row lab_send_group_chief"><p class="lab_invite_field">Cliquez ici pour compléter la demande et la transmettre au responsable du groupe :</p><button id="lab_mission_send_group_leader">'.esc_html__("Send to responsible",'lab').'</button></div>';
             }
