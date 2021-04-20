@@ -119,6 +119,7 @@
   </div></div>
   <br class="clear">
     </p>
+    <a href="/wp-content/plugins/lab/lab_export.php?&do=missionsExtraction&filename=missions.xls">Excel</a>
     <table class="widefat fixed lab_keyring_table" id="lab_admin_mission_list_table">
       <thead>
         <th>id</th>
