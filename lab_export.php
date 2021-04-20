@@ -109,6 +109,17 @@ if ($do == "presentOfTheWeek")
     $writer->save( "php://output" );
 
 } 
+else if ($do == "missionsExtraction")
+{
+    $spreadsheet = new Spreadsheet();
+    $sheet = $spreadsheet->getActiveSheet();
+    $sheet->setCellValue('A1', 'Id Mission');
+    $sheet->setCellValue('B1', 'Nom');
+    $line = 1;
+
+    $writer = new Xlsx($spreadsheet);
+    $writer->save( "php://output" );
+}
 else if ($do == "labo1.5")
 {   
     ob_end_clean();
