@@ -64,6 +64,11 @@ function createTd(str)
   return jQuery('<td />').html(str);
 }
 
+function createTdCurrency(valuemoney){
+  valuemoney = new Intl.NumberFormat('fr-FR', {style : 'currency', currency : 'EUR'}).format(valuemoney);
+  return jQuery('<td />').html(valuemoney);
+}
+
 function displayLoadingGif()
 {
   //jQuery("#loadingAjaxGif").show();

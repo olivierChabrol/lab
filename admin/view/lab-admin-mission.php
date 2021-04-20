@@ -134,7 +134,19 @@
         <tbody id="lab_admin_mission_list_table_tbody">
         </tbody>
     </table>
-    </div> 
+
+    <table class="widefat fixed lab_keyring_table_cost" id="lab_admin_mission_list_table_cost">
+      <thead>
+        <th><?php esc_html_e('Estimation cost','lab'); ?></th>
+        <th><?php esc_html_e('Real cost','lab'); ?></th>
+        <th><?php esc_html_e('Delta','lab'); ?></th>
+      </thead>
+        <tbody id="lab_admin_mission_list_table_tbody_cost">
+        </tbody>
+    </table>
+    
+    </div>
+
     <div id="lab_mission_delete_dialog" class="modal">
       <p><?php esc_html_e('Do you really want to delete this mission ?','lab');?></p>
       <input type="hidden" id="lab_mission_delete_dialog_mission_id" value="">

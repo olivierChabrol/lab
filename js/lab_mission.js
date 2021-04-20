@@ -89,8 +89,52 @@ jQuery(function($){
 
     $("#lab_admin_mission_list_table_tbody").empty();
     $.each(data.results, function(i, obj) {
+      //console.log(obj.hostel_cost);
       $("#lab_admin_mission_list_table_tbody").append(createTrMissionTableLine(obj, data));
     });
+
+    $("#lab_admin_mission_list_table_tbody_cost").empty();
+    let sumcost = 0;
+    let sumrealcost = 0;
+    let diffcost = 0;
+
+    $.each(data.results, function(i, mission) {
+        $.each(mission.routes, function(i, route) {
+        sumcost += parseInt(route.estimated_cost);
+        console.log("[displayMission] estimated_cost :" + route.estimated_cost);
+      });
+      console.log(mission.hostel_cost);
+      sumcost += parseInt(mission.hostel_cost);
+      console.log("[displayMission] sumcost :" + sumcost);
+      
+      if (mission.real_cost == undefined){
+          sumrealcost += 0;
+      }
+      else {
+        sumrealcost += parseInt(mission.real_cost);
+      }
+      console.log("[displayMission] sumrealcost :" + sumrealcost);
+  
+      diffcost = sumrealcost - sumcost;  
+    });
+
+    $("#lab_admin_mission_list_table_tbody_cost").append(createTrMissionTableLineCost(sumcost, sumrealcost, diffcost));
+
+
+        
+    $("#lab_admin_mission_list_table_tbody_cost").children("tr").each(function () 
+    {
+      if(diffcost > 0) {
+        $(this).css("background-color", "palegreen");
+      } 
+      else if (diffcost < 0 && sumrealcost != 0) {
+        $(this).css("background-color", "salmon");
+      } 
+      else if (sumrealcost == 0) {
+        $(this).css("background-color", "khaki");
+      }
+    })
+  
 
     $("#lab_admin_mission_list_table_tbody").children("tr").each(function () 
     {
@@ -130,6 +174,14 @@ jQuery(function($){
     tr.append(createTdUser(mission.manager_id, data));
     tr.append(createTdParam(mission.mission_objective, data));
     tr.append(createEditButton(mission.id, mission.token, data));
+    return tr;
+  }
+
+  function createTrMissionTableLineCost(estimatedCost, realCost, diff) {
+    let tr = $('<tr />');
+    tr.append(createTdCurrency(estimatedCost));
+    tr.append(createTdCurrency(realCost));
+    tr.append(createTdCurrency(diff));
     return tr;
   }
 
