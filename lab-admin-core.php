@@ -889,7 +889,11 @@ function lab_admin_group_add_manager($groupId, $userId, $userRole) {
 function lab_admin_get_group_name($groupId) {
     global $wpdb;
     $results = $wpdb->get_results("SELECT group_name FROM `".$wpdb->prefix."lab_groups` WHERE id=".$groupId);
-    return $results[0];
+    if (count($results) > 0) {
+        return $results[0];
+    }
+    else
+        return null;
 }
 
 /**
