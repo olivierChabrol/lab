@@ -12,8 +12,16 @@ $_SERVER['DOCUMENT_ROOT'] = dirname(__FILE__).'/../../..';
 require_once( $_SERVER['DOCUMENT_ROOT'] . '/wp-load.php' );
 require_once( $_SERVER['DOCUMENT_ROOT'] . '/wp-config.php' );
 require_once( $_SERVER['DOCUMENT_ROOT'] . '/wp-includes/wp-db.php' );
+require_once(ABSPATH . "wp-includes/pluggable.php"); 
+require_once(ABSPATH . "wp-includes/class-wp-user.php"); 
+require_once(ABSPATH . "wp-includes/user.php"); 
+require_once(ABSPATH . "wp-includes/kses.php");
+require_once(ABSPATH . "wp-includes/capabilities.php");
+require_once(ABSPATH . 'wp-settings.php' );
+
 define('LAB_DIR_PATH', dirname(__FILE__));
 require_once(LAB_DIR_PATH."/lab-admin-core.php");
+require_once(LAB_DIR_PATH."/core/lab-admin-core-mission.php");
 //
 $wpdb = new wpdb( DB_USER, DB_PASSWORD, DB_NAME, DB_HOST);
 $wpdb->prefix = "wp_";
@@ -114,8 +122,32 @@ else if ($do == "missionsExtraction")
     $spreadsheet = new Spreadsheet();
     $sheet = $spreadsheet->getActiveSheet();
     $sheet->setCellValue('A1', 'Id Mission');
-    $sheet->setCellValue('B1', 'Nom');
+    $sheet->setCellValue('B1', 'Etat');
+    $sheet->setCellValue('C1', 'Date de la demande');
+    $sheet->setCellValue('D1',"Utilisateur");
+    $sheet->setCellValue('E1',"Site");
+    $sheet->setCellValue('F1',"Groupes");
+    $sheet->setCellValue('G1',"Gestionaire budjet");
+    $sheet->setCellValue('H1',"Type de Mission");
     $line = 1;
+
+    $sheet->setCellValue('A8', 'toto : ');
+    $sheet->setCellValue('A9', get_current_user_id());
+    $userId = $param;
+    //$data = lab_mission_load(null, null, null);
+    /*
+    foreach ($data["results"] as $mission){
+        $line++;
+        $sheet->setCellValue('A'.$line, $mission->id);
+        $sheet->setCellValue('B'.$line, AdminParams::get_param($mission->status));
+        $sheet->setCellValue('C'.$line, $mission->creation_time);
+        $sheet->setCellValue('D'.$line, $mission->host_id);
+        $sheet->setCellValue('E'.$line, $mission->site);
+        $sheet->setCellValue('F'.$line, $mission->host_group_id);
+        $sheet->setCellValue('G'.$line, $mission->manager_id);
+        $sheet->setCellValue('H'.$line, $mission->mission_objective);
+    }
+    //*/
 
     $writer = new Xlsx($spreadsheet);
     $writer->save( "php://output" );

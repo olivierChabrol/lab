@@ -21,6 +21,29 @@ function lab_admin_ajax_user_info()
 /********************************************************************************************
  * MISSION
  ********************************************************************************************/
+
+
+/**
+ * Generate excel file
+ *
+ * @return excel filename generated
+ */
+function lab_mission_ajax_excel() {
+  $missionId = $_POST['id'];
+  if (!isset($missionId) || empty($missionId)) {
+    $missionId = null;
+  }
+  $filters = $_POST['filters'];
+  if (!isset($filters) || empty($filters)) {
+    $filters = null;
+  }
+  $groupIds = $_POST['groupIds'];
+  if (!isset($groupIds) || empty($groupIds) || count($groupIds) == 0) {
+    $groupIds = null;
+  }
+  wp_send_json_success(lab_mission_generate_excel($missionId, $filters, $groupIds));
+}
+
 function lab_mission_ajax_load() {
   $missionId = $_POST['id'];
   if (!isset($missionId) || empty($missionId)) {

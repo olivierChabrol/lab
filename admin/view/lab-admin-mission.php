@@ -119,7 +119,8 @@
   </div></div>
   <br class="clear">
     </p>
-    <a href="/wp-content/plugins/lab/lab_export.php?&do=missionsExtraction&filename=missions.xls">Excel</a>
+    <button type="button" id="lab_mission_excel" class="btn btn-success">Excel</button>
+    <a href="/wp-content/plugins/lab/lab_export.php?&do=missionsExtraction&filename=missions.xls&param=<?php echo get_current_user_id(); ?>">Excel</a>
     <table class="widefat fixed lab_keyring_table" id="lab_admin_mission_list_table">
       <thead>
         <th>id</th>

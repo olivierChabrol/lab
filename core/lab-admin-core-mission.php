@@ -1,4 +1,6 @@
 <?php
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 
 function lab_mission_status_to_value($missionStatus) {
@@ -83,7 +85,7 @@ function lab_mission_load($missionToken, $filters = null, $groupIds = null) {
     $data = array();
     $data["filters"] = array();
 
-    $budgetManagerGroupIds = lab_admin_group_get_manager_groups();
+    $budgetManagerGroupIds = lab_admin_group_get_manager_groups(get_current_user_id());
     $leaderManagerGroupIds = lab_admin_group_get_manager_groups(null, 2);
     $isBudgetManager  = count($budgetManagerGroupIds) > 0;
     $isLeaderOfAGroup = count($leaderManagerGroupIds) > 0;
@@ -224,4 +226,25 @@ function lab_mission_load($missionToken, $filters = null, $groupIds = null) {
     $data["years"] = $years;
     $data["sql"] = $sql;
     return $data;
+}
+
+function lab_mission_generate_excel($missionToken = null, $filters = null, $groupIds = null) {
+    $data = lab_mission_load($missionToken, $filters, $groupIds);
+    
+    $spreadsheet = new Spreadsheet();
+    $sheet = $spreadsheet->getActiveSheet();
+    $sheet->setCellValue('A1', 'Mission');
+    $sheet->setCellValue('B1', 'Test');
+    define('LAB_DIR_PATH', dirname(__FILE__));
+
+    $writer = new Xlsx($spreadsheet);
+    $name = LAB_DIR_PATH."files/excel/missions_".uniqid().".xls";
+    try {
+        $writer->save($name);
+    }
+    catch( Exception $e ) {
+        return $e->getMessage();
+    }
+    
+    return $name;
 }
