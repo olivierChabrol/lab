@@ -181,6 +181,7 @@ if (is_admin()) {
     add_action( 'wp_ajax_lab_budget_info_set_date', 'budget_info_ajax_set_date');
     // Actions pour les mission
     add_action( 'wp_ajax_lab_mission_load', 'lab_mission_ajax_load');
+    add_action( 'wp_ajax_lab_mission_load_excel', 'lab_mission_ajax_excel');
     add_action( 'wp_ajax_lab_travels_load', 'lab_travels_ajax_load');
     add_action( 'wp_ajax_lab_travel_delete', 'lab_travel_ajax_delete');
     add_action( 'wp_ajax_lab_travel_save', 'lab_travel_ajax_save');

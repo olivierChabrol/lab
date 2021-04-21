@@ -21,29 +21,51 @@ jQuery(function($){
     loadMissions();
   }
 
-
+  $("#lab_mission_excel").click(function() {
+    //alert("test");
+    generateMissionFile();
+  });
 
   $("#lab_mission_delete_confirm").click(function() {
       //endLoan($(this).attr('loan_id'),$("#lab_keyring_loanform_key_id").text(),defaultTodayDate($("#lab_keyring_loanform_end_date").val()));
       deleteMission($("#lab_mission_delete_dialog_mission_id").val());
   });
 
-  function applyFilter() {
-    let action        = "lab_mission_load";
+  function generateMissionFile() {
+    let callBackFct   = displayExcelLink;
+    data = {
+      'action': 'lab_mission_load_excel',
+    };
+    data["filters"] = getFilters();
+    console.log(data);
+    callAjax(data, null, callBackFct, null, null);
+  }
+
+  function displayExcelLink(data) {
+    console.log(data);
+  }
+
+  function getFilters() {
     let filterPattern = "lab_mission_filter_";
     let filterFields  = ["year", "status", "site", "budget_manager"];
+    let filters  = {};
+    for (let i = 0; i < filterFields.length ; i++) {
+      let filter = filterFields[i];
+      if ($("#" + filterPattern + filter).val() != "") {
+        filters[filter] = $("#" + filterPattern + filter).val();
+      }
+    }
+    return filters;
+  }
+
+  function applyFilter() {
+    let action        = "lab_mission_load";
     let callBackFct   = displayMission;
 
     data = {
       'action': action,
     };
-    data["filters"] = {};
-    for (let i = 0; i < filterFields.length ; i++) {
-      let filter = filterFields[i];
-      if ($("#" + filterPattern + filter).val() != "") {
-        data["filters"][filter] = $("#" + filterPattern + filter).val();
-      }
-    }
+    data["filters"] = getFilters();
     console.log(data);
     callAjax(data, null, callBackFct, null, null);
   }
