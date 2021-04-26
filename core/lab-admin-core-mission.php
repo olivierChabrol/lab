@@ -188,14 +188,14 @@ function lab_mission_load($missionToken, $filters = null, $groupIds = null) {
         if ($mission->manager_id != null) {
             $userIds[$mission->manager_id] = lab_admin_usermeta_names($mission->manager_id);
         }
-        if (isset($userIds[$r->host_id]->group)) {
-            $r->group = $userIds[$r->host_id]->group;
+        if (isset($userIds[$mission->host_id]->group)) {
+            $mission->group = $userIds[$mission->host_id]->group;
         }
         else {
-            $r->group = "";
+            $mission->group = "";
         }
-        //$r->manager_id = $userIds[$r->host_id]->manager_id;
-        $groups[$r->host_group_id] = lab_admin_get_group_name($r->host_group_id);
+        //$mission->manager_id = $userIds[$mission->host_id]->manager_id;
+        $groups[$mission->host_group_id] = lab_admin_get_group_name($mission->host_group_id);
         # get all params associated to the mission see @$paramsToGet
         foreach($paramsToGet as $ptg) {
             if (!isset($params[$mission->$ptg])) {
@@ -207,11 +207,11 @@ function lab_mission_load($missionToken, $filters = null, $groupIds = null) {
 
 
     //if ($budgetId== null) {
-    if (count($results) > 0) {
-        $data["results"] = $results;
+    if (count($missions) > 0) {
+        $data["results"] = $missions;
     }
     else {
-        $data["results"] = $results[0];
+        $data["results"] = $missions[0];
     }
     $data["users"] = $userIds;
     $data["groups"] = $groups;
