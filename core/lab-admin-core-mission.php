@@ -195,6 +195,7 @@ function lab_mission_load($missionToken, $filters = null, $groupIds = null) {
             $mission->group = "";
         }
         //$mission->manager_id = $userIds[$mission->host_id]->manager_id;
+        $mission->routes=lab_mission_load_travels($mission->id);
         $groups[$mission->host_group_id] = lab_admin_get_group_name($mission->host_group_id);
         # get all params associated to the mission see @$paramsToGet
         foreach($paramsToGet as $ptg) {
