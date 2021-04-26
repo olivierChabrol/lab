@@ -119,8 +119,8 @@
   </div></div>
   <br class="clear">
     </p>
-    <button type="button" id="lab_mission_excel" class="btn btn-success">Excel</button>
-    <a href="/wp-content/plugins/lab/lab_export.php?&do=missionsExtraction&filename=missions.xls&param=<?php echo get_current_user_id(); ?>">Excel</a>
+    <button type="button" id="lab_mission_excel" class="btn btn-success"> <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Microsoft_Excel_2013-2019_logo.svg/1200px-Microsoft_Excel_2013-2019_logo.svg.png" width="30px" height="30px"></button>
+    <a href="/wp-content/plugins/lab/lab_export.php?&do=missionsExtraction&filename=missions.xls&param=<?php echo get_current_user_id(); ?>"></a>
     <table class="widefat fixed lab_keyring_table" id="lab_admin_mission_list_table">
       <thead>
         <th>id</th>

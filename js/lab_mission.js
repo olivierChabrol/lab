@@ -43,6 +43,7 @@ jQuery(function($){
 
   function displayExcelLink(data) {
     console.log(data);
+    window.location.href=data;
   }
 
   function getFilters() {
@@ -122,27 +123,25 @@ jQuery(function($){
 
     $.each(data.results, function(i, mission) {
         $.each(mission.routes, function(i, route) {
-        sumcost += parseInt(route.estimated_cost);
+        sumcost += parseFloat(route.estimated_cost);
         console.log("[displayMission] estimated_cost :" + route.estimated_cost);
       });
-      console.log(mission.hostel_cost);
-      sumcost += parseInt(mission.hostel_cost);
+      //console.log(mission.hostel_cost);
+      sumcost += parseFloat(mission.hostel_cost);
       console.log("[displayMission] sumcost :" + sumcost);
       
       if (mission.real_cost == undefined){
           sumrealcost += 0;
       }
       else {
-        sumrealcost += parseInt(mission.real_cost);
+        sumrealcost += parseFloat(mission.real_cost);
       }
-      console.log("[displayMission] sumrealcost :" + sumrealcost);
+      //console.log("[displayMission] sumrealcost :" + sumrealcost);
   
       diffcost = sumrealcost - sumcost;  
     });
 
     $("#lab_admin_mission_list_table_tbody_cost").append(createTrMissionTableLineCost(sumcost, sumrealcost, diffcost));
-
-
         
     $("#lab_admin_mission_list_table_tbody_cost").children("tr").each(function () 
     {

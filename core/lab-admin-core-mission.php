@@ -170,7 +170,7 @@ function lab_mission_load($missionToken, $filters = null, $groupIds = null) {
         }
     }
     $sql = $select. $from .$join. $where. $order;
-    $results = $wpdb->get_results($sql);
+    $missions = $wpdb->get_results($sql);
 
     // load user info
     $userIds = array();
@@ -179,14 +179,14 @@ function lab_mission_load($missionToken, $filters = null, $groupIds = null) {
     $paramsToGet = ["mission_objective", "status"];
     $notifs = array();
     $current_user_id = get_current_user_id();
-    foreach($results as $r) {
-        $notifs[$r->id] = lab_admin_mission_getNotifs($current_user_id, $r->id);
-        if(!isset($userIds[$r->host_id]) && $r->host_id != 0) {
-            $userIds[$r->host_id] = lab_admin_usermeta_names($r->host_id);
+    foreach($missions as $mission) {
+        $notifs[$mission->id] = lab_admin_mission_getNotifs($current_user_id, $mission->id);
+        if(!isset($userIds[$mission->host_id]) && $mission->host_id != 0) {
+            $userIds[$mission->host_id] = lab_admin_usermeta_names($mission->host_id);
             
         }
-        if ($r->manager_id != null) {
-            $userIds[$r->manager_id] = lab_admin_usermeta_names($r->manager_id);
+        if ($mission->manager_id != null) {
+            $userIds[$mission->manager_id] = lab_admin_usermeta_names($mission->manager_id);
         }
         if (isset($userIds[$r->host_id]->group)) {
             $r->group = $userIds[$r->host_id]->group;
@@ -198,8 +198,8 @@ function lab_mission_load($missionToken, $filters = null, $groupIds = null) {
         $groups[$r->host_group_id] = lab_admin_get_group_name($r->host_group_id);
         # get all params associated to the mission see @$paramsToGet
         foreach($paramsToGet as $ptg) {
-            if (!isset($params[$r->$ptg])) {
-                $params[$r->$ptg] = AdminParams::get_full_param($r->$ptg);
+            if (!isset($params[$mission->$ptg])) {
+                $params[$mission->$ptg] = AdminParams::get_full_param($mission->$ptg);
             }
 
         }
@@ -238,13 +238,233 @@ function lab_mission_generate_excel($missionToken = null, $filters = null, $grou
     $data = lab_mission_load($missionToken, $filters, $groupIds);
     
     $spreadsheet = new Spreadsheet();
-    $sheet = $spreadsheet->getActiveSheet();
-    $sheet->setCellValue('A1', 'Mission');
-    $sheet->setCellValue('B1', 'Test');
+    $sheet = $spreadsheet->getActiveSheet()->setTitle('RecapMissions')->setAutoFilter('A1:N1');
+
+    $styleBold = [
+        'font' => [
+         'bold' => true,
+    ]
+];
+    $sheet->getStyle('A1:N1' )->applyFromArray($styleBold);
+
+    $sheet->setCellValue('A1', esc_html__('Id Mission', 'lab'));
+    $sheet->setCellValue('B1', esc_html__('Etat', 'lab'));
+    $sheet->setCellValue('C1', esc_html__('Date of demand', 'lab'));
+    $sheet->setCellValue('D1', esc_html__('Departure date', 'lab'));
+    $sheet->setCellValue('E1', esc_html__('User', 'lab'));
+    $sheet->setCellValue('F1', esc_html__('Site', 'lab'));
+    $sheet->setCellValue('G1', esc_html__('Group', 'lab'));
+    $sheet->setCellValue('H1', esc_html__('Budjet Manager', 'lab'));
+    $sheet->setCellValue('I1', esc_html__('Mission Type', 'lab'));
+    $sheet->setCellValue('J1', __('Hostel Night', 'lab'));
+    $sheet->setCellValue('K1', esc_html__('Estimation cost Travel', 'lab'));
+    $sheet->setCellValue('L1', __('Estimation cost Hostel', 'lab'));
+    $sheet->setCellValue('M1', esc_html__('Total estimation', 'lab'));
+    $sheet->setCellValue('N1', esc_html__('Real cost', 'lab'));
+
     define('LAB_DIR_PATH', dirname(__FILE__));
+    $line = 1;
+
+    $data = lab_mission_load(null, null, null);
+
+
+    foreach ($data["results"] as $mission){
+        $line++;
+        $user = $data["users"][$mission->host_id];
+        $gestion = $data["users"][$mission->manager_id];
+        $group = $data["groups"][$mission->host_group_id];
+        $sheet->setCellValue('A'.$line, $mission->id);
+        $sheet->setCellValue('B'.$line, AdminParams::get_param($mission->status));
+
+        if (AdminParams::get_param($mission->status) == "Validate"){
+            $sheet->getStyle($line)
+                    ->getFill()
+                    ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+                    ->getStartColor()
+                    ->setARGB('98FB98');
+        }
+        if (AdminParams::get_param($mission->status) == "Refused") {
+            $sheet->getStyle($line)
+                    ->getFill()
+                    ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+                    ->getStartColor()
+                    ->setARGB('FA8072');
+        }
+
+        $sheet->setCellValue('C'.$line, $mission->creation_time);
+
+        foreach ($mission->routes as $route){
+            $sheet->setCellValue('D'.$line, $route->travel_date);
+            break;
+        }
+        $sheet->setCellValue('E'.$line, $user->first_name." ".$user->last_name);
+        $sheet->setCellValue('F'.$line, $mission->site);
+        $sheet->setCellValue('G'.$line, $group->group_name);
+        $sheet->setCellValue('H'.$line, $gestion->first_name." ".$gestion->last_name);
+        $sheet->setCellValue('I'.$line, AdminParams::get_param($mission->mission_objective));
+        $sheet->setCellValue('J'.$line, $mission->hostel_night);
+
+        $currency = numfmt_create('fr_FR', NumberFormatter::CURRENCY);
+
+        $sumcosttravel = $mission->estimated_cost - $mission->hostel_cost;
+
+        $sheet->setCellValue('K'.$line, numfmt_format_currency($currency, $sumcosttravel, "EUR"));
+
+        $sheet->setCellValue('L'.$line, numfmt_format_currency($currency, $mission->hostel_cost, "EUR"));
+        $sheet->setCellValue('M'.$line, numfmt_format_currency($currency, $mission->estimated_cost, "EUR"));
+
+        if ($mission->real_cost == null){
+            $sheet->setCellValue('N'.$line, numfmt_format_currency($currency, 0, "EUR"));
+        } else {
+            $sheet->setCellValue('N'.$line, numfmt_format_currency($currency, $mission->real_cost, "EUR"));
+        }
+    
+
+        $estimationcostxls += $mission->estimated_cost;
+        if ($mission->real_cost == null){
+            $realcostxls = 0;
+        } else {
+            $realcostxls = $mission->real_cost;
+        }
+
+        $deltaxls = $realcostxls - $estimationcostxls;
+    }
+
+    $line += 2;
+
+    $sheet->getStyle("A$line:D$line")->applyFromArray($styleBold);
+    
+    $sheet->setCellValue('A'.$line, esc_html__('Total', 'lab'));
+    $sheet->setCellValue('B'.$line, esc_html__('Estimation cost', 'lab'));
+    $sheet->setCellValue('C'.$line, esc_html__('Real cost', 'lab'));
+    $sheet->setCellValue('D'.$line, esc_html__('Delta', 'lab'));
+
+    $line++;
+
+    if ($deltaxls >= 0){
+        $sheet->getStyle("A$line:D$line")
+                ->getFill()
+                ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+                ->getStartColor()
+                ->setARGB('98FB98');
+    }
+    else{
+        $sheet->getStyle("A$line:D$line")
+                ->getFill()
+                ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+                ->getStartColor()
+                ->setARGB('FA8072');
+    }
+
+    $sheet->setCellValue('B'.$line, numfmt_format_currency($currency, $estimationcostxls, "EUR"));
+    $sheet->setCellValue('C'.$line, numfmt_format_currency($currency, $realcostxls, "EUR"));
+    $sheet->setCellValue('D'.$line, numfmt_format_currency($currency, $deltaxls, "EUR"));
+
+    $sheetMission = $spreadsheet->createSheet()->setTitle('Missions');
+    $sheetMission->getStyle('A1:R1' )->applyFromArray($styleBold);
+    $sheetMission->setCellValue('A1', esc_html__('Id Mission', 'lab'));
+    $sheetMission->setCellValue('B1', esc_html__('Etat', 'lab'));
+    $sheetMission->setCellValue('C1', esc_html__('User', 'lab'));
+    $sheetMission->setCellValue('D1', esc_html__('Departure date', 'lab'));
+    $sheetMission->setCellValue('E1', esc_html__('Travel from', 'lab'));
+    $sheetMission->setCellValue('F1', __('Travel to', 'lab'));
+    $sheetMission->setCellValue('G1', esc_html__('Means of locomotion', 'lab'));
+    $sheetMission->setCellValue('H1', esc_html__('Number of people', 'lab'));    
+    $sheetMission->setCellValue('I1', esc_html__('Round trip', 'lab'));
+    $sheetMission->setCellValue('J1', esc_html__('Path reference', 'lab'));
+    $sheetMission->setCellValue('K1', esc_html__('Carbon footprint', 'lab'));
+    $sheetMission->setCellValue('L1', esc_html__('Loyalty card number', 'lab'));
+    $sheetMission->setCellValue('M1', __('Loyalty card number expiry date', 'lab'));
+    $sheetMission->setCellValue('N1', __('Hostel Night', 'lab'));
+    $sheetMission->setCellValue('O1', esc_html__('Estimation cost Travel', 'lab'));
+    $sheetMission->setCellValue('P1', __('Estimation cost Hostel', 'lab'));
+    $sheetMission->setCellValue('Q1', esc_html__('Total estimation', 'lab'));
+    $sheetMission->setCellValue('R1', esc_html__('Real cost', 'lab'));
+
+    $line = 1;
+    $sumcosttravel = 0;
+    
+    foreach ($data["results"] as $mission){
+        $line++;
+        $sheetMission->setCellValue('A'.$line, $mission->id);
+        $sheetMission->setCellValue('B'.$line, esc_html__(AdminParams::get_param($mission->status), 'lab'));
+
+        if (AdminParams::get_param($mission->status) == "Validate"){
+            $sheetMission->getStyle("A$line:R$line")
+                    ->getFill()
+                    ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+                    ->getStartColor()
+                    ->setARGB('98FB98');
+        }
+        if (AdminParams::get_param($mission->status) == "Refused") {
+            $sheetMission->getStyle("A$line:R$line")
+                    ->getFill()
+                    ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+                    ->getStartColor()
+                    ->setARGB('FA8072');
+        }
+
+
+        $sheetMission->setCellValue('C'.$line, $user->first_name." ".$user->last_name);
+        $sheetMission->setCellValue('L'.$line, $mission->loyalty_card_number);
+        $sheetMission->setCellValue('M'.$line, $mission->loyalty_card_expiry_date);
+        $sheetMission->setCellValue('N'.$line, $mission->hostel_night);
+
+        
+
+        $currency = numfmt_create ('fr_FR', NumberFormatter::CURRENCY);
+
+        $sumcosttravel = $mission->estimated_cost - $mission->hostel_cost;
+
+        $sheetMission->setCellValue('O'.$line, numfmt_format_currency($currency, $sumcosttravel, "EUR"));
+        $sheetMission->setCellValue('P'.$line, numfmt_format_currency($currency, $mission->hostel_cost, "EUR"));
+        $sheetMission->setCellValue('Q'.$line, numfmt_format_currency($currency, $mission->estimated_cost, "EUR"));
+
+        if ($mission->real_cost == null){
+            $sheetMission->setCellValue('R'.$line, numfmt_format_currency($currency, 0, "EUR"));
+        } else {
+            $sheetMission->setCellValue('R'.$line, numfmt_format_currency($currency, $mission->real_cost, "EUR"));
+        }
+
+        $line++;
+
+        foreach ($mission->routes as $route){
+            $sheetMission->setCellValue('D'.$line, $route->travel_date);
+            $sheetMission->setCellValue('E'.$line, $route->travel_from);
+            $sheetMission->setCellValue('F'.$line, $route->travel_to);
+            $sheetMission->setCellValue('G'.$line, AdminParams::get_param($route->means_of_locomotion));
+            $sheetMission->setCellValue('H'.$line, $route->nb_person);
+
+            if ($route->round_trip == 0){
+                $sheetMission->setCellValue('I'.$line, esc_html__('No', 'lab'));
+            }
+            else
+            {
+                $sheetMission->setCellValue('I'.$line, esc_html__('Yes', 'lab'));
+            }
+            
+            $sheetMission->setCellValue('J'.$line, $route->reference);
+
+            if ($route->carbon_footprint == null){
+                $sheetMission->setCellValue('K'.$line, 0);
+            }
+            else
+            {
+                $sheetMission->setCellValue('K'.$line, $route->carbon_footprint);
+            }
+            $sheetMission->setCellValue('O'.$line, numfmt_format_currency($currency, $route->estimated_cost, "EUR"));
+            $sheetMission->setCellValue('R'.$line, numfmt_format_currency($currency, $route->real_cost, "EUR"));
+
+
+            $line++;
+        }
+    }
+
+
 
     $writer = new Xlsx($spreadsheet);
-    $name = LAB_DIR_PATH."files/excel/missions_".uniqid().".xls";
+    $filename = "missions_".uniqid().".xls";
+    $name = LAB_DIR_PATH."files/excel/".$filename;
     try {
         $writer->save($name);
     }
@@ -252,5 +472,5 @@ function lab_mission_generate_excel($missionToken = null, $filters = null, $grou
         return $e->getMessage();
     }
     
-    return $name;
+    return get_site_url()."/wp-content/plugins/lab/files/excel/".$filename;
 }
