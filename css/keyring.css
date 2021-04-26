@@ -88,6 +88,12 @@
     text-decoration: underline;
     cursor: pointer;
 }
+
+.lab_keyring_table_cost {
+    margin-top: 20px;
+    width: 20em;
+}
+
 /* ================== Gestion des prêts  ================== */
 #lab_keyring_loading_gif {
     margin:1em 40%;
