@@ -45,17 +45,26 @@ function lab_mission_ajax_excel() {
 }
 
 function lab_mission_ajax_load() {
-  $missionId = $_POST['id'];
-  if (!isset($missionId) || empty($missionId)) {
-    $missionId = null;
+  $missionId = null;
+  $filters = null;
+  $groupIds = null;
+  if (isset($_POST['id'])) {
+    $missionId = $_POST['id'];
+    if (!isset($missionId) || empty($missionId)) {
+      $missionId = null;
+    }
   }
-  $filters = $_POST['filters'];
-  if (!isset($filters) || empty($filters)) {
-    $filters = null;
+  if (isset($_POST['filters'])) {
+    $filters = $_POST['filters'];
+    if (!isset($filters) || empty($filters)) {
+      $filters = null;
+    }
   }
-  $groupIds = $_POST['groupIds'];
-  if (!isset($groupIds) || empty($groupIds) || count($groupIds) == 0) {
-    $groupIds = null;
+  if (isset($_POST['filters'])) {
+    $groupIds = $_POST['groupIds'];
+    if (!isset($groupIds) || empty($groupIds) || count($groupIds) == 0) {
+      $groupIds = null;
+    }
   }
   //wp_send_json_success($groupIds);
   wp_send_json_success(lab_mission_load($missionId, $filters, $groupIds));
