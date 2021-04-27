@@ -50,11 +50,9 @@
       if ($active_tab == 'entry') {
         lab_mission_tab_mission($token);
       } 
-      else //if ($active_tab == 'historic') {
+      else
       {
         lab_mission_tab_historic();
-      //} else {
-      //  lab_budget_info_tab_new_order();
       }
   }
 
