@@ -23,7 +23,7 @@ function lab_mission($args) {
     $isManager = false;
     $guest = null;
     $invitation = null;
-    $isChief = false;
+    $isgroupLeader = false;
     if ( isset($param['hostpage']) ) {
         $explode = explode("/",$url);
         $a = null;
@@ -33,9 +33,12 @@ function lab_mission($args) {
         if (!isset($url) && empty($url)) {
             $a = $args["token"];
         }
-        if ( ! isset($a) || empty($a)) { //Aucun token, donc l'invitant crée lui-même une nouvelle invitation
+        //Aucun token, donc l'invitant crée lui-même une nouvelle invitation
+        if ( ! isset($a) || empty($a)) { 
             $host = new labUser(get_current_user_id());
-        } else {//Token fournit, récupère les informations existantes
+        } 
+        //Token fournit, récupère les informations existantes
+        else {
             $token = $a;
 
             $invitation     = lab_invitations_getByToken($token);
@@ -51,9 +54,9 @@ function lab_mission($args) {
 
             $host = new labUser($invitation->host_id);
             //Qui modifie, l'invitant ou le responsable ?
-            $isChief = false;
+            $isgroupLeader = false;
             if (isset($invitation->host_group_id)) {
-                $isChief = lab_admin_group_is_group_leader(get_current_user_id(), $invitation->host_group_id);
+                $isgroupLeader = lab_admin_group_is_group_leader(get_current_user_id(), $invitation->host_group_id);
             };
             $isManager = false;
             $isAdmin = current_user_can( 'manage_options' );
@@ -63,9 +66,9 @@ function lab_mission($args) {
                     $isManager = true;
                 }
             }
-            $isGuest   = !$isChief && !$isManager && $missionType == "Invitation";
+            $isGuest   = !$isgroupLeader && !$isManager && $missionType == "Invitation";
             
-            if ( $isChief ) {
+            if ( $isgroupLeader ) {
                 $missionInformation .= '<p><i>'.esc_html__('You can edit this invitation as a group leader','lab').'</i></p>';
                 $missionInformation .= '<p><i>'.esc_html__('Invitation status : ','lab').'</i>'.lab_invitations_getStatusName($invitation->status).'</p>';
                 
@@ -301,7 +304,7 @@ function lab_mission($args) {
                     <p>'.esc_html__("To be filled in by the person in charge: maximum budget allocated to this invitation ","lab").'</p>
                 </div>
             </div><!--';
-            if ($isChief) {
+            if ($isgroupLeader) {
                 $invitationStr .= '<div class="lab_invite_field">
                 <input '.($invitation->status>10 ? 'disabled' : '').' type="submit" value="'.esc_html__("Save","lab").'">
                 </div>'.($invitation->status>10 ? '<i>'.esc_html__("This invitation is already in the next step, to modify it, you must resend it (via the button below)",'lab').'</i>' : '').
