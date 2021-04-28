@@ -133,12 +133,18 @@ function lab_directory($param) {
             if ($params != NULL && count($params) > 0)
             {
                 $debugFct .= "Nb Params : ".count($params)."<br>";
-                //foreach($params as $param)
-                for ($i = 0 ; $i < count($params) ; $i++)
+                if (count($params) > 1)
                 {
-                    $param = $params[$i];
-                    $debugFct .= "param : ".$param->id." ".$param->value." ".$param->slug."<br>";
-                    $whereFunctionUser .= "um9.`meta_value` = '".$param->id."' OR ";
+                    foreach($params as $param)
+                    {
+
+                        $debugFct .= "param : ".$param->id." ".$param->value." ".$param->slug."<br>";
+                        $whereFunctionUser .= "um9.`meta_value` = '".$param->id."' OR ";
+                    }
+                }
+                else{
+                    $debugFct .= "param : ".$params->id." ".$params->value." ".$params->slug."<br>";
+                    $whereFunctionUser .= "um9.`meta_value` = '".$params->id."' OR ";
                 }
             }
             else {
