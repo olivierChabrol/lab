@@ -16,8 +16,8 @@ function lab_mission_status_to_value($missionStatus) {
     
 function lab_mission_delete($missionId) {
     global $wpdb;
-    $wpdb->delete($wpdb->prefix."lab_invite_comments", array('invite_id' => $missionId));
-    $wpdb->delete($wpdb->prefix.'lab_invitations', array('id' => $missionId));
+    $wpdb->delete($wpdb->prefix."lab_mission_comments", array('invite_id' => $missionId));
+    $wpdb->delete($wpdb->prefix.'lab_mission', array('id' => $missionId));
     $wpdb->delete($wpdb->prefix.'lab_mission_route', array('mission_id' => $missionId));
     $wpdb->delete($wpdb->prefix.'lab_mission_comment_notifs', array('invite_id' => $missionId));
     return true;
@@ -34,7 +34,7 @@ function lab_mission_set_budget_manager($missionId, $managerId) {
 
 function lab_mission_get_budget_manager($missionId) {
     global $wpdb;
-    $results = $wpdb->get_results("SELECT manager_id FROM `".$wpdb->prefix."lab_invitations` WHERE id=".$missionId);
+    $results = $wpdb->get_results("SELECT manager_id FROM `".$wpdb->prefix."lab_mission` WHERE id=".$missionId);
     if (count($results) == 1) {
         return $results[0]->manager_id;
     }
@@ -43,7 +43,7 @@ function lab_mission_get_budget_manager($missionId) {
 
 function lab_mission_get_id_by_token($token) {
     global $wpdb;
-    $sql = "SELECT id FROM `".$wpdb->prefix."lab_invitations` WHERE token = '".$token."'";
+    $sql = "SELECT id FROM `".$wpdb->prefix."lab_mission` WHERE token = '".$token."'";
     $results = $wpdb->get_results($sql);
     if (count($results) > 0) {
         return $results[0]->id;
@@ -76,7 +76,7 @@ function lab_mission_take_in_charge($missionId)
 
 function lab_mission_get_token_from_id($missionId) {
     global $wpdb;
-    $sql = "SELECT token FROM `".$wpdb->prefix."lab_invitations` WHERE id = ".$missionId;
+    $sql = "SELECT token FROM `".$wpdb->prefix."lab_mission` WHERE id = ".$missionId;
     return $wpdb->get_results($sql);
 }
 
@@ -98,7 +98,7 @@ function lab_mission_load($missionToken, $filters = null, $groupIds = null) {
     }
     
     $select = "SELECT m.*,param.value AS site ";
-    $from = " FROM `".$wpdb->prefix."lab_invitations` as m"; 
+    $from = " FROM `".$wpdb->prefix."lab_mission` as m"; 
     $join = " JOIN ".$wpdb->prefix."usermeta AS site ON site.user_id = m.host_id 
     JOIN ".$wpdb->prefix."lab_params AS param ON param.id = site.meta_value";
     $where = " WHERE site.meta_key='lab_user_location'";
@@ -219,7 +219,7 @@ function lab_mission_load($missionToken, $filters = null, $groupIds = null) {
     $data["params"] = $params;
     $data["notifs"] = $notifs;
 
-    $sqlYear = "SELECT DISTINCT YEAR(`creation_time`) AS year FROM `".$wpdb->prefix."lab_invitations` ORDER BY `year` DESC";
+    $sqlYear = "SELECT DISTINCT YEAR(`creation_time`) AS year FROM `".$wpdb->prefix."lab_mission` ORDER BY `year` DESC";
     $results = $wpdb->get_results($sqlYear);
 
     $years   = array();

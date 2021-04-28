@@ -1005,11 +1005,11 @@ function lab_admin_param_change_id($oldId, $type, $newId)
     }
     else if ($type == AdminParams::PARAMS_MISSION_ID)
     {
-        $wpdb->update($wpdb->prefix.'lab_invitations', array("mission_objective"=>$newId), array("mission_objective"=>$oldId));
+        $wpdb->update($wpdb->prefix.'lab_mission', array("mission_objective"=>$newId), array("mission_objective"=>$oldId));
     }
     else if ($type == AdminParams::PARAMS_FUNDING_ID)
     {
-        $wpdb->update($wpdb->prefix.'lab_invitations', array("funding_source"=>$newId), array("funding_source"=>$oldId));
+        $wpdb->update($wpdb->prefix.'lab_mission', array("funding_source"=>$newId), array("funding_source"=>$oldId));
         $wpdb->update($wpdb->prefix.'usermeta', array("meta_value"=>$newId), array("meta_value"=>$oldId, "meta_key"=>"lab_user_funding"));
         
     }
@@ -2794,9 +2794,9 @@ function delete_all_tables() {
     drop_table("lab_hal_users");
     drop_table("lab_groups");
     drop_table("lab_presence");
-    drop_table("lab_invitations");
+    drop_table("lab_mission");
     drop_table("lab_guests");
-    drop_table("lab_invite_comments");
+    drop_table("lab_mission_comments");
     drop_table("lab_presence");
     drop_table("lab_budget_info");
     drop_table("lab_contract");
