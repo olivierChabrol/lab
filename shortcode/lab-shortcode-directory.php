@@ -137,7 +137,6 @@ function lab_directory($param) {
                 {
                     foreach($params as $param)
                     {
-
                         $debugFct .= "param : ".$param->id." ".$param->value." ".$param->slug."<br>";
                         $whereFunctionUser .= "um9.`meta_value` = '".$param->id."' OR ";
                     }
