@@ -133,14 +133,17 @@ function lab_directory($param) {
             if ($params != NULL && count($params) > 0)
             {
                 $debugFct .= "Nb Params : ".count($params)."<br>";
-                foreach($params as $param)
+                //foreach($params as $param)
+                for ($i = 0 ; $i < count($params) ; $i++)
                 {
-
+                    $param = $params[$i];
                     $debugFct .= "param : ".$param->id." ".$param->value." ".$param->slug."<br>";
                     $whereFunctionUser .= "um9.`meta_value` = '".$param->id."' OR ";
                 }
             }
-            $debugFct .= "Nb Params : 0<br>";
+            else {
+                $debugFct .= "Nb Params : 0<br>";
+            }
             $debugFct .= "<br>";
         }
         $whereFunctionUser = substr($whereFunctionUser, 0, strlen($whereFunctionUser) - 3);
