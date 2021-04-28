@@ -30,7 +30,6 @@ div[wrapped=true] h2:hover .fa-arrow-up {
 }
 .lab_invite_field {
   display: flex;
-  flex-direction: column;
   margin:1em;
 }
 #invitationForm .lab_invite_field input, #invitationForm .lab_invite_field select {
@@ -47,6 +46,7 @@ div[wrapped=true] h2:hover .fa-arrow-up {
 .lab_invite_row_left {
   display: flex;
   justify-content: left;
+  flex-direction: column;
 }
 .lab_invite_row_right {
   display: flex;
@@ -57,6 +57,7 @@ div[wrapped=true] h2:hover .fa-arrow-up {
 }
 .lab_invite_row .lab_invite_field {
   width: 50%;
+  flex-direction: column;
 }
 #invitationForm .lab_invite_field p {
   font-size: 0.9em;

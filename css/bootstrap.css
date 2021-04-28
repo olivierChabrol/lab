@@ -232,8 +232,9 @@ th {
 }
 
 label {
-  display: inline-block;
+  display: block;
   margin-bottom: 0.5rem;
+  width: 150px;
 }
 
 button {
@@ -285,6 +286,7 @@ input[type="radio"],
 input[type="checkbox"] {
   box-sizing: border-box;
   padding: 0;
+  margin-left: 48px;
 }
 
 input[type="date"],
@@ -297,6 +299,7 @@ input[type="month"] {
 textarea {
   overflow: auto;
   resize: vertical;
+  width: 100em;
 }
 
 fieldset {

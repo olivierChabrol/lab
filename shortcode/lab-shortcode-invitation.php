@@ -20,10 +20,15 @@ function lab_mission($args) {
     $missionInformation = "";
     $token='0';
     $isGuest   = false;
-    $isManager = false;
+    $isAdmin = false;
     $guest = null;
     $invitation = null;
     $isgroupLeader = false;
+
+    $isAdmin = current_user_can( 'manage_options' );
+    $groupManagerIds = lab_admin_group_get_groups_of_manager(get_current_user_id());
+    $isManager = count($groupManagerIds) > 0;
+
     if ( isset($param['hostpage']) ) {
         $explode = explode("/",$url);
         $a = null;
@@ -51,6 +56,7 @@ function lab_mission($args) {
             
             $charges = json_decode($invitation->charges);
             $guest = lab_invitations_getGuest($invitation->guest_id);
+            $missionType = AdminParams::get_param($invitation->mission_objective);
 
             $host = new labUser($invitation->host_id);
             //Qui modifie, l'invitant ou le responsable ?
@@ -58,14 +64,7 @@ function lab_mission($args) {
             if (isset($invitation->host_group_id)) {
                 $isgroupLeader = lab_admin_group_is_group_leader(get_current_user_id(), $invitation->host_group_id);
             };
-            $isManager = false;
-            $isAdmin = current_user_can( 'manage_options' );
-            $missionType = AdminParams::get_param($invitation->mission_objective);
-            foreach($budget_manager_ids as $bm) {
-                if (get_current_user_id() == $bm) {
-                    $isManager = true;
-                }
-            }
+
             $isGuest   = !$isgroupLeader && !$isManager && $missionType == "Invitation";
             
             if ( $isgroupLeader ) {
@@ -104,20 +103,29 @@ function lab_mission($args) {
     $newForm = $token=='0'; //Le formulaire est-il nouveau ? Si non, remplit les champs avec les infos existantes
     $invitationStr = '<div id="missionForm" hostForm='.$param['hostpage'].' token="'.(($param['hostpage'] && strlen($token)>1) ? $token : '').'" newForm='.$newForm.'>';
     $invitationStr .= '<h2>'.esc_html__("Form","lab").'<i class="fas fa-arrow-up"></i></h2>'.$missionInformation;
+    
     if (!$isGuest) {
         $invitationStr .= '
             <!-- <form action="javascript:formAction()"> -->
             <h3>'.esc_html__("Personnal informations","lab").'</h3>
-
             <div class="lab_invite_field">
-                <label for="lab_hostname">'.esc_html__("Host name","lab").'</label>
-                <input type="text" required id="lab_hostname" name="lab_hostname" host_id="'.($host==null ? '' : $host->id.'" value="'.$host->first_name.' '.$host->last_name).'">
-            </div><div class="lab_invite_row_left">';
-        $invitationStr .= mission_display_userGroup($host->id, $invitation);
+            <label for="lab_hostname">'.esc_html__("Host name","lab")." : ".'</label>';
+
+            if ($isAdmin || $isManager){
+                $invitationStr .= '           
+                <input type="text" required id="lab_hostname" name="lab_hostname" host_id="'.($host==null ? '' : $host->id.'" value="'.$host->first_name.' '.$host->last_name).'"/>';
+
+            }
+            else {
+                $invitationStr .= '
+                <h6 id="lab_hostname" name="lab_hostname" host_id="'.($host==null ? '' : $host->id.'" >'.$host->first_name.' '.$host->last_name).'</h6>';
+            }
+            $invitationStr .=    '</div><div class="lab_invite_row_left">';
+            $invitationStr .= mission_display_userGroup($host->id, $invitation);
         $invitationStr .= mission_user_funding($host->id, $invitation, $isManager);
         $invitationStr .= '</div>
             <div class="lab_invite_field">
-                <label for="lab_mission">'.esc_html__("Reason for the mission","lab").'<span class="lab_form_required_star"/></label>
+                <label for="lab_mission">'.esc_html__("Reason for the mission","lab")." : ". '<span class="lab_form_required_star"/></label>
                 <select id="lab_mission" name="lab_mission">';
         foreach(AdminParams::get_params_fromId(AdminParams::PARAMS_MISSION_ID) as $missionparam)
         {
