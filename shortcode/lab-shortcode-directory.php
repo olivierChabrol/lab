@@ -130,8 +130,9 @@ function lab_directory($param) {
         {
             $debugFct .= $fct."<br>";
             $params = AdminParams::get_param_by_slug($fct);
-            if (count($params) > 0)
+            if ($params != NULL && count($params) > 0)
             {
+                $debugFct .= "Nb Params : ".count($params)."<br>";
                 foreach($params as $param)
                 {
 
@@ -139,6 +140,7 @@ function lab_directory($param) {
                     $whereFunctionUser .= "um9.`meta_value` = '".$param->id."' OR ";
                 }
             }
+            $debugFct .= "Nb Params : 0<br>";
             $debugFct .= "<br>";
         }
         $whereFunctionUser = substr($whereFunctionUser, 0, strlen($whereFunctionUser) - 3);
@@ -156,7 +158,7 @@ function lab_directory($param) {
     if ($debug)
     {
         //$directoryStr .= "**** LETTER :". $_GET["letter"]."<br>";
-        $directoryStr .= "**** Debuf Fct : '". $debugFct."'<br>";
+        $directoryStr .= "<br>**** Debuf Fct : '". $debugFct."'<br>";
         $directoryStr .= "**** onlyLeftUserParam : '". $onlyLeftUserParam."'<br>";
         $directoryStr .= "**** displayOnlyLeftUser : '". $displayOnlyLeftUser."'<br>";
         $directoryStr .= "**** includeLeftUserParam : '". $includeLeftUserParam."'<br>";
