@@ -123,6 +123,9 @@ jQuery(function($){
 
     $.each(data.results, function(i, mission) {
         $.each(mission.routes, function(i, route) {
+          if(route.estimated_cost == null){
+            route.estimated_cost == 0;
+          }
         sumcost += parseFloat(route.estimated_cost);
         console.log("[displayMission] estimated_cost :" + route.estimated_cost);
       });
