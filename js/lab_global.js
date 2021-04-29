@@ -6,6 +6,44 @@ jQuery("#lab_event_submit_button").submit(function () {
     }
 });
 jQuery(document).ready( function($){
+
+  if ($("#lab_upload_image").length > 0) {
+    $('#lab_upload_image').click(function() {
+      if (this.window === undefined) {
+				this.window = wp.media({
+					title: 'Insert Image',
+					library: {type: 'image'},
+					multiple: false,
+					button: {text: 'Insert Image'}
+				});
+
+				var self = this;
+				this.window.on('select', function() {
+					var response = self.window.state().get('selection').first().toJSON();
+
+					$('.wp_attachment_id').val(response.id);
+          console.log(response);
+					$('#lab_user_picture_display').attr('src', response.url);
+          $('#lab_user_picture_display').show();
+				});
+			}
+
+			this.window.open();
+			return false;
+    });
+
+    $('#lab_user_picture_btn_delete_image').on('click',function(e){
+      e.preventDefault();
+      $("#attachment_id").val("");
+      $("#lab_user_picture_display").fadeTo(300,0,function(){
+              $(this).animate({width:0},200,function(){
+                      $(this).remove();
+                  });
+          });
+  });
+  }
+
+
   if ($("#lav_event_submit").length > 0) {
     $("#lav_event_submit").click(function (){
       let ok = true;

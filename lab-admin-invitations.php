@@ -46,10 +46,10 @@ function lab_invitations_createTables() {
   }
   $sql = "CREATE TABLE IF NOT EXISTS `".$wpdb->prefix."lab_mission_comments` (
     `id` BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
-    `invite_id` BIGINT UNSIGNED,
-    `author_id` BIGINT UNSIGNED,
-    `author_type` tinyint,
-    `timestamp` datetime,
+    `invite_id` bigint UNSIGNED DEFAULT NULL,
+    `author_id` bigint NOT NULL,
+    `author_type` tinyint NOT NULL DEFAULT '0',
+    `timestamp` datetime DEFAULT NULL,
     `content` text,
     FOREIGN KEY (`invite_id`) REFERENCES `".$wpdb->prefix."lab_mission`(`id`));";
   $res = $wpdb->get_results($sql);

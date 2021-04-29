@@ -804,15 +804,25 @@ function lab_admin_mission_create_table() {
         `travel_to` varchar(100) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
         `travel_date` datetime NOT NULL,
         `means_of_locomotion` bigint NOT NULL,
-        `round_trip` tinyint(1) DEFAULT 0,
+        `round_trip` tinyint(1) NOT NULL,
         `nb_person` int NOT NULL,
-        `carbon_footprint` varchar(20) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+        `carbon_footprint` varchar(50) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
         `travel_datereturn` datetime DEFAULT NULL,
         `estimated_cost` float NOT NULL,
-        `real_cost float` NOT NULL,
-        `reference varchar(255)` COLLATE utf8_bin NOT NULL,
-        `loyalty_car_number` varchar(50) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-        `loyalty_card_expiry_date` date DEFAULT NULL
+        `real_cost` float NOT NULL,
+        `reference` varchar(255) COLLATE utf8_bin NOT NULL,
+        `loyalty_card_number` varchar(50) COLLATE utf8_bin DEFAULT NULL,
+        `loyalty_card_expiry_date` date DEFAULT NULL,
+        PRIMARY KEY (id)
+    ) ENGINE=InnoDB";
+    $wpdb->get_results($sql);
+
+
+    $sql = "CREATE TABLE IF NOT EXISTS `".$wpdb->prefix."lab_mission_comment_notifs` (
+        `id` bigint NOT NULL AUTO_INCREMENT
+        `user_id` bigint NOT NULL,
+        `invite_id` bigint NOT NULL,
+        `comment_id` bigint NOT NULL,
         PRIMARY KEY (id)
     ) ENGINE=InnoDB";
     return $wpdb->get_results($sql);

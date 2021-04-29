@@ -93,8 +93,13 @@ function lab_profile($id=0) {
 		<input type="hidden" id="userId" value="'.$user->id.'"/>
 		<div id="lab_pic_name">
 			<div>
-				<img src="'.$user->gravatar.'" id="lab_avatar"></img>'
-				.($is_current_user || current_user_can('edit_users') ? '<p id="lab_avatar_change" class="lab_profile_edit"><a target="_blank" href="https://fr.gravatar.com/">Modifier l\'avatar</a></p>' :'').
+				';
+				//<img src="
+	$imgId = get_user_meta($user->id, 'lab_user_picture_display', true);
+	$imgUrl = wp_get_attachment_image($imgId, array('112', '112'));
+	$profileStr .= $imgUrl;
+	//.'" id="lab_avatar"></img>'
+	$profileStr .= ($is_current_user || current_user_can('edit_users') ? '<p id="lab_avatar_change" class="lab_profile_edit"><a target="_blank" href="https://fr.gravatar.com/">Modifier l\'avatar</a></p>' :'').
 				$SocialIcons.
 			'</div>
 			<div id="lab_profile_info">
