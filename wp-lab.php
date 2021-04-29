@@ -394,7 +394,7 @@ function wp_lab_menu()
  **/
 function admin_enqueue()
 {
-  wp_enqueue_style('labCSS',plugins_url('css/lab.css',__FILE__));
+  wp_enqueue_style('labCSS',plugins_url('css/lab.css',__FILE__), version_id(), true);
   wp_enqueue_script('fontAwesome',"https://kit.fontawesome.com/341f99cb81.js",array(),"3.2",true);
   wp_enqueue_script('SpectrumJS', plugins_url('js/spectrum.js',__FILE__), array('jquery','wp-i18n'), '1.8.0', true);
   wp_enqueue_style('SpectrumCSS',plugins_url('css/spectrum.css',__FILE__));

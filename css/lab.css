@@ -52,6 +52,19 @@
     font-size: 22px;
     }
 
+.btn-excel{
+  color: #fff;
+  background-color: #28a745;
+  border-color: #28a745;
+  height: 30px;
+  width: 59px;
+}
+
+.btn-excel img{
+  width: 20px;
+  height: 20px;
+}
+
 .hover_delete_btn {
   display:none;
   position:absolute;
