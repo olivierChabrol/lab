@@ -23,6 +23,8 @@ jQuery(document).ready( function($){
 
 					$('.wp_attachment_id').val(response.id);
           console.log(response);
+          console.log($('#lab_user_picture_display'));
+          saveUserPicture(response.id, $('#lab_upload_image').attr("userId"));
 					$('#lab_user_picture_display').attr('src', response.url);
           $('#lab_user_picture_display').show();
 				});
@@ -40,8 +42,9 @@ jQuery(document).ready( function($){
                       $(this).remove();
                   });
           });
-  });
+    });
   }
+
 
 
   if ($("#lav_event_submit").length > 0) {
@@ -68,6 +71,15 @@ jQuery(document).ready( function($){
     });
   }
 });
+
+function saveUserPicture(imgId, userId) {
+  let data = {
+    'action':'lab_save_user_picture',
+    'imgId' :  imgId,
+    'userId': userId
+  };
+  callAjax(data, "User image Save", null, "Failed to save image", null);
+}
 
 function createTdUser(userId, data) {
   return createTd(getUserNames(userId, data));

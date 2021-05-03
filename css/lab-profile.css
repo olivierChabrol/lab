@@ -22,7 +22,7 @@
     align-items: center;
     justify-content: space-between;
 }
-#lab_avatar {
+#lab_avatar, #lab_user_picture_display {
     margin: 1em 1em 1em 0;
     width:7em;
     height:7em;

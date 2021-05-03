@@ -793,6 +793,16 @@ function lab_mission_update_travel($travelId, $travelFields, $missionId){
     return $return;
 }
 
+function lab_save_user_picture($imgId, $userId) {
+    $currentUserId = get_current_user_id();
+    if($currentUserId == $userId || current_user_can('administrator'))
+    {
+        update_user_meta( $userId, 'lab_user_picture_display', $imgId );
+        return true;
+    }
+    return false;
+}
+
 function lab_admin_mission_create_table() {
     global $wpdb;
     $sql = "CREATE TABLE IF NOT EXISTS `".$wpdb->prefix."lab_mission_route` (

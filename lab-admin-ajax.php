@@ -229,6 +229,16 @@ function lab_user_delThematic()
   return;
 }
 
+function lab_ajax_save_user_picture()
+{
+  $imgId = $_POST['imgId'];
+  $userId = $_POST['userId'];
+  if (lab_save_user_picture($imgId, $userId))
+    wp_send_json_success();
+  else
+    wp_send_json_error();
+}
+
 function lab_admin_ajax_users_thematic_set_main()
 {
   $thematic_id = $_POST['thematic_id'];
