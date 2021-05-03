@@ -96,7 +96,7 @@ function lab_profile($id=0) {
 	$imgId = get_user_meta($user->id, 'lab_user_picture_display', true);
 	if ($imgId != NULL && !empty($imgId))
 	{
-		$imgUrl = wp_get_attachment_image($imgId, array('150', '112'),false, array("id"=>"lab_user_picture_display"));
+		$imgUrl = wp_get_attachment_image($imgId, array('112', '112'),false, array("id"=>"lab_user_picture_display", "userId"=>$user->id));
 		$profileStr .= $imgUrl;
 	}
 	else
@@ -105,7 +105,8 @@ function lab_profile($id=0) {
 	}
 
 	if($is_current_user || current_user_can('edit_users')) {
-		$profileStr .= '<div id="lab_upload_image" class="lab_profile_edit pointer" userId="'.$user->id.'"><a href="#">Edit here</a></div>';//<input type="button" value="Change picture" class="btn btn-info" id="lab_upload_image"/>';
+		$profileStr .= '<div id="lab_upload_image" class="lab_profile_edit pointer" userId="'.$user->id.'"><a href="#">Edit here</a></div>';
+		$profileStr .= '<div id="lab_delete_image" class="lab_profile_edit pointer" userId="'.$user->id.'"><a href="#">Delete image</a></div>';
 		$profileStr .= '<input type="hidden" name="attachment_id" class="wp_attachment_id" id="attachment_id" value="" /> </br>';
 	}
 	$profileStr .=  $SocialIcons.

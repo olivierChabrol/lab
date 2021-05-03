@@ -34,6 +34,10 @@ jQuery(document).ready( function($){
 			return false;
     });
 
+    $('#lab_delete_image').click(function() {
+      deleteUserPicture($('#lab_upload_image').attr("userId"));
+    });
+
     $('#lab_user_picture_btn_delete_image').on('click',function(e){
       e.preventDefault();
       $("#attachment_id").val("");
@@ -71,6 +75,22 @@ jQuery(document).ready( function($){
     });
   }
 });
+
+function deleteUserPicture(userId) {
+  let data = {
+    'action':'lab_save_user_picture',
+    'imgId' :  "",
+    'userId': userId
+  };
+  callAjax(data, "User image Save", deleteuserPictureSuccess, "Failed to save image", null);
+}
+
+function deleteuserPictureSuccess(data) {
+  console.log("[deleteuserPictureSuccess]");
+  console.log("[deleteuserPictureSuccess] src : " + jQuery('#lab_user_picture_display').attr("src"));
+  jQuery('#lab_user_picture_display').attr("src", "https://www.gravatar.com/https://www.gravatar.com/avatar/ab8bfaf41e8f9f4c34cbf0f4c516e414?s=160&d=mp");
+  console.log("[deleteuserPictureSuccess] src : " + jQuery('#lab_user_picture_display').attr("src"));
+}
 
 function saveUserPicture(imgId, userId) {
   let data = {

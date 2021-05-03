@@ -231,7 +231,11 @@ function lab_user_delThematic()
 
 function lab_ajax_save_user_picture()
 {
-  $imgId = $_POST['imgId'];
+  $imgId = "";
+  if (isset($_POST['imgId'])) {
+    $imgId = $_POST['imgId'];
+  }
+  
   $userId = $_POST['userId'];
   if (lab_save_user_picture($imgId, $userId))
     wp_send_json_success();
