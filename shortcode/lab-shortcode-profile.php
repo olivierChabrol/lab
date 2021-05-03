@@ -96,7 +96,7 @@ function lab_profile($id=0) {
 	$imgId = get_user_meta($user->id, 'lab_user_picture_display', true);
 	if ($imgId != NULL && !empty($imgId))
 	{
-		$imgUrl = wp_get_attachment_image($imgId, array('112', '112'));
+		$imgUrl = wp_get_attachment_image($imgId, array('150', '112'),false, array("id"=>"lab_user_picture_display"));
 		$profileStr .= $imgUrl;
 	}
 	else
