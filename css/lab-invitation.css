@@ -43,6 +43,10 @@ div[wrapped=true] h2:hover .fa-arrow-up {
   display: flex;
   justify-content: center;
 }
+.lab_invite_row label {
+  margin-left: 100px;
+}
+
 .lab_invite_row_left {
   display: flex;
   justify-content: left;

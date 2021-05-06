@@ -191,10 +191,9 @@ function lab_mission($args) {
             </div>
         </div><!-- end invite div -->
         <hr>
-        <h3>'.esc_html__("Hosting","lab").'</h3>
+        <label for="lab_hostel"><h3>'.esc_html__("Need a hostel","lab").'</h3></label>
         <div class="lab_invite_row">
-            <div class="lab_invite_field">
-                <label for="lab_hostel">'.esc_html__("Need a hostel","lab").'</label>
+                
                     <input type="checkbox" id="lab_hostel" name="lab_hostel" ';
 
             if($param['hostpage'] && $invitation && $invitation->needs_hostel == 1)
@@ -203,13 +202,10 @@ function lab_mission($args) {
             }
                 
             $invitationStr .= '>
-            </div>
-            <div class="lab_invite_field">
                 <label for="lab_mission_hostel_night">'.esc_html__("Number of night(s)", "lab").'</label>
                 <input type="number" id="lab_mission_hostel_night" value="'.(!$newForm?$invitation->hostel_night:1).'"></td>
                 <label for="lab_mission_hostel_cost">'.esc_html__("Estimated cost (€)","lab").'</label>
                 <input type="text" id="lab_mission_hostel_cost" value="'.(!$newForm?$invitation->hostel_cost:0).'"></td>
-            </div>
         </div>
         <hr>
         <h3>'.esc_html__("Journeys","lab").'</h3>
@@ -399,7 +395,7 @@ function mission_user_funding($userId, $mission, $isBudgetManager) {
     else {
         $contracts = lab_admin_contract_get_contracts_by_user($userId);
     }
-    $html = '<div class="lab_invite_field"><label for="lab_mission_user_funding">'.esc_html__("Fundings","lab").'</label>';
+    $html = '<div class="lab_invite_field"><label for="lab_mission_user_funding">'.esc_html__("Fundings","lab").' :</label>';
     if (count($contracts) > 0) {
         $html .= '<select id="lab_mission_user_funding">';
         $selectedFunding = $mission != null ? $mission->funding: '';
@@ -433,7 +429,7 @@ function mission_user_funding($userId, $mission, $isBudgetManager) {
  */
 function mission_display_userGroup($userId, $mission) {
     $newForm = $mission == null;
-    $invitationStr = '<div class="lab_invite_field"><label for="lab_group_name">'.esc_html__("Group","lab").'</label>';
+    $invitationStr = '<div class="lab_invite_field"><label for="lab_group_name">'.esc_html__("Group","lab").' :</label>';
     $groups = lab_admin_group_by_user($userId);
     if (count($groups) == 1) {
         if($newForm) {
