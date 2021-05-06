@@ -340,7 +340,7 @@ function admin_enqueue()
   wp_enqueue_style('bootstrap',plugins_url('css/bootstrap.css',__FILE__), version_id(), true);
   //Plugin permettant d'afficher les toasts :
   wp_enqueue_style('jqueryToastCSS',plugins_url('css/jquery.toast.css',__FILE__));
-  wp_enqueue_style('InvitationCSS',plugins_url('css/lab-invitation.css',__FILE__), version_id(), false);
+  wp_enqueue_style('InvitationCSS',plugins_url('css/lab-invitation.css',__FILE__), version_id(), true);
   wp_enqueue_script('jqueryToastJS',plugins_url('js/jquery.toast.js',__FILE__), array('jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog'),"1.3.2",false);
 
   wp_enqueue_script('lab-global', plugins_url('js/lab_global.js',__FILE__), array('jqueryToastJS', 'jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog'), version_id(), false);
@@ -401,7 +401,7 @@ function wp_lab_fe_enqueues()
   wp_set_script_translations( 'lab-fe', 'lab', dirname(__FILE__).'/lang' );
   wp_set_script_translations( 'lab-mission', 'lab', dirname(__FILE__).'/lang' );
   wp_enqueue_script('fontAwesome',"https://kit.fontawesome.com/341f99cb81.js",array(),"3.2",true);
-  wp_enqueue_style('InvitationCSS',plugins_url('css/lab-invitation.css',__FILE__), version_id(), false);
+  wp_enqueue_style('InvitationCSS',plugins_url('css/lab-invitation.css',__FILE__), version_id(), true);
   wp_enqueue_style('LdapCSS',plugins_url('css/lab-ldap.css',__FILE__));
   wp_enqueue_style('CountrySelectCSS',plugins_url('css/countrySelect.min.css',__FILE__));
   wp_enqueue_script('CountrySelectJS',plugins_url('js/countrySelect.min.js',__FILE__),array('jquery'),"3.5",false);

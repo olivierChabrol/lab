@@ -354,7 +354,7 @@ function lab_profile_edit(user_id,phone,url,bio,color,hal_id,hal_name) {
  **************************************************************************************************************************************************************/
 
 function getEditTravelField() {
-  return ["dateGoTo", "timeGoTo", "countryFrom", "cityFrom", "countryTo", "cityTo", "mean", "cost", "ref", "rt", "dateReturn", "timeReturn", "carbon_footprint", "loyalty_card_number", "loyalty_card_expiry_date", "nb_person", "travelId"];
+  return ["dateGoTo", "timeGoTo", "countryFrom", "cityFrom","stationFrom", "countryTo", "cityTo","stationTo", "mean", "company", "cost", "ref", "rt", "dateReturn", "timeReturn", "carbon_footprint", "loyalty_card_number", "loyalty_card_expiry_date", "nb_person", "travelId"];
 }
 
 function loadMeanOfTransportMap() {
@@ -457,9 +457,12 @@ function displayTravels(data) {
     fields["timeGoTo"]    = strToGo[1];
     fields["countryFrom"] = obj.country_from;
     fields["cityFrom"]    = obj.travel_from;
+    fields["stationFrom"] = obj.station_from;
     fields["countryTo"]   = obj.country_to;
     fields["cityTo"]      = obj.travel_to;
+    fields["stationTo"]   = obj.station_to;
     fields["mean"]        = obj.means_of_locomotion;
+    fields["company"]     = obj.travel_company;
     fields["cost"]        = obj.estimated_cost;
     fields["ref"]         = obj.reference;
     fields["carbon_footprint"] = obj.carbon_footprint;
@@ -569,7 +572,9 @@ function editTravelTd(id, fieldsVal) {
 
 function emptyTravelDivFields() {
   $("#lab_mission_edit_travel_div_cityFrom" ).val(" ");
+  $("#lab_mission_edit_travel_div_stationFrom" ).val(" ");
   $("#lab_mission_edit_travel_div_cityTo" ).val(" ");
+  $("#lab_mission_edit_travel_div_stationTo" ).val(" ");
   $("#lab_mission_edit_travel_div_dateGoTo" ).val(nowDay());
   $("#lab_mission_edit_travel_div_timeGoTo" ).val(nowHour());
   $("#lab_mission_edit_travel_div_dateReturn" ).val(null);
@@ -577,6 +582,7 @@ function emptyTravelDivFields() {
   $("#lab_mission_edit_travel_div_ref" ).val(" ");
   $("#lab_mission_edit_travel_div_rt" ).val("false");
   $("#lab_mission_edit_travel_div_mean" ).val(getMeanOfTransportCode("Train"));
+  $("#lab_mission_edit_travel_div_company" ).val(" ");
   $("#lab_mission_edit_travel_div_cost" ).val(0);
   $("#lab_mission_edit_travel_div_countryFrom" ).countrySelect("setCountry", "France");
   $("#lab_mission_edit_travel_div_countryTo" ).countrySelect("setCountry", "France");
@@ -676,9 +682,12 @@ function addTravel(id, fields, travelId, mission_id) {
   createDefaultTdToTr(tr, id, "timeGoTo", fields);
   createTravelCountryTdToTr(tr, id, "countryFrom", fields);
   createDefaultTdToTr(tr, id, "cityFrom", fields);
+  createDefaultTdToTr(tr, id, "stationFrom", fields);
   createTravelCountryTdToTr(tr, id, "countryTo", fields);
   createDefaultTdToTr(tr, id, "cityTo", fields);
+  createDefaultTdToTr(tr, id, "stationTo", fields);
   createSelectTdToTr(tr, id, "mean", fields, listMeanOfTransport());
+  createDefaultTdToTr(tr, id, "company", fields);
   createTravelCostTdToTr(tr, id, "cost", fields);
   createDefaultTdToTr(tr, id, "ref", fields);
   createTravelBooleanField(tr, id, "rt", fields);
@@ -1255,6 +1264,7 @@ function invitation_submit(callback) {
       'funding': $("#lab_mission_user_funding").val(),
       'charges': charges,
       'travels': travelsFields,
+      'host_group_id': $("#lab_group_name").val()
     }
     console.log($("#lab_mission_user_funding").val());
     if ($("#lab_email").attr('guest_id').length) {
@@ -1262,7 +1272,7 @@ function invitation_submit(callback) {
     }
     if ($("#lab_mission_fund_origin").length) {
       fields['funding_source'] = $("#lab_mission_fund_origin").val();
-      fields['host_group_id'] = $("#lab_group_name").val();
+      //fields['host_group_id'] = $("#lab_group_name").val();
       //alert('$("#lab_group_name").val() : ' + $("#lab_group_name").val());
     }
     if ($("#missionForm").attr("hostForm")==1) {//La version invitant est affichée 

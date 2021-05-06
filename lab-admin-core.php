@@ -630,10 +630,13 @@ function lab_mission_remap_fields($fields) {
     $a["mission_id"] = $fields["missionId"];
     $a["country_from"] = $fields["countryFrom"];
     $a["travel_from"] = $fields["cityFrom"];
+    $a["station_from"] = $fields["stationFrom"];
     $a["country_to"] = $fields["countryTo"];
-    $a["travel_to"] = $fields["cityTo"];
+    $a["station_to"] = $fields["stationTo"];
+    $a["travel_from"] = $fields["cityFrom"];
     $a["travel_date"] = $fields["dateGoTo"]." ".$fields["timeGoTo"].":00";
     $a["means_of_locomotion"] = $fields["mean"];
+    $a["travel_company"] = $fields["company"];
     $a["estimated_cost"] = $fields["cost"];
     $a["round_trip"] = $fields["rt"]; //($fields["rt"]=="false"?0:1);
     $a["reference"] = $fields["ref"];
@@ -971,6 +974,7 @@ function lab_admin_group_get_manager($groupId) {
     $sql = "SELECT `user_id` FROM `".$wpdb->prefix."lab_group_manager` WHERE group_id=".$groupId." AND manager_type=1";
     $results = $wpdb->get_results($sql);
     return $results[0]->user_id;
+    //return $sql;
 }
 
 function lab_group_delete_manager($id)
@@ -1693,7 +1697,7 @@ function lab_admin_group_get_user_groups_delete($groupId)
 function lab_group_get_user_groups($userId)
 {
     global $wpdb;
-    return $wpdb->get_results("SELECT lg.group_name, lg.url, lug.id, lug.favorite
+    return $wpdb->get_results("SELECT lg.group_name, lg.url, lg.id, lug.favorite
                                 FROM `".$wpdb->prefix."lab_users_groups` as lug 
                                 JOIN `".$wpdb->prefix."lab_groups` AS lg ON lg.id=lug.group_id 
                                 WHERE lug.`user_id`=".$userId);

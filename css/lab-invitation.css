@@ -71,6 +71,17 @@ div[wrapped=true] h2:hover .fa-arrow-up {
   color: red;
   font-weight: 600;
 }
+
+/*Missions*/
+
+label {
+  width: 160px;
+}
+
+#lab_mission_edit_travel_div_company{
+  margin-left: 5px;
+}
+
 /*Bulle de discussion*/
 
 .lab_comment_box {

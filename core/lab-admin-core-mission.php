@@ -367,26 +367,29 @@ function lab_mission_generate_excel($missionToken = null, $filters = null, $grou
     $sheet->setCellValue('D'.$line, numfmt_format_currency($currency, $deltaxls, "EUR"));
 
     $sheetMission = $spreadsheet->createSheet()->setTitle('Missions');
-    $sheetMission->getStyle('A1:S1' )->applyFromArray($styleBold);
+    $sheetMission->getStyle('A1:V1' )->applyFromArray($styleBold);
     $sheetMission->setCellValue('A1', esc_html__('Id Mission', 'lab'));
     $sheetMission->setCellValue('B1', esc_html__('Etat', 'lab'));
     $sheetMission->setCellValue('C1', esc_html__('User', 'lab'));
     $sheetMission->setCellValue('D1', esc_html__('Departure date', 'lab'));
     $sheetMission->setCellValue('E1', esc_html__('Travel from', 'lab'));
-    $sheetMission->setCellValue('F1', __('Travel to', 'lab'));
-    $sheetMission->setCellValue('G1', esc_html__('Means of locomotion', 'lab'));
-    $sheetMission->setCellValue('H1', esc_html__('Number of people', 'lab'));    
-    $sheetMission->setCellValue('I1', esc_html__('Round trip', 'lab'));
-    $sheetMission->setCellValue('J1', esc_html__('Return date', 'lab'));
-    $sheetMission->setCellValue('K1', esc_html__('Path reference', 'lab'));
-    $sheetMission->setCellValue('L1', esc_html__('Carbon footprint', 'lab'));
-    $sheetMission->setCellValue('M1', esc_html__('Loyalty card number', 'lab'));
-    $sheetMission->setCellValue('N1', __('Loyalty card number expiry date', 'lab'));
-    $sheetMission->setCellValue('O1', __('Hostel Night', 'lab'));
-    $sheetMission->setCellValue('P1', esc_html__('Estimation cost Travel', 'lab'));
-    $sheetMission->setCellValue('Q1', __('Estimation cost Hostel', 'lab'));
-    $sheetMission->setCellValue('R1', esc_html__('Total estimation', 'lab'));
-    $sheetMission->setCellValue('S1', esc_html__('Real cost', 'lab'));
+    $sheetMission->setCellValue('F1', __('Station from', 'lab'));
+    $sheetMission->setCellValue('G1', __('Travel to', 'lab'));
+    $sheetMission->setCellValue('H1', __('Station to', 'lab'));
+    $sheetMission->setCellValue('I1', esc_html__('Means of locomotion', 'lab'));
+    $sheetMission->setCellValue('J1', __('Travel company', 'lab'));
+    $sheetMission->setCellValue('K1', esc_html__('Number of people', 'lab'));    
+    $sheetMission->setCellValue('L1', esc_html__('Round trip', 'lab'));
+    $sheetMission->setCellValue('M1', esc_html__('Return date', 'lab'));
+    $sheetMission->setCellValue('N1', esc_html__('Path reference', 'lab'));
+    $sheetMission->setCellValue('O1', esc_html__('Carbon footprint', 'lab'));
+    $sheetMission->setCellValue('P1', esc_html__('Loyalty card number', 'lab'));
+    $sheetMission->setCellValue('Q1', __('Loyalty card number expiry date', 'lab'));
+    $sheetMission->setCellValue('R1', __('Hostel Night', 'lab'));
+    $sheetMission->setCellValue('S1', esc_html__('Estimation cost Travel', 'lab'));
+    $sheetMission->setCellValue('T1', __('Estimation cost Hostel', 'lab'));
+    $sheetMission->setCellValue('U1', esc_html__('Total estimation', 'lab'));
+    $sheetMission->setCellValue('V1', esc_html__('Real cost', 'lab'));
 
     $line = 1;
     $sumcosttravel = 0;
@@ -414,7 +417,7 @@ function lab_mission_generate_excel($missionToken = null, $filters = null, $grou
 
 
         $sheetMission->setCellValue('C'.$line, $user->first_name." ".$user->last_name);
-        $sheetMission->setCellValue('O'.$line, $mission->hostel_night);
+        $sheetMission->setCellValue('R'.$line, $mission->hostel_night);
 
         
 
@@ -422,14 +425,14 @@ function lab_mission_generate_excel($missionToken = null, $filters = null, $grou
 
         $sumcosttravel = $mission->estimated_cost - $mission->hostel_cost;
 
-        $sheetMission->setCellValue('P'.$line, numfmt_format_currency($currency, $sumcosttravel, "EUR"));
-        $sheetMission->setCellValue('Q'.$line, numfmt_format_currency($currency, $mission->hostel_cost, "EUR"));
-        $sheetMission->setCellValue('R'.$line, numfmt_format_currency($currency, $mission->estimated_cost, "EUR"));
+        $sheetMission->setCellValue('S'.$line, numfmt_format_currency($currency, $sumcosttravel, "EUR"));
+        $sheetMission->setCellValue('T'.$line, numfmt_format_currency($currency, $mission->hostel_cost, "EUR"));
+        $sheetMission->setCellValue('U'.$line, numfmt_format_currency($currency, $mission->estimated_cost, "EUR"));
 
         if ($mission->real_cost == null){
-            $sheetMission->setCellValue('S'.$line, numfmt_format_currency($currency, 0, "EUR"));
+            $sheetMission->setCellValue('V'.$line, numfmt_format_currency($currency, 0, "EUR"));
         } else {
-            $sheetMission->setCellValue('S'.$line, numfmt_format_currency($currency, $mission->real_cost, "EUR"));
+            $sheetMission->setCellValue('V'.$line, numfmt_format_currency($currency, $mission->real_cost, "EUR"));
         }
 
         $line++;
@@ -438,32 +441,35 @@ function lab_mission_generate_excel($missionToken = null, $filters = null, $grou
             
             $sheetMission->setCellValue('D'.$line, $route->travel_date);
             $sheetMission->setCellValue('E'.$line, $route->travel_from);
-            $sheetMission->setCellValue('F'.$line, $route->travel_to);
-            $sheetMission->setCellValue('G'.$line, AdminParams::get_param($route->means_of_locomotion));
-            $sheetMission->setCellValue('H'.$line, $route->nb_person);
-            $sheetMission->setCellValue('M'.$line, $route->loyalty_card_number);
-            $sheetMission->setCellValue('N'.$line, $route->loyalty_card_expiry_date);
+            $sheetMission->setCellValue('F'.$line, $route->station_from);
+            $sheetMission->setCellValue('G'.$line, $route->travel_to);
+            $sheetMission->setCellValue('H'.$line, $route->station_to);
+            $sheetMission->setCellValue('I'.$line, AdminParams::get_param($route->means_of_locomotion));
+            $sheetMission->setCellValue('J'.$line, $route->travel_company);
+            $sheetMission->setCellValue('K'.$line, $route->nb_person);
+            $sheetMission->setCellValue('P'.$line, $route->loyalty_card_number);
+            $sheetMission->setCellValue('Q'.$line, $route->loyalty_card_expiry_date);
 
             if ($route->round_trip == 0){
-                $sheetMission->setCellValue('I'.$line, esc_html__('No', 'lab'));
+                $sheetMission->setCellValue('L'.$line, esc_html__('No', 'lab'));
             }
             else
             {
-                $sheetMission->setCellValue('I'.$line, esc_html__('Yes', 'lab'));
-                $sheetMission->setCellValue('J'.$line, $route->travel_datereturn);
+                $sheetMission->setCellValue('L'.$line, esc_html__('Yes', 'lab'));
+                $sheetMission->setCellValue('M'.$line, $route->travel_datereturn);
             }
             
-            $sheetMission->setCellValue('K'.$line, $route->reference);
+            $sheetMission->setCellValue('N'.$line, $route->reference);
 
             if ($route->carbon_footprint == null){
-                $sheetMission->setCellValue('L'.$line, 0);
+                $sheetMission->setCellValue('O'.$line, 0);
             }
             else
             {
-                $sheetMission->setCellValue('L'.$line, $route->carbon_footprint);
+                $sheetMission->setCellValue('O'.$line, $route->carbon_footprint);
             }
-            $sheetMission->setCellValue('P'.$line, numfmt_format_currency($currency, $route->estimated_cost, "EUR"));
-            $sheetMission->setCellValue('S'.$line, numfmt_format_currency($currency, $route->real_cost, "EUR"));
+            $sheetMission->setCellValue('S'.$line, numfmt_format_currency($currency, $route->estimated_cost, "EUR"));
+            $sheetMission->setCellValue('V'.$line, numfmt_format_currency($currency, $route->real_cost, "EUR"));
 
 
             $line++;
