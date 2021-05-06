@@ -60,7 +60,7 @@ function lab_mission_ajax_load() {
       $filters = null;
     }
   }
-  if (isset($_POST['filters'])) {
+  if (isset($_POST['groupIds'])) {
     $groupIds = $_POST['groupIds'];
     if (!isset($groupIds) || empty($groupIds) || count($groupIds) == 0) {
       $groupIds = null;
@@ -1279,7 +1279,10 @@ function lab_profile_edit() {
   $bg_color = $_POST['bg_color'];
   $hal_id = $_POST['hal_id'];
   $hal_name = $_POST['hal_name'];
-  $socials = $_POST['socials'];
+  $socials = null;
+  if (isset($_POST['socials'])) {
+    $socials = $_POST['socials'];
+  }
   if (get_current_user_id()==$user_id || current_user_can('edit_users')) {
     lab_profile_set_MetaKey($user_id,'description',$description);
     lab_profile_setURL($user_id,$url);
@@ -1287,8 +1290,10 @@ function lab_profile_edit() {
     lab_profile_set_MetaKey($user_id,'lab_hal_id',$hal_id);
     lab_profile_set_MetaKey($user_id,'lab_hal_name',$hal_name);
     lab_profile_set_MetaKey($user_id,'lab_profile_bg_color',$bg_color);
-    foreach (array_keys($socials) as $key) {
-      lab_profile_set_MetaKey($user_id,"lab_$key",$socials[$key]);
+    if ($socials != null) {
+      foreach (array_keys($socials) as $key) {
+        lab_profile_set_MetaKey($user_id,"lab_$key",$socials[$key]);
+      }
     }
     wp_send_json_success(lab_profile($user_id));
     return;

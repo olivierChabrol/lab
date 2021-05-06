@@ -1265,6 +1265,7 @@ function invitation_submit(callback) {
       'charges': charges,
       'travels': travelsFields,
       'host_group_id': $("#lab_group_name").val()
+      'noChargeMission': $("#lab_no_charge_mission").prop('checked'),
     }
     console.log($("#lab_mission_user_funding").val());
     if ($("#lab_email").attr('guest_id').length) {

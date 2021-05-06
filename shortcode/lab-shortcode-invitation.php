@@ -122,8 +122,9 @@ function lab_mission($args) {
             }
             $invitationStr .=    '</div><div class="lab_invite_row_left">';
             $invitationStr .= mission_display_userGroup($host->id, $invitation);
-        $invitationStr .= mission_user_funding($host->id, $invitation, $isManager);
-        $invitationStr .= '</div>
+            $invitationStr .= mission_user_funding($host->id, $invitation, $isManager);
+            $invitationStr .= '</div>
+            <div class="lab_invite_row">
             <div class="lab_invite_field">
                 <label for="lab_mission">'.esc_html__("Reason for the mission","lab")." : ". '<span class="lab_form_required_star"/></label>
                 <select id="lab_mission" name="lab_mission">';
@@ -138,10 +139,13 @@ function lab_mission($args) {
             }
             $invitationStr .= '<option value="'.$missionparam->id.'" '.$selectedGroup.'>'.esc_html__($missionparam->value,"lab")                                                                                                                                                                                      .'</option>';
         }
-        $invitationStr .= '</select>
-                <input style="display:none" type="text" id="lab_mission_other" value="'.($newForm ? '' : $invitation->mission_objective).'">
-                <p style="display:none" id="lab_mission_other_desc">'.esc_html__("Specify the nature of your mission here.","lab").'</p>
-            </div>';
+        $invitationStr .= '</select></div>
+            <div class="lab_invite_field">
+                &nbsp;<label for="lab_no_charge_mission">
+                <input type="checkbox" id="lab_no_charge_mission">'.esc_html__("No charge mission","lab").' </label>
+            
+            </div>
+        </div>';
 
     }
     else {
@@ -191,9 +195,9 @@ function lab_mission($args) {
             </div>
         </div><!-- end invite div -->
         <hr>
-        <label for="lab_hostel"><h3>'.esc_html__("Need a hostel","lab").'</h3></label>
+        <h3>'.esc_html__("Hostel","lab").'</h3>
         <div class="lab_invite_row">
-                
+                    <label for="lab_hostel">
                     <input type="checkbox" id="lab_hostel" name="lab_hostel" ';
 
             if($param['hostpage'] && $invitation && $invitation->needs_hostel == 1)
@@ -201,11 +205,11 @@ function lab_mission($args) {
                 $invitationStr .= 'checked';
             }
                 
-            $invitationStr .= '>
+            $invitationStr .= '>'.esc_html__("Need a hostel","lab").'</label>
                 <label for="lab_mission_hostel_night">'.esc_html__("Number of night(s)", "lab").'</label>
-                <input type="number" id="lab_mission_hostel_night" value="'.(!$newForm?$invitation->hostel_night:1).'"></td>
+                <input type="number" id="lab_mission_hostel_night" value="'.(!$newForm?$invitation->hostel_night:1).'">
                 <label for="lab_mission_hostel_cost">'.esc_html__("Estimated cost (€)","lab").'</label>
-                <input type="text" id="lab_mission_hostel_cost" value="'.(!$newForm?$invitation->hostel_cost:0).'"></td>
+                <input type="text" id="lab_mission_hostel_cost" value="'.(!$newForm?$invitation->hostel_cost:0).'"></div>
         </div>
         <hr>
         <h3>'.esc_html__("Journeys","lab").'</h3>
