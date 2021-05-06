@@ -796,6 +796,16 @@ function lab_mission_update_travel($travelId, $travelFields, $missionId){
     return $return;
 }
 
+function lab_save_user_picture($imgId, $userId) {
+    $currentUserId = get_current_user_id();
+    if($currentUserId == $userId || current_user_can('administrator'))
+    {
+        update_user_meta( $userId, 'lab_user_picture_display', $imgId );
+        return true;
+    }
+    return false;
+}
+
 function lab_admin_mission_create_table() {
     global $wpdb;
     $sql = "CREATE TABLE IF NOT EXISTS `".$wpdb->prefix."lab_mission_route` (
@@ -807,15 +817,25 @@ function lab_admin_mission_create_table() {
         `travel_to` varchar(100) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
         `travel_date` datetime NOT NULL,
         `means_of_locomotion` bigint NOT NULL,
-        `round_trip` tinyint(1) DEFAULT 0,
+        `round_trip` tinyint(1) NOT NULL,
         `nb_person` int NOT NULL,
-        `carbon_footprint` varchar(20) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+        `carbon_footprint` varchar(50) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
         `travel_datereturn` datetime DEFAULT NULL,
         `estimated_cost` float NOT NULL,
-        `real_cost float` NOT NULL,
-        `reference varchar(255)` COLLATE utf8_bin NOT NULL,
-        `loyalty_car_number` varchar(50) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-        `loyalty_card_expiry_date` date DEFAULT NULL
+        `real_cost` float NOT NULL,
+        `reference` varchar(255) COLLATE utf8_bin NOT NULL,
+        `loyalty_card_number` varchar(50) COLLATE utf8_bin DEFAULT NULL,
+        `loyalty_card_expiry_date` date DEFAULT NULL,
+        PRIMARY KEY (id)
+    ) ENGINE=InnoDB";
+    $wpdb->get_results($sql);
+
+
+    $sql = "CREATE TABLE IF NOT EXISTS `".$wpdb->prefix."lab_mission_comment_notifs` (
+        `id` bigint NOT NULL AUTO_INCREMENT
+        `user_id` bigint NOT NULL,
+        `invite_id` bigint NOT NULL,
+        `comment_id` bigint NOT NULL,
         PRIMARY KEY (id)
     ) ENGINE=InnoDB";
     return $wpdb->get_results($sql);
@@ -1009,11 +1029,11 @@ function lab_admin_param_change_id($oldId, $type, $newId)
     }
     else if ($type == AdminParams::PARAMS_MISSION_ID)
     {
-        $wpdb->update($wpdb->prefix.'lab_invitations', array("mission_objective"=>$newId), array("mission_objective"=>$oldId));
+        $wpdb->update($wpdb->prefix.'lab_mission', array("mission_objective"=>$newId), array("mission_objective"=>$oldId));
     }
     else if ($type == AdminParams::PARAMS_FUNDING_ID)
     {
-        $wpdb->update($wpdb->prefix.'lab_invitations', array("funding_source"=>$newId), array("funding_source"=>$oldId));
+        $wpdb->update($wpdb->prefix.'lab_mission', array("funding_source"=>$newId), array("funding_source"=>$oldId));
         $wpdb->update($wpdb->prefix.'usermeta', array("meta_value"=>$newId), array("meta_value"=>$oldId, "meta_key"=>"lab_user_funding"));
         
     }
@@ -2798,9 +2818,9 @@ function delete_all_tables() {
     drop_table("lab_hal_users");
     drop_table("lab_groups");
     drop_table("lab_presence");
-    drop_table("lab_invitations");
+    drop_table("lab_mission");
     drop_table("lab_guests");
-    drop_table("lab_invite_comments");
+    drop_table("lab_mission_comments");
     drop_table("lab_presence");
     drop_table("lab_budget_info");
     drop_table("lab_contract");

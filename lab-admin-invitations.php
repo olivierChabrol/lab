@@ -13,28 +13,30 @@ function lab_invitations_createTables() {
   if (!strlen($res)==0) {
     return $res;
   }
-  $sql = "CREATE TABLE IF NOT EXISTS `".$wpdb->prefix."lab_invitations` (
+  $sql = "CREATE TABLE IF NOT EXISTS `".$wpdb->prefix."lab_mission` (
       `id` bigint UNSIGNED PRIMARY KEY AUTO_INCREMENT,
-      `guest_id` bigint UNSIGNED,
-      `host_id` bigint UNSIGNED,
-      `host_group_id` bigint,
-      `mission_objective` varchar(255),
-      `token` varchar(20),
-      `needs_hostel` boolean,
-      `start_date` datetime,
-      `end_date` datetime,
-      `travel_mean_to` varchar(50),
-      `travel_mean_from` varchar(50),
-      `funding_source` varchar(200),
-      `estimated_cost` float,
-      `maximum_cost` float,
-      `real_cost` float,
-      `status` tinyint,
-      `creation_time` datetime,
-      `completion_time` datetime,
-      `validation_time` datetime,
-      `charges` JSON,
-      `research_contract` text,
+      `guest_id` bigint UNSIGNED DEFAULT NULL,
+      `host_id` bigint UNSIGNED DEFAULT NULL,
+      `host_group_id` bigint DEFAULT NULL,
+      `manager_id` bigint NOT NULL,
+      `mission_objective` varchar(255) DEFAULT NULL,
+      `token` varchar(20) DEFAULT NULL,
+      `needs_hostel` tinyint(1) DEFAULT NULL,
+      `hostel_night` int NOT NULL DEFAULT '0',
+      `hostel_cost` float NOT NULL DEFAULT '0',
+      `funding` bigint NOT NULL,
+      `funding_source` varchar(200) DEFAULT NULL,
+      `estimated_cost` float DEFAULT NULL,
+      `maximum_cost` float DEFAULT NULL,
+      `real_cost` float DEFAULT NULL,
+      `status` int DEFAULT NULL,
+      `creation_time` datetime DEFAULT NULL,
+      `completion_time` datetime DEFAULT NULL,
+      `validation_time` datetime DEFAULT NULL,
+      `research_contract` text CHARACTER SET latin1 COLLATE latin1_swedish_ci,
+      `charges` json DEFAULT NULL,
+      `forward_carbon_footprint` float NOT NULL,
+      `return_carbon_footprint` float NOT NULL,
       FOREIGN KEY (`guest_id`) REFERENCES `".$wpdb->prefix."lab_guests` (`id`),
       FOREIGN KEY (`host_id`) REFERENCES `".$wpdb->prefix."users` (`ID`)
     );";
@@ -42,14 +44,14 @@ function lab_invitations_createTables() {
   if (!strlen($res)==0) {
     return $res;
   }
-  $sql = "CREATE TABLE IF NOT EXISTS `".$wpdb->prefix."lab_invite_comments` (
+  $sql = "CREATE TABLE IF NOT EXISTS `".$wpdb->prefix."lab_mission_comments` (
     `id` BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
-    `invite_id` BIGINT UNSIGNED,
-    `author_id` BIGINT UNSIGNED,
-    `author_type` tinyint,
-    `timestamp` datetime,
+    `invite_id` bigint UNSIGNED DEFAULT NULL,
+    `author_id` bigint NOT NULL,
+    `author_type` tinyint NOT NULL DEFAULT '0',
+    `timestamp` datetime DEFAULT NULL,
     `content` text,
-    FOREIGN KEY (`invite_id`) REFERENCES `".$wpdb->prefix."lab_invitations`(`id`));";
+    FOREIGN KEY (`invite_id`) REFERENCES `".$wpdb->prefix."lab_mission`(`id`));";
   $res = $wpdb->get_results($sql);
   if (!strlen($res)==0) {
     return $res;
@@ -84,7 +86,7 @@ function lab_invitations_createGuest($params) {
 function lab_mission_create($params) {
   global $wpdb;
   if ( $wpdb->insert(
-      $wpdb->prefix.'lab_invitations',
+      $wpdb->prefix.'lab_mission',
       $params
       )
   ) {
@@ -171,7 +173,7 @@ function lab_invitations_editInvitation($missionId, $params) {
   }
   
   return $wpdb->update(
-    $wpdb->prefix.'lab_invitations',
+    $wpdb->prefix.'lab_mission',
     $params,
     array('id' => $missionId)
   );
@@ -179,7 +181,7 @@ function lab_invitations_editInvitation($missionId, $params) {
 
 function lab_invitations_getByToken($token, $deleteNotif = true) {
   global $wpdb;
-  $sql = "SELECT * FROM `".$wpdb->prefix."lab_invitations` WHERE token='".$token."';";
+  $sql = "SELECT * FROM `".$wpdb->prefix."lab_mission` WHERE token='".$token."';";
   $res = $wpdb->get_results($sql);
   $missionId = $res[0]->id;
   if($deleteNotif) {
@@ -207,7 +209,7 @@ function lab_group_manager($type) {
 /*function lab_mission_route_get($token)
 {
   global $wpdb;
-  $sql = "SELECT * FROM `".$wpdb->prefix."lab_mission_route` WHERE 'mission_id' IN (SELECT id FROM `".$wpdb->prefix."lab_invitations` WHERE token='".$token."';";
+  $sql = "SELECT * FROM `".$wpdb->prefix."lab_mission_route` WHERE 'mission_id' IN (SELECT id FROM `".$wpdb->prefix."lab_mission` WHERE token='".$token."';";
   $res = $wpdb->get_results($sql);
   return $res;
 }*/
@@ -248,13 +250,13 @@ function lab_invitations_getGuest_byName($firstname, $lastname) {
 function lab_invitations_getByGroup($group_id,$params=array("sortBy"=>"start_date","order"=>"DESC","page"=>"1","value"=>"5","status"=>"(1,10,20,30)","year"=>"all")) {
   $page_nb = ($params['page'] - 1) * $params['value'];
   global $wpdb;
-  $sql = "SELECT * FROM `".$wpdb->prefix."lab_invitations` 
+  $sql = "SELECT * FROM `".$wpdb->prefix."lab_mission` 
           WHERE `host_group_id`=".$group_id." 
           AND `status` in ".$params['status']
           .($params['year']=="all" ? ' ' : " AND `start_date` BETWEEN '".$params['year']."-01-01' AND '".$params['year']."-12-31' ")."
           ORDER BY ".$params['sortBy'].' '.$params['order']." 
           LIMIT ".$page_nb.", ".$params['value']." ;";
-  $count = "SELECT COUNT(*) FROM `".$wpdb->prefix."lab_invitations` 
+  $count = "SELECT COUNT(*) FROM `".$wpdb->prefix."lab_mission` 
             WHERE `host_group_id`=".$group_id." 
             AND `status` in ".$params['status']
             .($params['year']=="all" ? ' ' : " AND `start_date` BETWEEN '".$params['year']."-01-01' AND '".$params['year']."-12-31' ").";";
@@ -270,13 +272,13 @@ function lab_invitations_getByGroups($groups_ids,$params=array("sortBy"=>"start_
     $str .= ' host_group_id='.$g." OR";
   }
   $str = '('.substr($str,0, -3).')'; //Enlève le dernier OR, rajoute des parenthèses
-  $sql = "SELECT * FROM `".$wpdb->prefix."lab_invitations` 
+  $sql = "SELECT * FROM `".$wpdb->prefix."lab_mission` 
           WHERE".$str." 
           AND `status` in ".$params['status']
           .($params['year']=="all" ? ' ' : " AND `start_date` BETWEEN '".$params['year']."-01-01' AND '".$params['year']."-12-31' ")."
           ORDER BY ".$params['sortBy']." ".$params['order']." 
           LIMIT ".$page_nb.", ".$params['value']." ;";
-  $count = "SELECT COUNT(*) FROM `".$wpdb->prefix."lab_invitations` 
+  $count = "SELECT COUNT(*) FROM `".$wpdb->prefix."lab_mission` 
             WHERE".$str." 
             AND `status` in ".$params['status']
             .($params['year']=="all" ? ' ' : " AND `start_date` BETWEEN '".$params['year']."-01-01' AND '".$params['year']."-12-31' ").";";
@@ -288,12 +290,12 @@ function lab_invitations_getByGroups($groups_ids,$params=array("sortBy"=>"start_
 function lab_invitations_getByHost($host_id,$params=array("sortBy"=>"start_date","order"=>"DESC","page"=>"1","value"=>"5","status"=>"(1,10,20,30)","year"=>"all")) {
   $page_nb = ($params['page'] - 1) * $params['value'];
   global $wpdb;
-  $sql = "SELECT * FROM `".$wpdb->prefix."lab_invitations` 
+  $sql = "SELECT * FROM `".$wpdb->prefix."lab_mission` 
           WHERE `host_id`=".$host_id." 
           AND `status` in ".$params['status']
           .($params['year']=="all" ? ' ' : " AND `start_date` BETWEEN '".$params['year']."-01-01' AND '".$params['year']."-12-31' ")."
           ORDER BY ".$params['sortBy']." ".$params['order']." LIMIT ".$page_nb.", ".$params['value']." ;";
-  $count = "SELECT COUNT(*) FROM `".$wpdb->prefix."lab_invitations` 
+  $count = "SELECT COUNT(*) FROM `".$wpdb->prefix."lab_mission` 
             WHERE `host_id`=".$host_id." 
             AND `status` in ".$params['status']
             .($params['year']=="all" ? ' ' : " AND `start_date` BETWEEN '".$params['year']."-01-01' AND '".$params['year']."-12-31' ").";";
@@ -316,13 +318,13 @@ function lab_invitations_getPrefGroups($user_id,$params=array()) {
 }
 function lab_invitations_getComments($id) {
   global $wpdb;
-  $sql = "SELECT * FROM `".$wpdb->prefix."lab_invite_comments` WHERE `invite_id`=".$id.";";
+  $sql = "SELECT * FROM `".$wpdb->prefix."lab_mission_comments` WHERE `invite_id`=".$id.";";
   $res = $wpdb->get_results($sql);
   return $res;
 }
 function lab_invitations_addComment($fields, $commentGeneratedBy = 0) {
   global $wpdb;
-  $sql = $wpdb->insert($wpdb->prefix."lab_invite_comments", $fields);
+  $sql = $wpdb->insert($wpdb->prefix."lab_mission_comments", $fields);
   $last_comment_id = $wpdb->insert_id;
   $concerned = lab_invitations_getConcernedId($fields["invite_id"]);
   
@@ -349,7 +351,7 @@ function lab_invitations_comment_notif($user_id, $invite_id, $comment_id) {
 function lab_invitations_getConcernedId($invite_id) {
   global $wpdb;
   $sql = "SELECT inv.host_id, inv.guest_id, m.user_id AS `manager_id`, inv.manager_id AS `mission_manager_id`
-          FROM `".$wpdb->prefix."lab_invitations` AS inv
+          FROM `".$wpdb->prefix."lab_mission` AS inv
           JOIN `".$wpdb->prefix."lab_group_manager` AS m ON  m.group_id = inv.host_group_id
           WHERE inv.id = ".$invite_id.";";
   $res = $wpdb->get_results($sql);
@@ -401,7 +403,7 @@ function lab_invitation_is_budget_manager() {
 
 function lab_admin_get_mission_type($missionId) {
   global $wpdb;
-  $sql = "SELECT mission_objective FROM `".$wpdb->prefix."lab_invitations` WHERE id=".$missionId;
+  $sql = "SELECT mission_objective FROM `".$wpdb->prefix."lab_mission` WHERE id=".$missionId;
   $res = $wpdb->get_results($sql);
   return $res;
 }

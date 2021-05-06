@@ -285,9 +285,10 @@ function lab_events($eventCategory, $eventYear, $old, $debug = False) {
     }
 
     /***  DISPLAY ***/
-    $listEventStr = "debug : ".$debug;
+    $listEventStr = "";
     if ($debug) {
-        $listEventStr .= "SQL : ".$sql."<br>";
+        $listEventStr .= "<br>Debug : ".$debug;
+        $listEventStr .= "<br>SQL : ".$sql."<br>";
     }
     $listEventStr .= "<table>";
     $url = esc_url(home_url('/'));

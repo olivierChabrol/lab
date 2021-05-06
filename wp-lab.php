@@ -93,6 +93,10 @@ add_action( 'wp_enqueue_scripts', 'replace_core_jquery_version' );
 
 function replace_core_jquery_version() {
   wp_enqueue_style('bootstrap4', 'https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css');
+  wp_enqueue_script('media-upload');
+  wp_enqueue_script('thickbox');
+  wp_enqueue_style('thickbox');
+  wp_enqueue_media();
  }
 
 /**
@@ -125,22 +129,135 @@ add_shortcode('lab-labo1dot5resp', 'lab_labo1_5resp');
 add_shortcode('lab-invite-interface','lab_invitations_interface');
 add_shortcode('lab-ldap','lab_ldap');
 
-
-add_action('admin_enqueue_scripts', 'admin_enqueue');
 register_activation_hook( __FILE__, 'lab_activation_hook' );
 register_uninstall_hook(__FILE__, 'lab_uninstall_hook');
+
+add_action( 'show_user_profile', 'lab_add_user_profile_fields' );
+add_action( 'personal_options_update', 'lab_save_extra_user_profile_fields' );
+
   
 /*
  * Ajoute le widget wphal à l'initialisation des widgets
  */
 add_action('widgets_init', 'wplab_init');
+
+add_filter('get_wp_user_avatar', 'custom_user_avatar', 1, 5);
+remove_action('wpua_before_avatar', 'wpua_do_before_avatar');
+remove_action('wpua_after_avatar', 'wpua_do_after_avatar');
+
+
+function custom_user_avatar($avatar, $id_or_email = NULL, $size = NULL, $align = NULL, $alt = NULL) {
+  if(is_object($id_or_email) && isset($id_or_email->comment_author_email))
+  {
+    $comment_user = get_user_by('email',$id_or_email->comment_author_email);
+    if(is_object($comment_user))
+    {
+      $user_pic_base_url = 'url';
+      $imgId = get_user_meta($comment_user->ID, 'lab_user_picture_display', true);
+      if($imgId)
+      {
+        //$avatar = '<img src="' . $user_pic_base_url . $user_pic . '" width="54" height="54" alt="admin.kh" class="avatar avatar-54 wp-user-avatar wp-user-avatar-54 alignnone photo">';
+        $avatar = wp_get_attachment_image($imgId, array('54', '54'));
+      }
+    }
+  }
+  return $avatar;
+}
+
+function lab_add_user_profile_fields($user) {
+?>
+  <h3><?php _e("Extra profile information", "lab"); ?></h3>
+
+  <table class="form-table">
+    <tr>
+      <td>
+        <table class="form-table">
+        <tr>
+            <th><label for="address1"><?php _e("Address line 1"); ?></label></th>
+            <td>
+                <input type="text" name="address1" id="address1" value="<?php echo esc_attr( get_the_author_meta( 'lab_address1', $user->ID ) ); ?>" class="regular-text" /><br />
+                <span class="description"><?php _e("Please enter your address.", "lab"); ?></span>
+            </td>
+        </tr>
+        <tr>
+            <th><label for="address2"><?php _e("Address line 2"); ?></label></th>
+            <td>
+                <input type="text" name="address2" id="address2" value="<?php echo esc_attr( get_the_author_meta( 'lab_address2', $user->ID ) ); ?>" class="regular-text" /><br />
+                <span class="description"><?php _e("Please enter your address.", "lab"); ?></span>
+            </td>
+        </tr>
+        <tr>
+            <th><label for="address3"><?php _e("Address line 3"); ?></label></th>
+            <td>
+                <input type="text" name="address3" id="address3" value="<?php echo esc_attr( get_the_author_meta( 'lab_address3', $user->ID ) ); ?>" class="regular-text" /><br />
+                <span class="description"><?php _e("Please enter your address.", "lab"); ?></span>
+            </td>
+        </tr>
+        <tr>
+            <th><label for="city"><?php _e("City"); ?></label></th>
+            <td>
+                <input type="text" name="city" id="city" value="<?php echo esc_attr( get_the_author_meta( 'lab_city', $user->ID ) ); ?>" class="regular-text" /><br />
+                <span class="description"><?php _e("Please enter your city.", "lab"); ?></span>
+            </td>
+        </tr>
+        <tr>
+        <th><label for="postalcode"><?php _e("Postal Code"); ?></label></th>
+            <td>
+                <input type="text" name="postalcode" id="postalcode" value="<?php echo esc_attr( get_the_author_meta( 'lab_postalcode', $user->ID ) ); ?>" class="regular-text" /><br />
+                <span class="description"><?php _e("Please enter your postal code.", "lab"); ?></span>
+            </td>
+        </tr>
+        <tr>
+        <th><label for="birthdate"><?php _e("Birth date"); ?></label></th>
+            <td>
+                <input type="date" name="birthdate" id="birthdate" value="<?php echo esc_attr( get_the_author_meta( 'lab_birthdate', $user->ID ) ); ?>" class="regular-text" /><br />
+                <span class="description"><?php _e("Please enter your birthdate.", "lab"); ?></span>
+            </td>
+        </tr>
+        </table>
+      </td>
+      <td>
+        <label for="lab_upload_image"><?php _e("Picture of you"); ?></label>
+        <input type="button" value="Upload Image" class="btn btn-info" id="lab_upload_image" userId="<?php echo get_current_user_id(); ?>"/>
+        <input type="hidden" name="attachment_id" class="wp_attachment_id" id="attachment_id" value="" /> </br>
+        
+        <?php
+          $imgId = get_the_author_meta( 'lab_user_picture_display', $user->ID );
+          if ($imgId != NULL && !empty($imgId)) {
+            echo wp_get_attachment_image($imgId, array('300', '300'), false, array("id"=>"lab_user_picture_display", "class"=>"lab_user_picture_img"));
+          }
+          else {
+        ?>
+            <img src="" class="image lab_user_picture_img" id="lab_user_picture_display" name="lab_user_picture_display" width="300" height="300"/>
+        <?php
+          }
+        ?>
+        
+        <br>
+
+        <input type="button " value="Delete Image" class="btn btn-danger" id="lab_user_picture_btn_delete_image"/>
+      </td>
+    </tr>
+    
+  </table>
+<?php 
+}
+
+function lab_save_extra_user_profile_fields( $user_id ) {
+  if ( !current_user_can( 'edit_user', $user_id ) ) { 
+      return false; 
+  }
+  update_user_meta( $user_id, 'lab_birthdate' , $_POST['birthdate'] );
+  update_user_meta( $user_id, 'lab_address1'  , $_POST['address1'] );
+  update_user_meta( $user_id, 'lab_address2'  , $_POST['address2'] );
+  update_user_meta( $user_id, 'lab_address3'  , $_POST['address3'] );
+  update_user_meta( $user_id, 'lab_city'      , $_POST['city'] );
+  update_user_meta( $user_id, 'lab_postalcode', $_POST['postalcode'] );
+  update_user_meta( $user_id, 'lab_user_picture_display', $_POST['attachment_id'] );
+}
+
+
 function myplugin_load_textdomain() {
-  /*
-  LAB_LDAP::getInstance(AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_HOST)[0]->value,
-                        AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_BASE)[0]->value,
-                        AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_LOGIN)[0]->value,
-                        AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_PASSWORD)[0]->value);
-                        //*/
   load_plugin_textdomain( 'lab', false, '/lab/lang' ); 
 }
 
@@ -180,38 +297,6 @@ class LabRewriteRules {
     $wp_rewrite->flush_rules();
   }
 }
-/**
- * Show custom user profile fields
- * 
- * @param  object $profileuser A WP_User object
- * @return void
- */
-function custom_user_profile_fields( $profileuser ) {
-  ?>
-    <!--
-    <table class="form-table">
-      <tr>
-        <th>
-          <label for="user_hal_id">Hal ID</label>
-        </th>
-        <td>
-          <input type="text" name="user_hal_id" id="user_hal_id" value="<?php echo esc_attr( get_user_meta($profileuser->ID, 'lab_hal_id', true) ); ?>" class="regular-text" />
-          <br><span class="description"><?php esc_html_e( 'Your HAL id', 'text-domain' ); ?></span>
-        </td>
-      </tr>
-      <tr>
-        <th>
-          <label for="user_hal_name">Hal Name</label>
-        </th>
-        <td>
-          <input type="text" name="user_hal_name" id="user_hal_name" value="<?php echo esc_attr( get_user_meta($profileuser->ID, 'user_hal_name', true) ); ?>" class="regular-text" />
-          <br><span class="description"><?php esc_html_e( 'Your HAL name', 'text-domain' ); ?></span>
-        </td>
-      </tr>
-    </table>
-    -->
-  <?php
-  }
 
 /**
  * Fonction de création du menu
@@ -243,6 +328,11 @@ function wp_lab_menu()
  **/
 function admin_enqueue()
 {
+  wp_enqueue_script('media-upload');
+  wp_enqueue_script('thickbox');
+  wp_enqueue_style('thickbox');
+  wp_enqueue_media();
+
   wp_enqueue_style('labCSS',plugins_url('css/lab.css',__FILE__), version_id(), true);
   wp_enqueue_script('fontAwesome',"https://kit.fontawesome.com/341f99cb81.js",array(),"3.2",true);
   wp_enqueue_script('SpectrumJS', plugins_url('js/spectrum.js',__FILE__), array('jquery','wp-i18n'), '1.8.0', true);
@@ -296,7 +386,8 @@ function wp_lab_fe_enqueues()
   wp_enqueue_style('jqueryToastCSS',plugins_url('css/jquery.toast.css',__FILE__), version_id(), false);
   wp_enqueue_script('jqueryToastJS',plugins_url('js/jquery.toast.js',__FILE__), array('jquery'),version_id(),false);
   wp_enqueue_script('jquery-ui-1.12.1-js', plugins_url('js/jquery-ui.min.js',__FILE__), array('jquery'), version_id(), false);
-  wp_enqueue_script('lab-global', plugins_url('js/lab_global.js',__FILE__), array('jqueryToastJS', 'jquery'), version_id(), false);
+  //wp_enqueue_script('lab-global', plugins_url('js/lab_global.js',__FILE__), array('jqueryToastJS', 'jquery'), version_id(), false);
+  wp_enqueue_script('lab-global', plugins_url('js/lab_global.js',__FILE__), array('jqueryToastJS', 'jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog'), version_id(), false);
   wp_enqueue_script('lab-fe', plugins_url('js/lab_fe.js',__FILE__), array('jquery', 'wp-i18n', 'lab-global'), version_id(), true);
   wp_enqueue_script('lab-mission', plugins_url('js/lab_mission.js',__FILE__), array('jquery', 'wp-i18n', 'lab-global'), version_id(), true);
   wp_enqueue_style('profileCSS',plugins_url('css/lab-profile.css',__FILE__));

@@ -129,8 +129,6 @@ if (is_admin()) {
     add_action( 'wp_ajax_hal_download', 'lab_ajax_hal_download');
     add_action( 'wp_ajax_hal_empty_table', 'lab_ajax_delete_hal_table');
 
-    add_action( 'show_user_profile', 'custom_user_profile_fields', 10, 1 );
-    add_action( 'edit_user_profile', 'custom_user_profile_fields', 10, 1 );
     //Actions pour keyring - Prêts
     add_action( 'wp_ajax_keyring_create_loan', 'lab_keyring_create_loanReq' ); 
     add_action( 'wp_ajax_keyring_find_loan_byKey', 'lab_keyring_find_loan_byKey' ); 
@@ -216,11 +214,16 @@ if (is_admin()) {
     add_action( 'wp_ajax_lab_admin_del_mission', 'lab_labo1dot5_admin_del_mission');
     add_action( 'wp_ajax_lab_labo1.5_transportation_getRowNum', 'lab_labo1dot5_getRowNum_ajax');
 
+    //user picture
+    add_action( 'wp_ajax_lab_save_user_picture', 'lab_ajax_save_user_picture');
+
+
 }
 // no admin
 else{
 
     add_action( 'wp_ajax_nopriv_lab_presence_save_ext', 'lab_admin_presence_save_ext_ajax');
     add_action( 'wp_ajax_nopriv_lab_save_transportation', 'lab_labo1dot5_save');
+    add_action( 'wp_ajax_nopriv_lab_save_user_picture', 'lab_ajax_save_user_picture');
 
 }

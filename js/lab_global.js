@@ -6,6 +6,51 @@ jQuery("#lab_event_submit_button").submit(function () {
     }
 });
 jQuery(document).ready( function($){
+
+  if ($("#lab_upload_image").length > 0) {
+    $('#lab_upload_image').click(function() {
+      if (this.window === undefined) {
+				this.window = wp.media({
+					title: 'Insert Image',
+					library: {type: 'image'},
+					multiple: false,
+					button: {text: 'Insert Image'}
+				});
+
+				var self = this;
+				this.window.on('select', function() {
+					var response = self.window.state().get('selection').first().toJSON();
+
+					$('.wp_attachment_id').val(response.id);
+          console.log(response);
+          console.log($('#lab_user_picture_display'));
+          saveUserPicture(response.id, $('#lab_upload_image').attr("userId"));
+					$('#lab_user_picture_display').attr('src', response.url);
+          $('#lab_user_picture_display').show();
+				});
+			}
+
+			this.window.open();
+			return false;
+    });
+
+    $('#lab_delete_image').click(function() {
+      deleteUserPicture($('#lab_upload_image').attr("userId"));
+    });
+
+    $('#lab_user_picture_btn_delete_image').on('click',function(e){
+      e.preventDefault();
+      $("#attachment_id").val("");
+      $("#lab_user_picture_display").fadeTo(300,0,function(){
+              $(this).animate({width:0},200,function(){
+                      $(this).remove();
+                  });
+          });
+    });
+  }
+
+
+
   if ($("#lav_event_submit").length > 0) {
     $("#lav_event_submit").click(function (){
       let ok = true;
@@ -30,6 +75,31 @@ jQuery(document).ready( function($){
     });
   }
 });
+
+function deleteUserPicture(userId) {
+  let data = {
+    'action':'lab_save_user_picture',
+    'imgId' :  "",
+    'userId': userId
+  };
+  callAjax(data, "User image Save", deleteuserPictureSuccess, "Failed to save image", null);
+}
+
+function deleteuserPictureSuccess(data) {
+  console.log("[deleteuserPictureSuccess]");
+  console.log("[deleteuserPictureSuccess] src : " + jQuery('#lab_user_picture_display').attr("src"));
+  jQuery('#lab_user_picture_display').attr("src", "https://www.gravatar.com/https://www.gravatar.com/avatar/ab8bfaf41e8f9f4c34cbf0f4c516e414?s=160&d=mp");
+  console.log("[deleteuserPictureSuccess] src : " + jQuery('#lab_user_picture_display').attr("src"));
+}
+
+function saveUserPicture(imgId, userId) {
+  let data = {
+    'action':'lab_save_user_picture',
+    'imgId' :  imgId,
+    'userId': userId
+  };
+  callAjax(data, "User image Save", null, "Failed to save image", null);
+}
 
 function createTdUser(userId, data) {
   return createTd(getUserNames(userId, data));

@@ -92,10 +92,24 @@ function lab_profile($id=0) {
 	<div id="lab_profile_card" bg-color="'.$user->bg_color.'">
 		<input type="hidden" id="userId" value="'.$user->id.'"/>
 		<div id="lab_pic_name">
-			<div>
-				<img src="'.$user->gravatar.'" id="lab_avatar"></img>'
-				.($is_current_user || current_user_can('edit_users') ? '<p id="lab_avatar_change" class="lab_profile_edit"><a target="_blank" href="https://fr.gravatar.com/">Modifier l\'avatar</a></p>' :'').
-				$SocialIcons.
+			<div>';
+	$imgId = get_user_meta($user->id, 'lab_user_picture_display', true);
+	if ($imgId != NULL && !empty($imgId))
+	{
+		$imgUrl = wp_get_attachment_image($imgId, array('112', '112'),false, array("id"=>"lab_user_picture_display", "userId"=>$user->id));
+		$profileStr .= $imgUrl;
+	}
+	else
+	{
+		$profileStr .= '<img src="https://www.gravatar.com/avatar/ab8bfaf41e8f9f4c34cbf0f4c516e414?s=160&amp;d=mp" id="lab_user_picture_display">';
+	}
+
+	if($is_current_user || current_user_can('edit_users')) {
+		$profileStr .= '<div id="lab_upload_image" class="lab_profile_edit pointer" userId="'.$user->id.'"><a href="#">Edit here</a></div>';
+		$profileStr .= '<div id="lab_delete_image" class="lab_profile_edit pointer" userId="'.$user->id.'"><a href="#">Delete image</a></div>';
+		$profileStr .= '<input type="hidden" name="attachment_id" class="wp_attachment_id" id="attachment_id" value="" /> </br>';
+	}
+	$profileStr .=  $SocialIcons.
 			'</div>
 			<div id="lab_profile_info">
 				<div id="lab_profile_name"><span id="lab_profile_name_span">'.$user->first_name.' • '.$user->last_name.'</span>'

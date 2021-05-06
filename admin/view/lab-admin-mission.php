@@ -73,6 +73,7 @@
     $isGroupLeader   = False;
     $groupLeaderIds  = array();
     $groupManagerIds = array();
+    $debug           = False;
     foreach($roles as $role) {
       if ($role == "administrator")
       {
@@ -84,6 +85,21 @@
       $groupLeaderIds  = lab_admin_group_get_groups_of_leader(get_current_user_id());
       $isManager = count($groupManagerIds) > 0;
       $isGroupLeader = count($groupLeaderIds) > 0;
+    }
+    if($debug) {
+      echo "<br><h4>Debug</h4><br>";
+      echo "\$groupManagerIds : <br><ul>";// . $groupManagerIds . "<br>";
+      foreach($groupManagerIds as $elm) {
+        echo "<li>'".$elm."'</li>";
+      }
+      echo "</ul>";
+      echo "\$groupLeaderIds : <br>";
+      foreach($groupLeaderIds as $elm) {
+        echo "- '".$elm."'<br>";
+      }
+      echo "\$isManager : $isManager <br>";
+      echo "\$isGroupLeader : $isGroupLeader <br>";
+      echo "\$isAdministrator : $isAdministrator <br>";
     }
     ?>
     <div class="wrap">

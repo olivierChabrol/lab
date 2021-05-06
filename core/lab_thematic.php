@@ -107,9 +107,11 @@ function lab_admin_thematic_get_thematics_by_user($userId)
             $thematics[] = $thematic;
         }
     }
+    /*
     else
     {
         return null;
     }
+    //*/
     return $thematics;
 }
