@@ -214,8 +214,8 @@ function lab_mission($args) {
             <table id="lab_mission_travels_table" class="table">
                 <thead>
                     <td colspan="2">'.esc_html__("Departure date","lab").'</td>
-                    <td colspan="2">'.esc_html__("From","lab").'</td>
-                    <td colspan="2">'.esc_html__("To","lab").'</td>
+                    <td colspan="3">'.esc_html__("From","lab").'</td>
+                    <td colspan="3">'.esc_html__("To","lab").'</td>
                     <td>'.esc_html__("Mean","lab").'</td>
                     <td>'.esc_html__("Cost","lab").'</td>
                     <td>'.esc_html__("Ref","lab").'</td>
@@ -238,15 +238,18 @@ function lab_mission($args) {
                 <label for="lab_mission_edit_travel_div_countryFrom">'.esc_html__("City departure","lab").'</label>
                 <input type="text" id="lab_mission_edit_travel_div_countryFrom"  countryCode="FR">
                 <input type="text" id="lab_mission_edit_travel_div_cityFrom" value="">
+                <input type="text" id="lab_mission_edit_travel_div_stationFrom" value="" placeholder = '.esc_html__("Station from","lab").'>
                 <br/>
                 <label for="lab_mission_edit_travel_div_countryTo">'.esc_html__("City arrival","lab").'</label>
                 <input type="text" id="lab_mission_edit_travel_div_countryTo"  countryCode="FR">
                 <input type="text" id="lab_mission_edit_travel_div_cityTo" value="">
+                <input type="text" id="lab_mission_edit_travel_div_stationTo" value="" placeholder = '.esc_html__("Station to","lab").'>
                 <br/>
                 <label for="lab_mission_edit_travel_div_mean">'.esc_html__("Mean of transport ","lab").'</label>';
                 $invitationStr .= lab_html_select_str("lab_mission_edit_travel_div_mean", "lab_mission_edit_travel_div_mean", "", "lab_admin_get_params_meanOfTransport", null, array("value"=>"0","label"=>"None"), "");;
                 $invitationStr .=
-                '<br/>
+                '<input type="text" id="lab_mission_edit_travel_div_company" value="" placeholder='.esc_html__("Travel company","lab").'>
+                <br/>
                 <label for="lab_mission_edit_travel_div_nb_person">'.esc_html__("Number of persons","lab").'</label>
                 <input type="text" id="lab_mission_edit_travel_div_nb_person" >
                 <br/>
@@ -431,6 +434,7 @@ function mission_display_userGroup($userId, $mission) {
     $newForm = $mission == null;
     $invitationStr = '<div class="lab_invite_field"><label for="lab_group_name">'.esc_html__("Group","lab").' :</label>';
     $groups = lab_admin_group_by_user($userId);
+    //var_dump($groups);
     if (count($groups) == 1) {
         if($newForm) {
             $invitationStr .= '<input type="hidden" id="lab_group_name" value="'.$groups[0]->id.'">';
