@@ -27,6 +27,7 @@ class AdminParams {
     public const PARAMS_CONTRACT_TYPE = 25;
     public const PARAMS_MEAN_OF_TRANSPORT = 26;
     public const PARAMS_MISSION_STATUS = 27;
+    public const PARAMS_MISSION_TYPE_DESC = 28;
     public const MISSION_STATUS_NEW = "msn";
     public const MISSION_STATUS_COMPLETE = "msc";
     public const MISSION_STATUS_CANCEL = "msca";
@@ -41,6 +42,11 @@ class AdminParams {
         global $wpdb;
         $sql = "SELECT value,id FROM `".$wpdb->prefix."lab_params` WHERE type_param=".$id." ORDER BY value;";
         return $results = $wpdb->get_results($sql);
+    }
+
+    public static function lab_admin_get_params_mission_type_description()
+    {
+        return AdminParams::get_params_fromId(AdminParams::PARAMS_MISSION_TYPE_DESC);
     }
 
     public static function lab_admin_get_params_mission_status()
@@ -156,14 +162,6 @@ class AdminParams {
         $results = $wpdb->get_results($sql);
         return $results[0];
     }
-    /* Inutiles, préférer utiliser get_params_fromId(CONSTANTE)
-    public function lab_admin_get_params_Types() {
-        return $this->lab_admin_get_params_fromId($this->LAB_ADMIN_PARAMS_ID);
-    }
-    public function lab_admin_get_params_groupTypes() {
-        global $LAB_ADMIN_PARAMS_GROUPTYPE_ID;
-        return $this->lab_admin_get_params_fromId($this->LAB_ADMIN_PARAMS_GROUPTYPE_ID);
-    }*/
 };
 
 function lab_admin_get_params_missionStatus() {
