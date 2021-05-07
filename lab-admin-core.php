@@ -636,7 +636,7 @@ function lab_mission_remap_fields($fields) {
     $a["travel_from"] = $fields["cityFrom"];
     $a["travel_date"] = $fields["dateGoTo"]." ".$fields["timeGoTo"].":00";
     $a["means_of_locomotion"] = $fields["mean"];
-    $a["travel_company"] = $fields["company"];
+    $a["company"] = $fields["company"];
     $a["estimated_cost"] = $fields["cost"];
     $a["round_trip"] = $fields["rt"]; //($fields["rt"]=="false"?0:1);
     $a["reference"] = $fields["ref"];
@@ -813,10 +813,13 @@ function lab_admin_mission_create_table() {
         `mission_id` bigint NOT NULL,
         `country_from` varchar(100) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
         `travel_from` varchar(100) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+        `station_from` varchar(100) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
         `country_to` varchar(100) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
         `travel_to` varchar(100) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+        `station_to` varchar(100) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
         `travel_date` datetime NOT NULL,
         `means_of_locomotion` bigint NOT NULL,
+        `company` varchar(100) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
         `round_trip` tinyint(1) NOT NULL,
         `nb_person` int NOT NULL,
         `carbon_footprint` varchar(50) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
