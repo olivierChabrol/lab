@@ -445,7 +445,7 @@ function lab_mission_generate_excel($missionToken = null, $filters = null, $grou
             $sheetMission->setCellValue('G'.$line, $route->travel_to);
             $sheetMission->setCellValue('H'.$line, $route->station_to);
             $sheetMission->setCellValue('I'.$line, AdminParams::get_param($route->means_of_locomotion));
-            $sheetMission->setCellValue('J'.$line, $route->travel_company);
+            $sheetMission->setCellValue('J'.$line, $route->company);
             $sheetMission->setCellValue('K'.$line, $route->nb_person);
             $sheetMission->setCellValue('P'.$line, $route->loyalty_card_number);
             $sheetMission->setCellValue('Q'.$line, $route->loyalty_card_expiry_date);

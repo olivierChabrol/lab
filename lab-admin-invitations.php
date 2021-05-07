@@ -109,7 +109,7 @@ function lab_invitations_editInvitation($missionId, $params) {
   $userMeta = lab_admin_usermeta_names($userId);
   $missionType = lab_admin_get_mission_type($missionId);
 
-  $currentParams = getAllTableFields("lab_invitations", $missionId, "id");
+  $currentParams = getAllTableFields("lab_mission", $missionId, "id");
   $currentParamsArray = json_decode(json_encode($currentParams), true);
 
   $change = array_diff_assoc($params, $currentParamsArray);
@@ -183,14 +183,17 @@ function lab_invitations_getByToken($token, $deleteNotif = true) {
   global $wpdb;
   $sql = "SELECT * FROM `".$wpdb->prefix."lab_mission` WHERE token='".$token."';";
   $res = $wpdb->get_results($sql);
-  $missionId = $res[0]->id;
-  if($deleteNotif) {
-    lab_mission_resetNotifs($missionId);
+  if (count($res) == 1) {
+    $missionId = $res[0]->id;
+    if($deleteNotif) {
+      lab_mission_resetNotifs($missionId);
+    }
+    //if(lab_invitations_getBudgetManager()) {
+      //lab_mission_take_in_charge($missionId);
+    //}
+    return $res[0];
   }
-  if(lab_invitations_getBudgetManager()) {
-    //lab_mission_take_in_charge($missionId);
-  }
-  return $res[0];
+  return null;
 }
 
 function lab_group_manager($type) {

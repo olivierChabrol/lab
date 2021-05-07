@@ -250,7 +250,7 @@ function lab_mission($args) {
                 <input type="text" id="lab_mission_edit_travel_div_stationTo" value="" placeholder = '.esc_html__("Station to","lab").'>
                 <br/>
                 <label for="lab_mission_edit_travel_div_mean">'.esc_html__("Mean of transport ","lab").'</label>';
-                $invitationStr .= lab_html_select_str("lab_mission_edit_travel_div_mean", "lab_mission_edit_travel_div_mean", "", "lab_admin_get_params_meanOfTransport", null, array("value"=>"0","label"=>"None"), "");;
+                $invitationStr .= lab_html_select_str("lab_mission_edit_travel_div_mean", "lab_mission_edit_travel_div_mean", "", "lab_admin_get_params_meanOfTransport", null, array("value"=>"0","label"=>"None"), "");
                 $invitationStr .=
                 '<input type="text" id="lab_mission_edit_travel_div_company" value="" placeholder='.esc_html__("Travel company","lab").'>
                 <br/>
@@ -675,6 +675,8 @@ function lab_invitations_interface_fromList($list,$view) {
     return $listStr;
 }
 function lab_invitations_mail($type=1, $guest, $invite) {
+    $content = "";
+    $dest = "";
     switch ($type) {
         case 1: //Envoi de mail récapitulatif à l'invité lorsqu'il crée sa demande d'invitation
             global $currLocale;
@@ -682,7 +684,7 @@ function lab_invitations_mail($type=1, $guest, $invite) {
             $dest = $guest["email"];
             $subj = esc_html__("Your invitation request to I2M",'lab');
             $date = date_create_from_format("Y-m-d H:i:s", $invite["creation_time"]);
-            $content = "<p><i>".strftime('%A %d %B %G - %H:%M',$date->getTimestamp())."</i></p>";
+            $content .= "<p><i>".strftime('%A %d %B %G - %H:%M',$date->getTimestamp())."</i></p>";
             //$content .= "<p>".get_locale()."</p>";
             $content .= "<p>".esc_html__("Your invitation request has been taken into account",'lab').".<br>".esc_html__("It has been forwarded to your host",'lab').".</p>";
             $content .= lab_InviteForm('',$guest,$invite);
@@ -699,6 +701,8 @@ function lab_invitations_mail($type=1, $guest, $invite) {
             break;
         case 2:
             $subj = esc_html__("Mission request",'lab');
+            $host = new LabUser($invite['host_id']);
+            $dest = $host->email;
             $date = date_create_from_format("Y-m-d H:i:s", $invite["creation_time"]);
             $content .= "<p>".esc_html__("Your mission request has been taken into account",'lab').".<br>".esc_html__("It has been forwarded to your responsible",'lab').".</p>";
             $content .= lab_mission_summary($invite);
@@ -755,8 +759,11 @@ function lab_mission_summary($invite) {
 
     $chargesList = '<ul>';
     $charges = json_decode($invite['charges']);
-    foreach ($charges as $el => $value) {
-        $chargesList .= "<li><i>$el : </i>$value €</li>";
+    if($charges)
+    {
+        foreach ($charges as $el => $value) {
+            $chargesList .= "<li><i>$el : </i>$value €</li>";
+        }
     }
     $chargesList .= '</ul>';
     $out = '<div class="lab_invite_field"><h2>'.esc_html__("Summary of the mission request",'lab').' : <i class="fas fa-arrow-up"></i></h2>';
@@ -781,7 +788,7 @@ function paramToMap($params) {
 
 function lab_mission_display_travels($travels) {
     $meansOfLocomotion = paramToMap(lab_admin_get_params_meanOfTransport());
-    $out .= '<h2>'.esc_html__("Travels",'lab').' :</h2><table class="table">';
+    $out = '<h2>'.esc_html__("Travels",'lab').' :</h2><table class="table">';
     foreach($travels as $travel) {
         $out .= "<tr>";
         $out .= '<td>'.$travel->travel_date;
