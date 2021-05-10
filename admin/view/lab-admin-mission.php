@@ -131,6 +131,7 @@
     <button type="button" id="lab_mission_excel" class="btn btn-excel"> <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Microsoft_Excel_2013-2019_logo.svg/1200px-Microsoft_Excel_2013-2019_logo.svg.png"></button>
     </span>
 <?php lab_html_select("lab_mission_filter_site", "lab_budget_info_filter_site", "", "lab_admin_get_params_userLocation", null, array("value"=>"","label"=>"".esc_html__('Site','lab')), ""); ?>
+<?php lab_html_select("lab_mission_filter_group", "lab_mission_filter_group", "", "lab_admin_group_select_group", "group_name", array("value"=>"","label"=>"".esc_html__('Group','lab')), ""); ?>
 <?php lab_html_select("lab_mission_filter_budget_manager", "lab_budget_info_filter_budget_manager", "", "lab_admin_budget_managers_list", null, array("value"=>"","label"=>"".esc_html__('Budget manager','lab')), ""); ?>
 <label class="screen-reader-text" for="post-search-input"><?php esc_html_e('Search command Number','lab'); ?>:</label>
   </div></div>

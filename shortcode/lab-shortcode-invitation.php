@@ -132,17 +132,23 @@ function lab_mission($args) {
         {
             $selectedGroup = "";
             if(isset($invitation)) {
-                $selectedGroup = ($invitation->mission_objective==$missionparam->value)?'selected="selected"':"";
+                $selectedGroup = ($invitation->mission_objective==$missionparam->id)?'selected="selected"':"";
             } 
             else {
                 $selectedGroup = ($missionparam->value == "Mission" ? 'selected="selected"':"");
             }
-            $invitationStr .= '<option value="'.$missionparam->id.'" '.$selectedGroup.'>'.esc_html__($missionparam->value,"lab")                                                                                                                                                                                      .'</option>';
+            $invitationStr .= '<option value="'.$missionparam->id.'" '.$selectedGroup.'>'.esc_html__($missionparam->value,"lab").'</option>';
         }
         $invitationStr .= '</select></div>
             <div class="lab_invite_field">
                 &nbsp;<label for="lab_no_charge_mission">
-                <input type="checkbox" id="lab_no_charge_mission">'.esc_html__("No charge mission","lab").' </label>
+                <input type="checkbox" id="lab_no_charge_mission"';
+
+        if($param['hostpage'] && $invitation && $invitation->no_charge == 1)
+        {
+            $invitationStr .= 'checked';
+        }
+        $invitationStr .= '>'.esc_html__("No charge mission","lab").' </label>
             
             </div>
         </div>';
@@ -314,7 +320,8 @@ function lab_mission($args) {
                     <input type="text" id="lab_maximum_cost" value="'.(!$newForm ? $invitation->maximum_cost : '').'">
                     <p>'.esc_html__("To be filled in by the person in charge: maximum budget allocated to this invitation ","lab").'</p>
                 </div>
-            </div><!--';
+            </div>';
+            /*
             if ($isgroupLeader) {
                 $invitationStr .= '<div class="lab_invite_field">
                 <input '.($invitation->status>10 ? 'disabled' : '').' type="submit" value="'.esc_html__("Save","lab").'">
@@ -329,6 +336,7 @@ function lab_mission($args) {
                 <div class="lab_invite_row lab_send_group_chief"><p class="lab_invite_field">Cliquez ici pour compléter la demande et la transmettre au responsable du groupe :</p><button id="lab_mission_send_group_leader">'.esc_html__("Send to responsible",'lab').'</button></div>';
             }
             $invitationStr .= '-->';
+            //*/
             $invitationStr .= '<div class="lab_invite_row_right"><button id="lab_mission_save" type="button" class="btn btn-primary">'.esc_html__("Update",'lab').'</button>&nbsp&nbsp';
             $managerType = 0;
             $budget_manager_ids = lab_group_manager(1);
@@ -351,11 +359,12 @@ function lab_mission($args) {
                     }
                 }
             }
-
+            // if group leader
             if($managerType == 2 || $managerType == 3) {
                 $invitationStr .= '<button id="lab_mission_validate" type="button" class="btn btn-success">'.esc_html__("Validate", "lab").'</button>&nbsp&nbsp
                                    <button id="lab_mission_refuse" type="button" class="btn btn-danger">'.esc_html__("Refuse","lab").'</button>';
             }
+            // if administrative manager
             else if($managerType == 1) {
                 $invitationStr .= '<button id="lab_mission_tic" type="button" class="btn btn-info">'.esc_html__("Take in charge","lab").'</button>&nbsp&nbsp
                                    <button id="lab_mission_complete" type="button" class="btn btn-success">'.esc_html__("Complete","lab").'</button>';
@@ -366,9 +375,16 @@ function lab_mission($args) {
             $invitationStr .= '</div>';                                
         }
         else if($param['hostpage']) {
-            $invitationStr .= '<div class="lab_invite_row_right"><button id="lab_mission_save" type="button" class="btn btn-primary">'.esc_html__("Update",'lab').'</button>&nbsp&nbsp';
-            $invitationStr .= '<button id="lab_mission_cancel" type="button" class="btn btn-warning">'.esc_html__("Cancel","lab").'</button>';
-            $invitationStr .= '</div>';   
+
+            if (!$newForm) {
+                $invitationStr .= '<div class="lab_invite_row_right"><button id="lab_mission_save" type="button" class="btn btn-primary">'.esc_html__("Update",'lab').'</button>&nbsp&nbsp';
+                $invitationStr .= '<button id="lab_mission_cancel" type="button" class="btn btn-warning">'.esc_html__("Cancel","lab").'</button>';
+                $invitationStr .= '</div>';
+            }
+            else {
+                $invitationStr .= '<div class="lab_invite_row_right"><button id="lab_mission_save" type="button" class="btn btn-primary">'.esc_html__("Save",'lab').'</button>';
+                $invitationStr .= '</div>';
+            }
         }
         else {
             $invitationStr .= '<div class="lab_invite_field">
@@ -421,8 +437,9 @@ function mission_user_funding($userId, $mission, $isBudgetManager) {
         $html .= '</select>';
     }
     else {
-        $html .= '<input type="hidden" id="lab_mission_user_funding" value="0">';
+        $html .= '<input type="hidden" id="lab_mission_user_funding" value="0"><span id="lab_mission_group_funding">';
         $html .= esc_html__("Group fundings","lab");
+        $html .= "<span>";
     }
     $html .= '</div>';
     return $html;

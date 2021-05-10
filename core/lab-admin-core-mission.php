@@ -157,6 +157,13 @@ function lab_mission_load($missionToken, $filters = null, $groupIds = null) {
                     $where .= "m.status=".lab_mission_status_to_value($value)."";
                     $data["filters"]["status"] = $value;
                 }
+                if ($key == "group") {
+                    if ($nbFilter > 0) {
+                        $where .= " AND ";
+                    }
+                    $where .= "m.host_group_id=".$value."";
+                    $data["filters"]["status"] = $value;
+                }
                 $nbFilter += 1;
             }
         }
@@ -232,6 +239,15 @@ function lab_mission_load($missionToken, $filters = null, $groupIds = null) {
     }
     $data["years"] = $years;
     $data["sql"] = $sql;
+    return $data;
+}
+
+function lab_mission_get_user_information($userId) {
+    $groups = lab_admin_group_by_user($userId);
+    $contracts = lab_admin_contract_get_contracts_by_user($userId);
+    $data   = array();
+    $data["groups"] = $groups;
+    $data["contracts"] = $contracts;
     return $data;
 }
 

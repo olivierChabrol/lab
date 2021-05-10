@@ -146,6 +146,9 @@ function lab_invitations_editInvitation($missionId, $params) {
       case "funding_source":
         $comment_vals[$cpt] = esc_html__("Funding source", "lab");
         break;
+      case "no_charge":
+        $comment_vals[$cpt] = esc_html__("No charge mission", "lab");
+        break;
       case "maximum_cost":
         $comment_vals[$cpt] = esc_html__("Maximum cost", "lab");
         break;
@@ -154,6 +157,7 @@ function lab_invitations_editInvitation($missionId, $params) {
   }
   $content = "¤";
   $numItems = count($comment_vals);
+  $i = 0;
   foreach($comment_vals as $cv) {
     if(++$i == $numItems) {
       $content .= $cv." ";

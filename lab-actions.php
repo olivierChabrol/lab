@@ -190,6 +190,7 @@ if (is_admin()) {
     add_action( 'wp_ajax_lab_mission_refuse', 'lab_mission_refuse');
     add_action( 'wp_ajax_lab_mission_cancel', 'lab_mission_cancel');
     add_action( 'wp_ajax_lab_mission_complete', 'lab_mission_complete');
+    add_action( 'wp_ajax_lab_mission_get_user_information', 'lab_mission_ajax_get_user_information');
 
     //add_action( 'wp_ajax_lab_mission_getNotifs', 'lab_mission_getNotifs');
     //add_action( 'wp_ajax_lab_mission_resetNotifs', 'lab_mission_resetNotifs');
