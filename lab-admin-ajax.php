@@ -1352,10 +1352,13 @@ function lab_invitations_new() {
     'last_name'=> $fields['guest_lastName'],
     'email'=> $fields['guest_email'],
     'phone'=> $fields['guest_phone'],
-    'language'=> $fields['guest_country'],
     'residence_country'=> $fields['guest_residence_country'],
     'residence_city'=> $fields['guest_residence_city'],
   );
+  if(isset($fields['guest_country'])) {
+    $guest['language'] = $fields['guest_country'];
+  }
+
   $travels = $fields["travels"];
   do {//Génère un token jusqu'à ce qu'il soit unique (on sait jamais)
     $token = bin2hex(random_bytes(10));
@@ -1389,10 +1392,17 @@ function lab_invitations_new() {
   //wp_send_json_success("toto " . $managerId);
   $fields['manager_id'] = $managerId;
 
-  foreach (['host_group_id','host_id', 'manager_id', 'estimated_cost', 'hostel_cost', 'hostel_night', 'funding' , 'mission_objective','funding_source','research_contract'] as $champ) {
-    $invite[$champ]=$fields[$champ];
+  foreach (['host_group_id','host_id', 'manager_id', 'estimated_cost', 'hostel_cost', 'hostel_night', 'funding' , 'mission_objective','funding_source','research_contract', 'no_charge'] as $champ) {
+    if(isset($fields[$champ])) {
+      $invite[$champ]=$fields[$champ];
+    }
   }
-  $invite["charges"]=json_encode($fields["charges"]);
+  if(isset($fields["charges"])) {
+    $invite["charges"]=json_encode($fields["charges"]);
+  }
+  else {
+    $invite["charges"]= null;
+  }
   $missionId = lab_mission_create($invite);
   if (!is_numeric ($missionId))
   {
@@ -2309,6 +2319,7 @@ function lab_admin_ldap_settings() {
   );
   foreach ($associations as $key => $value) {
     if (strlen($_POST[$key][0])>0) {
+      //@todo corriger le retour de la fonction lab_admin_param_save
       if (lab_admin_param_save($value, $_POST[$key][0],'000001',($_POST[$key][1])===false, null)) {
         wp_send_json_error();
       }
