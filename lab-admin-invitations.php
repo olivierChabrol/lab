@@ -119,6 +119,12 @@ function lab_invitations_editInvitation($missionId, $params) {
 
   foreach($change as $key=>$value) {
     switch($key) {
+      case "funding_source":
+        $comment_vals[$cpt] = esc_html__("Funding source", "lab");
+        break;
+      case "funding":
+        $comment_vals[$cpt] = esc_html__("Fundings", "lab");
+        break;
       case "guest_id":
         $comment_vals[$cpt] = esc_html__("Guest ID", "lab");
         break;
@@ -128,8 +134,17 @@ function lab_invitations_editInvitation($missionId, $params) {
       case "host_group_id":
         $comment_vals[$cpt] = esc_html__("Host group ID", "lab");
         break;
+      case "hostel_cost":
+        $comment_vals[$cpt] = esc_html__("Hostel estimated cost", "lab");
+        break;
+      case "hostel_night":
+        $comment_vals[$cpt] = esc_html__("Number of night(s)", "lab");
+        break;
       case "manager_id":
         $comment_vals[$cpt] = esc_html__("Manager ID", "lab");
+        break;
+      case "maximum_cost":
+        $comment_vals[$cpt] = esc_html__("Maximum cost", "lab");
         break;
       case "mission_objective":
         $comment_vals[$cpt] = esc_html__("Mission type", "lab");
@@ -137,20 +152,8 @@ function lab_invitations_editInvitation($missionId, $params) {
       case "needs_hostel":
         $comment_vals[$cpt] = esc_html__('Field "Need a hostel"', "lab");
         break;
-      case "hostel_night":
-        $comment_vals[$cpt] = esc_html__("Number of night(s)", "lab");
-        break;
-      case "hostel_cost":
-        $comment_vals[$cpt] = esc_html__("Hostel estimated cost", "lab");
-        break;
-      case "funding_source":
-        $comment_vals[$cpt] = esc_html__("Funding source", "lab");
-        break;
       case "no_charge":
         $comment_vals[$cpt] = esc_html__("No charge mission", "lab");
-        break;
-      case "maximum_cost":
-        $comment_vals[$cpt] = esc_html__("Maximum cost", "lab");
         break;
     }
     $cpt++;

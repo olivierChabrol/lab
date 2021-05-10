@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: lab\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-05-10 11:08+0200\n"
-"PO-Revision-Date: 2021-05-10 11:08+0200\n"
+"PO-Revision-Date: 2021-05-10 15:28+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -651,27 +651,23 @@ msgstr "Ville de départ"
 
 #: core/lab-admin-core-mission.php:385 shortcode/lab-shortcode-invitation.php:251
 msgid "Station from"
-msgstr ""
+msgstr "Gare de départ"
 
 #: core/lab-admin-core-mission.php:386
 msgid "Travel to"
 msgstr "Ville d'arrivée"
 
 #: core/lab-admin-core-mission.php:387 shortcode/lab-shortcode-invitation.php:256
-#, fuzzy
-#| msgid "Estimation cost"
 msgid "Station to"
-msgstr "Coût estimé"
+msgstr "Gare d'arrivée"
 
 #: core/lab-admin-core-mission.php:388
 msgid "Means of locomotion"
 msgstr "Moyen de transport"
 
 #: core/lab-admin-core-mission.php:389 shortcode/lab-shortcode-invitation.php:261
-#, fuzzy
-#| msgid "Travel from"
 msgid "Travel company"
-msgstr "Ville de départ"
+msgstr "Companie de transport"
 
 #: core/lab-admin-core-mission.php:390
 msgid "Number of people"

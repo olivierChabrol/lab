@@ -4,14 +4,7 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 
 function lab_mission_status_to_value($missionStatus) {
-    $status = array();
-    $status["c"] = 265;
-    $status["ca"] = 268;
-    $status["wgm"] = 264;
-    $status["n"] = 261;
-    $status["vgl"] = 266;
-    $status["rgl"] = 267;
-    return $status[$missionStatus];
+    return AdminParams::get_param_by_slug("ms".$missionStatus)->id;
 }
     
 function lab_mission_delete($missionId) {

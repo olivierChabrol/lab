@@ -148,13 +148,16 @@ function lab_budget_info_ajax_load() {
   $budgetId = null;
   if(isset($budgetId)) {
     $budgetId = $_POST['id'];
+    if (!isset($budgetId) || empty($budgetId)) {
+      $budgetId = null;
+    }
   }
-  if (!isset($budgetId) || empty($budgetId)) {
-    $budgetId = null;
-  }
-  $filters = $_POST['filters'];
-  if (!isset($filters) || empty($filters)) {
-    $filters = null;
+  $filters = null;
+  if(isset($_POST['filters'])) {
+    $filters = $_POST['filters'];
+    if (!isset($filters) || empty($filters)) {
+      $filters = null;
+    }
   }
   wp_send_json_success(lab_budget_info_load($budgetId, $filters));
 }
