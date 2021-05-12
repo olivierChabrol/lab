@@ -697,7 +697,7 @@ function lab_admin_contract_ajax_save() {
   $id = $_POST['id'];
   $contractName  = $_POST['name'];
   $contractStart = $_POST['start'];
-  $contractType  = $_POST['type'];
+  $contractType  = $_POST['contract_type'];
   $contractEnd   = $_POST['end'];
   $holders       = $_POST["holders"];
   $managers      = $_POST["managers"];
