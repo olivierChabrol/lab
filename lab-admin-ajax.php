@@ -14,7 +14,10 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 function lab_admin_ajax_user_info()
 {
   $userId = $_POST['userId'];
-  $fields = $_POST['fields'];
+  $fields = null;
+  if(isset($_POST['fields'])) {
+    $fields = $_POST['fields'];
+  }
   wp_send_json_success(lab_admin_user_info($userId, $fields));
 }
 
