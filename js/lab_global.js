@@ -124,7 +124,12 @@ function getGroupNames(groupId, data) {
   if (groupId != 0 && data.groups[groupId] != undefined)
   {
     let group = data.groups[groupId];
-    f = group.group_name;
+    if (group.acronym) {
+      f = group.acronym;
+    }
+    else {
+      f = group.group_name;
+    }
   }
   return f;
 }

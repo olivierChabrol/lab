@@ -83,12 +83,14 @@ function lab_mission_load($missionToken, $filters = null, $groupIds = null) {
     $isBudgetManager  = count($budgetManagerGroupIds) > 0;
     $isLeaderOfAGroup = count($leaderManagerGroupIds) > 0;
     $isAdmin = current_user_can( 'administrator' );
+    /*
     $data["rights"] = array();
     $data["rights"]["budgetManagerGroupIds"] = $budgetManagerGroupIds;
     $data["rights"]["leaderManagerGroupIds"] = $leaderManagerGroupIds;
     $data["rights"]["isBudgetManager"] = $isBudgetManager;
     $data["rights"]["isLeaderOfAGroup"] = $isLeaderOfAGroup;
     $data["rights"]["isAdmin"] = $isAdmin;
+    //*/
 
     // by default load current year
     if ($filters == null)
@@ -201,8 +203,8 @@ function lab_mission_load($missionToken, $filters = null, $groupIds = null) {
             $mission->group = "";
         }
         //$mission->manager_id = $userIds[$mission->host_id]->manager_id;
-        $mission->routes=lab_mission_load_travels($mission->id);
-        $groups[$mission->host_group_id] = lab_admin_get_group_name($mission->host_group_id);
+        $mission->routes = lab_mission_load_travels($mission->id);
+        $groups[$mission->host_group_id] = lab_admin_get_group($mission->host_group_id);
         # get all params associated to the mission see @$paramsToGet
         foreach($paramsToGet as $ptg) {
             if (!isset($params[$mission->$ptg])) {
