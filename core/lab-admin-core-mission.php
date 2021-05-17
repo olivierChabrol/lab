@@ -82,7 +82,13 @@ function lab_mission_load($missionToken, $filters = null, $groupIds = null) {
     $leaderManagerGroupIds = lab_admin_group_get_manager_groups(null, 2);
     $isBudgetManager  = count($budgetManagerGroupIds) > 0;
     $isLeaderOfAGroup = count($leaderManagerGroupIds) > 0;
-    $isAdmin = current_user_can( 'manage_options' );
+    $isAdmin = current_user_can( 'administrator' );
+    $data["rights"] = array();
+    $data["rights"]["budgetManagerGroupIds"] = $budgetManagerGroupIds;
+    $data["rights"]["leaderManagerGroupIds"] = $leaderManagerGroupIds;
+    $data["rights"]["isBudgetManager"] = $isBudgetManager;
+    $data["rights"]["isLeaderOfAGroup"] = $isLeaderOfAGroup;
+    $data["rights"]["isAdmin"] = $isAdmin;
 
     // by default load current year
     if ($filters == null)

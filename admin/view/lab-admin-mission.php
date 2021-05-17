@@ -74,6 +74,7 @@
     $groupLeaderIds  = array();
     $groupManagerIds = array();
     $debug           = False;
+    
     foreach($roles as $role) {
       if ($role == "administrator")
       {

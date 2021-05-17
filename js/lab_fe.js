@@ -1318,7 +1318,7 @@ function invitation_submit(callback) {
       'no_charge': $("#lab_no_charge_mission").prop('checked'),
     }
     console.log($("#lab_mission_user_funding").val());
-    if ($("#lab_email").attr('guest_id').length) {
+    if ($("#lab_email").length && $("#lab_email").attr('guest_id').length) {
       fields['guest_id'] = $("#lab_email").attr('guest_id');
     }
     if ($("#lab_mission_fund_origin").length) {
