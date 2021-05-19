@@ -4,14 +4,7 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 
 function lab_mission_status_to_value($missionStatus) {
-    $status = array();
-    $status["c"] = 265;
-    $status["ca"] = 268;
-    $status["wgm"] = 264;
-    $status["n"] = 261;
-    $status["vgl"] = 266;
-    $status["rgl"] = 267;
-    return $status[$missionStatus];
+    return AdminParams::get_param_by_slug("ms".$missionStatus)->id;
 }
     
 function lab_mission_delete($missionId) {
@@ -89,7 +82,15 @@ function lab_mission_load($missionToken, $filters = null, $groupIds = null) {
     $leaderManagerGroupIds = lab_admin_group_get_manager_groups(null, 2);
     $isBudgetManager  = count($budgetManagerGroupIds) > 0;
     $isLeaderOfAGroup = count($leaderManagerGroupIds) > 0;
-    $isAdmin = current_user_can( 'manage_options' );
+    $isAdmin = current_user_can( 'administrator' );
+    /*
+    $data["rights"] = array();
+    $data["rights"]["budgetManagerGroupIds"] = $budgetManagerGroupIds;
+    $data["rights"]["leaderManagerGroupIds"] = $leaderManagerGroupIds;
+    $data["rights"]["isBudgetManager"] = $isBudgetManager;
+    $data["rights"]["isLeaderOfAGroup"] = $isLeaderOfAGroup;
+    $data["rights"]["isAdmin"] = $isAdmin;
+    //*/
 
     // by default load current year
     if ($filters == null)
@@ -157,6 +158,13 @@ function lab_mission_load($missionToken, $filters = null, $groupIds = null) {
                     $where .= "m.status=".lab_mission_status_to_value($value)."";
                     $data["filters"]["status"] = $value;
                 }
+                if ($key == "group") {
+                    if ($nbFilter > 0) {
+                        $where .= " AND ";
+                    }
+                    $where .= "m.host_group_id=".$value."";
+                    $data["filters"]["status"] = $value;
+                }
                 $nbFilter += 1;
             }
         }
@@ -195,8 +203,8 @@ function lab_mission_load($missionToken, $filters = null, $groupIds = null) {
             $mission->group = "";
         }
         //$mission->manager_id = $userIds[$mission->host_id]->manager_id;
-        $mission->routes=lab_mission_load_travels($mission->id);
-        $groups[$mission->host_group_id] = lab_admin_get_group_name($mission->host_group_id);
+        $mission->routes = lab_mission_load_travels($mission->id);
+        $groups[$mission->host_group_id] = lab_admin_get_group($mission->host_group_id);
         # get all params associated to the mission see @$paramsToGet
         foreach($paramsToGet as $ptg) {
             if (!isset($params[$mission->$ptg])) {
@@ -232,6 +240,15 @@ function lab_mission_load($missionToken, $filters = null, $groupIds = null) {
     }
     $data["years"] = $years;
     $data["sql"] = $sql;
+    return $data;
+}
+
+function lab_mission_get_user_information($userId) {
+    $groups = lab_admin_group_by_user($userId);
+    $contracts = lab_admin_contract_get_contracts_by_user($userId);
+    $data   = array();
+    $data["groups"] = $groups;
+    $data["contracts"] = $contracts;
     return $data;
 }
 

@@ -17,6 +17,9 @@ jQuery(function($){
   $("#lab_mission_filter_budget_manager").change(function () {
     applyFilter();
   });
+  $("#lab_mission_filter_group").change(function () {
+    applyFilter();
+  });
   if ($("#lab_admin_mission_list_table").length) {
     loadMissions();
   }
@@ -48,7 +51,7 @@ jQuery(function($){
 
   function getFilters() {
     let filterPattern = "lab_mission_filter_";
-    let filterFields  = ["year", "status", "site", "budget_manager"];
+    let filterFields  = ["year", "status", "site", "budget_manager", "group"];
     let filters  = {};
     for (let i = 0; i < filterFields.length ; i++) {
       let filter = filterFields[i];
@@ -108,6 +111,10 @@ jQuery(function($){
     {
         $("#lab_mission_filter_year").val(data.filters["year"]);
     }
+    if (data.filters["group"])
+    {
+        $("#lab_mission_filter_group").val(data.filters["group"]);
+    }
 
 
     $("#lab_admin_mission_list_table_tbody").empty();
@@ -157,7 +164,7 @@ jQuery(function($){
       else if (sumrealcost == 0) {
         $(this).css("background-color", "khaki");
       }
-    })
+    });
   
 
     $("#lab_admin_mission_list_table_tbody").children("tr").each(function () 

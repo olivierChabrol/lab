@@ -14,7 +14,10 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 function lab_admin_ajax_user_info()
 {
   $userId = $_POST['userId'];
-  $fields = $_POST['fields'];
+  $fields = null;
+  if(isset($_POST['fields'])) {
+    $fields = $_POST['fields'];
+  }
   wp_send_json_success(lab_admin_user_info($userId, $fields));
 }
 
@@ -22,6 +25,10 @@ function lab_admin_ajax_user_info()
  * MISSION
  ********************************************************************************************/
 
+function lab_mission_ajax_get_user_information() {
+  $userId = $_POST['userId'];
+  wp_send_json_success(lab_mission_get_user_information($userId));
+}
 
 /**
  * Generate excel file
@@ -141,13 +148,19 @@ function lab_budget_info_ajax_save_order() {
 }
 
 function lab_budget_info_ajax_load() {
-  $budgetId = $_POST['id'];
-  if (!isset($budgetId) || empty($budgetId)) {
-    $budgetId = null;
+  $budgetId = null;
+  if(isset($budgetId)) {
+    $budgetId = $_POST['id'];
+    if (!isset($budgetId) || empty($budgetId)) {
+      $budgetId = null;
+    }
   }
-  $filters = $_POST['filters'];
-  if (!isset($filters) || empty($filters)) {
-    $filters = null;
+  $filters = null;
+  if(isset($_POST['filters'])) {
+    $filters = $_POST['filters'];
+    if (!isset($filters) || empty($filters)) {
+      $filters = null;
+    }
   }
   wp_send_json_success(lab_budget_info_load($budgetId, $filters));
 }
@@ -684,7 +697,7 @@ function lab_admin_contract_ajax_save() {
   $id = $_POST['id'];
   $contractName  = $_POST['name'];
   $contractStart = $_POST['start'];
-  $contractType  = $_POST['type'];
+  $contractType  = $_POST['contract_type'];
   $contractEnd   = $_POST['end'];
   $holders       = $_POST["holders"];
   $managers      = $_POST["managers"];
@@ -1368,6 +1381,7 @@ function lab_invitations_new() {
   $invite = array (
     'token'=>$token,
     'needs_hostel'=>$fields['needs_hostel']=='true' ? 1 : 0,
+    'no_charge'=>$fields['no_charge']=='true' ? 1 : 0,
     'creation_time' => $timeStamp,
     'status' => AdminParams::get_param_by_slug(AdminParams::MISSION_STATUS_NEW)->id
   );
@@ -1506,12 +1520,17 @@ function lab_invitations_edit() {
     $timeStamp=date("Y-m-d H:i:s",time());
     $invite = array (
       'needs_hostel'=>$fields['needs_hostel']=='true' ? 1 : 0,
+      'no_charge'=>$fields['no_charge']=='true' ? 1 : 0,
       'completion_time' => $timeStamp
     );
     foreach (['host_group_id', 'estimated_cost', 'maximum_cost', 'host_id', 'funding', 'mission_objective','hostel_night','hostel_cost','funding_source','research_contract'] as $champ) {
-      $invite[$champ]=$fields[$champ];
+      if(isset($fields[$champ])) {
+        $invite[$champ]=$fields[$champ];
+      }
     }
-    $invite["charges"]=json_encode($fields["charges"]);
+    if (isset($fields["charges"])) {
+      $invite["charges"]=json_encode($fields["charges"]);
+    }
     //wp_send_json_error($invite);
     $missionId = lab_mission_get_id_by_token($fields['token']);
     if($isGroupLeader && ((float)$fields['maximum_cost']) > 0) {

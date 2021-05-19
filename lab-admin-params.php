@@ -40,7 +40,7 @@ class AdminParams {
 
     public static function get_params_fromId($id) {
         global $wpdb;
-        $sql = "SELECT value,id FROM `".$wpdb->prefix."lab_params` WHERE type_param=".$id." ORDER BY value;";
+        $sql = "SELECT value,id,slug FROM `".$wpdb->prefix."lab_params` WHERE type_param=".$id." ORDER BY value;";
         return $results = $wpdb->get_results($sql);
     }
 

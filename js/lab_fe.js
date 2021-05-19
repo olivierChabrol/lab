@@ -1067,6 +1067,7 @@ function LABLoadInvitation() {
         event.preventDefault();
         $("#lab_hostname").val(firstname + " " + lastname);
         $("#lab_hostname").attr('host_id', ui.item.user_id);
+        missionReloadUserInfo(ui.item.user_id);
       }
     });
     //Si le formulaire contient déjà des informations, sélectionne les bonnes options
@@ -1202,6 +1203,71 @@ function formAction() {
   });
 }
 
+function missionReloadUserInfo(userId) {
+  data = {
+    'action': 'lab_mission_get_user_information',
+    'userId': userId
+  };
+  callAjax(data, null, changeGroupAndFunding, null, null);
+}
+
+function changeGroupAndFunding(data) {
+  //console.log(data);
+  if (data["groups"]) {
+    $("#lab_group_name option").each(function() {
+      $(this).remove();
+    });
+    $.each(data["groups"], function (index, value){
+      let opt = '<option ';
+      if (value.favorite == 1) {
+        opt += "selected ";
+      }
+      opt += 'value="'+value.id+'">'+value.name+'</option>'
+      $("#lab_group_name").append(opt);
+    });
+  }
+  if (data["contracts"]) {
+    if (data["contracts"].length > 0)
+    {
+      let select = undefined;
+      if ($("#lab_mission_user_funding").prev().is("select")) {
+        $("#lab_mission_user_funding option").each(function() {
+          $(this).remove();
+        });
+        select = $("#lab_mission_user_funding");
+      }
+      else {
+        let parent = $("#lab_mission_user_funding").parent();
+        $("#lab_mission_user_funding").remove();
+        $("#lab_mission_group_funding").remove();
+        select = $('<select/>');
+        select.attr("id", "lab_mission_user_funding");
+        parent.append(select);
+      }
+      let defaultOpt = $('<option value="0">Financements du groupe</option>');
+      select.append(defaultOpt);
+      $.each(data["contracts"], function (index, value){
+        let opt = $('<option value="'+value.id+'">'+value.name+'</option>');
+        select.append(opt);
+      });
+    }
+    // user do not have their own contract
+    else {
+      //console.log("No contracts");
+      let parent = $("#lab_mission_user_funding").parent();
+      if ($("#lab_mission_user_funding").is("select")) {
+        //console.log("lab_mission_user_funding est un select");
+        $("#lab_mission_user_funding").remove();
+        if (!$("#lab_mission_group_funding").length) {
+          parent.append($('<span id="lab_mission_group_funding">Financements du groupe</span>'));
+        }
+        $("#lab_mission_group_funding").html("Financements du groupe");
+        parent.append($('<input type="hidden" id="lab_mission_user_funding" value="0"></input>'));
+      }
+    }
+  }
+}
+
 function getSumCostTravels() {
   var output = 0.0;
   $("#lab_mission_travels_table_tbody").children("tr").each(function () {
@@ -1252,7 +1318,7 @@ function invitation_submit(callback) {
       'no_charge': $("#lab_no_charge_mission").prop('checked'),
     }
     console.log($("#lab_mission_user_funding").val());
-    if ($("#lab_email").attr('guest_id').length) {
+    if ($("#lab_email").length && $("#lab_email").attr('guest_id').length) {
       fields['guest_id'] = $("#lab_email").attr('guest_id');
     }
     if ($("#lab_mission_fund_origin").length) {
@@ -1288,6 +1354,7 @@ function invitation_submit(callback) {
         'fields': fields
       };
       callAjax(data, null, callback, null, null);
+      //callAjax(data, null, null, null, null);
     }
 }
 jQuery("#button_add_comment").click(function () {

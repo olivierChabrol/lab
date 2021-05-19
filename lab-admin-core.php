@@ -247,7 +247,7 @@ function lab_budget_info_load($budgetId, $filters = null) {
     $data = array();
     $data["filters"] = array();
     $sql = "SELECT bi.* from ".$wpdb->prefix."lab_budget_info AS bi";
-    if ($budgetId != null OR $filters != null) {
+    if ($budgetId != null || $filters != null) {
         $sql .= " WHERE ";    
         if ($budgetId != null) {
             $sql .= "id=".$budgetId;
@@ -256,8 +256,17 @@ function lab_budget_info_load($budgetId, $filters = null) {
             $nbFilter = 0;
             foreach($filters as $key=>$value) {
                 if ($key == "year") {
-                    $sql .= "(bi.`order_date` != '0000-00-00' AND YEAR(bi.`order_date`)=".$value.")";
-                    $data["filters"]["year"] = $value;
+                    if ($value != '*') {
+                        $sql .= "(bi.`order_date` != '0000-00-00' AND YEAR(bi.`order_date`)=".$value.")";
+                        $data["filters"]["year"] = $value;
+                    }
+                    // if the only filter is year and * select remove key word WHERE in the SQL request to avoid error
+                    else {
+                        $nbFilter-=1;
+                        if ($budgetId == null && count($filters) == 1) {
+                            $sql = substr($sql, 0, strlen($sql) - 7);
+                        }
+                    }
                 }
                 else if ($key == "state") {
                     if ($nbFilter > 0) {
@@ -315,6 +324,14 @@ function lab_budget_info_load($budgetId, $filters = null) {
                 }
                 $nbFilter += 1;
             }
+        }
+    }
+    else {
+        if ($filters != null ||  !isset($filters["years"]))
+        {
+            $value = 2021;
+            $sql .= " WHERE (bi.`order_date` != '0000-00-00' AND YEAR(bi.`order_date`)=".$value.")";
+            $data["filters"]["year"] = $value;
         }
     }
     $sql .= " ORDER BY `request_date` DESC";
@@ -912,9 +929,9 @@ function lab_admin_group_add_manager($groupId, $userId, $userRole) {
     }
 }
 
-function lab_admin_get_group_name($groupId) {
+function lab_admin_get_group($groupId) {
     global $wpdb;
-    $results = $wpdb->get_results("SELECT group_name FROM `".$wpdb->prefix."lab_groups` WHERE id=".$groupId);
+    $results = $wpdb->get_results("SELECT group_name,acronym FROM `".$wpdb->prefix."lab_groups` WHERE id=".$groupId);
     if (count($results) > 0) {
         return $results[0];
     }
