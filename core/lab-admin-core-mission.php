@@ -27,7 +27,7 @@ function lab_mission_set_budget_manager($missionId, $managerId) {
 
 function lab_mission_get_budget_manager($missionId) {
     global $wpdb;
-    $results = $wpdb->get_results("SELECT manager_id FROM `".$wpdb->prefix."lab_mission` WHERE id=".$missionId);
+    $results = $wpdb->get_results("SELECT manager_id FROM `".$wpdb->prefix."lab_mission` WHERE id=".$missionId); 
     if (count($results) == 1) {
         return $results[0]->manager_id;
     }
