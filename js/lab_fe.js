@@ -41,21 +41,36 @@ jQuery(function($){
   });
 
   $("#lab_mission_validate").click(function() {
-    data = {
-      'action': 'lab_mission_validate',
-      'mission_id': $("#lab_mission_id").val()
-    };
-    callAjax(data, null, loadAdminPanel, null, null);
-    //callAjax(data, null, null, null, null);
+    if($("#lab_hostname").attr("host_id") == $("#lab_mission_currentUser_id").val())
+    {
+      $("#lab_mission_question_dialog").modal();
+      $("#lab_mission_question_title").html("Validate you own mission ?");
+      $("#lab_mission_question_callback_fct").val("missionGLValidateMission");
+    }
+    else {
+      missionGLValidateMission();
+    }
+  });
 
+  $("#lab_mission_question_delete_confirm").click(function () {
+    var callBackFct = $("#lab_mission_question_callback_fct").val();
+    if (callBackFct != undefined && callBackFct != "") {
+      var fn = window[callBackFct];
+      fn();
+    }
   });
 
   $("#lab_mission_refuse").click(function() {
-    data = {
-      'action': 'lab_mission_refuse',
-      'mission_id': $("#lab_mission_id").val()
-    };
-    callAjax(data, null, loadAdminPanel, null, null);
+
+    if($("#lab_hostname").attr("host_id") == $("#lab_mission_currentUser_id").val())
+    {
+      $("#lab_mission_question_dialog").modal();
+      $("#lab_mission_question_title").html("Refuse you own mission ?");
+      $("#lab_mission_question_callback_fct").val("missionGLRefuseMission");
+    }
+    else {
+      missionGLRefuseMission();
+    }
   });
   
   $("#lab_mission_tic").click(function() {
@@ -78,6 +93,7 @@ jQuery(function($){
     }
     hideShowInvitationDiv();
   });
+
 
   function loadDirectory()
   {
@@ -1642,3 +1658,22 @@ function lab_pagination(pages, currentPage) {
 }
 
 });
+
+function missionGLValidateMission()
+{
+  data = {
+    'action': 'lab_mission_validate',
+    'mission_id': jQuery("#lab_mission_id").val()
+  };
+  callAjax(data, null, loadAdminPanel, null, null);
+}
+
+function missionGLRefuseMission()
+{
+
+  data = {
+    'action': 'lab_mission_refuse',
+    'mission_id': jQuery("#lab_mission_id").val()
+  };
+  callAjax(data, null, loadAdminPanel, null, null);
+}

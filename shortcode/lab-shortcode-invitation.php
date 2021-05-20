@@ -106,7 +106,7 @@ function lab_mission($args) {
     
     if (!$isGuest) {
         $invitationStr .= '
-            <!-- <form action="javascript:formAction()"> -->
+            <input type="hidden" id="lab_mission_currentUser_id" value="'.get_current_user_id().'">
             <h3>'.esc_html__("Personnal informations","lab").'</h3>
             <div class="lab_invite_field">
             <label for="lab_hostname">'.esc_html__("Host name","lab")." : ".'</label>';
@@ -337,7 +337,12 @@ function lab_mission($args) {
             }
             $invitationStr .= '-->';
             //*/
-            $invitationStr .= '<div class="lab_invite_row_right"><button id="lab_mission_save" type="button" class="btn btn-primary">'.esc_html__("Update",'lab').'</button>&nbsp&nbsp';
+            if ($newForm) {
+                $invitationStr .= '<div class="lab_invite_row_right"><button id="lab_mission_save" type="button" class="btn btn-primary">'.esc_html__("Declare mission",'lab').'</button>&nbsp&nbsp';
+            }
+            else {
+                $invitationStr .= '<div class="lab_invite_row_right"><button id="lab_mission_save" type="button" class="btn btn-primary">'.esc_html__("Update",'lab').'</button>&nbsp&nbsp';
+            }
             $managerType = 0;
             $budget_manager_ids = lab_group_manager(1);
             $group_leader_ids = lab_group_manager(2);
@@ -399,6 +404,15 @@ function lab_mission($args) {
             }
             $invitationStr .= '</div><!-- end div lab_invitationComments -->';
         }
+        $invitationStr .= '<div id="lab_mission_question_dialog" class="modal">
+        <p id="lab_mission_question_title"></p>
+        <input type="hidden" id="lab_mission_question_mission_id" value="">
+        <input type="hidden" id="lab_mission_question_callback_fct" value="">
+        <div id="lab_mission_question_dialog_options">
+          <a href="#" rel="modal:close">'.esc_html__('Cancel','lab').'</a>
+          <a href="#" rel="modal:close" id="lab_mission_question_delete_confirm" keyid="">'.esc_html__('Confirm','lab').'</a>
+        </div>
+      </div>';
     return $invitationStr;
 }
 /**
@@ -587,7 +601,6 @@ function lab_invitations_interface($args) {
             break;
     }
     $listInvitationStr .= lab_invitations_filters();
-    //$listInvitationStr .= '<div id="loadingAjaxGif" style="display:none;"><img src="/wp-content/plugins/lab/loading.gif"/></div>';
     $listInvitationStr .= '<div id="loadingAjaxGif"><img src="/wp-content/plugins/lab/loading.gif"/></div>';
     $listInvitationStr .= '<table view="'.$param['view'].'" id="lab_invite_list" class="table">
                             <thead>
@@ -606,7 +619,6 @@ function lab_invitations_interface($args) {
                             </thead>
                             <tbody id="lab_invitesListBody">';
     
-    //$listInvitationStr .= lab_invitations_interface_fromList($list,$param['view']);
     $listInvitationStr .=   '</tbody>
                           </table>';
     $listInvitationStr .=  '<div id="lab_pages">'.lab_invitations_pagination(1,1).'</div><br/><br/>';

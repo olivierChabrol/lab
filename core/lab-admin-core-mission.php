@@ -36,7 +36,7 @@ function lab_mission_get_budget_manager($missionId) {
 
 function lab_mission_get_id_by_token($token) {
     global $wpdb;
-    $sql = "SELECT id FROM `".$wpdb->prefix."lab_mission` WHERE token = '".$token."'";
+    $sql = "SELECT id FROM `".$wpdb->prefix."lab_mission` WHERE token = '".$token."'"; 
     $results = $wpdb->get_results($sql);
     if (count($results) > 0) {
         return $results[0]->id;
