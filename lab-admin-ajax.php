@@ -1459,52 +1459,72 @@ function lab_invitations_new() {
   }
   wp_send_json_success($html);
 }
+
+function lab_mission_ajax_lab_mission_load_comments() {
+  $fields = $_POST['token'];
+
+}
+
 function lab_invitations_edit() {
   $fields = $_POST['fields'];
   if(!isset($fields['host_group_id'])) {
+    if (!isset($fields['host_id']) && isset($fields["token"])) {
+      $mission = lab_mission_by_token($fields["token"]);
+      //wp_send_json_error($mission);
+      //return;
+      $fields['host_id'] = $mission->host_id;
+    }
     $hostGroupId = lab_group_get_user_group($fields['host_id']);
     $fields['host_group_id'] = $hostGroupId;
   }
   $managerId = lab_admin_group_get_manager($fields['host_group_id']);
-  //wp_send_json_success("toto " . $managerId);
   $fields['manager_id'] = $managerId;
-  //wp_send_json_success( $fields['host_group_id']);
+  
   $currentUserId = get_current_user_id();
-  $isHost = $currentUserId == $fields['host_id'];
-  $userGroupInfo = lab_admin_group_get_user_info($currentUserId, $fields['host_group_id']);
+  $isHost = false;
   $canModify = false;
   $isBudgetManager = false;
-  foreach($userGroupInfo as $gi) {
-    if(!$isBudgetManager) {
-      $isBudgetManager = $gi->manager_type == 1;
-    }
-  }
   $isGroupLeader = false;
-  foreach($userGroupInfo as $gi) {
-    if(!$isGroupLeader) {
-      $isGroupLeader = $gi->manager_type == 2;
+  $isGuest = false;
+  $isAdmin = false;
+  // if modify by guest
+  if ($currentUserId == 0 && isset($fields["token"]))
+  {
+    $isGuest = true;
+    $canModify = true;
+  }
+  // if your not a guest check your rights
+  else
+  {
+    $isHost = $currentUserId == $fields['host_id'];
+    $userGroupInfo = lab_admin_group_get_user_info($currentUserId, $fields['host_group_id']);
+
+    foreach($userGroupInfo as $gi) {
+      if(!$isBudgetManager) {
+        $isBudgetManager = $gi->manager_type == 1;
+      }
+      if(!$isGroupLeader) {
+        $isGroupLeader = $gi->manager_type == 2;
+      }
+    }
+
+    // an admin can modify a mission
+    $isAdmin = current_user_can('manage_options');
+
+    // all budget Managers can modify a mission
+    $canModify = $isBudgetManager;
+
+    // if i am the group leader 
+    if (!$canModify) {
+      $canModify = $isGroupLeader;
+    }
+
+    // if it's i am the owner of the mission
+    if (!$canModify) {
+      $canModify = $currentUserId == $fields['host_id'];
     }
   }
 
-  // an admin can modify a mission
-
-  $isAdmin = current_user_can('manage_options');
-
-  // all budget Managers can modify a mission
-  $canModify = $isBudgetManager;
-
-  // if i am the group leader 
-  if (!$canModify) {
-    $canModify = $isGroupLeader;
-  }
-
-  // if it's i am the owner of the mission
-  if (!$canModify) {
-    $canModify = $currentUserId == $fields['host_id'];
-  }
-
-  
-  //wp_send_json_error($fields['host_group_id']);
   if ( $canModify || $isAdmin) {
     $guest = array (
       'first_name'=> $fields['guest_firstName'],
@@ -1520,23 +1540,37 @@ function lab_invitations_edit() {
     $timeStamp=date("Y-m-d H:i:s",time());
     $invite = array (
       'needs_hostel'=>$fields['needs_hostel']=='true' ? 1 : 0,
-      'no_charge'=>$fields['no_charge']=='true' ? 1 : 0,
+      //'no_charge'=>$fields['no_charge']=='true' ? 1 : 0,
       'completion_time' => $timeStamp
     );
-    foreach (['host_group_id', 'estimated_cost', 'maximum_cost', 'host_id', 'funding', 'mission_objective','hostel_night','hostel_cost','funding_source','research_contract'] as $champ) {
-      if(isset($fields[$champ])) {
-        $invite[$champ]=$fields[$champ];
+    if(isset($fields['no_charge'])) {
+      $invite['no_charge']=$fields['no_charge']=='true' ? 1 : 0;
+    }
+
+
+    if($isGuest)
+    {
+      foreach (['hostel_night','hostel_cost'] as $champ) {
+        if(isset($fields[$champ])) {
+          $invite[$champ]=$fields[$champ];
+        }
       }
     }
-    if (isset($fields["charges"])) {
-      $invite["charges"]=json_encode($fields["charges"]);
+    else {
+      foreach (['host_group_id', 'estimated_cost', 'maximum_cost', 'host_id', 'funding', 'mission_objective','hostel_night','hostel_cost','funding_source','research_contract'] as $champ) {
+        if(isset($fields[$champ])) {
+          $invite[$champ]=$fields[$champ];
+        }
+      }
+      if (isset($fields["charges"])) {
+        $invite["charges"]=json_encode($fields["charges"]);
+      }
+      if($isGroupLeader && ((float)$fields['maximum_cost']) > 0) {
+        $invite["status"] = AdminParams::get_param_by_slug(AdminParams::MISSION_STATUS_VALIDATED_GROUP_LEADER)->id;
+      }
     }
-    //wp_send_json_error($invite);
+
     $missionId = lab_mission_get_id_by_token($fields['token']);
-    if($isGroupLeader && ((float)$fields['maximum_cost']) > 0) {
-      $invite["status"] = AdminParams::get_param_by_slug(AdminParams::MISSION_STATUS_VALIDATED_GROUP_LEADER)->id;
-    }
-    //wp_send_json_success($invite);
     lab_invitations_editInvitation($missionId,$invite);
     $html = "<p>".esc_html__("Your invitation has been modified",'lab')."<br>à $timeStamp</p>";
     
@@ -1706,6 +1740,14 @@ function lab_invitations_comments(){
   $string = lab_inviteComments($missionId);
   $string .= lab_newComments(lab_admin_userMetaDatas_get(get_current_user_id()), $token);
   wp_send_json_success($string);
+}
+
+function lab_invitations_comments_json() {
+  $token = $_POST['token'];
+  $missionId = lab_invitations_getByToken($_POST['token'])->id;
+  //$string = lab_inviteComments($missionId);
+  //$string .= lab_newComments(lab_admin_userMetaDatas_get(get_current_user_id()), $token);
+  wp_send_json_success(lab_inviteComments_json($missionId));
 }
 
 function lab_invitations_realCost() {

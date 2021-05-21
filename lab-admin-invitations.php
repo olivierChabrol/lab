@@ -106,7 +106,13 @@ function lab_invitations_editGuest($id, $params) {
 function lab_invitations_editInvitation($missionId, $params) {
   global $wpdb;
   $userId = get_current_user_id();
-  $userMeta = lab_admin_usermeta_names($userId);
+  $userMeta = null;
+  if ($userId != 0) {
+    $userMeta = lab_admin_usermeta_names($userId);
+  }
+  else {
+    $userMeta = lab_invitations_getGuest_byMissionId($missionId);
+  }
   $missionType = lab_admin_get_mission_type($missionId);
 
   $currentParams = getAllTableFields("lab_mission", $missionId, "id");
@@ -241,6 +247,21 @@ function lab_invitations_guest_email_exist($email) {
   else {
     return $res[0];
   }
+}
+/**
+ * Return guest fields associated to a mission, if mission is an invitation
+ *
+ * @param [type] $missionId
+ * @return  guest fields associated to a mission, null otherwise
+ */
+function lab_invitations_getGuest_byMissionId($missionId) {
+  global $wpdb;
+  $sql = "SELECT g.* FROM `".$wpdb->prefix."lab_guests` AS g JOIN `".$wpdb->prefix."lab_mission` as m ON m.guest_id=g.id WHERE m.id=".$missionId.";";
+  $res = $wpdb->get_results($sql);
+  if (count($res) == 1) {
+    return $res[0];
+  }
+  return null;
 }
 function lab_invitations_getGuest($id) {
   if ($id == null) {

@@ -101,7 +101,7 @@ function lab_mission($args) {
         }
     }
     $newForm = $token=='0'; //Le formulaire est-il nouveau ? Si non, remplit les champs avec les infos existantes
-    $invitationStr = '<div id="missionForm" hostForm='.$param['hostpage'].' token="'.(($param['hostpage'] && strlen($token)>1) ? $token : '').'" newForm='.$newForm.'>';
+    $invitationStr = '<div id="missionForm" hostForm="'.$param['hostpage'].'" token="'.$token.'" newForm="'.$newForm.'">';
     $invitationStr .= '<h2>'.esc_html__("Form","lab").'<i class="fas fa-arrow-up"></i></h2>'.$missionInformation;
     
     if (!$isGuest) {
@@ -167,7 +167,7 @@ function lab_mission($args) {
             <h3>'.esc_html__("Guest Informations","lab").'</h3>
             <div class="lab_invite_field">
                 <label for="lab_email">'.esc_html__("Email","lab").'<span class="lab_form_required_star"> *</span></label>
-                <input type="email" required id="lab_email" guest_id="" name="lab_email"value="'.getGuestValue($newForm, $guest,'email').'">
+                <input type="email" required id="lab_email" guest_id="" name="lab_email" value="'.getGuestValue($newForm, $guest,'email').'">
             </div>
             <div class="lab_invite_row" id="lab_fullname">
                 <div class="lab_invite_field">
@@ -393,7 +393,7 @@ function lab_mission($args) {
         }
         else {
             $invitationStr .= '<div class="lab_invite_field">
-            <button id="lab_mission_submit">'.esc_html__("Submit","lab").'</button>
+            <button id="lab_mission_submit" class="btn btn-primary">'.esc_html__("Submit","lab").'</button>
         </div>';
         }
         if (!$newForm) {
@@ -887,8 +887,12 @@ function lab_InviteForm($who,$guest,$invite) {
     $out .= '</ul>';
     return $out;
 }
+function lab_inviteComments_json($missionId) {
+    return lab_invitations_getComments($missionId);    
+}
+
 function lab_inviteComments($missionId) {
-    $comments= lab_invitations_getComments($missionId);
+    $comments= lab_inviteComments_json($missionId);
     $out = '<div id="lab_invitation_oldComments">';
     if (count($comments)> 0) {
         foreach ( $comments as $comment) {

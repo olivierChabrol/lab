@@ -44,6 +44,16 @@ function lab_mission_get_id_by_token($token) {
     return null;
 }
 
+function lab_mission_by_token($token) {
+    global $wpdb;
+    $sql = "SELECT * FROM `".$wpdb->prefix."lab_mission` WHERE token = '".$token."'"; 
+    $results = $wpdb->get_results($sql);
+    if (count($results) > 0) {
+        return $results[0];
+    }
+    return null;
+}
+
 function lab_mission_take_in_charge($missionId)
 {
     $currentUserId = get_current_user_id();

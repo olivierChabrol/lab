@@ -922,8 +922,9 @@ function LABLoadInvitation() {
     });
 
     $("#lab_mission_submit").click(function(e) {
-      console.log("[$(#lab_mission_submit).click]");
-      invitation_submit(function() {
+      invitation_submit(function(data) {
+        toast_success(data);
+        missionReloadComments();
         return;
       });
     });
@@ -945,16 +946,6 @@ function LABLoadInvitation() {
       console.log($("#lab_mission option:selected" ).text());
       hideShowInvitationDiv();
     });
-
-    /*function hideShowInvitationDiv() {
-      if($("#lab_mission option:selected" ).text() == "Invitation") {
-        $("#inviteDiv").show();
-      }
-      else{
-        $("#inviteDiv").hide();
-      }
-      
-    }*/
 
     $("#missionForm h2").click(function() {
       if ( $("#missionForm").attr("wrapped")=="true" ) {
@@ -1217,6 +1208,58 @@ function formAction() {
   invitation_submit(function() {
     return;
   });
+}
+
+function missionReloadComments() {
+  $token = $("#missionForm").attr("token");
+  console.log("Token : " + $token);
+  if($token != undefined && $token != "")
+  {
+    data = {
+      'action': 'lab_mission_load_comments_json',
+      'token': $token
+    };
+    callAjax(data, null, displayComments, null, null);
+  }
+}
+
+function displayComments(data) {
+  jQuery("#lab_invitation_oldComments").empty();
+  jQuery.each(data, function(i, obj) {
+    let box = jQuery("<div/>").attr("class", "lab_comment_box");
+    let who = jQuery("<p/>").attr("class", "lab_comment_author auto");
+    if(obj.author_type==0) {
+      who.html("System");
+    }
+    box.append(who);
+    let msg = jQuery("<p/>").attr("class", "lab_comment auto");
+    let msgHour = jQuery("<i/>");
+    msgHour.html(obj.timestamp);
+    msg.append(msgHour);
+    msg.append(jQuery("<br/>"));
+    msg.append(obj.content);
+    box.append(msg);
+    jQuery("#lab_invitation_oldComments").append(box);
+  });
+  jQuery("#lab_invitation_oldComments").append();
+  generateNewCommentHtml(jQuery("#lab_invitation_oldComments"),"test");
+}
+
+function generateNewCommentHtml(htmlElm, token)
+{
+  let div = jQuery("<div/>").attr("token", token).attr("id", "lab_invitation_newComment");
+  let title = jQuery("<h5/>");
+  title.html("New comment");
+  let form = jQuery("<form>").attr("id", "form_new_comment");
+  let label = jQuery("<label><i>Publish as</i> : <span id='lab_comment_name' user_id='0'>John Doe</span></label>");
+  let ta    = jQuery("<textarea row=\"1\" cols=\"50\" id=\"lab_comment\" placeholder=\"Comment content...\"></textarea>");
+  let inp   = jQuery("<input id=\"button_add_comment\" type=\"button\" value=\"Send commend\">");
+  form.append(label);
+  form.append(ta);
+  form.append(inp);
+  div.append(title);
+  div.append(form);
+  htmlElm.append(div);
 }
 
 function missionReloadUserInfo(userId) {
