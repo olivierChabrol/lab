@@ -349,7 +349,7 @@ function lab_invitations_getPrefGroups($user_id,$params=array()) {
 }
 function lab_invitations_getComments($id) {
   global $wpdb;
-  $sql = "SELECT * FROM `".$wpdb->prefix."lab_mission_comments` WHERE `invite_id`=".$id.";";
+  $sql = "SELECT * FROM `".$wpdb->prefix."lab_mission_comments` WHERE `invite_id`=".$id."  ORDER BY `timestamp` DESC;";
   $res = $wpdb->get_results($sql);
   return $res;
 }

@@ -87,7 +87,7 @@ function lab_mission($args) {
             }
             //possibly the guest
             else if ($isGuest) {
-                $missionInformation .= '<p><i>'.esc_html__('You can edit this invitation as a guest','lab').'/i></p>';
+                $missionInformation .= '<p><i>'.esc_html__('You can edit this invitation as a guest','lab').'</i></p>';
             }
             else {
                 die(esc_html__('You cannot edit this invitation','lab'));
@@ -164,10 +164,14 @@ function lab_mission($args) {
     $invitationStr .= '
         <div id="inviteDiv">
             <hr>
-            <h3>'.esc_html__("Guest Informations","lab").'</h3>
+            <h3>'.esc_html__("Guest Informations","lab").'</h3>';
+    if ($isGuest) {
+        $invitationStr .= '<input type="hidden" id="lab_mission_edit_as_guest" value="1">';
+    }
+    $invitationStr .= '
             <div class="lab_invite_field">
-                <label for="lab_email">'.esc_html__("Email","lab").'<span class="lab_form_required_star"> *</span></label>
-                <input type="email" required id="lab_email" guest_id="" name="lab_email" value="'.getGuestValue($newForm, $guest,'email').'">
+                <label for="lab_mission_guest_email">'.esc_html__("Email","lab").'<span class="lab_form_required_star"> *</span></label>
+                <input type="email" required id="lab_mission_guest_email" guest_id="'.getGuestValue($newForm, $guest,'id').'" name="lab_mission_guest_email" value="'.getGuestValue($newForm, $guest,'email').'">
             </div>
             <div class="lab_invite_row" id="lab_fullname">
                 <div class="lab_invite_field">
@@ -398,7 +402,7 @@ function lab_mission($args) {
         }
         if (!$newForm) {
             $currentUser = lab_admin_userMetaDatas_get(get_current_user_id());
-            $invitationStr .= '<div id="lab_invitationComments"><h2>'.esc_html__("Comments","lab").' <i class="fas fa-arrow-up"></i></h2>'.lab_inviteComments($invitation->id);
+            $invitationStr .= '<div id="lab_invitationComments"><h2>'.esc_html__("Comments","lab").' <i class="fas fa-arrow-up"></i></h2><div id="lab_invitation_oldComments"/>';//.lab_inviteComments($invitation->id);
             if(!$isGuest) {
                 $invitationStr .= lab_newComments($currentUser,$token);
             }
@@ -888,7 +892,21 @@ function lab_InviteForm($who,$guest,$invite) {
     return $out;
 }
 function lab_inviteComments_json($missionId) {
-    return lab_invitations_getComments($missionId);    
+    $comments = lab_invitations_getComments($missionId);
+    foreach ( $comments as $comment) {
+        if($comment->author_type == 0) {
+            $comment->author = "System";
+        }
+        else if($comment->author_type == 1) {
+            $guest = lab_invitations_getGuest($comment->author_id);
+            $comment->author = $guest->first_name . " " . $guest->last_name;
+        }
+        else {
+            $user = lab_admin_userMetaDatas_get($comment->author_id);
+            $comment->author = $user["first_name"] . " " . $user["last_name"];            
+        }
+    }
+    return $comments;    
 }
 
 function lab_inviteComments($missionId) {
@@ -901,9 +919,11 @@ function lab_inviteComments($missionId) {
             if($comment->author_type == 0) {
                 $author = "System";
             } else if($comment->author_type == 1) {
-                $author = lab_invitations_getGuest($comment->author_id)->first_name . " " . lab_invitations_getGuest($comment->author_id)->last_name;
+                $guest = lab_invitations_getGuest($comment->author_id);
+                $author = $guest->first_name . " " . $guest->last_name;
             } else {
-                $author = lab_admin_userMetaDatas_get($comment->author_id)["first_name"] . " " . lab_admin_userMetaDatas_get($comment->author_id)["last_name"];
+                $user = lab_admin_userMetaDatas_get($comment->author_id);
+                $author = $user["first_name"] . " " . $user["last_name"];  
             }
             $out .= "<div class='lab_comment_box'>
                         <p class='lab_comment_author".($author=="System" ? ' auto' : '')."'>$author</p>

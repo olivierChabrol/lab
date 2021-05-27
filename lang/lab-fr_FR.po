@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: lab\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-05-18 12:02+0200\n"
-"PO-Revision-Date: 2021-05-18 12:03+0200\n"
+"PO-Revision-Date: 2021-05-27 07:36+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -71,24 +71,24 @@ msgstr "Tou·te·s"
 #: admin/view/lab-admin-mission.php:123 js/lab_mission.js:297 lab-admin-keyring.php:52 lab-admin-keyring.php:218
 #: lab-params.php:256
 msgid "New"
-msgstr "Nouveau"
+msgstr "Nouvelles"
 
 #: admin/view/lab-admin-mission.php:124 lab-admin-budget.php:187 shortcode/lab-shortcode-invitation.php:375
 #: shortcode/lab-shortcode-invitation.php:936
 msgid "Complete"
-msgstr "Complétée"
+msgstr "Complétées"
 
 #: admin/view/lab-admin-mission.php:125 js/lab_mission.js:298 lab-params.php:262 shortcode/lab-shortcode-invitation.php:948
 msgid "Cancelled"
-msgstr "Annulée"
+msgstr "Annulées"
 
 #: admin/view/lab-admin-mission.php:126
 msgid "Validated"
-msgstr "Validé"
+msgstr "Validées"
 
 #: admin/view/lab-admin-mission.php:127
 msgid "Refused"
-msgstr "Refusé"
+msgstr "Refusées"
 
 #: admin/view/lab-admin-mission.php:128
 msgid "Waiting"

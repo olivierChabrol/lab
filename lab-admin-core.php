@@ -951,7 +951,22 @@ function lab_admin_group_get_manager_groups($userId = null, $managerType = 1) {
     if ($userId == null) {
         $userId = get_current_user_id();
     }
-    $results = $wpdb->get_results("SELECT group_id FROM `".$wpdb->prefix."lab_group_manager` WHERE `user_id`=".$userId." AND manager_type=$managerType");
+    $sql = "SELECT group_id FROM `".$wpdb->prefix."lab_group_manager` WHERE `user_id`=".$userId." AND (";
+    if(is_array($managerType)) {
+        $i = 0;
+        $count = count($managerType);
+        $cMinusOne = $count - 1;
+        for($i = 0 ; $i < $cMinusOne ; $i++) {
+            $sql .= "manager_type=".$managerType[$i]." OR ";
+        }
+        $sql .= "manager_type=".$managerType[$i];
+
+    }
+    else {
+        $sql .= "manager_type=$managerType";
+    }
+    $sql .= ")";
+    $results = $wpdb->get_results($sql);
     $groupIds = [];
     foreach ($results as $r) {
         $groupIds[] = $r->group_id;

@@ -1448,13 +1448,13 @@ function lab_invitations_new() {
   }
   $html = '<p>'.esc_html__("Your request has been taken into account",'lab').'</p>';
   if($fields['mission_objective'] != 251) {
-    $html .= "<hr><h5>e-mail envoyé à l'invité : </h5>";
+    $html .= "<hr><h5>".__('e-mail send to guest','lab')." : </h5>";
     $html .= lab_invitations_mail(1,$guest,$invite);
-    $html .= "<hr><h5>e-mail envoyé à l'invitant : </h5>";
+    $html .= "<hr><h5>".__('e-mail send to host','lab')." : </h5>";
     $html .= lab_invitations_mail(5,$guest,$invite);
   }
   else{
-    $html .= "<hr><h5>e-mail envoyé au responsable : </h5>";
+    $html .= "<hr><h5>".__('e-mail send to manager','lab')." : </h5>";
     $html .= lab_invitations_mail(2,$guest,$invite);
   }
   wp_send_json_success($html);
@@ -1629,19 +1629,32 @@ function lab_mission_ajax_set_manager() {
 }
 
 function lab_invitation_newComment() {
-  $id = lab_invitations_getByToken($_POST['token'])->id;
-  $author_type = is_null(lab_invitations_getByToken($_POST['token'])->guest_id) ? 2 : 1;
+  $mission = lab_invitations_getByToken($_POST['token']);
+  //wp_send_json_success($mission);
+  $id = $mission->id;
+  $authorId = $_POST['author_id'];
+  // case it's a guest
+  if(get_current_user_id() == 0)
+  {
+    $author_type = 1;
+    //$authorId = $_POST['author_id'];
+    $authorId = $mission->guest_id;
+  }
+  else {
+    $author_type = 2;
+    $authorId = get_current_user_id();
+  }
   date_default_timezone_set("Europe/Paris");
   $timeStamp=date("Y-m-d H:i:s",time());
   lab_invitations_addComment(array(
     'content'=> $_POST['content'],
     'timestamp'=> $timeStamp,
-    'author_id'=>$_POST['author_id'],
+    'author_id'=>$authorId,
     'author_type'=> $author_type,
     'invite_id'=>$id
   )); 
-  $html = lab_inviteComments($id);
-  wp_send_json_success($html);
+  //$html = lab_inviteComments($id);
+  wp_send_json_success($id);
 }
 
 function lab_prefGroups_addReq() {

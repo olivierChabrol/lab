@@ -89,10 +89,10 @@ function lab_mission_load($missionToken, $filters = null, $groupIds = null) {
     $data["filters"] = array();
 
     $budgetManagerGroupIds = lab_admin_group_get_manager_groups(get_current_user_id());
-    $leaderManagerGroupIds = lab_admin_group_get_manager_groups(null, 2);
-    $isBudgetManager  = count($budgetManagerGroupIds) > 0;
-    $isLeaderOfAGroup = count($leaderManagerGroupIds) > 0;
-    $isAdmin = current_user_can( 'administrator' );
+    $leaderManagerGroupIds = lab_admin_group_get_manager_groups(null, array(2,3));
+    $isBudgetManager       = count($budgetManagerGroupIds) > 0;
+    $isLeaderOfAGroup      = count($leaderManagerGroupIds) > 0;
+    $isAdmin               = current_user_can( 'administrator' );
     /*
     $data["rights"] = array();
     $data["rights"]["budgetManagerGroupIds"] = $budgetManagerGroupIds;
@@ -185,8 +185,22 @@ function lab_mission_load($missionToken, $filters = null, $groupIds = null) {
             if (!$isLeaderOfAGroup) {
                 $where .= " AND m.host_id=".get_current_user_id();
             }
+            // group leader and substitute can only see members of their group
+            if($isLeaderOfAGroup ) {
+                $i = 0;
+                $size = count($leaderManagerGroupIds);
+                $sizeMinus1 = $size -1;
+                $where .= " AND (";
+                for ($i = 0 ; $i < $sizeMinus1 ; $i++) {
+                    $where .= " host_group_id=".$leaderManagerGroupIds[$i]." OR ";
+                }
+                $where .= " host_group_id=".$leaderManagerGroupIds[$i];
+                $where .= " ) ";
+            }
         }
+
     }
+
     $sql = $select. $from .$join. $where. $order;
     $missions = $wpdb->get_results($sql);
 

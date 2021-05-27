@@ -91,6 +91,9 @@ jQuery(function($){
         dateFormat : "yy-mm-dd"
       });
     }
+    if ($("#lab_invitation_oldComments").length) {
+      missionReloadComments();
+    }
     hideShowInvitationDiv();
   });
 
@@ -967,7 +970,7 @@ function LABLoadInvitation() {
         $("#lab_invitationComments").attr("wrapped","true");
       }
     });
-    $("#lab_email").change(function(){
+    $("#lab_mission_guest_email").change(function(){
       data = {
         'action': 'lab_invitations_guestInfo',
         'email': $(this).val()
@@ -1213,7 +1216,7 @@ function formAction() {
 function missionReloadComments() {
   $token = $("#missionForm").attr("token");
   console.log("Token : " + $token);
-  if($token != undefined && $token != "")
+  if($token != undefined && $token != "" && $token != "0")
   {
     data = {
       'action': 'lab_mission_load_comments_json',
@@ -1227,12 +1230,20 @@ function displayComments(data) {
   jQuery("#lab_invitation_oldComments").empty();
   jQuery.each(data, function(i, obj) {
     let box = jQuery("<div/>").attr("class", "lab_comment_box");
-    let who = jQuery("<p/>").attr("class", "lab_comment_author auto");
-    if(obj.author_type==0) {
-      who.html("System");
+    let who = jQuery("<p/>");
+    let msg = jQuery("<p/>");
+    if (obj.author_type == 0)
+    {
+      who.attr("class", "lab_comment_author auto");
+      msg.attr("class", "lab_comment auto");
     }
+    else
+    {
+      who.attr("class", "lab_comment_author");
+      msg.attr("class", "lab_comment");
+    }
+    who.html(obj.author);
     box.append(who);
-    let msg = jQuery("<p/>").attr("class", "lab_comment auto");
     let msgHour = jQuery("<i/>");
     msgHour.html(obj.timestamp);
     msg.append(msgHour);
@@ -1242,7 +1253,7 @@ function displayComments(data) {
     jQuery("#lab_invitation_oldComments").append(box);
   });
   jQuery("#lab_invitation_oldComments").append();
-  generateNewCommentHtml(jQuery("#lab_invitation_oldComments"),"test");
+  generateNewCommentHtml(jQuery("#lab_invitation_oldComments"),jQuery("#lab_mission_token").val());
 }
 
 function generateNewCommentHtml(htmlElm, token)
@@ -1251,15 +1262,37 @@ function generateNewCommentHtml(htmlElm, token)
   let title = jQuery("<h5/>");
   title.html("New comment");
   let form = jQuery("<form>").attr("id", "form_new_comment");
-  let label = jQuery("<label><i>Publish as</i> : <span id='lab_comment_name' user_id='0'>John Doe</span></label>");
-  let ta    = jQuery("<textarea row=\"1\" cols=\"50\" id=\"lab_comment\" placeholder=\"Comment content...\"></textarea>");
-  let inp   = jQuery("<input id=\"button_add_comment\" type=\"button\" value=\"Send commend\">");
-  form.append(label);
-  form.append(ta);
-  form.append(inp);
+  //let str = "<label><i>Publish as</i> : <span id='lab_comment_name' user_id='0'";
+  let lab = jQuery("<label>");
+  lab.html("<i>Publish as</i> :");
+
+  let spanInLabel = jQuery("<span>").attr("id", "lab_comment_name");
+  
+  if (jQuery("#lab_mission_edit_as_guest").length) {
+    spanInLabel.attr("user_id", jQuery("#lab_mission_guest_email").attr('guest_id'));
+    spanInLabel.html(jQuery("#lab_firstname").val() + " " + jQuery("#lab_lastname").val());
+  }
+  else {
+    spanInLabel.attr("user_id", jQuery("#lab_hostname").attr("host_id"));
+    spanInLabel.html(jQuery("#lab_hostname").val());
+  }
+  lab.append(spanInLabel);
+
+  //let label = jQuery(str);
+  //let ta    = jQuery("<textarea row=\"1\" cols=\"50\" id=\"lab_comment\" placeholder=\"Comment content...\"></textarea>");
+  //let inp   = jQuery("<input id=\"button_add_comment\" type=\"button\" value=\"Send commend\">");
+  let taComment = jQuery("<textarea>").attr("row", "1").attr("cols", "50").attr("id", "lab_comment").attr("placeholder","Comment content...");
+  let buttonSendComment = jQuery("<input>").attr("type", "button").attr("id", "button_add_comment").attr("value","Send commend");
+  form.append(lab);
+  form.append(taComment);
+  form.append(buttonSendComment);
   div.append(title);
   div.append(form);
   htmlElm.append(div);
+
+  jQuery(buttonSendComment).click(function () {
+    addComment();
+  });
 }
 
 function missionReloadUserInfo(userId) {
@@ -1360,7 +1393,7 @@ function invitation_submit(callback) {
     fields = {
       'guest_firstName': $("#lab_firstname").val(),
       'guest_lastName': $("#lab_lastname").val(),
-      'guest_email': $("#lab_email").val(),
+      'guest_email': $("#lab_mission_guest_email").val(),
       'guest_phone': $("#lab_phone").attr('phoneval'),
       'guest_language': $("#guest_language").countrySelect("getSelectedCountryData")['iso2'],
       'guest_residence_country': $("#residence_country").countrySelect("getSelectedCountryData")['iso2'],
@@ -1377,8 +1410,8 @@ function invitation_submit(callback) {
       'no_charge': $("#lab_no_charge_mission").prop('checked'),
     }
     console.log($("#lab_mission_user_funding").val());
-    if ($("#lab_email").length && $("#lab_email").attr('guest_id').length) {
-      fields['guest_id'] = $("#lab_email").attr('guest_id');
+    if ($("#lab_mission_guest_email").length && $("#lab_mission_guest_email").attr('guest_id').length) {
+      fields['guest_id'] = $("#lab_mission_guest_email").attr('guest_id');
     }
     if ($("#lab_mission_fund_origin").length) {
       fields['funding_source'] = $("#lab_mission_fund_origin").val();
@@ -1417,6 +1450,11 @@ function invitation_submit(callback) {
     }
 }
 jQuery("#button_add_comment").click(function () {
+  addComment();
+});
+
+function addComment()
+{
   regex=/\"/g;
   jQuery(function ($) {
     data = {
@@ -1427,14 +1465,15 @@ jQuery("#button_add_comment").click(function () {
     }
     jQuery.post(LAB.ajaxurl, data, function(response) {
       if (response.success) {
-        console.log(response.data);
-        $("#lab_invitation_oldComments").html(response.data);
-        $("#lab_comment").val('');
+        //console.log(response.data);
+        //$("#lab_invitation_oldComments").html(response.data);
+        //$("#lab_comment").val('');
         //callback();
+        missionReloadComments();
       }
     });
   });
-});
+}
 
 /************ Liste des invitation ***********************/ 
 function LABLoadInviteList() {
