@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: lab\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-05-18 12:02+0200\n"
-"PO-Revision-Date: 2021-05-27 07:36+0200\n"
+"PO-Revision-Date: 2021-05-31 11:04+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -2788,7 +2788,7 @@ msgstr "sur site"
 
 #: shortcode/lab-shortcode-present.php:318
 msgid "I would like to change one of my attendance"
-msgstr "Je voudrais changer un de mes présences"
+msgstr "Je voudrais changer une de mes présences"
 
 #: shortcode/lab-shortcode-present.php:337
 msgid "On"
