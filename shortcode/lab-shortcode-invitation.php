@@ -201,6 +201,50 @@ function lab_mission($args) {
             </div>
         </div><!-- end invite div -->
         <hr>
+
+        <h3>'.esc_html__("Description mission", "lab").'</h3>
+        <div class="lab_invite_field">
+            <label for="lab_title">'.esc_html__("Title", "lab").' :</label>
+            <input id="lab_title" type="text" value="'.(!$newForm?$invitation->title:"0").'">
+
+            <div id="lab_mission_edit_description_div" class="lab_fe_modal">
+                <div class="lab_fe_modal-content">
+                    <span class="lab_fe_modal_close">&times;</span>
+                    <label for="lab_mission_edit_description_div_type">'.esc_html("Add a document", "lab").' :</label>';                
+
+                    $invitationStr .= 
+
+                    lab_html_select_str("lab_mission_edit_description_div_type", "lab_mission_edit_description_div_type", "", "lab_admin_get_params_mission_type_description", null, array("value"=>"0","label"=>"None"), "");
+
+                    $invitationStr .= '
+
+
+                    <div id="lab_mission_add_description_comment" style="display:none"><input type="text" id ="lab_mission_edit_description_div_value"></div>
+                    <div id="lab_mission_add_description_pdf" style="display:none">
+                        <input type="file" id="lab_mission_description_PDF" accept=".pdf">
+                        <input type="hidden" id="lab_mission_description_PDF_url" value="">
+                        <button id="lab_mission_description_file">'.esc_html__("Upload","lab").'</button>
+                        <input type="hidden" id="lab_mission_edit_description_div_descriptionId" value="">
+                    </div>
+                    <button id="lab_mission_edit_description_save_button" descriptionId="" style="display:none">'.esc_html__("Validate","lab").'</button>
+
+                </div>
+            </div>
+        </div>
+        <div id="lab_mission_desc">
+            <table id="lab_mission_description_table" class="table">
+                <thead>
+                    <td>'.esc_html__("Description Type","lab").'</td>
+                    <td>'.esc_html__("value","lab").'</td>
+                    
+                    <td colspan="2"><i id="addDescription" class="fa fa-plus pointer" aria-hidden="true" title="Add Description"></i></td>
+
+                </thead>
+                <tbody id="lab_mission_description_table_tbody"/>
+            </table>
+        <hr>
+
+
         <h3>'.esc_html__("Hostel","lab").'</h3>
         <div class="lab_invite_row">
                     <label for="lab_hostel">

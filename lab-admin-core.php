@@ -623,13 +623,36 @@ function lab_admin_contract_create_table() {
  ***********************************************************************************************************/
 
 
-function lab_mission_save($missionId, $travels) {
+function lab_mission_save($missionId, $travels, $descriptions, $token) {
     $t = null;
+    foreach ($descriptions as $description){
+        $description['missionId'] = $missionId;
+        if ($description['type'] == '279'){
+            $description['value'] = rename_token($description, $token);
+        }
+        $t = lab_mission_save_description($description);
+    }
+
     foreach ($travels as $travel) {
         $travel['missionId'] = $missionId;
         $t = lab_mission_save_travel($travel);
     }
     return $t;
+}
+
+function rename_token($description, $token){
+    $ext = ".pdf";
+    $number = 1;
+    $filename = $token."_".$number.$ext;
+    $path = dirname(__FILE__)."/../../mission/";
+    while (file_exists($path.$filename)){
+        $number++;
+        $filename = $token."_".$number.$ext;
+    }
+    $oldfile = pathinfo($description['value']);
+    rename($path.$oldfile['basename'], $path.$filename);
+    $url = "http://stephanie.fr/wp-content/mission/";
+    return $url.$filename;
 }
 
 function lab_admin_null_if_empty($string) {
@@ -670,6 +693,27 @@ function lab_mission_remap_fields($fields) {
     return $a;
 }
 
+function lab_mission_remap_fields_description($fields){
+    $a = array();
+    $a["mission_id"] = $fields["missionId"];
+    $a["description_type"] = intval($fields["type"]);
+    $a["description_value"] = $fields["value"];
+    return $a;
+}
+
+function lab_mission_save_description($description, $remap=True) {
+    global $wpdb;
+    $a = null;
+    if ($remap) { 
+        $a = lab_mission_remap_fields_description($description);
+    }
+    else {
+        $a = $description;
+    }
+    $wpdb->insert($wpdb->prefix.'lab_mission_description', $a);
+    return $wpdb->insert_id;
+}
+
 function lab_mission_save_travel($travel, $remap=True) {
     global $wpdb;
     $a = null;
@@ -691,6 +735,13 @@ function lab_mission_load_travels($missionId) {
     return $results;
 }
 
+function lab_mission_load_descriptions($missionId) {
+    global $wpdb;
+    $results =$wpdb->get_results("SELECT * FROM `".$wpdb->prefix."lab_mission_description` WHERE mission_id=".$missionId);
+
+    return $results;
+}
+
 function lab_mission_delete_travel($id, $missionId) {
     global $wpdb;
     $userId = get_current_user_id();
@@ -703,6 +754,94 @@ function lab_mission_delete_travel($id, $missionId) {
         'author_type' => 0,
         'invite_id' => $missionId
     ));
+}
+
+function lab_mission_delete_description ($jsId, $missionId){
+    global $wpdb;
+    $userId = get_current_user_id();
+    $userMeta = lab_admin_usermeta_names($userId);
+    $path = lab_mission_get_description_value_from_id($jsId);
+    $value = $path[0]->description_value;
+    $name = pathinfo($value);
+    $basename = $name['basename'];
+    $delfile = dirname(__FILE__)."/../../mission/";
+    $file = $delfile.$basename;
+    if (file_exists($file)){
+        unlink($file);
+    }
+    $wpdb->delete($wpdb->prefix.'lab_mission_description', array('id' => $jsId));
+    lab_invitations_addComment(array(
+        'content' => "¤Description supprimée par " . $userMeta->first_name . " " . $userMeta->last_name,
+        'timestamp' => date("Y-m-d H:i:s", strtotime("+1 hour")),
+        'author_id' => 0,
+        'author_type' => 0,
+        'invite_id' => $missionId
+    ));
+}
+
+function lab_mission_update_description ($descriptionId, $descriptionFields, $missionId){
+    global $wpdb;
+    $userId = get_current_user_id();
+    $userMeta = lab_admin_usermeta_names($userId);
+    $msg = "";
+    $return = "";
+    if (isset($descriptionId) && !empty($descriptionId)){
+        $currentDescriptions = getAllTableFields("lab_mission_description", $missionId, "mission_id", $descriptionId);
+        $currentDescriptionsArray = json_decode(json_encode($currentDescriptions), true);
+        $change = array_diff_assoc($descriptionFields, $currentDescriptionsArray);
+
+        foreach($change as $key=>$value) {
+            switch($key) {
+              case "description_type":
+                $comment_vals[$cpt] = esc_html__("Description type", "lab");
+                break;
+              case "description_value":
+                $comment_vals[$cpt] = esc_html__("Description value", "lab");
+                break;
+            }
+            $cpt++;
+        }
+        $msg = '¤';
+        $numItems = count($comment_vals);
+        $i = 0;
+        foreach($comment_vals as $cv) {
+            if(++$i == $numItems) {
+            $msg .= $cv." ";
+            }
+            else {
+            $msg .= $cv.", ";
+            }
+        } 
+
+        if($numItems > 0) {
+            lab_invitations_addComment(array(
+              'content' => $msg . esc_html__(" modified by ", "lab") . $userMeta->first_name . " " . $userMeta->last_name,
+              'timestamp'=> date("Y-m-d H:i:s",/*strtotime("+1 hour")*/),
+              'author_id' => 0,
+              'author_type' => 0,
+              'invite_id' => $descriptionFields["mission_id"]
+            ));
+          } 
+        $msg .= esc_html("modified", "lab");
+
+        $wpdb->update($wpdb->prefix.'lab_mission_description', $descriptionFields, array('id' => $descriptionId));
+        //return $wpdb;
+        $return = $descriptionId;
+
+    }
+    else {
+        $msg = '¤Description ajoutée';
+        $return = lab_mission_save_description($descriptionFields, false);
+        lab_invitations_addComment(array(
+            'content' => $msg.esc_html(" by ", "lab") . $userMeta->first_name . " " . $userMeta->last_name,
+            'timestamp'=> date("Y-m-d H:i:s",strtotime("+1 hour")),
+            'author_id' => 0,
+            'author_type' => 0,
+            'invite_id' => $descriptionFields["mission_id"]
+        ));
+    }
+
+    return $return;
 }
 
 function lab_mission_update_travel($travelId, $travelFields, $missionId){
@@ -796,6 +935,7 @@ function lab_mission_update_travel($travelId, $travelFields, $missionId){
         $msg .= esc_html("modified", "lab");
 
         $wpdb->update($wpdb->prefix.'lab_mission_route', $travelFields, array('id' => $travelId));
+        wp_send_json_success($wpdb);
 
         $return = $travelId;
     }
@@ -825,6 +965,16 @@ function lab_save_user_picture($imgId, $userId) {
 
 function lab_admin_mission_create_table() {
     global $wpdb;
+
+    $sql ="CREATE TABLE IF NOT EXISTS '".$wpdb->prefix."lab_mission_description' (
+        `id` bigint NOT NULL AUTO_INCREMENT,
+        `mission_id` bigint NOT NULL,
+        `description_type` tinyint NOT NULL,
+        `description_value` varchar(100) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+        PRIMARY KEY (id)
+    ) ENGINE=InnoDB";
+    $wpdb->get_results($sql);
+
     $sql = "CREATE TABLE IF NOT EXISTS `".$wpdb->prefix."lab_mission_route` (
         `id` bigint NOT NULL AUTO_INCREMENT,
         `mission_id` bigint NOT NULL,

@@ -128,6 +128,9 @@ function lab_invitations_editInvitation($missionId, $params) {
       case "guest_id":
         $comment_vals[$cpt] = esc_html__("Guest ID", "lab");
         break;
+      case "title":
+        $comment_vals[$cpt] = esc_html__("Title", "lab");
+        break;
       case "host_id":
         $comment_vals[$cpt] = esc_html__("Host ID", "lab");
         break;
