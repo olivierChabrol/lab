@@ -3,9 +3,13 @@ if(typeof __ === 'undefined') {
   const { __, _x, _n, sprintf } = wp.i18n;
 }
 
+
 jQuery(function($){
 
   /*** DIRECTORY ***/ 
+  var descriptions = [];
+  var typesOfDescription = new Array();
+  var typesOfDescriptionReverse = new Array();
   var travels = [];
   var meansOfTransport = new Array();
   var meansOfTransportReverse = new Array();
@@ -82,6 +86,10 @@ jQuery(function($){
 
   });
 
+  $("#lab_mission_description_file").click(function(e){
+    uploadFile();
+  });
+
 
   var dateClass='.datechk';
   $(document).ready(function ()
@@ -97,6 +105,29 @@ jQuery(function($){
     hideShowInvitationDiv();
   });
 
+  function uploadFile()
+  {
+    //console.log("[upload file]");
+    var file_data = $('#lab_mission_description_PDF').prop('files')[0];
+    var form_data = new FormData();
+    form_data.append('file', file_data);
+    form_data.append('action', 'md_support_save');
+    $.ajax({
+      url: '/wp-admin/admin-ajax.php',
+      type: 'post',
+      contentType: false,
+      processData: false,
+      data: form_data,
+      success: function (response){
+        $('.Success-div').html("Upload PDF Successfully")
+        $("#lab_mission_description_PDF_url").val(response.data.url);
+        console.log(response.data.url);
+      },
+      error: function (response){
+        console.log('error');
+      }
+    });
+  }
 
   function loadDirectory()
   {
@@ -387,6 +418,26 @@ function loadMeanOfTransportMap() {
   }
 }
 
+function loadTypeOfDescriptionMap(){
+  if (typesOfDescription.length == 0) {
+    $("#lab_mission_edit_description_div_type option").each(function()
+    {
+      typesOfDescription[$(this).val()] = $(this).html();
+      typesOfDescriptionReverse[$(this).html()] = $(this).val();
+    });
+  }
+}
+
+function listTypeOfDescription(){
+  loadTypeOfDescriptionMap();
+  return typesOfDescription;
+}
+
+function getTypeOfDescriptionCode(type){
+  loadTypeOfDescriptionMap();
+  return typesOfDescriptionReverse[type];
+}
+
 /**
  * Get means of transport inside the options of the #lab_mission_edit_travel_div_mean select
  */
@@ -403,6 +454,7 @@ function getMeanOfTransportCode(mean) {
 /**
  * Get fields in DIV values, and save them into the table
  */
+
 function saveTravelModification(id) {
   console.log("[saveTravelModification] " + id);
   let f = {};
@@ -677,28 +729,284 @@ function deleteTravelTr(id, mission_id) {
   deleteTravelId(id);
 }
 
+///////////////////DESCRIPTION MISSION///////////////////////////////////
+
+function getEditDescriptionField(){
+  return ["type", "value", "descriptionId"];
+}
+
+function saveDescription(jsId, descriptionId){
+  console.log("[saveDesc] --> NEW : " + jsId);
+  let f = {};
+  let fields = getEditDescriptionField();
+
+  data = {
+    'action' : 'lab_description_save',
+    'missionId' : $("#lab_mission_id").val(),
+  }
+
+  let typeDesc = $("#lab_mission_edit_description_div_type").val();
+  if (typeDesc == '279') {
+    f["type"] = "279";
+    f["value"] = $("#lab_mission_description_PDF_url").val();
+    data["type"] = "279";
+    data["value"] = $("#lab_mission_description_PDF_url").val();
+  }
+  else {
+    for (let i = 0; i < fields.length ; i++){
+      let val = $("#lab_mission_edit_description_div_" + fields[i]).val();
+      f[fields[i]] = val;
+      data[fields[i]] = val;
+      console.log("["+fields[i]+"] = " + val);
+    }
+  }
+  f["descriptionId"] = descriptionId;
+  data["descriptionId"] = descriptionId;
+
+  //console.log("[descriptionExist(id)] = " + descriptionExist(id));
+  if (descriptionExist(jsId)){
+    console.log("[saveDescriptionModification] [description exist]");
+    editDescriptionTd(jsId, f);
+  }
+  else {
+    console.log("[saveDescriptionModification] [description NEW]");
+    addDescription(jsId, f, null, null);
+  }
+
+  if($("#lab_mission_token").length && $("#lab_mission_token").val() != 0){
+    callAjax(data, "Description updated", updateDescriptionIdFromDb, null, null);
+  }
+  
+}
+
+function updateDescriptionIdFromDb(data){
+  $("#description_descriptionId_" + data.descriptionId).attr("tv", data.id);
+}
+
+function editDescriptionTd(id, fieldsVal) {
+  console.log("[editDescriptionTd] " + id);
+  let fields = getEditDescriptionField();
+  for (let i = 0 ; i < fields.length ; i++) {
+    let fieldId = "#description_" + fields[i] + "_" + id;
+    let val = fieldsVal[fields[i]];
+    console.log("[editDescriptionTd] " + fieldId + " = '" + val + "'");
+
+    if (fields[i] == "descriptionId") {
+      $(fieldId).val(val);
+    } 
+    else 
+    {
+      $(fieldId).html(val);
+    }
+    $(fieldId).attr("tv", val);
+  }
+}
+
+function displayDescriptions(data){
+  $.each(data, function (i, obj){
+    let fields = {};
+    fields["type"] = obj.description_type;
+    fields["value"] = obj.description_value;
+    fields["descriptionId"] = obj.id;
+    addDescription(getNewDescriptionsId(), fields, obj.id, obj.mission_id);
+  });
+}
+
+function addDescriptionId(id){
+  descriptions.push(parseInt(id));  
+}
+
+function descriptionExist(jsId) {
+  return descriptions.includes(parseInt(jsId));
+}
+
+function deleteDescriptionId(jsId){
+  console.log("deleteDescriptionId " + jsId);
+  console.log(descriptions.length);
+  console.log(descriptions);
+  console.log("inArray " + arrayIndexOf(descriptions, jsId));
+  descriptions.splice(arrayIndexOf(descriptions, jsId), 1);
+  console.log(descriptions);
+  console.log("deleteDescriptionIdEnd " + jsId);
+}
+
+function getNewDescriptionsId() {
+  let max = 0;
+  for (let i = 0 ; i < descriptions.length ; i++) {
+    if (descriptions[i] > max) {
+      max = parseInt(descriptions[i]);
+    }
+  }
+  return max + 1;
+}
+
+function emptyDescriptionDivFields(){
+  $("#lab_mission_edit_description_div_type" ).val(getTypeOfDescriptionCode("None"));
+  $("#lab_mission_edit_description_div_value" ).val(" ");
+}
+
+function getDescription(id){
+  let fields = getEditDescriptionField();
+  let description = {};
+  for (let i = 0 ; i < fields.length ; i++){
+    let fieldId = "#description_" + fields[i] + "_" + id;
+    description[fields[i]] = $(fieldId).attr("tv");
+  }
+  return description;
+}
+
+function editDescriptionDiv(id, descriptionId){
+  let fields = getEditDescriptionField();
+  for (let i=0; i < fields.length; i++){
+    let fieldId = "#description_" + fields[i] + "_" + id;
+    if ($(fieldId).length > 0){
+      let val = $(fieldId).html();
+      if (fields[i] == "descriptionId") {
+        val = $(fieldId).attr("tv");
+      }
+        console.log("[editDescriptionDiv] #lab_mission_edit_description_div_" + fields[i] + " = '" + val + "'");
+        if ($("#description_type_"+ id).attr("tv") == '279'){
+          $("#lab_mission_add_description_pdf").show();
+          $("#lab_mission_add_description_comment").hide();
+        }
+        else if ($("#description_type_"+ id).attr("tv") == '280' || $("#description_type_"+ id).attr("tv") == '282'){
+          $("#lab_mission_add_description_comment").show();
+          $("#lab_mission_add_description_pdf").hide();
+        }
+        $("#lab_mission_edit_description_div_" + fields[i]).val(val);
+    }
+    else {
+      console.log("[editDescriptionsDiv] fieldId (" + fieldId + ")  NO VALUE ");
+    }
+  }
+    $("#lab_mission_edit_description_save_button").attr("jsId", id).attr("descriptionId",descriptionId);
+    $("#lab_mission_edit_description_div").show();
+}
+
+function deleteDescriptionTr(jsId, mission_id){
+  console.log("[deleteDescriptionTr] " + jsId);
+  console.log ("VALUE = " + $("#description_value_" + jsId).attr("tv"));
+  if ($("#lab_mission_token").length && $("#lab_mission_token").val() != 0){
+    console.log("[deleteDescriptionTr] " + jsId + " oui");
+    data = {
+      'action' : 'lab_description_delete',
+      'jsId' : $("#description_descriptionId_" + jsId).attr("tv"),
+      'mission_id' : mission_id
+    }
+    callAjax(data, "Description deleted", null, null, null);
+    $("#lab_mission_description_table_tr_" + jsId).remove();
+  }
+  else {
+    console.log("[deleteDescriptionTr] " + jsId + " non");
+    $("#lab_mission_description_table_tr_" + jsId).remove();
+  }
+  deleteDescriptionId(jsId);
+}
+
+$("#lab_mission_edit_description_div_type").change(function(){
+  if ($("#lab_mission_edit_description_div_type").val() == '279'){
+  $("#lab_mission_add_description_pdf").show();
+  $("#lab_mission_edit_description_div_value").val(null);
+  $("#lab_mission_add_description_comment").hide();
+  $("#lab_mission_edit_description_save_button").show();
+  
+  } else if ($("#lab_mission_edit_description_div_type").val() == '280' || $("#lab_mission_edit_description_div_type").val() == '282') {
+  $("#lab_mission_add_description_comment").show();
+  $("#lab_mission_add_description_pdf").hide();
+  $("#lab_mission_description_PDF").val(null);
+  $("#lab_mission_edit_description_save_button").show();
+
+  } else {
+  $("#lab_mission_add_description_comment").hide();
+  $("#lab_mission_add_description_pdf").hide();
+  $("#lab_mission_edit_description_div_value").val(null);
+  $("#lab_mission_edit_description_save_button").hide();
+  $("#lab_mission_description_PDF").val(null);
+  $("#lab_mission_edit_description_save_button").hide();
+}
+});
+
+$("#lab_mission_edit_description_save_button").click(function(event){
+  event.preventDefault();
+  console.log($("#lab_mission_edit_description_save_button").attr("descriptionId"));
+  saveDescription($("#lab_mission_edit_description_save_button").attr("jsId"), $("#lab_mission_edit_description_save_button").attr("descriptionId"));
+  $("#lab_mission_edit_description_div").hide();
+});
+
+function addDescription(id, fields, descriptionId ,mission_id){
+  console.log("addDescription()");
+  addDescriptionId(id);
+  let tr = $("<tr/>").attr("id","lab_mission_description_table_tr_"+id);
+  createSelectDescriptionTdToTr(tr, id, "type", fields, listTypeOfDescription());
+  createDefaultDescriptionTdToTr(tr, id, "value", fields);
+  let fileView = fields["value"];
+  console.log("[fileView1] " + fileView);
+  let tdView = $("<td/>").attr("class", "pointer").attr("jsId",id).attr("descriptionId", descriptionId).html('<a href='+ fileView +' target="_blank" style="color:#212529"><i class="fas fa-search" aria-hidden="true" descriptionId ="'+id+'"></i></a>');
+  let tdEdit = $("<td/>").attr("class", "pointer").attr("jsId",id).attr("descriptionId",descriptionId).html('<i class="fa fa-pencil"  aria-hidden="true" descriptionId="'+id+'"></i>');
+  let tdDel  = $("<td/>").attr("class", "pointer").attr({
+    "jsId" : id,
+    "descriptionId" : descriptionId,
+    "missionId" : mission_id
+  }).html('<i class="fa fa-trash-o" aria-hidden="true" descriptionId="'+id+'"></i>');
+
+  tr.append(tdEdit);
+  tr.append(tdDel);
+  if ($("#lab_mission_edit_description_div_type").val() == '279' || fields["type"] == '279' || $("#lab_mission_edit_description_div_type").val() == '280' || fields["type"] == '280'){
+    tr.append(tdView);
+  }
+
+  createDescriptionHiddenField(tdEdit, id, "descriptionId", fields);
+
+  tdView.click(function (e){
+    console.log("[fileView] " + fileView);
+    console.log($("#description_value_"+ id).attr("tv"));
+    console.log($("#lab_mission_description_PDF_url").val());
+  });
+
+  tdEdit.click(function (e) {
+    editDescriptionDiv($(this).attr("jsId"), $(this).attr("descriptionId"));
+    $('#lab_mission_edit_description_div_type option[value="' + $("#description_type_"+ id).attr("tv")+ '"]').prop('selected', true);
+  });
+
+  tdDel.click(function (e) {
+    deleteDescriptionTr($(this).attr("jsId"), $(this).attr("missionId"));
+  });
+
+  $("#lab_mission_description_table_tbody").append(tr);
+}
+
+function createDescriptionHiddenField(td, id, fieldName, fields) {
+  let hi = $("<input/>").attr('type','hidden').attr("id", "description_" + fieldName + "_" + id).attr("tv", fields[fieldName]);
+  hi.val(fields[fieldName]);
+  td.append(hi);
+}
+
+function createDefaultDescriptionTdToTr(tr, id, fieldName, fields) {
+  createDescriptionTdToTr(tr, id, fieldName, fields[fieldName], fields[fieldName]);
+}
+
 function addTravel(id, fields, travelId, mission_id) {
   console.log("[AddTravel] ");
   console.log(fields);
   addTravelId(id);
   let tr = $("<tr/>").attr("id","lab_mission_table_tr_"+id);
-  createDefaultTdToTr(tr, id, "dateGoTo", fields);
-  createDefaultTdToTr(tr, id, "timeGoTo", fields);
+  createDefaultTravelTdToTr(tr, id, "dateGoTo", fields);
+  createDefaultTravelTdToTr(tr, id, "timeGoTo", fields);
   createTravelCountryTdToTr(tr, id, "countryFrom", fields);
-  createDefaultTdToTr(tr, id, "cityFrom", fields);
-  createDefaultTdToTr(tr, id, "stationFrom", fields);
+  createDefaultTravelTdToTr(tr, id, "cityFrom", fields);
+  createDefaultTravelTdToTr(tr, id, "stationFrom", fields);
   createTravelCountryTdToTr(tr, id, "countryTo", fields);
-  createDefaultTdToTr(tr, id, "cityTo", fields);
-  createDefaultTdToTr(tr, id, "stationTo", fields);
-  createSelectTdToTr(tr, id, "mean", fields, listMeanOfTransport());
-  //createDefaultTdToTr(tr, id, "company", fields);
+  createDefaultTravelTdToTr(tr, id, "cityTo", fields);
+  createDefaultTravelTdToTr(tr, id, "stationTo", fields);
+  createSelectTravelTdToTr(tr, id, "mean", fields, listMeanOfTransport());
+  //createDefaultTravelTdToTr(tr, id, "company", fields);
   createTravelCostTdToTr(tr, id, "cost", fields);
-  createDefaultTdToTr(tr, id, "ref", fields);
+  createDefaultTravelTdToTr(tr, id, "ref", fields);
   createTravelBooleanField(tr, id, "rt", fields);
-  createDefaultTdToTr(tr, id, "dateReturn", fields);
-  createDefaultTdToTr(tr, id, "timeReturn", fields);
-  createDefaultTdToTr(tr, id, "loyalty_card_number", fields);
-  createDefaultTdToTr(tr, id, "loyalty_card_expiry_date", fields);
+  createDefaultTravelTdToTr(tr, id, "dateReturn", fields);
+  createDefaultTravelTdToTr(tr, id, "timeReturn", fields);
+  createDefaultTravelTdToTr(tr, id, "loyalty_card_number", fields);
+  createDefaultTravelTdToTr(tr, id, "loyalty_card_expiry_date", fields);
   let tdEdit = $("<td/>").attr("class", "pointer").attr("travelId",id).html('<i class="fa fa-pencil"  aria-hidden="true" travelId="'+id+'"></i>');
   let tdDel  = $("<td/>").attr("class", "pointer").attr({
     "id" : id,
@@ -782,20 +1090,36 @@ function createTravelCostTdToTr(tr, id, fieldName, fields) {
   createTravelTdToTr(tr, id, fieldName, formatMoneyValue(fields[fieldName]), fields[fieldName]);
 }
 
-function createSelectTdToTr(tr, id, fieldName, fields, displayMap) {
-  console.log("[createSelectTdToTr]");
+function createSelectTravelTdToTr(tr, id, fieldName, fields, displayMap) {
+  console.log("[createSelectTravelTdToTr]");
   console.log(displayMap);
   console.log(fields[fieldName]);
   console.log(displayMap[fields[fieldName]]);
   createTravelTdToTr(tr, id, fieldName, displayMap[fields[fieldName]], fields[fieldName]);
 }
 
-function createDefaultTdToTr(tr, id, fieldName, fields) {
+function createSelectDescriptionTdToTr(tr, id, fieldName, fields, displayMap){
+  console.log("[createSelectDescriptionTdToTr]");
+  console.log(displayMap);
+  console.log(fields[fieldName]);
+  console.log(displayMap[fields[fieldName]]);
+  createDescriptionTdToTr(tr, id, fieldName, displayMap[fields[fieldName]], fields[fieldName]);
+}
+
+function createDefaultTravelTdToTr(tr, id, fieldName, fields) {
   createTravelTdToTr(tr, id, fieldName, fields[fieldName], fields[fieldName]);
 }
 
 function createTravelTdToTr(tr, id, fieldName, displayVal, val) {
-  let td = $("<td/>").attr("id","travel_" + fieldName + "_" + id).html(displayVal);
+  createGenericTdToTr(tr, id, "travel", fieldName, displayVal, val);
+}
+
+function createDescriptionTdToTr(tr, id, fieldName, displayVal, val) {
+  createGenericTdToTr(tr, id, "description", fieldName, displayVal, val);
+}
+
+function createGenericTdToTr(tr, id, prefix, fieldName, displayVal, val) {
+  let td = $("<td/>").attr("id",prefix + "_" + fieldName + "_" + id).html(displayVal);
   if (val != null) {
     td.attr("tv", val);
   }
@@ -898,6 +1222,12 @@ function LABLoadInvitation() {
         'id' : $("#lab_mission_id").val(),
       }
       callAjax(data, null, displayTravels, null, null);
+
+      data = {
+        'action' : 'lab_descriptions_load',
+        'id' : $("#lab_mission_id").val(),
+      }
+      callAjax(data, null, displayDescriptions, null, null);
     }
     else {
       addEmptyTravel("0");
@@ -919,6 +1249,11 @@ function LABLoadInvitation() {
       }
     });
 
+    $("#addDescription").click(function(e){
+      emptyDescriptionDivFields();
+      editDescriptionDiv(getNewDescriptionsId(), "");
+    })
+
     $("#addTravel").click(function(e) {
       emptyTravelDivFields();
       editTravelDiv(getNewTravelId());
@@ -939,6 +1274,7 @@ function LABLoadInvitation() {
 
     $(".lab_fe_modal_close").click(function(e) {
       $("#lab_mission_edit_travel_div").hide();
+      $("#lab_mission_edit_description_div").hide();
     });
 
     if ($("#lab_mission option:selected" ).text() == "Invitation") {
@@ -1388,8 +1724,16 @@ function invitation_submit(callback) {
     for (let i = 0 ; i < travels.length ; i++) {
       travelsFields.push(getTravel(travels[i]));
     }
+
+    let descriptionsFields = [];
+    for (let i = 0 ; i < descriptions.length ; i++) {
+      descriptionsFields.push(getDescription(descriptions[i]));
+    }
+
     console.log("Travels to save:");
     console.log(travelsFields);
+    console.log("Descriptions to save:");
+    console.log(descriptionsFields);
     fields = {
       'guest_firstName': $("#lab_firstname").val(),
       'guest_lastName': $("#lab_lastname").val(),
@@ -1400,6 +1744,8 @@ function invitation_submit(callback) {
       'guest_residence_city': $("#residence_city").val(),
       'host_id': $("#lab_hostname").attr('host_id'),      
       'mission_objective': $("#lab_mission").val()=="other" ? $("#lab_mission_other").val().replace(regex,"”").replace(/\'/g,"’") : $("#lab_mission").val(),
+      'descriptions' : descriptionsFields,
+      'title' : $("#lab_title").val(),
       'needs_hostel' : $("#lab_hostel").prop('checked'),
       'hostel_cost' : $("#lab_mission_hostel_cost").val(),
       'hostel_night' : $("#lab_mission_hostel_night").val(),
@@ -1445,8 +1791,8 @@ function invitation_submit(callback) {
         'action': 'lab_invitations_edit',
         'fields': fields
       };
-      callAjax(data, null, callback, null, null);
-      //callAjax(data, null, null, null, null);
+      //callAjax(data, null, callback, null, null);
+      callAjax(data, null, null, null, null);
     }
 }
 jQuery("#button_add_comment").click(function () {

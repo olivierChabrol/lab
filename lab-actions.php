@@ -190,12 +190,19 @@ if (is_admin()) {
     add_action( 'wp_ajax_lab_mission_refuse', 'lab_mission_refuse');
     add_action( 'wp_ajax_lab_mission_cancel', 'lab_mission_cancel');
     add_action( 'wp_ajax_lab_mission_complete', 'lab_mission_complete');
+    add_action( 'wp_ajax_lab_description_save', 'lab_description_ajax_save');
+    add_action( 'wp_ajax_lab_description_delete', 'lab_description_ajax_delete');
+    add_action( 'wp_ajax_lab_descriptions_load', 'lab_descriptions_ajax_load');
     add_action( 'wp_ajax_lab_mission_get_user_information', 'lab_mission_ajax_get_user_information');
+    
+    add_action( 'wp_ajax_md_support_save', 'md_support_save');
+    add_action( 'wp_ajax_nopriv_md_support_save', 'md_support_save');
     add_action( 'wp_ajax_lab_mission_load_comments', 'lab_invitations_comments');
     add_action( 'wp_ajax_lab_mission_load_comments_json', 'lab_invitations_comments_json');
     add_action( 'wp_ajax_nopriv_lab_mission_load_comments', 'lab_invitations_comments');
     add_action( 'wp_ajax_nopriv_lab_mission_load_comments_json', 'lab_invitations_comments_json');
     add_action( 'wp_ajax_nopriv_lab_invitation_newComment','lab_invitation_newComment' );
+
 
     //add_action( 'wp_ajax_lab_mission_getNotifs', 'lab_mission_getNotifs');
     //add_action( 'wp_ajax_lab_mission_resetNotifs', 'lab_mission_resetNotifs');
@@ -206,6 +213,8 @@ if (is_admin()) {
     add_action( 'wp_ajax_nopriv_lab_travel_delete', 'lab_travel_ajax_delete');
     add_action( 'wp_ajax_nopriv_lab_travel_save', 'lab_travel_ajax_save');
     add_action( 'wp_ajax_nopriv_lab_invitations_edit','lab_invitations_edit' );
+    add_action( 'wp_ajax_nopriv_lab_description_save', 'lab_description_ajax_save');
+    add_action( 'wp_ajax_nopriv_lab_description_delete', 'lab_description_ajax_delete');
 
     // LABO 1.5
     add_action( 'wp_ajax_lab_labo1.5_initial', 'lab_labo1dot5_initial');

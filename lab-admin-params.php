@@ -164,6 +164,10 @@ class AdminParams {
     }
 };
 
+function lab_admin_get_params_mission_type_description() {
+    return AdminParams::lab_admin_get_params_mission_type_description();
+}
+
 function lab_admin_get_params_missionStatus() {
     return AdminParams::lab_admin_get_params_mission_status();
 }

@@ -9,10 +9,21 @@ function lab_mission_status_to_value($missionStatus) {
     
 function lab_mission_delete($missionId) {
     global $wpdb;
+    $tokenArray = lab_mission_get_token_from_id($missionId);
+    $delfile = dirname(__FILE__)."/../../../mission/";
+    $ext = ".pdf";
+    for($i = 0; $i < 20; $i++){
+        $token = $tokenArray[0]->token;
+        $file = $delfile.$token."_".$i.$ext;
+        if (file_exists($file)){
+            unlink($file);
+        }
+    }
     $wpdb->delete($wpdb->prefix."lab_mission_comments", array('invite_id' => $missionId));
     $wpdb->delete($wpdb->prefix.'lab_mission', array('id' => $missionId));
     $wpdb->delete($wpdb->prefix.'lab_mission_route', array('mission_id' => $missionId));
     $wpdb->delete($wpdb->prefix.'lab_mission_comment_notifs', array('invite_id' => $missionId));
+    $wpdb->delete($wpdb->prefix.'lab_mission_description', array('mission_id' => $missionId));
     return true;
 }
 
@@ -75,6 +86,12 @@ function lab_mission_take_in_charge($missionId)
         ), $currentUserId);
         lab_mission_set_status($missionId, AdminParams::MISSION_STATUS_WAITING_GROUP_MANAGER);
     }
+}
+
+function lab_mission_get_description_value_from_id($jsId){
+    global $wpdb;
+    $sql = "SELECT description_value FROM `".$wpdb->prefix."lab_mission_description` WHERE id = ".$jsId;
+    return $wpdb->get_results($sql);
 }
 
 function lab_mission_get_token_from_id($missionId) {
@@ -227,8 +244,9 @@ function lab_mission_load($missionToken, $filters = null, $groupIds = null) {
             $mission->group = "";
         }
         //$mission->manager_id = $userIds[$mission->host_id]->manager_id;
-        $mission->routes = lab_mission_load_travels($mission->id);
-        $groups[$mission->host_group_id] = lab_admin_get_group($mission->host_group_id);
+        $mission->routes=lab_mission_load_travels($mission->id);
+        $mission->description=lab_mission_load_descriptions($mission->id);
+        //$groups[$mission->host_group_id] = lab_admin_get_group_name($mission->host_group_id);
         # get all params associated to the mission see @$paramsToGet
         foreach($paramsToGet as $ptg) {
             if (!isset($params[$mission->$ptg])) {
@@ -287,7 +305,7 @@ function lab_mission_generate_excel($missionToken = null, $filters = null, $grou
          'bold' => true,
     ]
 ];
-    $sheet->getStyle('A1:N1' )->applyFromArray($styleBold);
+    $sheet->getStyle('A1:O1' )->applyFromArray($styleBold);
 
     $sheet->setCellValue('A1', esc_html__('Id Mission', 'lab'));
     $sheet->setCellValue('B1', esc_html__('Etat', 'lab'));
@@ -298,11 +316,12 @@ function lab_mission_generate_excel($missionToken = null, $filters = null, $grou
     $sheet->setCellValue('G1', esc_html__('Group', 'lab'));
     $sheet->setCellValue('H1', esc_html__('Budjet Manager', 'lab'));
     $sheet->setCellValue('I1', esc_html__('Mission Type', 'lab'));
-    $sheet->setCellValue('J1', __('Hostel Night', 'lab'));
-    $sheet->setCellValue('K1', esc_html__('Estimation cost Travel', 'lab'));
-    $sheet->setCellValue('L1', __('Estimation cost Hostel', 'lab'));
-    $sheet->setCellValue('M1', esc_html__('Total estimation', 'lab'));
-    $sheet->setCellValue('N1', esc_html__('Real cost', 'lab'));
+    $sheet->setCellValue('J1', esc_html__('Title', 'lab'));
+    $sheet->setCellValue('K1', __('Hostel Night', 'lab'));
+    $sheet->setCellValue('L1', esc_html__('Estimation cost Travel', 'lab'));
+    $sheet->setCellValue('M1', __('Estimation cost Hostel', 'lab'));
+    $sheet->setCellValue('N1', esc_html__('Total estimation', 'lab'));
+    $sheet->setCellValue('O1', esc_html__('Real cost', 'lab'));
 
     define('LAB_DIR_PATH', dirname(__FILE__));
     $line = 1;
@@ -344,7 +363,8 @@ function lab_mission_generate_excel($missionToken = null, $filters = null, $grou
         $sheet->setCellValue('G'.$line, $group->group_name);
         $sheet->setCellValue('H'.$line, $gestion->first_name." ".$gestion->last_name);
         $sheet->setCellValue('I'.$line, AdminParams::get_param($mission->mission_objective));
-        $sheet->setCellValue('J'.$line, $mission->hostel_night);
+        $sheet->setCellValue('J'.$line, $mission->title);
+        $sheet->setCellValue('K'.$line, $mission->hostel_night);
 
         $currency = numfmt_create('fr_FR', NumberFormatter::CURRENCY);
 
@@ -355,15 +375,15 @@ function lab_mission_generate_excel($missionToken = null, $filters = null, $grou
             $sumcosttravel = $mission->estimated_cost - $mission->hostel_cost;
         }
 
-        $sheet->setCellValue('K'.$line, numfmt_format_currency($currency, $sumcosttravel, "EUR"));
+        $sheet->setCellValue('L'.$line, numfmt_format_currency($currency, $sumcosttravel, "EUR"));
 
-        $sheet->setCellValue('L'.$line, numfmt_format_currency($currency, $mission->hostel_cost, "EUR"));
-        $sheet->setCellValue('M'.$line, numfmt_format_currency($currency, $mission->estimated_cost, "EUR"));
+        $sheet->setCellValue('M'.$line, numfmt_format_currency($currency, $mission->hostel_cost, "EUR"));
+        $sheet->setCellValue('N'.$line, numfmt_format_currency($currency, $mission->estimated_cost, "EUR"));
 
         if ($mission->real_cost == null){
-            $sheet->setCellValue('N'.$line, numfmt_format_currency($currency, 0, "EUR"));
+            $sheet->setCellValue('O'.$line, numfmt_format_currency($currency, 0, "EUR"));
         } else {
-            $sheet->setCellValue('N'.$line, numfmt_format_currency($currency, $mission->real_cost, "EUR"));
+            $sheet->setCellValue('O'.$line, numfmt_format_currency($currency, $mission->real_cost, "EUR"));
         }
     
 
