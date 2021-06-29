@@ -218,7 +218,7 @@ function lab_mission($args) {
 
                     $invitationStr .= 
 
-                    lab_html_select_str("lab_mission_edit_description_div_type", "lab_mission_edit_description_div_type", "", "lab_admin_get_params_mission_type_description", null, array("value"=>"0","label"=>"None"), "");
+                    lab_html_select_str("lab_mission_edit_description_div_type", "lab_mission_edit_description_div_type", "", "lab_admin_get_params_mission_type_description", null, array("value"=>"0","label"=>"None"), null, null, array("slug"=>"slug"));
 
                     $invitationStr .= '
 

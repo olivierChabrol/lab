@@ -1526,8 +1526,8 @@ function lab_mission_ajax_lab_mission_load_comments() {
 function lab_invitations_edit() {
   global $wpdb;
   $fields = $_POST['fields'];
-  for($i = 0; $i<20; $i++){
-    if($fields['descriptions'][$i]['type'] == '279'){
+  for($i = 0; $i<20; $i++) {
+    if($fields['descriptions'][$i]['type'] == '279') {
       $description = $fields['descriptions'][$i];
       $token = $fields['token'];
       $value = rename_token($description, $token);
@@ -1614,10 +1614,11 @@ function lab_invitations_edit() {
     foreach (['host_group_id', 'estimated_cost', 'maximum_cost', 'title', 'host_id', 'funding', 'mission_objective','hostel_night','hostel_cost','funding_source','research_contract'] as $champ) {
       if(isset($fields[$champ])) {
         $invite[$champ]=$fields[$champ];
+      }
+    }
     if(isset($fields['no_charge'])) {
       $invite['no_charge']=$fields['no_charge']=='true' ? 1 : 0;
     }
-
 
     if($isGuest)
     {

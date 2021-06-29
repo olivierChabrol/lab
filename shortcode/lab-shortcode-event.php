@@ -236,7 +236,7 @@ function lab_events($eventCategory, $eventYear, $old, $debug = False) {
                 $sql .= " AND ";
             }
         }
-        $sql .= ")" . $sqlYearCondition . $sqlCondition . " AND pmd.meta_key = 'Speaker' ".
+        $sql .= ")" . $sqlYearCondition . $sqlCondition .// " AND pmd.meta_key = 'Speaker' ".
             " ORDER BY `ee`.`event_start_date` DESC";
     } 
     else

@@ -35,6 +35,9 @@ class AdminParams {
     public const MISSION_STATUS_REFUSED_GROUP_LEADER = "msrbgl";
     public const MISSION_STATUS_WAITING_GROUP_LEADER = "mswgl";
     public const MISSION_STATUS_WAITING_GROUP_MANAGER = "mswgm";
+    public const MISSION_DESC_COMMENT = "td_com";
+    public const MISSION_DESC_PDF = "tdpdf";
+    public const MISSION_DESC_URL = "tdu";
     public const CONTRACT_USER_TYPE_MANAGER = 1;
     public const CONTRACT_USER_TYPE_OWNER = 2;
 

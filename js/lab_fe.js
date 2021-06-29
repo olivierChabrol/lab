@@ -732,7 +732,7 @@ function deleteTravelTr(id, mission_id) {
 ///////////////////DESCRIPTION MISSION///////////////////////////////////
 
 function getEditDescriptionField(){
-  return ["type", "value", "descriptionId"];
+  return ["type", "value", "descriptionId", "slug"];
 }
 
 function saveDescription(jsId, descriptionId){
@@ -745,11 +745,13 @@ function saveDescription(jsId, descriptionId){
     'missionId' : $("#lab_mission_id").val(),
   }
 
-  let typeDesc = $("#lab_mission_edit_description_div_type").val();
-  if (typeDesc == '279') {
-    f["type"] = "279";
+  //let typeDesc = $("#lab_mission_edit_description_div_type").val();
+  let optionSelected = $("#lab_mission_edit_description_div_type").find("option:selected");
+  let typeDesc = optionSelected.attr("slug");
+  if (typeDesc == 'tdpdf') {
+    f["type"] = typeDesc.val();
     f["value"] = $("#lab_mission_description_PDF_url").val();
-    data["type"] = "279";
+    data["type"] = typeDesc.val();
     data["value"] = $("#lab_mission_description_PDF_url").val();
   }
   else {
@@ -904,13 +906,15 @@ function deleteDescriptionTr(jsId, mission_id){
 }
 
 $("#lab_mission_edit_description_div_type").change(function(){
-  if ($("#lab_mission_edit_description_div_type").val() == '279'){
+  console.log("[lab_mission_edit_description_div_type] change : " + $("option:selected", this).attr("slug"));
+  let selectedOption = $("option:selected", this);
+  if (selectedOption.attr("slug") == 'tdpdf'){
   $("#lab_mission_add_description_pdf").show();
   $("#lab_mission_edit_description_div_value").val(null);
   $("#lab_mission_add_description_comment").hide();
   $("#lab_mission_edit_description_save_button").show();
   
-  } else if ($("#lab_mission_edit_description_div_type").val() == '280' || $("#lab_mission_edit_description_div_type").val() == '282') {
+  } else if (selectedOption.attr("slug") == 'td_com' || selectedOption.attr("slug") == 'tdu') {
   $("#lab_mission_add_description_comment").show();
   $("#lab_mission_add_description_pdf").hide();
   $("#lab_mission_description_PDF").val(null);
@@ -951,9 +955,13 @@ function addDescription(id, fields, descriptionId ,mission_id){
 
   tr.append(tdEdit);
   tr.append(tdDel);
-  if ($("#lab_mission_edit_description_div_type").val() == '279' || fields["type"] == '279' || $("#lab_mission_edit_description_div_type").val() == '280' || fields["type"] == '280'){
+
+  let optionSelected = $("#lab_mission_edit_description_div_type").find("option:selected");
+  let typeDesc = optionSelected.attr("slug");
+
+  //if (typeDesc == 'tdpdf' || fields["type"] == '279' || $("#lab_mission_edit_description_div_type").val() == '280' || fields["type"] == '280'){
     tr.append(tdView);
-  }
+  //}
 
   createDescriptionHiddenField(tdEdit, id, "descriptionId", fields);
 
