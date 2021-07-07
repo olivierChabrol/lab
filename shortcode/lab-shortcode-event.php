@@ -233,7 +233,7 @@ function lab_events($eventCategory, $eventYear, $old, $debug = False) {
         {
             $sql .= " t".$i.".slug = '" . $category[$i] . "'";
             if ($i+1 < $categorySize) {
-                $sql .= " AND ";
+                $sql .= " OR ";
             }
         }
         $sql .= ")" . $sqlYearCondition . $sqlCondition .// " AND pmd.meta_key = 'Speaker' ".
@@ -272,16 +272,21 @@ function lab_events($eventCategory, $eventYear, $old, $debug = False) {
     //return "MON SQL : ".$sql."<br>";
     global $wpdb;
     $results = $wpdb->get_results($sql);
+    $exist = array();
     foreach($results as $r) {
-        $speakers = $wpdb->get_results("SELECT meta_key, meta_value FROM ".$wpdb->prefix."postmeta WHERE post_id=".$r->post_id." AND meta_key='Speaker'");
-        if (count($speakers) > 0)
-        {
-            $r->speaker = $speakers[0]->meta_value;
-        }
-        else
-        {
-            $r->speaker = "";
-        }
+	if (!array_key_exists($r->post_id."*", $exist))
+	{
+	  $exist[$r->post_id."*"]="*";
+          $speakers = $wpdb->get_results("SELECT meta_key, meta_value FROM ".$wpdb->prefix."postmeta WHERE post_id=".$r->post_id." AND meta_key='Speaker'");
+          if (count($speakers) > 0)
+          {
+              $r->speaker = $speakers[0]->meta_value;
+          }
+          else
+          {
+              $r->speaker = "";
+          }
+	}
     }
 
     /***  DISPLAY ***/
@@ -292,8 +297,14 @@ function lab_events($eventCategory, $eventYear, $old, $debug = False) {
     }
     $listEventStr .= "<table>";
     $url = esc_url(home_url('/'));
+    //var_dump($exist);
+    $exist = array();
     foreach ($results as $r){
-        $listEventStr .= "<tr><td>" . esc_html($r->event_start_date) . "</td><td><span style=\"color: mediumseagreen\">".esc_html($r->speaker)."</span></td><td><a href=\"".$url."event/".$r->event_slug."\">".$r->event_name."</a></td></tr>";
+	    if (!array_key_exists($r->post_id."*", $exist))
+	    {
+              $exist[$r->post_id."*"]="*";
+              $listEventStr .= "<tr><td>" . esc_html($r->event_start_date) . "</td><td><span style=\"color: mediumseagreen\">".esc_html($r->speaker)."</span></td><td><a href=\"".$url."event/".$r->event_slug."\">".$r->event_name."</a></td></tr>";
+	    }
     }
     $listEventStr .= "</table>";
     return $listEventStr;
