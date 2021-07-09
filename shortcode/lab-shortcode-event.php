@@ -27,14 +27,14 @@ function lab_incoming_event($param)
             JOIN `wp_term_relationships` AS tr  ON tr.`term_taxonomy_id` = t.`term_id` 
             JOIN `wp_em_events`          AS p   ON p.`post_id`           = tr.`object_id` 
             JOIN `wp_postmeta`           AS pmd ON pmd.`post_id`         = p.`post_id`
-           WHERE t.slug = '" . $category[0] . "'";
+           WHERE (t.slug = '" . $category[0] . "'";
     
     for($i = 1 ; $i < count($category) ; ++$i)
     {
-        $sql .= "OR t.slug = '" . $category[$i] . "'";
+        $sql .= " OR t.slug = '" . $category[$i] . "' ";
     }
 
-    $sql .= "AND `p`.`event_end_date` >= NOW() 
+    $sql .= ") AND `p`.`event_end_date` >= NOW() 
              AND pmd.meta_key = 'Speaker'
              ORDER BY `p`.`event_start_date` 
              ASC ";
@@ -43,7 +43,8 @@ function lab_incoming_event($param)
     
     /***  DISPLAY ***/
     $url           = esc_url(home_url('/'));
-    $listEventStr = '<br><a href="'.$url."events/categories/agenda/seminaires/".$eventCategory.'/ical">iCal</a>';
+    $listEventStr = "SQL : $sql<br>";
+    $listEventStr .= '<br><a href="'.$url."events/categories/agenda/seminaires/".$eventCategory.'/ical">iCal</a>';
     $listEventStr  .= "<table>";
     foreach ($results as $r )
     {
@@ -233,7 +234,7 @@ function lab_events($eventCategory, $eventYear, $old, $debug = False) {
         {
             $sql .= " t".$i.".slug = '" . $category[$i] . "'";
             if ($i+1 < $categorySize) {
-                $sql .= " OR ";
+                $sql .= " AND ";
             }
         }
         $sql .= ")" . $sqlYearCondition . $sqlCondition .// " AND pmd.meta_key = 'Speaker' ".
