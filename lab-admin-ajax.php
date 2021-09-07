@@ -406,7 +406,14 @@ function lab_admin_ajax_usermeta_names()
 {
   $search = $_POST['search'];
   $userId  = $search["term"];
-  wp_send_json_success(lab_admin_userMetaDatas_get($userId));
+  if (isset($userId) && $userId !== '') {
+    
+    wp_send_json_success(lab_admin_userMetaDatas_get($userId));
+  }
+  else
+  {
+    wp_send_json_error("No user found");
+  }
 }
 function lab_admin_usermeta_update_phone()
 {

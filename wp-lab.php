@@ -455,34 +455,6 @@ function lab_admin_tab_seminaire()
 <?php
 }
 
-
-function old_event1($param)
-{
-  extract(shortcode_atts(
-    array(
-      'event' => get_option('option_event')
-    ),
-    $param
-  ));
-  $eventCaterory = get_option('option_event');
-  //$sql = "SELECT p.* FROM `wp_terms` AS t JOIN `wp_term_relationships` AS tr ON tr.`term_taxonomy_id`=t.`term_id` JOIN `wp_posts` as p ON p.`ID`=tr.`object_id` WHERE t.name='".$event."' AND `p`.`post_date` < NOW() ORDER BY `p`.`post_date` DESC ";
-  $sql = "SELECT p.* FROM `wp_terms` AS t JOIN `wp_term_relationships` AS tr ON tr.`term_taxonomy_id`=t.`term_id` JOIN `wp_em_events` as p ON p.`post_id`=tr.`object_id` WHERE t.slug='" . $event . "' AND `p`.`event_end_date` < NOW() ORDER BY `p`.`event_end_date` DESC ";
-  global $wpdb;
-  // SELECT * FROM `wp_terms` AS t JOIN `wp_term_relationships` AS tr ON tr.`term_taxonomy_id`=t.`term_id` WHERE t.name='HYPERBO' 
-  $results = $wpdb->get_results($sql);
-  $listEventStr = "<table>";
-  $url = esc_url(home_url('/'));
-  foreach ($results as $r) {
-    $listEventStr .= "<tr>";
-    $listEventStr .= "<td>" . esc_html($r->event_start_date) . "</td><td><a href=\"" . $url . "event/" . $r->event_slug . "\">" . $r->event_name . "</a></td>";
-    $listEventStr .= "</tr>";
-  }
-  $listEventStr .= "</table>";
-  //return "category de l'evenement : ".$event."<br>".$sql."<br>".$listEventStr;
-  return $listEventStr;
-}
-
-
 /***********************************************************************************************************************
  * PLUGIN WIDGET
  **********************************************************************************************************************/
