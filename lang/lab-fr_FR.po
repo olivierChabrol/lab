@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: lab\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-05-18 12:02+0200\n"
-"PO-Revision-Date: 2021-05-31 11:04+0200\n"
+"PO-Revision-Date: 2021-09-21 13:26+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -494,7 +494,7 @@ msgstr "Date de départ"
 
 #: admin/view/lab-admin-tab-users.php:169
 msgid "Edit user status"
-msgstr "Modifier status utilisateur"
+msgstr "Modifier statut utilisateur"
 
 #: admin/view/lab-admin-tab-users.php:170 admin/view/lab-admin-tab-users.php:213
 msgid "Delete user"
@@ -2317,7 +2317,7 @@ msgstr "Personnels partis"
 
 #: shortcode/lab-shortcode-directory.php:260
 msgid "People present"
-msgstr "Personnel présent"
+msgstr "Personnels présents"
 
 #: shortcode/lab-shortcode-directory.php:265
 msgid "Search a name"
