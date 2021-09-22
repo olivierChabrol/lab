@@ -80,6 +80,13 @@ function lab_admin_loadUserHistory($user_id) {
         return lab_admin_history($res);
     }
 }
+
+function lab_admin_get_user_historics($user_id) {
+    global $wpdb;
+    $sql = "SELECT * from `".$wpdb->prefix."lab_users_historic` WHERE `user_id`=$user_id ORDER BY `begin` DESC";
+    $res = $wpdb->get_results($sql);
+    return $res;
+}
 function lab_admin_load_lastUserHistory($user_id) {
     global $wpdb;
     $sql = "SELECT * from `".$wpdb->prefix."lab_users_historic` WHERE `user_id`=$user_id ORDER BY `begin` DESC LIMIT 1";
