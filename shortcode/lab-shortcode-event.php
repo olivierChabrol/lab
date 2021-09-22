@@ -59,6 +59,65 @@ function lab_incoming_event($param)
 
 
 /***********************************************************************************************************************
+ * PLUGIN SHORTCODE lab_event_of_the_day
+ **********************************************************************************************************************/
+/*** 
+ * Shortcode use : [lab-event-of-the-day]
+    No parameters
+***/ 
+
+function lab_event_of_the_day($param) 
+{
+    $day        = date('w');
+    //$day_start = date('Y-m-d', strtotime('today midnight'));
+    //$day_end   = date('Y-m-d', strtotime('+'.(7-$day).' days'));
+    $today = new DateTime();
+    $today->setTime(0,0);
+    $endOfToday = new DateTime();
+    $endOfToday->setTime(24,59,59);
+    $day_start = $today->format('Y-m-d');
+    $day_end   = $endOfToday->format('Y-m-d');
+
+    $sql = "SELECT t.name, p.*, pmd.meta_value as speaker
+            FROM `wp_terms` AS t 
+            JOIN `wp_term_relationships` AS tr  ON tr.`term_taxonomy_id`=t.`term_id` 
+            JOIN `wp_em_events`          AS p   ON p.`post_id`=tr.`object_id` 
+            JOIN `wp_postmeta`           AS pmd ON pmd.`post_id`         = p.`post_id`
+            WHERE p.`event_start_date` >= '".$day_start."' 
+                AND p.`event_end_date` <= '".$day_end."' 
+                AND pmd.meta_key = 'Speaker'
+            ORDER BY `p`.`event_start_date` ASC";
+    global $wpdb;
+    $results = $wpdb->get_results($sql);
+
+    $res = array();
+    $ids = array();
+    foreach($results as $r)
+    {
+        if (array_key_exists ($r->post_id, $ids)) {
+            $ids[$r->post_id]->name = $ids[$r->post_id]->name.", ".$r->name;
+        }
+        else
+        {
+            $ids[$r->post_id] = $r;
+            $res[] = $r;
+        }
+    }
+
+    $content ="<h4><a class=\"spip_in\" href=\"/events/\">".esc_html__("I2m Week",'lab')."</a></h4><br/>";
+    
+    foreach ( $res as $r )
+    {
+        $content .= "<p><span style=\"color: #ff6600;\">".date_i18n("l j F Y", strtotime($r->event_start_date))."</span> ";
+        $content .= "<span style=\"color: mediumseagreen\"><strong>".$r->speaker."</strong></span><br>";
+        $content .= "<span style=\"color: #000000;\"><strong>".$r->name."</strong></span><br>";
+        $content .= date("H:i", strtotime($r->event_start_time))." - ".date("H:i", strtotime($r->event_end_time))." <a class=\"spip_out\" href=\"".$r->event_slug."\">".$r->event_name."</a></p>";
+    }
+    return $content;
+    //return $sql;
+}
+
+/***********************************************************************************************************************
  * PLUGIN SHORTCODE lab_event_of_the_week
  **********************************************************************************************************************/
 /*** 
