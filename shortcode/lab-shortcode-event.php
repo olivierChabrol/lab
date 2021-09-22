@@ -104,7 +104,7 @@ function lab_event_of_the_day($param)
         }
     }
 
-    $content ="<h4><a class=\"spip_in\" href=\"/events/\">".esc_html__("I2m Week",'lab')."</a></h4><br/>";
+    $content ="<h4><a class=\"spip_in\" href=\"/events/\">".esc_html__("Today",'lab')."</a></h4><br/>";
     
     foreach ( $res as $r )
     {
