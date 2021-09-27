@@ -1002,7 +1002,7 @@ function lab_admin_mission_create_table() {
 
 
     $sql = "CREATE TABLE IF NOT EXISTS `".$wpdb->prefix."lab_mission_comment_notifs` (
-        `id` bigint NOT NULL AUTO_INCREMENT
+        `id` bigint NOT NULL AUTO_INCREMENT,
         `user_id` bigint NOT NULL,
         `invite_id` bigint NOT NULL,
         `comment_id` bigint NOT NULL,
