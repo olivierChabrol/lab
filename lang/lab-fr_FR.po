@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: lab\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-09-27 10:06+0200\n"
-"PO-Revision-Date: 2021-09-27 10:07+0200\n"
+"PO-Revision-Date: 2021-09-27 16:31+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -2367,7 +2367,7 @@ msgstr "Coordonnées"
 
 #: shortcode/lab-shortcode-event.php:118
 msgid "No event today"
-msgstr "Rien de prévus aujourd'hui"
+msgstr "Aucun(s) évènement(s)"
 
 #: shortcode/lab-shortcode-event.php:165
 msgid "I2m Week"
