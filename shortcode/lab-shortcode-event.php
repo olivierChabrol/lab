@@ -13,13 +13,18 @@
 function lab_incoming_event($param) 
 {
     $param = shortcode_atts(array(
-        'slug' => get_option('lab-incoming-event')
+        'slug' => get_option('lab-incoming-event'),
+        'debug' => get_option('lab-old-event')
         ),
         $param,
         "lab-incoming-event"
     );
     $eventCategory = $param['slug'];
     $category      = explode(",", $eventCategory);
+    $debug         = False;
+    if(isset($param['debug']) && $param['debug'] == "true") {
+        $debug = True;
+    }
 
     /***  SQL ***/
     $sql = "SELECT p.*, pmd.meta_value as speaker
@@ -34,7 +39,7 @@ function lab_incoming_event($param)
         $sql .= " OR t.slug = '" . $category[$i] . "' ";
     }
 
-    $sql .= ") AND `p`.`event_end_date` >= NOW() 
+    $sql .= ") AND TIMESTAMP(p.`event_end_date`, p.`event_end_time`) >= NOW() 
              AND pmd.meta_key = 'Speaker'
              ORDER BY `p`.`event_start_date` 
              ASC ";
@@ -43,7 +48,11 @@ function lab_incoming_event($param)
     
     /***  DISPLAY ***/
     $url           = esc_url(home_url('/'));
-    $listEventStr = "";//"SQL : $sql<br>";
+    $listEventStr = "";
+    if ($debug) {
+        $listEventStr .= "<br>Debug : ".$debug;
+        $listEventStr .= "<br>SQL : ".$sql."<br>";
+    }
     $listEventStr .= '<br><a href="'.$url."events/categories/agenda/seminaires/".$eventCategory.'/ical">iCal</a>';
     $listEventStr  .= "<table>";
     foreach ($results as $r )
@@ -74,7 +83,7 @@ function lab_event_of_the_day($param)
     $today = new DateTime();
     $today->setTime(0,0);
     $endOfToday = new DateTime();
-    $endOfToday->setTime(24,59,59);
+    $endOfToday->setTime(23,59,59);
     $day_start = $today->format('Y-m-d');
     $day_end   = $endOfToday->format('Y-m-d');
 
@@ -105,15 +114,19 @@ function lab_event_of_the_day($param)
     }
 
     $content ="<h4><a class=\"spip_in\" href=\"/events/\">".esc_html__("Today",'lab')."</a></h4><br/>";
-    
-    foreach ( $res as $r )
-    {
-        $content .= "<p><span style=\"color: #ff6600;\">".date_i18n("l j F Y", strtotime($r->event_start_date))."</span> ";
-        $content .= "<span style=\"color: mediumseagreen\"><strong>".$r->speaker."</strong></span><br>";
-        $content .= "<span style=\"color: #000000;\"><strong>".$r->name."</strong></span><br>";
-        $content .= date("H:i", strtotime($r->event_start_time))." - ".date("H:i", strtotime($r->event_end_time))." <a class=\"spip_out\" href=\"".$r->event_slug."\">".$r->event_name."</a></p>";
+    if(count($res) > 0) {
+        foreach ( $res as $r )
+        {
+            $content .= "<p><span style=\"color: #ff6600;\">".date_i18n("l j F Y", strtotime($r->event_start_date))."</span> ";
+            $content .= "<span style=\"color: mediumseagreen\"><strong>".$r->speaker."</strong></span><br>";
+            $content .= "<span style=\"color: #000000;\"><strong>".$r->name."</strong></span><br>";
+            $content .= date("H:i", strtotime($r->event_start_time))." - ".date("H:i", strtotime($r->event_end_time))." <a class=\"spip_out\" href=\"".$r->event_slug."\">".$r->event_name."</a></p>";
+        }
     }
-    $content .= "<!-- ".$sql." -->";
+    else {
+        $content .= esc_html__("No event today",'lab')."<br>";
+    }
+    //$content .= "<br> Start End : ".$day_start." ".$day_end."<br>";
     return $content;
     //return $sql;
 }
@@ -312,7 +325,7 @@ function lab_events($eventCategory, $eventYear, $old, $debug = False) {
         }
 
         if ($old == true) {
-            $sqlCondition = " AND `p`.`event_end_date` < NOW() ";
+            $sqlCondition = " AND TIMESTAMP(p.`event_end_date`, p.`event_end_time`) < NOW() ";
         }
         
         /***  SQL ***/
