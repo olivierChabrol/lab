@@ -113,6 +113,7 @@ function lab_event_of_the_day($param)
         $content .= "<span style=\"color: #000000;\"><strong>".$r->name."</strong></span><br>";
         $content .= date("H:i", strtotime($r->event_start_time))." - ".date("H:i", strtotime($r->event_end_time))." <a class=\"spip_out\" href=\"".$r->event_slug."\">".$r->event_name."</a></p>";
     }
+    $content .= "<!-- ".$sql." -->";
     return $content;
     //return $sql;
 }
