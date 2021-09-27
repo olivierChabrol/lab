@@ -42,7 +42,7 @@ function lab_profile($id=0) {
 						<input style="display:none;" type="text" class="lab_profile_edit" id="lab_profile_edit_halName" placeholder="'.esc_html__('Nom HAL','lab').'" value="' . $user->hal_name .'"/><a id="lab_profile_testHal_name" target="_blank" style="display:none" class="lab_profile_edit" href="'.$HalName_URL.'">'.esc_html__('Tester sur HAL','lab').'</a>
 					</p>';
 	}
-	$metaDatas = "";
+	$metaDatas = "Histo : ";
 	if (isset($user->funding) && !empty($user->funding))
 	{
 		$metaDatas .='<p id="lab_profile_funding"><span class="lab_current">'.esc_html__('Funding','lab').' : '.$user->funding.'</span></p>';
@@ -67,8 +67,31 @@ function lab_profile($id=0) {
 	{
 		$metaDatas .='<p id="lab_profile_hdr_title"><span class="lab_current">'.esc_html__('HDR','lab').' : '.$user->hdrTitle.'</span></p>';
 	}
+	//var_dump($user->historics);
 	if ($user->historics != null && isset($user->historics))
 	{
+		$metaDatas .='<p id="lab_profile_historic"><span class="lab_current">'.esc_html('Mobility','lab')." : </span></p><ul>";
+		foreach($user->historics as $historic)
+		{
+			$historic = lab_admin_history_fields($historic);
+			$metaDatas .= '<li>'.esc_html('Begin','lab')." : ".strftime('%d %B %G',$historic->begin->getTimestamp()).' - '.
+			($historic->end == null?esc_html__('present','lab'):esc_html('End','lab').' : '.strftime('%d %B %G',$historic->end->getTimestamp())).' • '.AdminParams::get_param($historic->function);
+			if ($historic->host) {
+				$metaDatas .= " ".esc_html('Host','lab')." : " .$historic->host;
+			}
+			if ($historic->mobility) {
+				$metaDatas .= "<br>".esc_html('Mobility','lab')." : " .$historic->mobility;
+				if ($historic->mobility_status) {
+					$metaDatas .= " " .$historic->mobility_status;
+				}
+			}
+			else if ($historic->mobility_status) {
+				$metaDatas .= "<br>".esc_html('Mobility','lab')." : " .$historic->mobility_status;
+			}
+			$metaDatas .='</li>';
+		}
+		$metaDatas .='</ul>';
+		/*
 		$lastHisto = $user->historics;
 		//var_dump($lastHisto);
 		$metaDatas .='<p id="lab_profile_historic"><span class="lab_current">'.esc_html('Mobility','lab')." ".esc_html('Begin','lab').' : '.strftime('%d %B %G',$lastHisto->begin->getTimestamp()).' - '.
@@ -83,10 +106,11 @@ function lab_profile($id=0) {
 			}
 		}
 		else
-		{$metaDatas .= "<br>".esc_html('Mobility','lab')." : " .$lastHisto->mobility_status;
-
+		{
+			$metaDatas .= "<br>".esc_html('Mobility','lab')." : " .$lastHisto->mobility_status;
 		}
 		$metaDatas .='</span></p>';
+		//*/
 	}
 	  
 	  				  
@@ -184,7 +208,7 @@ class labUser {
 		$this -> funding     = lab_profile_get_param_metaKey($id,'lab_user_funding', AdminParams::PARAMS_FUNDING_ID);
 		$this -> sectionCn   = lab_profile_get_param_metaKey($id,'lab_user_section_cn', AdminParams::PARAMS_USER_SECTION_CN);
 		$this -> sectionCnu  = lab_profile_get_param_metaKey($id,'lab_user_section_cnu', AdminParams::PARAMS_USER_SECTION_CNU);
-		$this -> historics   = lab_admin_load_lastUserHistory($id);
+		$this -> historics   = lab_admin_get_user_historics($id);
 		$this -> thesisTitle = stripslashes(lab_profile_get_metaKey($id,'lab_user_thesis_title'));
 		//$this -> thesisTitle = lab_profile_get_metaKey($id,'lab_user_thesis_title');
 		$this -> hdrTitle    = stripslashes(lab_profile_get_metaKey($id,'lab_user_hdr_title'));
