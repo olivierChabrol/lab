@@ -95,7 +95,7 @@ function lab_event_of_the_day($param)
             WHERE p.`event_start_date` >= '".$day_start."' 
                 AND p.`event_end_date` <= '".$day_end."' 
                 AND pmd.meta_key = 'Speaker'
-            ORDER BY `p`.`event_start_date` ASC";
+            ORDER BY `p`.`event_start_time` ASC";
     global $wpdb;
     $results = $wpdb->get_results($sql);
 
