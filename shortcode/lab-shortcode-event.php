@@ -113,7 +113,7 @@ function lab_event_of_the_day($param)
         }
     }
 
-    $content ="<h4><a class=\"spip_in\" href=\"/events/\">".esc_html__("Today",'lab')."</a></h4><br/>";
+    $content ="<h4><a class=\"spip_in\" href=\"/events/\">".esc_html__("Today",'lab')."</a></h4>";
     if(count($res) > 0) {
         foreach ( $res as $r )
         {
