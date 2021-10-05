@@ -805,6 +805,7 @@ function lab_admin_ajax_group_by_user($userId)
   {
       $group = new \stdClass();
       $group->id = $r->id; 
+      $group->ugid = $r->ugid; 
       $group->name = $r->group_name;
       $groups[] = $group;
   }
