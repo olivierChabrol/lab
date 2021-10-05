@@ -1662,7 +1662,7 @@ function loaduserGroup() {
           //use obj.id and obj.name here, for example:
           //alert(obj.name);
           let span = $('<span />').attr('class', 'badge badge-secondary user-role-badge').html(obj.name+" ");
-          let innerSpan = $('<span />').attr('class', 'lab_group_delete').attr('group_id', obj.id);
+          let innerSpan = $('<span />').attr('class', 'lab_group_delete').attr('group_id', obj.id).attr('user_group_id', obj.ugid);
           let innerI = $('<i />').attr('class', 'fas fa-trash').attr('group_id', obj.id);
           innerSpan.append(innerI);
           span.append(innerSpan);
@@ -1671,7 +1671,7 @@ function loaduserGroup() {
         $(".lab_group_delete").click(function (){
           data = {
             'action':'lab_user_delGroup',
-            'group_id':$(this).attr('group_id'),
+            'group_id':$(this).attr('user_group_id'),
           };
           callAjax(data,"Group "+$(this).attr('role')+" delete !",loaduserGroup,'Failed to delete group',null);
         });
