@@ -112,8 +112,18 @@ jQuery(function($){
       }
     }
 
-    callAjax(data, null, clearEntryField, null, null);
+    callAjax(data, null, clearAndReload, null, null);
   });
+
+  function clearAndReload() {
+    clearEntryField();
+    let tab = $("#lab_keyring_tab").val();
+    reloadKeyringPage(tab);
+  }
+
+  function reloadKeyringPage(tab) {
+    window.location.reload(false); 
+  }
 
   function clearEntryField()
   {

@@ -83,9 +83,23 @@ function lab_admin_loadUserHistory($user_id) {
 
 function lab_admin_trombinoscope() {
     global $wpdb;
-    $sql = "SELECT wp1.meta_value, wp2.meta_value, wp3.meta_value FROM `".$wpdb->prefix."_usermeta` AS wp1 JOIN `".$wpdb->prefix."_usermeta` AS wp2 ON wp2.user_id=wp1.user_id JOIN `".$wpdb->prefix."_usermeta` AS wp3 ON wp3.user_id=wp1.user_id WHERE wp1.`meta_key` = 'lab_user_picture_display' AND wp2.meta_key='last_name' AND wp3.meta_key='first_name'";
+    $sql = "SELECT wp1.user_id, wp1.meta_value as imgId, wp2.meta_value as lastName, wp3.meta_value as firstName FROM `".$wpdb->prefix."_usermeta` AS wp1 JOIN `".$wpdb->prefix."_usermeta` AS wp2 ON wp2.user_id=wp1.user_id JOIN `".$wpdb->prefix."_usermeta` AS wp3 ON wp3.user_id=wp1.user_id WHERE wp1.`meta_key` = 'lab_user_picture_display' AND wp2.meta_key='last_name' AND wp3.meta_key='first_name'";
     $res = $wpdb->get_results($sql);
-    return $res;
+    $users = array();
+    foreach ($res as $r) {
+        if ($r->imgId)
+        {
+            $u = new stdClass();
+            $imgUrl = wp_get_attachment_image($r->imgId, array('112', '112'),false, array("id"=>"lab_user_picture_display", "userId"=>$r->user_id));
+            $u->imgUrl = $imgUrl;
+            $u->lastName = $lastName;
+            $u->firstName = $firstName;
+            array_push($users, $u);
+        }
+    }
+    
+    
+    return $users;
 }
 
 function lab_admin_get_user_historics($user_id) {

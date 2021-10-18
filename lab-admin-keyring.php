@@ -9,7 +9,8 @@
       <h1 class="wp-heading-inline"><?php esc_html_e('Key management','lab'); ?></h1>
       <hr class="wp-header-end">
       <h2 class="nav-tab-wrapper">
-        <a id="lab_keyring_default_tab_pointer" style="position: relative" class="nav-tab <?php echo $active_tab == 'entry' ? 'nav-tab-active' : ''; ?>"   href="<?php echo add_query_arg(array('tab' => 'entry')  , $_SERVER['REQUEST_URI']); ?>"><?php esc_html_e('keyring entry','lab'); ?></a>
+        <a id="lab_keyring_default_tab_pointer" style="position: relative" class="nav-tab <?php echo $active_tab == 'entry' ? 'nav-tab-active' : ''; ?>"   href="<?php echo add_query_arg(array('tab' => 'entry')  , $_SERVER['REQUEST_URI']); ?>"><?php esc_html_e('keyring entry','lab'); ?></a></a>
+        <a id="lab_keyring_default_tab_pointer" style="position: relative" class="nav-tab <?php echo $active_tab == 'oneKey' ? 'nav-tab-active' : ''; ?>" href="<?php echo add_query_arg(array('tab' => 'oneKey'), $_SERVER['REQUEST_URI']); ?>"><?php esc_html_e('Add one key','lab'); ?></a>
         <a id="lab_keyring_default_tab_pointer" style="position: relative" class="nav-tab <?php echo $active_tab == 'default' ? 'nav-tab-active' : ''; ?>" href="<?php echo add_query_arg(array('tab' => 'default'), $_SERVER['REQUEST_URI']); ?>"><?php esc_html_e('Key','lab'); ?></a>
         <a id="lab_keyring_second_tab_pointer"  style="position: relative" class="nav-tab <?php echo $active_tab == 'second' ? 'nav-tab-active' : ''; ?>"  href="<?php echo add_query_arg(array('tab' => 'second') , $_SERVER['REQUEST_URI']); ?>"><?php esc_html_e('Loans','lab'); ?></a>
       </h2>
@@ -26,10 +27,88 @@
         lab_keyring_tab_keys();
       } else if ($active_tab == 'entry') {
         lab_keyring_tab_entry();
-      } else {
+      } else if ($active_tab == 'oneKey') {
+        lab_keyring_tab_entry_on_entry();
+      } {
         lab_keyring_tab_users();
       }
   }
+
+  function lab_keyring_tab_entry_on_entry() {
+?>
+  <input type="hidden" id="lab_keyring_tab" value="oneKey">
+    <table class="widefat fixed lab_keyring_table">
+      <tbody>
+        <tr id="lab_keyring_who">
+              <td scope="col"><?php esc_html_e('User','lab'); ?> :</td>
+              <td scope="col" colspan="6">
+                <input type="text" id="lab_keyring_entry_user" placeholder="<?php esc_html_e('User name','lab'); ?>"/>
+                <input type="hidden" id="lab_keyring_entry_user_id" value="">
+              </td>
+        </tr>
+    <?php //Récupère la liste des types de clés existants
+      $output ="";
+      $params = new AdminParams;
+      $i = 0;
+      //foreach ( $params->get_params_fromId($params::PARAMS_KEYTYPE_ID) as $r ) {
+      {
+    ?>
+        <tr id="lab_keyring_addKey0">
+              <td scope="col"><?php esc_html_e('New','lab'); ?> :</td>
+              <td scope="col"><select id="lab_keyring_entry_type_0">
+    <?php
+              foreach ( $params->get_params_fromId($params::PARAMS_KEYTYPE_ID) as $r ) {
+    ?>
+                <option value="<?php echo $r->id?>"><?php print($r->value); ?></option>
+    <?php
+      }
+    ?>
+                </select>
+              </td>
+              <td scope="col">
+                <input type="text" id="lab_keyring_entry_number0" placeholder="123" index="O"/>
+                <input type="hidden" id="lab_keyring_entry_key_id0" value="">
+              </td>
+              <td scope="col">
+                <input type="text" id="lab_keyring_entry_office0" placeholder="Numero de Bureau"/>
+              </td>
+              <td scope="col">
+                <input type="text" id="lab_keyring_entry_brand0" placeholder="<?php esc_html_e('Brand','lab'); ?>"/>
+              </td>
+              <!-- 
+              <?php esc_html_e('ok','lab'); ?>
+              <?php esc_html_e('lost','lab'); ?>
+              <?php esc_html_e('broken','lab'); ?>
+              -->
+              <td scope="col">
+                <select id="lab_keyring_entry_site<?php echo $i ?>">
+                  <?php //Récupère la liste des Sites existants
+                    $output ="";
+                    $params = new AdminParams;
+                    foreach ( $params->get_params_fromId($params::PARAMS_SITE_ID) as $r ) {
+                      $output .= "<option value=".$r->id.">".$r->value."</option>";
+                    }
+                    echo $output;
+                  ?>
+                </select>
+              </td>
+              <td scope="col" colspan="1">
+                <input type="text" id="lab_keyring_entry_commentary0" placeholder="<?php echo esc_html__('Comment','lab').'('.esc_html__('optional','lab').')'; ?>"/>
+              </td>
+        </tr>
+      <?php
+      }
+      ?>
+            <tr>
+              <td scope="col" colspan="7"><button class="page-title-action" id="lab_keyring_entry_create"><?php esc_html_e('Create','lab'); ?></button></td>
+            </tr>
+          </tbody>
+        </table>
+    <?php
+        $html = '<input id="lab_keyring_entry_number" type="hidden" value="1">';
+        $html .= '<div id="loadingAjaxGif"><img src="/wp-content/plugins/lab/loading.gif"/></div>';
+        echo $html;
+      }
 
   function lab_keyring_tab_entry() {
 ?>
