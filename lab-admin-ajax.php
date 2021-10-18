@@ -1180,13 +1180,18 @@ function lab_keyring_save_loans()
   }
   $keyNumber = intval($keyNumber);
   $keyFields = ["type","number","brand","site","office","commentary"];
-  $ret = "RETOUR\n";
-  $ret .= "keyNumber : " . $keyNumber;
+  $ret = array();
+
+  $ret["keyNumber"] = $keyNumber;
+  $ret["keys"] = array();
   
   for ($i = 0 ; $i < $keyNumber ; $i++)
   {
     $keyId = $_POST["key_id".$i];
-    $ret .= " i:" .$i. " keyId :".$keyId." ";
+    $ret["keys"][$i] = array();
+    $ret["keys"][$i]["i"] = $i;
+    $ret["keys"][$i]["keyId"] = $keyId;
+
     if ($keyId == -1)
     {
       $param = array();
@@ -1199,8 +1204,8 @@ function lab_keyring_save_loans()
       $keyId = lab_keyring_create_key($param);
       //$ret .= $
       //$ret .= $param;
-      $ret .= " min state : ". $param["state"];
-      $ret .= " Clef ". $keyId ." create";
+      $ret["keys"][$i]["min state"] = $param["state"];
+      $ret["keys"][$i]["Clef"] = $keyId ." create";
     }
     else
     {
