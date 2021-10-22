@@ -66,6 +66,9 @@ function lab_hal($param) {
         //$html .= count($publications)." <br>";
     }
     if ($publications != null) {
+        if(!isset($html)) {
+            $html  = "<h1>".__('Publications HAL','lab')."</h1>";
+        }
         foreach($publications as $p) {
             $html .= date("Y/m", strtotime($p->producedDate_tdate))." <i>".($p->journalTitle_s !=null?$p->journalTitle_s :"")."</i> - <a href=\"".$p->url."\"  target=\"".$p->docid."\">".$p->title."</a><br>";
             $html .= "<br>";
