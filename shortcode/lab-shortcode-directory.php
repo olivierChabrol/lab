@@ -130,7 +130,7 @@ function lab_directory($param) {
         {
             $debugFct .= $fct."<br>";
             $params = AdminParams::get_param_by_slug($fct);
-            if ($params != NULL && count($params) > 0)
+            if ($params != NULL && is_countable($params) && count($params) > 0)
             {
                 $debugFct .= "Nb Params : ".count($params)."<br>";
                 if (count($params) > 1)
