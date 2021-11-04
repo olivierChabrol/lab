@@ -123,6 +123,7 @@ add_shortcode('lab-event-of-the-day', 'lab_event_of_the_day');
 add_shortcode('lab-event-of-the-year', 'lab_event_of_the_year');
 add_shortcode('lab-incoming-event', 'lab_incoming_event');
 add_shortcode('lab-trombinoscope', 'lab_trombinoscope');
+add_shortcode('lab-user-by-thematic', 'lab_users_by_thematic');
 add_shortcode('lab-hal', 'lab_hal');
 add_shortcode('lab-invite', 'lab_invitation');
 add_shortcode('lab-mission', 'lab_mission');
