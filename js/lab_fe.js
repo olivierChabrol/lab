@@ -6,6 +6,10 @@ if(typeof __ === 'undefined') {
 
 jQuery(function($){
 
+  if(typeof __ === 'undefined') {
+    const { __, _x, _n, sprintf } = wp.i18n;
+  }
+
   /*** DIRECTORY ***/ 
   var descriptions = [];
   var typesOfDescription = new Array();
@@ -241,19 +245,21 @@ jQuery(function($){
         console.log("[loadThematics]] success");
         jQuery.each(response.data, function (index, value){
           console.log("[loadThematics] value : " + value["name"]);
-          let li = $('<li />').html('*'+value["name"]);
+          let li = $('<li />').html(value["name"]);
 
           let thematicCssClass = 'lab_thematic_order';
           if (value["main"] == "1") {
             thematicCssClass += " lab_thematic_main";
           }
           let innerSpanStar = $('<span />').attr('class', thematicCssClass).attr('thematic_id', value['id']).attr('thematic_value', value["main"]);
-          let innerIStar = $('<i />').attr('class', 'fas fa-star').attr('thematic_id', value['id']).attr("title",__('Change main thematic','lab'));
+          //let innerIStar = $('<i />').attr('class', 'fas fa-star').attr('thematic_id', value['id']).attr("title",__('Change main thematic','lab'));
+          let innerIStar = $('<i />').attr('class', 'fas fa-star').attr('thematic_id', value['id']).attr("title",'Change main thematic');
           innerSpanStar.append(innerIStar);
           li.append(innerSpanStar);
           
           let innerSpanDelete = $('<span />').attr('class', 'lab_profile_edit delete_thematic').attr('thematic_id', value['id']);
-          let innerI = $('<i />').attr('class', 'fas fa-trash').attr('thematic_id', value['id']).attr("title",__('Delete thematic','lab'));
+          //let innerI = $('<i />').attr('class', 'fas fa-trash').attr('thematic_id', value['id']).attr("title",__('Delete thematic','lab'));
+          let innerI = $('<i />').attr('class', 'fas fa-trash').attr('thematic_id', value['id']).attr("title",'Delete thematic');
           innerSpanDelete.append(innerI);
           li.append(innerSpanDelete);
 
