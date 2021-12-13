@@ -149,7 +149,7 @@ function lab_budget_info_ajax_save_order() {
 
 function lab_budget_info_ajax_load() {
   $budgetId = null;
-  if(isset($budgetId)) {
+  if(isset($_POST['id'])) {
     $budgetId = $_POST['id'];
     if (!isset($budgetId) || empty($budgetId)) {
       $budgetId = null;
@@ -1165,6 +1165,10 @@ function lab_keyring_search_key_number() {
   wp_send_json_success($items);
 }
 
+function lab_hal_tools_ajax_load()
+{
+  wp_send_json_success(lab_hal_tools_load());
+}
 
 function lab_keyring_save_loans()
 {
