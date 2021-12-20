@@ -364,6 +364,7 @@ function lab_budget_info_load($budgetId, $filters = null) {
     }
     $sql .= " ORDER BY `request_date` DESC";
     $results = $wpdb->get_results($sql);
+    $data["sql"] = $sql;
     $userIds = array();
     foreach($results as $r) {
         if(!isset($userIds[$r->user_id]) && $r->user_id != 0) {
@@ -516,7 +517,7 @@ function lab_admin_contract_get_contracts_by_user($userId) {
  */
 function lab_admin_contract_get_all_contracts() {
     global $wpdb;
-    $sql = "SELECT cu.*, c.contract_type as contract_type_id, p.value as contract_type, c.name, c.start, c.end  
+    $sql = "SELECT cu.*, c.contract_type as contract_type_id, p.value as contract_type, c.name, c.start, c.end,  
               FROM `".$wpdb->prefix."lab_contract_user` AS cu 
               JOIN ".$wpdb->prefix."lab_contract AS c ON c.id = cu.contract_id 
               JOIN ".$wpdb->prefix."lab_params as p ON p.id = c.contract_type";
@@ -603,6 +604,7 @@ function lab_admin_contract_inner_new_stdClass_contract($line)
     $contract->start = $line->start;
     $contract->end   = $line->end;
     $contract->type   = $line->contract_type_label;
+    $contract->amount = $line->amount; /*kuwabara*/           
     $contract->holders  = array();
     $contract->managers = array();
     lab_admin_contract_inner_new_stdClass_add_user($line, $contract);
@@ -3339,5 +3341,11 @@ function getAllTableFields($table, $id, $primaryFieldName, $travelId = null) {
 function getAllParamsValue() {
     global $wpdb;
     $sql = "SELECT `value` FROM  `".$wpdb->prefix."lab_params`";
+    return $wpdb->get_results($sql);
+}
+
+function lab_hal_tools_load() {
+    global $wpdb;
+    $sql = "SELECT * FROM  `".$wpdb->prefix."lab_hal_tools`";
     return $wpdb->get_results($sql);
 }

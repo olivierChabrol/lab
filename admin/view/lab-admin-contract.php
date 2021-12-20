@@ -96,6 +96,14 @@
             </td>
         </tr>
         <tr>
+            <td>
+                <label for="lab_admin_contract_amount"><?php esc_html_e('Contract Amount', 'lab') ?></label>
+            </td>
+            <td>
+                <input type="number" id="lab_admin_contract_amount">
+            </td>
+        </tr>
+        <tr>
           <td scope="col" colspan="2"><button class="page-title-action" id="lab_admin_contract_create"><?php esc_html_e('Add','lab'); ?></button></td>
         </tr>
     </table>

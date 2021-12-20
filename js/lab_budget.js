@@ -149,7 +149,7 @@ jQuery(function($){
 
   function loadBudgetInfo()
   {
-    
+    console.log("loadBudgetInfo()");
     data = {
       'action':"lab_budget_info_load",
       'id':$("#lab_budget_info_id").val(),
@@ -158,6 +158,8 @@ jQuery(function($){
   }
 
   function displayEditBudget(data) {
+    console.log("[displayEditBudget]");
+    console.log(data);
     let fields = getFields();
     let params=Object();
     for (const element of fields) {
@@ -175,6 +177,7 @@ jQuery(function($){
 
   function displayBudget(data)
   {
+    console.log("[displayBudget");
     let budgetSum = {};
     let origins = [];
     let sites   = [];

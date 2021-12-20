@@ -72,6 +72,7 @@ jQuery(function($){
                 'contract_type':$("#lab_admin_contract_type").val(),
                 'start':$("#lab_admin_contract_start").val(),
                 'end':$("#lab_admin_contract_end").val(),
+                'amount':$("lab_admin_contract_amount").val(),
             };
             let holders  = [];
             let managers = [];
@@ -92,7 +93,6 @@ jQuery(function($){
             toast_error("Contract name mandatory");
         }
     });
-
     $("#lab_contract_delete_confirm").click(function() {
         console.log($("#lab_contract_delete_dialog_contract_id").val());
         deleteContract($("#lab_contract_delete_dialog_contract_id").val());
@@ -125,6 +125,8 @@ jQuery(function($){
         $("#lab_admin_contract_type").val(data.contract_type);
         $("#lab_admin_contract_start").val(data.start);
         $("#lab_admin_contract_end").val(data.end);
+        $("#lab_admin_contract_amount").val(data.end);
+
         loadContractUsers(data.id);
         //displayDeleteButton();
         $("#lab_admin_contract_delete").prop('disabled', false);
@@ -148,9 +150,11 @@ jQuery(function($){
             let tdId = $('<td />').html(obj.id);
             let tdContractName = $('<td />').html(obj.name);
             let tdContractType = $('<td />').html(obj.type);
+            let tdContractAmount = $('<td />').html(obj.amount + ' &euro;') /*kuwabara*/
             tr.append(tdId);
             tr.append(tdContractName);
             tr.append(tdContractType);
+            tr.append(tdContractAmount); /*kuwabara*/
             let holdersStr = "";
             $.each(obj.holders, function(i, usr) {
                 holdersStr += usr.first_name + " " + usr.last_name+", ";
