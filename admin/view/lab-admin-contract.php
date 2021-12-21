@@ -100,7 +100,8 @@
                 <label for="lab_admin_contract_amount"><?php esc_html_e('Contract Amount', 'lab') ?></label>
             </td>
             <td>
-                <input type="number" id="lab_admin_contract_amount">
+                
+                <input type="number" id="lab_admin_contract_amount"> &euro;  
             </td>
         </tr>
         <tr>

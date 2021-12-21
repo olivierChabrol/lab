@@ -125,7 +125,7 @@ jQuery(function($){
         $("#lab_admin_contract_type").val(data.contract_type);
         $("#lab_admin_contract_start").val(data.start);
         $("#lab_admin_contract_end").val(data.end);
-        $("#lab_admin_contract_amount").val(data.end);
+        $("#lab_admin_contract_amount").val(data.amount);
 
         loadContractUsers(data.id);
         //displayDeleteButton();
@@ -150,11 +150,11 @@ jQuery(function($){
             let tdId = $('<td />').html(obj.id);
             let tdContractName = $('<td />').html(obj.name);
             let tdContractType = $('<td />').html(obj.type);
-            let tdContractAmount = $('<td />').html(obj.amount + ' &euro;') /*kuwabara*/
+            let tdContractAmount = $('<td />').html(obj.amount + ' &euro;') 
             tr.append(tdId);
             tr.append(tdContractName);
             tr.append(tdContractType);
-            tr.append(tdContractAmount); /*kuwabara*/
+            tr.append(tdContractAmount); 
             let holdersStr = "";
             $.each(obj.holders, function(i, usr) {
                 holdersStr += usr.first_name + " " + usr.last_name+", ";

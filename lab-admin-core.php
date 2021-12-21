@@ -536,7 +536,7 @@ function lab_admin_contract_search($contractName) {
 
 function lab_admin_contract_get($contractId) {
     global $wpdb;
-    $res = $wpdb->get_results("SELECT id, contract_type, name as label, start, end FROM ".$wpdb->prefix."lab_contract WHERE `id` = ".$contractId);
+    $res = $wpdb->get_results("SELECT id, contract_type, name as label, start, end, amount FROM ".$wpdb->prefix."lab_contract WHERE `id` = ".$contractId);
     if (count($res) == 1) {
         return $res[0];
     }
