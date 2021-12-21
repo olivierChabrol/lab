@@ -471,11 +471,11 @@ function lab_admin_budget_funds() {
 /***********************************************************************************************************
  * CONTRACT
  ***********************************************************************************************************/
-function lab_admin_contract_save($id, $name, $contractType, $start, $end, $holders, $managers) {
+function lab_admin_contract_save($id, $name, $contractType, $start, $end, $holders, $managers, $amount) {
     global $wpdb;
     // new contract
     if (!isset($id) || empty($id)) {
-        if ($wpdb->insert($wpdb->prefix.'lab_contract', array("name"=>$name, "contract_type"=>$contractType,"start"=>$start,"end"=>$end))) {
+        if ($wpdb->insert($wpdb->prefix.'lab_contract', array("name"=>$name, "contract_type"=>$contractType,"start"=>$start,"end"=>$end ,"amount"=>$amount))) {
             $contractId = $wpdb->insert_id;
             foreach ($holders as $userId) {
                 $wpdb->insert($wpdb->prefix.'lab_contract_user', array("contract_id"=>$contractId, "user_id"=>$userId,"user_type"=> 2));
@@ -491,7 +491,7 @@ function lab_admin_contract_save($id, $name, $contractType, $start, $end, $holde
     }
     else
     {
-        $wpdb->update($wpdb->prefix.'lab_contract', array("name"=>$name,"start"=>$start,"end"=>$end), array("id"=>$id));
+        $wpdb->update($wpdb->prefix.'lab_contract', array("name"=>$name,"start"=>$start,"end"=>$end, "amount"=>$amount), array("id"=>$id));
     }
 }
 
@@ -503,7 +503,7 @@ function lab_admin_contract_save($id, $name, $contractType, $start, $end, $holde
  */
 function lab_admin_contract_get_contracts_by_user($userId) {
     global $wpdb;
-    $sql = "SELECT cu.*, c.contract_type as contract_type_id, p.value as contract_type, c.name, c.start, c.end  
+    $sql = "SELECT cu.*, c.contract_type as contract_type_id, p.value as contract_type, c.name, c.start, c.end, c.amount  
               FROM `".$wpdb->prefix."lab_contract_user` AS cu 
               JOIN ".$wpdb->prefix."lab_contract AS c ON c.id = cu.contract_id 
               JOIN ".$wpdb->prefix."lab_params as p ON p.id = c.contract_type WHERE `user_id` = ".$userId;
@@ -517,7 +517,7 @@ function lab_admin_contract_get_contracts_by_user($userId) {
  */
 function lab_admin_contract_get_all_contracts() {
     global $wpdb;
-    $sql = "SELECT cu.*, c.contract_type as contract_type_id, p.value as contract_type, c.name, c.start, c.end,  
+    $sql = "SELECT cu.*, c.contract_type as contract_type_id, p.value as contract_type, c.name, c.start, c.end, c.amount 
               FROM `".$wpdb->prefix."lab_contract_user` AS cu 
               JOIN ".$wpdb->prefix."lab_contract AS c ON c.id = cu.contract_id 
               JOIN ".$wpdb->prefix."lab_params as p ON p.id = c.contract_type";
