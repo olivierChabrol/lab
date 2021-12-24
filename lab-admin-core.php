@@ -649,6 +649,40 @@ function lab_admin_contract_create_table() {
 }
 
 /***********************************************************************************************************
+ * FINANCIAL
+ ***********************************************************************************************************/
+
+
+function lab_admin_financial_create_table() {
+    global $wpdb;
+    $sql = "CREATE TABLE IF NOT EXISTS `".$wpdb->prefix."lab_financial` (
+        `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
+        `̀financial_type` int,
+        `eotp_expense_entity` varchar(500) NOT NULL,
+        `funder_type` int,
+        `expense_type` int, 
+        `expense_details` varchar(500),
+        `amount` double,
+        PRIMARY KEY (`id`)
+      ) ENGINE=InnoDB";
+    $wpdb->get_results($sql);
+    }
+
+function lab_admin_financial_modify($id, $financial_type, $object_id, $eotp, $funder_type, $expense_type, $expense_details, $amount) {
+    global $wpdb;
+    $sql = "UPDATE `".$wpdb->prefix."lab_financial` ( 
+            SET
+                `financial_type` = $financial_type,
+                `eotp_expense_entity` = $eotp,
+                `funder_type` = $funder_type,
+                `expense_type` = $expense_type,
+                `expense_details` = $expense_details,
+                `amount` = $amount
+                WHERE `id` = $id )
+                ENGINE = InnoDB"; }
+    return '';
+} // TODO: régler le pbm du unexpected }
+/***********************************************************************************************************
  * MISSION
  ***********************************************************************************************************/
 
@@ -3017,6 +3051,7 @@ function create_all_tables() {
     lab_admin_contract_create_table();
     lab_admin_mission_create_table();
     lab_admin_notification_create_table();
+    lab_admin_financial_create_table();
 }
 
 function delete_all_tables() {
@@ -3042,6 +3077,7 @@ function delete_all_tables() {
     drop_table("lab_contract_user");
     drop_table("lab_mission_route");
     drop_table("lab_mission_comment_notifs");
+    drop_table("lab_financial");
 }
 
 /**
