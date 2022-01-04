@@ -18,23 +18,23 @@ class FinancialParams {
     
     public const EXPENSE_TYPE_STAFF = 1;
     public const EXPENSE_TYPE_INVESTMENT = 2;
-    public const EXPENSE_TYPE_ADMINISTRATIVE = 3; /* TODO: choisir terme administrative/operating  */
+    public const EXPENSE_TYPE_ADMINISTRATIVE = 3; 
 
     public function get_financial_type($typeid) {
         switch($typeid) {
             case FinancialParams::FINANCIAL_TYPE_CONTRACT: 
                 return 'contract';
                 break;
-            case FinancialParams::FINANCIAL_TYPE_CONTRACT: 
-                return 'contract';
+            case FinancialParams::FINANCIAL_TYPE_HISTORY: 
+                return 'history';
                 break;
-            default:
-            return 'contract';
+            case FinancialParams::FINANCIAL_TYPE_SEMINAR:
+                return 'seminar';
         }
     }
     public function save_financial($financial_type, $object_id, $eotp, $funder_type, $expense_type, $expense_detail, $amount) {
-        //
-        return ;
+        global $wpdb;
+        $wpdb->insert($wpdb->prefix.'lab_financial', array("financial_type"=>$financial_type, "object_id"=>$object_id, "eotp"=>$eotp, "funder_type"=>$funder_type, "expense_type"=>$expense_type, "expense_detail"=>$expense_detail, "amount"=>$amount ));
     }
 
     public function save_financial_contract($object_id, $eotp, $funder_type, $expense_type, $expense_detail, $amount) {
@@ -51,14 +51,7 @@ class FinancialParams {
 
     
 
-    
-    //TODO:
-    // modify
-
-    // delete * 2 : delete by id, delete by object _id
-
-    // list funder type
-    // list expense type
+  
 
 }
  
