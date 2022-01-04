@@ -119,13 +119,13 @@ function lab_present_select($param) {
     $str .= "</style>\n";
 
     $sum = array();
-
     foreach($listSite as $site) {
         $sum[$site->id] = array();
         for ($i = 0 ; $i < 10 ; $i++) {
             $sum[$site->id][$i] = 0;
         }
     }
+    //var_dump($sum);
     
     $dayInt = date('j', $startDay);
     $dayInMonth = date('t', $startDay);
@@ -167,8 +167,8 @@ function lab_present_select($param) {
                     if (date('H', $hours->hour_start) < 13) {
                         // presence toute la journée
                         if (date('H', $hours->hour_end) >= 13) {
-                            $sum[$hours->site_id][$i*2]   += $sum[$i*2] + 1;
-                            $sum[$hours->site_id][$i*2+1] += $sum[$i*2+1] + 1;
+                            $sum[$hours->site_id][$i*2]   += $sum[$hours->site_id][$i*2] + 1;
+                            $sum[$hours->site_id][$i*2+1] += $sum[$hours->site_id][$i*2+1] + 1;
                             $str .= td($hours->hour_start,$hours->hour_end,$hours->site_id, false,"style=\"background-color:#".$colors[$hours->site_id].";color:white;\"", $hours->user_id, $hours->id, true, $hours->comment, $hours->users);
                             //$str .= td($hours->hour_end,null,false,"style=\"background-color:#".$colors[$hours->site_id].";color:white;\"", $hours->user_id, $hours->id);
                             $nb = 2; 
