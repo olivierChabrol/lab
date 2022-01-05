@@ -475,8 +475,10 @@ function lab_admin_contract_save($id, $name, $contractType, $start, $end, $holde
     global $wpdb;
     // new contract
     if (!isset($id) || empty($id)) {
-        if ($wpdb->insert($wpdb->prefix.'lab_contract', array("name"=>$name, "contract_type"=>$contractType,"start"=>$start,"end"=>$end ,"amount"=>$amount))) {
+        if ($wpdb->insert($wpdb->prefix.'lab_contract', array("name"=>$name, "contract_type"=>$contractType,"start"=>$start,"end"=>$end))) {
             $contractId = $wpdb->insert_id;
+            $f = new FinancialParams;
+            $f->save_financial_contract($contractId, '', 1, 1, "", $amount);    
             foreach ($holders as $userId) {
                 $wpdb->insert($wpdb->prefix.'lab_contract_user', array("contract_id"=>$contractId, "user_id"=>$userId,"user_type"=> 2));
             }
@@ -491,8 +493,9 @@ function lab_admin_contract_save($id, $name, $contractType, $start, $end, $holde
     }
     else
     {
-        $wpdb->update($wpdb->prefix.'lab_contract', array("name"=>$name,"start"=>$start,"end"=>$end, "amount"=>$amount), array("id"=>$id));
-    }
+        $wpdb->update($wpdb->prefix.'lab_contract', array("name"=>$name,"start"=>$start,"end"=>$end,), array("id"=>$id));
+        lab_admin_financial_modify($wpdb->insert_id, 1, $id, '', 1, 1, '', $amount);
+        }
 }
 
 /**
@@ -517,10 +520,11 @@ function lab_admin_contract_get_contracts_by_user($userId) {
  */
 function lab_admin_contract_get_all_contracts() {
     global $wpdb;
-    $sql = "SELECT cu.*, c.contract_type as contract_type_id, p.value as contract_type, c.name, c.start, c.end, c.amount 
+    $sql = "SELECT cu.*, c.contract_type as contract_type_id, p.value as contract_type, c.name, c.start, c.end, f.amount 
               FROM `".$wpdb->prefix."lab_contract_user` AS cu 
               JOIN ".$wpdb->prefix."lab_contract AS c ON c.id = cu.contract_id 
-              JOIN ".$wpdb->prefix."lab_params as p ON p.id = c.contract_type";
+              JOIN ".$wpdb->prefix."lab_params AS p ON p.id = c.contract_type
+              JOIN ".$wpdb->prefix."lab_financial AS f ON f.object_id = c.id";
     return $wpdb->get_results($sql);
 }
 
@@ -536,7 +540,7 @@ function lab_admin_contract_search($contractName) {
 
 function lab_admin_contract_get($contractId) {
     global $wpdb;
-    $res = $wpdb->get_results("SELECT id, contract_type, name as label, start, end, amount FROM ".$wpdb->prefix."lab_contract WHERE `id` = ".$contractId);
+    $res = $wpdb->get_results("SELECT id, contract_type, name as label, start, end FROM ".$wpdb->prefix."lab_contract WHERE `id` = ".$contractId);
     if (count($res) == 1) {
         return $res[0];
     }
@@ -558,7 +562,14 @@ function lab_admin_contract_delete($contractId) {
 
 function lab_admin_contract_load() {
     global $wpdb;
-    $results = $wpdb->get_results("SELECT c.*,p.value AS contract_type_label, cu.user_id, cu.user_type,um1.meta_value AS first_name, um2.meta_value AS last_name FROM `".$wpdb->prefix."lab_contract` AS c JOIN ".$wpdb->prefix."lab_contract_user AS cu ON cu.contract_id=c.id JOIN ".$wpdb->prefix."usermeta AS um1 ON um1.user_id=cu.user_id JOIN ".$wpdb->prefix."usermeta AS um2 ON um2.user_id=cu.user_id JOIN ".$wpdb->prefix."lab_params AS p ON p.id=c.contract_type WHERE um1.meta_key='first_name' AND um2.meta_key='last_name' ");
+    $results = $wpdb->get_results("SELECT c.*,p.value AS contract_type_label, cu.user_id, cu.user_type,um1.meta_value AS first_name, um2.meta_value AS last_name, f.amount 
+                                    FROM `".$wpdb->prefix."lab_contract` AS c 
+                                    JOIN ".$wpdb->prefix."lab_contract_user AS cu ON cu.contract_id=c.id 
+                                    JOIN ".$wpdb->prefix."lab_financial AS f ON f.object_id=c.id
+                                    JOIN ".$wpdb->prefix."usermeta AS um1 ON um1.user_id=cu.user_id 
+                                    JOIN ".$wpdb->prefix."usermeta AS um2 ON um2.user_id=cu.user_id 
+                                    JOIN ".$wpdb->prefix."lab_params AS p ON p.id=c.contract_type 
+                                    WHERE um1.meta_key='first_name' AND um2.meta_key='last_name' ");
     $contracts = array();
     $lastId = -1;
     $nbLine = 0;
@@ -604,7 +615,7 @@ function lab_admin_contract_inner_new_stdClass_contract($line)
     $contract->start = $line->start;
     $contract->end   = $line->end;
     $contract->type   = $line->contract_type_label;
-    $contract->amount = $line->amount; /*kuwabara*/           
+    $contract->amount = $line->amount;       
     $contract->holders  = array();
     $contract->managers = array();
     lab_admin_contract_inner_new_stdClass_add_user($line, $contract);
@@ -679,9 +690,9 @@ function lab_admin_financial_modify($id, $financial_type, $object_id, $eotp, $fu
                 `expense_details` = $expense_details,
                 `amount` = $amount
                 WHERE `id` = $id )
-                ENGINE = InnoDB"; }
+                ENGINE = InnoDB";
     return '';
-} // TODO: régler le pbm du unexpected }
+} 
 /***********************************************************************************************************
  * MISSION
  ***********************************************************************************************************/

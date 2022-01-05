@@ -32,21 +32,21 @@ class FinancialParams {
                 return 'seminar';
         }
     }
-    public function save_financial($financial_type, $object_id, $eotp, $funder_type, $expense_type, $expense_detail, $amount) {
+    public function save_financial($financial_type, $object_id, $eotp, $funder_type, $expense_type, $expense_details, $amount) {
         global $wpdb;
-        $wpdb->insert($wpdb->prefix.'lab_financial', array("financial_type"=>$financial_type, "object_id"=>$object_id, "eotp"=>$eotp, "funder_type"=>$funder_type, "expense_type"=>$expense_type, "expense_detail"=>$expense_detail, "amount"=>$amount ));
+        $wpdb->insert($wpdb->prefix.'lab_financial', array("financial_type"=>$financial_type, "object_id"=>$object_id, "eotp"=>$eotp, "funder_type"=>$funder_type, "expense_type"=>$expense_type, "expense_details"=>$expense_details, "amount"=>$amount ));
     }
 
-    public function save_financial_contract($object_id, $eotp, $funder_type, $expense_type, $expense_detail, $amount) {
-        return $this->save_financial(FinancialParams::FINANCIAL_TYPE_CONTRACT, $object_id, $eotp, $funder_type, $expense_type, $expense_detail, $amount);
+    public function save_financial_contract($object_id, $eotp, $funder_type, $expense_type, $expense_details, $amount) {
+        return $this->save_financial(FinancialParams::FINANCIAL_TYPE_CONTRACT, $object_id, $eotp, $funder_type, $expense_type, $expense_details, $amount);
     }
 
-    public function save_financial_history($object_id, $eotp, $funder_type, $expense_type, $expense_detail, $amount) {
-        return $this->save_financial(FinancialParams::FINANCIAL_TYPE_HISTORY, $object_id, $eotp, $funder_type, $expense_type, $expense_detail, $amount);
+    public function save_financial_history($object_id, $eotp, $funder_type, $expense_type, $expense_details, $amount) {
+        return $this->save_financial(FinancialParams::FINANCIAL_TYPE_HISTORY, $object_id, $eotp, $funder_type, $expense_type, $expense_details, $amount);
     }
 
-    public function save_financial_seminar($object_id, $eotp, $funder_type, $expense_type, $expense_detail, $amount) {
-        return $this->save_financial(FinancialParams::FINANCIAL_TYPE_SEMINAR, $object_id, $eotp, $funder_type, $expense_type, $expense_detail, $amount);
+    public function save_financial_seminar($object_id, $eotp, $funder_type, $expense_type, $expense_details, $amount) {
+        return $this->save_financial(FinancialParams::FINANCIAL_TYPE_SEMINAR, $object_id, $eotp, $funder_type, $expense_type, $expense_details, $amount);
     }
 
     

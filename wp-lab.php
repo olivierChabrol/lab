@@ -24,6 +24,7 @@ require_once("lab-admin-ajax.php");
 require_once("lab-admin-core.php");
 require_once("lab-admin-groups.php");
 require_once("lab-admin-params.php");
+require_once("lab-admin-financial-params.php");
 require_once("lab-admin-keyring.php");
 require_once("lab-admin-budget.php");
 require_once("admin/view/lab-admin-contract.php");
