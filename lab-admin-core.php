@@ -561,7 +561,8 @@ function lab_admin_contract_delete($contractId) {
     global $wpdb;
     $wpdb->delete($wpdb->prefix.'lab_contract_user', array("contract_id"=>$contractId));
     $wpdb->delete($wpdb->prefix.'lab_contract', array("id"=>$contractId));
-    $wpdb->delete($wpdb->prefix.'lab_financial', array("object_id"=>$contractId));
+    $f = new FinancialParams;
+    $f->delete_financial_contract($contractId);
     return true;
 }
 
