@@ -49,32 +49,29 @@ class FinancialParams {
         return $this->save_financial(FinancialParams::FINANCIAL_TYPE_SEMINAR, $object_id, $eotp, $funder_type, $expense_type, $expense_details, $amount);
     }
 
-    public function modify_financial($financial_type, $object_id, $eotp, $funder_type, $expense_type, $expense_details, $amount) {
+    public function modify_financial($object_id, $financial_type, $eotp, $funder_type, $expense_type, $expense_details, $amount) {
         global $wpdb;
-        $wpdb->update($wpdb->prefix.'lab_financial', array("financial_type"=>$financial_type, "object_id"=>$object_id, "eotp"=>$eotp, "funder_type"=>$funder_type, "expense_type"=>$expense_type, "expense_details"=>$expense_details, "amount"=>$amount ));
+        $wpdb->update($wpdb->prefix.'lab_financial', array("eotp"=>$eotp, "funder_type"=>$funder_type, "expense_type"=>$expense_type, "expense_details"=>$expense_details, "amount"=>$amount ), array('object_id'=>$object_id, "financial_type"=>$financial_type));
     }
 
     public function modify_financial_contract($object_id, $eotp, $funder_type, $expense_type, $expense_details, $amount) {
-        return $this->modify_financial(FinancialParams::FINANCIAL_TYPE_CONTRACT, $object_id, $eotp, $funder_type, $expense_type, $expense_details, $amount);
+        return $this->modify_financial($object_id, FinancialParams::FINANCIAL_TYPE_CONTRACT, $eotp, $funder_type, $expense_type, $expense_details, $amount);
     }
 
-    public function modify_financial_history($object_id, $eotp, $funder_type, $expense_type, $expense_details, $amount) {
-        return $this->modify_financial(FinancialParams::FINANCIAL_TYPE_HISTORY, $object_id, $eotp, $funder_type, $expense_type, $expense_details, $amount);
+    public function modify_financial_history($id, $object_id, $eotp, $funder_type, $expense_type, $expense_details, $amount) {
+        return $this->modify_financial($id, FinancialParams::FINANCIAL_TYPE_HISTORY, $object_id, $eotp, $funder_type, $expense_type, $expense_details, $amount);
     }
 
-    public function modify_financial_seminar($object_id, $eotp, $funder_type, $expense_type, $expense_details, $amount) {
-        return $this->modify_financial(FinancialParams::FINANCIAL_TYPE_SEMINAR, $object_id, $eotp, $funder_type, $expense_type, $expense_details, $amount);
+    public function modify_financial_seminar($id, $object_id, $eotp, $funder_type, $expense_type, $expense_details, $amount) {
+        return $this->modify_financial($id, FinancialParams::FINANCIAL_TYPE_SEMINAR, $object_id, $eotp, $funder_type, $expense_type, $expense_details, $amount);
     }
-
-
-    
-
-  
 
 }
+
+
  
 
-// TODO: financial edit on contract edit ; financial delete on contract delete ; function to popuplate financial table
+// TODO: financial delete on contract delete ; function to popuplate financial table
 
 
 

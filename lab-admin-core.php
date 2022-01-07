@@ -496,7 +496,7 @@ function lab_admin_contract_save($id, $name, $contractType, $start, $end, $holde
     {
         $wpdb->update($wpdb->prefix.'lab_contract', array("name"=>$name,"start"=>$start,"end"=>$end,), array("id"=>$id));
         $financial->modify_financial_contract($id, '', 1, 1, '', $amount);
-        }
+    }
     
 }
 
@@ -685,20 +685,6 @@ function lab_admin_financial_create_table() {
     $wpdb->get_results($sql);
     }
 
-function lab_admin_financial_modify($id, $financial_type, $object_id, $eotp, $funder_type, $expense_type, $expense_details, $amount) {
-    global $wpdb;
-    $sql = "UPDATE `".$wpdb->prefix."lab_financial` ( 
-            SET
-                `financial_type` = $financial_type,
-                `eotp_expense_entity` = $eotp,
-                `funder_type` = $funder_type,
-                `expense_type` = $expense_type,
-                `expense_details` = $expense_details,
-                `amount` = $amount
-                WHERE `id` = $id )
-                ENGINE = InnoDB";
-    return '';
-} 
 /***********************************************************************************************************
  * MISSION
  ***********************************************************************************************************/
