@@ -88,3 +88,17 @@ function lab_users_by_thematic($args) {
     $html .= "</table>";
     return $html;
 }
+
+
+function lab_hal_tools($args) {
+    $param = shortcode_atts(array(
+        'debug' => 0 
+        ),
+        $args, 
+        "lab-hal-tools"
+    );
+    $html = '<input type="text" id="lab_hal_tools_search"><input type="hidden" id="lab_hal_tools_db">';
+    $html.= '<table class="table" id="lab_hal_tools_table"><thead><tr><th>id</th><th>biblio</th><th>Title</th><th>Author</th></tr></thead><tbody id="lab_hal_tools_table_body"></tbody>';
+    $html.= '</table>';
+    return $html;
+}

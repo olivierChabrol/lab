@@ -18,6 +18,9 @@ jQuery(function($){
   var meansOfTransport = new Array();
   var meansOfTransportReverse = new Array();
 
+  if ($("#lab_hal_tools_table").length) {
+    labToolsLoad();
+  }
   
   $("#lab-directory-group-id").on('change', function() {
     loadDirectory();
@@ -108,6 +111,21 @@ jQuery(function($){
     }
     hideShowInvitationDiv();
   });
+
+  function labToolsLoad()
+  {
+    data = {
+      'action' : 'lab_hal_tools_load',
+    }
+    callAjax(data, "Travel updated", labToolsDisplay, null, null);
+  }
+
+  function labToolsDisplay(data) {
+    //$("#lab_hal_tools_db").value(data);
+    $.each(data, function (index, value){ 
+      $("#lab_hal_tools_table_body").append("<tr><td>" + value["id"] + "</td><td></td><td>" + value["title"] + "</td><td>" + value["authors"] + "</td></tr>");
+    });
+  }
 
   function uploadFile()
   {
