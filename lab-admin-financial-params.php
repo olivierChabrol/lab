@@ -56,6 +56,8 @@ class FinancialParams {
 }
  
 
+// TODO: financial edit on contract edit ; financial delete on contract delete ; function to popuplate financial table
+
 
 
 

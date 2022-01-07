@@ -506,7 +506,7 @@ function lab_admin_contract_save($id, $name, $contractType, $start, $end, $holde
  */
 function lab_admin_contract_get_contracts_by_user($userId) {
     global $wpdb;
-    $sql = "SELECT cu.*, c.contract_type as contract_type_id, p.value as contract_type, c.name, c.start, c.end, c.amount  
+    $sql = "SELECT cu.*, c.contract_type as contract_type_id, p.value as contract_type, c.name, c.start, c.end,
               FROM `".$wpdb->prefix."lab_contract_user` AS cu 
               JOIN ".$wpdb->prefix."lab_contract AS c ON c.id = cu.contract_id 
               JOIN ".$wpdb->prefix."lab_params as p ON p.id = c.contract_type WHERE `user_id` = ".$userId;
@@ -517,7 +517,8 @@ function lab_admin_contract_get_contracts_by_user($userId) {
  * Get all the contracts for a specific user
  *
  * @return void
- */
+ */ 
+
 function lab_admin_contract_get_all_contracts() {
     global $wpdb;
     $sql = "SELECT cu.*, c.contract_type as contract_type_id, p.value as contract_type, c.name, c.start, c.end, f.amount 
@@ -528,6 +529,8 @@ function lab_admin_contract_get_all_contracts() {
     return $wpdb->get_results($sql);
 }
 
+
+
 function lab_admin_contract_get_managers($contractId) {
     global $wpdb;
     return $wpdb->get_results("SELECT user_id FROM ".$wpdb->prefix."lab_contract_user WHERE `contract_id` = ".$contractId." AND user_type=".AdminParams::CONTRACT_USER_TYPE_MANAGER);
@@ -535,12 +538,12 @@ function lab_admin_contract_get_managers($contractId) {
 
 function lab_admin_contract_search($contractName) {
     global $wpdb;
-    return $wpdb->get_results("SELECT id, contract_type, name as label, start, end FROM ".$wpdb->prefix."lab_contract WHERE `name` LIKE '%".$contractName."%'");
+    return $wpdb->get_results("SELECT id, contract_type, name as label, start, end FROM ".$wpdb->prefix."lab_contract AS c WHERE `name` LIKE '%".$contractName."%'");
 }
 
 function lab_admin_contract_get($contractId) {
     global $wpdb;
-    $res = $wpdb->get_results("SELECT id, contract_type, name as label, start, end FROM ".$wpdb->prefix."lab_contract WHERE `id` = ".$contractId);
+    $res = $wpdb->get_results("SELECT c.id, c.contract_type, c.name as label, c.start, c.end, f.amount AS amount FROM ".$wpdb->prefix."lab_contract AS c JOIN ".$wpdb->prefix."lab_financial AS f ON f.object_id = c.id WHERE c.id = ".$contractId);
     if (count($res) == 1) {
         return $res[0];
     }
