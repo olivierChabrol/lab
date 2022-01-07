@@ -473,18 +473,20 @@ function lab_admin_budget_funds() {
  ***********************************************************************************************************/
 function lab_admin_contract_save($id, $name, $contractType, $start, $end, $holders, $managers, $amount) {
     global $wpdb;
+   // global $financial;
     // new contract
     if (!isset($id) || empty($id)) {
         if ($wpdb->insert($wpdb->prefix.'lab_contract', array("name"=>$name, "contract_type"=>$contractType,"start"=>$start,"end"=>$end))) {
             $contractId = $wpdb->insert_id;
-            $f = new FinancialParams;
-            $f->save_financial_contract($contractId, '', 1, 1, "", $amount);    
+            $financial = new FinancialParams;
+            $financial->save_financial_contract($contractId, '', 1, '', '', $amount);
             foreach ($holders as $userId) {
                 $wpdb->insert($wpdb->prefix.'lab_contract_user', array("contract_id"=>$contractId, "user_id"=>$userId,"user_type"=> 2));
             }
             foreach ($managers as $userId) {
                 $wpdb->insert($wpdb->prefix.'lab_contract_user', array("contract_id"=>$contractId, "user_id"=>$userId,"user_type"=> 1));
             }
+            
         }
         else {
             return $wpdb->last_error;
@@ -494,8 +496,9 @@ function lab_admin_contract_save($id, $name, $contractType, $start, $end, $holde
     else
     {
         $wpdb->update($wpdb->prefix.'lab_contract', array("name"=>$name,"start"=>$start,"end"=>$end,), array("id"=>$id));
-        lab_admin_financial_modify($wpdb->insert_id, 1, $id, '', 1, 1, '', $amount);
+        $financial->modify_financial_contract($contractId, '', 1, '', '', $amount);
         }
+    
 }
 
 /**
