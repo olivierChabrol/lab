@@ -65,13 +65,29 @@ class FinancialParams {
     public function modify_financial_seminar($id, $object_id, $eotp, $funder_type, $expense_type, $expense_details, $amount) {
         return $this->modify_financial($id, FinancialParams::FINANCIAL_TYPE_SEMINAR, $object_id, $eotp, $funder_type, $expense_type, $expense_details, $amount);
     }
+    
+    public function delete_financial($object_id, $financial_type) {
+        global $wpdb;
+    $wpdb->delete($wpdb->prefix.'lab_financial', array("object_id"=>$object_id, 'financial_type'=>$financial_type));
+    }
 
+    public function delete_financial_contract($object_id) {
+        $this->delete_financial($object_id, FinancialParams::FINANCIAL_TYPE_CONTRACT);
+    }
+
+    public function delete_financial_history($object_id) {
+        $this->delete_financial($object_id, FinancialParams::FINANCIAL_TYPE_HISTORY);
+    }
+
+    public function delete_financial_seminar($object_id) {
+        $this->delete_financial($object_id, FinancialParams::FINANCIAL_TYPE_SEMINAR);
+    }
 }
 
 
  
 
-// TODO: financial delete on contract delete ; function to popuplate financial table
+// TODO:  function to popuplate financial table
 
 
 
