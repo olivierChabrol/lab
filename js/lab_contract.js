@@ -72,7 +72,7 @@ jQuery(function($){
                 'contract_type':$("#lab_admin_contract_type").val(),
                 'start':$("#lab_admin_contract_start").val(),
                 'end':$("#lab_admin_contract_end").val(),
-                'amount':$("#lab_admin_contract_amount").val(),
+                'amount':$("#lab_admin_financial_amount").val(),
             };
             let holders  = [];
             let managers = [];
@@ -125,7 +125,7 @@ jQuery(function($){
         $("#lab_admin_contract_type").val(data.contract_type);
         $("#lab_admin_contract_start").val(data.start);
         $("#lab_admin_contract_end").val(data.end);
-        $("#lab_admin_contract_amount").val(data.amount);
+        $("#lab_admin_financial_amount").val(data.amount);
 
         loadContractUsers(data.id);
         //displayDeleteButton();
@@ -237,7 +237,7 @@ jQuery(function($){
         $("#lab_admin_contract_start").val("");
         $("#lab_admin_contract_end").val("");
         $("#lab_admin_contract_end").val("");
-        $("#lab_admin_contract_amount").val("");
+        $("#lab_admin_financial_amount").val("");
         clearContractUsersFields();
         $("#lab_admin_contract_delete").prop('disabled', true);
     }
