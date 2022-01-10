@@ -36,9 +36,6 @@
     }
   }
 
-// TODO: solve url problem when editing a contract then going back on get_all list (L18 ?)
-
-
   function lab_admin_contract_new($contractId = "") {
 ?>
 <input type="hidden" id="lab_contract_delete_dialog_contract_id" value="<?php echo $contractId; ?>">
@@ -100,10 +97,10 @@
         </tr>
         <tr>
             <td>
-                <label for="lab_admin_contract_amount"><?php esc_html_e('Amount', 'lab') ?></label>
+                <label for="lab_admin_financial_amount"><?php esc_html_e('Amount', 'lab') ?></label>
             </td>
             <td>
-                <input type="text" id="lab_admin_contract_amount"> &euro;  
+                <input type="text" id="lab_admin_financial_amount"> &euro;  
             </td>
         </tr>
         <tr>

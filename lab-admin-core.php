@@ -608,7 +608,6 @@ function lab_admin_contract_load() {
             $str .= ' LA 2';
             $lastId = $line->id;
          //   $contract = $contracts[$lastId];
-            // TODO: solve undefined offset 
             if (!isset($contracts[$lastId]))
             {
                 $contracts[$lastId] = lab_admin_contract_inner_new_stdClass_contract($line);
