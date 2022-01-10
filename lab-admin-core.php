@@ -471,7 +471,8 @@ function lab_admin_budget_funds() {
 /***********************************************************************************************************
  * CONTRACT
  ***********************************************************************************************************/
-function lab_admin_contract_save($id, $name, $contractType, $start, $end, $holders, $managers, $amount) {
+
+ function lab_admin_contract_save($id, $name, $contractType, $start, $end, $holders, $managers, $amount) {
     global $wpdb;
     // new contract
     $financial = new FinancialParams;
@@ -497,7 +498,6 @@ function lab_admin_contract_save($id, $name, $contractType, $start, $end, $holde
         $wpdb->update($wpdb->prefix.'lab_contract', array("name"=>$name,"start"=>$start,"end"=>$end,), array("id"=>$id));
         $financial->modify_financial_contract($id, '', 1, 1, '', $amount);
     }
-    
 }
 
 /**
@@ -592,6 +592,7 @@ function lab_admin_contract_load() {
             $str .= ' LA 2';
             $lastId = $line->id;
             $contract = $contracts[$lastId];
+            // TODO: solve undefined offset 
             if (!isset($contract))
             {
                 $contracts[$lastId] = lab_admin_contract_inner_new_stdClass_contract($line);
