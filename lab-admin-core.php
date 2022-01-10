@@ -496,6 +496,13 @@ function lab_admin_budget_funds() {
     else
     {
         $wpdb->update($wpdb->prefix.'lab_contract', array("name"=>$name,"start"=>$start,"end"=>$end,), array("id"=>$id));
+        $wpdb->delete($wpdb->prefix.'lab_contract_user', array("contract_id"=>$id));
+        foreach ($holders as $userId) {
+            $wpdb->insert($wpdb->prefix.'lab_contract_user', array("contract_id"=>$id, "user_id"=>$userId,"user_type"=> 2));
+        }
+        foreach ($managers as $userId) {
+            $wpdb->insert($wpdb->prefix.'lab_contract_user', array("contract_id"=>$id, "user_id"=>$userId,"user_type"=> 1));
+        }
         $financial->modify_financial_contract($id, '', 1, 1, '', $amount);
     }
 }
@@ -569,6 +576,15 @@ function lab_admin_contract_delete($contractId) {
 
 function lab_admin_contract_load() {
     global $wpdb;
+    $sql = "SELECT c.*,p.value AS contract_type_label, cu.user_id, cu.user_type,um1.meta_value AS first_name, um2.meta_value AS last_name, f.amount 
+    FROM `".$wpdb->prefix."lab_contract` AS c 
+    JOIN ".$wpdb->prefix."lab_contract_user AS cu ON cu.contract_id=c.id 
+    JOIN ".$wpdb->prefix."lab_financial AS f ON f.object_id=c.id
+    JOIN ".$wpdb->prefix."usermeta AS um1 ON um1.user_id=cu.user_id 
+    JOIN ".$wpdb->prefix."usermeta AS um2 ON um2.user_id=cu.user_id 
+    JOIN ".$wpdb->prefix."lab_params AS p ON p.id=c.contract_type 
+    WHERE um1.meta_key='first_name' AND um2.meta_key='last_name' ";
+ //   return $sql;
     $results = $wpdb->get_results("SELECT c.*,p.value AS contract_type_label, cu.user_id, cu.user_type,um1.meta_value AS first_name, um2.meta_value AS last_name, f.amount 
                                     FROM `".$wpdb->prefix."lab_contract` AS c 
                                     JOIN ".$wpdb->prefix."lab_contract_user AS cu ON cu.contract_id=c.id 
@@ -591,9 +607,9 @@ function lab_admin_contract_load() {
         } else if ($lastId != $line->id) {
             $str .= ' LA 2';
             $lastId = $line->id;
-            $contract = $contracts[$lastId];
+         //   $contract = $contracts[$lastId];
             // TODO: solve undefined offset 
-            if (!isset($contract))
+            if (!isset($contracts[$lastId]))
             {
                 $contracts[$lastId] = lab_admin_contract_inner_new_stdClass_contract($line);
             }

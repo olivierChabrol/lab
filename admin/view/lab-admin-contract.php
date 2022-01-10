@@ -15,7 +15,7 @@
       <hr class="wp-header-end">
       <h2 class="nav-tab-wrapper">
         <a id="lab_keyring_default_tab_pointer" style="position: relative" class="nav-tab <?php echo $active_tab == 'new' ? 'nav-tab-active' : ''; ?>"   href="<?php echo add_query_arg(array('tab' => 'new'), $_SERVER['REQUEST_URI']); ?>"><?php esc_html_e('New Contract','lab'); ?></a>
-        <a id="lab_keyring_default_tab_pointer" style="position: relative" class="nav-tab <?php echo $active_tab == 'list' ? 'nav-tab-active' : ''; ?>"  href="<?php echo add_query_arg(array('tab' => 'list'), $_SERVER['REQUEST_URI'])  ; ?>"><?php esc_html_e('Contract list','lab'); ?></a>
+        <a id="lab_keyring_default_tab_pointer" style="position: relative" class="nav-tab <?php echo $active_tab == 'list' ? 'nav-tab-active' : ''; ?>"  href="<?php echo add_query_arg(array('tab' => 'list'), remove_query_arg("id", $_SERVER['REQUEST_URI']))  ; ?>"><?php esc_html_e('Contract list','lab'); ?></a>
       </h2>
 
 <?php
