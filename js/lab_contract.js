@@ -237,6 +237,7 @@ jQuery(function($){
         $("#lab_admin_contract_start").val("");
         $("#lab_admin_contract_end").val("");
         $("#lab_admin_contract_end").val("");
+        $("#lab_admin_contract_amount").val("");
         clearContractUsersFields();
         $("#lab_admin_contract_delete").prop('disabled', true);
     }

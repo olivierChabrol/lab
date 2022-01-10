@@ -471,6 +471,16 @@ function lab_admin_budget_funds() {
 /***********************************************************************************************************
  * CONTRACT
  ***********************************************************************************************************/
+function set_contract_users($id, $holders, $managers) 
+{
+    global $wpdb;
+   foreach ($holders as $userId) {
+       $wpdb->insert($wpdb->prefix.'lab_contract_user', array("contract_id"=>$id, "user_id"=>$userId,"user_type"=> 2));
+   }
+   foreach ($managers as $userId) {
+       $wpdb->insert($wpdb->prefix.'lab_contract_user', array("contract_id"=>$id, "user_id"=>$userId,"user_type"=> 1));
+   }
+}
 
  function lab_admin_contract_save($id, $name, $contractType, $start, $end, $holders, $managers, $amount) {
     global $wpdb;
@@ -480,12 +490,7 @@ function lab_admin_budget_funds() {
         if ($wpdb->insert($wpdb->prefix.'lab_contract', array("name"=>$name, "contract_type"=>$contractType,"start"=>$start,"end"=>$end))) {
             $contractId = $wpdb->insert_id;
             $financial->save_financial_contract($contractId, '', 1, '', '', $amount);
-            foreach ($holders as $userId) {
-                $wpdb->insert($wpdb->prefix.'lab_contract_user', array("contract_id"=>$contractId, "user_id"=>$userId,"user_type"=> 2));
-            }
-            foreach ($managers as $userId) {
-                $wpdb->insert($wpdb->prefix.'lab_contract_user', array("contract_id"=>$contractId, "user_id"=>$userId,"user_type"=> 1));
-            }
+            set_contract_users($contractId, $holders, $managers);
             
         }
         else {
@@ -497,12 +502,7 @@ function lab_admin_budget_funds() {
     {
         $wpdb->update($wpdb->prefix.'lab_contract', array("name"=>$name,"start"=>$start,"end"=>$end,), array("id"=>$id));
         $wpdb->delete($wpdb->prefix.'lab_contract_user', array("contract_id"=>$id));
-        foreach ($holders as $userId) {
-            $wpdb->insert($wpdb->prefix.'lab_contract_user', array("contract_id"=>$id, "user_id"=>$userId,"user_type"=> 2));
-        }
-        foreach ($managers as $userId) {
-            $wpdb->insert($wpdb->prefix.'lab_contract_user', array("contract_id"=>$id, "user_id"=>$userId,"user_type"=> 1));
-        }
+        set_contract_users($id, $holders, $managers);
         $financial->modify_financial_contract($id, '', 1, 1, '', $amount);
     }
 }
