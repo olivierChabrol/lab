@@ -736,6 +736,27 @@ function lab_admin_contract_ajax_delete() {
 }
 
 /********************************************************************************************
+ * SEMINAR
+ ********************************************************************************************/
+
+function lab_admin_seminar_ajax_save() {
+  $id = $_POST['id'];
+  $user_id = $_POST['user_id'];
+  $name = $_POST['name'];
+  $start = $_POST['start'];
+  $end = $_POST['end'];
+  $location = $_POST['location'];
+  $funder_int = $_POST['funder_int'];
+  $funder_nat = $_POST['funder_nat'];
+  $funder_reg = $_POST['funder_reg'];
+  $funder_lab = $_POST['funder_lab'];
+  $guests_number = $_POST['guests_number'];
+  $seminar_details = $_POST['seminar_details;'];
+
+  wp_send_json_success(lab_admin_seminar_save($id, $user_id, $financial_id, $name, $location, $funder_int, $funder_nat, $funder_reg, $funder_lab, $start, $end, $guests_number, $seminar_details));
+}
+
+/********************************************************************************************
  * GROUPS
  ********************************************************************************************/
 
