@@ -28,6 +28,7 @@ require_once("lab-admin-financial-params.php");
 require_once("lab-admin-keyring.php");
 require_once("lab-admin-budget.php");
 require_once("admin/view/lab-admin-contract.php");
+require_once("admin/view/lab-admin-seminar.php");
 require_once("lab-actions.php");
 require_once("lab-hal-widget.php");
 require_once("lab-admin-invitations.php");
