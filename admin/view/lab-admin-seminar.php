@@ -18,30 +18,30 @@
         <a id="lab_keyring_default_tab_pointer" style="position: relative" class="nav-tab <?php echo $active_tab == 'list' ? 'nav-tab-active' : ''; ?>"  href="<?php echo add_query_arg(array('tab' => 'list'), remove_query_arg("id", $_SERVER['REQUEST_URI']))  ; ?>"><?php esc_html_e('Seminar list','lab'); ?></a>
       </h2>
 <?php
-  }
 
-  if (!lab_admin_checkTable("lab_seminar")) {
+if (!lab_admin_checkTable("lab_seminar")) {
     echo "<p id='lab_keyring_noKeysTableWarning'>La table <em>lab_contract</em> n'a pas été trouvée dans la base, vous devez d'abord la créer ici : </p>";
     echo '<button class="lab_keyring_create_table_keys" id="lab_admin_contract_create_table">'.esc_html__('Créer la table Contrat','lab').'</button>';
-    }
-    if (!lab_admin_checkTable("lab_financial")) {
+}
+if (!lab_admin_checkTable("lab_financial")) {
     echo "<p id='lab_keyring_noKeysTableWarning'>La table <em>lab_contract_user</em> n'a pas été trouvée dans la base, vous devez d'abord la créer ici : </p>";
     echo '<button class="lab_keyring_create_table_keys" id="lab_admin_contract_create_table">'.esc_html__('Créer la table Contrat user','lab').'</button>';
-    }
-    if ($active_tab == 'new') {
+}
+if ($active_tab == 'new') {
     lab_admin_seminar_new($seminarId);
-    } else if ($active_tab == 'list') {
+} else if ($active_tab == 'list') {
     lab_admin_seminar_list();
-    } else {
+} else {
     lab_admin_seminar_new($seminarId);
-    }
+}
   
+}
 
-
+   
 
   function lab_admin_seminar_new($seminarId = "") {
 ?>
-<input type="hidden" id="lab_admin_seminar_form" value="<?php echo $financialId; ?>">
+<input type="hidden" id="lab_admin_seminar_form" value="<?php echo $seminarId; ?>">
 <table class="widefat fixed lab_keyring_table">
     <tbody>
         <tr>
@@ -56,7 +56,7 @@
         </tr>
         <tr>
             <td>
-                <label for="lab_admin_seminar_location"><?php esc_html_e('Seminar location','lab') ?></label>
+                <label for="lab_admin_seminar_location"><?php esc_html_e('Location','lab') ?></label>
             </td>
             <td>
                 <input type="text" id="lab_admin_seminar_location"maxlength="600">
@@ -64,7 +64,7 @@
         </tr>
         <tr>
             <td>
-                <label for="lab_admin_seminar_start"><?php esc_html_e('Seminar start','lab') ?></label>
+                <label for="lab_admin_seminar_start"><?php esc_html_e('Start','lab') ?></label>
             </td>
             <td>
                 <input type="date"   id="lab_admin_seminar_start">
@@ -72,7 +72,7 @@
         </tr>
         <tr>
             <td>
-                <label for="lab_admin_seminar_end"><?php esc_html_e('Seminar end','lab') ?></label>
+                <label for="lab_admin_seminar_end"><?php esc_html_e('End','lab') ?></label>
             </td>
             <td>
                 <input type="date"   id="lab_admin_seminar_end">
@@ -101,13 +101,21 @@
             <td>
                 <input type="text"   id="lab_admin_seminar_funder_reg" maxlength="255">
             </td>
+        </tr>  
+        <tr>
+            <td>
+                <label for="lab_admin_seminar_funder_lab"><?php esc_html_e('Seminar labo funder','lab') ?></label>
+            </td>
+            <td>
+                <input type="text"   id="lab_admin_seminar_funder_labo" maxlength="255">
+            </td>
         </tr>
         <tr>
             <td>
-                <label for="lab_admin_seminar_guest_number"><?php esc_html_e('Guests number(s)','lab') ?></label>
+                <label for="lab_admin_seminar_guests_number"><?php esc_html_e('Guests number(s)','lab') ?></label>
             </td>
             <td>
-                <input type="number"   id="lab_admin_seminar_guest_number" >
+                <input type="number"   id="lab_admin_seminar_guests_number" >
             </td>
         </tr>
         <tr>
@@ -125,6 +133,10 @@
 <?php
   }
 
+
+function lab_admin_seminar_list() {
+
+}
 
 
 // Create new seminar 
