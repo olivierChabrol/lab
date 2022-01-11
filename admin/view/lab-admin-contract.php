@@ -36,7 +36,6 @@
     }
   }
 
-// TODO: solve url problem when editing a contract then going back on get_all list (L18 ?)
 
 
   function lab_admin_contract_new($contractId = "") {
