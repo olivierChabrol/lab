@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lab\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-27 10:06+0200\n"
-"PO-Revision-Date: 2021-09-27 16:31+0200\n"
+"POT-Creation-Date: 2022-01-11 10:17+0100\n"
+"PO-Revision-Date: 2022-01-11 10:20+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -38,6 +38,7 @@ msgstr ""
 "X-Poedit-SearchPath-20: admin/view/lab-admin-mission.php\n"
 "X-Poedit-SearchPath-21: core/lab-admin-core-mission.php\n"
 "X-Poedit-SearchPath-22: lab-admin-invitations.php\n"
+"X-Poedit-SearchPath-23: admin/view/lab-admin-seminar.php\n"
 
 #: admin/view/lab-admin-mission.php:33
 msgid "Mission management"
@@ -68,8 +69,8 @@ msgstr "Missions"
 msgid "All"
 msgstr "Tou·te·s"
 
-#: admin/view/lab-admin-mission.php:123 js/lab_mission.js:297 lab-admin-keyring.php:52 lab-admin-keyring.php:218
-#: lab-params.php:256
+#: admin/view/lab-admin-mission.php:123 js/lab_mission.js:297 lab-admin-keyring.php:57 lab-admin-keyring.php:131
+#: lab-admin-keyring.php:297 lab-params.php:256
 msgid "New"
 msgstr "Nouvelles"
 
@@ -95,7 +96,7 @@ msgid "Waiting"
 msgstr "En attente"
 
 #: admin/view/lab-admin-mission.php:134 admin/view/lab-admin-mission.php:148 core/lab-admin-core-mission.php:315
-#: lab-admin-budget.php:97 lab-admin-budget.php:207 lab-admin-keyring.php:150 lab-admin-keyring.php:382
+#: lab-admin-budget.php:97 lab-admin-budget.php:207 lab-admin-keyring.php:229 lab-admin-keyring.php:461
 #: shortcode/lab-shortcode-profile.php:145
 msgid "Site"
 msgstr "Site"
@@ -124,8 +125,8 @@ msgid "Request date"
 msgstr "Date de la demande"
 
 #: admin/view/lab-admin-mission.php:147 admin/view/lab-admin-tabs.php:24 core/lab-admin-core-mission.php:314
-#: core/lab-admin-core-mission.php:434 lab-admin-budget.php:86 lab-admin-keyring.php:39 lab-admin-keyring.php:331
-#: lab-admin-keyring.php:403
+#: core/lab-admin-core-mission.php:434 lab-admin-budget.php:86 lab-admin-keyring.php:43 lab-admin-keyring.php:118
+#: lab-admin-keyring.php:410 lab-admin-keyring.php:482
 msgid "User"
 msgstr "Utilisateur"
 
@@ -142,7 +143,7 @@ msgid "Estimation cost"
 msgstr "Coût estimé"
 
 #: admin/view/lab-admin-mission.php:161 core/lab-admin-core-mission.php:324 core/lab-admin-core-mission.php:406
-#: core/lab-admin-core-mission.php:453 lab-admin-core.php:923
+#: core/lab-admin-core-mission.php:453 lab-admin-core.php:993
 msgid "Real cost"
 msgstr "Budget réel"
 
@@ -155,17 +156,33 @@ msgid "Do you really want to delete this mission ?"
 msgstr "Voulez-vous vraiment supprimer cette mission ?"
 
 #: admin/view/lab-admin-mission.php:174 admin/view/lab-admin-tab-params.php:99 admin/view/lab-admin-tab-settings.php:67
-#: admin/view/lab-admin-tab-users.php:305 admin/view/lab-admin-tab-users.php:401 lab-admin-keyring.php:106
-#: lab-admin-keyring.php:115 lab-admin-keyring.php:276 shortcode/lab-shortcode-invitation.php:426
+#: admin/view/lab-admin-tab-users.php:305 admin/view/lab-admin-tab-users.php:401 lab-admin-keyring.php:185
+#: lab-admin-keyring.php:194 lab-admin-keyring.php:355 shortcode/lab-shortcode-invitation.php:426
 #: shortcode/lab-shortcode-invitation.php:434 shortcode/lab-shortcode-invitation.php:460 shortcode/lab-shortcode-present.php:491
 msgid "Cancel"
 msgstr "Annuler"
 
 #: admin/view/lab-admin-mission.php:175 admin/view/lab-admin-tab-params.php:100 admin/view/lab-admin-tab-settings.php:68
-#: admin/view/lab-admin-tab-users.php:402 lab-admin-keyring.php:107 lab-admin-keyring.php:116 lab-admin-keyring.php:277
+#: admin/view/lab-admin-tab-users.php:402 lab-admin-keyring.php:186 lab-admin-keyring.php:195 lab-admin-keyring.php:356
 #: shortcode/lab-shortcode-invitation.php:461
 msgid "Confirm"
 msgstr "Confirmer"
+
+#: admin/view/lab-admin-seminar.php:14 lab-admin-budget.php:28
+msgid "IT budget management"
+msgstr "Gestion du budget"
+
+#: admin/view/lab-admin-seminar.php:17
+#, fuzzy
+#| msgid "Seminar"
+msgid "New Seminar"
+msgstr "Séminaire"
+
+#: admin/view/lab-admin-seminar.php:18
+#, fuzzy
+#| msgid "Seminar"
+msgid "Seminar list"
+msgstr "Séminaire"
 
 #: admin/view/lab-admin-tab-groups.php:10 admin/view/lab-admin-tab-groups.php:71
 msgid "Group name"
@@ -228,7 +245,7 @@ msgstr "Acronyme"
 msgid "Parent group"
 msgstr "Groupe parent"
 
-#: admin/view/lab-admin-tab-groups.php:87 lab-admin-keyring.php:146
+#: admin/view/lab-admin-tab-groups.php:87 lab-admin-keyring.php:225
 msgid "Type"
 msgstr "Type"
 
@@ -384,7 +401,7 @@ msgstr "Vider la table HAL"
 msgid "Add Meta Key"
 msgstr "Ajouter une metakey"
 
-#: admin/view/lab-admin-tab-users.php:16 lab-admin-keyring.php:41
+#: admin/view/lab-admin-tab-users.php:16 lab-admin-keyring.php:45 lab-admin-keyring.php:120
 msgid "User name"
 msgstr "Nom utilisateur"
 
@@ -525,11 +542,11 @@ msgstr "Historique utilisateur"
 msgid "Add a period"
 msgstr "Ajouter une période"
 
-#: admin/view/lab-admin-tab-users.php:239 lab-admin-keyring.php:407
+#: admin/view/lab-admin-tab-users.php:239 lab-admin-keyring.php:486
 msgid "Start date"
 msgstr "Date de début"
 
-#: admin/view/lab-admin-tab-users.php:247 lab-admin-keyring.php:409
+#: admin/view/lab-admin-tab-users.php:247 lab-admin-keyring.php:488
 msgid "End date"
 msgstr "Date de fin"
 
@@ -549,7 +566,7 @@ msgstr "Internal/external mobility"
 msgid "Host"
 msgstr "Hôte"
 
-#: admin/view/lab-admin-tab-users.php:304 lab-admin-keyring.php:167 lab-admin-keyring.php:215 lab-admin-keyring.php:485
+#: admin/view/lab-admin-tab-users.php:304 lab-admin-keyring.php:246 lab-admin-keyring.php:294 lab-admin-keyring.php:564
 #: shortcode/lab-shortcode-invitation.php:743
 msgid "Edit"
 msgstr "Modifier"
@@ -683,7 +700,7 @@ msgstr "Nombre de personnes"
 msgid "Round trip"
 msgstr "Aller-retour"
 
-#: core/lab-admin-core-mission.php:444 lab-admin-core.php:916 shortcode/lab-shortcode-invitation.php:324
+#: core/lab-admin-core-mission.php:444 lab-admin-core.php:986 shortcode/lab-shortcode-invitation.php:324
 msgid "Return date"
 msgstr "Date de retour"
 
@@ -691,11 +708,11 @@ msgstr "Date de retour"
 msgid "Path reference"
 msgstr "Référence trajet"
 
-#: core/lab-admin-core-mission.php:446 lab-admin-core.php:912 shortcode/lab-shortcode-invitation.php:330
+#: core/lab-admin-core-mission.php:446 lab-admin-core.php:982 shortcode/lab-shortcode-invitation.php:330
 msgid "Carbon footprint"
 msgstr "Empreinte carbone"
 
-#: core/lab-admin-core-mission.php:447 lab-admin-core.php:929 shortcode/lab-shortcode-invitation.php:282
+#: core/lab-admin-core-mission.php:447 lab-admin-core.php:999 shortcode/lab-shortcode-invitation.php:282
 #: shortcode/lab-shortcode-invitation.php:332
 msgid "Loyalty card number"
 msgstr "Numéro de carte de fidélité"
@@ -712,15 +729,7 @@ msgstr "Non"
 msgid "Yes"
 msgstr "Oui"
 
-#: js/lab_fe.js:251
-msgid "Change main thematic"
-msgstr "Changer thème principal"
-
-#: js/lab_fe.js:256
-msgid "Delete thematic"
-msgstr "Effacer thématique"
-
-#: js/lab_fe.js:330
+#: js/lab_fe.js:354
 msgid "Your biography is too long (max 200 characters)"
 msgstr "Votre biographie est trop longue (max 200 caractères)"
 
@@ -740,125 +749,125 @@ msgstr "Erreur lors de la création de la table"
 msgid "Error while creating the table"
 msgstr "Erreur lors de la création de la table"
 
-#: js/lab_keyring.js:139
+#: js/lab_keyring.js:149
 msgid "Error while creating the key"
 msgstr "Erreur lors de la création de la clé"
 
-#: js/lab_keyring.js:139 js/lab_keyring.js:268
+#: js/lab_keyring.js:149 js/lab_keyring.js:278
 msgid "All required fields must be filled"
 msgstr "Tous les champs requis doivent être remplis"
 
-#: js/lab_keyring.js:195
+#: js/lab_keyring.js:205
 msgid "Impossible to find the loan corresponding to this key"
 msgstr "Impossible de trouver le prêt correspondant à cette clé"
 
-#: js/lab_keyring.js:204 js/lab_keyring.js:500
+#: js/lab_keyring.js:214 js/lab_keyring.js:510
 msgid "Impossible to find the information for this key"
 msgstr "Impossible de trouver les informations pour cette clé"
 
-#: js/lab_keyring.js:218 js/lab_keyring.js:682
+#: js/lab_keyring.js:228 js/lab_keyring.js:692
 msgid "result(s)"
 msgstr "résultat(s)"
 
-#: js/lab_keyring.js:221
+#: js/lab_keyring.js:231
 msgid "No keys found. You can create one below"
 msgstr "Aucune clé trouvée. Vous pouvez en créer une ci-dessous"
 
-#: js/lab_keyring.js:268
+#: js/lab_keyring.js:278
 msgid "Error while changing the key"
 msgstr "Erreur lors du changement de clé"
 
-#: js/lab_keyring.js:285
+#: js/lab_keyring.js:295
 msgid "Key successfully modified"
 msgstr "Clé modifiée avec succès"
 
-#: js/lab_keyring.js:291
+#: js/lab_keyring.js:301
 msgid "Failed to change the key"
 msgstr "Echec du changement de clé"
 
-#: js/lab_keyring.js:301
+#: js/lab_keyring.js:311
 msgid "Key deleted successfully"
 msgstr "Clé supprimée avec succès"
 
-#: js/lab_keyring.js:305
+#: js/lab_keyring.js:315
 msgid "The key could not be deleted"
 msgstr "La clé ne peut pas être supprimée"
 
-#: js/lab_keyring.js:380
+#: js/lab_keyring.js:390
 msgid "Impossible to create the loan: the form is not filled in correctly"
 msgstr "Impossible de créer le prêt: le formulaire n'est pas rempli correctement"
 
-#: js/lab_keyring.js:504
+#: js/lab_keyring.js:514
 msgid "Impossible to find the ID loan"
 msgstr "Impossible de trouver l'ID du prêt"
 
-#: js/lab_keyring.js:523
+#: js/lab_keyring.js:533
 msgid "Key successfully created"
 msgstr "Clé créée avec succès"
 
-#: js/lab_keyring.js:527
+#: js/lab_keyring.js:537
 msgid "Error while creating a key"
 msgstr "Erreur lors de la création de la clé"
 
-#: js/lab_keyring.js:537
+#: js/lab_keyring.js:547
 msgid "Loan successfully created"
 msgstr "Prêt créé avec succès"
 
-#: js/lab_keyring.js:546
+#: js/lab_keyring.js:556
 msgid "Error while creating the loan"
 msgstr "Erreur lors de la création du prêt"
 
-#: js/lab_keyring.js:557
+#: js/lab_keyring.js:567
 msgid "Loan successfully modified"
 msgstr "Prêt modifié avec succès"
 
-#: js/lab_keyring.js:563
+#: js/lab_keyring.js:573
 msgid "Loan modification error"
 msgstr "Erreur lors de la modification du prêt"
 
-#: js/lab_keyring.js:575
+#: js/lab_keyring.js:585
 msgid "Loan successfully completed"
 msgstr "Prêt complété avec succès"
 
-#: js/lab_keyring.js:585
+#: js/lab_keyring.js:595
 msgid "Error when trying to end the loan"
 msgstr "Erreur lors d'une tentative de terminer le prêt"
 
-#: js/lab_keyring.js:629 js/lab_keyring.js:633
+#: js/lab_keyring.js:639 js/lab_keyring.js:643
 msgid "Loan receipt"
 msgstr "Reçu du prêt"
 
-#: js/lab_keyring.js:636
+#: js/lab_keyring.js:646
 msgid "Loan ID"
 msgstr "ID du prêt"
 
-#: js/lab_keyring.js:637 lab-admin-keyring.php:330 lab-admin-keyring.php:401
+#: js/lab_keyring.js:647 lab-admin-keyring.php:409 lab-admin-keyring.php:480
 msgid "Referent"
 msgstr "Référent"
 
-#: js/lab_keyring.js:638
+#: js/lab_keyring.js:648
 msgid "The key/badge number"
 msgstr "La clé / numéro de badge"
 
-#: js/lab_keyring.js:639
+#: js/lab_keyring.js:649
 msgid "Has been lent to"
 msgstr "A été prétée à"
 
-#: js/lab_keyring.js:643
+#: js/lab_keyring.js:653
 msgid "And must be returned before"
 msgstr "Et doit être retournée avant"
 
-#: js/lab_keyring.js:644 lab-admin-keyring.php:82 lab-admin-keyring.php:152 lab-admin-keyring.php:213 lab-admin-keyring.php:258
-#: lab-admin-keyring.php:334 lab-admin-keyring.php:395 shortcode/lab-shortcode-present.php:294
+#: js/lab_keyring.js:654 lab-admin-keyring.php:96 lab-admin-keyring.php:161 lab-admin-keyring.php:231 lab-admin-keyring.php:292
+#: lab-admin-keyring.php:337 lab-admin-keyring.php:413 lab-admin-keyring.php:474 shortcode/lab-shortcode-present.php:294
 #: shortcode/lab-shortcode-present.php:409 shortcode/lab-shortcode-present.php:455
 msgid "Comment"
 msgstr "Commentaire"
 
-#: js/lab_keyring.js:645
+#: js/lab_keyring.js:655
 msgid "Signature"
 msgstr "Signature"
 
-#: js/lab_keyring.js:648
+#: js/lab_keyring.js:658
 msgid "Print"
 msgstr "Imprimer"
 
@@ -894,62 +903,58 @@ msgstr "La raison de votre présence est requise"
 msgid "Cant delete system param"
 msgstr "Impossible d'effacer un paramètre sytème"
 
-#: lab-admin-ajax.php:1264 lab-admin-ajax.php:1275
+#: lab-admin-ajax.php:1275 lab-admin-ajax.php:1286
 msgid "No loan found"
 msgstr "Aucun prêt trouvé"
 
-#: lab-admin-ajax.php:1514
+#: lab-admin-ajax.php:1525
 msgid "Your request has been taken into account"
 msgstr "Votre requête a été prise en compte"
 
-#: lab-admin-ajax.php:1516
+#: lab-admin-ajax.php:1527
 msgid "e-mail send to guest"
 msgstr ""
 
-#: lab-admin-ajax.php:1518
+#: lab-admin-ajax.php:1529
 msgid "e-mail send to host"
 msgstr ""
 
-#: lab-admin-ajax.php:1522
+#: lab-admin-ajax.php:1533
 #, fuzzy
 #| msgid "Waiting group manager"
 msgid "e-mail send to manager"
 msgstr "En attente du gestionnaire budget"
 
-#: lab-admin-ajax.php:1654
+#: lab-admin-ajax.php:1665
 msgid "Your invitation has been modified"
 msgstr "Votre invitation a bien été modifiée"
 
-#: lab-admin-ajax.php:1800 shortcode/lab-shortcode-invitation.php:750
+#: lab-admin-ajax.php:1811 shortcode/lab-shortcode-invitation.php:750
 msgid "No invitation"
 msgstr "Aucune invitation"
 
-#: lab-admin-ajax.php:1846
+#: lab-admin-ajax.php:1857
 msgid "undefined"
 msgstr "indéfini"
 
-#: lab-admin-ajax.php:1985
+#: lab-admin-ajax.php:1996
 msgid "Can only modify your own presency"
 msgstr "Vous ne pouvez modifier que votre propre présence"
 
-#: lab-admin-ajax.php:1995
+#: lab-admin-ajax.php:2006
 #, php-format
 msgid "%s is a no working day"
 msgstr "%s est férié"
 
-#: lab-admin-ajax.php:2018
+#: lab-admin-ajax.php:2029
 #, php-format
 msgid "Your are already present in %s the %s between %s and %s"
 msgstr "Vous êtes déjà présent au/à %s le %s entre %s et %s"
 
-#: lab-admin-ajax.php:2041 lab-admin-ajax.php:2050
+#: lab-admin-ajax.php:2052 lab-admin-ajax.php:2061
 #, php-format
 msgid "Your new schedules overlap to an existing one : %s the %s between %s and %s"
 msgstr "Votre calendrier chevauche une déclaration de présence existante à/au %s le %s entre %s et %s"
-
-#: lab-admin-budget.php:28
-msgid "IT budget management"
-msgstr "Gestion du budget"
 
 #: lab-admin-budget.php:31
 msgid "New order"
@@ -1060,74 +1065,74 @@ msgstr "Date de livraison"
 msgid "Payement date"
 msgstr "Date de paiement"
 
-#: lab-admin-core.php:810
+#: lab-admin-core.php:880
 #, fuzzy
 #| msgid "Mission Type"
 msgid "Description type"
 msgstr "Type de mission"
 
-#: lab-admin-core.php:813
+#: lab-admin-core.php:883
 msgid "Description value"
 msgstr ""
 
-#: lab-admin-core.php:832 lab-admin-invitations.php:183
+#: lab-admin-core.php:902 lab-admin-invitations.php:183
 msgid " modified by "
 msgstr " modifié par "
 
-#: lab-admin-core.php:888
+#: lab-admin-core.php:958
 msgid "Country of origin"
 msgstr "Pays de départ"
 
-#: lab-admin-core.php:891
+#: lab-admin-core.php:961
 msgid "City of origin"
 msgstr "Ville de départ"
 
-#: lab-admin-core.php:894
+#: lab-admin-core.php:964
 msgid "Arrival country"
 msgstr "Pays d'arrivée"
 
-#: lab-admin-core.php:897
+#: lab-admin-core.php:967
 msgid "Arrival city"
 msgstr "Ville d'arrivée"
 
-#: lab-admin-core.php:900
+#: lab-admin-core.php:970
 msgid "Date"
 msgstr "Date"
 
-#: lab-admin-core.php:903
+#: lab-admin-core.php:973
 msgid "Mean of locomotion"
 msgstr "Moyen de transport"
 
-#: lab-admin-core.php:906
+#: lab-admin-core.php:976
 msgid "Box \"Round trip\""
 msgstr "Case \"Aller-retour\""
 
-#: lab-admin-core.php:909 shortcode/lab-shortcode-invitation.php:311
+#: lab-admin-core.php:979 shortcode/lab-shortcode-invitation.php:311
 msgid "Number of persons"
 msgstr "Nombre de personnes"
 
-#: lab-admin-core.php:920 shortcode/lab-shortcode-invitation.php:317 shortcode/lab-shortcode-invitation.php:931
+#: lab-admin-core.php:990 shortcode/lab-shortcode-invitation.php:317 shortcode/lab-shortcode-invitation.php:931
 msgid "Estimated cost"
 msgstr "Coût estimé"
 
-#: lab-admin-core.php:926
+#: lab-admin-core.php:996
 msgid "Reference"
 msgstr "Référence"
 
-#: lab-admin-core.php:933 shortcode/lab-shortcode-invitation.php:334
+#: lab-admin-core.php:1003 shortcode/lab-shortcode-invitation.php:334
 msgid "Loyalty card expiry date"
 msgstr "Date d'expiration de la carte de fidélité"
 
-#: lab-admin-core.php:939
+#: lab-admin-core.php:1009
 msgid "¤Travel from "
 msgstr "¤Trajet du "
 
-#: lab-admin-core.php:1266
+#: lab-admin-core.php:1336
 #, php-format
 msgid "A param key with '%1s' and type %1s already exist in db"
 msgstr "Un paramètre avec la clef '%1s' et le type %1s existe déjà en DB"
 
-#: lab-admin-core.php:1268
+#: lab-admin-core.php:1338
 #, php-format
 msgid "Can't have space in param slug name '%1s'"
 msgstr "Il ne peut y avoir d'espace dans le slug du paramètre  '%1s'"
@@ -1204,192 +1209,199 @@ msgstr "Gestion des clés"
 msgid "keyring entry"
 msgstr "saisie clés"
 
-#: lab-admin-keyring.php:13 lab-admin-keyring.php:329
+#: lab-admin-keyring.php:13
+#, fuzzy
+#| msgid "Add role keyring"
+msgid "Add one key"
+msgstr "Ajouter le rôle pour keyring"
+
+#: lab-admin-keyring.php:14 lab-admin-keyring.php:408
 msgid "Key"
 msgstr "Clé"
 
-#: lab-admin-keyring.php:14
+#: lab-admin-keyring.php:15
 msgid "Loans"
 msgstr "Prêts"
 
-#: lab-admin-keyring.php:19
+#: lab-admin-keyring.php:20
 msgid "Create table Keys"
 msgstr "Créer la table Keys"
 
-#: lab-admin-keyring.php:23
+#: lab-admin-keyring.php:24
 msgid "Create table Loans"
 msgstr "Créer la table Loans"
 
-#: lab-admin-keyring.php:62 lab-admin-keyring.php:149 lab-admin-keyring.php:186 lab-admin-keyring.php:238
-#: lab-admin-keyring.php:378
+#: lab-admin-keyring.php:76 lab-admin-keyring.php:141 lab-admin-keyring.php:228 lab-admin-keyring.php:265
+#: lab-admin-keyring.php:317 lab-admin-keyring.php:457
 msgid "Brand"
 msgstr "Marque"
 
-#: lab-admin-keyring.php:65 lab-admin-keyring.php:241 lab-params.php:135
+#: lab-admin-keyring.php:79 lab-admin-keyring.php:144 lab-admin-keyring.php:320 lab-params.php:135
 msgid "ok"
 msgstr "ok"
 
-#: lab-admin-keyring.php:66 lab-admin-keyring.php:242 lab-params.php:136
+#: lab-admin-keyring.php:80 lab-admin-keyring.php:145 lab-admin-keyring.php:321 lab-params.php:136
 msgid "lost"
 msgstr "perdu(e)"
 
-#: lab-admin-keyring.php:67 lab-admin-keyring.php:243 lab-params.php:137
+#: lab-admin-keyring.php:81 lab-admin-keyring.php:146 lab-admin-keyring.php:322 lab-params.php:137
 msgid "broken"
 msgstr "cassé(e)"
 
-#: lab-admin-keyring.php:82 lab-admin-keyring.php:213 lab-admin-keyring.php:258 lab-admin-keyring.php:409
+#: lab-admin-keyring.php:96 lab-admin-keyring.php:161 lab-admin-keyring.php:292 lab-admin-keyring.php:337
+#: lab-admin-keyring.php:488
 msgid "optional"
 msgstr "optionnel"
 
-#: lab-admin-keyring.php:90 lab-admin-keyring.php:260
+#: lab-admin-keyring.php:103 lab-admin-keyring.php:169 lab-admin-keyring.php:339
 msgid "Create"
 msgstr "Créer"
 
-#: lab-admin-keyring.php:104
+#: lab-admin-keyring.php:183
 msgid "Do you really want to delete this key?"
 msgstr "Voulez-vous vraiment supprimer cette clé ?"
 
-#: lab-admin-keyring.php:112
+#: lab-admin-keyring.php:191
 msgid "Do you really want to en this loan ?"
 msgstr "Voulez-vous vraiment supprimer ce prêt ?"
 
-#: lab-admin-keyring.php:113
+#: lab-admin-keyring.php:192
 msgid "Date of return"
 msgstr "Date de retour"
 
-#: lab-admin-keyring.php:113 lab-admin-keyring.php:274 shortcode/lab-shortcode-event.php:107
+#: lab-admin-keyring.php:192 lab-admin-keyring.php:353 shortcode/lab-shortcode-event.php:116
 msgid "Today"
 msgstr "Aujourd'hui"
 
-#: lab-admin-keyring.php:120
+#: lab-admin-keyring.php:199
 msgid "Key list"
 msgstr "List des clés"
 
-#: lab-admin-keyring.php:122
+#: lab-admin-keyring.php:201
 msgid "Search a key"
 msgstr "Chercher une clé"
 
-#: lab-admin-keyring.php:124 lab-admin-keyring.php:284
+#: lab-admin-keyring.php:203 lab-admin-keyring.php:363
 msgid "Page"
 msgstr "Page"
 
-#: lab-admin-keyring.php:130 lab-admin-keyring.php:290
+#: lab-admin-keyring.php:209 lab-admin-keyring.php:369
 msgid "Result number per page"
 msgstr "Nombre de résultats par page"
 
-#: lab-admin-keyring.php:135
+#: lab-admin-keyring.php:214
 msgid "Other"
 msgstr "Autre"
 
-#: lab-admin-keyring.php:145 lab-admin-keyring.php:328 lab-admin-keyring.php:366
+#: lab-admin-keyring.php:224 lab-admin-keyring.php:407 lab-admin-keyring.php:445
 msgid "ID"
 msgstr "ID"
 
-#: lab-admin-keyring.php:147 lab-admin-keyring.php:180 lab-admin-keyring.php:370
+#: lab-admin-keyring.php:226 lab-admin-keyring.php:259 lab-admin-keyring.php:449
 msgid "Number"
 msgstr "Numéro"
 
-#: lab-admin-keyring.php:148 lab-admin-keyring.php:183 lab-admin-keyring.php:374 shortcode/lab-shortcode-profile.php:145
+#: lab-admin-keyring.php:227 lab-admin-keyring.php:262 lab-admin-keyring.php:453 shortcode/lab-shortcode-profile.php:145
 msgid "Office"
 msgstr "Bureau"
 
-#: lab-admin-keyring.php:151
+#: lab-admin-keyring.php:230
 msgid "State"
 msgstr "Etat"
 
-#: lab-admin-keyring.php:153
+#: lab-admin-keyring.php:232
 msgid "Available"
 msgstr "Disponible"
 
-#: lab-admin-keyring.php:154 lab-admin-keyring.php:336 lab-admin-keyring.php:414 shortcode/lab-shortcode-invitation.php:665
+#: lab-admin-keyring.php:233 lab-admin-keyring.php:415 lab-admin-keyring.php:493 shortcode/lab-shortcode-invitation.php:665
 msgid "Actions"
 msgstr "Actions"
 
-#: lab-admin-keyring.php:162 lab-admin-keyring.php:312
+#: lab-admin-keyring.php:241 lab-admin-keyring.php:391
 msgid "Previous page"
 msgstr "Page précédente"
 
-#: lab-admin-keyring.php:163 lab-admin-keyring.php:313
+#: lab-admin-keyring.php:242 lab-admin-keyring.php:392
 msgid "Next page"
 msgstr "Page suivante"
 
-#: lab-admin-keyring.php:273
+#: lab-admin-keyring.php:352
 msgid "Do you really want to end this loan ?"
 msgstr "Voulez-vous vraiment terminer ce prêt ?"
 
-#: lab-admin-keyring.php:274
+#: lab-admin-keyring.php:353
 msgid "Return date : "
 msgstr "Date de retour : "
 
-#: lab-admin-keyring.php:280
+#: lab-admin-keyring.php:359
 msgid "Ongoing loan list"
 msgstr "Liste des prêts en cours"
 
-#: lab-admin-keyring.php:282
+#: lab-admin-keyring.php:361
 msgid "Search a user"
 msgstr "Recherche d'un utilisateur"
 
-#: lab-admin-keyring.php:295
+#: lab-admin-keyring.php:374
 msgid "other"
 msgstr "autre"
 
-#: lab-admin-keyring.php:332
+#: lab-admin-keyring.php:411
 msgid "Start"
 msgstr "Début"
 
-#: lab-admin-keyring.php:333
+#: lab-admin-keyring.php:412
 msgid "Deadline"
 msgstr "Date limite"
 
-#: lab-admin-keyring.php:335
+#: lab-admin-keyring.php:414
 msgid "Finished"
 msgstr "Fini"
 
-#: lab-admin-keyring.php:342
+#: lab-admin-keyring.php:421
 msgid "Loan management"
 msgstr "Gestion des prêts"
 
-#: lab-admin-keyring.php:345
+#: lab-admin-keyring.php:424
 msgid "New loan"
 msgstr "Nouveau prêt"
 
-#: lab-admin-keyring.php:347
+#: lab-admin-keyring.php:426
 msgid "Ongoing loan"
 msgstr "Prêt en cours"
 
-#: lab-admin-keyring.php:348
+#: lab-admin-keyring.php:427
 msgid "Show receipt"
 msgstr "Afficher reçu"
 
-#: lab-admin-keyring.php:413
+#: lab-admin-keyring.php:492
 msgid "Optionnal comment"
 msgstr "Commentaire optionnel"
 
-#: lab-admin-keyring.php:415
+#: lab-admin-keyring.php:494
 msgid "Create loan"
 msgstr "Créer  prêt"
 
-#: lab-admin-keyring.php:416
+#: lab-admin-keyring.php:495
 msgid "Edit loan"
 msgstr "Modifier prêt"
 
-#: lab-admin-keyring.php:417
+#: lab-admin-keyring.php:496
 msgid "Mark as returned"
 msgstr "Marquer comme rendue"
 
-#: lab-admin-keyring.php:422
+#: lab-admin-keyring.php:501
 msgid "Loan historic for this key"
 msgstr "Historique des prêts pour cette clé"
 
-#: lab-admin-keyring.php:422
+#: lab-admin-keyring.php:501
 msgid "User loan history"
 msgstr "Historique des prêts de cet utilisateur"
 
-#: lab-admin-keyring.php:452
+#: lab-admin-keyring.php:531
 msgid "Lend"
 msgstr "Prêter"
 
-#: lab-admin-keyring.php:453
+#: lab-admin-keyring.php:532
 msgid "View loan"
 msgstr "Voir prêt"
 
@@ -2365,11 +2377,11 @@ msgstr "Fonction"
 msgid "User details"
 msgstr "Coordonnées"
 
-#: shortcode/lab-shortcode-event.php:118
+#: shortcode/lab-shortcode-event.php:127
 msgid "No event today"
 msgstr "Aucun(s) évènement(s)"
 
-#: shortcode/lab-shortcode-event.php:165
+#: shortcode/lab-shortcode-event.php:174
 msgid "I2m Week"
 msgstr "Semaine de l'I2M"
 
@@ -2929,6 +2941,12 @@ msgstr "Aucun·e"
 #: shortcode/lab-shortcode-profile.php:294
 msgid "Research keywords : "
 msgstr "Rechercher mots clef : "
+
+#~ msgid "Change main thematic"
+#~ msgstr "Changer thème principal"
+
+#~ msgid "Delete thematic"
+#~ msgstr "Effacer thématique"
 
 #~ msgid "This invitation is already in the next step, to modify it, you must resend it (via the button below)"
 #~ msgstr ""
@@ -3673,9 +3691,6 @@ msgstr "Rechercher mots clef : "
 
 #~ msgid "Order state"
 #~ msgstr "Etat de la commande"
-
-#~ msgid "Add role keyring"
-#~ msgstr "Ajouter le rôle pour keyring"
 
 #, fuzzy
 #~ msgid "Supprimer un utilisateur"
