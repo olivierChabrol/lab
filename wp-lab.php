@@ -315,9 +315,11 @@ function wp_lab_menu()
   add_menu_page("Budget Info","Budget Info","budget_info_manager","lab_admin_budget_info","lab_admin_budget_info",'dashicons-money-alt'    ,23);
   add_menu_page("Mission"    ,"Manage Mission".$bookings_num, "subscriber","lab_admin_mission_manager","lab_admin_mission_manager",'dashicons-admin-site-alt'    ,23);
   add_submenu_page("lab_admin_budget_info", esc_html('Contract','lab'), esc_html('Contract','lab'),'edit_plugins', 'lab_admin_contract', 'lab_admin_new_contract', 24 );
+  add_submenu_page("lab_admin_budget_info", esc_html('Seminar','lab'), esc_html('Seminar','lab'),'edit_plugins', 'lab_admin_seminar', 'lab_admin_new_seminar', 25 );
+
   //add_menu_page("LDAP Admin","LDAP Admin",'edit_plugins','lab_ldap','lab_ldap','dashicons-id-alt',23);
-  add_submenu_page( 'wp-lab.php', "LDAP Admin", "LDAP Admin",'edit_plugins', 'lab_ldap', 'lab_ldap_test', 25 );
-  add_submenu_page("wp-lab.php", "User Admin", "User Admin", "lab_user_manager", "lab_user", "lab_user_echo", 26);
+  add_submenu_page( 'wp-lab.php', "LDAP Admin", "LDAP Admin",'edit_plugins', 'lab_ldap', 'lab_ldap_test', 26 );
+  add_submenu_page("wp-lab.php", "User Admin", "User Admin", "lab_user_manager", "lab_user", "lab_user_echo", 27);
   //add_submenu_page("wp-lab.php","Budget",'keyring','lab_admin_budget_info','lab_admin_budget_info','dashicons-money-alt',22);
   if ( ! current_user_can('edit_plugins') ) {
     remove_menu_page('wpfastestcacheoptions');
