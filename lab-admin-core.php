@@ -364,6 +364,7 @@ function lab_budget_info_load($budgetId, $filters = null) {
     }
     $sql .= " ORDER BY `request_date` DESC";
     $results = $wpdb->get_results($sql);
+    $data["sql"] = $sql;
     $userIds = array();
     foreach($results as $r) {
         if(!isset($userIds[$r->user_id]) && $r->user_id != 0) {
@@ -3339,5 +3340,11 @@ function getAllTableFields($table, $id, $primaryFieldName, $travelId = null) {
 function getAllParamsValue() {
     global $wpdb;
     $sql = "SELECT `value` FROM  `".$wpdb->prefix."lab_params`";
+    return $wpdb->get_results($sql);
+}
+
+function lab_hal_tools_load() {
+    global $wpdb;
+    $sql = "SELECT * FROM  `".$wpdb->prefix."lab_hal_tools`";
     return $wpdb->get_results($sql);
 }

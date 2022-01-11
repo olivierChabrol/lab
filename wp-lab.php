@@ -132,6 +132,7 @@ add_shortcode('lab-labo1dot5admin', 'lab_labo1_5admin');
 add_shortcode('lab-labo1dot5resp', 'lab_labo1_5resp');
 add_shortcode('lab-invite-interface','lab_invitations_interface');
 add_shortcode('lab-ldap','lab_ldap');
+add_shortcode('lab-hal-tools', 'lab_hal_tools');
 
 register_activation_hook( __FILE__, 'lab_activation_hook' );
 register_uninstall_hook(__FILE__, 'lab_uninstall_hook');

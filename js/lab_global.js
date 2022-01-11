@@ -158,6 +158,7 @@ function hideLoadingGif()
 
 function callAjax(data, successMessage, callBackSuccess = null, errorMessage, callBackError = null) {
   let candisplayLoadingGif = false;
+  console.log("[callAjax]");
   if (jQuery("#loadingAjaxGif").length) {
     candisplayLoadingGif = true;
   }
@@ -175,9 +176,9 @@ function callAjax(data, successMessage, callBackSuccess = null, errorMessage, ca
       if (successMessage != null) {
         toast_success(successMessage);
       }
-      console.log("callBack" + response.data);
+      console.log("[callAjax] callBack" + response.data);
       if (callBackSuccess != null) {
-        //console.log("callBackSuccess" + callBackSuccess);
+        //console.log("[callAjax] callBackSuccess" + callBackSuccess);
         callBackSuccess(response.data);
       }
     }

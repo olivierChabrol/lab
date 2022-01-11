@@ -130,11 +130,11 @@ function lab_directory($param) {
         {
             $debugFct .= $fct."<br>";
             $params = AdminParams::get_param_by_slug($fct);
-            if ($params != NULL && is_countable($params) && count($params) > 0)
+            if ($params != NULL)
             {
-                $debugFct .= "Nb Params : ".count($params)."<br>";
-                if (count($params) > 1)
+                if (is_countable($params) && count($params) > 1)
                 {
+                    $debugFct .= "Nb Params : ".count($params)."<br>";
                     foreach($params as $param)
                     {
                         $debugFct .= "param : ".$param->id." ".$param->value." ".$param->slug."<br>";
@@ -142,6 +142,7 @@ function lab_directory($param) {
                     }
                 }
                 else{
+                    $debugFct .= "Nb Params : only one <br>";
                     $debugFct .= "param : ".$params->id." ".$params->value." ".$params->slug."<br>";
                     $whereFunctionUser .= "um9.`meta_value` = '".$params->id."' OR ";
                 }
