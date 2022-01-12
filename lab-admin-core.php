@@ -710,10 +710,12 @@ function lab_admin_financial_create_table() {
 function lab_admin_seminar_save($id, $user_id, $financial_id, $name, $location, $funder_int, $funder_nat, $funder_reg, $funder_lab, $start, $end, $guests_number, $seminar_details) {
     global $wpdb;
     $financial = new FinancialParams;
+    
     if (!isset($id) || empty($id)) {
         if ($wpdb->insert($wpdb->prefix.'lab_seminar', array("name"=>$name, "location"=>$location, "funder_int"=>$funder_int, "funder_nat"=>$funder_nat, "funder_reg"=>$funder_reg, "funder_lab"=>$funder_lab,
                           "funder_lab"=>$funder_lab, "start"=>$start,"end"=>$end, "guests_number"=>$guests_number, "seminar_details"=>$seminar_details))) {
-            $financial->save_financial_seminar($id, '', 1, 1, 'oui', 0);
+            $seminarId = $wpdb->insert_id;
+            $financial->save_financial_seminar($seminarId, '', 1, 1, 'oui', 0);
         }
         else {
             return $wpdb->last_error;
