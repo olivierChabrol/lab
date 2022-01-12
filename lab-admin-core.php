@@ -711,10 +711,9 @@ function lab_admin_seminar_save($id, $user_id, $financial_id, $name, $location, 
     global $wpdb;
     $financial = new FinancialParams;
     if (!isset($id) || empty($id)) {
-        if ($wpdb->insert($wpdb->prefix.'lab_seminar', array("name"=>$name, "location"=>$location, "funder_int"=>$funder_int, "funder_nat"=>$funder_nat, "funder_reg"=>$funder_nat, "funder_lab"=>$funder_lab,
-                          "funder_lab"=>$funder_lab, "start"=>$start,"end"=>$end, "guests_number"=>$guests_number, "details"=>$seminar_details))) {
-            $id = $wpdb->insert_id;
-          //  $financial->save_financial_contract($contractId, '', 1, '', '', $amount);
+        if ($wpdb->insert($wpdb->prefix.'lab_seminar', array("name"=>$name, "location"=>$location, "funder_int"=>$funder_int, "funder_nat"=>$funder_nat, "funder_reg"=>$funder_reg, "funder_lab"=>$funder_lab,
+                          "funder_lab"=>$funder_lab, "start"=>$start,"end"=>$end, "guests_number"=>$guests_number, "seminar_details"=>$seminar_details))) {
+            $financial->save_financial_seminar($id, '', 1, 1, 'oui', 0);
         }
         else {
             return $wpdb->last_error;
@@ -723,8 +722,8 @@ function lab_admin_seminar_save($id, $user_id, $financial_id, $name, $location, 
     }
     else
     {
-        $wpdb->update($wpdb->prefix.'lab_seminar', array("name"=>$name,"start"=>$start,"end"=>$end,), array("id"=>$id));
-        $financial->modify_financial_contract($id, '', 1, 1, '', $amount);
+        // Update when $id is set
+        // $financial->modify_financial_contract($id, '', 1, 1, '', 0);
     }
 }
 

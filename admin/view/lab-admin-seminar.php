@@ -107,7 +107,7 @@ if ($active_tab == 'new') {
                 <label for="lab_admin_seminar_funder_lab"><?php esc_html_e('Seminar labo funder','lab') ?></label>
             </td>
             <td>
-                <input type="text"   id="lab_admin_seminar_funder_labo" maxlength="255">
+                <input type="text"   id="lab_admin_seminar_funder_lab" maxlength="255">
             </td>
         </tr>
         <tr>
