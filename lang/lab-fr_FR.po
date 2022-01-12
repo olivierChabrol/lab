@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lab\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-01-11 10:17+0100\n"
-"PO-Revision-Date: 2022-01-11 10:20+0100\n"
+"POT-Creation-Date: 2022-01-11 15:43+0100\n"
+"PO-Revision-Date: 2022-01-11 15:57+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -143,7 +143,7 @@ msgid "Estimation cost"
 msgstr "Coût estimé"
 
 #: admin/view/lab-admin-mission.php:161 core/lab-admin-core-mission.php:324 core/lab-admin-core-mission.php:406
-#: core/lab-admin-core-mission.php:453 lab-admin-core.php:993
+#: core/lab-admin-core-mission.php:453 lab-admin-core.php:1022
 msgid "Real cost"
 msgstr "Budget réel"
 
@@ -168,21 +168,75 @@ msgstr "Annuler"
 msgid "Confirm"
 msgstr "Confirmer"
 
-#: admin/view/lab-admin-seminar.php:14 lab-admin-budget.php:28
-msgid "IT budget management"
-msgstr "Gestion du budget"
+#: admin/view/lab-admin-seminar.php:14
+msgid "Seminar management"
+msgstr "Gestion des séminaires"
 
 #: admin/view/lab-admin-seminar.php:17
-#, fuzzy
-#| msgid "Seminar"
 msgid "New Seminar"
-msgstr "Séminaire"
+msgstr "Nouveau colloque"
 
 #: admin/view/lab-admin-seminar.php:18
-#, fuzzy
-#| msgid "Seminar"
 msgid "Seminar list"
-msgstr "Séminaire"
+msgstr "Liste des colloques"
+
+#: admin/view/lab-admin-seminar.php:24
+msgid "Créer la table Contrat"
+msgstr "Créer la table contrat"
+
+#: admin/view/lab-admin-seminar.php:28
+msgid "Créer la table Contrat user"
+msgstr "Créer la table  contract_user"
+
+#: admin/view/lab-admin-seminar.php:49 shortcode/lab-shortcode-directory.php:288
+msgid "Name"
+msgstr "Nom"
+
+#: admin/view/lab-admin-seminar.php:54 admin/view/lab-admin-tab-params.php:25 shortcode/lab-shortcode-present.php:481
+msgid "Delete"
+msgstr "Effacer"
+
+#: admin/view/lab-admin-seminar.php:59
+msgid "Location"
+msgstr "LIeu"
+
+#: admin/view/lab-admin-seminar.php:67 lab-admin-keyring.php:411
+msgid "Start"
+msgstr "Début"
+
+#: admin/view/lab-admin-seminar.php:75
+msgid "End"
+msgstr "Fin"
+
+#: admin/view/lab-admin-seminar.php:83
+msgid "Seminar international funder"
+msgstr "Financeur international"
+
+#: admin/view/lab-admin-seminar.php:91
+msgid "Seminar national funder"
+msgstr "Financeur national"
+
+#: admin/view/lab-admin-seminar.php:99
+msgid "Seminar regional funder"
+msgstr "Financeur régional"
+
+#: admin/view/lab-admin-seminar.php:107
+msgid "Seminar labo funder"
+msgstr "Labo Financeur"
+
+#: admin/view/lab-admin-seminar.php:115
+msgid "Guests number(s)"
+msgstr "Nombre d'invités"
+
+#: admin/view/lab-admin-seminar.php:123 shortcode/lab-shortcode-invitation.php:744
+msgid "Details"
+msgstr "Détails"
+
+#: admin/view/lab-admin-seminar.php:130 admin/view/lab-admin-tab-groups.php:58 admin/view/lab-admin-tab-users.php:183
+#: admin/view/lab-admin-tab-users.php:194 admin/view/lab-admin-tab-users.php:205 admin/view/lab-admin-tab-users.php:303
+#: shortcode/lab-shortcode-profile.php:287
+msgid "Add"
+msgstr "Ajouter"
 
 #: admin/view/lab-admin-tab-groups.php:10 admin/view/lab-admin-tab-groups.php:71
 msgid "Group name"
@@ -227,11 +281,6 @@ msgstr "Responsable du groupe"
 #: admin/view/lab-admin-tab-groups.php:56
 msgid "Group substitute"
 msgstr "Suppléant du groupe"
-
-#: admin/view/lab-admin-tab-groups.php:58 admin/view/lab-admin-tab-users.php:183 admin/view/lab-admin-tab-users.php:194
-#: admin/view/lab-admin-tab-users.php:205 admin/view/lab-admin-tab-users.php:303 shortcode/lab-shortcode-profile.php:287
-msgid "Add"
-msgstr "Ajouter"
 
 #: admin/view/lab-admin-tab-groups.php:67
 msgid "Create a group"
@@ -308,10 +357,6 @@ msgstr "Nouveau Paramètre"
 #: admin/view/lab-admin-tab-params.php:17 admin/view/lab-admin-tab-params.php:68
 msgid "Param type"
 msgstr "Type de paramètre"
-
-#: admin/view/lab-admin-tab-params.php:25 shortcode/lab-shortcode-present.php:481
-msgid "Delete"
-msgstr "Effacer"
 
 #: admin/view/lab-admin-tab-params.php:28
 msgid "Param value"
@@ -700,7 +745,7 @@ msgstr "Nombre de personnes"
 msgid "Round trip"
 msgstr "Aller-retour"
 
-#: core/lab-admin-core-mission.php:444 lab-admin-core.php:986 shortcode/lab-shortcode-invitation.php:324
+#: core/lab-admin-core-mission.php:444 lab-admin-core.php:1015 shortcode/lab-shortcode-invitation.php:324
 msgid "Return date"
 msgstr "Date de retour"
 
@@ -708,11 +753,11 @@ msgstr "Date de retour"
 msgid "Path reference"
 msgstr "Référence trajet"
 
-#: core/lab-admin-core-mission.php:446 lab-admin-core.php:982 shortcode/lab-shortcode-invitation.php:330
+#: core/lab-admin-core-mission.php:446 lab-admin-core.php:1011 shortcode/lab-shortcode-invitation.php:330
 msgid "Carbon footprint"
 msgstr "Empreinte carbone"
 
-#: core/lab-admin-core-mission.php:447 lab-admin-core.php:999 shortcode/lab-shortcode-invitation.php:282
+#: core/lab-admin-core-mission.php:447 lab-admin-core.php:1028 shortcode/lab-shortcode-invitation.php:282
 #: shortcode/lab-shortcode-invitation.php:332
 msgid "Loyalty card number"
 msgstr "Numéro de carte de fidélité"
@@ -956,6 +1001,10 @@ msgstr "Vous êtes déjà présent au/à %s le %s entre %s et %s"
 msgid "Your new schedules overlap to an existing one : %s the %s between %s and %s"
 msgstr "Votre calendrier chevauche une déclaration de présence existante à/au %s le %s entre %s et %s"
 
+#: lab-admin-budget.php:28
+msgid "IT budget management"
+msgstr "Gestion du budget"
+
 #: lab-admin-budget.php:31
 msgid "New order"
 msgstr "Nouvelle commande"
@@ -1065,74 +1114,74 @@ msgstr "Date de livraison"
 msgid "Payement date"
 msgstr "Date de paiement"
 
-#: lab-admin-core.php:880
+#: lab-admin-core.php:909
 #, fuzzy
 #| msgid "Mission Type"
 msgid "Description type"
 msgstr "Type de mission"
 
-#: lab-admin-core.php:883
+#: lab-admin-core.php:912
 msgid "Description value"
 msgstr ""
 
-#: lab-admin-core.php:902 lab-admin-invitations.php:183
+#: lab-admin-core.php:931 lab-admin-invitations.php:183
 msgid " modified by "
 msgstr " modifié par "
 
-#: lab-admin-core.php:958
+#: lab-admin-core.php:987
 msgid "Country of origin"
 msgstr "Pays de départ"
 
-#: lab-admin-core.php:961
+#: lab-admin-core.php:990
 msgid "City of origin"
 msgstr "Ville de départ"
 
-#: lab-admin-core.php:964
+#: lab-admin-core.php:993
 msgid "Arrival country"
 msgstr "Pays d'arrivée"
 
-#: lab-admin-core.php:967
+#: lab-admin-core.php:996
 msgid "Arrival city"
 msgstr "Ville d'arrivée"
 
-#: lab-admin-core.php:970
+#: lab-admin-core.php:999
 msgid "Date"
 msgstr "Date"
 
-#: lab-admin-core.php:973
+#: lab-admin-core.php:1002
 msgid "Mean of locomotion"
 msgstr "Moyen de transport"
 
-#: lab-admin-core.php:976
+#: lab-admin-core.php:1005
 msgid "Box \"Round trip\""
 msgstr "Case \"Aller-retour\""
 
-#: lab-admin-core.php:979 shortcode/lab-shortcode-invitation.php:311
+#: lab-admin-core.php:1008 shortcode/lab-shortcode-invitation.php:311
 msgid "Number of persons"
 msgstr "Nombre de personnes"
 
-#: lab-admin-core.php:990 shortcode/lab-shortcode-invitation.php:317 shortcode/lab-shortcode-invitation.php:931
+#: lab-admin-core.php:1019 shortcode/lab-shortcode-invitation.php:317 shortcode/lab-shortcode-invitation.php:931
 msgid "Estimated cost"
 msgstr "Coût estimé"
 
-#: lab-admin-core.php:996
+#: lab-admin-core.php:1025
 msgid "Reference"
 msgstr "Référence"
 
-#: lab-admin-core.php:1003 shortcode/lab-shortcode-invitation.php:334
+#: lab-admin-core.php:1032 shortcode/lab-shortcode-invitation.php:334
 msgid "Loyalty card expiry date"
 msgstr "Date d'expiration de la carte de fidélité"
 
-#: lab-admin-core.php:1009
+#: lab-admin-core.php:1038
 msgid "¤Travel from "
 msgstr "¤Trajet du "
 
-#: lab-admin-core.php:1336
+#: lab-admin-core.php:1365
 #, php-format
 msgid "A param key with '%1s' and type %1s already exist in db"
 msgstr "Un paramètre avec la clef '%1s' et le type %1s existe déjà en DB"
 
-#: lab-admin-core.php:1338
+#: lab-admin-core.php:1367
 #, php-format
 msgid "Can't have space in param slug name '%1s'"
 msgstr "Il ne peut y avoir d'espace dans le slug du paramètre  '%1s'"
@@ -1344,10 +1393,6 @@ msgstr "Recherche d'un utilisateur"
 #: lab-admin-keyring.php:374
 msgid "other"
 msgstr "autre"
-
-#: lab-admin-keyring.php:411
-msgid "Start"
-msgstr "Début"
 
 #: lab-admin-keyring.php:412
 msgid "Deadline"
@@ -2365,10 +2410,6 @@ msgstr "Rechercher un nom"
 msgid "Show only group"
 msgstr "Afficher les membres du groupe"
 
-#: shortcode/lab-shortcode-directory.php:288
-msgid "Name"
-msgstr "Nom"
-
 #: shortcode/lab-shortcode-directory.php:290
 msgid "Function"
 msgstr "Fonction"
@@ -2641,10 +2682,6 @@ msgstr "Emprunte carbone retour"
 #: shortcode/lab-shortcode-invitation.php:683
 msgid "Carbon footprint of the return travel ..."
 msgstr "Emprunte carbone du trajet retour..."
-
-#: shortcode/lab-shortcode-invitation.php:744
-msgid "Details"
-msgstr "Détails"
 
 #: shortcode/lab-shortcode-invitation.php:762
 msgid "Your invitation request to I2M"
@@ -2941,6 +2978,19 @@ msgstr "Aucun·e"
 #: shortcode/lab-shortcode-profile.php:294
 msgid "Research keywords : "
 msgstr "Rechercher mots clef : "
+
+#~ msgid "Seminar location"
+#~ msgstr "Lieu du séminaire"
+
+#, fuzzy
+#~| msgid "Seminar"
+#~ msgid "Seminar start"
+#~ msgstr "Séminaire"
+
+#, fuzzy
+#~| msgid "Seminar"
+#~ msgid "Seminar end"
+#~ msgstr "Séminaire"
 
 #~ msgid "Change main thematic"
 #~ msgstr "Changer thème principal"
@@ -3729,10 +3779,6 @@ msgstr "Rechercher mots clef : "
 #, fuzzy
 #~ msgid "Booked Spaces"
 #~ msgstr "Confirm"
-
-#, fuzzy
-#~ msgid "Location:"
-#~ msgstr "Actions"
 
 #, fuzzy
 #~ msgid "Location Name:"

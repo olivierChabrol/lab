@@ -87,7 +87,8 @@ if (is_admin()) {
     add_action( "wp_ajax_lab_admin_contract_load", "lab_admin_contract_ajax_load");
     add_action( "wp_ajax_lab_admin_contract_get_managers", "lab_admin_contract_ajax_get_managers");
     add_action( "wp_ajax_lab_budget_info_save_order", "lab_budget_info_ajax_save_order");
-
+    //Actions pour la gestion des colloques
+    add_action( 'wp_ajax_lab_admin_seminar_save', 'lab_admin_seminar_ajax_save');
     //Actions pour la gestion des params
     add_action( 'wp_ajax_param_create_table', 'lab_admin_param_create_table');
     add_action( 'wp_ajax_save_param', 'lab_admin_ajax_param_save');

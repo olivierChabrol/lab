@@ -36,11 +36,7 @@
     }
   }
 
-<<<<<<< HEAD
-=======
 
-
->>>>>>> test
   function lab_admin_contract_new($contractId = "") {
 ?>
 <input type="hidden" id="lab_contract_delete_dialog_contract_id" value="<?php echo $contractId; ?>">
