@@ -87,24 +87,27 @@ function lab_event_of_the_day($param)
     $day_start = $today->format('Y-m-d');
     $day_end   = $endOfToday->format('Y-m-d');
 
-    $sql = "SELECT t.name, p.*, pmd.meta_value as speaker
+    $sql = "SELECT t.name, p.*, pmd.meta_value as speaker, pmd.meta_key
             FROM `wp_terms` AS t 
             JOIN `wp_term_relationships` AS tr  ON tr.`term_taxonomy_id`=t.`term_id` 
             JOIN `wp_em_events`          AS p   ON p.`post_id`=tr.`object_id` 
             JOIN `wp_postmeta`           AS pmd ON pmd.`post_id`         = p.`post_id`
-            WHERE p.`event_start_date` >= '".$day_start."' 
-                AND p.`event_end_date` <= '".$day_end."' 
-                AND pmd.meta_key = 'Speaker'
+            WHERE pmd.meta_key = 'Speaker' AND (p.`event_start_date` >= '".$day_start."' 
+                AND p.`event_end_date` <= '".$day_end."') OR (p.`event_start_date` < '".$day_start."' AND '".$day_start."' < p.`event_end_date`) 
             ORDER BY `p`.`event_start_time` ASC";
     global $wpdb;
     $results = $wpdb->get_results($sql);
 
     $res = array();
     $ids = array();
+    $speakers = array();
     foreach($results as $r)
     {
-        if (array_key_exists ($r->post_id, $ids)) {
-            $ids[$r->post_id]->name = $ids[$r->post_id]->name.", ".$r->name;
+       if (array_key_exists ($r->post_id, $ids)) {
+            if($r->meta_key == "Speaker" && strpos($ids[$r->post_id]->name, $r->name) === false) {
+		    $ids[$r->post_id]->name = $ids[$r->post_id]->name.", ".$r->name;
+		    $speakers[$r->post_id] = $r->speaker;
+	    }
         }
         else
         {
@@ -116,9 +119,14 @@ function lab_event_of_the_day($param)
     $content ="<h4><a class=\"spip_in\" href=\"/events/\">".esc_html__("Today",'lab')."</a></h4>";
     if(count($res) > 0) {
         foreach ( $res as $r )
-        {
-            $content .= "<p><span style=\"color: #ff6600;\">".date_i18n("l j F Y", strtotime($r->event_start_date))."</span> ";
-            $content .= "<span style=\"color: mediumseagreen\"><strong>".$r->speaker."</strong></span><br>";
+	{
+		if($r->event_start_date < $day_start) {
+		    $content .= "<p><span style=\"color: #ff6600;\">".date_i18n("l j F Y", strtotime($r->event_start_date)).' -&gt; '.date_i18n("l j F Y", strtotime($r->event_end_date))."</span> ";
+		}
+		else {
+	            $content .= "<p><span style=\"color: #ff6600;\">".date_i18n("l j F Y", strtotime($r->event_start_date))."</span> ";
+		}
+            $content .= "<span style=\"color: mediumseagreen\"><strong>".$speakers[$r->post_id]."</strong></span><br>";
             $content .= "<span style=\"color: #000000;\"><strong>".$r->name."</strong></span><br>";
             $content .= date("H:i", strtotime($r->event_start_time))." - ".date("H:i", strtotime($r->event_end_time))." <a class=\"spip_out\" href=\"".$r->event_slug."\">".$r->event_name."</a></p>";
         }
