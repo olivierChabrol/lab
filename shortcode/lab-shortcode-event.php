@@ -103,11 +103,16 @@ function lab_event_of_the_day($param)
     $speakers = array();
     foreach($results as $r)
     {
+        if($r->meta_key == "Speaker") {
+                $speakers[$r->post_id] = $r->speaker;
+            }
        if (array_key_exists ($r->post_id, $ids)) {
-            if($r->meta_key == "Speaker" && strpos($ids[$r->post_id]->name, $r->name) === false) {
+            if(strpos($ids[$r->post_id]->name, $r->name) === false) {
 		    $ids[$r->post_id]->name = $ids[$r->post_id]->name.", ".$r->name;
-		    $speakers[$r->post_id] = $r->speaker;
 	    }
+	    //if($r->meta_key == "Speaker") {
+	//	$speakers[$r->post_id] = $r->speaker;
+	//    }
         }
         else
         {
