@@ -126,7 +126,11 @@ function lab_event_of_the_day($param)
 		else {
 	            $content .= "<p><span style=\"color: #ff6600;\">".date_i18n("l j F Y", strtotime($r->event_start_date))."</span> ";
 		}
-            $content .= "<span style=\"color: mediumseagreen\"><strong>".$speakers[$r->post_id]."</strong></span><br>";
+		$content .= "<span style=\"color: mediumseagreen\"><strong>";
+		if(isset($speakers[$r->post_id])) {
+		  $content .= $speakers[$r->post_id];
+		}
+		 $content .= "</strong></span><br>";
             $content .= "<span style=\"color: #000000;\"><strong>".$r->name."</strong></span><br>";
             $content .= date("H:i", strtotime($r->event_start_time))." - ".date("H:i", strtotime($r->event_end_time))." <a class=\"spip_out\" href=\"".$r->event_slug."\">".$r->event_name."</a></p>";
         }
