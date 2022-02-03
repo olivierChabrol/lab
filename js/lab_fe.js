@@ -263,7 +263,7 @@ jQuery(function($){
         console.log("[loadThematics]] success");
         jQuery.each(response.data, function (index, value){
           console.log("[loadThematics] value : " + value["name"]);
-          let li = $('<li />').html(value["name"]);
+          let li = $('<li />').html(__(value["name"],'lab'));
 
           let thematicCssClass = 'lab_thematic_order';
           if (value["main"] == "1") {
