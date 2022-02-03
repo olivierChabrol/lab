@@ -157,7 +157,7 @@ class AdminParams {
             return $results[0];
         }
         else {
-            return null;
+            throw new ErrorException("No param with id : " + $id);
         }
     }
     public static function get_param_fields($id, $field) {
