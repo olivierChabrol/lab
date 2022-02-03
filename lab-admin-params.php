@@ -141,14 +141,24 @@ class AdminParams {
         global $wpdb;
         $sql = "SELECT * FROM `".$wpdb->prefix."lab_params` WHERE id=".$id;
         $results = $wpdb->get_results($sql);
-        return $results[0];
+        if (count($results) == 1) {
+            return $results[0];
+        }
+        else {
+            return null;
+        }
     }
 
     public static function get_full_param($id) {
         global $wpdb;
         $sql = "SELECT value FROM `".$wpdb->prefix."lab_params` WHERE id=".$id." ORDER BY value;";
         $results = $wpdb->get_results($sql);
-        return $results[0];
+        if ($results) {
+            return $results[0];
+        }
+        else {
+            return null;
+        }
     }
     public static function get_param_fields($id, $field) {
         return AdminParams::get_param_all($id)->$field;
