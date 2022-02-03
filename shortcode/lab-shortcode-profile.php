@@ -271,7 +271,7 @@ class labUser {
 		else {
 			$output .= '<ul id="lab_profile_thematics">';
 			foreach ($this->thematics as $g) {
-				$output .= "<li>".$g->name;
+				$output .= "<li>".esc_html__($g->name, "lab");
 				if ($g->main == 1)
 				{
 					$output .= '<span class="lab_thematic_main"><i class="fa fa-star"></i></span>';
