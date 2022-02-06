@@ -41,6 +41,17 @@ jQuery(function($){
     });
   });
 
+  $("#lab_request_send").click(function() {
+    data = {
+      'action': 'lab_request_save',
+      'request_id': $("#lab_request_type_id").val(),
+      'request_type': $("#lab_request_type_request").val(),
+      'request_title': $("#lab_request_title").val(),
+      'request_text': $("#lab_request_text").val(),
+    };
+    callAjax(data, null, null, null, null);
+  });
+
   $("#lab_mission_cancel").click(function() {
     data = {
       'action': 'lab_mission_cancel',

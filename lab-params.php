@@ -260,4 +260,8 @@
 	esc_html__('Validated by group leader', 'lab');
 	esc_html__('Refused by group leader', 'lab');
 	esc_html__('Cancelled', 'lab');
+	esc_html__('Invited a visitor', 'lab');
+	esc_html__('Free of charge mission', 'lab');
+	esc_html__('Mission', 'lab');
+	esc_html__('Purchase of equipment', 'lab');
 ?>

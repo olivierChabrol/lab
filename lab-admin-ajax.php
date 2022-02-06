@@ -123,6 +123,17 @@ function lab_mission_complete() {
   wp_send_json_success();
 }
 /********************************************************************************************
+ * REQUEST
+ ********************************************************************************************/
+function lab_request_save_ajax() {
+  $request_id    = $_POST['request_id'];
+  $request_type  = $_POST['request_type'];
+  $request_title = $_POST['request_title'];
+  $request_text  = $_POST['request_text'];
+  lab_request_save($request_id, get_current_user_id(), $request_type, $request_title, $request_text);
+  wp_send_json_success();
+}
+/********************************************************************************************
  * BUDGET
  ********************************************************************************************/
 function lab_ajax_admin_createTable_budget_info()

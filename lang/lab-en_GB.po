@@ -7,8 +7,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2022-02-03 11:49+0100\n"
-"PO-Revision-Date: 2022-02-03 11:52+0100\n"
+"POT-Creation-Date: 2022-02-06 19:00+0100\n"
+"PO-Revision-Date: 2022-02-06 19:01+0100\n"
 "Language: en\n"
 "X-Generator: Poedit 2.3\n"
 "X-Poedit-Basepath: ..\n"
@@ -35,6 +35,7 @@ msgstr ""
 "X-Poedit-SearchPath-17: shortcode/lab-shortcode-event.php\n"
 "X-Poedit-SearchPath-18: js/lab_fe.js\n"
 "X-Poedit-SearchPath-19: lab-params.php\n"
+"X-Poedit-SearchPath-20: shortcode/lab-shortcode-request.php\n"
 
 #: admin/view/lab-admin-tab-groups.php:10
 #: admin/view/lab-admin-tab-groups.php:71
@@ -234,9 +235,8 @@ msgid "Delete param"
 msgstr "Delete param"
 
 #: admin/view/lab-admin-tab-params.php:95
-#, fuzzy
 msgid "Delete this param ?"
-msgstr "delete this param ?"
+msgstr "Delete this param ?"
 
 #: admin/view/lab-admin-tab-params.php:99
 #: admin/view/lab-admin-tab-settings.php:67
@@ -834,9 +834,8 @@ msgstr "broken"
 #: lab-admin-keyring.php:292
 #: lab-admin-keyring.php:337
 #: lab-admin-keyring.php:488
-#, fuzzy
 msgid "optional"
-msgstr "Function"
+msgstr "optional"
 
 #: lab-admin-keyring.php:103
 #: lab-admin-keyring.php:169
@@ -940,9 +939,8 @@ msgid "Do you really want to end this loan ?"
 msgstr ""
 
 #: lab-admin-keyring.php:353
-#, fuzzy
 msgid "Return date : "
-msgstr "Date de retour si AR"
+msgstr "Return date : "
 
 #: lab-admin-keyring.php:359
 msgid "Ongoing loan list"
@@ -1971,6 +1969,7 @@ msgid "Invitation"
 msgstr "Host"
 
 #: lab-params.php:251
+#: lab-params.php:265
 msgid "Mission"
 msgstr "Mission"
 
@@ -2017,7 +2016,19 @@ msgstr ""
 #: lab-params.php:262
 #: shortcode/lab-shortcode-invitation.php:1025
 msgid "Cancelled"
-msgstr ""
+msgstr "Cancelled"
+
+#: lab-params.php:263
+msgid "Invited a visitor"
+msgstr "Invited a visitor"
+
+#: lab-params.php:264
+msgid "Free of charge mission"
+msgstr "Free of charge mission"
+
+#: lab-params.php:266
+msgid "Purchase of equipment"
+msgstr "Purchase of equipment"
 
 #: shortcode/lab-shortcode-directory.php:255
 #: shortcode/lab-shortcode-invitation.php:580
@@ -2026,12 +2037,11 @@ msgstr "All"
 
 #: shortcode/lab-shortcode-directory.php:258
 msgid "People who have left"
-msgstr ""
+msgstr "People who have left"
 
 #: shortcode/lab-shortcode-directory.php:261
-#, fuzzy
 msgid "People present"
-msgstr "present"
+msgstr "People present"
 
 #: shortcode/lab-shortcode-directory.php:266
 #, fuzzy
@@ -2070,7 +2080,7 @@ msgstr "I2m's Week"
 
 #: shortcode/lab-shortcode-invitation.php:51
 msgid "Invalid invitation token"
-msgstr ""
+msgstr "Invalid invitation token"
 
 #: shortcode/lab-shortcode-invitation.php:71
 msgid "You can edit this invitation as a group leader"
@@ -2176,9 +2186,8 @@ msgid "Description Type"
 msgstr ""
 
 #: shortcode/lab-shortcode-invitation.php:242
-#, fuzzy
 msgid "value"
-msgstr "Param value"
+msgstr "value"
 
 #: shortcode/lab-shortcode-invitation.php:252
 msgid "Hostel"
@@ -2257,9 +2266,8 @@ msgid "Station to"
 msgstr "Function"
 
 #: shortcode/lab-shortcode-invitation.php:306
-#, fuzzy
 msgid "Mean of transport "
-msgstr "Mean of transport"
+msgstr "Mean of transport "
 
 #: shortcode/lab-shortcode-invitation.php:309
 msgid "Travel company"
@@ -2732,698 +2740,18 @@ msgstr "None"
 
 #: shortcode/lab-shortcode-profile.php:294
 msgid "Research keywords : "
-msgstr "Research keywords : "
+msgstr "Research keywords :"
 
+#: shortcode/lab-shortcode-request.php:12
 #, fuzzy
-#~ msgid "Delete thematic"
-#~ msgstr "Delete user"
+msgid "Type of request"
+msgstr "Make a request"
 
+#: shortcode/lab-shortcode-request.php:16
 #, fuzzy
-#~ msgid "Send to administration"
-#~ msgstr "Send to manager"
-
-#, fuzzy
-#~ msgid "Send to responsible"
-#~ msgstr "Co-responsible"
-
-#~ msgid "Nom du groupe  "
-#~ msgstr "Group name "
-
-#~ msgid "Supprimer le groupe"
-#~ msgstr "Delete group"
-
-#~ msgid "Nouveau nom du groupe"
-#~ msgstr "New group name"
-
-#~ msgid "Définir un autre responsable du groupe"
-#~ msgstr "Define a new group leader"
-
-#~ msgid "Ajouter un co-responsable"
-#~ msgstr "Add co-responsible"
-
-#~ msgid "Modifier le groupe parent"
-#~ msgstr "Modify parent group"
-
-#~ msgid "Page web du groupe"
-#~ msgstr "Group website"
-
-#~ msgid "Nom du groupe"
-#~ msgstr "Group name"
-
-#~ msgid "Responsable du groupe"
-#~ msgstr "Group leader"
-
-#~ msgid "Suppléant"
-#~ msgstr "Substitute"
-
-#~ msgid "Facultatif"
-#~ msgstr "(optional)"
-
-#~ msgid "Vider la liste"
-#~ msgstr "Clear list"
-
-#~ msgid "N'oubliez pas d'appuyer sur ajouter"
-#~ msgstr "Don't forget to press add"
-
-#~ msgid "+ Ajouter un suppléant"
-#~ msgstr "Add co-responsible"
-
-#~ msgid "Affecter des utilisateurs à des groupes"
-#~ msgstr "Assign users to groups"
-
-#~ msgid "Afficher aussi les personnes qui ont déjà un groupe"
-#~ msgstr "Show also people who already have a group"
-
-#~ msgid "Afficher aussi les utilisateurs qui ont quitté l'Institut"
-#~ msgstr "Show also users who have left the Institute"
-
-#~ msgid "Choisissez une ou plusieurs personne(s) à affecter :"
-#~ msgstr "Choose one or more people to assign :"
-
-#~ msgid ""
-"\n"
-"le ou les groupe(s) au(x)quel(s) vous allez affecter des \"\n"
-":\""
-#~ msgstr "Choose which group or groups you're going to assign people to :"
-
-#~ msgid "envoyer"
-#~ msgstr "submit"
-
-#~ msgid "Annuler"
-#~ msgstr "Cancel"
-
-#~ msgid "Copier les champs phone"
-#~ msgstr "Copy usermeta phone fields"
-
-#~ msgid "Nom de l'utilisateur"
-#~ msgstr "Username"
-
-#~ msgid "Sex"
-#~ msgstr "Sex"
-
-#~ msgid "Section CNU"
-#~ msgstr "Section CNU"
-
-#~ msgid "Parti"
-#~ msgstr "Left"
-
-#~ msgid "Date de départ"
-#~ msgstr "Departure date"
-
-#~ msgid "Modifier le statut de l'utilisateur"
-#~ msgstr "Modify user's status"
-
-#~ msgid "Affecter des rôles à l'utilisateur"
-#~ msgstr "Affect roles to user"
-
-#~ msgid "Historique de l'utilisateur"
-#~ msgstr "User's history"
-
-#~ msgid "Ajouter une période"
-#~ msgstr "Add period"
-
-#~ msgid "Date de début"
-#~ msgstr "Start date"
-
-#~ msgid "Date de fin"
-#~ msgstr "End date"
-
-#~ msgid "Hôte"
-#~ msgstr "Host"
-
-#~ msgid "Ajouter"
-#~ msgstr "Add"
-
-#~ msgid "Modifier"
-#~ msgstr "Edit"
-
-#~ msgid "Ajouter un utilisateur dans l'annuaire"
-#~ msgstr "Add user to directory"
-
-#~ msgid "E-Mail d'utilisateur AMU :"
-#~ msgstr "User e-mail :"
-
-#~ msgid "Nom"
-#~ msgstr "Last name"
-
-#~ msgid "Prénom"
-#~ msgstr "First name"
-
-#~ msgid "E-Mail"
-#~ msgstr "E-Mail"
-
-#~ msgid "Mot de passe"
-#~ msgstr "Password"
-
-#~ msgid "Ajouter l'utilisateur à WordPress"
-#~ msgstr "Add user to WordPress"
-
-#~ msgid "Voulez-vous vraiment supprimer cette période ?"
-#~ msgstr "Do you really want to remove this periodicity ?"
-
-#~ msgid "Utilisateur"
-#~ msgstr "User"
-
-#~ msgid "Paramètres globaux des utilisateurs"
-#~ msgstr "Users global settings"
-
-#~ msgid "Paramètres"
-#~ msgstr "Settings"
-
-#~ msgid "Paramètres globaux"
-#~ msgstr "General settings"
-
-#~ msgid "Commentaire"
-#~ msgstr "Comment"
-
-#~ msgid "Aucun prêt trouvé"
-#~ msgstr "No loan found"
-
-#~ msgid "Votre demande a bien été prise en compte"
-#~ msgstr "Your invitation request has been take into account"
-
-#~ msgid "indéfini"
-#~ msgstr "undefined"
-
-#~ msgid "Gestion des clés"
-#~ msgstr "Keys management"
-
-#~ msgid "Clés"
-#~ msgstr "Keys"
-
-#~ msgid "Prêts"
-#~ msgstr "Loans"
-
-#~ msgid "Nouvelle"
-#~ msgstr "New"
-
-#~ msgid "Marque"
-#~ msgstr "Brand"
-
-#~ msgid "facultatif"
-#~ msgstr "optional"
-
-#~ msgid "Créer"
-#~ msgstr "Create"
-
-#~ msgid "Voulez-vous vraiment supprimer cette clé ?"
-#~ msgstr "Do you really want to remove this key?"
-
-#~ msgid "Voulez-vous vraiment terminer ce prêt ?"
-#~ msgstr "Do you really want to end this loan?"
-
-#~ msgid "Aujourd'hui"
-#~ msgstr "Today"
-
-#~ msgid "Liste des clés"
-#~ msgstr "List of keys"
-
-#~ msgid "Rechercher une clé"
-#~ msgstr "Search for a key"
-
-#~ msgid "Numéro"
-#~ msgstr "Number"
-
-#~ msgid "Bureau"
-#~ msgstr "Office"
-
-#~ msgid "Dispo"
-#~ msgstr "Available"
-
-#~ msgid "Page précédente"
-#~ msgstr "Previous page"
-
-#~ msgid "Page suivante"
-#~ msgstr "Next Page"
-
-#~ msgid "numéro"
-#~ msgstr "number"
-
-#~ msgid "bureau"
-#~ msgstr "office"
-
-#~ msgid "Date de rendu : "
-#~ msgstr "Date of return : "
-
-#~ msgid "Liste des prêts en cours"
-#~ msgstr "List of ongoing loans"
-
-#~ msgid "Rechercher un utilisateur"
-#~ msgstr "Search for an user"
-
-#~ msgid "Clé"
-#~ msgstr "Key"
-
-#~ msgid "Début"
-#~ msgstr "Start"
-
-#~ msgid "Échéance"
-#~ msgstr "Deadline"
-
-#~ msgid "Terminé"
-#~ msgstr "Ended"
-
-#~ msgid "Gestion des prêts"
-#~ msgstr "Loan management"
-
-#~ msgid "Nouveau prêt"
-#~ msgstr "New loan"
-
-#~ msgid "Prêt en cours"
-#~ msgstr "Ongoing loan"
-
-#~ msgid "Afficher Reçu"
-#~ msgstr "Show Receipt"
-
-#~ msgid "Usager"
-#~ msgstr "User"
-
-#~ msgid "Commentaire faculatif"
-#~ msgstr "Optional comments"
-
-#~ msgid "Créer le prêt"
-#~ msgstr "Create loan"
-
-#~ msgid "Modifier le prêt"
-#~ msgstr "Edit loan"
-
-#~ msgid "Marquer comme rendu"
-#~ msgstr "Mark as returned"
-
-#~ msgid "Historique des prêts pour cette clé"
-#~ msgstr "Loan history for this key"
-
-#~ msgid "Historique des prêts de l'utilisateur"
-#~ msgstr "Loan history for user"
-
-#~ msgid "Prêter"
-#~ msgstr "Loan"
-
-#~ msgid "Voir prêt"
-#~ msgstr "Show Loan"
-
-#~ msgid "Chercher un nom"
-#~ msgstr "Search for name"
-
-#~ msgid "Token d'invitation invalide"
-#~ msgstr "Invalid invitation token"
-
-#~ msgid "Informations personnelles"
-#~ msgstr "Personal information"
-
-#~ msgid "Précisez la nature de votre mission ici."
-#~ msgstr "Specify the nature of your mission here."
-
-#, fuzzy
-#~ msgid "Firstname"
-#~ msgstr "First name"
-
-#, fuzzy
-#~ msgid "Lastname"
-#~ msgstr "Last name"
-
-#~ msgid ""
-"\n"
-"exemple vos numéros de carte de fidélité à utiliser lors de la \"\n"
-"de vos voyages + la date d'expiration si nécessaire)\""
-#~ msgstr "(ex. : fidelity card)"
-
-#~ msgid "Champs pour l'invitant : "
-#~ msgstr "Fields for host : "
-
-#~ msgid "Origine des crédits"
-#~ msgstr "Funding source"
-
-#~ msgid "Choisissez une option"
-#~ msgstr "Select an option"
-
-#~ msgid "Précisez l'origine de crédit ici."
-#~ msgstr "Specify the funding source here."
-
-#~ msgid "Contrats de recherche"
-#~ msgstr "Research contract"
-
-#~ msgid "Coût estimé (en €)"
-#~ msgstr "Estimated cost (in €)"
-
-#~ msgid "À remplir par l'invitant : coût estimé du défraiement "
-#~ msgstr "À remplir par l'invitant : coût estimé du défraiement "
-
-#~ msgid ""
-"\n"
-"remplir par le responsable : budget maximal allouable à cette \"\n"
-""
-#~ msgstr ""
-"\n"
-"be filled out by the manager: maximum budget allocated to this \"\n"
-""
-
-#~ msgid "Enregistrer"
-#~ msgstr "Save"
-
-#~ msgid ""
-"\n"
-"invitation est déjà à l'étape suivante, pour la modifier, vous \"\n"
-"la renvoyer (via le bouton ci-dessous)\""
-#~ msgstr ""
-"\n"
-"invitation est déjà à l'étape suivante, pour la modifier, vous \"\n"
-"la renvoyer (via le bouton ci-dessous)\""
-
-#~ msgid "Envoyer au responsable"
-#~ msgstr "Send to group leader"
-
-#~ msgid "Numéro de téléphone"
-#~ msgstr "Phone number"
-
-#~ msgid "Nom de l'invitant"
-#~ msgstr "Host name"
-
-#~ msgid "Besoin d'un hôtel"
-#~ msgstr "Need a hostel"
-
-#~ msgid "Moyen de transport"
-#~ msgstr "Mean of transport"
-
-#~ msgid "Vers l'I2M"
-#~ msgstr "To the I2M"
-
-#~ msgid "Avion"
-#~ msgstr "Plane"
-
-#~ msgid "Car"
-#~ msgstr "Bus"
-
-#~ msgid "Aucun"
-#~ msgstr "None"
-
-#~ msgid "Moyen de transport depuis votre domicile vers notre laboratoire"
-#~ msgstr "Mean of travel from your home to our laboratory"
-
-#~ msgid "Coût estimé du trajet"
-#~ msgstr "Estimated cost (in €)"
-
-#~ msgid "en €"
-#~ msgstr "in €"
-
-#~ msgid "À ne remplir que si l'I2M devra vous défrayer ce trajet."
-#~ msgstr "Fill it only, if I2M take in charge."
-
-#~ msgid "Depuis l'I2M"
-#~ msgstr "From the I2M"
-
-#~ msgid "Moyen de transport depuis notre laboratoire vers votre domicile"
-#~ msgstr "Mean of travel from our laboratory to your home"
-
-#~ msgid "Date d'arrivée"
-#~ msgstr "Arrival date"
-
-#~ msgid ""
-"\n"
-"la date de réservation du voyage, l'heure est quand vous quittez \"\n"
-"domicile\""
-#~ msgstr ""
-"\n"
-"date for travel reservation, the hour is when you leave your home\""
-
-#~ msgid ""
-"\n"
-"la date de réservation du voyage, l'heure est quand vous quittez \"\n"
-"labo\""
-#~ msgstr ""
-"\n"
-"date for travel reservation, the hour is when you leave the \"\n"
-""
-
-#~ msgid "Autres frais"
-#~ msgstr "Other cost"
-
-#~ msgid "Précisez les frais qui devront être pris en charge par l'I2M."
-#~ msgstr "Other cost."
-
-#~ msgid "Hôtel"
-#~ msgstr "Hostel"
-
-#~ msgid "Repas"
-#~ msgstr "Meal"
-
-#~ msgid "Taxi"
-#~ msgstr "Taxi"
-
-#~ msgid "Année"
-#~ msgstr "Year"
-
-#~ msgid "Toutes"
-#~ msgstr "All"
-
-#~ msgid "Groupes Préférés"
-#~ msgstr "Prefered group"
-
-#~ msgid "Invité"
-#~ msgstr "Host"
-
-#~ msgid "Budget estimé"
-#~ msgstr "Estimate budget"
-
-#~ msgid "Budget max."
-#~ msgstr "Max budget."
-
-#~ msgid "Détails de l'invitation"
-#~ msgstr "Invitation details"
-
-#~ msgid "Budget réel"
-#~ msgstr "Real budget"
-
-#~ msgid "Votre demande d'invitation à l'I2M"
-#~ msgstr "Your invitation request to the I2M"
-
-#~ msgid "Votre demande d'invitation a bien été prise en compte"
-#~ msgstr "Your invitation request has been take into account"
-
-#~ msgid "Elle a été transmise à votre invitant"
-#~ msgstr "It has been forwarded to your host"
-
-#~ msgid "Demande de mission"
-#~ msgstr "Mission request"
-
-#~ msgid "Votre demande de mission a bien été prise en compte"
-#~ msgstr "Your request for a mission has been taken into account"
-
-#~ msgid "Elle a été transmise à votre responsable"
-#~ msgstr "It has been forwarded to your manager"
-
-#~ msgid "Demande d'invitation à l'I2M"
-#~ msgstr "Your invitation request to the I2M"
-
-#~ msgid "Une demande d'invitation à l'I2M vous a été transmise."
-#~ msgstr "An invitation request to the I2M has been sent to you."
-
-#~ msgid "Vous pouvez la modifier en suivant"
-#~ msgstr "You can modify it by following"
-
-#~ msgid "ce lien"
-#~ msgstr "this link"
-
-#~ msgid "Nouvelle demande d'invitation à l'I2M"
-#~ msgstr "New invitation request to the I2M"
-
-#~ msgid "Une demande d'invitation à l'I2M a été complétée."
-#~ msgstr "An invitation request to the I2M has been completed."
-
-#~ msgid "Vous pouvez la consulter en suivant"
-#~ msgstr "You can consult it by following"
-
-#~ msgid "Récapitulatif de la demande de mission"
-#~ msgstr "Summary of the invitation request"
-
-#~ msgid "Trajets"
-#~ msgstr "Travels"
-
-#~ msgid "Récapitulatif de la demande d'invitation"
-#~ msgstr "Summary of the invitation request"
-
-#~ msgid "Informations personnelles de l'invité"
-#~ msgstr "Guest's personal information"
-
-#~ msgid "Téléphone"
-#~ msgstr "Phone number"
-
-#~ msgid "Pays"
-#~ msgstr "Country"
-
-#~ msgid "Besoin d'un hotel"
-#~ msgstr "Need a hostel"
-
-#~ msgid "oui"
-#~ msgstr "yes"
-
-#~ msgid "Frais"
-#~ msgstr "Charges"
-
-#~ msgid "Estimation du coût"
-#~ msgstr "Estimate cost"
-
-#~ msgid "Publier sous le nom de"
-#~ msgstr "Publish under name of"
-
-#~ msgid "Envoyer commentaire"
-#~ msgstr "Send comment"
-
-#~ msgid ""
-"\n"
-"invitation a été créée, vous pouvez maintenant en compléter toutes \"\n"
-"informations et l'envoyer pour validation au responsable du groupe.\""
-#~ msgstr ""
-"\n"
-"invitation has been created, you can now complete all the \"\n"
-"and send it for validation to the group leader.\""
-
-#~ msgid "Créée"
-#~ msgstr "Created"
-
-#~ msgid ""
-"\n"
-"invitation a été complétée, le responsable peut maintenant la \"\n"
-"pour l'envoyer au pôle budget.\""
-#~ msgstr ""
-"\n"
-"invitation has been completed, the manager can now validate it to \"\n"
-"it to the budget division.\""
-
-#~ msgid "Cette invitation a été validée et envoyée au pôle budget."
-#~ msgstr "This invitation was validated and sent to the budget division."
-
-#~ msgid "Validée"
-#~ msgstr "Confirmed"
-
-#~ msgid ""
-"\n"
-"invitation a été prise en charge par un administratif du pôle \"\n"
-""
-#~ msgstr "This invitation has been take by an dministrator."
-
-#~ msgid "Aucun groupe préféré trouvé"
-#~ msgstr ""
-"\n"
-"invitation was taken over by an administrative department in the \"\n"
-"division\""
-
-#~ msgid "Lundi"
-#~ msgstr "Monday"
-
-#~ msgid "Mardi"
-#~ msgstr "Tuesday"
-
-#~ msgid "Mercredi"
-#~ msgstr "Wednesday"
-
-#~ msgid "Jeudi"
-#~ msgstr "Thursday"
-
-#~ msgid "Vendredi"
-#~ msgstr "Friday"
-
-#~ msgid "Je serai présent·e"
-#~ msgstr "I will be there"
-
-#~ msgid "Le"
-#~ msgstr "From"
-
-#~ msgid "Jusqu'à"
-#~ msgstr "To"
-
-#~ msgid "sur le site"
-#~ msgstr "on the site"
-
-#~ msgid "Sauvegarder"
-#~ msgstr "Save"
-
-#~ msgid "Je souhaite modifier une de mes présences"
-#~ msgstr "I would like to change one of my presences"
-
-#~ msgid "De"
-#~ msgstr "From"
-
-#~ msgid "Sur"
-#~ msgstr "On"
-
-#~ msgid "Supprimer"
-#~ msgstr "Delete"
-
-#~ msgid "Êtes vous certain·e de vouloir supprimer cette présence ?"
-#~ msgstr "Do you really want to remove this presence ?"
-
-#~ msgid "Oui"
-#~ msgstr "Yes"
-
-#~ msgid "Formulaire"
-#~ msgstr "Form"
-
-#, fuzzy
-#~ msgid "Supprimer un utilisateur"
-#~ msgstr "Search for an user"
-
-#~ msgid "Commentaire (facultatif)"
-#~ msgstr "Comments (optional)"
-
-#~ msgid "Nom de l'invité"
-#~ msgstr "Guest name"
-
-#~ msgid "to"
-#~ msgstr "to"
-
-#~ msgid "Publications HAL"
-#~ msgstr "HAL Publications"
-
-#~ msgid "Page :"
-#~ msgstr "Page :"
-
-#~ msgid "Nombre de résultats par page :"
-#~ msgstr "Results per page :"
-
-#~ msgid "Tous les prêts :"
-#~ msgstr "All loans :"
-
-#, fuzzy
-#~ msgid "Date and time"
-#~ msgstr "End date"
-
-#, fuzzy
-#~ msgid "Confirmed Spaces"
-#~ msgstr "Confirm"
-
-#, fuzzy
-#~ msgid "Pending Spaces"
-#~ msgstr "Confirm"
-
-#, fuzzy
-#~ msgid "Booked Spaces"
-#~ msgstr "Confirm"
-
-#, fuzzy
-#~ msgid "Location:"
-#~ msgstr "Actions"
-
-#, fuzzy
-#~ msgid "Location Name:"
-#~ msgstr "Actions"
-
-#, fuzzy
-#~ msgid "Location Name"
-#~ msgstr "Actions"
-
-#, fuzzy
-#~ msgid "Location Image"
-#~ msgstr "Actions"
-
-#, fuzzy
-#~ msgid "Location not found"
-#~ msgstr "Actions"
-
-#, fuzzy
-#~ msgid "Locations"
-#~ msgstr "Actions"
-
-#, fuzzy
-#~ msgid "Bulk Actions"
-#~ msgstr "Actions"
+msgid "Request title"
+msgstr "Thesis title"
+
+#: shortcode/lab-shortcode-request.php:18
+msgid "Request"
+msgstr ""

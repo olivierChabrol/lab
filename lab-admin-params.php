@@ -28,6 +28,7 @@ class AdminParams {
     public const PARAMS_MEAN_OF_TRANSPORT = 26;
     public const PARAMS_MISSION_STATUS = 27;
     public const PARAMS_MISSION_TYPE_DESC = 28;
+    public const PARAMS_REQUEST_TYPE = 29;
     public const MISSION_STATUS_NEW = "msn";
     public const MISSION_STATUS_COMPLETE = "msc";
     public const MISSION_STATUS_CANCEL = "msca";
@@ -50,6 +51,10 @@ class AdminParams {
     public static function lab_admin_get_params_mission_type_description()
     {
         return AdminParams::get_params_fromId(AdminParams::PARAMS_MISSION_TYPE_DESC);
+    }
+    public static function lab_admin_get_params_request_type()
+    {
+        return AdminParams::get_params_fromId(AdminParams::PARAMS_REQUEST_TYPE);
     }
 
     public static function lab_admin_get_params_mission_status()
@@ -177,6 +182,11 @@ class AdminParams {
         return $results[0];
     }
 };
+
+function lab_admin_get_params_request_type()
+{
+    return AdminParams::lab_admin_get_params_request_type();
+}
 
 function lab_admin_get_params_mission_type_description() {
     return AdminParams::lab_admin_get_params_mission_type_description();

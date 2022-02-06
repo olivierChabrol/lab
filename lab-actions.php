@@ -189,6 +189,7 @@ if (is_admin()) {
     add_action( 'wp_ajax_lab_mission_validate', 'lab_mission_validate');
     add_action( 'wp_ajax_lab_mission_refuse', 'lab_mission_refuse');
     add_action( 'wp_ajax_lab_mission_cancel', 'lab_mission_cancel');
+    add_action( 'wp_ajax_lab_request_save', 'lab_request_save_ajax');
     add_action( 'wp_ajax_lab_mission_complete', 'lab_mission_complete');
     add_action( 'wp_ajax_lab_description_save', 'lab_description_ajax_save');
     add_action( 'wp_ajax_lab_description_delete', 'lab_description_ajax_delete');

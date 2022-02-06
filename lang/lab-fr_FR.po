@@ -7,8 +7,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2022-02-06 16:34+0100\n"
-"PO-Revision-Date: 2022-02-06 16:34+0100\n"
+"POT-Creation-Date: 2022-02-06 19:21+0100\n"
+"PO-Revision-Date: 2022-02-06 19:21+0100\n"
 "Language: fr\n"
 "X-Generator: Poedit 2.3\n"
 "X-Poedit-Basepath: ..\n"
@@ -38,6 +38,7 @@ msgstr ""
 "X-Poedit-SearchPath-20: admin/view/lab-admin-mission.php\n"
 "X-Poedit-SearchPath-21: core/lab-admin-core-mission.php\n"
 "X-Poedit-SearchPath-22: lab-admin-invitations.php\n"
+"X-Poedit-SearchPath-23: shortcode/lab-shortcode-request.php\n"
 
 #: admin/view/lab-admin-mission.php:33
 msgid "Mission management"
@@ -50,6 +51,7 @@ msgstr "Historique"
 
 #: admin/view/lab-admin-mission.php:37
 #: lab-params.php:251
+#: lab-params.php:265
 msgid "Mission"
 msgstr "Mission"
 
@@ -827,12 +829,6 @@ msgstr "Non"
 msgid "Yes"
 msgstr "Oui"
 
-#: js/lab_fe.js:4
-#: lab-params.php:197
-#, fuzzy
-msgid "Algebraic geometry (zero and positive characteristic)"
-msgstr "Géométrie algébrique (caractéristique nulle et positive)"
-
 #: js/lab_keyring.js:647
 #: lab-admin-keyring.php:409
 #: lab-admin-keyring.php:480
@@ -902,9 +898,8 @@ msgid "e-mail send to host"
 msgstr ""
 
 #: lab-admin-ajax.php:1532
-#, fuzzy
 msgid "e-mail send to manager"
-msgstr "En attente du gestionnaire budget"
+msgstr "Email envoyé au gestionnaire"
 
 #: lab-admin-ajax.php:1664
 msgid "Your invitation has been modified"
@@ -1056,7 +1051,6 @@ msgid "Payement date"
 msgstr "Date de paiement"
 
 #: lab-admin-core.php:825
-#, fuzzy
 msgid "Description type"
 msgstr "Type de mission"
 
@@ -1132,7 +1126,6 @@ msgid "Can't have space in param slug name '%1s'"
 msgstr "Il ne peut y avoir d'espace dans le slug du paramètre  '%1s'"
 
 #: lab-admin-invitations.php:129
-#, fuzzy
 msgid "Funding source"
 msgstr "Financements"
 
@@ -1142,23 +1135,20 @@ msgid "Fundings"
 msgstr "Financements"
 
 #: lab-admin-invitations.php:135
-#, fuzzy
 msgid "Guest ID"
-msgstr "Invité"
+msgstr "Invité ID"
 
 #: lab-admin-invitations.php:141
-#, fuzzy
 msgid "Host ID"
-msgstr "Hôte"
+msgstr "Hôte ID"
 
 #: lab-admin-invitations.php:144
 msgid "Host group ID"
 msgstr ""
 
 #: lab-admin-invitations.php:147
-#, fuzzy
 msgid "Hostel estimated cost"
-msgstr "Coût estimé"
+msgstr "Coût estimé de l'hotel"
 
 #: lab-admin-invitations.php:150
 #: shortcode/lab-shortcode-invitation.php:263
@@ -1166,22 +1156,18 @@ msgid "Number of night(s)"
 msgstr "Nombre de nuit(s)"
 
 #: lab-admin-invitations.php:153
-#, fuzzy
 msgid "Manager ID"
 msgstr "Gestionnaire informatique"
 
 #: lab-admin-invitations.php:156
-#, fuzzy
 msgid "Maximum cost"
 msgstr "Coût maximum (€)"
 
 #: lab-admin-invitations.php:159
-#, fuzzy
 msgid "Mission type"
 msgstr "Type de mission"
 
 #: lab-admin-invitations.php:162
-#, fuzzy
 msgid "Field \"Need a hostel\""
 msgstr "Besoin d'un hôtel"
 
@@ -1199,9 +1185,8 @@ msgid "keyring entry"
 msgstr "saisie clés"
 
 #: lab-admin-keyring.php:13
-#, fuzzy
 msgid "Add one key"
-msgstr "Ajouter le rôle pour keyring"
+msgstr "Ajouter une clef"
 
 #: lab-admin-keyring.php:14
 #: lab-admin-keyring.php:408
@@ -2128,7 +2113,6 @@ msgid "Agent Technique de Recherche et de Formation (AGT)"
 msgstr ""
 
 #: lab-params.php:188
-#, fuzzy
 msgid "Complex analysis and geometry"
 msgstr "Analyse et géométrie complexe"
 
@@ -2153,19 +2137,20 @@ msgid "Kinetic equations"
 msgstr "Équations cinétiques"
 
 #: lab-params.php:194
-#, fuzzy
 msgid "Elliptic PDEs"
 msgstr "EDP elliptiques"
 
 #: lab-params.php:195
-#, fuzzy
 msgid "Hyperbolic PDEs"
 msgstr "EDP Hyperboliques"
 
 #: lab-params.php:196
-#, fuzzy
 msgid "Parabolic PDEs, population dynamics"
 msgstr "EDP parabolique, dynamique des populations"
+
+#: lab-params.php:197
+msgid "Algebraic geometry (zero and positive characteristic)"
+msgstr "Géométrie algébrique (caractéristique nulle et positive)"
 
 #: lab-params.php:198
 msgid "Differential geometry (including Lie groups, Riemannian, symplectic, etc.)"
@@ -2188,7 +2173,6 @@ msgid "Discrete mathematics"
 msgstr "Mathématiques discrètes"
 
 #: lab-params.php:203
-#, fuzzy
 msgid "Mathematics for evolutionary biology"
 msgstr "Mathématiques pour l'évolution et la biologie"
 
@@ -2197,37 +2181,30 @@ msgid "Fluid mechanics"
 msgstr "Mécanique des fluides"
 
 #: lab-params.php:205
-#, fuzzy
 msgid "Math modelling, equations related to biology"
 msgstr "Modélisation, équations liées à la biologie"
 
 #: lab-params.php:206
-#, fuzzy
 msgid "Probability"
 msgstr "Probabilités"
 
 #: lab-params.php:207
-#, fuzzy
 msgid "Singularity theory"
 msgstr "Singularités"
 
 #: lab-params.php:208
-#, fuzzy
 msgid "Statistics"
 msgstr "Statistiques"
 
 #: lab-params.php:209
-#, fuzzy
 msgid "Measured dynamical systems"
 msgstr "Systèmes dynamiques mesurés"
 
 #: lab-params.php:210
-#, fuzzy
 msgid "Geometric dynamical systems"
 msgstr "Systèmes dynamiques géométriques"
 
 #: lab-params.php:211
-#, fuzzy
 msgid "Symbolic dynamical systems"
 msgstr "Systèmes dynamiques symboliques"
 
@@ -2240,7 +2217,6 @@ msgid "Algebraic number theory, arithmetic geometry"
 msgstr "Théorie algébrique des nombres, géométrie arithmétique"
 
 #: lab-params.php:214
-#, fuzzy
 msgid "Analytic number theory"
 msgstr "Théorie analytique des nombres"
 
@@ -2397,6 +2373,18 @@ msgstr "Vélo"
 msgid "Waiting group leader"
 msgstr "En attente du chef de groupe"
 
+#: lab-params.php:263
+msgid "Invited a visitor"
+msgstr "Invité un visiteur"
+
+#: lab-params.php:264
+msgid "Free of charge mission"
+msgstr "Mission sans frais"
+
+#: lab-params.php:266
+msgid "Purchase of equipment"
+msgstr "Achat de matériel"
+
 #: shortcode/lab-shortcode-directory.php:258
 msgid "People who have left"
 msgstr "Personnels partis"
@@ -2512,13 +2500,12 @@ msgid "Country of residence"
 msgstr "Pays de résidence"
 
 #: shortcode/lab-shortcode-invitation.php:209
-#, fuzzy
 msgid "Description mission"
-msgstr "Créer la mission"
+msgstr "Descriptif de la mision"
 
 #: shortcode/lab-shortcode-invitation.php:230
 msgid "Upload"
-msgstr ""
+msgstr "Upload"
 
 #: shortcode/lab-shortcode-invitation.php:233
 #: shortcode/lab-shortcode-invitation.php:417
@@ -2526,19 +2513,16 @@ msgid "Validate"
 msgstr "Valider"
 
 #: shortcode/lab-shortcode-invitation.php:241
-#, fuzzy
 msgid "Description Type"
 msgstr "Type de mission"
 
 #: shortcode/lab-shortcode-invitation.php:242
-#, fuzzy
 msgid "value"
-msgstr "Valeur du paramètre"
+msgstr "valeur du paramètre"
 
 #: shortcode/lab-shortcode-invitation.php:252
-#, fuzzy
 msgid "Hostel"
-msgstr "Hôte"
+msgstr "Hotel"
 
 #: shortcode/lab-shortcode-invitation.php:262
 #: shortcode/lab-shortcode-invitation.php:920
@@ -3002,6 +2986,25 @@ msgstr "Aucun·e"
 #: shortcode/lab-shortcode-profile.php:294
 msgid "Research keywords : "
 msgstr "Rechercher mots clef : "
+
+#: shortcode/lab-shortcode-request.php:12
+msgid "Type of request"
+msgstr "Type de demande"
+
+#: shortcode/lab-shortcode-request.php:16
+msgid "Request title"
+msgstr "Intitulé de la demande"
+
+#: shortcode/lab-shortcode-request.php:18
+msgid "Request"
+msgstr "Demande"
+
+#: shortcode/lab-shortcode-request.php:19
+msgid "Send"
+msgstr "Envoyé"
+
+#~ msgid "Make a request"
+#~ msgstr "Faire une demande"
 
 #~ msgid "Change main thematic"
 #~ msgstr "Changer thème principal"
