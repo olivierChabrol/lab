@@ -1,14 +1,19 @@
 /* front end 21 04 2020 */
-if(typeof __ === 'undefined') {
-  const { __, _x, _n, sprintf } = wp.i18n;
-}
 
+const { __, _x, _n, _nx } = wp.i18n;
+//alert(__("Algebraic geometry (zero and positive characteristic)","lab"));
+/*
+__( '__', 'lab' );
+_x( '_x', '_x_context', 'lab' );
+_n( '_n_single', '_n_plural', number, 'lab' );
+_nx( '_nx_single', '_nx_plural', number, '_nx_context', 'lab' );
+//*/
 
 jQuery(function($){
 
-  if(typeof __ === 'undefined') {
-    const { __, _x, _n, sprintf } = wp.i18n;
-  }
+ // if(typeof __ === 'undefined') {
+ //   const { __, _x, _n, sprintf } = wp.i18n;
+ // }
 
   /*** DIRECTORY ***/ 
   var descriptions = [];
@@ -263,8 +268,8 @@ jQuery(function($){
         console.log("[loadThematics]] success");
         jQuery.each(response.data, function (index, value){
           console.log("[loadThematics] value : " + value["name"]);
-          //let li = $('<li />').html(__(value["name"],'lab'));
-          let li = $('<li />').html(value["name"]);
+          let li = $('<li />').html(__(value["name"],'lab'));
+          //let li = $('<li />').html(value["name"]);
 
           let thematicCssClass = 'lab_thematic_order';
           if (value["main"] == "1") {
