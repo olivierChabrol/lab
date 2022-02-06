@@ -3,6 +3,7 @@
 const { __, _x, _n, _nx } = wp.i18n;
 //alert(__("Algebraic geometry (zero and positive characteristic)","lab"));
 /*
+__("Algebraic geometry (zero and positive characteristic)", "lab")
 __( '__', 'lab' );
 _x( '_x', '_x_context', 'lab' );
 _n( '_n_single', '_n_plural', number, 'lab' );
