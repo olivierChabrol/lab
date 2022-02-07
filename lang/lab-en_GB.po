@@ -7,8 +7,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2022-02-06 19:00+0100\n"
-"PO-Revision-Date: 2022-02-06 19:01+0100\n"
+"POT-Creation-Date: 2022-02-07 11:39+0100\n"
+"PO-Revision-Date: 2022-02-07 11:40+0100\n"
 "Language: en\n"
 "X-Generator: Poedit 2.3\n"
 "X-Poedit-Basepath: ..\n"
@@ -36,6 +36,7 @@ msgstr ""
 "X-Poedit-SearchPath-18: js/lab_fe.js\n"
 "X-Poedit-SearchPath-19: lab-params.php\n"
 "X-Poedit-SearchPath-20: shortcode/lab-shortcode-request.php\n"
+"X-Poedit-SearchPath-21: wp-lab.php\n"
 
 #: admin/view/lab-admin-tab-groups.php:10
 #: admin/view/lab-admin-tab-groups.php:71
@@ -102,7 +103,7 @@ msgstr ""
 #: admin/view/lab-admin-tab-users.php:194
 #: admin/view/lab-admin-tab-users.php:205
 #: admin/view/lab-admin-tab-users.php:303
-#: shortcode/lab-shortcode-profile.php:287
+#: shortcode/lab-shortcode-profile.php:289
 msgid "Add"
 msgstr "Add"
 
@@ -605,62 +606,62 @@ msgstr "Referent"
 msgid "Comment"
 msgstr "Comment"
 
-#: lab-admin-ajax.php:366
+#: lab-admin-ajax.php:380
 msgid "Cant delete system param"
 msgstr "Can't delete system param"
 
-#: lab-admin-ajax.php:1274
-#: lab-admin-ajax.php:1285
+#: lab-admin-ajax.php:1288
+#: lab-admin-ajax.php:1299
 msgid "No loan found"
 msgstr ""
 
-#: lab-admin-ajax.php:1524
+#: lab-admin-ajax.php:1538
 msgid "Your request has been taken into account"
 msgstr ""
 
-#: lab-admin-ajax.php:1526
+#: lab-admin-ajax.php:1540
 msgid "e-mail send to guest"
 msgstr ""
 
-#: lab-admin-ajax.php:1528
+#: lab-admin-ajax.php:1542
 msgid "e-mail send to host"
 msgstr ""
 
-#: lab-admin-ajax.php:1532
+#: lab-admin-ajax.php:1546
 msgid "e-mail send to manager"
 msgstr ""
 
-#: lab-admin-ajax.php:1664
+#: lab-admin-ajax.php:1678
 #, fuzzy
 msgid "Your invitation has been modified"
 msgstr "Your invitation request has been take into account"
 
-#: lab-admin-ajax.php:1810
+#: lab-admin-ajax.php:1824
 #: shortcode/lab-shortcode-invitation.php:750
 #, fuzzy
 msgid "No invitation"
 msgstr "No invitation"
 
-#: lab-admin-ajax.php:1856
+#: lab-admin-ajax.php:1870
 msgid "undefined"
 msgstr ""
 
-#: lab-admin-ajax.php:1995
+#: lab-admin-ajax.php:2009
 msgid "Can only modify your own presency"
 msgstr ""
 
-#: lab-admin-ajax.php:2005
+#: lab-admin-ajax.php:2019
 #, fuzzy,php-format
 msgid "%s is a no working day"
 msgstr "%s is a non wordking day"
 
-#: lab-admin-ajax.php:2028
+#: lab-admin-ajax.php:2042
 #, php-format
 msgid "Your are already present in %s the %s between %s and %s"
 msgstr "Your are already present in %s the %s between %s and %s"
 
-#: lab-admin-ajax.php:2051
-#: lab-admin-ajax.php:2060
+#: lab-admin-ajax.php:2065
+#: lab-admin-ajax.php:2074
 #, php-format
 msgid "Your new schedules overlap to an existing one : %s the %s between %s and %s"
 msgstr "Your new schedules overlap to an existing one : %s the %s between %s and %s"
@@ -2730,15 +2731,15 @@ msgstr "Office Floor"
 msgid "User group(s) : "
 msgstr "User group(s) : "
 
-#: shortcode/lab-shortcode-profile.php:170
+#: shortcode/lab-shortcode-profile.php:172
 msgid "User Thematic(s) : "
 msgstr "User Thematic(s) : "
 
-#: shortcode/lab-shortcode-profile.php:269
+#: shortcode/lab-shortcode-profile.php:271
 msgid "None"
 msgstr "None"
 
-#: shortcode/lab-shortcode-profile.php:294
+#: shortcode/lab-shortcode-profile.php:296
 msgid "Research keywords : "
 msgstr "Research keywords :"
 
@@ -2754,4 +2755,79 @@ msgstr "Thesis title"
 
 #: shortcode/lab-shortcode-request.php:18
 msgid "Request"
+msgstr ""
+
+#: shortcode/lab-shortcode-request.php:19
+msgid "Send"
+msgstr ""
+
+#: wp-lab.php:14
+msgid "Crée une page qui remonte les publications d'un auteur ou d'une structure en relation avec HAL et un widget des dernières publications d'un auteur ou d'une structure."
+msgstr ""
+
+#: wp-lab.php:178
+msgid "Extra profile information"
+msgstr ""
+
+#: wp-lab.php:185
+msgid "Address line 1"
+msgstr ""
+
+#: wp-lab.php:188
+#: wp-lab.php:195
+#: wp-lab.php:202
+msgid "Please enter your address."
+msgstr ""
+
+#: wp-lab.php:192
+msgid "Address line 2"
+msgstr ""
+
+#: wp-lab.php:199
+msgid "Address line 3"
+msgstr ""
+
+#: wp-lab.php:206
+msgid "City"
+msgstr ""
+
+#: wp-lab.php:209
+msgid "Please enter your city."
+msgstr ""
+
+#: wp-lab.php:213
+msgid "Postal Code"
+msgstr ""
+
+#: wp-lab.php:216
+msgid "Please enter your postal code."
+msgstr ""
+
+#: wp-lab.php:220
+msgid "Birth date"
+msgstr ""
+
+#: wp-lab.php:223
+msgid "Please enter your birthdate."
+msgstr ""
+
+#: wp-lab.php:229
+msgid "Picture of you"
+msgstr ""
+
+#: wp-lab.php:318
+#, fuzzy
+msgid "Requests"
+msgstr "Thesis title"
+
+#: wp-lab.php:486
+msgid "Affiche les evenements de la semaine en cour."
+msgstr ""
+
+#: wp-lab.php:491
+msgid "Semaine du laboratoire"
+msgstr ""
+
+#: wp-lab.php:542
+msgid "Publications récentes"
 msgstr ""

@@ -150,7 +150,7 @@ class AdminParams {
             return $results[0];
         }
         else {
-            throw new ErrorException("[get_param_all] No param with id : " + $id);
+            throw new ErrorException("[get_param_all] No param with id : " . $id);
             return null;
         }
     }
