@@ -2,14 +2,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lab\n"
 "Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-02-06 19:21+0100\n"
+"PO-Revision-Date: 2022-02-07 08:41+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
+"Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2022-02-06 19:21+0100\n"
-"PO-Revision-Date: 2022-02-06 19:21+0100\n"
-"Language: fr\n"
 "X-Generator: Poedit 2.3\n"
 "X-Poedit-Basepath: ..\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -44,14 +44,11 @@ msgstr ""
 msgid "Mission management"
 msgstr "Gestion des missions"
 
-#: admin/view/lab-admin-mission.php:36
-#: lab-admin-budget.php:32
+#: admin/view/lab-admin-mission.php:36 lab-admin-budget.php:32
 msgid "Historic"
 msgstr "Historique"
 
-#: admin/view/lab-admin-mission.php:37
-#: lab-params.php:251
-#: lab-params.php:265
+#: admin/view/lab-admin-mission.php:37 lab-params.php:251 lab-params.php:265
 msgid "Mission"
 msgstr "Mission"
 
@@ -67,33 +64,22 @@ msgstr "Créer la table Budget info"
 msgid "Missions"
 msgstr "Missions"
 
-#: admin/view/lab-admin-mission.php:122
-#: lab-admin-budget.php:186
-#: shortcode/lab-shortcode-directory.php:255
+#: admin/view/lab-admin-mission.php:122 lab-admin-budget.php:186 shortcode/lab-shortcode-directory.php:255
 #: shortcode/lab-shortcode-invitation.php:580
 msgid "All"
 msgstr "Tou·te·s"
 
-#: admin/view/lab-admin-mission.php:123
-#: js/lab_mission.js:297
-#: lab-admin-keyring.php:57
-#: lab-admin-keyring.php:131
-#: lab-admin-keyring.php:297
-#: lab-params.php:256
+#: admin/view/lab-admin-mission.php:123 js/lab_mission.js:297 lab-admin-keyring.php:57 lab-admin-keyring.php:131
+#: lab-admin-keyring.php:297 lab-params.php:256
 msgid "New"
 msgstr "Nouvelles"
 
-#: admin/view/lab-admin-mission.php:124
-#: lab-admin-budget.php:187
-#: shortcode/lab-shortcode-invitation.php:423
+#: admin/view/lab-admin-mission.php:124 lab-admin-budget.php:187 shortcode/lab-shortcode-invitation.php:423
 #: shortcode/lab-shortcode-invitation.php:1013
 msgid "Complete"
 msgstr "Complétées"
 
-#: admin/view/lab-admin-mission.php:125
-#: js/lab_mission.js:298
-#: lab-params.php:262
-#: shortcode/lab-shortcode-invitation.php:1025
+#: admin/view/lab-admin-mission.php:125 js/lab_mission.js:298 lab-params.php:262 shortcode/lab-shortcode-invitation.php:1025
 msgid "Cancelled"
 msgstr "Annulées"
 
@@ -109,87 +95,59 @@ msgstr "Refusées"
 msgid "Waiting"
 msgstr "En attente"
 
-#: admin/view/lab-admin-mission.php:134
-#: admin/view/lab-admin-mission.php:148
-#: core/lab-admin-core-mission.php:315
-#: lab-admin-budget.php:97
-#: lab-admin-budget.php:207
-#: lab-admin-keyring.php:229
-#: lab-admin-keyring.php:461
+#: admin/view/lab-admin-mission.php:134 admin/view/lab-admin-mission.php:148 core/lab-admin-core-mission.php:315
+#: lab-admin-budget.php:97 lab-admin-budget.php:207 lab-admin-keyring.php:229 lab-admin-keyring.php:461
 #: shortcode/lab-shortcode-profile.php:145
 msgid "Site"
 msgstr "Site"
 
-#: admin/view/lab-admin-mission.php:135
-#: admin/view/lab-admin-mission.php:149
-#: core/lab-admin-core-mission.php:316
-#: lab-admin-budget.php:209
-#: shortcode/lab-shortcode-directory.php:295
-#: shortcode/lab-shortcode-invitation.php:518
+#: admin/view/lab-admin-mission.php:135 admin/view/lab-admin-mission.php:149 core/lab-admin-core-mission.php:316
+#: lab-admin-budget.php:209 shortcode/lab-shortcode-directory.php:295 shortcode/lab-shortcode-invitation.php:518
 #: shortcode/lab-shortcode-invitation.php:656
 msgid "Group"
 msgstr "Groupes"
 
-#: admin/view/lab-admin-mission.php:136
-#: admin/view/lab-admin-mission.php:150
-#: admin/view/lab-admin-tab-groups.php:54
+#: admin/view/lab-admin-mission.php:136 admin/view/lab-admin-mission.php:150 admin/view/lab-admin-tab-groups.php:54
 #: lab-admin-budget.php:105
 msgid "Budget manager"
 msgstr "Gestionaire budget"
 
-#: admin/view/lab-admin-mission.php:137
-#: lab-admin-budget.php:196
+#: admin/view/lab-admin-mission.php:137 lab-admin-budget.php:196
 msgid "Search command Number"
 msgstr "Recherche par numéro de devis"
 
-#: admin/view/lab-admin-mission.php:145
-#: shortcode/lab-shortcode-invitation.php:565
-#: shortcode/lab-shortcode-invitation.php:662
+#: admin/view/lab-admin-mission.php:145 shortcode/lab-shortcode-invitation.php:565 shortcode/lab-shortcode-invitation.php:662
 msgid "Status"
 msgstr "Etat"
 
-#: admin/view/lab-admin-mission.php:146
-#: lab-admin-budget.php:203
+#: admin/view/lab-admin-mission.php:146 lab-admin-budget.php:203
 msgid "Request date"
 msgstr "Date de la demande"
 
-#: admin/view/lab-admin-mission.php:147
-#: admin/view/lab-admin-tabs.php:24
-#: core/lab-admin-core-mission.php:314
-#: core/lab-admin-core-mission.php:434
-#: lab-admin-budget.php:86
-#: lab-admin-keyring.php:43
-#: lab-admin-keyring.php:118
-#: lab-admin-keyring.php:410
-#: lab-admin-keyring.php:482
+#: admin/view/lab-admin-mission.php:147 admin/view/lab-admin-tabs.php:24 core/lab-admin-core-mission.php:314
+#: core/lab-admin-core-mission.php:434 lab-admin-budget.php:86 lab-admin-keyring.php:43 lab-admin-keyring.php:118
+#: lab-admin-keyring.php:410 lab-admin-keyring.php:482
 msgid "User"
 msgstr "Utilisateur"
 
-#: admin/view/lab-admin-mission.php:151
-#: core/lab-admin-core-mission.php:318
+#: admin/view/lab-admin-mission.php:151 core/lab-admin-core-mission.php:318
 msgid "Mission Type"
 msgstr "Type de mission"
 
-#: admin/view/lab-admin-mission.php:152
-#: shortcode/lab-shortcode-present.php:338
+#: admin/view/lab-admin-mission.php:152 shortcode/lab-shortcode-present.php:338
 msgid "Action"
 msgstr "Action"
 
-#: admin/view/lab-admin-mission.php:160
-#: core/lab-admin-core-mission.php:405
+#: admin/view/lab-admin-mission.php:160 core/lab-admin-core-mission.php:405
 msgid "Estimation cost"
 msgstr "Coût estimé"
 
-#: admin/view/lab-admin-mission.php:161
-#: core/lab-admin-core-mission.php:324
-#: core/lab-admin-core-mission.php:406
-#: core/lab-admin-core-mission.php:453
-#: lab-admin-core.php:938
+#: admin/view/lab-admin-mission.php:161 core/lab-admin-core-mission.php:324 core/lab-admin-core-mission.php:406
+#: core/lab-admin-core-mission.php:453 lab-admin-core.php:938
 msgid "Real cost"
 msgstr "Budget réel"
 
-#: admin/view/lab-admin-mission.php:162
-#: core/lab-admin-core-mission.php:407
+#: admin/view/lab-admin-mission.php:162 core/lab-admin-core-mission.php:407
 msgid "Delta"
 msgstr "Différence"
 
@@ -197,34 +155,20 @@ msgstr "Différence"
 msgid "Do you really want to delete this mission ?"
 msgstr "Voulez-vous vraiment supprimer cette mission ?"
 
-#: admin/view/lab-admin-mission.php:174
-#: admin/view/lab-admin-tab-params.php:99
-#: admin/view/lab-admin-tab-settings.php:67
-#: admin/view/lab-admin-tab-users.php:305
-#: admin/view/lab-admin-tab-users.php:401
-#: lab-admin-keyring.php:185
-#: lab-admin-keyring.php:194
-#: lab-admin-keyring.php:355
-#: shortcode/lab-shortcode-invitation.php:426
-#: shortcode/lab-shortcode-invitation.php:434
-#: shortcode/lab-shortcode-invitation.php:460
-#: shortcode/lab-shortcode-present.php:491
+#: admin/view/lab-admin-mission.php:174 admin/view/lab-admin-tab-params.php:99 admin/view/lab-admin-tab-settings.php:67
+#: admin/view/lab-admin-tab-users.php:305 admin/view/lab-admin-tab-users.php:401 lab-admin-keyring.php:185
+#: lab-admin-keyring.php:194 lab-admin-keyring.php:355 shortcode/lab-shortcode-invitation.php:426
+#: shortcode/lab-shortcode-invitation.php:434 shortcode/lab-shortcode-invitation.php:460 shortcode/lab-shortcode-present.php:491
 msgid "Cancel"
 msgstr "Annuler"
 
-#: admin/view/lab-admin-mission.php:175
-#: admin/view/lab-admin-tab-params.php:100
-#: admin/view/lab-admin-tab-settings.php:68
-#: admin/view/lab-admin-tab-users.php:402
-#: lab-admin-keyring.php:186
-#: lab-admin-keyring.php:195
-#: lab-admin-keyring.php:356
+#: admin/view/lab-admin-mission.php:175 admin/view/lab-admin-tab-params.php:100 admin/view/lab-admin-tab-settings.php:68
+#: admin/view/lab-admin-tab-users.php:402 lab-admin-keyring.php:186 lab-admin-keyring.php:195 lab-admin-keyring.php:356
 #: shortcode/lab-shortcode-invitation.php:461
 msgid "Confirm"
 msgstr "Confirmer"
 
-#: admin/view/lab-admin-tab-groups.php:10
-#: admin/view/lab-admin-tab-groups.php:71
+#: admin/view/lab-admin-tab-groups.php:10 admin/view/lab-admin-tab-groups.php:71
 msgid "Group name"
 msgstr "Nom du groupe"
 
@@ -252,8 +196,7 @@ msgstr "Modifier groupe parent"
 msgid "Modify type"
 msgstr "Modifier groupe"
 
-#: admin/view/lab-admin-tab-groups.php:38
-#: admin/view/lab-admin-tab-groups.php:93
+#: admin/view/lab-admin-tab-groups.php:38 admin/view/lab-admin-tab-groups.php:93
 msgid "Group webpage"
 msgstr "Page web du groupe"
 
@@ -261,8 +204,7 @@ msgstr "Page web du groupe"
 msgid "Add manager to group"
 msgstr "Ajouter un gestionaire au groupe"
 
-#: admin/view/lab-admin-tab-groups.php:55
-#: admin/view/lab-admin-tab-groups.php:99
+#: admin/view/lab-admin-tab-groups.php:55 admin/view/lab-admin-tab-groups.php:99
 msgid "Group leader"
 msgstr "Responsable du groupe"
 
@@ -270,12 +212,8 @@ msgstr "Responsable du groupe"
 msgid "Group substitute"
 msgstr "Suppléant du groupe"
 
-#: admin/view/lab-admin-tab-groups.php:58
-#: admin/view/lab-admin-tab-users.php:183
-#: admin/view/lab-admin-tab-users.php:194
-#: admin/view/lab-admin-tab-users.php:205
-#: admin/view/lab-admin-tab-users.php:303
-#: shortcode/lab-shortcode-profile.php:287
+#: admin/view/lab-admin-tab-groups.php:58 admin/view/lab-admin-tab-users.php:183 admin/view/lab-admin-tab-users.php:194
+#: admin/view/lab-admin-tab-users.php:205 admin/view/lab-admin-tab-users.php:303 shortcode/lab-shortcode-profile.php:287
 msgid "Add"
 msgstr "Ajouter"
 
@@ -291,8 +229,7 @@ msgstr "Acronyme"
 msgid "Parent group"
 msgstr "Groupe parent"
 
-#: admin/view/lab-admin-tab-groups.php:87
-#: lab-admin-keyring.php:225
+#: admin/view/lab-admin-tab-groups.php:87 lab-admin-keyring.php:225
 msgid "Type"
 msgstr "Type"
 
@@ -340,8 +277,7 @@ msgstr "Choisissez une ou plusieurs personnes :"
 msgid "Choose the group(s) you want to assign people to :"
 msgstr "Choisissez le ou les groupes où vous voulez assigner des personnes :"
 
-#: admin/view/lab-admin-tab-groups.php:151
-#: shortcode/lab-shortcode-invitation.php:444
+#: admin/view/lab-admin-tab-groups.php:151 shortcode/lab-shortcode-invitation.php:444
 msgid "Submit"
 msgstr "Envoyer"
 
@@ -353,13 +289,11 @@ msgstr "Gérer les Paramètres"
 msgid "New Parameters"
 msgstr "Nouveau Paramètre"
 
-#: admin/view/lab-admin-tab-params.php:17
-#: admin/view/lab-admin-tab-params.php:68
+#: admin/view/lab-admin-tab-params.php:17 admin/view/lab-admin-tab-params.php:68
 msgid "Param type"
 msgstr "Type de paramètre"
 
-#: admin/view/lab-admin-tab-params.php:25
-#: shortcode/lab-shortcode-present.php:481
+#: admin/view/lab-admin-tab-params.php:25 shortcode/lab-shortcode-present.php:481
 msgid "Delete"
 msgstr "Effacer"
 
@@ -367,18 +301,15 @@ msgstr "Effacer"
 msgid "Param value"
 msgstr "Valeur du paramètre"
 
-#: admin/view/lab-admin-tab-params.php:32
-#: admin/view/lab-admin-tab-params.php:72
+#: admin/view/lab-admin-tab-params.php:32 admin/view/lab-admin-tab-params.php:72
 msgid "Param slug"
 msgstr "Slug du paramètre"
 
-#: admin/view/lab-admin-tab-params.php:36
-#: admin/view/lab-admin-tab-params.php:76
+#: admin/view/lab-admin-tab-params.php:36 admin/view/lab-admin-tab-params.php:76
 msgid "Param color"
 msgstr "Couleur du paramètre"
 
-#: admin/view/lab-admin-tab-params.php:40
-#: admin/view/lab-admin-tab-params.php:80
+#: admin/view/lab-admin-tab-params.php:40 admin/view/lab-admin-tab-params.php:80
 msgid "Affect color to param"
 msgstr "Changer la couleur du param"
 
@@ -386,8 +317,7 @@ msgstr "Changer la couleur du param"
 msgid "Shift param"
 msgstr "Décalé paramètre"
 
-#: admin/view/lab-admin-tab-params.php:56
-#: admin/view/lab-admin-tab-params.php:86
+#: admin/view/lab-admin-tab-params.php:56 admin/view/lab-admin-tab-params.php:86
 msgid "Save param"
 msgstr "Sauver Paramètre"
 
@@ -455,25 +385,17 @@ msgstr "Vider la table HAL"
 msgid "Add Meta Key"
 msgstr "Ajouter une metakey"
 
-#: admin/view/lab-admin-tab-users.php:16
-#: lab-admin-keyring.php:45
-#: lab-admin-keyring.php:120
+#: admin/view/lab-admin-tab-users.php:16 lab-admin-keyring.php:45 lab-admin-keyring.php:120
 msgid "User name"
 msgstr "Nom utilisateur"
 
-#: admin/view/lab-admin-tab-users.php:25
-#: admin/view/lab-admin-tab-users.php:344
-#: shortcode/lab-shortcode-invitation.php:178
-#: shortcode/lab-shortcode-invitation.php:849
-#: shortcode/lab-shortcode-invitation.php:910
+#: admin/view/lab-admin-tab-users.php:25 admin/view/lab-admin-tab-users.php:344 shortcode/lab-shortcode-invitation.php:178
+#: shortcode/lab-shortcode-invitation.php:849 shortcode/lab-shortcode-invitation.php:910
 msgid "First name"
 msgstr "Prénom"
 
-#: admin/view/lab-admin-tab-users.php:28
-#: admin/view/lab-admin-tab-users.php:336
-#: shortcode/lab-shortcode-invitation.php:182
-#: shortcode/lab-shortcode-invitation.php:850
-#: shortcode/lab-shortcode-invitation.php:911
+#: admin/view/lab-admin-tab-users.php:28 admin/view/lab-admin-tab-users.php:336 shortcode/lab-shortcode-invitation.php:182
+#: shortcode/lab-shortcode-invitation.php:850 shortcode/lab-shortcode-invitation.php:911
 msgid "Last name"
 msgstr "Nom"
 
@@ -497,11 +419,8 @@ msgstr "Slug utilisateur"
 msgid "Correct slug name"
 msgstr "Corriger les metadatas manquantes"
 
-#: admin/view/lab-admin-tab-users.php:44
-#: admin/view/lab-admin-tab-users.php:352
-#: shortcode/lab-shortcode-invitation.php:173
-#: shortcode/lab-shortcode-invitation.php:851
-#: shortcode/lab-shortcode-invitation.php:912
+#: admin/view/lab-admin-tab-users.php:44 admin/view/lab-admin-tab-users.php:352 shortcode/lab-shortcode-invitation.php:173
+#: shortcode/lab-shortcode-invitation.php:851 shortcode/lab-shortcode-invitation.php:912
 msgid "Email"
 msgstr "Email"
 
@@ -517,9 +436,7 @@ msgstr "Fonction"
 msgid "Employer"
 msgstr "Employeur"
 
-#: admin/view/lab-admin-tab-users.php:70
-#: lab-admin-budget.php:114
-#: shortcode/lab-shortcode-profile.php:48
+#: admin/view/lab-admin-tab-users.php:70 lab-admin-budget.php:114 shortcode/lab-shortcode-profile.php:48
 msgid "Funding"
 msgstr "Soutien financier"
 
@@ -535,18 +452,15 @@ msgstr "Numéro de bureau"
 msgid "User office floor"
 msgstr "Etage du bureau"
 
-#: admin/view/lab-admin-tab-users.php:102
-#: shortcode/lab-shortcode-invitation.php:913
+#: admin/view/lab-admin-tab-users.php:102 shortcode/lab-shortcode-invitation.php:913
 msgid "Phone"
 msgstr "Téléphone"
 
-#: admin/view/lab-admin-tab-users.php:110
-#: shortcode/lab-shortcode-profile.php:52
+#: admin/view/lab-admin-tab-users.php:110 shortcode/lab-shortcode-profile.php:52
 msgid "CN Section"
 msgstr "Section CN"
 
-#: admin/view/lab-admin-tab-users.php:118
-#: shortcode/lab-shortcode-profile.php:56
+#: admin/view/lab-admin-tab-users.php:118 shortcode/lab-shortcode-profile.php:56
 msgid "CNU Section"
 msgstr "Section CNU"
 
@@ -574,13 +488,9 @@ msgstr "France"
 msgid "left"
 msgstr "parti"
 
-#: admin/view/lab-admin-tab-users.php:163
-#: core/lab-admin-core-mission.php:313
-#: core/lab-admin-core-mission.php:435
-#: shortcode/lab-shortcode-invitation.php:274
-#: shortcode/lab-shortcode-invitation.php:292
-#: shortcode/lab-shortcode-invitation.php:661
-#: shortcode/lab-shortcode-invitation.php:927
+#: admin/view/lab-admin-tab-users.php:163 core/lab-admin-core-mission.php:313 core/lab-admin-core-mission.php:435
+#: shortcode/lab-shortcode-invitation.php:274 shortcode/lab-shortcode-invitation.php:292
+#: shortcode/lab-shortcode-invitation.php:661 shortcode/lab-shortcode-invitation.php:927
 msgid "Departure date"
 msgstr "Date de départ"
 
@@ -588,8 +498,7 @@ msgstr "Date de départ"
 msgid "Edit user status"
 msgstr "Modifier statut utilisateur"
 
-#: admin/view/lab-admin-tab-users.php:170
-#: admin/view/lab-admin-tab-users.php:213
+#: admin/view/lab-admin-tab-users.php:170 admin/view/lab-admin-tab-users.php:213
 msgid "Delete user"
 msgstr "Effacer"
 
@@ -617,13 +526,11 @@ msgstr "Historique utilisateur"
 msgid "Add a period"
 msgstr "Ajouter une période"
 
-#: admin/view/lab-admin-tab-users.php:239
-#: lab-admin-keyring.php:486
+#: admin/view/lab-admin-tab-users.php:239 lab-admin-keyring.php:486
 msgid "Start date"
 msgstr "Date de début"
 
-#: admin/view/lab-admin-tab-users.php:247
-#: lab-admin-keyring.php:488
+#: admin/view/lab-admin-tab-users.php:247 lab-admin-keyring.php:488
 msgid "End date"
 msgstr "Date de fin"
 
@@ -639,15 +546,11 @@ msgstr "Institution"
 msgid "Outgoing mobility status"
 msgstr "Internal/external mobility"
 
-#: admin/view/lab-admin-tab-users.php:294
-#: shortcode/lab-shortcode-invitation.php:658
+#: admin/view/lab-admin-tab-users.php:294 shortcode/lab-shortcode-invitation.php:658
 msgid "Host"
 msgstr "Hôte"
 
-#: admin/view/lab-admin-tab-users.php:304
-#: lab-admin-keyring.php:246
-#: lab-admin-keyring.php:294
-#: lab-admin-keyring.php:564
+#: admin/view/lab-admin-tab-users.php:304 lab-admin-keyring.php:246 lab-admin-keyring.php:294 lab-admin-keyring.php:564
 #: shortcode/lab-shortcode-invitation.php:743
 msgid "Edit"
 msgstr "Modifier"
@@ -708,13 +611,11 @@ msgstr "LDAP"
 msgid "Global settings"
 msgstr "Options globales"
 
-#: core/lab-admin-core-mission.php:310
-#: core/lab-admin-core-mission.php:432
+#: core/lab-admin-core-mission.php:310 core/lab-admin-core-mission.php:432
 msgid "Id Mission"
 msgstr "Id Mission"
 
-#: core/lab-admin-core-mission.php:311
-#: core/lab-admin-core-mission.php:433
+#: core/lab-admin-core-mission.php:311 core/lab-admin-core-mission.php:433
 msgid "Etat"
 msgstr ""
 
@@ -726,30 +627,24 @@ msgstr "Date de la demande"
 msgid "Budjet Manager"
 msgstr "Gestionnaire budjet"
 
-#: core/lab-admin-core-mission.php:319
-#: lab-admin-budget.php:70
-#: lab-admin-invitations.php:138
+#: core/lab-admin-core-mission.php:319 lab-admin-budget.php:70 lab-admin-invitations.php:138
 #: shortcode/lab-shortcode-invitation.php:211
 msgid "Title"
 msgstr "Intitulé"
 
-#: core/lab-admin-core-mission.php:320
-#: core/lab-admin-core-mission.php:449
+#: core/lab-admin-core-mission.php:320 core/lab-admin-core-mission.php:449
 msgid "Hostel Night"
 msgstr "Nuit à l'hôtel"
 
-#: core/lab-admin-core-mission.php:321
-#: core/lab-admin-core-mission.php:450
+#: core/lab-admin-core-mission.php:321 core/lab-admin-core-mission.php:450
 msgid "Estimation cost Travel"
 msgstr "Coût estimé pour les trajets"
 
-#: core/lab-admin-core-mission.php:322
-#: core/lab-admin-core-mission.php:451
+#: core/lab-admin-core-mission.php:322 core/lab-admin-core-mission.php:451
 msgid "Estimation cost Hostel"
 msgstr "Coût estimé pour l'hôtel"
 
-#: core/lab-admin-core-mission.php:323
-#: core/lab-admin-core-mission.php:452
+#: core/lab-admin-core-mission.php:323 core/lab-admin-core-mission.php:452
 msgid "Total estimation"
 msgstr "Estimation totale"
 
@@ -761,8 +656,7 @@ msgstr ""
 msgid "Travel from"
 msgstr "Ville de départ"
 
-#: core/lab-admin-core-mission.php:437
-#: shortcode/lab-shortcode-invitation.php:299
+#: core/lab-admin-core-mission.php:437 shortcode/lab-shortcode-invitation.php:299
 msgid "Station from"
 msgstr "Gare de départ"
 
@@ -770,8 +664,7 @@ msgstr "Gare de départ"
 msgid "Travel to"
 msgstr "Ville d'arrivée"
 
-#: core/lab-admin-core-mission.php:439
-#: shortcode/lab-shortcode-invitation.php:304
+#: core/lab-admin-core-mission.php:439 shortcode/lab-shortcode-invitation.php:304
 msgid "Station to"
 msgstr "Gare d'arrivée"
 
@@ -779,8 +672,7 @@ msgstr "Gare d'arrivée"
 msgid "Means of locomotion"
 msgstr "Moyen de transport"
 
-#: core/lab-admin-core-mission.php:441
-#: shortcode/lab-shortcode-invitation.php:309
+#: core/lab-admin-core-mission.php:441 shortcode/lab-shortcode-invitation.php:309
 msgid "Travel company"
 msgstr "Companie de transport"
 
@@ -788,14 +680,11 @@ msgstr "Companie de transport"
 msgid "Number of people"
 msgstr "Nombre de personnes"
 
-#: core/lab-admin-core-mission.php:443
-#: shortcode/lab-shortcode-invitation.php:320
+#: core/lab-admin-core-mission.php:443 shortcode/lab-shortcode-invitation.php:320
 msgid "Round trip"
 msgstr "Aller-retour"
 
-#: core/lab-admin-core-mission.php:444
-#: lab-admin-core.php:931
-#: shortcode/lab-shortcode-invitation.php:324
+#: core/lab-admin-core-mission.php:444 lab-admin-core.php:931 shortcode/lab-shortcode-invitation.php:324
 msgid "Return date"
 msgstr "Date de retour"
 
@@ -803,15 +692,11 @@ msgstr "Date de retour"
 msgid "Path reference"
 msgstr "Référence trajet"
 
-#: core/lab-admin-core-mission.php:446
-#: lab-admin-core.php:927
-#: shortcode/lab-shortcode-invitation.php:330
+#: core/lab-admin-core-mission.php:446 lab-admin-core.php:927 shortcode/lab-shortcode-invitation.php:330
 msgid "Carbon footprint"
 msgstr "Empreinte carbone"
 
-#: core/lab-admin-core-mission.php:447
-#: lab-admin-core.php:944
-#: shortcode/lab-shortcode-invitation.php:282
+#: core/lab-admin-core-mission.php:447 lab-admin-core.php:944 shortcode/lab-shortcode-invitation.php:282
 #: shortcode/lab-shortcode-invitation.php:332
 msgid "Loyalty card number"
 msgstr "Numéro de carte de fidélité"
@@ -824,64 +709,185 @@ msgstr "Date d'expiration de la carte de fidélité"
 msgid "No"
 msgstr "Non"
 
-#: core/lab-admin-core-mission.php:519
-#: shortcode/lab-shortcode-present.php:490
+#: core/lab-admin-core-mission.php:519 shortcode/lab-shortcode-present.php:490
 msgid "Yes"
 msgstr "Oui"
 
-#: js/lab_keyring.js:647
-#: lab-admin-keyring.php:409
-#: lab-admin-keyring.php:480
+#: js/lab_fe.js:361
+msgid "Your biography is too long (max 200 characters)"
+msgstr ""
+
+#: js/lab_keyring.js:48
+msgid "Loaded key"
+msgstr ""
+
+#: js/lab_keyring.js:67 js/lab_keyring.js:80
+msgid "Table successfully created"
+msgstr ""
+
+#: js/lab_keyring.js:71
+msgid "Error when creating the table"
+msgstr ""
+
+#: js/lab_keyring.js:84
+msgid "Error while creating the table"
+msgstr ""
+
+#: js/lab_keyring.js:149
+msgid "Error while creating the key"
+msgstr ""
+
+#: js/lab_keyring.js:149 js/lab_keyring.js:278
+msgid "All required fields must be filled"
+msgstr ""
+
+#: js/lab_keyring.js:205
+msgid "Impossible to find the loan corresponding to this key"
+msgstr "Impossible de trouver le prêt associé à cette clef"
+
+#: js/lab_keyring.js:214 js/lab_keyring.js:510
+msgid "Impossible to find the information for this key"
+msgstr ""
+
+#: js/lab_keyring.js:228 js/lab_keyring.js:692
+msgid "result(s)"
+msgstr ""
+
+#: js/lab_keyring.js:231
+msgid "No keys found. You can create one below"
+msgstr ""
+
+#: js/lab_keyring.js:278
+msgid "Error while changing the key"
+msgstr ""
+
+#: js/lab_keyring.js:295
+msgid "Key successfully modified"
+msgstr ""
+
+#: js/lab_keyring.js:301
+msgid "Failed to change the key"
+msgstr ""
+
+#: js/lab_keyring.js:311
+msgid "Key deleted successfully"
+msgstr ""
+
+#: js/lab_keyring.js:315
+msgid "The key could not be deleted"
+msgstr ""
+
+#: js/lab_keyring.js:390
+msgid "Impossible to create the loan: the form is not filled in correctly"
+msgstr ""
+
+#: js/lab_keyring.js:514
+msgid "Impossible to find the ID loan"
+msgstr ""
+
+#: js/lab_keyring.js:533
+msgid "Key successfully created"
+msgstr ""
+
+#: js/lab_keyring.js:537
+msgid "Error while creating a key"
+msgstr ""
+
+#: js/lab_keyring.js:547
+msgid "Loan successfully created"
+msgstr ""
+
+#: js/lab_keyring.js:556
+msgid "Error while creating the loan"
+msgstr ""
+
+#: js/lab_keyring.js:567
+msgid "Loan successfully modified"
+msgstr ""
+
+#: js/lab_keyring.js:573
+msgid "Loan modification error"
+msgstr ""
+
+#: js/lab_keyring.js:585
+msgid "Loan successfully completed"
+msgstr ""
+
+#: js/lab_keyring.js:595
+msgid "Error when trying to end the loan"
+msgstr "Erreur quand on essaie de finir ce prêt"
+
+#: js/lab_keyring.js:639 js/lab_keyring.js:643
+msgid "Loan receipt"
+msgstr "Prêt reçu"
+
+#: js/lab_keyring.js:646
+msgid "Loan ID"
+msgstr "ID du prêt"
+
+#: js/lab_keyring.js:647 lab-admin-keyring.php:409 lab-admin-keyring.php:480
 msgid "Referent"
 msgstr "Référent"
 
-#: js/lab_keyring.js:654
-#: lab-admin-keyring.php:96
-#: lab-admin-keyring.php:161
-#: lab-admin-keyring.php:231
-#: lab-admin-keyring.php:292
-#: lab-admin-keyring.php:337
-#: lab-admin-keyring.php:413
-#: lab-admin-keyring.php:474
-#: shortcode/lab-shortcode-present.php:294
-#: shortcode/lab-shortcode-present.php:409
-#: shortcode/lab-shortcode-present.php:455
+#: js/lab_keyring.js:648
+msgid "The key/badge number"
+msgstr ""
+
+#: js/lab_keyring.js:649
+msgid "Has been lent to"
+msgstr ""
+
+#: js/lab_keyring.js:653
+msgid "And must be returned before"
+msgstr ""
+
+#: js/lab_keyring.js:654 lab-admin-keyring.php:96 lab-admin-keyring.php:161 lab-admin-keyring.php:231 lab-admin-keyring.php:292
+#: lab-admin-keyring.php:337 lab-admin-keyring.php:413 lab-admin-keyring.php:474 shortcode/lab-shortcode-present.php:294
+#: shortcode/lab-shortcode-present.php:409 shortcode/lab-shortcode-present.php:455
 msgid "Comment"
 msgstr "Commentaire"
 
-#: js/lab_mission.js:102
-#: shortcode/lab-shortcode-invitation.php:578
+#: js/lab_keyring.js:655
+msgid "Signature"
+msgstr ""
+
+#: js/lab_keyring.js:658
+msgid "Print"
+msgstr ""
+
+#: js/lab_mission.js:102 shortcode/lab-shortcode-invitation.php:578
 msgid "Year"
 msgstr "Année"
 
-#: js/lab_mission.js:299
-#: lab-params.php:260
-#: shortcode/lab-shortcode-invitation.php:1017
+#: js/lab_mission.js:299 lab-params.php:260 shortcode/lab-shortcode-invitation.php:1017
 msgid "Validated by group leader"
 msgstr "Validée par le chef de groupe"
 
-#: js/lab_mission.js:300
-#: lab-params.php:261
-#: shortcode/lab-shortcode-invitation.php:1021
+#: js/lab_mission.js:300 lab-params.php:261 shortcode/lab-shortcode-invitation.php:1021
 msgid "Refused by group leader"
 msgstr "Refusée par le chef de groupe"
 
-#: js/lab_mission.js:301
-#: lab-params.php:258
+#: js/lab_mission.js:301 lab-params.php:258
 msgid "Waiting group manager"
 msgstr "En attente du gestionnaire budget"
 
-#: js/lab_mission.js:302
-#: lab-params.php:259
+#: js/lab_mission.js:302 lab-params.php:259
 msgid "Completed"
 msgstr "Complétée"
+
+#: js/lab_shortcode_present.js:32 js/lab_shortcode_present.js:47
+msgid "I participate in the working group"
+msgstr ""
+
+#: js/lab_shortcode_present.js:112
+msgid "Reason of your attendance is require"
+msgstr ""
 
 #: lab-admin-ajax.php:366
 msgid "Cant delete system param"
 msgstr "Impossible d'effacer un paramètre sytème"
 
-#: lab-admin-ajax.php:1274
-#: lab-admin-ajax.php:1285
+#: lab-admin-ajax.php:1274 lab-admin-ajax.php:1285
 msgid "No loan found"
 msgstr "Aucun prêt trouvé"
 
@@ -905,8 +911,7 @@ msgstr "Email envoyé au gestionnaire"
 msgid "Your invitation has been modified"
 msgstr "Votre invitation a bien été modifiée"
 
-#: lab-admin-ajax.php:1810
-#: shortcode/lab-shortcode-invitation.php:750
+#: lab-admin-ajax.php:1810 shortcode/lab-shortcode-invitation.php:750
 msgid "No invitation"
 msgstr "Aucune invitation"
 
@@ -928,8 +933,7 @@ msgstr "%s est férié"
 msgid "Your are already present in %s the %s between %s and %s"
 msgstr "Vous êtes déjà présent au/à %s le %s entre %s et %s"
 
-#: lab-admin-ajax.php:2051
-#: lab-admin-ajax.php:2060
+#: lab-admin-ajax.php:2051 lab-admin-ajax.php:2060
 #, php-format
 msgid "Your new schedules overlap to an existing one : %s the %s between %s and %s"
 msgstr "Votre calendrier chevauche une déclaration de présence existante à/au %s le %s entre %s et %s"
@@ -978,9 +982,7 @@ msgstr "Date de livraison"
 msgid "Date of payment"
 msgstr "Date de paiement"
 
-#: lab-admin-budget.php:169
-#: shortcode/lab-shortcode-invitation.php:339
-#: shortcode/lab-shortcode-invitation.php:438
+#: lab-admin-budget.php:169 shortcode/lab-shortcode-invitation.php:339 shortcode/lab-shortcode-invitation.php:438
 #: shortcode/lab-shortcode-present.php:298
 msgid "Save"
 msgstr "Sauvegarder"
@@ -1029,8 +1031,7 @@ msgstr "Gestionnaire informatique"
 msgid "Budget Manager"
 msgstr "Gestionaire administratif"
 
-#: lab-admin-budget.php:212
-#: shortcode/lab-shortcode-invitation.php:357
+#: lab-admin-budget.php:212 shortcode/lab-shortcode-invitation.php:357
 msgid "Funds"
 msgstr "Soutien financier"
 
@@ -1058,8 +1059,7 @@ msgstr "Type de mission"
 msgid "Description value"
 msgstr ""
 
-#: lab-admin-core.php:847
-#: lab-admin-invitations.php:183
+#: lab-admin-core.php:847 lab-admin-invitations.php:183
 msgid " modified by "
 msgstr " modifié par "
 
@@ -1091,14 +1091,11 @@ msgstr "Moyen de transport"
 msgid "Box \"Round trip\""
 msgstr "Case \"Aller-retour\""
 
-#: lab-admin-core.php:924
-#: shortcode/lab-shortcode-invitation.php:311
+#: lab-admin-core.php:924 shortcode/lab-shortcode-invitation.php:311
 msgid "Number of persons"
 msgstr "Nombre de personnes"
 
-#: lab-admin-core.php:935
-#: shortcode/lab-shortcode-invitation.php:317
-#: shortcode/lab-shortcode-invitation.php:931
+#: lab-admin-core.php:935 shortcode/lab-shortcode-invitation.php:317 shortcode/lab-shortcode-invitation.php:931
 msgid "Estimated cost"
 msgstr "Coût estimé"
 
@@ -1106,8 +1103,7 @@ msgstr "Coût estimé"
 msgid "Reference"
 msgstr "Référence"
 
-#: lab-admin-core.php:948
-#: shortcode/lab-shortcode-invitation.php:334
+#: lab-admin-core.php:948 shortcode/lab-shortcode-invitation.php:334
 msgid "Loyalty card expiry date"
 msgstr "Date d'expiration de la carte de fidélité"
 
@@ -1129,8 +1125,7 @@ msgstr "Il ne peut y avoir d'espace dans le slug du paramètre  '%1s'"
 msgid "Funding source"
 msgstr "Financements"
 
-#: lab-admin-invitations.php:132
-#: shortcode/lab-shortcode-invitation.php:483
+#: lab-admin-invitations.php:132 shortcode/lab-shortcode-invitation.php:483
 msgid "Fundings"
 msgstr "Financements"
 
@@ -1150,8 +1145,7 @@ msgstr ""
 msgid "Hostel estimated cost"
 msgstr "Coût estimé de l'hotel"
 
-#: lab-admin-invitations.php:150
-#: shortcode/lab-shortcode-invitation.php:263
+#: lab-admin-invitations.php:150 shortcode/lab-shortcode-invitation.php:263
 msgid "Number of night(s)"
 msgstr "Nombre de nuit(s)"
 
@@ -1171,8 +1165,7 @@ msgstr "Type de mission"
 msgid "Field \"Need a hostel\""
 msgstr "Besoin d'un hôtel"
 
-#: lab-admin-invitations.php:165
-#: shortcode/lab-shortcode-invitation.php:151
+#: lab-admin-invitations.php:165 shortcode/lab-shortcode-invitation.php:151
 msgid "No charge mission"
 msgstr "Mission sans frais"
 
@@ -1188,8 +1181,7 @@ msgstr "saisie clés"
 msgid "Add one key"
 msgstr "Ajouter une clef"
 
-#: lab-admin-keyring.php:14
-#: lab-admin-keyring.php:408
+#: lab-admin-keyring.php:14 lab-admin-keyring.php:408
 msgid "Key"
 msgstr "Clé"
 
@@ -1205,47 +1197,29 @@ msgstr "Créer la table Keys"
 msgid "Create table Loans"
 msgstr "Créer la table Loans"
 
-#: lab-admin-keyring.php:76
-#: lab-admin-keyring.php:141
-#: lab-admin-keyring.php:228
-#: lab-admin-keyring.php:265
-#: lab-admin-keyring.php:317
-#: lab-admin-keyring.php:457
+#: lab-admin-keyring.php:76 lab-admin-keyring.php:141 lab-admin-keyring.php:228 lab-admin-keyring.php:265
+#: lab-admin-keyring.php:317 lab-admin-keyring.php:457
 msgid "Brand"
 msgstr "Marque"
 
-#: lab-admin-keyring.php:79
-#: lab-admin-keyring.php:144
-#: lab-admin-keyring.php:320
-#: lab-params.php:135
+#: lab-admin-keyring.php:79 lab-admin-keyring.php:144 lab-admin-keyring.php:320 lab-params.php:135
 msgid "ok"
 msgstr "ok"
 
-#: lab-admin-keyring.php:80
-#: lab-admin-keyring.php:145
-#: lab-admin-keyring.php:321
-#: lab-params.php:136
+#: lab-admin-keyring.php:80 lab-admin-keyring.php:145 lab-admin-keyring.php:321 lab-params.php:136
 msgid "lost"
 msgstr "perdu(e)"
 
-#: lab-admin-keyring.php:81
-#: lab-admin-keyring.php:146
-#: lab-admin-keyring.php:322
-#: lab-params.php:137
+#: lab-admin-keyring.php:81 lab-admin-keyring.php:146 lab-admin-keyring.php:322 lab-params.php:137
 msgid "broken"
 msgstr "cassé(e)"
 
-#: lab-admin-keyring.php:96
-#: lab-admin-keyring.php:161
-#: lab-admin-keyring.php:292
-#: lab-admin-keyring.php:337
+#: lab-admin-keyring.php:96 lab-admin-keyring.php:161 lab-admin-keyring.php:292 lab-admin-keyring.php:337
 #: lab-admin-keyring.php:488
 msgid "optional"
 msgstr "optionnel"
 
-#: lab-admin-keyring.php:103
-#: lab-admin-keyring.php:169
-#: lab-admin-keyring.php:339
+#: lab-admin-keyring.php:103 lab-admin-keyring.php:169 lab-admin-keyring.php:339
 msgid "Create"
 msgstr "Créer"
 
@@ -1261,9 +1235,7 @@ msgstr "Voulez-vous vraiment supprimer ce prêt ?"
 msgid "Date of return"
 msgstr "Date de retour"
 
-#: lab-admin-keyring.php:192
-#: lab-admin-keyring.php:353
-#: shortcode/lab-shortcode-event.php:124
+#: lab-admin-keyring.php:192 lab-admin-keyring.php:353 shortcode/lab-shortcode-event.php:124
 msgid "Today"
 msgstr "Aujourd'hui"
 
@@ -1275,13 +1247,11 @@ msgstr "List des clés"
 msgid "Search a key"
 msgstr "Chercher une clé"
 
-#: lab-admin-keyring.php:203
-#: lab-admin-keyring.php:363
+#: lab-admin-keyring.php:203 lab-admin-keyring.php:363
 msgid "Page"
 msgstr "Page"
 
-#: lab-admin-keyring.php:209
-#: lab-admin-keyring.php:369
+#: lab-admin-keyring.php:209 lab-admin-keyring.php:369
 msgid "Result number per page"
 msgstr "Nombre de résultats par page"
 
@@ -1289,22 +1259,15 @@ msgstr "Nombre de résultats par page"
 msgid "Other"
 msgstr "Autre"
 
-#: lab-admin-keyring.php:224
-#: lab-admin-keyring.php:407
-#: lab-admin-keyring.php:445
+#: lab-admin-keyring.php:224 lab-admin-keyring.php:407 lab-admin-keyring.php:445
 msgid "ID"
 msgstr "ID"
 
-#: lab-admin-keyring.php:226
-#: lab-admin-keyring.php:259
-#: lab-admin-keyring.php:449
+#: lab-admin-keyring.php:226 lab-admin-keyring.php:259 lab-admin-keyring.php:449
 msgid "Number"
 msgstr "Numéro"
 
-#: lab-admin-keyring.php:227
-#: lab-admin-keyring.php:262
-#: lab-admin-keyring.php:453
-#: shortcode/lab-shortcode-profile.php:145
+#: lab-admin-keyring.php:227 lab-admin-keyring.php:262 lab-admin-keyring.php:453 shortcode/lab-shortcode-profile.php:145
 msgid "Office"
 msgstr "Bureau"
 
@@ -1316,20 +1279,15 @@ msgstr "Etat"
 msgid "Available"
 msgstr "Disponible"
 
-#: lab-admin-keyring.php:233
-#: lab-admin-keyring.php:415
-#: lab-admin-keyring.php:493
-#: shortcode/lab-shortcode-invitation.php:665
+#: lab-admin-keyring.php:233 lab-admin-keyring.php:415 lab-admin-keyring.php:493 shortcode/lab-shortcode-invitation.php:665
 msgid "Actions"
 msgstr "Actions"
 
-#: lab-admin-keyring.php:241
-#: lab-admin-keyring.php:391
+#: lab-admin-keyring.php:241 lab-admin-keyring.php:391
 msgid "Previous page"
 msgstr "Page précédente"
 
-#: lab-admin-keyring.php:242
-#: lab-admin-keyring.php:392
+#: lab-admin-keyring.php:242 lab-admin-keyring.php:392
 msgid "Next page"
 msgstr "Page suivante"
 
@@ -1597,18 +1555,15 @@ msgstr ""
 msgid "d5u.4SR:"
 msgstr ""
 
-#: lab-params.php:48
-#: lab-params.php:56
+#: lab-params.php:48 lab-params.php:56
 msgid "true"
 msgstr ""
 
-#: lab-params.php:49
-#: lab-params.php:241
+#: lab-params.php:49 lab-params.php:241
 msgid "AMU"
 msgstr ""
 
-#: lab-params.php:50
-#: lab-params.php:242
+#: lab-params.php:50 lab-params.php:242
 msgid "CNRS"
 msgstr ""
 
@@ -1760,8 +1715,7 @@ msgstr ""
 msgid "Technicienne (TCH)"
 msgstr ""
 
-#: lab-params.php:89
-#: lab-params.php:92
+#: lab-params.php:89 lab-params.php:92
 msgid "I2M"
 msgstr ""
 
@@ -1793,8 +1747,7 @@ msgstr ""
 msgid "CT.C (H)"
 msgstr ""
 
-#: lab-params.php:98
-#: lab-params.php:116
+#: lab-params.php:98 lab-params.php:116
 msgid "IUT"
 msgstr ""
 
@@ -1802,28 +1755,23 @@ msgstr ""
 msgid "Doctorant (Phd Student)"
 msgstr ""
 
-#: lab-params.php:100
-#: lab-params.php:108
+#: lab-params.php:100 lab-params.php:108
 msgid "ENS Paris-Saclay"
 msgstr ""
 
-#: lab-params.php:101
-#: lab-params.php:109
+#: lab-params.php:101 lab-params.php:109
 msgid "ENS Rennes"
 msgstr ""
 
-#: lab-params.php:102
-#: lab-params.php:106
+#: lab-params.php:102 lab-params.php:106
 msgid "ENS Paris Ulm"
 msgstr ""
 
-#: lab-params.php:103
-#: lab-params.php:105
+#: lab-params.php:103 lab-params.php:105
 msgid "ENS"
 msgstr ""
 
-#: lab-params.php:104
-#: lab-params.php:107
+#: lab-params.php:104 lab-params.php:107
 msgid "ENS Lyon"
 msgstr ""
 
@@ -1847,8 +1795,7 @@ msgstr ""
 msgid "Badge"
 msgstr ""
 
-#: lab-params.php:115
-#: lab-params.php:243
+#: lab-params.php:115 lab-params.php:243
 msgid "ECM"
 msgstr ""
 
@@ -1872,19 +1819,15 @@ msgstr ""
 msgid "10"
 msgstr ""
 
-#: lab-params.php:122
-#: lab-params.php:125
-#: lab-params.php:180
+#: lab-params.php:122 lab-params.php:125 lab-params.php:180
 msgid "25"
 msgstr ""
 
-#: lab-params.php:123
-#: lab-params.php:179
+#: lab-params.php:123 lab-params.php:179
 msgid "26"
 msgstr ""
 
-#: lab-params.php:124
-#: lab-params.php:181
+#: lab-params.php:124 lab-params.php:181
 msgid "27"
 msgstr ""
 
@@ -2154,7 +2097,7 @@ msgstr "Géométrie algébrique (caractéristique nulle et positive)"
 
 #: lab-params.php:198
 msgid "Differential geometry (including Lie groups, Riemannian, symplectic, etc.)"
-msgstr "Géométrie différentielle (y compris les groupes de Lie, les groupes riemanniens, symplectiques, etc.)"
+msgstr "Géométrie différentielle (incluant groupes de Lie, géométrie riemannienne, symplectique, etc.)"
 
 #: lab-params.php:199
 msgid "History of mathematics"
@@ -2194,7 +2137,7 @@ msgstr "Singularités"
 
 #: lab-params.php:208
 msgid "Statistics"
-msgstr "Statistiques"
+msgstr "Statistique"
 
 #: lab-params.php:209
 msgid "Measured dynamical systems"
@@ -2210,7 +2153,7 @@ msgstr "Systèmes dynamiques symboliques"
 
 #: lab-params.php:212
 msgid "Geometric group theory"
-msgstr "Théorie des groupes géométriques"
+msgstr "Théorie géométrique des groupes"
 
 #: lab-params.php:213
 msgid "Algebraic number theory, arithmetic geometry"
@@ -2234,7 +2177,7 @@ msgstr "Théorie de la représentation"
 
 #: lab-params.php:218
 msgid "Topology (algebraic, low dimensional, general)"
-msgstr "Topologie (algébrique, basse dimension, générale)"
+msgstr "Topologie (algébrique, de basse dimension, générale)"
 
 #: lab-params.php:219
 msgid "Signal and image processing"
@@ -2368,8 +2311,7 @@ msgstr "Avion"
 msgid "Bike"
 msgstr "Vélo"
 
-#: lab-params.php:257
-#: shortcode/lab-shortcode-invitation.php:1005
+#: lab-params.php:257 shortcode/lab-shortcode-invitation.php:1005
 msgid "Waiting group leader"
 msgstr "En attente du chef de groupe"
 
@@ -2429,9 +2371,7 @@ msgstr "Token d'invitation invalide"
 msgid "You can edit this invitation as a group leader"
 msgstr "Vous pouvez éditer cette invitation en tant que chef de groupe"
 
-#: shortcode/lab-shortcode-invitation.php:72
-#: shortcode/lab-shortcode-invitation.php:77
-#: shortcode/lab-shortcode-invitation.php:82
+#: shortcode/lab-shortcode-invitation.php:72 shortcode/lab-shortcode-invitation.php:77 shortcode/lab-shortcode-invitation.php:82
 #: shortcode/lab-shortcode-invitation.php:86
 msgid "Invitation status : "
 msgstr "Statut de l'invitation : "
@@ -2460,18 +2400,15 @@ msgstr "Vous ne pouvez pas modifier cette invitation"
 msgid "Form"
 msgstr "Formulaire"
 
-#: shortcode/lab-shortcode-invitation.php:110
-#: shortcode/lab-shortcode-invitation.php:847
+#: shortcode/lab-shortcode-invitation.php:110 shortcode/lab-shortcode-invitation.php:847
 msgid "Personnal informations"
 msgstr "Informations personnelles"
 
-#: shortcode/lab-shortcode-invitation.php:112
-#: shortcode/lab-shortcode-invitation.php:918
+#: shortcode/lab-shortcode-invitation.php:112 shortcode/lab-shortcode-invitation.php:918
 msgid "Host name"
 msgstr "Nom de l’hôte"
 
-#: shortcode/lab-shortcode-invitation.php:129
-#: shortcode/lab-shortcode-invitation.php:659
+#: shortcode/lab-shortcode-invitation.php:129 shortcode/lab-shortcode-invitation.php:659
 msgid "Reason for the mission"
 msgstr "Motif de la mission"
 
@@ -2507,8 +2444,7 @@ msgstr "Descriptif de la mision"
 msgid "Upload"
 msgstr "Upload"
 
-#: shortcode/lab-shortcode-invitation.php:233
-#: shortcode/lab-shortcode-invitation.php:417
+#: shortcode/lab-shortcode-invitation.php:233 shortcode/lab-shortcode-invitation.php:417
 msgid "Validate"
 msgstr "Valider"
 
@@ -2524,13 +2460,11 @@ msgstr "valeur du paramètre"
 msgid "Hostel"
 msgstr "Hotel"
 
-#: shortcode/lab-shortcode-invitation.php:262
-#: shortcode/lab-shortcode-invitation.php:920
+#: shortcode/lab-shortcode-invitation.php:262 shortcode/lab-shortcode-invitation.php:920
 msgid "Need a hostel"
 msgstr "Besoin d'un hôtel"
 
-#: shortcode/lab-shortcode-invitation.php:265
-#: shortcode/lab-shortcode-invitation.php:363
+#: shortcode/lab-shortcode-invitation.php:265 shortcode/lab-shortcode-invitation.php:363
 msgid "Estimated cost (€)"
 msgstr "Coût estimé (€)"
 
@@ -2538,14 +2472,11 @@ msgstr "Coût estimé (€)"
 msgid "Journeys"
 msgstr "Trajets"
 
-#: shortcode/lab-shortcode-invitation.php:275
-#: shortcode/lab-shortcode-present.php:335
+#: shortcode/lab-shortcode-invitation.php:275 shortcode/lab-shortcode-present.php:335
 msgid "From"
 msgstr "De"
 
-#: shortcode/lab-shortcode-invitation.php:276
-#: shortcode/lab-shortcode-present.php:286
-#: shortcode/lab-shortcode-present.php:336
+#: shortcode/lab-shortcode-invitation.php:276 shortcode/lab-shortcode-present.php:286 shortcode/lab-shortcode-present.php:336
 msgid "To"
 msgstr "Vers"
 
@@ -2589,8 +2520,7 @@ msgstr "Moyen de transport "
 msgid "Travel reference"
 msgstr "Référence trajet"
 
-#: shortcode/lab-shortcode-invitation.php:346
-#: shortcode/lab-shortcode-invitation.php:449
+#: shortcode/lab-shortcode-invitation.php:346 shortcode/lab-shortcode-invitation.php:449
 msgid "Comments"
 msgstr "Commentaires"
 
@@ -2614,8 +2544,7 @@ msgstr "A remplir par le responsable : budget maximum alloué à cette invitatio
 msgid "Declare mission"
 msgstr "Créer la mission"
 
-#: shortcode/lab-shortcode-invitation.php:392
-#: shortcode/lab-shortcode-invitation.php:433
+#: shortcode/lab-shortcode-invitation.php:392 shortcode/lab-shortcode-invitation.php:433
 msgid "Update"
 msgstr "Mettre à jour"
 
@@ -2627,8 +2556,7 @@ msgstr "Refuser"
 msgid "Take in charge"
 msgstr "Prendre en charge"
 
-#: shortcode/lab-shortcode-invitation.php:488
-#: shortcode/lab-shortcode-invitation.php:503
+#: shortcode/lab-shortcode-invitation.php:488 shortcode/lab-shortcode-invitation.php:503
 msgid "Group fundings"
 msgstr "Financements du groupe"
 
@@ -2648,8 +2576,7 @@ msgstr "Groupe préféré"
 msgid "Guest"
 msgstr "Invité"
 
-#: shortcode/lab-shortcode-invitation.php:660
-#: shortcode/lab-shortcode-invitation.php:926
+#: shortcode/lab-shortcode-invitation.php:660 shortcode/lab-shortcode-invitation.php:926
 msgid "Arrival date"
 msgstr "Date d'arrivée"
 
@@ -2725,8 +2652,7 @@ msgstr "Une demande d'invitation à l'I2M vous a été envoyée."
 msgid "You can modify it by following"
 msgstr "Vous pouvez le modifier en suivant les instructions suivantes"
 
-#: shortcode/lab-shortcode-invitation.php:801
-#: shortcode/lab-shortcode-invitation.php:818
+#: shortcode/lab-shortcode-invitation.php:801 shortcode/lab-shortcode-invitation.php:818
 msgid "this link"
 msgstr "ce lien"
 
@@ -2827,8 +2753,11 @@ msgid "Send comment"
 msgstr "Envoyer commentaire"
 
 #: shortcode/lab-shortcode-invitation.php:1000
-msgid "This invitation has been created, you can now complete all the information and send it to the group leader for validation."
-msgstr "Cette invitation a été créée, vous pouvez maintenant compléter toutes les informations et les envoyer au chef de groupe pour validation."
+msgid ""
+"This invitation has been created, you can now complete all the information and send it to the group leader for validation."
+msgstr ""
+"Cette invitation a été créée, vous pouvez maintenant compléter toutes les informations et les envoyer au chef de groupe pour "
+"validation."
 
 #: shortcode/lab-shortcode-invitation.php:1001
 msgid "Created"
@@ -2846,10 +2775,8 @@ msgstr "Cette invitation a été prise en charge par un membre du personnel admi
 msgid "Taken care of"
 msgstr "Pris en charge"
 
-#: shortcode/lab-shortcode-invitation.php:1012
-#: shortcode/lab-shortcode-invitation.php:1016
-#: shortcode/lab-shortcode-invitation.php:1020
-#: shortcode/lab-shortcode-invitation.php:1024
+#: shortcode/lab-shortcode-invitation.php:1012 shortcode/lab-shortcode-invitation.php:1016
+#: shortcode/lab-shortcode-invitation.php:1020 shortcode/lab-shortcode-invitation.php:1024
 msgid "This invitation is complete."
 msgstr "Cette invitation est complétée."
 
@@ -2885,8 +2812,7 @@ msgstr "Férié"
 msgid "I will be present"
 msgstr "Je serais présent·e"
 
-#: shortcode/lab-shortcode-present.php:279
-#: shortcode/lab-shortcode-present.php:334
+#: shortcode/lab-shortcode-present.php:279 shortcode/lab-shortcode-present.php:334
 msgid "The"
 msgstr "Le"
 
@@ -2930,8 +2856,7 @@ msgstr "Votre ID HAL"
 msgid "Vous n'avez pas défini votre ID HAL"
 msgstr "Vous n'avez pas défini votre ID HAL"
 
-#: shortcode/lab-shortcode-profile.php:37
-#: shortcode/lab-shortcode-profile.php:42
+#: shortcode/lab-shortcode-profile.php:37 shortcode/lab-shortcode-profile.php:42
 msgid "Tester sur HAL"
 msgstr "Tester sur HAL"
 

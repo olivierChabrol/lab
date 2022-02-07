@@ -163,11 +163,13 @@ function lab_profile($id=0) {
 			.($is_current_user || current_user_can('edit_users') ? '<textarea style="display:none;" rows="4" cols="50" class="lab_profile_edit" id="lab_profile_edit_bio" placeholder="Biographie (200 caractères max)">'.$user->description.'</textarea>' : '').
 			'<span style="display:block; max-width:700px;" class="lab_current">'.(isset($user->description) ? $user->description :  '...' ).'</span>
 		</div>
-		<hr/>'.esc_html__("User group(s) : ", "lab").'<ul id="lab_profile_groups">'.$user->print_groups().'</ul>	
+		<hr/>'.esc_html__("User group(s) : ", "lab").'<ul id="lab_profile_groups">'.$user->print_groups().'</ul>';
+		/*
 		<div id="lab_profile_keywords">
 			'.$user->print_keywords().'
 		</div>
-		<hr/><div id="lab_profile_thematics_div">'.esc_html__("User Thematic(s) : ", "lab").$user->print_thematics().'</div><hr/></div>';
+		//*/
+		$profileStr .=	'<hr/><div id="lab_profile_thematics_div">'.esc_html__("User Thematic(s) : ", "lab").$user->print_thematics().'</div><hr/></div>';
     return $profileStr;
 }
 /*** CLASS LABUSER ***/
