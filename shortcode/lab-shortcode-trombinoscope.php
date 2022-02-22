@@ -70,7 +70,7 @@ function lab_users_by_thematic($args) {
 
         $html .= "<tr><td colspan=\"3\"><b>";
         $param = AdminParams::get_param($theme->thematic_id);
-        $html .= $param;
+        $html .= esc_html__($param,'lab');
         $html .= "</b></td></tr>";
         $users = get_user_by_thematics($theme->thematic_id);
         foreach($users as $user) {
