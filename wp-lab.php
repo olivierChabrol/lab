@@ -51,6 +51,7 @@ require_once(LAB_DIR_PATH."admin/view/lab-admin-tab-settings.php");
 require_once(LAB_DIR_PATH."admin/view/lab-admin-tab-ldap.php");
 require_once(LAB_DIR_PATH."lab-admin-ldap.php");
 require_once(LAB_DIR_PATH."view/lab-view-user.php");
+require_once(LAB_DIR_PATH."view/lab-view-request.php");
 require_once(LAB_DIR_PATH."core/lab-admin-core-request.php");
 require_once("lab-html-helper.php");
 require_once("lab-utils.php");
@@ -314,12 +315,13 @@ function wp_lab_menu()
   $bookings_num = '<span class="update-plugins count-'.lab_admin_mission_getNotifs(get_current_user_id(), null)[0]->notifs_number.'"><span class="plugin-count">'.lab_admin_mission_getNotifs(get_current_user_id(), null)[0]->notifs_number.'</span></span>';
   add_menu_page('Options'    , 'LAB'       , 'edit_plugins'      , 'wp-lab.php'          , 'wp_lab_option'       , ''                      , 21);
   add_menu_page("KeyRing"    ,"KeyRing"    ,'keyring'            , 'lab_keyring'         ,'lab_keyring'          ,'dashicons-admin-network',22);
-  add_menu_page("Budget Info","Budget Info","budget_info_manager","lab_admin_budget_info","lab_admin_budget_info",'dashicons-money-alt'    ,23);
+  add_menu_page("Request"    ,esc_html__("Requests","lab"),'subscriber' , 'lab_request_view'         ,'lab_request_view','dashicons-format-chat',23);
+  add_menu_page("Budget Info","Budget Info","budget_info_manager","lab_admin_budget_info","lab_admin_budget_info",'dashicons-money-alt'    ,24);
   add_menu_page("Mission"    ,"Manage Mission".$bookings_num, "subscriber","lab_admin_mission_manager","lab_admin_mission_manager",'dashicons-admin-site-alt'    ,23);
-  add_submenu_page("lab_admin_budget_info", esc_html('Contract','lab'), esc_html('Contract','lab'),'edit_plugins', 'lab_admin_contract', 'lab_admin_new_contract', 24 );
+  add_submenu_page("lab_admin_budget_info", esc_html('Contract','lab'), esc_html('Contract','lab'),'edit_plugins', 'lab_admin_contract', 'lab_admin_new_contract', 25 );
   //add_menu_page("LDAP Admin","LDAP Admin",'edit_plugins','lab_ldap','lab_ldap','dashicons-id-alt',23);
-  add_submenu_page( 'wp-lab.php', "LDAP Admin", "LDAP Admin",'edit_plugins', 'lab_ldap', 'lab_ldap_test', 25 );
-  add_submenu_page("wp-lab.php", "User Admin", "User Admin", "lab_user_manager", "lab_user", "lab_user_echo", 26);
+  add_submenu_page( 'wp-lab.php', "LDAP Admin", "LDAP Admin",'edit_plugins', 'lab_ldap', 'lab_ldap_test', 26 );
+  add_submenu_page("wp-lab.php", "User Admin", "User Admin", "lab_user_manager", "lab_user", "lab_user_echo", 27);
   //add_submenu_page("wp-lab.php","Budget",'keyring','lab_admin_budget_info','lab_admin_budget_info','dashicons-money-alt',22);
   if ( ! current_user_can('edit_plugins') ) {
     remove_menu_page('wpfastestcacheoptions');
@@ -366,6 +368,7 @@ function admin_enqueue()
   //Plugin permettant d'afficher des fenêtres modales :
   wp_enqueue_style('jqueryModalCSS',plugins_url('css/jquery.modal.min.css',__FILE__));
   wp_enqueue_script('jqueryModalJS',plugins_url('js/jquery.modal.min.js',__FILE__),array('jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog'),"0.9.1",false);
+  wp_enqueue_script('jquery-ui-1.12.1-js', plugins_url('js/jquery-ui.min.js',__FILE__), array('jquery'), version_id(), false);
   wp_enqueue_script('lab-ldap', plugins_url('js/lab_ldap.js',__FILE__), array('jquery', 'wp-i18n'), version_id(), true);
   wp_enqueue_style('CountrySelectCSS',plugins_url('css/countrySelect.min.css',__FILE__));
   wp_enqueue_script('CountrySelectJS',plugins_url('js/countrySelect.min.js',__FILE__),array('jquery'),"3.5",false);

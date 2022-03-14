@@ -1,21 +1,8 @@
 /* front end 21 04 2020 */
 
-const { __, _x, _n, _nx } = wp.i18n;
 //alert(__("Algebraic geometry (zero and positive characteristic)","lab"));
-/*
-__("Algebraic geometry (zero and positive characteristic)", "lab")
-__( '__', 'lab' );
-_x( '_x', '_x_context', 'lab' );
-_n( '_n_single', '_n_plural', number, 'lab' );
-_nx( '_nx_single', '_nx_plural', number, '_nx_context', 'lab' );
-//*/
 
 jQuery(function($){
-
- // if(typeof __ === 'undefined') {
- //   const { __, _x, _n, sprintf } = wp.i18n;
- // }
-
   /*** DIRECTORY ***/ 
   var descriptions = [];
   var typesOfDescription = new Array();
@@ -44,13 +31,18 @@ jQuery(function($){
   $("#lab_request_send").click(function() {
     data = {
       'action': 'lab_request_save',
-      'request_id': $("#lab_request_type_id").val(),
-      'request_type': $("#lab_request_type_request").val(),
+      'request_id': $("#lab_request_id").val(),
+      'request_previsional_date': $("#lab_request_previsional_date").val(),
+      'request_type': $("#lab_request_type").val(),
       'request_title': $("#lab_request_title").val(),
       'request_text': $("#lab_request_text").val(),
     };
-    callAjax(data, null, null, null, null);
+    callAjax(data, __("Request send", "lab"), forwardToRequestList, null, null);
+    //callAjax(data, __("Request send", "lab"), null, null, null);
   });
+
+
+
 
   $("#lab_mission_cancel").click(function() {
     data = {
@@ -114,6 +106,123 @@ jQuery(function($){
     uploadFile();
   });
 
+  $("[id^=lab_request_description_file]").click(function(e){
+    request_perform_click(null, $(this));
+  });
+
+  if ($("#lab_request_list_table").length) {
+    loadOwnRequests();
+  }
+
+  if($("#lab_request_list_admin_table").length) {
+    loadRequests();
+  }
+
+  if ($("#lab_request_ingo_tab_legal").length) {
+    let ids = getRequestInfoTabs();
+    ids.forEach(function (elm) {
+      $("#"+elm).click(function(e){
+        toggleTab($(this), getRequestInfoTabs);
+      });
+    });
+    toggleTab($("#lab_request_ingo_tab_legal"), getRequestInfoTabs);
+  }
+
+  function request_save_before_upload(type) {
+    console.log("[request_save_before_upload] type : " + type);
+    data = {
+      'action': 'lab_request_save',
+      'request_id': $("#lab_request_id").val(),
+      'request_previsional_date': $("#lab_request_previsional_date").val(),
+      'request_type': $("#lab_request_type").val(),
+      'request_title': $("#lab_request_title").val(),
+      'request_text': $("#lab_request_text").val(),
+    };
+    if (type == 'nic') {
+      fct = request_click_upload_nic;
+    }
+    else if (type == 'passport') {
+      fct = request_click_upload_passport;
+    }
+    else if (type == 'rib') {
+      fct = request_click_upload_rib;
+    }
+    callAjax(data, __("Request send", "lab"), fct, null, null);
+  }
+
+  function request_click_upload_nic(data)
+  {
+    request_perform_click(data, $("#lab_request_description_file_nic"));
+  }
+  function request_click_upload_passport(data)
+  {
+    request_perform_click(data, $("#lab_request_description_file_passport"));
+  }
+  function request_click_upload_rib(data)
+  {
+    request_perform_click(data, $("#lab_request_description_file_rib"));
+  }
+
+  function request_perform_click(data, button) {
+    if (data != null) {
+      console.log(data);
+      $("#lab_request_id").val(data);
+    }
+    
+    if($("#lab_request_id").val()=="") {
+      let buttonId = button.attr("id");
+      let fileType = buttonId.substr(buttonId.lastIndexOf("_") + 1);
+      console.log("Request not save, save it first : " + fileType);
+
+      request_save_before_upload(fileType);
+    }
+    else {
+      console.log(button.attr("file-type"));
+      request_uploadFileWithName(button.attr("file-type"));
+    }
+    //*/
+  }
+
+  function getRequestInfoTabs() {
+    return ["lab_request_ingo_tab_legal", "lab_request_ingo_tab_upload", "lab_request_ingo_tab_doc"];
+  }
+
+  function toggleTab(tab, idsList) {
+    console.log("[toggleTab] click sur " + $(tab).attr("id"));
+    let ids = idsList();
+    ids.forEach(function (elm) {
+      $("#"+elm).removeClass("nav-tab-active");
+      $("#"+elm).removeClass("lab-request-tab-active");
+      $("#"+elm+"_div").hide();
+    });
+    tab.addClass("nav-tab-active");
+    tab.addClass("lab-request-tab-active");
+    $("#"+$(tab).attr("id")+"_div").show();
+  }
+
+  $("#lab_div_delete_confirm").click(function() {
+    console.log($("#lab_contract_delete_dialog_contract_id").val());
+    deleteObj($("#lab_request_delete_dialog_request_id").val(),'lab_request_cancel');
+  });
+
+  $("#lab_request_upload_nic").click(function() {
+    $("#lab_request_upload_dialog").modal();
+  });
+
+
+  if($("#lab_request_id").length && $("#lab_request_id").val() != "") {
+    loadRequestById($("#lab_request_id").val());
+  }
+  if($("#lab_request_type").length) {
+    //if ($("#lab_request_type").val() == )
+    $("#lab_request_type").change(function(){
+      request_hideDisplayPrevisionalDate($(this));
+    });
+  }
+
+  if($("#tabs-request").length) {
+    $("#tabs-request").tabs();
+  }
 
   var dateClass='.datechk';
   $(document).ready(function ()
@@ -128,6 +237,266 @@ jQuery(function($){
     }
     hideShowInvitationDiv();
   });
+
+  function request_hideDisplayPrevisionalDate(selectElm) {
+    let optionSelected = $("option:selected", selectElm);
+    let slug = optionSelected.attr("slug");
+    if(slug == "rt_poe") {
+      $("#lab_request_previsional_date_label").hide();
+      $("#lab_request_previsional_date").hide();
+    }
+    else {
+      $("#lab_request_previsional_date_label").show();
+      $("#lab_request_previsional_date").show();
+    }
+  }
+
+  function forwardToRequestList()
+  {
+    $(location).attr("href","/wp-admin/admin.php?page=lab_request_view");
+  }
+
+  function deleteObj(objId, action) {
+    let data = {
+      'action':action,
+      'id':objId,
+    }
+    callAjax(data, null, displayRequests, null, null);
+  }
+
+  function loadRequestById(id) {
+    let data = {
+        'action':'lab_request_get',
+        'id':id,
+    }
+    callAjax(data, null, displayRequest, null, null);
+  }
+
+  function loadRequests() {
+    let data = {
+        'action':'lab_request_list_all'
+    }
+    callAjax(data, null, displayAllRequests, null, null);
+  }
+
+  function loadOwnRequests() {
+    let data = {
+        'action':'lab_request_load_own_request'
+    }
+    callAjax(data, null, displayOwnRequests, null, null);
+  }
+
+  function deleteUploadedFile(fileId) {
+    let data = {
+        'action':'lab_request_delete_file',
+        'id':fileId,
+    }
+    callAjax(data, null, displayOwnRequests, null, null);
+  }
+
+  function displayViewRequestFiles(data) {
+    console.log("[displayViewRequestFiles]");
+    console.log(data);
+    $("#lab_request_files").empty();
+    let ul = $('<ul class="list-group" id="lab_resquest_list_files"/>');
+    $(data).each(function( i, obj ) {
+      console.log("[displayViewRequestFiles] each");
+      console.log(obj);
+      let li = $('<li />').attr('class', 'list-group-item').attr("id", "lab_request_file_"+obj.id);
+      let fileLink = $("<a/>").attr("href", obj.url).attr("target","t"+i).html(obj.name);
+      li.append(fileLink);
+      ul.append(li);
+    });
+    $("#lab_request_files").append(ul);
+  }
+
+  function displayViewRequest(data) {
+    $("#lab_request_type").hide();
+    let options = {};
+    $("#lab_request_type > option").each(function() {
+      options[this.value] = this.text;
+    });
+    console.log(options);
+    $("#lab_request_view").html(options[data["request_type"]]);
+    $("#lab_request_title").html(data["request_title"]);
+    $("#lab_request_text").html(data["request_text"]);
+    $("#lab_request_applicant").html(data["first_name"] + " " + data["last_name"]);
+    $("#lab_request_previsional_date").html(data["request_previsional_date"]);
+    if (data["files"].length) {
+      displayViewRequestFiles(data.files);
+    }
+    if(data["request_state"]<0) {
+      $("#lab_resquest_state").addClass("text-danger");
+      $("#lab_resquest_state").html(__("Cancel", "lab"));
+    }
+    else if(data["request_state"]<10) {
+      $("#lab_resquest_state").addClass("text-primary");
+      $("#lab_resquest_state").html(__("New, pending", "lab"));
+    }
+    else {
+      $("#lab_resquest_state").addClass("btn-outline-warning");
+      $("#lab_resquest_state").html(__("???", "lab"));
+    }
+    $("#lab_resquest_files_directory").html(generatePath(data, options));
+    //["request_previsional_date"], data["groups"].acronym, )
+    //$("#lab_resquest_files_directory").html("/2022/"+data["groups"].acronym+"/"+data["first_name"]+'.'+data["last_name"]+'/'+options[data["request_type"]]+'/');
+  }
+
+  function generatePath(data, options) {
+    let path = "/";
+    path += "2022";
+    path += "/";
+    path += data["groups"].acronym;
+    path += "/";
+    let userName = data["first_name"].toLowerCase()+'.'+data["last_name"].toLowerCase();
+    userName = userName.replace(/\s/g,'');
+    path += userName;
+    path += "/";
+    let requestType = options[data["request_type"]];
+    const words = requestType.split(" ");
+    for (let i = 0; i < words.length; i++) {
+        words[i] = words[i][0].toUpperCase() + words[i].substr(1);
+    }
+    path += words.join("");
+    path += "/";
+    return path;
+  }
+
+  function displayRequest(data) {
+    if ($("#lab_request_view").length) {
+      displayViewRequest(data);
+    }
+    else {
+      $("#lab_request_type").val(data["request_type"]);
+      $("#lab_request_title").val(data["request_title"]);
+      $("#lab_request_text").val(data["request_text"]);
+      $("#lab_request_previsional_date").val(data["request_previsional_date"]);
+      request_hideDisplayPrevisionalDate($("#lab_request_type"));
+      let html = ""
+      $(data.files).each(function( i, obj ) {
+        console.log(obj.url);
+        let fileLink = $("<a/>").attr("href", obj.url).attr("target","t"+i).html(obj.name);
+        html += fileLink+", "
+        $("#lab_request_files").append(fileLink);
+        let aDel = $('<i />').attr('class', 'clickable fas fa-trash').attr("objId", obj.id).attr("id", "lab-delete-file-button-"+obj.id);
+
+        $(aDel).click(function (){
+          //displayModalDeleteRequest($(this).attr("objId"));
+          //alert($(this).attr("objId"));
+          deleteUploadedFile($(this).attr("objId"));
+        });
+        $("#lab_request_files").append(aDel);
+        $("#lab_request_files").append(", ");
+      });
+    }
+  }
+
+  function displayRequests1(data, tableBody) {
+    tableBody.empty();
+    $.each(data, function(i, obj) {
+        let tr = $('<tr />');
+        let tdId = $('<td />').html(obj.id);
+        let tdName = $('<td />').html(obj.first_name + " " + obj.last_name);
+        let tdDate = $('<td />').html(obj.date);
+        let tdTitle = $('<td />').html(obj.request_title);
+        let tdState;
+        if(obj.request_state < 0) {
+          tdState = $('<td />').html(__("Cancel", "lab"));
+        }
+        else if (obj.request_state < 10) {
+          tdState = $('<td />').html(__("New, pending", "lab"));
+        }
+        else {
+          tdState = $('<td />').html(__("???", "lab"));
+        }
+        tr.append(tdId);
+        tr.append(tdDate);
+        tr.append(tdName);
+        tr.append(tdTitle);
+        tr.append(tdState);
+        tableBody.append(tr);
+        tr.append(createViewRequestButton(obj.id, obj));
+    });
+  }
+
+  function displayRequests(data, tableBody) {
+    tableBody.empty();
+    $.each(data, function(i, obj) {
+        let tr = $('<tr />');
+        let tdId = $('<td />').html(obj.id);
+        let tdDate = $('<td />').html(obj.date);
+        let tdTitle = $('<td />').html(obj.request_title);
+        let tdState;
+        if(obj.request_state < 0) {
+          tdState = $('<td />').html(__("Cancel", "lab"));
+        }
+        else if (obj.request_state < 10) {
+          tdState = $('<td />').html(__("New, pending", "lab"));
+        }
+        else {
+          tdState = $('<td />').html(__("???", "lab"));
+        }
+        tr.append(tdId);
+        tr.append(tdDate);
+        tr.append(tdTitle);
+        tr.append(tdState);
+        tableBody.append(tr);
+        tr.append(createEditRequestButton(obj.id, obj));
+    });
+  }
+
+  function displayAllRequests(data) {
+    {
+      displayRequests1(data["results"],$("#lab_request_list_table_tbody"));
+    }
+  }
+
+  function displayOwnRequests(data)
+  {
+    displayRequests(data,$("#lab_request_list_table_tbody"));
+  }
+
+  function createEditRequestButton(id, data) {
+    let url = window.location.href;
+    console.log(url);
+    if (url.indexOf("&") != -1) 
+    {
+      url = (""+url).substring(0, url.indexOf("&"));
+    }
+    url  += "&tab=entry&id="+id;
+    createActionRequestButton(id, data, "Edit", url);
+  }
+
+  function createViewRequestButton(id, data) {
+    let url = window.location.href;
+    console.log(url);
+    if (url.indexOf("&") != -1) 
+    {
+      url = (""+url).substring(0, url.indexOf("&"));
+    }
+    url  += "&tab=entry&id="+id+"&view=1";
+    return createActionRequestButton(id, data, "View", url);
+
+  }
+
+  function createActionRequestButton(id, data, editLabel, editValue) {   
+    
+    let userId = $("#lab_request_user_id").val();
+    let aEdit = $('<a />').attr("class", "lab-page-title-action lab_mission_edit").attr("href",editValue).attr("objId", id).html(editLabel);
+    let aDel = $('<a />').attr("class", "lab-page-title-action lab_budget_info_delete").attr("objId", id).attr("id", "lab-delete-div-button").html("X");
+
+    $(aDel).click(function (){
+      displayModalDeleteRequest($(this).attr("objId"));
+    });
+
+    return $('<td />').attr("class", "lab_keyring_icon").append(aEdit).append(aDel);   
+  }
+
+  function displayModalDeleteRequest(objId) {
+      console.log("[displayModalDeleteRequest] requestId : " + objId)
+      $("#lab_request_delete_dialog").modal();
+      $("#lab_request_delete_dialog_request_id").val(objId);
+  }
 
   function labToolsLoad()
   {
@@ -144,12 +513,42 @@ jQuery(function($){
     });
   }
 
+  function request_uploadFileWithName(name) {
+    console.log("[request_uploadFileWithName] name:"+name);
+    var file_data = $('#lab_request_add_file_'+name).prop('files')[0];
+    var form_data = new FormData();
+    form_data.append('file', file_data);
+    form_data.append('file_name_type', name);
+    form_data.append('upload_from', 'request');
+    form_data.append('action', 'md_support_save');
+    form_data.append('request_id', $("#lab_request_id").val());
+    $.ajax({
+      url: '/wp-admin/admin-ajax.php',
+      type: 'post',
+      contentType: false,
+      processData: false,
+      data: form_data,
+      success: function (response){
+        console.log("[request_uploadFileWithName] success");
+        console.log(response);
+        $('.Success-div').html("Upload Successfull")
+        displayViewRequestFiles(response.data);
+        //$("#lab_request_file_"+name+"_url").val(response.data.url);
+        //console.log(response.data.url);
+      },
+      error: function (response){
+        console.log('error');
+      }
+    });
+  }
+
   function uploadFile()
   {
     //console.log("[upload file]");
     var file_data = $('#lab_mission_description_PDF').prop('files')[0];
     var form_data = new FormData();
     form_data.append('file', file_data);
+    form_data.append('file_name_type', 'nic');
     form_data.append('action', 'md_support_save');
     $.ajax({
       url: '/wp-admin/admin-ajax.php',

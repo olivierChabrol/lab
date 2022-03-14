@@ -785,6 +785,30 @@ function lab_mission_delete_travel($id, $missionId) {
     ));
 }
 
+
+
+function lab_is_admin()
+{
+    return current_user_can( 'administrator' );
+}
+function lab_is_manager()
+{
+    $budgetManagerGroupIds = lab_admin_group_get_manager_groups(get_current_user_id());
+    return count($budgetManagerGroupIds) > 0;
+}
+function lab_is_group_leader()
+{
+    $leaderManagerGroupIds = lab_admin_group_get_manager_groups(null, array(2,3));
+    if (count($leaderManagerGroupIds) > 0)
+    {
+        return $leaderManagerGroupIds;
+    }
+    else 
+    {
+        return null;
+    }
+}
+
 function lab_mission_delete_description ($jsId, $missionId){
     global $wpdb;
     $userId = get_current_user_id();
@@ -1155,6 +1179,26 @@ function lab_admin_group_get_manager_groups($userId = null, $managerType = 1) {
 
 function lab_admin_group_is_manager($userId = null, $managerType = 1) {
     return count(lab_admin_group_get_manager_groups($userId, $managerType));
+}
+
+function lab_group_get_user_group_information($userId) {
+    global $wpdb;
+    $sql = "SELECT group_id, favorite, lg.acronym FROM ".$wpdb->prefix."lab_users_groups AS lug LEFT JOIN ".$wpdb->prefix."lab_groups AS lg ON lg.id=lug.group_id WHERE user_id=".$userId;
+    //return $sql;
+    $results = $wpdb->get_results($sql);
+    $groupReturn = null;
+    if (count($results) > 0) {        
+        foreach ($results as $group) {
+            if ($group->favorite == 1) {
+                $groupReturn = $group;
+            }
+        }
+        // if no favorite group defined, take the first one
+        if ($groupReturn == null) {
+            $groupReturn = $results[0];
+        }
+    }
+    return $groupReturn;
 }
 
 /**

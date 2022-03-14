@@ -51,6 +51,11 @@ function lab_mission_ajax_excel() {
   wp_send_json_success(lab_mission_generate_excel($missionId, $filters, $groupIds));
 }
 
+function lab_request_list_all_ajax()
+{
+  wp_send_json_success(lab_request_list_requests(null));
+}
+
 function lab_mission_ajax_load() {
   $missionId = null;
   $filters = null;
@@ -130,8 +135,46 @@ function lab_request_save_ajax() {
   $request_type  = $_POST['request_type'];
   $request_title = $_POST['request_title'];
   $request_text  = $_POST['request_text'];
-  lab_request_save($request_id, get_current_user_id(), $request_type, $request_title, $request_text);
-  wp_send_json_success();
+  $previsional_date  = $_POST['request_previsional_date'];
+  if (!isset($previsional_date) || $previsional_date == "") {
+    $previsional_date = null;
+  }
+  $reqId = lab_request_save($request_id, get_current_user_id(), $request_type, $request_title, $request_text, $previsional_date);
+  wp_send_json_success($reqId);
+}
+function lab_request_get_ajax() {
+  $request_id    = $_POST['id'];
+  wp_send_json_success(lab_request_get_by_id($request_id));
+}
+function lab_request_cancel_ajax() {
+  $request_id    = $_POST['id'];
+  if(!isset($request_id) || empty($request_id))
+  {
+    wp_send_json_error("No id send");
+  }
+  $request_modify = lab_request_cancel($request_id);
+  if ($request_modify) {
+    wp_send_json_success($request_modify);
+  }
+  else {
+    wp_send_json_error("Failed to modify request");
+  }
+}
+
+function lab_request_delete_file_ajax() {
+  $fileId = $_POST['id'];
+  $r = lab_request_delete_file($fileId); 
+  if ($r) {
+    wp_send_json_success($r);
+  }
+  else {
+    wp_send_json_error();
+  }
+
+}
+
+function lab_request_load_own_request_ajax() {
+  wp_send_json_success(lab_request_get_own_requests());
 }
 /********************************************************************************************
  * BUDGET
@@ -1419,17 +1462,42 @@ function md_support_save(){
   if (!function_exists('wp_handle_upload')){
       require_once(ABSPATH . 'wp-admin/includes/file.php');
   }
-  $uploadedfile = $_FILES['file'];
-  $upload_overrides = array('test_form' => false,'unique_filename_callback' => 'rename_file' );  
-  $movefile = wp_handle_upload($uploadedfile, $upload_overrides);
-
-  if ($movefile && !isset($movefile['error'])){
-  wp_send_json_success($movefile);
+  $file = $_FILES['file'];
+  $fileNameType = $_POST['file_name_type'];
+  $uploadFrom   = $_POST['upload_from'];
+  if(!isset($_POST['request_id'])) {
+    wp_send_json_error("Save Request first");
   }
-  else {
-      wp_send_json_error($movefile['error']);    
+  $request_id   = $_POST['request_id'];
+
+  $ext = strtolower(pathinfo($file["name"], PATHINFO_EXTENSION));
+  $reqDir = __DIR__.'/requests';
+  if (!file_exists($reqDir)) {
+    mkdir($reqDir, 0777, true);
+  }
+
+  // generate an unique file name
+  $filename = "";
+  while (true) {
+    $filename = uniqid('lr_', true) . '.'.$ext;
+    if (!file_exists(sys_get_temp_dir() . $filename)) break;
+  }
+
+  $newFile_name = $reqDir.'/'.$filename;
+  $move_new_file = @move_uploaded_file( $file['tmp_name'], $newFile_name );
+  
+  if ($move_new_file) {
+    $url = '/wp-content/plugins/lab/requests/'.$filename;
+    $fileId = lab_request_save_file($request_id,$url , $fileNameType);
+    $file1 = array("id"=>$fileId,"url"=>$url, "name"=>$fileNameType);
+    wp_send_json_success([$file1]);
+  }
+  else
+  {
+    wp_send_json_error($newFile_name);
   }
 }
+
 
 function rename_file($dir, $name, $ext){
   $dir = "../../../mission/";

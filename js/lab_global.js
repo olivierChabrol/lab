@@ -1,3 +1,5 @@
+const { __, _x, _n, _nx } = wp.i18n;
+
 jQuery("#lab_event_submit_button").submit(function () {
     var isValid = jQuery("#lab_event_speaker_name").val();
     alert("isValid : " + isValid);

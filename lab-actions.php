@@ -190,6 +190,11 @@ if (is_admin()) {
     add_action( 'wp_ajax_lab_mission_refuse', 'lab_mission_refuse');
     add_action( 'wp_ajax_lab_mission_cancel', 'lab_mission_cancel');
     add_action( 'wp_ajax_lab_request_save', 'lab_request_save_ajax');
+    add_action( 'wp_ajax_lab_request_load_own_request', 'lab_request_load_own_request_ajax');
+    add_action( 'wp_ajax_lab_request_delete_file', 'lab_request_delete_file_ajax');
+    add_action( 'wp_ajax_lab_request_cancel', 'lab_request_cancel_ajax');
+    add_action( 'wp_ajax_lab_request_get', 'lab_request_get_ajax');
+    add_action( 'wp_ajax_lab_request_list_all', 'lab_request_list_all_ajax');
     add_action( 'wp_ajax_lab_mission_complete', 'lab_mission_complete');
     add_action( 'wp_ajax_lab_description_save', 'lab_description_ajax_save');
     add_action( 'wp_ajax_lab_description_delete', 'lab_description_ajax_delete');

@@ -1,3 +1,60 @@
+@media screen and (min-width: 768px) {
+  .su-tabs-nav {
+    display: flex;
+  }
+  .su-tabs-nav span {
+    flex-basis: 100%;
+    text-align: center;
+  }
+  .su-tabs-nav span:last-child {
+    margin-right: 0;
+  }
+}
+
+.lab-request-tab-active, .lab-request-tab-active:hover{
+  background-color: #f1f1f1;
+  border-bottom-color: #f1f1f1;
+}
+.lab-request-tab-active, .lab-request-tab-active:focus, .lab-request-tab-active:focus:active, .lab-request-tab-active:hover {
+  border-bottom: 1px solid #f0f0f1;
+  border-bottom-color: rgb(240, 240, 241);
+  background: #f0f0f1;
+  background-color: rgb(240, 240, 241);
+  color: #000;
+}
+
+.lab-request-tab-wrapper {
+  border-bottom: 1px solid #c3c4c7;
+  margin: 0;
+  padding-top: 9px;
+  padding-bottom: 0;
+  line-height: inherit;
+  display: block;
+}
+
+.lab-request-tab {
+  float: left;
+  border: 1px solid #c3c4c7;
+  border-bottom-color: rgb(195, 196, 199);
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  border-bottom: none;
+  margin-left: .5em;
+  padding: 5px 10px;
+  font-size: 14px;
+  line-height: 1.71428571;
+  font-weight: 600;
+  background: #dcdcde;
+  background-color: rgb(220, 220, 222);
+  color: #50575e;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.lab-request-tab:focus, .lab-request-tab:over {
+  background-color: #fff;
+  color: #3c434a;
+}
 
 /* The Modal (background) */
 .lab_fe_modal {

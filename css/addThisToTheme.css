@@ -5,6 +5,10 @@
 	background-color: #FD7E29;
 }
 
+.clickable {
+	cursor: pointer;
+}
+
 .content-area {
 	max-width:1140px;
 }
