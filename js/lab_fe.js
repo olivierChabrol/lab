@@ -464,7 +464,7 @@ jQuery(function($){
       url = (""+url).substring(0, url.indexOf("&"));
     }
     url  += "&tab=entry&id="+id;
-    createActionRequestButton(id, data, "Edit", url);
+    return createActionRequestButton(id, data, "Edit", url);
   }
 
   function createViewRequestButton(id, data) {
