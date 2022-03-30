@@ -36,6 +36,9 @@ function lab_request($param) {
       $html .= '<h3>'.esc_html__('Request title', 'lab').' : <span id="lab_request_title" class="small"></span></h3>';
       $html .= '<h3>'.esc_html__('Request', 'lab').' : <span id="lab_request_text" class="small"></span></h3>';
       $html .= '<h3>'.esc_html__('Provisional date', 'lab').' : <span id="lab_request_previsional_date" class="small"></span></h3>';
+      $html .= '<h4>'.esc_html__('Expenses', 'lab').' :</h4>';
+      $html .= '<div id="lab_request_expenses"></div>';
+
       $html .= '<h4>'.esc_html__('Uploaded files', 'lab').' :</h4>';
       $html .= '<div id="lab_request_files"></div>';
       $html .= 'Save this files in :';
@@ -55,6 +58,10 @@ function lab_request($param) {
       $html .= '<input id="lab_request_title" type="text" size="50" placeholder="'.esc_html__('ex : European Congress of Mathematics', 'lab').'"></input><br/>';
       $html .= '<label for="lab_request_text">'.esc_html__('Request', 'lab').'</label>';
       $html .= '<textarea id="lab_request_text" placeholder="'.esc_html__('ex : Hi M Durant, i want to go to the European Congress of Mathematis by plane', 'lab').'" rows="5" cols="50"></textarea><br/>';
+      $html .= '<h5>Estimated cost :</h5>';
+      $html .= generate_expense_type("transport");
+      $html .= generate_expense_type("hosting");
+      $html .= generate_expense_type("fooding");
       $html .= '<h5>Liste des fichiers uploadés : <span id="lab_request_files"></span></h5><br/></<div><div>';
 
       $html .= nav_tabs();
@@ -63,6 +70,38 @@ function lab_request($param) {
       $html .= '<br/>Penser à consulter le <a href="/linstitut/informations-ressources/livrets-guides/guide-des-missions/">guide des missions</a>';
       $html .= '</div>';
     }
+  return $html;
+}
+
+function generate_expense_type($suffix) {
+  $html = '<label for="lab_request_expense_'.$suffix.'">'.esc_html__($suffix.' costs', 'lab').' : </label>';
+  $html .= '<input type="hidden" id="lab_request_expense_'.$suffix.'_id" value="">';
+  $html .= generate_expense_combobox($suffix);
+  $html .= '&nbsp;<input type="text" id="lab_request_expense_'.$suffix.'_amount" value="0.0"></input>&euro;<br/>';
+  return $html;
+}
+
+function generate_expense_combobox($suffix) {
+  $html = '<select id="lab_request_expense_'.$suffix.'">';
+  $html .= '<option value="-1">'.esc_html__('Exterior', 'lab').'</option>';
+  $groups = null;
+  $contracts = null;
+  if (lab_is_admin() || lab_is_manager()) {
+    $groups = lab_admin_group_load();
+    $contracts = lab_admin_contract_get_all_contracts();
+  }
+  else {
+    $host = new labUser(get_current_user_id());
+    $groups = lab_admin_group_by_user($host->id);
+    $contracts = lab_admin_contract_get_contracts_by_user($host->id);
+  }
+  foreach($groups as $group) {
+    $html .= '<option value="1_'.$group->id.'">Equipe '.$group->acronym.'</option>';
+  }
+  foreach($contracts as $contract) {
+    $html .= '<option value="2_'.$contract->contract_id.'">Contact '.$contract->name.'</option>';
+  }
+  $html .= '</select>';
   return $html;
 }
 

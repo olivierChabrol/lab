@@ -29,14 +29,17 @@ jQuery(function($){
   });
 
   $("#lab_request_send").click(function() {
-    data = {
+    let data = {
       'action': 'lab_request_save',
       'request_id': $("#lab_request_id").val(),
       'request_previsional_date': $("#lab_request_previsional_date").val(),
       'request_type': $("#lab_request_type").val(),
       'request_title': $("#lab_request_title").val(),
       'request_text': $("#lab_request_text").val(),
+      //'request_expense': JSON.stringify(request_get_expenses()),
     };
+    request_get_expenses(data);
+    //console.log(data);
     callAjax(data, __("Request send", "lab"), forwardToRequestList, null, null);
     //callAjax(data, __("Request send", "lab"), null, null, null);
   });
@@ -128,6 +131,31 @@ jQuery(function($){
     toggleTab($("#lab_request_ingo_tab_legal"), getRequestInfoTabs);
   }
 
+  function request_get_expenses(data) {
+    console.log("[request_get_expenses] ");
+    let expenses_type = ["transport", "hosting", "fooding"];
+    let expenses = {};
+    let i = 0;
+    data["expenses_number"] = expenses_type.length;
+    expenses_type.forEach(element => {
+      console.log("[request_get_expenses] element : " + element);
+      if($("#lab_request_expense_" + element + "_id").val() != "") {
+        data["expense_id_"+i] = $("#lab_request_expense_" + element + "_id").val();
+      }
+      data["expense_name_"+i] = element;
+      data["expense_value_"+i] = $("#lab_request_expense_" + element + "_amount").val();
+      data["expense_type_"+i] = $("#lab_request_expense_" + element).val();
+      i+=1;
+      //let expense = {"name":element, "value":$("lab_request_expense_" + element + "_amount").val(), "type":$("lab_request_expense_" + element).val()};
+      //expense["name"] = element;
+      //expense["value"] = $("lab_request_expense_" + element + "_amount").val();
+      //expense["type"] = $("lab_request_expense_" + element);
+      //expenses.push(expense);
+
+    });
+    //return expenses;
+  }
+
   function request_save_before_upload(type) {
     console.log("[request_save_before_upload] type : " + type);
     data = {
@@ -137,7 +165,9 @@ jQuery(function($){
       'request_type': $("#lab_request_type").val(),
       'request_title': $("#lab_request_title").val(),
       'request_text': $("#lab_request_text").val(),
+      //'request_expense': request_get_expenses(),
     };
+
     if (type == 'nic') {
       fct = request_click_upload_nic;
     }
@@ -188,7 +218,7 @@ jQuery(function($){
   }
 
   function toggleTab(tab, idsList) {
-    console.log("[toggleTab] click sur " + $(tab).attr("id"));
+    console.log("[toggleTab] click on " + $(tab).attr("id"));
     let ids = idsList();
     ids.forEach(function (elm) {
       $("#"+elm).removeClass("nav-tab-active");
@@ -310,6 +340,28 @@ jQuery(function($){
     $("#lab_request_files").append(ul);
   }
 
+  function displayViewRequestExpenses(data) {
+    console.log("[displayViewRequestExpenses]");
+    console.log(data);
+    $("#lab_request_expenses").empty();
+    let ul = $('<ul class="list-group" id="lab_resquest_list_expenses"/>');
+    $(data).each(function( i, obj ) {
+      console.log("[displayViewRequestExpenses] each");
+      console.log(obj);
+      let li = $('<li />').attr('class', 'list-group-item').attr("id", "lab_request_expenses_"+obj.id);
+      if (obj.type != -1) {
+        li.html(obj.name + " " + obj.type_string + " " + obj.support_name + " " + obj.amount + " " + obj.financial_support_string + " &euro;");
+      }
+      else {
+        li.html(obj.name + " Exterior "  + obj.amount + " " + " &euro;");
+      }
+      //let fileLink = $("<a/>").attr("href", obj.url).attr("target","t"+i).html(obj.name);
+      //li.append(fileLink);
+      ul.append(li);
+    });
+    $("#lab_request_files").append(ul);
+  }
+
   function displayViewRequest(data) {
     $("#lab_request_type").hide();
     let options = {};
@@ -324,6 +376,8 @@ jQuery(function($){
     $("#lab_request_previsional_date").html(data["request_previsional_date"]);
     if (data["files"].length) {
       displayViewRequestFiles(data.files);
+    }if (data["expenses"].length) {
+      displayViewRequestExpenses(data.expenses);
     }
     if(data["request_state"]<0) {
       $("#lab_resquest_state").addClass("text-danger");
@@ -387,6 +441,20 @@ jQuery(function($){
         });
         $("#lab_request_files").append(aDel);
         $("#lab_request_files").append(", ");
+      });
+      $(data.expenses).each(function( i, obj ) {
+        console.log(obj.name);
+        console.log(obj.id);
+        if (obj.id) {
+          $("#lab_request_expense_" + obj.name + "_id").val(obj.id);
+        }
+        $("#lab_request_expense_" + obj.name + "_amount").val(obj.amount);
+        if(obj.type==-1) {
+          $("#lab_request_expense_" + obj.name).val(-1);
+        }
+        else {
+          $("#lab_request_expense_" + obj.name).val(obj.type+"_"+obj.object_id);
+        }
       });
     }
   }

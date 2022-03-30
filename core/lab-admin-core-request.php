@@ -79,9 +79,40 @@ function lab_request_expenses_load_by_request($request_id) {
     global $wpdb;
     return $wpdb->get_results("SELECT * FROM ".$wpdb->prefix."lab_request_expenses WHERE request_id=".$request_id);
 }
+
+function lab_request_expenses_load_by_request_all_infos($request_id) {
+    global $wpdb;
+    $results = $wpdb->get_results("SELECT * FROM ".$wpdb->prefix."lab_request_expenses WHERE request_id=".$request_id);
+    foreach($results as $result) {
+        switch ($result->type) {
+            case 1:
+                $result->type_string = "team";
+                $result->support_name = lab_admin_get_group($result->object_id)->acronym;
+                break;
+            case 2:
+                $result->type_string = "contract";
+                $result->support_name = lab_admin_contract_get($result->object_id)->label;
+                break;
+            
+            default:
+                $result->type_string = "exterior";
+                break;
+        }
+        switch ($result->financial_support) {
+            case -1:
+                $result->financial_support_string = "";
+                break;
+            default:
+                $result->financial_support_string = AdminParam::lab_admin_get_params_budgetFunds($result->financial_support);
+                break;
+        }
+    }
+    return $results;
+}
+
 function lab_request_expenses_load($id) {
     global $wpdb;
-    return $wpdb->get_results("SELECT * FROM ".$wpdb->prefix."lab_request_expenses WHERE id=".$request_id);
+    return $wpdb->get_results("SELECT * FROM ".$wpdb->prefix."lab_request_expenses WHERE id=".$id);
 }
 
 function lab_request_expenses_save($id, $request_id, $type, $name, $amount) {
@@ -103,15 +134,32 @@ function lab_request_save_file($request_id, $url, $name) {
     return $wpdb->insert_id;
 }
 
+function lab_request_save_expenses($request_id, $expenses) {
+    if ($expenses == null) {
+        return;
+    }
+    global $wpdb;
+    $size = count($expenses);
+    for ($i = 0 ; $i < $size ; $i++) {
+        $expenses[$i]["request_id"] = $request_id;
+        if ($expenses[$i]["id"] == null) {
+            $wpdb->insert($wpdb->prefix."lab_request_expenses", $expenses[$i]);
+        }
+        else {
+            $expenseId = $expenses[$i]["id"];
+            unset($expenses[$i]["id"]);
+            $wpdb->update($wpdb->prefix."lab_request_expenses", $expenses[$i], array("id"=>$expenseId));
+        }
+    }
+}
+
 function lab_request_save($request_id, $request_user_id, $request_type, $request_title, $request_text, $previsional_date, $expenses = null) {
     global $wpdb;
     if (isset($request_id) && $request_id) {
         $wpdb->update($wpdb->prefix."lab_request", array("request_type" => $request_type, "request_title"=>$request_title, "request_text" => $request_text, "request_previsional_date"=>$previsional_date), array("id" => $request_id));
         lab_request_add_historic_update_request($request_id, get_current_user_id());
+        lab_request_save_expenses($request_id, $expenses);
 
-        foreach($expenses as $expense) {
-            lab_request_expenses_save(null, $request_id, $expense["type"], $expense["name"], $expense["amount"]);
-        }
         return $request_id;
     }
     else {
@@ -119,11 +167,8 @@ function lab_request_save($request_id, $request_user_id, $request_type, $request
         $request_id = $wpdb->insert_id;
         lab_request_add_historic_new_request($request_id, get_current_user_id());
         lab_request_send_request_to_manager($request_id);
-        if(isset($expenses)) {
-            foreach($expenses as $expense) {
-                lab_request_expenses_save(null, $request_id, $expense["type"], $expense["name"], $expense["amount"]);
-            }
-        }
+        lab_request_save_expenses($request_id, $expenses);
+        
         return $request_id;
     }
 }
@@ -161,10 +206,10 @@ function lab_request_get_by_id($request_id) {
     $results = $wpdb->get_results("SELECT lr.*, um1.meta_value as last_name, um2.meta_value as first_name FROM ".$wpdb->prefix."lab_request as lr LEFT JOIN ".$wpdb->prefix."usermeta AS um1 On um1.user_id=lr.request_user_id LEFT JOIN ".$wpdb->prefix."usermeta AS um2 On um2.user_id=lr.request_user_id WHERE id=".$request_id." AND um1.meta_key='last_name' AND um2.meta_key='first_name'");
     if(isset($results) && count($results) == 1) {
         lab_request_add_historic_cancel_request($request_id, get_current_user_id());
-        $results[0]->files = lab_request_get_associated_files($request_id);
-        $results[0]->groups = lab_group_get_user_group_information($results[0]->request_user_id);
-        $results[0]->historic = lab_request_hisoric_load($request_id);
-        $reqults[0]->expenses = lab_request_expenses_load_by_request($request_id);
+        $results[0]->files    = lab_request_get_associated_files($request_id);
+        $results[0]->groups   = lab_group_get_user_group_information($results[0]->request_user_id);
+        $results[0]->historic = lab_request_historic_load($request_id);
+        $results[0]->expenses = lab_request_expenses_load_by_request_all_infos($request_id);
         return $results[0];
     }
     else{
@@ -198,7 +243,7 @@ function lab_request_add_historic($request_id, $historic_type, $user_id) {
     return $wpdb->insert_id;
 }
 
-function lab_request_hisoric_load($request_id) {
+function lab_request_historic_load($request_id) {
     global $wpdb;
     return $wpdb->get_results("SELECT * FROM ".$wpdb->prefix."lab_request_historic WHERE request_id=".$request_id);
 

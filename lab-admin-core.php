@@ -1929,6 +1929,22 @@ function lab_admin_group_load_all()
     return $items;
 }
 
+function lab_admin_group_load()
+{
+    global $wpdb;
+    $sql = "SELECT * FROM `".$wpdb->prefix."lab_groups`;";
+    return $wpdb->get_results($sql);
+    /*
+    $items = array();
+    foreach ( $results as $r )
+    {
+      array_push($items,$r);
+    }
+    return $items;
+    //*/
+}
+
+
 function lab_admin_group_by_user($userId)
 {
     $results = lab_group_get_user_groups($userId);
@@ -1939,6 +1955,8 @@ function lab_admin_group_by_user($userId)
         $group->id = $r->id; 
         $group->ugid = $r->ugid; 
         $group->name = $r->group_name;
+        $group->group_name = $r->group_name;
+        $group->acronym = $r->acronym;
         $group->favorite = $r->favorite;
         $groups[] = $group;
     }
@@ -1955,7 +1973,7 @@ function lab_admin_group_get_user_groups_delete($groupId)
 function lab_group_get_user_groups($userId)
 {
     global $wpdb;
-    return $wpdb->get_results("SELECT lg.group_name, lg.url, lg.id, lug.favorite, lug.id as ugid
+    return $wpdb->get_results("SELECT lg.acronym, lg.group_name, lg.url, lg.id, lug.favorite, lug.id as ugid
                                 FROM `".$wpdb->prefix."lab_users_groups` as lug 
                                 JOIN `".$wpdb->prefix."lab_groups` AS lg ON lg.id=lug.group_id 
                                 WHERE lug.`user_id`=".$userId);

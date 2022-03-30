@@ -131,15 +131,52 @@ function lab_mission_complete() {
  * REQUEST
  ********************************************************************************************/
 function lab_request_save_ajax() {
-  $request_id    = $_POST['request_id'];
-  $request_type  = $_POST['request_type'];
-  $request_title = $_POST['request_title'];
-  $request_text  = $_POST['request_text'];
+  $request_id      = $_POST['request_id'];
+  $request_type    = $_POST['request_type'];
+  $request_title   = $_POST['request_title'];
+  $request_text    = $_POST['request_text'];
+  $expenses_number = $_POST['expenses_number'];
+
   $previsional_date  = $_POST['request_previsional_date'];
   if (!isset($previsional_date) || $previsional_date == "") {
     $previsional_date = null;
   }
-  $reqId = lab_request_save($request_id, get_current_user_id(), $request_type, $request_title, $request_text, $previsional_date);
+  $expenses = null;
+  if(isset($expenses_number)) {
+    $expenses = array ();
+    for ($i = 0 ; $i < $expenses_number ; $i++) {
+      $expense = array ();
+      if (isset($_POST['expense_id_' . $i])) {
+        $expense["id"] = $_POST['expense_id_' . $i];
+      }
+      else {
+        $expense["id"] = null;
+      }
+      if ($_POST['expense_type_' . $i] == -1) {
+        $expense["type"] = -1;
+        $expense["financial_support"] = -1;
+        $expense["object_id"] = -1;
+      }
+      else {
+        $split = explode("_", $_POST['expense_type_' . $i]);
+        $expense["type"] = $split[0];
+        $expense["object_id"] = $split[1];
+        if (count($split)>2) {
+          $expense["financial_support"] = $split[2];
+        }
+        else
+        {
+          $expense["financial_support"] = -1;
+        }
+
+      }
+      $expense["name"] = $_POST['expense_name_' . $i];
+      $expense["amount"] = $_POST['expense_value_' . $i];
+      $expenses[] = $expense;
+    }
+  }
+  //wp_send_json_success($expenses);
+  $reqId = lab_request_save($request_id, get_current_user_id(), $request_type, $request_title, $request_text, $previsional_date, $expenses);
   wp_send_json_success($reqId);
 }
 function lab_request_get_ajax() {
