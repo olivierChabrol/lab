@@ -1,7 +1,7 @@
 <?php
     !defined('LAB_REQUEST_HISTORIC_CANCEL') && define('LAB_REQUEST_HISTORIC_CANCEL', -1);
     !defined('LAB_REQUEST_HISTORIC_NEW') && define('LAB_REQUEST_HISTORIC_NEW', 1);
-    !defined('LAB_REQUEST_HISTORIC_NEW') && define('LAB_REQUEST_HISTORIC_UPDATE', 2);
+    !defined('LAB_REQUEST_HISTORIC_UPDATE') && define('LAB_REQUEST_HISTORIC_UPDATE', 2);
     !defined('LAB_REQUEST_HISTORIC_TAKE_IN_CHARGE') && define('LAB_REQUEST_HISTORIC_TAKE_IN_CHARGE', 10);
 
 function lab_request_get_own_requests() {
@@ -159,7 +159,7 @@ function lab_request_save($request_id, $request_user_id, $request_type, $request
         $wpdb->update($wpdb->prefix."lab_request", array("request_type" => $request_type, "request_title"=>$request_title, "request_text" => $request_text, "request_previsional_date"=>$previsional_date), array("id" => $request_id));
         lab_request_add_historic_update_request($request_id, get_current_user_id());
         lab_request_save_expenses($request_id, $expenses);
-
+        return lab_request_move_file($request_id);
         return $request_id;
     }
     else {
@@ -168,9 +168,84 @@ function lab_request_save($request_id, $request_user_id, $request_type, $request
         lab_request_add_historic_new_request($request_id, get_current_user_id());
         lab_request_send_request_to_manager($request_id);
         lab_request_save_expenses($request_id, $expenses);
+        lab_request_move_file($request_id);
         
         return $request_id;
     }
+}
+
+function lab_request_move_file($request_id) {
+    $request = lab_request_get_by_id($request_id);
+    $path = generatePath($request);
+    //return $path;
+    $need_db_update = FALSE;
+    if (!is_dir($path)) {
+        if (!mkdir($path, 0777, true)) {
+
+        }
+        else {
+            $need_db_update = TRUE;
+        }
+    }
+    $str = array();
+    foreach($request->files as $file) {
+        $fileName = substr($file->url, strrpos($file->url,'/',-1) + 1);
+        $str[] = $path.$fileName;
+        if (!file_exists($path.$fileName)) {
+            $str[] = "N'existe pas";
+            if (!copy(__DIR__.'/../requests/'.$fileName, $path.$fileName)) {
+                $str[] = "Copie ne marche pas";
+            }
+            else {
+                $str[] = "Copie marche";
+                $str[] = lab_request_update_file_path($file, $path);
+            }
+        }
+        else {
+            $str[] = "Existe";
+            //$str[] = lab_request_update_file_path($file, $path.$fileName);
+        }
+    }
+    return $str;
+}
+
+function lab_request_update_file_path($file, $path)
+{
+    $fileName = substr($file->url, strrpos($file->url,'/',-1) + 1);
+    $pattern = "requests";
+    $relative_path = substr($path, strpos($path,$pattern) + strlen($pattern) + 1);
+
+    $new_url = "/wp-content/plugins/lab/requests/".$relative_path.$fileName;
+    if(lab_request_update_file($file->id, array("url"=>$new_url))) {
+        $tmp_file = __DIR__.'/../requests/'.$fileName;
+        if (file_exists($tmp_file)) {
+            unlink($tmp_file);
+        }
+    }
+
+}
+
+function generatePath($request) {
+    $year = 0;
+    $year = date("Y");
+    $groupAcronym = "None";
+    foreach ($request->historic as $h) {
+        if ($h->historic_type == LAB_REQUEST_HISTORIC_NEW) {
+            $date = $h->date;
+            break;
+        }
+    }
+    $date = new DateTime($date);
+    $year = $date->format("Y");
+    //var_dump($request->groups);
+    //foreach($request->groups as $group) {
+    //    $groupAcronym = $group->acronym;
+    //}
+    $groupAcronym = $request->groups->acronym;
+    $firstName = preg_replace("/\s+/", "", (strtolower($request->first_name)));
+    $lastName  = preg_replace("/\s+/", "", (strtolower($request->last_name)));
+    $request_type = preg_replace("/\s+/", "", ucwords(AdminParams::get_paramWithColor($request->request_type)->value));
+    return __DIR__.'/../requests/'.$year."/".$groupAcronym."/".$firstName.".".$lastName."/".$request_type."/".$request->id."/";
 }
 
 function lab_request_update_state($request_id, $new_state) {
@@ -184,6 +259,11 @@ function lab_request_delete($request_id) {
     lab_request_delete_historic($request_id);
     lab_request_expenses_delete_by_request($request_id);
     $wpdb->delete($wpdb->prefix."lab_request", array("request_id"=>$request_id));
+}
+
+function lab_request_update_file($file_id, $values) {
+    global $wpdb;
+    return $wpdb->update($wpdb->prefix."lab_request_files", $values, array("id"=> $file_id));
 }
 
 function lab_request_delete_files($request_id) {
@@ -205,16 +285,32 @@ function lab_request_get_by_id($request_id) {
     global $wpdb;
     $results = $wpdb->get_results("SELECT lr.*, um1.meta_value as last_name, um2.meta_value as first_name FROM ".$wpdb->prefix."lab_request as lr LEFT JOIN ".$wpdb->prefix."usermeta AS um1 On um1.user_id=lr.request_user_id LEFT JOIN ".$wpdb->prefix."usermeta AS um2 On um2.user_id=lr.request_user_id WHERE id=".$request_id." AND um1.meta_key='last_name' AND um2.meta_key='first_name'");
     if(isset($results) && count($results) == 1) {
-        lab_request_add_historic_cancel_request($request_id, get_current_user_id());
         $results[0]->files    = lab_request_get_associated_files($request_id);
         $results[0]->groups   = lab_group_get_user_group_information($results[0]->request_user_id);
         $results[0]->historic = lab_request_historic_load($request_id);
         $results[0]->expenses = lab_request_expenses_load_by_request_all_infos($request_id);
+        $results[0]->path     = generatePath($results[0]);
+        $results[0]->users    = lab_request_generateUsers($results[0]);
         return $results[0];
     }
     else{
         return null;
     }
+}
+
+function lab_request_generateUsers($request) {
+    //return "ok";
+    $users = array();//"test"=>"olivier");
+    //$users[0] = $request->request_user_id;
+    $users[$request->request_user_id] = lab_admin_usermeta_names($request->request_user_id);
+    
+    foreach($request->historic as $historic) {
+        if (!isset($users[$historic->user_id])) {
+            $users[$historic->user_id] = lab_admin_usermeta_names($historic->user_id);
+        }
+    }
+    
+    return $users;
 }
 
 function lab_request_cancel($request_id) {

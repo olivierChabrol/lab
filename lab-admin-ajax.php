@@ -1526,8 +1526,9 @@ function md_support_save(){
   if ($move_new_file) {
     $url = '/wp-content/plugins/lab/requests/'.$filename;
     $fileId = lab_request_save_file($request_id,$url , $fileNameType);
+    //$request_id
     $file1 = array("id"=>$fileId,"url"=>$url, "name"=>$fileNameType);
-    wp_send_json_success([$file1]);
+    wp_send_json_success(lab_request_get_associated_files($request_id));
   }
   else
   {

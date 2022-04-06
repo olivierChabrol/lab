@@ -36,10 +36,8 @@ jQuery(function($){
       'request_type': $("#lab_request_type").val(),
       'request_title': $("#lab_request_title").val(),
       'request_text': $("#lab_request_text").val(),
-      //'request_expense': JSON.stringify(request_get_expenses()),
     };
     request_get_expenses(data);
-    //console.log(data);
     callAjax(data, __("Request send", "lab"), forwardToRequestList, null, null);
     //callAjax(data, __("Request send", "lab"), null, null, null);
   });
@@ -324,6 +322,33 @@ jQuery(function($){
     callAjax(data, null, displayOwnRequests, null, null);
   }
 
+  function displayViewRequestHistoric(data) {
+    console.log("[displayViewRequestHistoric]");
+    console.log(data);
+    $("#lab_request_historic").empty();
+    let ul = $('<ul class="list-group" id="lab_resquest_list_historic"/>');
+    $(data["historic"]).each(function( i, obj ) {
+      console.log("[displayViewRequestHistoric] each");
+      console.log(obj);
+      let li = $('<li />').attr('class', 'list-group-item').attr("id", "lab_request_historic_"+obj.id);
+      let text = obj.date + " ";
+      if (obj.historic_type == 1) {
+        text += " Created by ";
+      }
+      if (obj.historic_type == -1) {
+        text += " Cancel request by ";
+      }
+      if (obj.historic_type == 0) {
+        text += " update by ";
+      }
+      if (obj.user_id > 0) {
+        text += data["users"][obj.user_id].first_name + " " + data["users"][obj.user_id].last_name;
+      }
+      li.html(text);
+      ul.append(li);
+    });
+    $("#lab_request_historic").append(ul);
+  }
   function displayViewRequestFiles(data) {
     console.log("[displayViewRequestFiles]");
     console.log(data);
@@ -376,7 +401,8 @@ jQuery(function($){
     $("#lab_request_previsional_date").html(data["request_previsional_date"]);
     if (data["files"].length) {
       displayViewRequestFiles(data.files);
-    }if (data["expenses"].length) {
+    }
+    if (data["expenses"].length) {
       displayViewRequestExpenses(data.expenses);
     }
     if(data["request_state"]<0) {
@@ -392,6 +418,9 @@ jQuery(function($){
       $("#lab_resquest_state").html(__("???", "lab"));
     }
     $("#lab_resquest_files_directory").html(generatePath(data, options));
+    if (data["historic"].length) {
+      displayViewRequestHistoric(data);
+    }
     //["request_previsional_date"], data["groups"].acronym, )
     //$("#lab_resquest_files_directory").html("/2022/"+data["groups"].acronym+"/"+data["first_name"]+'.'+data["last_name"]+'/'+options[data["request_type"]]+'/');
   }
