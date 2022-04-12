@@ -140,18 +140,12 @@ jQuery(function($){
       if($("#lab_request_expense_" + element + "_id").val() != "") {
         data["expense_id_"+i] = $("#lab_request_expense_" + element + "_id").val();
       }
+      data["expense_financial_support_"+i] = $("#lab_request_expense_financial_support_" + element).val();
       data["expense_name_"+i] = element;
       data["expense_value_"+i] = $("#lab_request_expense_" + element + "_amount").val();
       data["expense_type_"+i] = $("#lab_request_expense_" + element).val();
       i+=1;
-      //let expense = {"name":element, "value":$("lab_request_expense_" + element + "_amount").val(), "type":$("lab_request_expense_" + element).val()};
-      //expense["name"] = element;
-      //expense["value"] = $("lab_request_expense_" + element + "_amount").val();
-      //expense["type"] = $("lab_request_expense_" + element);
-      //expenses.push(expense);
-
     });
-    //return expenses;
   }
 
   function request_save_before_upload(type) {
@@ -163,7 +157,6 @@ jQuery(function($){
       'request_type': $("#lab_request_type").val(),
       'request_title': $("#lab_request_title").val(),
       'request_text': $("#lab_request_text").val(),
-      //'request_expense': request_get_expenses(),
     };
 
     if (type == 'nic') {
@@ -328,8 +321,6 @@ jQuery(function($){
     $("#lab_request_historic").empty();
     let ul = $('<ul class="list-group" id="lab_resquest_list_historic"/>');
     $(data["historic"]).each(function( i, obj ) {
-      console.log("[displayViewRequestHistoric] each");
-      console.log(obj);
       let li = $('<li />').attr('class', 'list-group-item').attr("id", "lab_request_historic_"+obj.id);
       let text = obj.date + " ";
       if (obj.historic_type == 1) {
@@ -338,7 +329,7 @@ jQuery(function($){
       if (obj.historic_type == -1) {
         text += " Cancel request by ";
       }
-      if (obj.historic_type == 0) {
+      if (obj.historic_type == 2) {
         text += " update by ";
       }
       if (obj.user_id > 0) {
@@ -370,12 +361,13 @@ jQuery(function($){
     console.log(data);
     $("#lab_request_expenses").empty();
     let ul = $('<ul class="list-group" id="lab_resquest_list_expenses"/>');
-    $(data).each(function( i, obj ) {
+    $(data.expenses).each(function( i, obj ) {
       console.log("[displayViewRequestExpenses] each");
       console.log(obj);
       let li = $('<li />').attr('class', 'list-group-item').attr("id", "lab_request_expenses_"+obj.id);
       if (obj.type != -1) {
-        li.html(obj.name + " " + obj.type_string + " " + obj.support_name + " " + obj.amount + " " + obj.financial_support_string + " &euro;");
+        let fs = data["financial_support"][obj.financial_support];
+        li.html(obj.name + " " + obj.type_string + " " + obj.support_name + " " + obj.amount + " " + fs + " &euro;");
       }
       else {
         li.html(obj.name + " Exterior "  + obj.amount + " " + " &euro;");
@@ -403,7 +395,7 @@ jQuery(function($){
       displayViewRequestFiles(data.files);
     }
     if (data["expenses"].length) {
-      displayViewRequestExpenses(data.expenses);
+      displayViewRequestExpenses(data);
     }
     if(data["request_state"]<0) {
       $("#lab_resquest_state").addClass("text-danger");
@@ -426,8 +418,12 @@ jQuery(function($){
   }
 
   function generatePath(data, options) {
+    console.log("[generatePath]");
+    let dateStr = data.historic[0].date;
+    let year = dateStr.substr(0, dateStr.indexOf("-"));
+    //console.log(data);
     let path = "/";
-    path += "2022";
+    path += year;
     path += "/";
     path += data["groups"].acronym;
     path += "/";
@@ -441,6 +437,8 @@ jQuery(function($){
         words[i] = words[i][0].toUpperCase() + words[i].substr(1);
     }
     path += words.join("");
+    path += "/";
+    path += data.id;
     path += "/";
     return path;
   }
@@ -484,6 +482,7 @@ jQuery(function($){
         else {
           $("#lab_request_expense_" + obj.name).val(obj.type+"_"+obj.object_id);
         }
+        $("#lab_request_expense_financial_support_" + obj.name).val(obj.financial_support);
       });
     }
   }

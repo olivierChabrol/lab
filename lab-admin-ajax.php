@@ -161,6 +161,8 @@ function lab_request_save_ajax() {
         $split = explode("_", $_POST['expense_type_' . $i]);
         $expense["type"] = $split[0];
         $expense["object_id"] = $split[1];
+        $expense["financial_support"] = $_POST['expense_financial_support_' . $i];
+        /*
         if (count($split)>2) {
           $expense["financial_support"] = $split[2];
         }
@@ -168,7 +170,7 @@ function lab_request_save_ajax() {
         {
           $expense["financial_support"] = -1;
         }
-
+        //*/
       }
       $expense["name"] = $_POST['expense_name_' . $i];
       $expense["amount"] = $_POST['expense_value_' . $i];

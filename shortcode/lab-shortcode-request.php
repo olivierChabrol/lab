@@ -77,7 +77,20 @@ function generate_expense_type($suffix) {
   $html = '<label for="lab_request_expense_'.$suffix.'">'.esc_html__($suffix.' costs', 'lab').' : </label>';
   $html .= '<input type="hidden" id="lab_request_expense_'.$suffix.'_id" value="">';
   $html .= generate_expense_combobox($suffix);
+  $html .= generate_financial_support($suffix);
   $html .= '&nbsp;<input type="text" id="lab_request_expense_'.$suffix.'_amount" value="0.0"></input>&euro;<br/>';
+  return $html;
+}
+
+function get_financial_support() {
+  return AdminParams::lab_admin_get_params_budgetFunds();
+}
+
+function generate_financial_support($suffix) {
+  $html = "";
+  if (lab_is_admin() || lab_is_manager()) {
+    $html .= lab_html_select_str("lab_request_expense_financial_support_".$suffix, "lab_request_expense_financial_support_".$suffix, "", "get_financial_support", null, array("value"=>"-1","label"=>"None"), null);
+  }
   return $html;
 }
 

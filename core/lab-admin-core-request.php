@@ -103,7 +103,7 @@ function lab_request_expenses_load_by_request_all_infos($request_id) {
                 $result->financial_support_string = "";
                 break;
             default:
-                $result->financial_support_string = AdminParam::lab_admin_get_params_budgetFunds($result->financial_support);
+                $result->financial_support_string = AdminParams::lab_admin_get_params_budgetFunds($result->financial_support);
                 break;
         }
     }
@@ -281,6 +281,16 @@ function lab_request_delete_historic($request_id) {
     $wpdb->delete($wpdb->prefix."lab_request_historic", array("request_id"=>$request_id));
 }
 
+function lab_request_generate_financial_support_map() {
+    $a = array();
+    $supports = get_financial_support();
+    foreach($supports as $fs) {
+        $a[$fs->id] = $fs->value;
+    }
+
+    return $a;
+}
+
 function lab_request_get_by_id($request_id) {
     global $wpdb;
     $results = $wpdb->get_results("SELECT lr.*, um1.meta_value as last_name, um2.meta_value as first_name FROM ".$wpdb->prefix."lab_request as lr LEFT JOIN ".$wpdb->prefix."usermeta AS um1 On um1.user_id=lr.request_user_id LEFT JOIN ".$wpdb->prefix."usermeta AS um2 On um2.user_id=lr.request_user_id WHERE id=".$request_id." AND um1.meta_key='last_name' AND um2.meta_key='first_name'");
@@ -291,6 +301,7 @@ function lab_request_get_by_id($request_id) {
         $results[0]->expenses = lab_request_expenses_load_by_request_all_infos($request_id);
         $results[0]->path     = generatePath($results[0]);
         $results[0]->users    = lab_request_generateUsers($results[0]);
+        $results[0]->financial_support = lab_request_generate_financial_support_map();
         return $results[0];
     }
     else{
