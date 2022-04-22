@@ -125,7 +125,7 @@ function nav_tabs() {
   $html .= '<a id="lab_request_ingo_tab_upload" style="position: relative" class="nav-tab lab-request-tab" href="#">Upload Files</a>';
   $html .= '<a id="lab_request_ingo_tab_doc" style="position: relative" class="nav-tab lab-request-tab" href="#">Documents</a>';
   $html .= '</h2>';
-  $html .= '<div id="lab_request_ingo_tab_legal_div">
+  $html .= '<div id="lab_request_ingo_tab_legal_div"><br><br>
     <p>Les informations recueillies font l’objet d’un traitement informatique destiné à la commande de 
     billets de transport et de nuitées d\'hôtels pris en charge par l\'I2M. Les destinataires des 
     données sont les services concernés de l\'I2M et les groupements titulaires du marché mission. 
@@ -136,12 +136,13 @@ function nav_tabs() {
     92195 MEUDON cedex. Vous pouvez également, pour des motifs légitimes, 
     vous opposer au traitement des données vous concernant.</p>
   </div>';
-  $html .= '<div id="lab_request_ingo_tab_upload_div">';
+  $html .= '<div id="lab_request_ingo_tab_upload_div"><br><br>';
   $html .= generate_upload_code('nic', esc_html__('Add National identity card', 'lab'));
   $html .= generate_upload_code('passport', esc_html__('Add Passport', 'lab'));
   $html .= generate_upload_code('rib', esc_html__('Add Bank statement of identity', 'lab'));
+  $html .= generate_upload_code_with_name();
   $html .= '</div>
-  <div id="lab_request_ingo_tab_doc_div">
+  <div id="lab_request_ingo_tab_doc_div"><br><br>
     <p>Penser à consulter le <a href="/linstitut/informations-ressources/livrets-guides/guide-des-missions/">guide des missions</a></p>
     <p>Liste des documents a remplir pour partir en mission</p>
     <p>Liste des documents a remplir pour partir en mission à l\'étranger</p>
@@ -170,9 +171,10 @@ function jq_tabs() {
     </div>
     <div id="tabs-2">
       <p>';
-      $html .= generate_upload_code('nic', esc_html__('Add National identity card', 'lab'));
+      $html .= generate_upload_code('nic', esc_html__('National identity card', 'lab'));
       $html .= generate_upload_code('passport', esc_html__('Add Passport', 'lab'));
       $html .= generate_upload_code('rib', esc_html__('Add Bank statement of identity', 'lab'));
+      $html .= generate_upload_code_with_name();
       $html .='</p>
     </div>
     <div id="tabs-3">
@@ -184,10 +186,21 @@ function jq_tabs() {
 return $html;
 }
 
+function generate_upload_code_with_name() {
+  return '<div id="lab_request_add_file_name_div" style="display:show">
+                <label for="lab_request_add_file_name">Add another file</label>
+                <input type="text" id="lab_request_add_file_name_name">
+                <input type="file" id="lab_request_add_file_name" accept="image/*,.pdf">
+                <input type="hidden" id="lab_request_file_name_url" value="">
+                <button id="lab_request_description_file_name" file-type="name">'.esc_html__("Upload","lab").'</button>
+                <input type="hidden" id="lab_request_description_div_descriptionId_name" value="">
+            </div>';
+}
+
 function generate_upload_code($fileName,$label) {
     return '<div id="lab_request_add_file_'.$fileName.'_div" style="display:show">
-                <label  class="btn btn-primary" for="lab_request_add_file_'.$fileName.'">'.$label.'</label>
-                <input type="file" id="lab_request_add_file_'.$fileName.'" accept="image/*,.pdf"  style="visibility:hidden;">
+                <label for="lab_request_add_file_'.$fileName.'">'.$label.'</label>
+                <input type="file" id="lab_request_add_file_'.$fileName.'" accept="image/*,.pdf">
                 <input type="hidden" id="lab_request_file_'.$fileName.'_url" value="">
                 <button id="lab_request_description_file_'.$fileName.'" file-type="'.$fileName.'">'.esc_html__("Upload","lab").'</button>
                 <input type="hidden" id="lab_request_description_div_descriptionId_'.$fileName.'" value="">
