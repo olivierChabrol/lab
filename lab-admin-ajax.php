@@ -181,6 +181,10 @@ function lab_request_save_ajax() {
   $reqId = lab_request_save($request_id, get_current_user_id(), $request_type, $request_title, $request_text, $previsional_date, $expenses);
   wp_send_json_success($reqId);
 }
+function lab_request_load_files_ajax() {
+  $request_id    = $_POST['id'];
+  wp_send_json_success(lab_request_load_files($request_id));
+}
 function lab_request_get_ajax() {
   $request_id    = $_POST['id'];
   wp_send_json_success(lab_request_get_by_id($request_id));

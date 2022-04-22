@@ -168,9 +168,17 @@ jQuery(function($){
     else if (type == 'rib') {
       fct = request_click_upload_rib;
     }
+    else if (type == 'name') {
+      fct = request_click_upload_name;
+    }
     callAjax(data, __("Request send", "lab"), fct, null, null);
   }
 
+  function request_click_upload_name(data)
+  {
+    console.log("[request_click_upload_name]");
+    request_perform_click(data, $("#lab_request_description_file_name"), $("lab_request_add_file_name_name").val());
+  }
   function request_click_upload_nic(data)
   {
     request_perform_click(data, $("#lab_request_description_file_nic"));
@@ -184,7 +192,7 @@ jQuery(function($){
     request_perform_click(data, $("#lab_request_description_file_rib"));
   }
 
-  function request_perform_click(data, button) {
+  function request_perform_click(data, button, name = "") {
     if (data != null) {
       console.log(data);
       $("#lab_request_id").val(data);
@@ -198,8 +206,18 @@ jQuery(function($){
       request_save_before_upload(fileType);
     }
     else {
+      console.log("[request_perform_click] " + button.attr('id'));
+      console.log("[request_perform_click] name : '" + name + "'");
       console.log(button.attr("file-type"));
-      request_uploadFileWithName(button.attr("file-type"));
+      if (button.attr('id') == "lab_request_description_file_name") {
+        name = $("#lab_request_add_file_name_name").val();
+      }
+      if (name != "") {
+        request_uploadFileWithName("name", name);
+      }
+      else {
+        request_uploadFileWithName(button.attr("file-type"));
+      }
     }
     //*/
   }
@@ -311,8 +329,17 @@ jQuery(function($){
     let data = {
         'action':'lab_request_delete_file',
         'id':fileId,
-    }
-    callAjax(data, null, displayOwnRequests, null, null);
+    };
+    callAjax(data, null, request_emptyAndDisplayFiles, null, null);
+  }
+
+  function request_emptyAndDisplayFiles(data) {
+    $("#lab_request_files").empty();
+    let datas = {
+      'action':'lab_request_load_files',
+      'id':$("#lab_request_id").val(),
+    };
+    callAjax(datas, null, displayRequestEditFile, null, null);
   }
 
   function displayViewRequestHistoric(data) {
@@ -346,8 +373,8 @@ jQuery(function($){
     $("#lab_request_files").empty();
     let ul = $('<ul class="list-group" id="lab_resquest_list_files"/>');
     $(data).each(function( i, obj ) {
-      console.log("[displayViewRequestFiles] each");
-      console.log(obj);
+      //console.log("[displayViewRequestFiles] each");
+      //console.log(obj);
       let li = $('<li />').attr('class', 'list-group-item').attr("id", "lab_request_file_"+obj.id);
       let fileLink = $("<a/>").attr("href", obj.url).attr("target","t"+i).html(obj.name);
       li.append(fileLink);
@@ -443,6 +470,40 @@ jQuery(function($){
     return path;
   }
 
+  function displayRequestEditFile(files) {
+    let html = ""
+    $(files).each(function( i, obj ) {
+      console.log(obj.url);
+      let fileLink = $("<a/>").attr("href", obj.url).attr("target","t"+i).html(obj.name);
+      html += fileLink+", "
+      $("#lab_request_files").append(fileLink);
+      let aDel = $('<i />').attr('class', 'clickable fas fa-trash').attr("objId", obj.id).attr("id", "lab-delete-file-button-"+obj.id);
+
+      $(aDel).click(function (){
+        deleteUploadedFile($(this).attr("objId"));
+      });
+      $("#lab_request_files").append(aDel);
+      $("#lab_request_files").append(", ");
+    });
+  }
+  function displayRequestEditExpense(expenses) {
+    $(expenses).each(function( i, obj ) {
+      //console.log(obj.name);
+      //console.log(obj.id);
+      if (obj.id) {
+        $("#lab_request_expense_" + obj.name + "_id").val(obj.id);
+      }
+      $("#lab_request_expense_" + obj.name + "_amount").val(obj.amount);
+      if(obj.type==-1) {
+        $("#lab_request_expense_" + obj.name).val(-1);
+      }
+      else {
+        $("#lab_request_expense_" + obj.name).val(obj.type+"_"+obj.object_id);
+      }
+      $("#lab_request_expense_financial_support_" + obj.name).val(obj.financial_support);
+    });
+  }
+
   function displayRequest(data) {
     if ($("#lab_request_view").length) {
       displayViewRequest(data);
@@ -453,37 +514,8 @@ jQuery(function($){
       $("#lab_request_text").val(data["request_text"]);
       $("#lab_request_previsional_date").val(data["request_previsional_date"]);
       request_hideDisplayPrevisionalDate($("#lab_request_type"));
-      let html = ""
-      $(data.files).each(function( i, obj ) {
-        console.log(obj.url);
-        let fileLink = $("<a/>").attr("href", obj.url).attr("target","t"+i).html(obj.name);
-        html += fileLink+", "
-        $("#lab_request_files").append(fileLink);
-        let aDel = $('<i />').attr('class', 'clickable fas fa-trash').attr("objId", obj.id).attr("id", "lab-delete-file-button-"+obj.id);
-
-        $(aDel).click(function (){
-          //displayModalDeleteRequest($(this).attr("objId"));
-          //alert($(this).attr("objId"));
-          deleteUploadedFile($(this).attr("objId"));
-        });
-        $("#lab_request_files").append(aDel);
-        $("#lab_request_files").append(", ");
-      });
-      $(data.expenses).each(function( i, obj ) {
-        console.log(obj.name);
-        console.log(obj.id);
-        if (obj.id) {
-          $("#lab_request_expense_" + obj.name + "_id").val(obj.id);
-        }
-        $("#lab_request_expense_" + obj.name + "_amount").val(obj.amount);
-        if(obj.type==-1) {
-          $("#lab_request_expense_" + obj.name).val(-1);
-        }
-        else {
-          $("#lab_request_expense_" + obj.name).val(obj.type+"_"+obj.object_id);
-        }
-        $("#lab_request_expense_financial_support_" + obj.name).val(obj.financial_support);
-      });
+      displayRequestEditFile(data.files);
+      displayRequestEditExpense(data.expenses);
     }
   }
 
@@ -609,12 +641,17 @@ jQuery(function($){
     });
   }
 
-  function request_uploadFileWithName(name) {
+  function request_uploadFileWithName(name, fileName = "") {
     console.log("[request_uploadFileWithName] name:"+name);
     var file_data = $('#lab_request_add_file_'+name).prop('files')[0];
     var form_data = new FormData();
     form_data.append('file', file_data);
-    form_data.append('file_name_type', name);
+    if (fileName == "") {
+      form_data.append('file_name_type', name);
+    }
+    else {
+      form_data.append('file_name_type', fileName);
+    }
     form_data.append('upload_from', 'request');
     form_data.append('action', 'md_support_save');
     form_data.append('request_id', $("#lab_request_id").val());

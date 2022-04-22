@@ -266,6 +266,10 @@ function lab_request_update_file($file_id, $values) {
     return $wpdb->update($wpdb->prefix."lab_request_files", $values, array("id"=> $file_id));
 }
 
+function lab_request_load_files($request_id) {
+    return lab_request_get_associated_files($request_id);
+}
+
 function lab_request_delete_files($request_id) {
     global $wpdb;
     $wpdb->delete($wpdb->prefix."lab_request_files", array("request_id"=>$request_id));
