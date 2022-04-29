@@ -196,6 +196,7 @@ if (is_admin()) {
     add_action( 'wp_ajax_lab_request_cancel', 'lab_request_cancel_ajax');
     add_action( 'wp_ajax_lab_request_get', 'lab_request_get_ajax');
     add_action( 'wp_ajax_lab_request_list_all', 'lab_request_list_all_ajax');
+    add_action( 'wp_ajax_lab_request_change_state', 'lab_request_change_state_ajax');
     add_action( 'wp_ajax_lab_mission_complete', 'lab_mission_complete');
     add_action( 'wp_ajax_lab_description_save', 'lab_description_ajax_save');
     add_action( 'wp_ajax_lab_description_delete', 'lab_description_ajax_delete');

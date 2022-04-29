@@ -57,7 +57,7 @@ function lab_request_admin() {
   $group = null;
   lab_html_select("lab-request-list-admin_filter_group", "lab-request-list-admin", "", "lab_admin_group_select_group", "acronym, group_name", array("value"=>0,"label"=>"None"), $group, array("id"=>"acronym", "value"=>"value"));
 ?>
-  <select id="lab-request-list-admin_filter_status">
+  <select id="lab-request-list-admin_filter_status" filter="status">
     <option value="">Status</option>
     <option value="-1">Cancel</option>
     <option value="0">No taken</option>

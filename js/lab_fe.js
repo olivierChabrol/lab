@@ -111,6 +111,10 @@ jQuery(function($){
     request_perform_click(null, $(this));
   });
 
+  $("[id^=lab-request-list-admin_filter_]").change(function(e){
+    loadRequests();
+  });
+
   if ($("#lab_request_list_table").length) {
     loadOwnRequests();
   }
@@ -312,9 +316,23 @@ jQuery(function($){
   }
 
   function loadRequests() {
+    
+    let filtersElm = $("[id^=lab-request-list-admin_filter_]");
+    let filters = {};
+    console.log("[loadRequests]");
+    $.each(filtersElm, function(i, obj) {
+      let elmId = $(this).attr("id");
+      let filter = elmId.substring(30);
+      filters[filter] = $(this).val();
+      console.log(elmId);
+      console.log($(this).val());
+    });
+    console.log(filters);
     let data = {
-        'action':'lab_request_list_all'
-    }
+      'action':'lab_request_list_all',
+      'filters' : filters,
+  }
+    console.log(data);
     callAjax(data, null, displayAllRequests, null, null);
   }
 
@@ -354,10 +372,13 @@ jQuery(function($){
         text += " Created by ";
       }
       if (obj.historic_type == -1) {
-        text += " Cancel request by ";
+        text += __(" Cancel request by ","lab");
       }
       if (obj.historic_type == 2) {
-        text += " update by ";
+        text += __(" update by ","lab");
+      }
+      if (obj.historic_type == 10) {
+        text += __(" take in charge by ","lab");
       }
       if (obj.user_id > 0) {
         text += data["users"][obj.user_id].first_name + " " + data["users"][obj.user_id].last_name;
@@ -399,11 +420,18 @@ jQuery(function($){
       else {
         li.html(obj.name + " Exterior "  + obj.amount + " " + " &euro;");
       }
-      //let fileLink = $("<a/>").attr("href", obj.url).attr("target","t"+i).html(obj.name);
-      //li.append(fileLink);
       ul.append(li);
     });
     $("#lab_request_files").append(ul);
+  }
+
+  function request_change_state(request_id, user_id) {
+    let data = {
+      'action' : 'lab_request_change_state',
+      'id' : request_id,
+      'user_id' : user_id,
+    };
+    callAjax(data, null, null, null, null);
   }
 
   function displayViewRequest(data) {
@@ -424,6 +452,14 @@ jQuery(function($){
     if (data["expenses"].length) {
       displayViewRequestExpenses(data);
     }
+    if ($("#lab_resquest_admin_button").length) {
+      let budgetManagerButton = $("<button/>").attr("class", "btn btn-success").attr("objId", data.id).attr("id", "lab-request-change-state-button").html("Take it");
+      $(budgetManagerButton).click(function (){
+        request_change_state($(this).attr("objId"), $("#lab_resquest_admin_button").attr("userId"));
+      });
+      $("#lab_resquest_admin_button").append(budgetManagerButton);
+
+    }
     if(data["request_state"]<0) {
       $("#lab_resquest_state").addClass("text-danger");
       $("#lab_resquest_state").html(__("Cancel", "lab"));
@@ -431,6 +467,10 @@ jQuery(function($){
     else if(data["request_state"]<10) {
       $("#lab_resquest_state").addClass("text-primary");
       $("#lab_resquest_state").html(__("New, pending", "lab"));
+    }
+    else if(data["request_state"] == 10) {
+      $("#lab_resquest_state").addClass("text-primary");
+      $("#lab_resquest_state").html(__("Take in charge", "lab"));
     }
     else {
       $("#lab_resquest_state").addClass("btn-outline-warning");
@@ -449,7 +489,7 @@ jQuery(function($){
     let dateStr = data.historic[0].date;
     let year = dateStr.substr(0, dateStr.indexOf("-"));
     //console.log(data);
-    let path = "/";
+    let path = "requests/";
     path += year;
     path += "/";
     path += data["groups"].acronym;
@@ -534,6 +574,9 @@ jQuery(function($){
         else if (obj.request_state < 10) {
           tdState = $('<td />').html(__("New, pending", "lab"));
         }
+        else if (obj.request_state == 10) {
+          tdState = $('<td />').html(__("Take in charge", "lab"));
+        }
         else {
           tdState = $('<td />').html(__("???", "lab"));
         }
@@ -575,6 +618,14 @@ jQuery(function($){
 
   function displayAllRequests(data) {
     {
+      console.log("[displayAllRequests]");
+      console.log(data["filters"]);
+      console.log(data["filters"].length);
+
+      $.each(data["filters"], function (key, value){ 
+        $("#lab-request-list-admin_filter_" + key).val(value);
+      });
+      //*/
       displayRequests1(data["results"],$("#lab_request_list_table_tbody"));
     }
   }

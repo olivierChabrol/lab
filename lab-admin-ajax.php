@@ -53,7 +53,12 @@ function lab_mission_ajax_excel() {
 
 function lab_request_list_all_ajax()
 {
-  wp_send_json_success(lab_request_list_requests(null));
+  $filters = null;
+  if(isset($_POST['filters'])) {
+    $filters = $_POST['filters'];
+  }
+  
+  wp_send_json_success(lab_request_list_requests($filters));
 }
 
 function lab_mission_ajax_load() {
@@ -180,6 +185,11 @@ function lab_request_save_ajax() {
   //wp_send_json_success($expenses);
   $reqId = lab_request_save($request_id, get_current_user_id(), $request_type, $request_title, $request_text, $previsional_date, $expenses);
   wp_send_json_success($reqId);
+}
+function lab_request_change_state_ajax() {
+  $request_id    = $_POST['id'];
+  $user_id    = $_POST['user_id'];
+  wp_send_json_success(lab_request_take_in_charge($request_id, $user_id));
 }
 function lab_request_load_files_ajax() {
   $request_id    = $_POST['id'];

@@ -29,6 +29,10 @@ function lab_request($param) {
       $html .= '<div class="container"><div class="get-quote"><div class="row"><div class="col-md-12 d-flex">';
       //$html .= '<h1 id="lab_request_view"></h1> <button type="button" class="btn" id="lab_resquest_state">Primary</button>';
       $html .= '<h1 id="lab_request_view"></h1> <p id="lab_resquest_state">Primary</p>';
+      if (lab_is_manager()) {
+        
+        $html .= '<div id="lab_resquest_admin_button" userId="'.get_current_user_id().'"></div>';
+      }
       $html .= '</div></div></div>';
       $html .= '<div class="get-quote"><div class="row"><div class="col-md-12 d-flex">';
       $html .= '<h3>'.esc_html__('Applicant', 'lab').' : <span id="lab_request_applicant" class="small"></span>';

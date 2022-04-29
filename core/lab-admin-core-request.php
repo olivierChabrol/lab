@@ -13,13 +13,24 @@ function lab_request_get_own_requests() {
 
 function lab_request_list_requests($filters) {
     global $wpdb;
+    $noFilter = FALSE;
+    //return $filters;
+    if ($filters == null) {
+        $noFilter = TRUE;
+        $filters = array();
+    }
     $sql = "SELECT lr.*, lrh.date, um1.meta_value as last_name, um2.meta_value as first_name 
               FROM ".$wpdb->prefix."lab_request AS lr ";
     $join = " LEFT JOIN ".$wpdb->prefix."lab_request_historic AS lrh On lrh.request_id = lr.id LEFT JOIN ".$wpdb->prefix."usermeta AS um1 On um1.user_id=lr.request_user_id LEFT JOIN ".$wpdb->prefix."usermeta AS um2 On um2.user_id=lr.request_user_id ";
     $where = " WHERE lrh.historic_type=1 AND um1.meta_key='last_name' AND um2.meta_key='first_name' ";
     $isAdmin = lab_is_admin();
     $isGroupLeader = lab_is_group_leader();
-
+    if (isset($filters["group"]) && $filters["group"] == "0") {
+        unset($filters["group"]);
+    }
+    if (isset($filters["status"]) && $filters["status"] == "") {
+        unset($filters["status"]);
+    }
     if (!$isAdmin && $isGroupLeader) {
         $filters["group"]=$isGroupLeader[0];
     }
@@ -34,6 +45,15 @@ function lab_request_list_requests($filters) {
                 }
                 $join  .= " LEFT JOIN wp_lab_users_groups AS lug On lug.user_id=lr.request_user_id ";
                 $where .= " lug.group_id=".$value;
+            }
+            if ($key == "status") {
+                if (empty($where)) {
+                    $where .= " WHERE ";
+                }
+                else {
+                    $where .= " AND ";
+                }
+                $where .= " lr.request_state = ".$value;
             }
         }
     }
@@ -326,6 +346,13 @@ function lab_request_generateUsers($request) {
     }
     
     return $users;
+}
+
+function lab_request_take_in_charge($request_id, $user_id) {
+    global $wpdb;
+    lab_request_update_state($request_id, LAB_REQUEST_HISTORIC_TAKE_IN_CHARGE);
+    lab_request_add_historic_take_in_charge($request_id, $user_id);
+    return lab_request_get_by_id($request_id);
 }
 
 function lab_request_cancel($request_id) {
