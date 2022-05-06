@@ -3,6 +3,8 @@
     !defined('LAB_REQUEST_HISTORIC_NEW') && define('LAB_REQUEST_HISTORIC_NEW', 1);
     !defined('LAB_REQUEST_HISTORIC_UPDATE') && define('LAB_REQUEST_HISTORIC_UPDATE', 2);
     !defined('LAB_REQUEST_HISTORIC_TAKE_IN_CHARGE') && define('LAB_REQUEST_HISTORIC_TAKE_IN_CHARGE', 10);
+    !defined('LAB_REQUEST_HISTORIC_TAKE_IN_CHARGE') && define('LAB_REQUEST_HISTORIC_VALIDATE', 20);
+    !defined('LAB_REQUEST_HISTORIC_TAKE_IN_CHARGE') && define('LAB_REQUEST_HISTORIC_CLOSE', 100);
 
 function lab_request_get_own_requests() {
     global $wpdb;
@@ -173,6 +175,44 @@ function lab_request_save_expenses($request_id, $expenses) {
     }
 }
 
+if ( ! function_exists('write_log')) {
+    function write_log ( $log )  {
+       if ( is_array( $log ) || is_object( $log ) ) {
+          error_log( print_r( $log, true ) );
+       } else {
+          error_log( $log );
+       }
+    }
+ }
+
+function lab_request_send_email_to_manager($request_id, $message) {
+    global $wpdb;
+    $results = $wpdb->get_results("SELECT * FROM ".$wpdb->prefix."lab_request WHERE id=".$request_id);
+    if (count($results) == 1) {
+        $request = $results[0];
+        $user_id = $request->request_user_id;
+        //return $user_id;
+        $managers = lab_admin_group_get_managers_for_user($user_id);
+        $adminManagers = $managers[1];
+        $isGroupLeader = $managers[2];
+        $to = [];
+        foreach($adminManagers as $manager) {
+            $to[] = $manager->email;
+        }
+        $userNames = lab_admin_usermeta_names($user_id);
+        $headers[] = 'From: Olivier CHABROL <olivier.chabrol@univ-amu.fr>';
+        $headers[] = 'Cc: olivier.chabrol@univ-amu.fr';
+        $subject   = "[Demandes] ne pas tenir compte de ce message c'est un test";
+        $message   = "Nouvelle demande à traiter de ".$userNames->first_name." ".$userNames->last_name;
+        $message  .= '<br> <a href="https://www.i2m.univ-amu.fr/wp-admin/admin.php?page=lab_request_view&tab=entry&id='.$request_id.'&view=1">https://www.i2m.univ-amu.fr/wp-admin/admin.php?page=lab_request_view&tab=entry&id='.$request_id.'&view=1</a>';
+        //wp_mail($to,$subject,$message, $headers);
+        write_log($to);
+        write_log($headers);
+        write_log($subject);
+        write_log($message);
+    }
+}
+
 function lab_request_save($request_id, $request_user_id, $request_type, $request_title, $request_text, $previsional_date, $expenses = null) {
     global $wpdb;
     if (isset($request_id) && $request_id) {
@@ -189,6 +229,8 @@ function lab_request_save($request_id, $request_user_id, $request_type, $request
         lab_request_send_request_to_manager($request_id);
         lab_request_save_expenses($request_id, $expenses);
         lab_request_move_file($request_id);
+        lab_request_send_email_to_manager($request_id, "test");
+        //return lab_request_send_email_to_manager($request_id, "test");
         
         return $request_id;
     }
@@ -305,6 +347,26 @@ function lab_request_delete_historic($request_id) {
     $wpdb->delete($wpdb->prefix."lab_request_historic", array("request_id"=>$request_id));
 }
 
+function lab_request_delete_historic_by_id($id) {
+    global $wpdb;
+    return $wpdb->delete($wpdb->prefix."lab_request_historic", array("id"=>$id));
+}
+
+/**
+ * Undocumented function
+ *
+ * @param [bigint] $id historic ID
+ * @return lab_request_historic line, null otherwise
+ */
+function lab_request_get_historic($id) {
+    global $wpdb;
+    $results = $wpdb->get_results("SELECT * FROM ".$wpdb->prefix."lab_request_historic WHERE id=".$id);
+    if (count($results) == 1) {
+        return $results[0];
+    }
+    return null;
+}
+
 function lab_request_generate_financial_support_map() {
     $a = array();
     $supports = get_financial_support();
@@ -314,6 +376,7 @@ function lab_request_generate_financial_support_map() {
 
     return $a;
 }
+
 
 function lab_request_get_by_id($request_id) {
     global $wpdb;
@@ -326,6 +389,7 @@ function lab_request_get_by_id($request_id) {
         $results[0]->path     = generatePath($results[0]);
         $results[0]->users    = lab_request_generateUsers($results[0]);
         $results[0]->financial_support = lab_request_generate_financial_support_map();
+        $results[0]->admin = lab_is_admin();
         return $results[0];
     }
     else{
@@ -348,17 +412,19 @@ function lab_request_generateUsers($request) {
     return $users;
 }
 
-function lab_request_take_in_charge($request_id, $user_id) {
+function lab_request_change_state($request_id, $user_id, $state) {
     global $wpdb;
-    lab_request_update_state($request_id, LAB_REQUEST_HISTORIC_TAKE_IN_CHARGE);
-    lab_request_add_historic_take_in_charge($request_id, $user_id);
+    lab_request_update_state($request_id, $state);
+    lab_request_add_historic($request_id, $state, $user_id);
     return lab_request_get_by_id($request_id);
 }
 
+function lab_request_take_in_charge($request_id, $user_id) {
+    return lab_request_change_state($request_id, $user_id, LAB_REQUEST_HISTORIC_TAKE_IN_CHARGE);
+}
+
 function lab_request_cancel($request_id) {
-    global $wpdb;
-    lab_request_update_state($request_id, LAB_REQUEST_HISTORIC_CANCEL);
-    return lab_request_get_by_id($request_id);
+    return lab_request_change_state($request_id, $user_id, LAB_REQUEST_HISTORIC_CANCEL);
 }
 
 function lab_request_add_historic_cancel_request($request_id, $user_id) {

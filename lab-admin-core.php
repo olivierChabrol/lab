@@ -1102,6 +1102,21 @@ function lab_admin_usermeta_names($userId) {
  * GROUP
  ***********************************************************************************************************/
 
+function lab_admin_group_get_managers_for_user($userId) {
+    global $wpdb;
+    $results =$wpdb->get_results("SELECT lug.group_id, lgm.user_id, lgm.manager_type as type, um.user_email as email FROM `".$wpdb->prefix."lab_users_groups` AS lug 
+    JOIN ".$wpdb->prefix."lab_group_manager AS lgm ON lgm.group_id=lug.`group_id` 
+    JOIN ".$wpdb->prefix."users AS um ON um.id = lgm.user_id WHERE lug.user_id=".$userId);
+    $managers = [];
+    foreach($results as $manager) {
+        if (!isset($managers[$manager->type])) {
+            $managers[$manager->type] = [];
+        }
+        $managers[$manager->type][] = $manager;
+    }
+    return $managers;
+}
+
 function lab_admin_group_get_groups_of_manager($managerId) {
     global $wpdb;
     $results =$wpdb->get_results("SELECT group_id FROM `".$wpdb->prefix."lab_group_manager` WHERE `user_id`=".$managerId." AND `manager_type`=1");

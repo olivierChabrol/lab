@@ -167,15 +167,6 @@ function lab_request_save_ajax() {
         $expense["type"] = $split[0];
         $expense["object_id"] = $split[1];
         $expense["financial_support"] = $_POST['expense_financial_support_' . $i];
-        /*
-        if (count($split)>2) {
-          $expense["financial_support"] = $split[2];
-        }
-        else
-        {
-          $expense["financial_support"] = -1;
-        }
-        //*/
       }
       $expense["name"] = $_POST['expense_name_' . $i];
       $expense["amount"] = $_POST['expense_value_' . $i];
@@ -186,10 +177,27 @@ function lab_request_save_ajax() {
   $reqId = lab_request_save($request_id, get_current_user_id(), $request_type, $request_title, $request_text, $previsional_date, $expenses);
   wp_send_json_success($reqId);
 }
+
+function lab_request_delete_histo_ajax() {
+  if (lab_is_admin()) {
+    $id    = $_POST['id'];
+    $histo = lab_request_get_historic($id);
+    $request_id = $histo->request_id;
+    lab_request_delete_historic_by_id($id);
+    wp_send_json_success(lab_request_get_by_id($request_id));
+    //*/
+  }
+  else {
+    wp_send_json_error("Not admin");
+  }
+}
+
 function lab_request_change_state_ajax() {
   $request_id    = $_POST['id'];
-  $user_id    = $_POST['user_id'];
-  wp_send_json_success(lab_request_take_in_charge($request_id, $user_id));
+  $state    = $_POST['state'];
+  $user_id  = get_current_user_id();
+  
+  wp_send_json_success(lab_request_change_state($request_id, $user_id, $state));
 }
 function lab_request_load_files_ajax() {
   $request_id    = $_POST['id'];

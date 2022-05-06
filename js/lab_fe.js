@@ -38,8 +38,8 @@ jQuery(function($){
       'request_text': $("#lab_request_text").val(),
     };
     request_get_expenses(data);
-    callAjax(data, __("Request send", "lab"), forwardToRequestList, null, null);
-    //callAjax(data, __("Request send", "lab"), null, null, null);
+    //callAjax(data, __("Request send", "lab"), forwardToRequestList, null, null);
+    callAjax(data, __("Request send", "lab"), null, null, null);
   });
 
 
@@ -362,7 +362,8 @@ jQuery(function($){
 
   function displayViewRequestHistoric(data) {
     console.log("[displayViewRequestHistoric]");
-    console.log(data);
+    console.log(data["admin"]);
+    //console.log(data);
     $("#lab_request_historic").empty();
     let ul = $('<ul class="list-group" id="lab_resquest_list_historic"/>');
     $(data["historic"]).each(function( i, obj ) {
@@ -380,14 +381,34 @@ jQuery(function($){
       if (obj.historic_type == 10) {
         text += __(" take in charge by ","lab");
       }
+      if (obj.historic_type == 20) {
+        text += __(" validate by ","lab");
+      }
       if (obj.user_id > 0) {
         text += data["users"][obj.user_id].first_name + " " + data["users"][obj.user_id].last_name;
       }
       li.html(text);
+      if (data["admin"]) {
+        let delButton = $("<button/>").attr("class", "btn btn-danger").html("Delete");
+        li.append(delButton);
+        $(delButton).click(function (){
+          request_delete_historic(obj.id);
+        });
+      }
+      
       ul.append(li);
     });
     $("#lab_request_historic").append(ul);
   }
+
+  function request_delete_historic(histo_id) {
+    let data = {
+      'action' : 'lab_request_delete_histo',
+      'id' : histo_id,
+    };
+    callAjax(data, null, displayViewRequestHistoric, null, null);
+  }
+
   function displayViewRequestFiles(data) {
     console.log("[displayViewRequestFiles]");
     console.log(data);
@@ -425,13 +446,13 @@ jQuery(function($){
     $("#lab_request_files").append(ul);
   }
 
-  function request_change_state(request_id, user_id) {
+  function request_change_state(request_id, state) {
     let data = {
       'action' : 'lab_request_change_state',
       'id' : request_id,
-      'user_id' : user_id,
+      'state' : state,
     };
-    callAjax(data, null, null, null, null);
+    callAjax(data, null, displayViewRequest, null, null);
   }
 
   function displayViewRequest(data) {
@@ -453,12 +474,23 @@ jQuery(function($){
       displayViewRequestExpenses(data);
     }
     if ($("#lab_resquest_admin_button").length) {
-      let budgetManagerButton = $("<button/>").attr("class", "btn btn-success").attr("objId", data.id).attr("id", "lab-request-change-state-button").html("Take it");
-      $(budgetManagerButton).click(function (){
-        request_change_state($(this).attr("objId"), $("#lab_resquest_admin_button").attr("userId"));
-      });
-      $("#lab_resquest_admin_button").append(budgetManagerButton);
-
+      //if (data["request_state"] < 10) {
+        let budgetManagerButton = $("<button/>").attr("class", "btn btn-success").attr("objId", data.id).attr("id", "lab-request-change-state-button").html(__("Take in charge","lab"));
+        $(budgetManagerButton).click(function (){
+          request_change_state($(this).attr("objId"), 10);
+        });
+        $("#lab_resquest_admin_button").append(budgetManagerButton);
+      //}
+    }
+    
+    if ($("#lab_resquest_group_leader_button").length) {
+      if (data["request_state"] < 20) {
+        let budgetManagerButton = $("<button/>").attr("class", "btn btn-success").attr("objId", data.id).attr("id", "lab-request-change-state-button").html(__("Validate","lab"));
+        $(budgetManagerButton).click(function (){
+          request_change_state($(this).attr("objId"), 20);
+        });
+        $("#lab_resquest_group_leader_button").append(budgetManagerButton);
+      }
     }
     if(data["request_state"]<0) {
       $("#lab_resquest_state").addClass("text-danger");
@@ -471,6 +503,10 @@ jQuery(function($){
     else if(data["request_state"] == 10) {
       $("#lab_resquest_state").addClass("text-primary");
       $("#lab_resquest_state").html(__("Take in charge", "lab"));
+    }
+    else if(data["request_state"] == 20) {
+      $("#lab_resquest_state").addClass("text-primary");
+      $("#lab_resquest_state").html(__("Validate", "lab"));
     }
     else {
       $("#lab_resquest_state").addClass("btn-outline-warning");
@@ -577,6 +613,9 @@ jQuery(function($){
         else if (obj.request_state == 10) {
           tdState = $('<td />').html(__("Take in charge", "lab"));
         }
+        else if (obj.request_state == 20) {
+          tdState = $('<td />').html(__("Validated", "lab"));
+        }
         else {
           tdState = $('<td />').html(__("???", "lab"));
         }
@@ -603,6 +642,12 @@ jQuery(function($){
         }
         else if (obj.request_state < 10) {
           tdState = $('<td />').html(__("New, pending", "lab"));
+        }
+        else if(obj.request_state == 10) {
+          tdState = $('<td />').html(__("Take in charge", "lab"));
+        }
+        else if(obj.request_state == 20) {
+          tdState = $('<td />').html(__("Validate", "lab"));
         }
         else {
           tdState = $('<td />').html(__("???", "lab"));
@@ -660,19 +705,23 @@ jQuery(function($){
 
   function createActionRequestButton(id, data, editLabel, editValue) {   
     
-    let userId = $("#lab_request_user_id").val();
-    let aEdit = $('<a />').attr("class", "lab-page-title-action lab_mission_edit").attr("href",editValue).attr("objId", id).html(editLabel);
-    let aDel = $('<a />').attr("class", "lab-page-title-action lab_budget_info_delete").attr("objId", id).attr("id", "lab-delete-div-button").html("X");
+    let userId  = $("#lab_request_user_id").val();
+    let aEdit   = $('<a />').attr("class", "lab-page-title-action lab_mission_edit").attr("href",editValue).attr("objId", id).html(editLabel);
+    let aCancel = $('<a />').attr("class", "lab-page-title-action lab_budget_info_delete").attr("objId", id).attr("id", "lab-delete-div-button").html("X");
 
-    $(aDel).click(function (){
-      displayModalDeleteRequest($(this).attr("objId"));
+    $(aCancel).click(function (){
+      displayModalCancelRequest($(this).attr("objId"));
     });
+    if(data["admin"]) {
+      let aDelete = $('<a />').attr("class", "lab-page-title-action lab_budget_info_delete").attr("objId", id).attr("id", "lab-delete-div-button").html("X");
 
-    return $('<td />').attr("class", "lab_keyring_icon").append(aEdit).append(aDel);   
+    }
+
+    return $('<td />').attr("class", "lab_keyring_icon").append(aEdit).append(aCancel);   
   }
 
-  function displayModalDeleteRequest(objId) {
-      console.log("[displayModalDeleteRequest] requestId : " + objId)
+  function displayModalCancelRequest(objId) {
+      console.log("[displayModalCancelRequest] requestId : " + objId)
       $("#lab_request_delete_dialog").modal();
       $("#lab_request_delete_dialog_request_id").val(objId);
   }
