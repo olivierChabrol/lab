@@ -202,20 +202,20 @@ function lab_request_send_email_to_manager($request_id, $message) {
         $userNames = lab_admin_usermeta_names($user_id);
         $headers[] = 'From: Olivier CHABROL <olivier.chabrol@univ-amu.fr>';
         $headers[] = 'Cc: olivier.chabrol@univ-amu.fr';
+        $headers[] = 'Content-Type: text/html; charset=UTF-8';
         $subject   = "[Demandes] ne pas tenir compte de ce message c'est un test";
         $message   = "Nouvelle demande à traiter de ".$userNames->first_name." ".$userNames->last_name;
         $message  .= '<br> <a href="https://www.i2m.univ-amu.fr/wp-admin/admin.php?page=lab_request_view&tab=entry&id='.$request_id.'&view=1">https://www.i2m.univ-amu.fr/wp-admin/admin.php?page=lab_request_view&tab=entry&id='.$request_id.'&view=1</a>';
-        apply_filters( 'wp_mail_content_type', "text/html" );
-        apply_filters( 'wp_mail_charset', 'UTF-8');
+        
+        add_filter( 'wp_mail_content_type','wpse27856_set_content_type' );
         wp_mail($to,$subject,$message, $headers);
-        /*
-        write_log($to);
-        write_log($headers);
-        write_log($subject);
-        write_log($message);
-        //*/
+        remove_filter( 'wp_mail_content_type','wpse27856_set_content_type' );
     }
 }
+function wpse27856_set_content_type(){
+    return "text/html";
+}
+
 
 function lab_request_save($request_id, $request_user_id, $request_type, $request_title, $request_text, $previsional_date, $expenses = null) {
     global $wpdb;
