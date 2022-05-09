@@ -196,13 +196,10 @@ function lab_request_send_email_to_manager($request_id, $message) {
         $adminManagers = $managers[1];
         $isGroupLeader = $managers[2];
         $to = [];
-        /*
+        
         foreach($adminManagers as $manager) {
             $to[] = $manager->email;
         }
-        //*/
-        $to[] = "olivier.chabrol@univ-amu.fr";
-        $to[] = "guillaume.chagnard@univ-amu.fr";
         $userNames = lab_admin_usermeta_names($user_id);
         $headers[] = 'From: Olivier CHABROL <olivier.chabrol@univ-amu.fr>';
         $headers[] = 'Cc: olivier.chabrol@univ-amu.fr';
