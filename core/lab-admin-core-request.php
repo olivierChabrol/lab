@@ -196,9 +196,13 @@ function lab_request_send_email_to_manager($request_id, $message) {
         $adminManagers = $managers[1];
         $isGroupLeader = $managers[2];
         $to = [];
+        /*
         foreach($adminManagers as $manager) {
             $to[] = $manager->email;
         }
+        //*/
+        $to[] = "olivier.chabrol@univ-amu.fr";
+        $to[] = "guillaume.chagnard@univ-amu.fr";
         $userNames = lab_admin_usermeta_names($user_id);
         $headers[] = 'From: Olivier CHABROL <olivier.chabrol@univ-amu.fr>';
         $headers[] = 'Cc: olivier.chabrol@univ-amu.fr';
@@ -208,7 +212,7 @@ function lab_request_send_email_to_manager($request_id, $message) {
         $message  .= '<br> <a href="https://www.i2m.univ-amu.fr/wp-admin/admin.php?page=lab_request_view&tab=entry&id='.$request_id.'&view=1">https://www.i2m.univ-amu.fr/wp-admin/admin.php?page=lab_request_view&tab=entry&id='.$request_id.'&view=1</a>';
         
         add_filter( 'wp_mail_content_type','wpse27856_set_content_type' );
-        wp_mail(implode(",", $to),$subject,$message, $headers);
+        wp_mail($to,$subject,$message, $headers);
         remove_filter( 'wp_mail_content_type','wpse27856_set_content_type' );
     }
 }
