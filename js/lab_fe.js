@@ -38,8 +38,8 @@ jQuery(function($){
       'request_text': $("#lab_request_text").val(),
     };
     request_get_expenses(data);
-    //callAjax(data, __("Request send", "lab"), forwardToRequestList, null, null);
-    callAjax(data, __("Request send", "lab"), null, null, null);
+    callAjax(data, __("Request send", "lab"), forwardToRequestList, null, null);
+    //callAjax(data, __("Request send", "lab"), null, null, null);
   });
 
 

@@ -205,6 +205,8 @@ function lab_request_send_email_to_manager($request_id, $message) {
         $subject   = "[Demandes] ne pas tenir compte de ce message c'est un test";
         $message   = "Nouvelle demande à traiter de ".$userNames->first_name." ".$userNames->last_name;
         $message  .= '<br> <a href="https://www.i2m.univ-amu.fr/wp-admin/admin.php?page=lab_request_view&tab=entry&id='.$request_id.'&view=1">https://www.i2m.univ-amu.fr/wp-admin/admin.php?page=lab_request_view&tab=entry&id='.$request_id.'&view=1</a>';
+        apply_filters( 'wp_mail_content_type', "text/html" );
+        apply_filters( 'wp_mail_charset', 'UTF-8');
         wp_mail($to,$subject,$message, $headers);
         /*
         write_log($to);
