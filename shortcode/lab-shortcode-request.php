@@ -99,7 +99,7 @@ function generate_financial_support($suffix) {
     $html .= lab_html_select_str("lab_request_expense_financial_support_".$suffix, "lab_request_expense_financial_support_".$suffix, "", "get_financial_support", null, array("value"=>"-1","label"=>"None"), null);
   }
   else {
-    $html .= '<input type="hidden" id="lab_request_expense_financial_support_'.$suffix.'_id" value="-1">';
+    $html .= '<input type="hidden" id="lab_request_expense_financial_support_'.$suffix.'" value="-1">';
   }
   return $html;
 }
