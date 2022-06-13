@@ -62,7 +62,7 @@ function lab_request_list_requests($filters) {
     $sql .= $join.$where;
 
     $results = $wpdb->get_results($sql);
-    return ["results"=>$results, "sql"=>$sql, "filters"=>$filters];
+    return ["results"=>$results, "sql"=>$sql, "filters"=>$filters,"admin"=>lab_is_admin()];
 }
 
 function lab_request_delete_file($fileId) {
@@ -429,7 +429,7 @@ function lab_request_take_in_charge($request_id, $user_id) {
 }
 
 function lab_request_cancel($request_id) {
-    return lab_request_change_state($request_id, $user_id, LAB_REQUEST_HISTORIC_CANCEL);
+    return lab_request_change_state($request_id, get_current_user_id(), LAB_REQUEST_HISTORIC_CANCEL);
 }
 
 function lab_request_add_historic_cancel_request($request_id, $user_id) {
