@@ -304,7 +304,7 @@ jQuery(function($){
       'action':action,
       'id':objId,
     }
-    callAjax(data, null, displayRequests, null, null);
+    callAjax(data, null, loadOwnRequests, null, null);
   }
 
   function loadRequestById(id) {
@@ -630,6 +630,7 @@ jQuery(function($){
   }
 
   function displayRequests(data, tableBody) {
+    console.log(tableBody);
     tableBody.empty();
     $.each(data, function(i, obj) {
         let tr = $('<tr />');
@@ -677,6 +678,7 @@ jQuery(function($){
 
   function displayOwnRequests(data)
   {
+    console.log($("#lab_request_list_table_tbody"));
     displayRequests(data,$("#lab_request_list_table_tbody"));
   }
 
@@ -712,12 +714,13 @@ jQuery(function($){
     $(aCancel).click(function (){
       displayModalCancelRequest($(this).attr("objId"));
     });
+    let td = $('<td />').attr("class", "lab_keyring_icon").append(aEdit).append(aCancel);
     if(data["admin"]) {
       let aDelete = $('<a />').attr("class", "lab-page-title-action lab_budget_info_delete").attr("objId", id).attr("id", "lab-delete-div-button").html("X");
-
+      td.append(aDelete);
     }
 
-    return $('<td />').attr("class", "lab_keyring_icon").append(aEdit).append(aCancel);   
+    return td;
   }
 
   function displayModalCancelRequest(objId) {
