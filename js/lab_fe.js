@@ -245,7 +245,12 @@ jQuery(function($){
 
   $("#lab_div_delete_confirm").click(function() {
     console.log($("#lab_contract_delete_dialog_contract_id").val());
-    deleteObj($("#lab_request_delete_dialog_request_id").val(),'lab_request_cancel');
+    if($("#lab_request_delete_dialog_order").val() == "cancel") {
+      deleteObj($("#lab_request_delete_dialog_request_id").val(),'lab_request_cancel');
+    }
+    else if ($("#lab_request_delete_dialog_order").val() == "delete") {
+      deleteObj($("#lab_request_delete_dialog_request_id").val(),'lab_request_delete');
+    }
   });
 
   $("#lab_request_upload_nic").click(function() {
@@ -709,24 +714,39 @@ jQuery(function($){
     
     let userId  = $("#lab_request_user_id").val();
     let aEdit   = $('<a />').attr("class", "lab-page-title-action lab_mission_edit").attr("href",editValue).attr("objId", id).html(editLabel);
-    let aCancel = $('<a />').attr("class", "lab-page-title-action lab_budget_info_delete").attr("objId", id).attr("id", "lab-delete-div-button").html("X");
+    let aCancel = $('<a />').attr("class", "lab-page-title-action lab_budget_info_delete").attr("objId", id).attr("id", "lab-cancel-div-button").html('<i class="fas fa-ban"></i>');
+    let aDelete = $('<a />').attr("class", "lab-page-title-action lab_budget_info_delete").attr("objId", id).attr("id", "lab-delete-div-button").html('<i class="fas fa-trash"></i>');
 
     $(aCancel).click(function (){
       displayModalCancelRequest($(this).attr("objId"));
     });
+    $(aDelete).click(function (){
+      displayModalDeleteRequest($(this).attr("objId"));
+    });
     let td = $('<td />').attr("class", "lab_keyring_icon").append(aEdit).append(aCancel);
+    /*
     if(data["admin"]) {
       let aDelete = $('<a />').attr("class", "lab-page-title-action lab_budget_info_delete").attr("objId", id).attr("id", "lab-delete-div-button").html("X");
       td.append(aDelete);
     }
+    //*/
+    td.append(aDelete);
 
     return td;
   }
+
+  function displayModalDeleteRequest(objId) {
+    console.log("[displayModalCancelRequest] requestId : " + objId)
+    $("#lab_request_delete_dialog").modal();
+    $("#lab_request_delete_dialog_request_id").val(objId);
+    $("#lab_request_delete_dialog_order").val("delete");
+}
 
   function displayModalCancelRequest(objId) {
       console.log("[displayModalCancelRequest] requestId : " + objId)
       $("#lab_request_delete_dialog").modal();
       $("#lab_request_delete_dialog_request_id").val(objId);
+      $("#lab_request_delete_dialog_order").val("cancel");
   }
 
   function labToolsLoad()

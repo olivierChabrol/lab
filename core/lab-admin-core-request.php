@@ -325,7 +325,8 @@ function lab_request_delete($request_id) {
     global $wpdb;
     lab_request_delete_historic($request_id);
     lab_request_expenses_delete_by_request($request_id);
-    $wpdb->delete($wpdb->prefix."lab_request", array("request_id"=>$request_id));
+    lab_request_delete_files($request_id);
+    return $wpdb->delete($wpdb->prefix."lab_request", array("id"=>$request_id));
 }
 
 function lab_request_update_file($file_id, $values) {

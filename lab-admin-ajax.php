@@ -222,6 +222,22 @@ function lab_request_cancel_ajax() {
   }
 }
 
+function lab_request_delete_ajax() {
+  $request_id    = $_POST['id'];
+  if(!isset($request_id) || empty($request_id))
+  {
+    wp_send_json_error("No id send");
+  }
+  $request_modify = lab_request_delete($request_id);
+  if ($request_modify) {
+    wp_send_json_success($request_modify);
+  }
+  else {
+    wp_send_json_error("Failed to delete request");
+  }
+
+}
+
 function lab_request_delete_file_ajax() {
   $fileId = $_POST['id'];
   $r = lab_request_delete_file($fileId); 

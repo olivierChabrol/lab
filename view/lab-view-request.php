@@ -72,6 +72,7 @@ function lab_request_admin() {
   <div id="lab_request_delete_dialog" class="modal">
       <p><?php esc_html_e('Do you really want to delete this request ?','lab');?></p>
       <input type="hidden" id="lab_request_delete_dialog_request_id" value="">
+      <input type="hidden" id="lab_request_delete_dialog_order" value="cancel">
       <div id="lab_request_delete_dialog_options">
       <a href="#" rel="modal:close"><?php esc_html_e('Cancel','lab')?></a>
       <a href="#" rel="modal:close" id="lab_div_delete_confirm" keyid=""><?php esc_html_e('Confirm','lab'); ?></a>
@@ -89,6 +90,7 @@ function lab_request_list() {
     <div id="lab_request_delete_dialog" class="modal">
         <p><?php esc_html_e('Do you really want to delete this request ?','lab');?></p>
         <input type="hidden" id="lab_request_delete_dialog_request_id" value="">
+        <input type="hidden" id="lab_request_delete_dialog_order" value="cancel">
         <div id="lab_request_delete_dialog_options">
         <a href="#" rel="modal:close"><?php esc_html_e('Cancel','lab')?></a>
         <a href="#" rel="modal:close" id="lab_div_delete_confirm" keyid=""><?php esc_html_e('Confirm','lab'); ?></a>
