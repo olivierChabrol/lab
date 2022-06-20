@@ -65,6 +65,13 @@ function lab_request_list_requests($filters) {
     return ["results"=>$results, "sql"=>$sql, "filters"=>$filters,"admin"=>lab_is_admin()];
 }
 
+function lab_request_delete_all_files($request_id) {
+    $files = lab_request_load_files($request_id);
+    foreach($files as $file) {
+        lab_request_delete_file($file->id);
+    }
+}
+
 function lab_request_delete_file($fileId) {
     //TODO faire le control de qui peut supprimer des fichiers
     global $wpdb;
@@ -325,7 +332,7 @@ function lab_request_delete($request_id) {
     global $wpdb;
     lab_request_delete_historic($request_id);
     lab_request_expenses_delete_by_request($request_id);
-    lab_request_delete_files($request_id);
+    lab_request_delete_all_files($request_id);
     return $wpdb->delete($wpdb->prefix."lab_request", array("id"=>$request_id));
 }
 
