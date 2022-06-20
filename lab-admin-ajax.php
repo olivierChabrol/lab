@@ -1568,11 +1568,14 @@ function md_support_save(){
     $fileId = lab_request_save_file($request_id,$url , $fileNameType);
     //$request_id
     //$file1 = array("id"=>$fileId,"url"=>$url, "name"=>$fileNameType);
+    /*
     $reponse = array();
     $reponse["files"] = lab_request_get_associated_files($request_id);
     $reponse["tmp_name"] = $file['tmp_name'];
     $reponse["to_name"] = $newFile_name;
     wp_send_json_success($reponse);
+    //*/
+    wp_send_json_success(lab_request_get_associated_files($request_id));
   }
   else
   {
