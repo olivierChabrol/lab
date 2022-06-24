@@ -225,17 +225,17 @@ function wpse27856_set_content_type(){
 }
 
 
-function lab_request_save($request_id, $request_user_id, $request_type, $request_title, $request_text, $previsional_date, $expenses = null) {
+function lab_request_save($request_id, $request_user_id, $request_type, $request_title, $request_text, $previsional_date, $end_date, $expenses = null) {
     global $wpdb;
     if (isset($request_id) && $request_id) {
-        $wpdb->update($wpdb->prefix."lab_request", array("request_type" => $request_type, "request_title"=>$request_title, "request_text" => $request_text, "request_previsional_date"=>$previsional_date), array("id" => $request_id));
+        $wpdb->update($wpdb->prefix."lab_request", array("request_type" => $request_type, "request_title"=>$request_title, "request_text" => $request_text, "request_previsional_date"=>$previsional_date, "end_date"=>$end_date), array("id" => $request_id));
         lab_request_add_historic_update_request($request_id, get_current_user_id());
         lab_request_save_expenses($request_id, $expenses);
         return lab_request_move_file($request_id);
         return $request_id;
     }
     else {
-        $wpdb->insert($wpdb->prefix."lab_request", array("request_user_id"=>$request_user_id, "request_type" => $request_type, "request_title"=>$request_title, "request_text" => $request_text, "request_previsional_date"=>$previsional_date));
+        $wpdb->insert($wpdb->prefix."lab_request", array("request_user_id"=>$request_user_id, "request_type" => $request_type, "request_title"=>$request_title, "request_text" => $request_text, "request_previsional_date"=>$previsional_date, "end_date"=>$end_date));
         $request_id = $wpdb->insert_id;
         lab_request_add_historic_new_request($request_id, get_current_user_id());
         lab_request_send_request_to_manager($request_id);

@@ -146,6 +146,10 @@ function lab_request_save_ajax() {
   if (!isset($previsional_date) || $previsional_date == "") {
     $previsional_date = null;
   }
+  $end_date  = $_POST['request_end_date'];
+  if (!isset($end_date) || $end_date == "") {
+    $end_date = null;
+  }
   $expenses = null;
   if(isset($expenses_number)) {
     $expenses = array ();
@@ -173,8 +177,8 @@ function lab_request_save_ajax() {
       $expenses[] = $expense;
     }
   }
-  //wp_send_json_success($expenses);
-  $reqId = lab_request_save($request_id, get_current_user_id(), $request_type, $request_title, $request_text, $previsional_date, $expenses);
+  //wp_send_json_success($end_date);
+  $reqId = lab_request_save($request_id, get_current_user_id(), $request_type, $request_title, $request_text, $previsional_date, $end_date, $expenses);
   wp_send_json_success($reqId);
 }
 

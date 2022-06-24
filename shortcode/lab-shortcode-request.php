@@ -59,7 +59,8 @@ function lab_request($param) {
       $html .= '<br /><label for="lab_request_type_request">'.esc_html__('Type of request', 'lab').'</label>';
       //$html .= lab_html_select_str("lab_request_type_request", "lab_request_type_request", "", "lab_admin_get_params_request_type", null, null, null, null, null);
       $html .= lab_html_select_str("lab_request_type", "lab_request_type", "", "lab_admin_get_params_request_type", null, null, null, null, array("slug"=>"slug"));
-      $html .= '<label id="lab_request_date_label" for="lab_request_previsional_date">'.esc_html__('Provisional date', 'lab').' :</label> <input type="date" id="lab_request_previsional_date">';
+      $html .= '<label id="lab_request_previsional_date_label" for="lab_request_previsional_date">'.esc_html__('Provisional date', 'lab').' :</label> <input type="date" id="lab_request_previsional_date">';
+      $html .= '<label id="lab_request_end_date_label" for="lab_request_end_date">'.esc_html__('End date', 'lab').' :</label> <input type="date" id="lab_request_end_date">';
       $html .= '<br />';
       $html .= '<label for="lab_request_title">'.esc_html__('Request title', 'lab').'</label>';
       $html .= '<input id="lab_request_title" type="text" size="50" placeholder="'.esc_html__('ex : European Congress of Mathematics', 'lab').'"></input><br/>';

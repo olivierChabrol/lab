@@ -520,7 +520,8 @@ function lab_admin_contract_get_all_contracts() {
     $sql = "SELECT cu.*, c.contract_type as contract_type_id, p.value as contract_type, c.name, c.start, c.end  
               FROM `".$wpdb->prefix."lab_contract_user` AS cu 
               JOIN ".$wpdb->prefix."lab_contract AS c ON c.id = cu.contract_id 
-              JOIN ".$wpdb->prefix."lab_params as p ON p.id = c.contract_type";
+              JOIN ".$wpdb->prefix."lab_params as p ON p.id = c.contract_type
+              WHERE cu.user_type=1";
     return $wpdb->get_results($sql);
 }
 

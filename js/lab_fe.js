@@ -33,6 +33,7 @@ jQuery(function($){
       'action': 'lab_request_save',
       'request_id': $("#lab_request_id").val(),
       'request_previsional_date': $("#lab_request_previsional_date").val(),
+      'request_end_date': $("#lab_request_end_date").val(),
       'request_type': $("#lab_request_type").val(),
       'request_title': $("#lab_request_title").val(),
       'request_text': $("#lab_request_text").val(),
@@ -158,6 +159,7 @@ jQuery(function($){
       'action': 'lab_request_save',
       'request_id': $("#lab_request_id").val(),
       'request_previsional_date': $("#lab_request_previsional_date").val(),
+      'request_end_date': $("#lab_request_end_date").val(),
       'request_type': $("#lab_request_type").val(),
       'request_title': $("#lab_request_title").val(),
       'request_text': $("#lab_request_text").val(),
@@ -292,10 +294,14 @@ jQuery(function($){
     if(slug == "rt_poe") {
       $("#lab_request_previsional_date_label").hide();
       $("#lab_request_previsional_date").hide();
+      $("#lab_request_end_date_label").hide();
+      $("#lab_request_end_date").hide();
     }
     else {
       $("#lab_request_previsional_date_label").show();
       $("#lab_request_previsional_date").show();
+      $("#lab_request_end_date_label").show();
+      $("#lab_request_end_date").show();
     }
   }
 
@@ -472,6 +478,7 @@ jQuery(function($){
     $("#lab_request_text").html(data["request_text"]);
     $("#lab_request_applicant").html(data["first_name"] + " " + data["last_name"]);
     $("#lab_request_previsional_date").html(data["request_previsional_date"]);
+    $("#lab_request_end_date").html(data["end_date"]);
     if (data["files"].length) {
       displayViewRequestFiles(data.files);
     }
@@ -594,6 +601,7 @@ jQuery(function($){
       $("#lab_request_title").val(data["request_title"]);
       $("#lab_request_text").val(data["request_text"]);
       $("#lab_request_previsional_date").val(data["request_previsional_date"]);
+      $("#lab_request_end_date").val(data["end_date"]);
       request_hideDisplayPrevisionalDate($("#lab_request_type"));
       displayRequestEditFile(data.files);
       displayRequestEditExpense(data.expenses);
