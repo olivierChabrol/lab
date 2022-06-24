@@ -93,7 +93,7 @@ function lab_event_of_the_day($param)
             JOIN `wp_em_events`          AS p   ON p.`post_id`=tr.`object_id` 
             JOIN `wp_postmeta`           AS pmd ON pmd.`post_id`         = p.`post_id`
             WHERE pmd.meta_key = 'Speaker' AND (p.`event_start_date` >= '".$day_start."' 
-                AND p.`event_end_date` <= '".$day_end."') OR (p.`event_start_date` < '".$day_start."' AND '".$day_start."' < p.`event_end_date`) 
+                AND p.`event_end_date` <= '".$day_end."') OR (p.`event_start_date` <= '".$day_start."' AND p.`event_end_date` >= '".$day_start."') 
             ORDER BY `p`.`event_start_time` ASC";
     global $wpdb;
     $results = $wpdb->get_results($sql);
@@ -144,8 +144,8 @@ function lab_event_of_the_day($param)
         $content .= esc_html__("No event today",'lab')."<br>";
     }
     //$content .= "<br> Start End : ".$day_start." ".$day_end."<br>";
-    return $content;
-    //return $sql;
+    //return $content;
+    return $sql;
 }
 
 /***********************************************************************************************************************
