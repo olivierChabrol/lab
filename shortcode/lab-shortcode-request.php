@@ -66,7 +66,12 @@ function lab_request($param) {
       $html .= '<input id="lab_request_title" type="text" size="50" placeholder="'.esc_html__('ex : European Congress of Mathematics', 'lab').'"></input><br/>';
       $html .= '<label for="lab_request_text">'.esc_html__('Request', 'lab').'</label>';
       $html .= '<textarea id="lab_request_text" placeholder="'.esc_html__('ex : Hi M Durant, i want to go to the European Congress of Mathematis by plane', 'lab').'" rows="5" cols="50"></textarea><br/>';
-      $html .= '<h5>Estimated cost :</h5>';
+      $html .= '<h5>'.esc_html__("Estimated cost", "lab").' :</h5>';
+      
+      esc_html__("transport costs", "lab");
+      esc_html__("hosting costs", "lab");
+      esc_html__("fooding costs", "lab");
+      
       $html .= generate_expense_type("transport");
       $html .= generate_expense_type("hosting");
       $html .= generate_expense_type("fooding");
@@ -84,9 +89,11 @@ function lab_request($param) {
 function generate_expense_type($suffix) {
   $html = '<label for="lab_request_expense_'.$suffix.'">'.esc_html__($suffix.' costs', 'lab').' : </label>';
   $html .= '<input type="hidden" id="lab_request_expense_'.$suffix.'_id" value="">';
+  $html .= '<label for="lab_request_expense_'.$suffix.'_amount">'.esc_html__('Maximum estimated cost', 'lab').' : </label>';
+  $html .= '<input type="text" id="lab_request_expense_'.$suffix.'_amount" value="0.0"></input>&euro; &nbsp;';
   $html .= generate_expense_combobox($suffix);
   $html .= generate_financial_support($suffix);
-  $html .= '&nbsp;<input type="text" id="lab_request_expense_'.$suffix.'_amount" value="0.0"></input>&euro;<br/>';
+  $html .= "<br/>";
   return $html;
 }
 
@@ -97,6 +104,7 @@ function get_financial_support() {
 function generate_financial_support($suffix) {
   $html = "";
   if (lab_is_admin() || lab_is_manager()) {
+    $html .= '<label for="lab_request_expense_financial_support_'.$suffix.'">'.esc_html__('Tutelage', 'lab').' : </label>';
     $html .= lab_html_select_str("lab_request_expense_financial_support_".$suffix, "lab_request_expense_financial_support_".$suffix, "", "get_financial_support", null, array("value"=>"-1","label"=>"None"), null);
   }
   else {
@@ -106,7 +114,8 @@ function generate_financial_support($suffix) {
 }
 
 function generate_expense_combobox($suffix) {
-  $html = '<select id="lab_request_expense_'.$suffix.'">';
+  $html = '<label for="lab_request_expense_'.$suffix.'">'.esc_html__('Funding', 'lab').' : </label>';
+  $html .= '<select id="lab_request_expense_'.$suffix.'">';
   $html .= '<option value="-1">'.esc_html__('Exterior', 'lab').'</option>';
   $groups = null;
   $contracts = null;
@@ -120,10 +129,10 @@ function generate_expense_combobox($suffix) {
     $contracts = lab_admin_contract_get_contracts_by_user($host->id);
   }
   foreach($groups as $group) {
-    $html .= '<option value="1_'.$group->id.'">Equipe '.$group->acronym.'</option>';
+    $html .= '<option value="1_'.$group->id.'">'.esc_html__('Team', 'lab').' '.$group->acronym.'</option>';
   }
   foreach($contracts as $contract) {
-    $html .= '<option value="2_'.$contract->contract_id.'">Contact '.$contract->name.'</option>';
+    $html .= '<option value="2_'.$contract->contract_id.'">'.esc_html__('Contract', 'lab').' '.$contract->name.'</option>';
   }
   $html .= '</select>';
   return $html;
