@@ -144,8 +144,8 @@ function lab_event_of_the_day($param)
         $content .= esc_html__("No event today",'lab')."<br>";
     }
     //$content .= "<br> Start End : ".$day_start." ".$day_end."<br>";
-    //return $content;
-    return $sql;
+    return $content;
+    //return $sql;
 }
 
 /***********************************************************************************************************************
