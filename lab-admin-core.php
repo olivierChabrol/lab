@@ -1914,7 +1914,7 @@ function lab_admin_firstname_lastname($param, $name){
   $items = array();
 
   foreach ($results as $r) {
-    $items[] = array(label => $r->first_name . " " . $r->last_name , value => $r->id);
+    $items[] = array("label"=> $r->first_name . " " . $r->last_name , "value" => $r->id);
   }
   return $items;
 }
