@@ -916,7 +916,7 @@ function lab_admin_group_search() {
   $url = esc_url(home_url('/'));
   foreach ( $results as $r )
   {
-    $items[] = array(label=>$r->group_name, value=>$r->id, id=>$r->id, group_name=>$r->group_name, group_type=>$r->group_type, acronym=>$r->acronym, chief_id=>$r->chief_id, parent_group_id=>$r->parent_group_id, url=>$r->url);
+    $items[] = array("label"=>$r->group_name, "value"=>$r->id, "id"=>$r->id, "group_name"=>$r->group_name, "group_type"=>$r->group_type, "acronym"=>$r->acronym, "chief_id"=>$r->chief_id, "parent_group_id"=>$r->parent_group_id, "url"=>$r->url);
   }
   wp_send_json_success( $items ); 
 }
