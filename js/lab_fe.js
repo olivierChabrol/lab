@@ -29,18 +29,33 @@ jQuery(function($){
   });
 
   $("#lab_request_send").click(function() {
-    let data = {
-      'action': 'lab_request_save',
-      'request_id': $("#lab_request_id").val(),
-      'request_previsional_date': $("#lab_request_previsional_date").val(),
-      'request_end_date': $("#lab_request_end_date").val(),
-      'request_type': $("#lab_request_type").val(),
-      'request_title': $("#lab_request_title").val(),
-      'request_text': $("#lab_request_text").val(),
-    };
-    request_get_expenses(data);
-    callAjax(data, __("Request send", "lab"), forwardToRequestList, null, null);
-    //callAjax(data, __("Request send", "lab"), null, null, null);
+    if ($("#lab_request_title").val().trim() == "" || $("#lab_request_text").val().trim() == "") {
+      highlight_empty_field($("#lab_request_title"));
+      highlight_empty_field($("#lab_request_text"));
+      /*
+      if ($("#lab_request_title").val().trim() == "") {
+        $("#lab_request_title").css('border-color', 'red');
+      }
+      else {
+        $("#lab_request_title").css('border-color', '');
+      }
+      //*/
+    }
+    else
+    {
+      let data = {
+        'action': 'lab_request_save',
+        'request_id': $("#lab_request_id").val(),
+        'request_previsional_date': $("#lab_request_previsional_date").val(),
+        'request_end_date': $("#lab_request_end_date").val(),
+        'request_type': $("#lab_request_type").val(),
+        'request_title': $("#lab_request_title").val(),
+        'request_text': $("#lab_request_text").val(),
+      };
+      request_get_expenses(data);
+      callAjax(data, __("Request send", "lab"), forwardToRequestList, null, null);
+      //callAjax(data, __("Request send", "lab"), null, null, null);
+    }
   });
 
 
@@ -132,6 +147,19 @@ jQuery(function($){
       });
     });
     toggleTab($("#lab_request_ingo_tab_legal"), getRequestInfoTabs);
+  }
+
+  function highlight_empty_field(field) {
+    let fieldId = field.attr("id");
+    let errorMsgId = fieldId + "ValidationMessage";
+    $("."+errorMsgId).remove();
+    if (field.val().trim() == "") {
+      field.css('border-color', 'red');
+      field.after("<span class='" + errorMsgId + "' style='color:red;'>Obligatoire</span>");
+    }
+    else {
+      field.css('border-color', '');
+    }
   }
 
   function request_get_expenses(data) {
