@@ -14,6 +14,10 @@ jQuery(function($){
   if ($("#lab_hal_tools_table").length) {
     labToolsLoad();
   }
+
+  $("#lab_internship_year").on('change', function() {
+    loadInternship();
+  });
   
   $("#lab-directory-group-id").on('change', function() {
     loadDirectory();
@@ -139,6 +143,11 @@ jQuery(function($){
     loadRequests();
   }
 
+  if($("#lab_internship_body").length) {
+    $(".entry-title").text("Stages");
+    loadInternship();
+  }
+
   if ($("#lab_request_ingo_tab_legal").length) {
     let ids = getRequestInfoTabs();
     ids.forEach(function (elm) {
@@ -147,6 +156,52 @@ jQuery(function($){
       });
     });
     toggleTab($("#lab_request_ingo_tab_legal"), getRequestInfoTabs);
+  }
+
+  function loadInternship() {
+    let data = {
+      'action': 'lab_internship_load',
+      'year' : $("#lab_internship_year").val(),
+    };
+    callAjax(data, null, displayInternshipList, null, null);
+  }
+
+  function displayInternshipList(data)
+  {
+    console.log("[displayInternshipList]");
+    $("#lab_internship_body").empty();
+    $.each(data["results"], function(i, obj) {
+      console.log("[displayInternshipList] " + obj.id);
+      let tr = $('<tr />').attr("ObjId", obj.id);
+      let tdName = $("<td />").attr("ObjId", obj.id);
+      if (data["users"][obj.user_id]) {
+        tdName.html(data["users"][obj.user_id]["first_name"]+" " + data["users"][obj.user_id]["last_name"]);
+      }
+      else {
+        tdName.html(obj.user_id);
+      }
+      tr.append(tdName);
+      let tdStart = $("<td />").attr("ObjId", obj.id).html(obj.begin);
+      let tdEnd   = $("<td />").attr("ObjId", obj.id).html(obj.end);
+      let tdId = $("<td />").attr("ObjId", obj.id).html(obj.id);
+      let tdTo = $("<td />").attr("ObjId", obj.id).html(" -> ");
+
+      let tdHost = $("<td />").attr("ObjId", obj.id);
+      if (data["users"][obj.host_id]) {
+        tdHost.html(data["users"][obj.host_id]["first_name"]+" " + data["users"][obj.host_id]["last_name"]);
+      }
+      else {
+        tdHost.html("NAN");
+      }
+
+      tr.append(tdId);
+      tr.append(tdName);
+      tr.append(tdStart);
+      tr.append(tdTo);
+      tr.append(tdEnd);
+      tr.append(tdHost);
+      $("#lab_internship_body").append(tr);
+    });
   }
 
   function highlight_empty_field(field) {
@@ -1036,7 +1091,9 @@ function LABloadProfile() {
       }
     });
     //Remplace le titre de la page par "Profil de "+Nom Prénom
-    $(".entry-title").text("Profil de "+$('#lab_profile_name_span').text().replace("• "," "))
+    if ($(".entry-title").length) {
+    //  $(".entry-title").text("Profil de "+$('#lab_profile_name_span').text().replace("• "," "))
+    }
     //Fonction d'édition du profil
     $("#lab_profile_edit").click( function() {
       deleteThematics();

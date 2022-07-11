@@ -921,6 +921,11 @@ function lab_admin_group_search() {
   wp_send_json_success( $items ); 
 }
 
+function lab_internship_load_ajax() {
+  $year = $_POST['year'];
+  return wp_send_json_success(list_intern($year));
+}
+
 /**
  * get all the groups by user
  *
