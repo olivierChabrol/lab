@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lab\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-06-24 16:15+0200\n"
-"PO-Revision-Date: 2022-06-24 16:16+0200\n"
+"POT-Creation-Date: 2022-07-11 19:36+0200\n"
+"PO-Revision-Date: 2022-07-11 19:36+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -40,6 +40,7 @@ msgstr ""
 "X-Poedit-SearchPath-22: lab-admin-invitations.php\n"
 "X-Poedit-SearchPath-23: shortcode/lab-shortcode-request.php\n"
 "X-Poedit-SearchPath-24: wp-lab.php\n"
+"X-Poedit-SearchPath-25: shortcode/lab-shortcode-internship.php\n"
 
 #: admin/view/lab-admin-mission.php:33
 msgid "Mission management"
@@ -84,7 +85,7 @@ msgstr "Complétées"
 msgid "Cancelled"
 msgstr "Annulées"
 
-#: admin/view/lab-admin-mission.php:126 js/lab_fe.js:630
+#: admin/view/lab-admin-mission.php:126 js/lab_fe.js:731
 msgid "Validated"
 msgstr "Validées"
 
@@ -157,16 +158,16 @@ msgid "Do you really want to delete this mission ?"
 msgstr "Voulez-vous vraiment supprimer cette mission ?"
 
 #: admin/view/lab-admin-mission.php:174 admin/view/lab-admin-tab-params.php:99 admin/view/lab-admin-tab-settings.php:67
-#: admin/view/lab-admin-tab-users.php:305 admin/view/lab-admin-tab-users.php:401 js/lab_fe.js:509 js/lab_fe.js:621
-#: js/lab_fe.js:655 lab-admin-keyring.php:185 lab-admin-keyring.php:194 lab-admin-keyring.php:355
-#: shortcode/lab-shortcode-invitation.php:426 shortcode/lab-shortcode-invitation.php:434
-#: shortcode/lab-shortcode-invitation.php:460 shortcode/lab-shortcode-present.php:491
+#: admin/view/lab-admin-tab-users.php:305 admin/view/lab-admin-tab-users.php:401 js/lab_fe.js:610 js/lab_fe.js:722
+#: js/lab_fe.js:756 lab-admin-keyring.php:185 lab-admin-keyring.php:194 lab-admin-keyring.php:355
+#: shortcode/lab-shortcode-internship.php:35 shortcode/lab-shortcode-invitation.php:426
+#: shortcode/lab-shortcode-invitation.php:434 shortcode/lab-shortcode-invitation.php:460 shortcode/lab-shortcode-present.php:491
 msgid "Cancel"
 msgstr "Annuler"
 
 #: admin/view/lab-admin-mission.php:175 admin/view/lab-admin-tab-params.php:100 admin/view/lab-admin-tab-settings.php:68
 #: admin/view/lab-admin-tab-users.php:402 lab-admin-keyring.php:186 lab-admin-keyring.php:195 lab-admin-keyring.php:356
-#: shortcode/lab-shortcode-invitation.php:461
+#: shortcode/lab-shortcode-internship.php:36 shortcode/lab-shortcode-invitation.php:461
 msgid "Confirm"
 msgstr "Confirmer"
 
@@ -716,48 +717,48 @@ msgstr "Non"
 msgid "Yes"
 msgstr "Oui"
 
-#: js/lab_fe.js:42 js/lab_fe.js:180
+#: js/lab_fe.js:63 js/lab_fe.js:281
 msgid "Request send"
 msgstr "Demande transmise"
 
-#: js/lab_fe.js:387
+#: js/lab_fe.js:488
 msgid " Cancel request by "
-msgstr ""
+msgstr "Requête annulée par"
 
-#: js/lab_fe.js:390
+#: js/lab_fe.js:491
 msgid " update by "
 msgstr ""
 
-#: js/lab_fe.js:393
+#: js/lab_fe.js:494
 #, fuzzy
 #| msgid "Take in charge"
 msgid " take in charge by "
 msgstr "Prendre en charge"
 
-#: js/lab_fe.js:396
+#: js/lab_fe.js:497
 #, fuzzy
 #| msgid "Validate"
 msgid " validate by "
 msgstr "Valider"
 
-#: js/lab_fe.js:490 js/lab_fe.js:517 js/lab_fe.js:627 js/lab_fe.js:661 shortcode/lab-shortcode-invitation.php:422
+#: js/lab_fe.js:591 js/lab_fe.js:618 js/lab_fe.js:728 js/lab_fe.js:762 shortcode/lab-shortcode-invitation.php:422
 msgid "Take in charge"
 msgstr "Prendre en charge"
 
-#: js/lab_fe.js:500 js/lab_fe.js:521 js/lab_fe.js:664 shortcode/lab-shortcode-invitation.php:233
+#: js/lab_fe.js:601 js/lab_fe.js:622 js/lab_fe.js:765 shortcode/lab-shortcode-invitation.php:233
 #: shortcode/lab-shortcode-invitation.php:417
 msgid "Validate"
 msgstr "Valider"
 
-#: js/lab_fe.js:513 js/lab_fe.js:624 js/lab_fe.js:658
+#: js/lab_fe.js:614 js/lab_fe.js:725 js/lab_fe.js:759
 msgid "New, pending"
 msgstr ""
 
-#: js/lab_fe.js:525 js/lab_fe.js:633 js/lab_fe.js:667
+#: js/lab_fe.js:626 js/lab_fe.js:734 js/lab_fe.js:768
 msgid "???"
 msgstr ""
 
-#: js/lab_fe.js:1035
+#: js/lab_fe.js:1138
 msgid "Your biography is too long (max 200 characters)"
 msgstr ""
 
@@ -935,53 +936,53 @@ msgstr ""
 msgid "Cant delete system param"
 msgstr "Impossible d'effacer un paramètre sytème"
 
-#: lab-admin-ajax.php:1409 lab-admin-ajax.php:1420
+#: lab-admin-ajax.php:1414 lab-admin-ajax.php:1425
 msgid "No loan found"
 msgstr "Aucun prêt trouvé"
 
-#: lab-admin-ajax.php:1692
+#: lab-admin-ajax.php:1697
 msgid "Your request has been taken into account"
 msgstr "Votre requête a été prise en compte"
 
-#: lab-admin-ajax.php:1694
+#: lab-admin-ajax.php:1699
 msgid "e-mail send to guest"
 msgstr ""
 
-#: lab-admin-ajax.php:1696
+#: lab-admin-ajax.php:1701
 msgid "e-mail send to host"
 msgstr ""
 
-#: lab-admin-ajax.php:1700
+#: lab-admin-ajax.php:1705
 msgid "e-mail send to manager"
 msgstr "Email envoyé au gestionnaire"
 
-#: lab-admin-ajax.php:1832
+#: lab-admin-ajax.php:1837
 msgid "Your invitation has been modified"
 msgstr "Votre invitation a bien été modifiée"
 
-#: lab-admin-ajax.php:1978 shortcode/lab-shortcode-invitation.php:750
+#: lab-admin-ajax.php:1983 shortcode/lab-shortcode-invitation.php:750
 msgid "No invitation"
 msgstr "Aucune invitation"
 
-#: lab-admin-ajax.php:2024
+#: lab-admin-ajax.php:2029
 msgid "undefined"
 msgstr "indéfini"
 
-#: lab-admin-ajax.php:2163
+#: lab-admin-ajax.php:2168
 msgid "Can only modify your own presency"
 msgstr "Vous ne pouvez modifier que votre propre présence"
 
-#: lab-admin-ajax.php:2173
+#: lab-admin-ajax.php:2178
 #, php-format
 msgid "%s is a no working day"
 msgstr "%s est férié"
 
-#: lab-admin-ajax.php:2196
+#: lab-admin-ajax.php:2201
 #, php-format
 msgid "Your are already present in %s the %s between %s and %s"
 msgstr "Vous êtes déjà présent au/à %s le %s entre %s et %s"
 
-#: lab-admin-ajax.php:2219 lab-admin-ajax.php:2228
+#: lab-admin-ajax.php:2224 lab-admin-ajax.php:2233
 #, php-format
 msgid "Your new schedules overlap to an existing one : %s the %s between %s and %s"
 msgstr "Votre calendrier chevauche une déclaration de présence existante à/au %s le %s entre %s et %s"
@@ -3057,67 +3058,67 @@ msgid ""
 "publications d'un auteur ou d'une structure."
 msgstr ""
 
-#: wp-lab.php:178
+#: wp-lab.php:181
 msgid "Extra profile information"
 msgstr "Informations diverses"
 
-#: wp-lab.php:185
+#: wp-lab.php:188
 msgid "Address line 1"
 msgstr "Ligne 1 adresse"
 
-#: wp-lab.php:188 wp-lab.php:195 wp-lab.php:202
+#: wp-lab.php:191 wp-lab.php:198 wp-lab.php:205
 msgid "Please enter your address."
 msgstr ""
 
-#: wp-lab.php:192
+#: wp-lab.php:195
 msgid "Address line 2"
 msgstr ""
 
-#: wp-lab.php:199
+#: wp-lab.php:202
 msgid "Address line 3"
 msgstr ""
 
-#: wp-lab.php:206
+#: wp-lab.php:209
 msgid "City"
 msgstr ""
 
-#: wp-lab.php:209
+#: wp-lab.php:212
 msgid "Please enter your city."
 msgstr ""
 
-#: wp-lab.php:213
+#: wp-lab.php:216
 msgid "Postal Code"
 msgstr ""
 
-#: wp-lab.php:216
+#: wp-lab.php:219
 msgid "Please enter your postal code."
 msgstr ""
 
-#: wp-lab.php:220
+#: wp-lab.php:223
 msgid "Birth date"
 msgstr "Date de naissance"
 
-#: wp-lab.php:223
+#: wp-lab.php:226
 msgid "Please enter your birthdate."
 msgstr ""
 
-#: wp-lab.php:229
+#: wp-lab.php:232
 msgid "Picture of you"
 msgstr ""
 
-#: wp-lab.php:318
+#: wp-lab.php:321
 msgid "Requests"
 msgstr "Demandes"
 
-#: wp-lab.php:487
+#: wp-lab.php:490
 msgid "Affiche les evenements de la semaine en cour."
 msgstr ""
 
-#: wp-lab.php:492
+#: wp-lab.php:495
 msgid "Semaine du laboratoire"
 msgstr ""
 
-#: wp-lab.php:543
+#: wp-lab.php:546
 msgid "Publications récentes"
 msgstr "Publications récentes"
 

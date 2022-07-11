@@ -18,6 +18,9 @@ jQuery(function($){
   $("#lab_internship_year").on('change', function() {
     loadInternship();
   });
+  $("#lab_internship_add_intern_button").click(function() {
+    displayAddInternDiv();
+  });
   
   $("#lab-directory-group-id").on('change', function() {
     loadDirectory();
@@ -134,6 +137,15 @@ jQuery(function($){
   $("[id^=lab-request-list-admin_filter_]").change(function(e){
     loadRequests();
   });
+  $("#lab_internship_add_intern_close").click(function() {
+    internShipCloseModal();
+  });
+  $("#lab_internship_add_intern_close_icon").click(function() {
+    internShipCloseModal();
+  });
+  $("#lab_internship_add_confirm").click(function() {
+    internShipSaveModal();
+  });
 
   if ($("#lab_request_list_table").length) {
     loadOwnRequests();
@@ -145,6 +157,7 @@ jQuery(function($){
 
   if($("#lab_internship_body").length) {
     $(".entry-title").text("Stages");
+   //$("#lab_internship_add_intern").hide();
     loadInternship();
   }
 
@@ -156,6 +169,43 @@ jQuery(function($){
       });
     });
     toggleTab($("#lab_request_ingo_tab_legal"), getRequestInfoTabs);
+  }
+
+  /*
+  function internShipSaveModal() {
+    let fields = internShipModalFields();
+    fields.forEach(element => console.log(element + " : " +$("#lab_internship_add_"+element).val()));
+    //internShipCloseModal();
+  }
+  //*/
+
+  function internShipSaveModal() {
+    let data = {
+      'action': 'lab_internship_save',
+    };
+    let fields = internShipModalFields();
+    fields.forEach(element => console.log(data[element] = $("#lab_internship_add_"+element).val()));
+    callAjax(data, null, internShipCloseModal, null, null);
+  }
+
+  function internShipClearFields() {
+    let fields = internShipModalFields();
+    fields.forEach(element => $("#lab_internship_add_"+element).val(""));
+    $("#lab_internship_add_convention_state").val(1);
+    $("#lab_internship_host_name").val("");
+  }
+
+  function internShipCloseModal() {
+    internShipClearFields();
+    $("#lab_internship_add_intern").modal('hide');
+  }
+
+  function internShipModalFields() {
+    return ["id", "firstname", "lastname", "firstname", "email", "training", "training", "establishment", "begin", "end", "host_id","convention_state"];
+  }
+
+  function displayAddInternDiv() {
+    $("#lab_internship_add_intern").modal();
   }
 
   function loadInternship() {
@@ -962,6 +1012,26 @@ jQuery(function($){
   $(".email").each(function() {
     var replaced = $(this).text().replace(/@/g, '[TA]');
     $(this).text(replaced);
+  });
+
+  $("#lab_internship_host_name").autocomplete({
+    minChars: 1,
+    source: function(term, suggest){
+      try { searchRequest.abort(); } catch(e){}
+      searchRequest = $.post(LAB.ajaxurl, { action: 'search_username2',search: term, },
+      function(res) {
+        suggest(res.data);
+      });
+    },
+    select: function( event, ui ) {
+      var firstname  = ui.item.firstname; // first name
+      var lastname = ui.item.lastname; // last name
+      var userslug = ui.item.userslug;
+      let userId =  ui.item.user_id;
+      $("#lab_internship_add_host_id").val(userId);
+      event.preventDefault();
+      $("#lab_internship_host_name").val(firstname + " " + lastname);
+    }
   });
 
   $('#lab_directory_user_name').autocomplete({

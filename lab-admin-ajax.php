@@ -926,6 +926,17 @@ function lab_internship_load_ajax() {
   return wp_send_json_success(list_intern($year));
 }
 
+function lab_internship_save_ajax() {
+  $fields = array("id", "firstname", "lastname", "firstname", "email", "training", "training", "establishment", "begin", "end", "host_id","convention_state");
+  $data = array();
+  foreach($fields as $field) {
+    if(isset($_POST[$field])) {
+      $data[$field] = $_POST[$field];
+    }
+  }
+  save_intern($data);
+}
+
 /**
  * get all the groups by user
  *
