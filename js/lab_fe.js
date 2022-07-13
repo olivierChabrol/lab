@@ -183,10 +183,12 @@ jQuery(function($){
   }
 
   function internshipDisplayUser(data) {
-    $("#lab_internship_add_user_id").val(data["user_id"]);
-    $("#lab_internship_add_email").val(data["email"]);
-    $("#lab_internship_add_firstname").val(data["first_name"]);
-    $("#lab_internship_add_lastname").val(data["last_name"]);
+    if (data["email"] != null && data["email"] != "") {
+      $("#lab_internship_add_user_id").val(data["user_id"]);
+      $("#lab_internship_add_email").val(data["email"]);
+      $("#lab_internship_add_firstname").val(data["first_name"]);
+      $("#lab_internship_add_lastname").val(data["last_name"]);
+    }
   }
 
 
