@@ -117,7 +117,7 @@ function save_intern($data) {
         return $data["id"];
     }
     else {
-        if(isset($data["user_id"]))
+        if(isset($data["user_id"]) && !empty($data["user_id"]))
         {
             $user_id = $data["user_id"];
         }
