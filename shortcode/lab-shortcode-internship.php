@@ -23,6 +23,7 @@ function lab_internship($param) {
     su_query_asset( 'js', 'jquery' );
     su_query_asset( 'js', 'su-shortcodes' );
     $html = "";
+    if(lab_is_admin() || lab_is_manager()) {
     $html .= '<div id="lab_profile_card">
               <div id="loadingAjaxGif">
                 <img src="/wp-content/plugins/lab/loading.gif" />
@@ -62,5 +63,10 @@ function lab_internship($param) {
     }
     $html .= '<select/><button type="button" class="btn btn-primary" id="lab_internship_add_intern_button">Ajouter un·e stagiair·e</button>';
     $html .= '<table id="lab_internship_table" class="table"><theader><td>Stagiaire</td><td colspan="2">Debut</td><td>Fin</td><td>Encadrant</td><td>Convention</td><td>Equipe</td><td>Financier</td><td># mois</td><td>&euro;</td><td>Equipe</td><td>Financier</td><td># mois</td><td>&euro;</td><td>Equipe</td><td>Financier</td><td># mois</td><td>&euro;</td><td>Equipe</td><td>Financier</td><td># mois</td><td>&euro;</td><td>Actions</td></theader><tbody id="lab_internship_body"/></table>';
+    }
+    else {
+      $html = "Vous ne possédez pas de droits suffisants pour consulter cette page";
+    }
+
     return $html;
 }
