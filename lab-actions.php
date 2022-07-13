@@ -19,6 +19,7 @@ if (is_admin()) {
     add_action( 'wp_ajax_lab_user_setMainThematic', 'lab_admin_ajax_users_thematic_set_main');
     add_action( 'wp_ajax_lab_admin_group_by_user', 'lab_admin_ajax_group_by_user');
     add_action( 'wp_ajax_lab_user_addGroup', 'lab_admin_ajax_group_add');
+    add_action( 'wp_ajax_lab_get_user_by_email', 'lab_get_user_by_email');
     // Action thematic BE
     add_action( 'wp_ajax_lab_user_getThematics', 'lab_admin_thematic_get_thematics_by_user');
     add_action( 'wp_ajax_lab_user_getThematics_by_user', 'ajax_thematic_get_thematics_by_user');
@@ -192,6 +193,8 @@ if (is_admin()) {
     add_action( 'wp_ajax_lab_request_save', 'lab_request_save_ajax');
     add_action( 'wp_ajax_lab_internship_load', 'lab_internship_load_ajax');
     add_action( 'wp_ajax_lab_internship_save', 'lab_internship_save_ajax');
+    add_action( 'wp_ajax_lab_internship_get', 'lab_internship_get_ajax');
+    add_action( 'wp_ajax_lab_internship_delete', 'lab_internship_delete_ajax');
     add_action( 'wp_ajax_lab_request_load_own_request', 'lab_request_load_own_request_ajax');
     add_action( 'wp_ajax_lab_request_delete_file', 'lab_request_delete_file_ajax');
     add_action( 'wp_ajax_lab_request_delete_histo', 'lab_request_delete_histo_ajax');

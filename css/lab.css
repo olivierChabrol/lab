@@ -153,7 +153,7 @@
   display: none;
   vertical-align: middle;
   position: relative;
-  max-width: 500px;
+  max-width: 1000px;
   box-sizing: border-box;
   width: 90%;
   background: #fff;
@@ -188,4 +188,8 @@
 }
 .ui-autocomplete {
   z-index: 9999 !important;
+}
+
+#lab_internship_table td {
+  font-size: 10px;
 }

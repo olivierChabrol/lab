@@ -137,6 +137,9 @@ jQuery(function($){
   $("[id^=lab-request-list-admin_filter_]").change(function(e){
     loadRequests();
   });
+  $("#lab_internship_add_email").focusout(function(e) {
+    loadInternUser();
+  });
   $("#lab_internship_add_intern_close").click(function() {
     internShipCloseModal();
   });
@@ -171,20 +174,39 @@ jQuery(function($){
     toggleTab($("#lab_request_ingo_tab_legal"), getRequestInfoTabs);
   }
 
-  /*
-  function internShipSaveModal() {
-    let fields = internShipModalFields();
-    fields.forEach(element => console.log(element + " : " +$("#lab_internship_add_"+element).val()));
-    //internShipCloseModal();
+  function loadInternUser() {
+    let data = {
+      'action': 'lab_get_user_by_email',
+      'email': $("#lab_internship_add_email").val(),
+    };
+    callAjax(data, null, internshipDisplayUser, null, null);
   }
-  //*/
+
+  function internshipDisplayUser(data) {
+    $("#lab_internship_add_user_id").val(data["user_id"]);
+    $("#lab_internship_add_email").val(data["email"]);
+    $("#lab_internship_add_firstname").val(data["first_name"]);
+    $("#lab_internship_add_lastname").val(data["last_name"]);
+  }
+
+
 
   function internShipSaveModal() {
     let data = {
       'action': 'lab_internship_save',
     };
     let fields = internShipModalFields();
-    fields.forEach(element => console.log(data[element] = $("#lab_internship_add_"+element).val()));
+    fields.forEach(element => data[element] = $("#lab_internship_add_"+element).val());
+    let financialFields = internshipFinancialFields();
+    let financialData = [];
+    let i = 1;
+    for (i = 1; i < 5; i++) {
+      let d = {};
+      financialFields.forEach(element => d[element] = $("#lab_internship_add_f_"+element+"_"+i).val());
+      financialData.push(d);
+    }
+    data["financials"] =  financialData;
+    //console.log(data);
     callAjax(data, null, internShipCloseModal, null, null);
   }
 
@@ -193,15 +215,25 @@ jQuery(function($){
     fields.forEach(element => $("#lab_internship_add_"+element).val(""));
     $("#lab_internship_add_convention_state").val(1);
     $("#lab_internship_host_name").val("");
+    let financialFields = internshipFinancialFields();
+    let i = 1;
+    for (i = 1; i < 5; i++) {
+      financialFields.forEach(element => $("#lab_internship_add_f_"+element+"_"+i).val(""));
+    }
   }
 
   function internShipCloseModal() {
     internShipClearFields();
     $("#lab_internship_add_intern").modal('hide');
+    loadInternship();
+  }
+
+  function internshipFinancialFields() {
+    return ["id", "team", "tutelage", "nb_month", "amount"];
   }
 
   function internShipModalFields() {
-    return ["id", "firstname", "lastname", "firstname", "email", "training", "training", "establishment", "begin", "end", "host_id","convention_state"];
+    return ["id", "user_id", "firstname", "lastname", "firstname", "email", "training", "training", "establishment", "begin", "end", "host_id","convention_state"];
   }
 
   function displayAddInternDiv() {
@@ -216,6 +248,19 @@ jQuery(function($){
     callAjax(data, null, displayInternshipList, null, null);
   }
 
+  function displayInternship(data) {
+    console.log("[displayInternship]");
+    $("#lab_internship_add_intern").modal();
+    let fields = internShipModalFields();
+    fields.forEach(element => $("#lab_internship_add_"+element).val(data[element]));
+    $("#lab_internship_host_name").val(data["host"]["first_name"]+" "+data["host"]["last_name"]);
+    $.each(data["financials"], function(i, obj) {
+      $.each(obj, function(index, value){
+        $("#lab_internship_add_f_" + index + "_"+(i+1)).val(value);
+      });
+    });
+  }
+
   function displayInternshipList(data)
   {
     console.log("[displayInternshipList]");
@@ -224,8 +269,12 @@ jQuery(function($){
       console.log("[displayInternshipList] " + obj.id);
       let tr = $('<tr />').attr("ObjId", obj.id);
       let tdName = $("<td />").attr("ObjId", obj.id);
+
+      let intern_name = "";
+
       if (data["users"][obj.user_id]) {
-        tdName.html(data["users"][obj.user_id]["first_name"]+" " + data["users"][obj.user_id]["last_name"]);
+        intern_name = data["users"][obj.user_id]["first_name"]+" " + data["users"][obj.user_id]["last_name"];
+        tdName.html(intern_name);
       }
       else {
         tdName.html(obj.user_id);
@@ -235,23 +284,80 @@ jQuery(function($){
       let tdEnd   = $("<td />").attr("ObjId", obj.id).html(obj.end);
       let tdId = $("<td />").attr("ObjId", obj.id).html(obj.id);
       let tdTo = $("<td />").attr("ObjId", obj.id).html(" -> ");
+      let convention = "Non signée";
+      switch(obj.convention_state) {
+        case "0":
+          convention="Non signée";break;
+        case "1":
+          convention="Signée";break;
+        case "2":
+          convention="En cours";break;
+      }
+      let tdConvention = $("<td />").attr("ObjId", obj.id).html(convention);
 
       let tdHost = $("<td />").attr("ObjId", obj.id);
       if (data["users"][obj.host_id]) {
         tdHost.html(data["users"][obj.host_id]["first_name"]+" " + data["users"][obj.host_id]["last_name"]);
       }
       else {
-        tdHost.html("NAN");
+        tdHost.html("NaN");
       }
 
-      tr.append(tdId);
+      //tr.append(tdId);  
       tr.append(tdName);
       tr.append(tdStart);
       tr.append(tdTo);
       tr.append(tdEnd);
       tr.append(tdHost);
+      tr.append(tdConvention);
+      //if (obj.financials.length > 0) {
+      //  for (var i = 0 ; i < 4 ; i++) {
+      $.each(obj.financials, function (i, value) {
+          let tdTeam     = $("<td />").attr("ObjId", obj.id).html(data["teams"][value.team]);
+          let tdTutelage = $("<td />").attr("ObjId", obj.id).html(data["tutelage"][value.tutelage]);
+          let tdNbMonths = $("<td />").attr("ObjId", obj.id).html(value.nb_month);
+          let tdAmmount  = $("<td />").attr("ObjId", obj.id).html(value.amount);
+          tr.append(tdTeam);
+          tr.append(tdTutelage);
+          tr.append(tdNbMonths);
+          tr.append(tdAmmount);
+      });
+
+      let aEdit   = $('<a />').attr("class", "lab-page-title-action lab_mission_edit").attr("objId", obj.id).html('<i class="fa fa-pencil pointer" aria-hidden="true" title="Modifier le stage de '+intern_name+'"></i>&nbsp;');
+      let aDelete = $('<a />').attr("class", "lab-page-title-action lab_budget_info_delete").attr("objId", obj.id).attr("id", "lab-internship-list-delete-button"+obj.id).html('<i class="fas fa-trash pointer" aria-hidden="true" title="Supprimer le stage de '+intern_name+'"></i>');
+  
+      $(aEdit).click(function () {
+        internship_edit($(this).attr("objId"));
+      });
+
+      $(aDelete).click(function () {
+        internship_delete($(this).attr("objId"));
+      });
+
+      $(aDelete).click(function (){
+        //displayModalDeleteRequest($(this).attr("objId"));
+      });
+      let td = $('<td />').attr("class", "lab_keyring_icon").append(aEdit).append(aDelete);
+
+      tr.append(td);
       $("#lab_internship_body").append(tr);
     });
+  }
+
+  function internship_edit(id) {
+    let data = {
+      'action' : 'lab_internship_get',
+      'id' : id,
+    }
+    callAjax(data, null, displayInternship, null, null);
+  }
+
+  function internship_delete(id) {
+    let data = {
+      'action' : 'lab_internship_delete',
+      'id' : id,
+    }
+    callAjax(data, null, loadInternship, null, null);
   }
 
   function highlight_empty_field(field) {
@@ -881,7 +987,7 @@ jQuery(function($){
     $("#lab_request_delete_dialog").modal();
     $("#lab_request_delete_dialog_request_id").val(objId);
     $("#lab_request_delete_dialog_order").val("delete");
-}
+  }
 
   function displayModalCancelRequest(objId) {
       console.log("[displayModalCancelRequest] requestId : " + objId)

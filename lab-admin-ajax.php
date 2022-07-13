@@ -629,6 +629,24 @@ function lab_admin_search_user_metadata()
   wp_send_json_success($items);
 }
 
+function lab_get_user_by_email() {
+  $email = $_POST['email'];
+  global $wpdb;
+  $sql = "SELECT ID,user_email FROM `".$wpdb->prefix."users`  WHERE user_email = '".$email."'";
+
+  $user = $wpdb->get_results($sql);
+  $data = array();
+  if (count($user) == 1) {
+    $data["email"] = $user[0]->user_email;
+    $data["user_id"] = $user[0]->ID;
+    $names = lab_admin_usermeta_names($user[0]->ID);
+    $data["first_name"] = $names->first_name;
+    $data["last_name"] = $names->last_name;
+  }
+  wp_send_json_success($data);
+  return;
+}
+
 function lab_admin_search_user_email()
 {
   $search = $_POST['search'];
@@ -921,20 +939,45 @@ function lab_admin_group_search() {
   wp_send_json_success( $items ); 
 }
 
+/********************************************************************************************
+ * INTERSHIP
+ ********************************************************************************************/
+
 function lab_internship_load_ajax() {
   $year = $_POST['year'];
   return wp_send_json_success(list_intern($year));
 }
 
+function lab_internship_delete_ajax() {
+  if(isset($_POST['id'])) {
+    $id = $_POST['id'];
+    wp_send_json_success(lab_internship_delete($id));
+  }
+  else {
+    wp_send_json_error("No id send");
+  }
+}
+
+function lab_internship_get_ajax() {
+  if(isset($_POST['id'])) {
+    $id = $_POST['id'];
+    wp_send_json_success(lab_internship_get($id));
+  }
+  else {
+    wp_send_json_error("No id send");
+  }
+
+}
+
 function lab_internship_save_ajax() {
-  $fields = array("id", "firstname", "lastname", "firstname", "email", "training", "training", "establishment", "begin", "end", "host_id","convention_state");
+  $fields = array("id", "user_id", "firstname", "lastname", "firstname", "email", "training", "training", "establishment", "begin", "end", "host_id","convention_state", "financials");
   $data = array();
   foreach($fields as $field) {
     if(isset($_POST[$field])) {
       $data[$field] = $_POST[$field];
     }
   }
-  save_intern($data);
+  wp_send_json_success(save_intern($data));
 }
 
 /**
