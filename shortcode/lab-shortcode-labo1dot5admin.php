@@ -2,6 +2,9 @@
 
 function lab_labo1_5admin() {
 
+    if ( ! is_user_logged_in() ) {
+        return "Page accessible qu’aux utilisateurs connect&eacute;s";
+    }
 /*    $count = lab_labo1dot5_getRowNum();
     print('<a href="#">&lt;</a>');
     for ($i =  ; $i < $count[]; $i++)

@@ -601,6 +601,10 @@ function lab_invitations_interface($args) {
         $args, 
         "lab-invite-interface"
     );
+
+    if ( ! is_user_logged_in() ) {
+        return "Page accessible qu’aux utilisateurs connect&eacute;s";
+    }
     $listInvitationStr = '';
     switch ($param['view']) {
         case 'host':

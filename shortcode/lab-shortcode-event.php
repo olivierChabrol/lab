@@ -229,7 +229,12 @@ function lab_event_of_the_week($param)
 
 function lab_event($param)
 {
-  print(lab_locate_template('forms/event-editor.php',true, array('args'=>$param)));
+    if ( is_user_logged_in() ) {
+        print(lab_locate_template('forms/event-editor.php',true, array('args'=>$param)));
+    }
+    else {
+        print("Page accessible qu’aux utilisateurs connectés");
+    }
 }
 
 /***********************************************************************************************************************

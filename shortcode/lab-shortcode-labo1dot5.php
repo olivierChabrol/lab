@@ -1,6 +1,10 @@
 <?php
 
 function lab_labo1_5($args){
+
+    if ( ! is_user_logged_in() ) {
+        return "Page accessible qu’aux utilisateurs connect&eacute;s";
+    }
     ?>
     <form action="javascript:validate()">
     <h5><b>Informations personnelles et missions</b></h5>
