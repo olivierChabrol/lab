@@ -24,18 +24,21 @@ function lab_internship($param) {
     su_query_asset( 'js', 'su-shortcodes' );
     $html = "";
     if(lab_is_manager() || lab_is_admin() ) {
-    $html .= '<div id="lab_profile_card">
+    $html .= '<div id="lab_internship">
               <div id="loadingAjaxGif">
                 <img src="/wp-content/plugins/lab/loading.gif" />
               </div>';
-    $html .= '<div id="lab_internship_add_intern" class="labModal">
+    $html .= '<div id="lab_internship_see_intern" class="labModal"></div>';
+    $html .= '<div id="lab_internship_add_intern" class="labModalTest"><div class="labModalContent">
+
+    <span class="close" id="labModalContentClose">&times;</span>
     <input type="hidden" id="lab_internship_add_user_id">
     <input type="hidden" id="lab_internship_add_id">
     <label for="lab_internship_add_email">Email</label><input type="text" id="lab_internship_add_email"><br>
     <label for="lab_internship_add_firstname">Pr&eacute;nom</label><input type="text" id="lab_internship_add_firstname">
-    <label for="lab_internship_add_lastname">Nom</label><input type="text" id="lab_internship_add_lastname">
+    <label for="lab_internship_add_lastname">Nom</label><input type="text" id="lab_internship_add_lastname"><br>
     <label for="lab_internship_add_training">Parcours</label><input type="text" id="lab_internship_add_training">
-    <label for="lab_internship_add_establishment">Etablissement</label><input type="text" id="lab_internship_add_establishment">
+    <label for="lab_internship_add_establishment">Etablissement</label><input type="text" id="lab_internship_add_establishment"><br>
     <label for="lab_internship_add_begin">Date début du stage</label><input type="date" id="lab_internship_add_begin">
     <label for="lab_internship_add_end">Date fin du stage</label><input type="date" id="lab_internship_add_end"><br>
     <label for="lab_internship_host_name">Encadrant</label><input type="text" id="lab_internship_host_name">
@@ -52,17 +55,17 @@ function lab_internship($param) {
       $html .= '<tr>';
     }
     //*/
-    $html .= '</tbody></table><div id="lab_internship_add_intern_options">
-      <a href="#" id="lab_internship_add_intern_close">'. esc_html__('Cancel','lab') .'</a>
-      <a href="#" rel="modal:close" id="lab_internship_add_confirm" keyid="">'. esc_html__('Confirm','lab') .'</a>
+    $html .= '</tbody></table><div id="lab_internship_add_intern_cost"></div><div id="lab_internship_add_intern_options">
+      <a href="#" id="lab_internship_add_intern_close" class="btn btn-light">'. esc_html__('Cancel','lab') .'</a>
+      <a href="#" rel="modal:close" id="lab_internship_add_confirm" keyid="" class="btn btn-success lab-btn-right">'. esc_html__('Confirm','lab') .'</a>
       </div>';
-    $html .= '</div>';
+    $html .= '</div></div>';
     $html .= '<label for="lab_internship_year">Année : </label><select id="lab_internship_year">';
     foreach($years as $y) {
         $html .= '<option val="'.$y.'">'.$y.'</option>';
     }
     $html .= '<select/><button type="button" class="btn btn-primary" id="lab_internship_add_intern_button">Ajouter un·e stagiair·e</button>';
-    $html .= '<table id="lab_internship_table" class="table-striped"><theader><td>Stagiaire</td><td colspan="2">Debut</td><td>Fin</td><td>Encadrant</td><td>Convention</td><td>Equipe</td><td>Financier</td><td># mois</td><td>&euro;</td><td>Equipe</td><td>Financier</td><td># mois</td><td>&euro;</td><td>Equipe</td><td>Financier</td><td># mois</td><td>&euro;</td><td>Equipe</td><td>Financier</td><td># mois</td><td>&euro;</td><td>Actions</td></theader><tbody id="lab_internship_body"/></table>';
+    $html .= '<table id="lab_internship_table" class="table table-striped table-hover"><thead class="thead-dark"><th>Stagiaire</th><th colspan="2">Debut</th><th>Fin</th><th>Encadrant</th><th>Convention</th><th>Equipe</th><th>Financier</th><th># mois</th><th>&euro;</th><th>Equipe</th><th>Financier</th><th># mois</th><th>&euro;</th><th>Equipe</th><th>Financier</th><th># mois</th><th>&euro;</th><th>Equipe</th><th>Financier</th><th># mois</th><th>&euro;</th><th>Actions</th></thead><tbody id="lab_internship_body"/></table>';
     }
     else {
       $html = "Vous ne possédez pas de droits suffisants pour consulter cette page";

@@ -948,6 +948,28 @@ function lab_internship_load_ajax() {
   return wp_send_json_success(list_intern($year));
 }
 
+function lab_internship_load_cost_ajax() {
+  $internship_id = $_POST['id'];
+  return wp_send_json_success(array("cost"=>intern_cost_load($internship_id)));
+}
+
+function lab_internship_update_cost_ajax() {
+  $id            = $_POST['id']; 
+  $internship_id = $_POST['internId'];
+  $field         = $_POST['field'];
+  $value         = $_POST['value'];
+  intern_cost_update($id, $field, $value);
+  return wp_send_json_success(array("cost"=>intern_cost_load($internship_id)));
+
+}
+
+function lab_internship_create_cost_ajax() {
+  $internship_id = $_POST['id'];
+  $internship = lab_internship_get($internship_id);
+  return wp_send_json_success($internship["begin"]);
+  //return wp_send_json_success();
+}
+
 function lab_internship_delete_ajax() {
   if(isset($_POST['id'])) {
     $id = $_POST['id'];
@@ -974,7 +996,12 @@ function lab_internship_save_ajax() {
   $data = array();
   foreach($fields as $field) {
     if(isset($_POST[$field])) {
-      $data[$field] = $_POST[$field];
+      if ($field != "financials") {
+        $data[$field] = stripslashes($_POST[$field]);
+      }
+      else {
+        $data[$field] = $_POST[$field];
+      }
     }
   }
   wp_send_json_success(save_intern($data));

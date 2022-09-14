@@ -140,6 +140,9 @@ jQuery(function($){
   $("#lab_internship_add_email").focusout(function(e) {
     loadInternUser();
   });
+  $("#labModalContentClose").click(function() {
+    internShipCloseModal();
+  });
   $("#lab_internship_add_intern_close").click(function() {
     internShipCloseModal();
   });
@@ -210,6 +213,7 @@ jQuery(function($){
     data["financials"] =  financialData;
     //console.log(data);
     callAjax(data, null, internShipCloseModal, null, null);
+    //callAjax(data, null, null, null, null);
   }
 
   function internShipClearFields() {
@@ -222,6 +226,7 @@ jQuery(function($){
     for (i = 1; i < 5; i++) {
       financialFields.forEach(element => $("#lab_internship_add_f_"+element+"_"+i).val(""));
     }
+    $("#lab_internship_add_intern_cost").empty();
   }
 
   function internShipCloseModal() {
@@ -239,6 +244,7 @@ jQuery(function($){
   }
 
   function displayAddInternDiv() {
+    $("#lab_internship_add_intern_cost").empty();
     $("#lab_internship_add_intern").modal();
   }
 
@@ -261,6 +267,128 @@ jQuery(function($){
         $("#lab_internship_add_f_" + index + "_"+(i+1)).val(value);
       });
     });
+    
+    internLoadCostPerMonth(data["id"]);
+  }
+
+  function internUpdateCostPerMonth(id, field, value, internId) {
+    console.log("[internUpdateCostPerMonth] id : " + id);
+    let data = {
+      'action' : 'lab_internship_update_cost',
+      'id' : id,
+      'field' : field,
+      'value' : value,
+      'internId' : internId,
+    }
+    callAjax(data, null, displayCostPerMonth, null, null);
+
+  }
+
+  function internLoadCostPerMonth(id) {
+    console.log("[internLoadCostPerMonth] id : " + id);
+    let data = {
+      'action' : 'lab_internship_load_cost',
+      'id' : id,
+    }
+    callAjax(data, null, displayCostPerMonth, null, null);
+  }
+
+  function displayCostPerMonth(data) {
+    console.log("[displayCostPerMonth]");
+    $("#lab_internship_add_intern_cost").empty();
+    let table = $('<table class="table"/>');
+    let thead = $('<thead/>');
+    //let thNum = $('<th/>').html("#");
+    let thHourlyRate = $('<th/>').html("Taux horaire");
+    let thMonth = $('<th/>').html("Mois");
+    let thOpenDay = $('<th/>').html("Jours ouvrés");
+    let thAbsentDay = $('<th/>').html("Jours absent");
+    let thCost = $('<th/>').html("Montant");
+    let thPayed = $('<th/>').html("Payé ?");
+    //thead.append(thNum);
+    thead.append(thMonth);
+    thead.append(thHourlyRate);
+    thead.append(thOpenDay);
+    thead.append(thAbsentDay);
+    thead.append(thCost);
+    thead.append(thPayed);
+    table.append(thead);
+    $.each(data["cost"], function(i, obj) {
+      let tr = $('<tr/>');
+      //let td = $('<td/>').html(obj.id);
+      let tdMonth = $('<td/>').html(getMonth(obj.month));
+      let tdHourlyRate = $('<td/>').append(createInternCostInputField(obj.month+"_hourly_rate",obj.id, "hourly_rate", obj.hourly_rate, 3));//('<input type="text" id="'+obj.month+'_hourly_rate" field="hourly_rate" objId="'+obj.id+'">'+obj.hourly_rate+'</i>');
+      let tdNbOpenDay = $('<td/>').html(obj.nb_open_day);
+      let tdNbAbsentDay = $('<td/>').html(createInternCostInputField(obj.month+"nb_day_absent",obj.id, "nb_day_absent", obj.nb_day_absent, 3));
+      let tdCost = $('<td/>').html((obj.hourly_rate * 7 * (obj.nb_open_day - obj.nb_day_absent)).toFixed(2));
+
+      let tdPayed = $('<td/>');
+      let a = $('<a />').attr("objId", obj.id).attr("value", obj.payed);
+      if(obj.payed == "1") {
+        a.html('<i class="fa fa-toggle-on fa-xl pointer" aria-hidden="true"></i>');
+      }
+      else {
+        a.html('<i class="fa fa-toggle-off fa-xl pointer" aria-hidden="true"></i>');
+      }
+      a.click(function() {
+        let toggleValue = "0";
+        console.log()
+        if ($(this).attr("value") == "0") {
+          toggleValue = 1;
+        }
+        internUpdateCostPerMonth(obj.id, "payed", toggleValue, $("#lab_internship_add_id").val());
+      });
+      tdPayed.append(a);
+      //tr.append(td);
+      tr.append(tdMonth);
+      tr.append(tdHourlyRate);
+      tr.append(tdNbOpenDay);
+      tr.append(tdNbAbsentDay);
+      tr.append(tdCost);
+      tr.append(tdPayed);
+      table.append(tr);
+    });
+    $("#lab_internship_add_intern_cost").append(table);
+  }
+
+  function createInternCostInputField(id, objId, field, value, nbDigit, internId) {
+    let input = $('<input/>').attr("type", "text").attr("id", id).attr("objId", objId).attr("maxlength", nbDigit).attr("size", nbDigit).attr("field", field).val(value);
+    input.focusout(function() {
+      internUpdateCostPerMonth(objId, field, input.val(), $("#lab_internship_add_id").val());
+    });
+    return input;
+  }
+
+  function getMonth(index) {
+    index = parseInt(index);
+    switch(index) {
+      case 1 :
+      return "Janvier";
+      case 2: 
+      return "Février";
+      case 3 :
+      return "Mars";
+      case 4: 
+      return "Avril";
+      case 5 :
+      return "Mai";
+      case 6: 
+      return "Juin";
+      case 7 :
+      return "Juillet";
+      case 8: 
+      return "Aout";
+      case 9 :
+      return "Septembre";
+      case 10: 
+      return "Octobre";
+      case 11 :
+      return "Novembre";
+      case 12: 
+      return "Décembre";
+      default:
+      return "None!!!";
+    }
   }
 
   function displayInternshipList(data)
@@ -325,8 +453,9 @@ jQuery(function($){
           tr.append(tdAmmount);
       });
 
-      let aEdit   = $('<a />').attr("class", "lab-page-title-action lab_mission_edit").attr("objId", obj.id).html('<i class="fa fa-pencil pointer" aria-hidden="true" title="Modifier le stage de '+intern_name+'"></i>&nbsp;');
-      let aDelete = $('<a />').attr("class", "lab-page-title-action lab_budget_info_delete").attr("objId", obj.id).attr("id", "lab-internship-list-delete-button"+obj.id).html('<i class="fas fa-trash pointer" aria-hidden="true" title="Supprimer le stage de '+intern_name+'"></i>');
+      let aEdit   = $('<a />').attr("class", "lab-page-title-action lab_mission_edit").attr("objId", obj.id).html('<i class="fa fa-pencil fa-lg pointer" aria-hidden="true" title="Modifier le stage de '+intern_name+'"></i>&nbsp;');
+      //let aSee    = $('<a />').attr("class", "lab-page-title-action lab_mission_see").attr("objId", obj.id).html('<i class="fa fa-eye fa-lg pointer" aria-hidden="true" title="Voir le stage de '+intern_name+'"></i>&nbsp;');
+      let aDelete = $('<a />').attr("class", "lab-page-title-action lab_budget_info_delete").attr("objId", obj.id).attr("id", "lab-internship-list-delete-button"+obj.id).html('<i class="fa fa-trash fa-lg pointer" aria-hidden="true" title="Supprimer le stage de '+intern_name+'"></i>');
   
       $(aEdit).click(function () {
         internship_edit($(this).attr("objId"));
@@ -336,6 +465,12 @@ jQuery(function($){
         internship_delete($(this).attr("objId"));
       });
 
+      /*
+      $(aSee).click(function () {
+        internship_create_cost($(this).attr("objId"));
+      });
+      //*/
+
       $(aDelete).click(function (){
         //displayModalDeleteRequest($(this).attr("objId"));
       });
@@ -344,6 +479,14 @@ jQuery(function($){
       tr.append(td);
       $("#lab_internship_body").append(tr);
     });
+  }
+
+  function internship_create_cost(id) {
+    let data = {
+      'action' : 'lab_internship_create_cost',
+      'id' : id,
+    }
+    callAjax(data, null, displayInternship, null, null);
   }
 
   function internship_edit(id) {

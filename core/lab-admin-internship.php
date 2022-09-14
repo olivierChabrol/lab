@@ -61,6 +61,7 @@ function lab_internship_delete($histo_id) {
     global $wpdb;
     $wpdb->delete($wpdb->prefix."lab_users_historic", array("id"=>$histo_id));
     internship_financial_delete_by_histo($histo_id);
+    intern_cost_delete_internship($histo_id);
     return TRUE;
 }
 
@@ -86,6 +87,7 @@ function lab_internship_get($histo_id) {
     $data["host_id"]        = $histo[0]->host_id;
     $data["convention_state"] = $histo[0]->convention_state;
     $data["financials"] = internship_financial_list($histo_id);
+    //$data["cost"] = intern_cost_load($histo_id);
     return $data;
 }
 
@@ -116,6 +118,7 @@ function save_intern($data) {
         update_user_meta($data["user_id"], "first_name", $data["firstname"]);
         return $data["id"];
     }
+    // new Internship
     else {
         if(isset($data["user_id"]) && !empty($data["user_id"]))
         {
@@ -146,6 +149,7 @@ function save_intern($data) {
         $histo["function"] = $fctStg;
         $wpdb->insert($wpdb->prefix.'lab_users_historic', $histo);
         $host_id = $wpdb->insert_id;
+        intern_create_cost_per_month($host_id, $histo["begin"],$histo["end"], 3.9);
         $i = 1;
         foreach($financials as $financial) {
             $financial["histo_id"] = $host_id;
@@ -175,6 +179,7 @@ function internship_financial_save_old($id, $histo_id, $cardinality, $team_id, $
         return $wpdb->insert_id;
     } 
     else {
+        //@todo a verifier le $id
         $wpdb->insert($wpdb->prefix."lab_internship_financial", array("histo_id"=>$histo_id, "cardinality"=>$cardinality, "team_id"=>$team_id, "tutelage_id"=>$tutelage_id, "nb_month"=>$months, "amount"=>$amount), array("id"=>$id));
         return $id;
     }
@@ -268,6 +273,86 @@ function list_intern($year)
     }
 
     return $data;
+}
+
+function intern_cost_update($id, $field, $value) {
+    global $wpdb;
+    return $wpdb->update($wpdb->prefix."lab_internship_cost", array($field => $value), array("id"=>$id));
+}
+
+function intern_cost_load($intern_id) {
+    global $wpdb;
+    $sql = "SELECT * FROM ".$wpdb->prefix."lab_internship_cost WHERE `intern_id`=".$intern_id;
+    $results = $wpdb->get_results($sql);
+    if ($results && count($results) > 0) {
+        return $results;
+    }
+    else {
+        $intern = lab_internship_get($intern_id);
+        intern_create_cost_per_month($intern_id, $intern["begin"], $intern["end"], 3.9);
+        return $wpdb->get_results($sql);
+    }
+}
+
+function intern_cost_delete($id) {
+    global $wpdb;
+    return $wpdb->delete($wpdb->prefix."lab_internship_cost", array("id"=>$id));
+}
+
+function intern_cost_delete_internship($intern_id) {
+    global $wpdb;
+    return $wpdb->delete($wpdb->prefix."lab_internship_cost", array("intern_id"=>$intern_id));
+}
+
+function intern_create_cost_per_month($intern_id, $start_date,$end_date, $hourly_rate) {
+    $start_date = strtotime($start_date);
+    $end_date = strtotime($end_date);
+    $year1 = date('Y', $start_date);
+    $year2 = date('Y', $end_date);
+
+    $month1 = date('m', $start_date);
+    $month2 = date('m', $end_date);
+
+    $nb_months = (($year2 - $year1) * 12) + ($month2 - $month1) + 1;
+
+    // if only one month in the same month
+    if($month2 == $month1) {
+        intern_save_internship_cost(null, $intern_id, $start_date, $end_date, $hourly_rate, 0, False);
+    }
+    else {
+        intern_save_internship_cost(null, $intern_id, $start_date, null, $hourly_rate, 0, False);
+        
+        for ($i = 1 ; $i < $nb_months - 1; $i++) {
+            $start_date = strtotime(date("Y-m-d", strtotime("+1 month", $start_date)));
+
+            $firstDayUTS = mktime (0, 0, 0, date("m", $start_date), 1, date("Y", $start_date));
+            intern_save_internship_cost(null, $intern_id, $firstDayUTS, null, $hourly_rate, 0, False);        
+        }
+        $start_date = strtotime(date("Y-m-d", strtotime("+1 month", $start_date)));
+        $firstDayUTS = mktime (0, 0, 0, date("m", $start_date), 1, date("Y", $start_date));
+
+        intern_save_internship_cost(null, $intern_id, $firstDayUTS, $end_date, $hourly_rate, 0, False);
+
+    }
+
+}
+
+function intern_save_internship_cost($id, $intern_id, $start_date, $end_date, $hourly_rate, $nb_day_absent, $payed) {
+    global $wpdb;
+    if ($end_date == null) {
+        $last_day_of_the_month = strtotime(date("Y-m-t", $start_date));
+    }
+    else {
+        $last_day_of_the_month = $end_date;
+    }
+    $month = date('n', $start_date);
+    $nb_open_days = get_nb_open_days($start_date, $last_day_of_the_month);
+    if ($id == null) {
+        $wpdb->insert($wpdb->prefix."lab_internship_cost", array("intern_id"=>$intern_id, "start"=>date("Y-m-d", $start_date), "end"=>date("Y-m-d", $last_day_of_the_month), "hourly_rate"=>$hourly_rate, "month"=>$month, "nb_open_day"=>$nb_open_days, "nb_day_absent"=>$nb_day_absent, "payed"=>$payed));
+    }
+    else {
+        $wpdb->update($wpdb->prefix."lab_internship_cost", array("intern_id"=>$intern_id, "start"=>date("Y-m-d", $start_date), "end"=>date("Y-m-d", $last_day_of_the_month), "hourly_rate"=>$hourly_rate, "month"=>$month, "nb_open_day"=>$nb_open_days, "nb_day_absent"=>$nb_day_absent, "payed"=>$payed), array("id"=>$id));
+    }
 }
 
 ?>
