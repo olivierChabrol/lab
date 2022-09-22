@@ -152,6 +152,15 @@ jQuery(function($){
   $("#lab_internship_add_confirm").click(function() {
     internShipSaveModal();
   });
+  $("#lab_internship_delete_confirm").click(function() {
+    let d = labFindModalPrentDiv($(this));
+    d.modal('hide');
+    internship_delete($("#lab_modal_obj_id").val());
+  });
+  $(".closeModalAction").click(function() {
+    let d = labFindModalPrentDiv($(this));
+    d.modal('hide');
+  });
 
   if ($("#lab_request_list_table").length) {
     loadOwnRequests();
@@ -175,6 +184,10 @@ jQuery(function($){
       });
     });
     toggleTab($("#lab_request_ingo_tab_legal"), getRequestInfoTabs);
+  }
+
+  function labFindModalPrentDiv(obj) {
+    return obj.parentsUntil(".labModalTest").parent();
   }
 
   function loadInternUser() {
@@ -398,7 +411,7 @@ jQuery(function($){
     $.each(data["results"], function(i, obj) {
       console.log("[displayInternshipList] " + obj.id);
       let tr = $('<tr />').attr("ObjId", obj.id);
-      let tdName = $("<td />").attr("ObjId", obj.id);
+      let tdName = $("<td />").attr("ObjId", obj.id).attr("id", "name_"+obj.id);
 
       let intern_name = "";
 
@@ -410,9 +423,9 @@ jQuery(function($){
         tdName.html(obj.user_id);
       }
       tr.append(tdName);
-      let tdStart = $("<td />").attr("ObjId", obj.id).html(obj.begin);
-      let tdEnd   = $("<td />").attr("ObjId", obj.id).html(obj.end);
-      let tdId = $("<td />").attr("ObjId", obj.id).html(obj.id);
+      let tdStart = $("<td />").attr("ObjId", obj.id).attr("id", "begin_"+obj.id).html(obj.begin);
+      let tdEnd   = $("<td />").attr("ObjId", obj.id).attr("id", "end_"+obj.id).html(obj.end);
+      //let tdId = $("<td />").attr("ObjId", obj.id).html(obj.id);
       let tdTo = $("<td />").attr("ObjId", obj.id).html(" -> ");
       let convention = "Non signée";
       switch(obj.convention_state) {
@@ -462,7 +475,7 @@ jQuery(function($){
       });
 
       $(aDelete).click(function () {
-        internship_delete($(this).attr("objId"));
+        internship_display_delete_ask($(this).attr("objId"));
       });
 
       /*
@@ -495,6 +508,13 @@ jQuery(function($){
       'id' : id,
     }
     callAjax(data, null, displayInternship, null, null);
+  }
+
+  function internship_display_delete_ask(id) {
+    $("#lab_modal_obj_id").val(id);
+    $("#lab_internship_delete_text_content").empty();
+    $("#lab_internship_delete_text_content").html($("#name_" + id).html() + " du " + $("#begin_" + id).html() + " au " + $("#end_" + id).html());
+    $("#lab_internship_delete_ask_intern").modal();
   }
 
   function internship_delete(id) {
