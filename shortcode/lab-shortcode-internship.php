@@ -23,7 +23,8 @@ function lab_internship($param) {
     su_query_asset( 'js', 'jquery' );
     su_query_asset( 'js', 'su-shortcodes' );
     $html = "";
-    if(lab_is_manager() || lab_is_admin() ) {
+    // is group manager or user can manage budget (for MC Rigat for example) or is admin
+    if(lab_is_manager() || lab_user_has_role(get_current_user_id(), "lab_manager") || lab_is_admin() ) {
     //$html .= 'option : "'.get_option('login_page_url').'"';
     $html .= '<div id="lab_internship">
               <div id="loadingAjaxGif">

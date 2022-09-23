@@ -797,6 +797,12 @@ function lab_is_manager()
     $budgetManagerGroupIds = lab_admin_group_get_manager_groups(get_current_user_id());
     return count($budgetManagerGroupIds) > 0;
 }
+function lab_user_has_role($user_id, $role_name)
+{
+    $user_meta = get_userdata($user_id);
+    $user_roles = $user_meta->roles;
+    return in_array($role_name, $user_roles);
+}
 function lab_is_group_leader()
 {
     $leaderManagerGroupIds = lab_admin_group_get_manager_groups(null, array(2,3));
