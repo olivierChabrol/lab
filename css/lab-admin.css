@@ -142,7 +142,7 @@ input:checked + .slider:before {
 {
     display : block;
     position : fixed;
-    z-index: 100;
+    z-index: 2000;
     opacity : 0.4;
     background-repeat : no-repeat;
     background-position : center;

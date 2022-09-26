@@ -64,7 +64,10 @@
   padding-top: 100px; /* Location of the box */
   left: 0;
   top: 0;
-  width: 100%;.modal {
+  width: 100%;
+}
+/*
+.modal {
     display: none;
     vertical-align: middle;
     position: relative;
@@ -88,7 +91,7 @@
   }x;
   border: 1px solid #888;
   width: 80%;
-}
+  //*/
 
 /* The Close Button */
 .lab_fe_modal_close {
