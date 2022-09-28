@@ -144,6 +144,7 @@ jQuery(function($){
     internShipCloseModal();
   });
   $("#lab_internship_add_intern_close").click(function() {
+    console.log("clic annuler");
     internShipCloseModal();
   });
   $("#lab_internship_add_intern_close_icon").click(function() {
@@ -244,6 +245,7 @@ jQuery(function($){
 
   function internShipCloseModal() {
     internShipClearFields();
+    console.log("[internShipCloseModal]");
     $("#lab_internship_add_intern").modal('hide');
     loadInternship();
   }
@@ -3046,7 +3048,7 @@ function lab_updatePrefGroups() {
     });
   });
 }
-
+/*
 function displayLoadingGif()
 {
   //jQuery("#loadingAjaxGif").show();
@@ -3058,6 +3060,7 @@ function hideLoadingGif()
   //jQuery("#loadingAjaxGif").hide();
   $("#loadingAjaxGif").removeClass('show');
 }
+//*/
 
 function lab_update_invitesList() {
     statuses =[];

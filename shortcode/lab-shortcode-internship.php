@@ -35,7 +35,7 @@ function lab_internship($param) {
       <input type="hidden" id="lab_modal_obj_id">
       <span class="close closeModalAction" id="labModalDeleteAskContentClose" >&times;</span>
       <span>Voulez vous suprimer le stage de : <br/><span id="lab_internship_delete_text_content"></span><br/></span>
-      <a href="#" class="closeModalAction" id="lab_internship_add_intern_close" class="btn btn-light">'. esc_html__('Cancel','lab') .'</a>
+      <a href="#" class="closeModalAction" id="lab_internship_delete_intern_close" class="btn btn-light">'. esc_html__('Cancel','lab') .'</a>
       <a href="#" rel="modal:close" id="lab_internship_delete_confirm" keyid="" class="btn btn-success lab-btn-right">'. esc_html__('Confirm','lab') .'</a>
     </div></div>';
     $html .= '<div id="lab_internship_add_intern" class="labModalTest"><div class="labModalContent">
