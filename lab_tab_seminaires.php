@@ -5,3 +5,7 @@
     <br>
 <?php lab_locate_template('forms/event/categories-public.php',true); ?>
 <br><a href="#" class="page-title-action" id="lab-button-change-category">Modifier la categorie d'un evenement</a>
+
+
+
+
