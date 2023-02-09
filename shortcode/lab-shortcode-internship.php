@@ -71,11 +71,12 @@ function lab_internship($param) {
     $html .= '</div></div>';
     $html .= '<label for="lab_internship_year">Année : </label><select id="lab_internship_year">';
     foreach($years as $y) {
-        $html .= '<option val="'.$y.'"';
-        if ($year == $y) {
-          $html .= " selected";
-        }
-        $html .= '>'.$y.'</option>';
+      $html .= '<option ';
+      if ($year == $y) {
+        $html .= " selected ";
+      }
+      $html .= ' val="'.$y.'"';
+      $html .= '>'.$y.'</option>';
     }
     $html .= '<select/><button type="button" class="btn btn-primary" id="lab_internship_add_intern_button">Ajouter un·e stagiair·e</button>';
     $html .= '<table id="lab_internship_table" class="table table-striped table-hover"><thead class="thead-dark"><th>Stagiaire</th><th colspan="2">Debut</th><th>Fin</th><th>Encadrant</th><th>Convention</th><th>Equipe</th><th>Financier</th><th># mois</th><th>&euro;</th><th>Equipe</th><th>Financier</th><th># mois</th><th>&euro;</th><th>Equipe</th><th>Financier</th><th># mois</th><th>&euro;</th><th>Equipe</th><th>Financier</th><th># mois</th><th>&euro;</th><th>Actions</th></thead><tbody id="lab_internship_body"/></table>';
