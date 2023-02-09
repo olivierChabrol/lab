@@ -72,7 +72,7 @@ function lab_internship($param) {
       if ($year == $y) {
         $html .= " selected ";
       }
-      $html .= ' val="'.$y.'"';
+      $html .= ' value="'.$y.'"';
       $html .= '>'.$y.'</option>';
     }
     $html .= '<select/><button type="button" class="btn btn-primary" id="lab_internship_add_intern_button">Ajouter un·e stagiair·e</button>';
