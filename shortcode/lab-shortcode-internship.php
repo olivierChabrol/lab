@@ -10,12 +10,9 @@ function lab_internship($param) {
         "lab-internship"
     );
 
-    $year = "";
-    if(isset($param["year"])) {
+    $year = date("Y");
+    if(isset($param["year"]) && !empty($param["year"])) {
         $year = $param["year"];
-    }
-    else {
-      $year = date("Y");
     }
     $years = list_internship_years();
 
