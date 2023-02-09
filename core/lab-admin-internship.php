@@ -149,7 +149,7 @@ function save_intern($data) {
         $histo["function"] = $fctStg;
         $wpdb->insert($wpdb->prefix.'lab_users_historic', $histo);
         $host_id = $wpdb->insert_id;
-        intern_create_cost_per_month($host_id, $histo["begin"],$histo["end"], 3.9);
+        intern_create_cost_per_month($host_id, $histo["begin"],$histo["end"], intern_cost_hourly_rate());
         $i = 1;
         foreach($financials as $financial) {
             $financial["histo_id"] = $host_id;
@@ -280,6 +280,10 @@ function intern_cost_update($id, $field, $value) {
     return $wpdb->update($wpdb->prefix."lab_internship_cost", array($field => $value), array("id"=>$id));
 }
 
+function intern_cost_hourly_rate() {
+    return 4.05;
+}
+
 function intern_cost_load($intern_id) {
     global $wpdb;
     $sql = "SELECT * FROM ".$wpdb->prefix."lab_internship_cost WHERE `intern_id`=".$intern_id;
@@ -288,8 +292,9 @@ function intern_cost_load($intern_id) {
         return $results;
     }
     else {
+        $HourlyRate = intern_cost_hourly_rate();
         $intern = lab_internship_get($intern_id);
-        intern_create_cost_per_month($intern_id, $intern["begin"], $intern["end"], 3.9);
+        intern_create_cost_per_month($intern_id, $intern["begin"], $intern["end"], $HourlyRate);
         return $wpdb->get_results($sql);
     }
 }
