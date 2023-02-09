@@ -66,6 +66,7 @@ function lab_internship($param) {
       <a href="#" rel="modal:close" id="lab_internship_add_confirm" keyid="" class="btn btn-success lab-btn-right">'. esc_html__('Confirm','lab') .'</a>
       </div>';
     $html .= '</div></div>';
+    $html .= '<input type="hidden" id="lab_intern_selected_year" value="'.$year.'"/>';
     $html .= '<label for="lab_internship_year">Année : </label><select id="lab_internship_year">';
     foreach($years as $y) {
       $html .= '<option ';
