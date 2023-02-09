@@ -77,7 +77,6 @@ function lab_internship($param) {
       $html .= '>'.$y.'</option>';
     }
     $html .= '<select/>&nbsp;';
-    $html .= '<select><option>a</option><option>b</option><option selected>c</option></select>';
     $html .= '<button type="button" class="btn btn-primary" id="lab_internship_add_intern_button">Ajouter un·e stagiair·e</button>';
     $html .= '<table id="lab_internship_table" class="table table-striped table-hover"><thead class="thead-dark"><th>Stagiaire</th><th colspan="2">Debut</th><th>Fin</th><th>Encadrant</th><th>Convention</th><th>Equipe</th><th>Financier</th><th># mois</th><th>&euro;</th><th>Equipe</th><th>Financier</th><th># mois</th><th>&euro;</th><th>Equipe</th><th>Financier</th><th># mois</th><th>&euro;</th><th>Equipe</th><th>Financier</th><th># mois</th><th>&euro;</th><th>Actions</th></thead><tbody id="lab_internship_body"/></table>';
     }
