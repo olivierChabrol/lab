@@ -70,7 +70,7 @@ function lab_internship($param) {
     foreach($years as $y) {
       $html .= '<option ';
       if ($year == $y) {
-        $html .= " selected ";
+        $html .= ' selected ';
       }
       $html .= ' value="'.$y.'"';
       $html .= '>'.$y.'</option>';

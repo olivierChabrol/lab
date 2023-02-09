@@ -264,9 +264,11 @@ jQuery(function($){
   }
 
   function loadInternship() {
+    $year = $("#lab_intern_selected_year").val();
+    $("#lab_internship_year").val(year);
     let data = {
       'action': 'lab_internship_load',
-      'year' : $("#lab_internship_year option:selected").val(),
+      'year' : $("#lab_internship_year").val(),
     };
     callAjax(data, null, displayInternshipList, null, null);
   }
