@@ -264,8 +264,6 @@ jQuery(function($){
   }
 
   function loadInternship() {
-    let year = $("#lab_intern_selected_year").val();
-    $("#lab_internship_year").val(year);
     let data = {
       'action': 'lab_internship_load',
       'year' : $("#lab_internship_year").val(),
