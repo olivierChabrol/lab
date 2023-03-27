@@ -70,6 +70,7 @@ jQuery(function($){
                 'id':$("#lab_admin_contract_id").val(),
                 'name':$("#lab_admin_contract_name").val(),
                 'contract_type':$("#lab_admin_contract_type").val(),
+                'contract_tutelage':$("#lab_admin_contract_tutelage").val(),
                 'start':$("#lab_admin_contract_start").val(),
                 'end':$("#lab_admin_contract_end").val(),
             };
@@ -123,6 +124,7 @@ jQuery(function($){
         $("#lab_contract_delete_dialog_contract_id").val($("#lab_admin_contract_id").val());
         $("#lab_admin_contract_name").val(data.label);
         $("#lab_admin_contract_type").val(data.contract_type);
+        $("#lab_admin_contract_tutelage").val(data.contract_tutelage);
         $("#lab_admin_contract_start").val(data.start);
         $("#lab_admin_contract_end").val(data.end);
         loadContractUsers(data.id);
@@ -148,9 +150,11 @@ jQuery(function($){
             let tdId = $('<td />').html(obj.id);
             let tdContractName = $('<td />').html(obj.name);
             let tdContractType = $('<td />').html(obj.type);
+            let tdContractTutelage = $('<td />').html(obj.tutelage);
             tr.append(tdId);
             tr.append(tdContractName);
             tr.append(tdContractType);
+            tr.append(tdContractTutelage);
             let holdersStr = "";
             $.each(obj.holders, function(i, usr) {
                 holdersStr += usr.first_name + " " + usr.last_name+", ";

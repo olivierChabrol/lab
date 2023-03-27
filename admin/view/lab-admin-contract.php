@@ -61,6 +61,14 @@
         </tr>
         <tr>
             <td>
+                <label for="lab_admin_contract_tutelage"><?php esc_html_e('Contract tutelage','lab') ?></label>
+            </td>
+            <td>
+                <?php lab_html_select("lab_admin_contract_tutelage", "lab_admin_contract_tutelage", "", "lab_admin_get_params_budget_origin_fund", null, array("value"=>"0","label"=>"None"), ""); ?>
+            </td>
+        </tr>
+        <tr>
+            <td>
                 <label for="lab_admin_contract_start"><?php esc_html_e('Contract start','lab') ?></label>
             </td>
             <td>

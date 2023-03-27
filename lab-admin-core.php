@@ -471,11 +471,11 @@ function lab_admin_budget_funds() {
 /***********************************************************************************************************
  * CONTRACT
  ***********************************************************************************************************/
-function lab_admin_contract_save($id, $name, $contractType, $start, $end, $holders, $managers) {
+function lab_admin_contract_save($id, $name, $contractType, $contractTutelage, $start, $end, $holders, $managers) {
     global $wpdb;
     // new contract
     if (!isset($id) || empty($id)) {
-        if ($wpdb->insert($wpdb->prefix.'lab_contract', array("name"=>$name, "contract_type"=>$contractType,"start"=>$start,"end"=>$end))) {
+        if ($wpdb->insert($wpdb->prefix.'lab_contract', array("name"=>$name, "contract_type"=>$contractType, "contract_tutelage"=>$contractTutelage,"start"=>$start,"end"=>$end))) {
             $contractId = $wpdb->insert_id;
             foreach ($holders as $userId) {
                 $wpdb->insert($wpdb->prefix.'lab_contract_user', array("contract_id"=>$contractId, "user_id"=>$userId,"user_type"=> 2));
@@ -491,7 +491,7 @@ function lab_admin_contract_save($id, $name, $contractType, $start, $end, $holde
     }
     else
     {
-        $wpdb->update($wpdb->prefix.'lab_contract', array("name"=>$name,"start"=>$start,"end"=>$end), array("id"=>$id));
+        $wpdb->update($wpdb->prefix.'lab_contract', array("name"=>$name,"start"=>$start,"end"=>$end, "contract_type"=>$contractType, "contract_tutelage"=>$contractTutelage), array("id"=>$id));
     }
 }
 
@@ -537,7 +537,7 @@ function lab_admin_contract_search($contractName) {
 
 function lab_admin_contract_get($contractId) {
     global $wpdb;
-    $res = $wpdb->get_results("SELECT id, contract_type, name as label, start, end FROM ".$wpdb->prefix."lab_contract WHERE `id` = ".$contractId);
+    $res = $wpdb->get_results("SELECT id, contract_type, contract_tutelage, name as label, start, end FROM ".$wpdb->prefix."lab_contract WHERE `id` = ".$contractId);
     if (count($res) == 1) {
         return $res[0];
     }
@@ -559,7 +559,7 @@ function lab_admin_contract_delete($contractId) {
 
 function lab_admin_contract_load() {
     global $wpdb;
-    $results = $wpdb->get_results("SELECT c.*,p.value AS contract_type_label, cu.user_id, cu.user_type,um1.meta_value AS first_name, um2.meta_value AS last_name FROM `".$wpdb->prefix."lab_contract` AS c JOIN ".$wpdb->prefix."lab_contract_user AS cu ON cu.contract_id=c.id JOIN ".$wpdb->prefix."usermeta AS um1 ON um1.user_id=cu.user_id JOIN ".$wpdb->prefix."usermeta AS um2 ON um2.user_id=cu.user_id JOIN ".$wpdb->prefix."lab_params AS p ON p.id=c.contract_type WHERE um1.meta_key='first_name' AND um2.meta_key='last_name' ");
+    $results = $wpdb->get_results("SELECT c.*,p.value AS contract_type_label,p1.value AS contract_tutelage_label, cu.user_id, cu.user_type,um1.meta_value AS first_name, um2.meta_value AS last_name FROM `".$wpdb->prefix."lab_contract` AS c JOIN ".$wpdb->prefix."lab_contract_user AS cu ON cu.contract_id=c.id JOIN ".$wpdb->prefix."usermeta AS um1 ON um1.user_id=cu.user_id JOIN ".$wpdb->prefix."usermeta AS um2 ON um2.user_id=cu.user_id JOIN ".$wpdb->prefix."lab_params AS p ON p.id=c.contract_type  JOIN ".$wpdb->prefix."lab_params AS p1 ON p1.id=c.contract_tutelage WHERE um1.meta_key='first_name' AND um2.meta_key='last_name' ");
     $contracts = array();
     $lastId = -1;
     $nbLine = 0;
@@ -605,6 +605,7 @@ function lab_admin_contract_inner_new_stdClass_contract($line)
     $contract->start = $line->start;
     $contract->end   = $line->end;
     $contract->type   = $line->contract_type_label;
+    $contract->tutelage   = $line->contract_tutelage_label;
     $contract->holders  = array();
     $contract->managers = array();
     lab_admin_contract_inner_new_stdClass_add_user($line, $contract);

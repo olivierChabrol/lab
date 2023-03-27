@@ -858,10 +858,11 @@ function lab_admin_contract_ajax_save() {
   $contractName  = $_POST['name'];
   $contractStart = $_POST['start'];
   $contractType  = $_POST['contract_type'];
+  $contractTutelage  = $_POST['contract_tutelage'];
   $contractEnd   = $_POST['end'];
   $holders       = $_POST["holders"];
   $managers      = $_POST["managers"];
-  wp_send_json_success(lab_admin_contract_save($id, $contractName, $contractType, $contractStart, $contractEnd, $holders, $managers));
+  wp_send_json_success(lab_admin_contract_save($id, $contractName, $contractType, $contractTutelage, $contractStart, $contractEnd, $holders, $managers));
 }
 
 function lab_admin_contract_ajax_search() {
