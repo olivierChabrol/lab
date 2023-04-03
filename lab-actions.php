@@ -85,6 +85,8 @@ if (is_admin()) {
     add_action( 'wp_ajax_lab_admin_contract_users_load', 'lab_admin_contract_ajax_users_load');
     add_action( "wp_ajax_lab_admin_contract_delete", "lab_admin_contract_ajax_delete");
     add_action( "wp_ajax_lab_admin_contract_create_table", "lab_admin_contract_ajax_create_table");
+    add_action( "lab_admin_contract_funder_save", "lab_admin_contract_funder_save_ajax");
+    add_action( "lab_admin_contract_funder_list", "lab_admin_contract_funder_list_ajax");
     add_action( "wp_ajax_lab_admin_contract_load", "lab_admin_contract_ajax_load");
     add_action( "wp_ajax_lab_admin_contract_get_managers", "lab_admin_contract_ajax_get_managers");
     add_action( "wp_ajax_lab_budget_info_save_order", "lab_budget_info_ajax_save_order");

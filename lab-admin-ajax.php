@@ -853,6 +853,12 @@ function lab_admin_contract_ajax_load() {
   wp_send_json_success(lab_admin_contract_load());
 }
 
+function lab_admin_contract_funder_save_ajax() {
+  $id = $_POST['id'];
+  $contractTutelage  = $_POST['contract_tutelage'];
+  wp_send_json_success(lab_admin_contract_funder_save($id, $contractTutelage));
+}
+
 function lab_admin_contract_ajax_save() {
   $id = $_POST['id'];
   $contractName  = $_POST['name'];

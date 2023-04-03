@@ -125,4 +125,19 @@
 </div>
 <?php
   }
+
+  function lab_admin_contract_funder() {
+?>
+<div id="loadingAjaxGif"><img src="/wp-content/plugins/lab/loading.gif"/></div>
+<div class="wrap">
+    <h1 class="wp-heading-inline">Gestion des financeurs</h1><br/>
+    Nouveau financeur
+    <?php lab_html_select("lab_admin_contract_tutelage", "lab_admin_contract_tutelage", "", "lab_admin_get_params_budget_origin_fund", null, array("value"=>"0","label"=>"None"), ""); ?>
+    <label for="lab_admin_contract_name">New Name</label>
+    <input type="text" id="lab_admin_contract_name" maxlength="50">
+    
+    <button class="page-title-action" id="lab_admin_contract_funder_create"><?php esc_html_e('Add','lab'); ?></button>
+</div>
+<?php
+  }
   

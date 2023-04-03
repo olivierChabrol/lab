@@ -556,6 +556,30 @@ function lab_admin_contract_delete($contractId) {
     return true;
 }
 
+function lab_admin_contract_funder_save($id, $tutelage) {
+    global $wpdb;
+    // new contract
+    if (!isset($id) || empty($id)) {
+        if ($wpdb->insert($wpdb->prefix.'lab_contract', array("name"=>$name, "contract_type"=>$contractType, "contract_tutelage"=>$contractTutelage,"start"=>$start,"end"=>$end))) {
+            $contractId = $wpdb->insert_id;
+            foreach ($holders as $userId) {
+                $wpdb->insert($wpdb->prefix.'lab_contract_user', array("contract_id"=>$contractId, "user_id"=>$userId,"user_type"=> 2));
+            }
+            foreach ($managers as $userId) {
+                $wpdb->insert($wpdb->prefix.'lab_contract_user', array("contract_id"=>$contractId, "user_id"=>$userId,"user_type"=> 1));
+            }
+        }
+        else {
+            return $wpdb->last_error;
+        }
+        
+    }
+    else
+    {
+        $wpdb->update($wpdb->prefix.'lab_contract_funder', array("name"=>$name,"start"=>$start,"end"=>$end, "contract_type"=>$contractType, "contract_tutelage"=>$contractTutelage), array("id"=>$id));
+    }
+}
+
 
 function lab_admin_contract_load() {
     global $wpdb;

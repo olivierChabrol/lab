@@ -322,6 +322,7 @@ function wp_lab_menu()
   add_menu_page("Budget Info","Budget Info","budget_info_manager","lab_admin_budget_info","lab_admin_budget_info",'dashicons-money-alt'    ,24);
   add_menu_page("Mission"    ,"Manage Mission".$bookings_num, "subscriber","lab_admin_mission_manager","lab_admin_mission_manager",'dashicons-admin-site-alt'    ,23);
   add_submenu_page("lab_admin_budget_info", esc_html('Contract','lab'), esc_html('Contract','lab'),'edit_plugins', 'lab_admin_contract', 'lab_admin_new_contract', 25 );
+  add_submenu_page("lab_admin_budget_info", esc_html('Contract funder','lab'), esc_html('Contract funder','lab'),'edit_plugins', 'lab_admin_contract_funder', 'lab_admin_contract_funder', 26 );
   //add_menu_page("LDAP Admin","LDAP Admin",'edit_plugins','lab_ldap','lab_ldap','dashicons-id-alt',23);
   add_submenu_page( 'wp-lab.php', "LDAP Admin", "LDAP Admin",'edit_plugins', 'lab_ldap', 'lab_ldap_test', 26 );
   add_submenu_page("wp-lab.php", "User Admin", "User Admin", "lab_user_manager", "lab_user", "lab_user_echo", 27);

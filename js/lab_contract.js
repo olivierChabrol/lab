@@ -2,6 +2,9 @@ jQuery(function($){
     if ($("#lab_admin_contract_list_table").length) {
         loadAllContracts();
     }
+    if ($("#lab_admin_contract_funder_list_table").length) {
+        loadAllContractsFunder();
+    }
 
     if($("#lab_contract_delete_dialog_contract_id").length && $("#lab_contract_delete_dialog_contract_id").val() != "") {
         loadContractById($("#lab_contract_delete_dialog_contract_id").val());
@@ -62,6 +65,16 @@ jQuery(function($){
         }
       }
     );
+
+    $("#lab_admin_contract_funder_create").click(function() {
+        let data = {
+            'action':'lab_admin_contract_funder_save',
+            'contract_tutelage':$("#lab_admin_contract_tutelage").val(),
+        }
+        callAjax(data, null, clearContractFunderFields, null, null);
+
+    });
+
     $("#lab_admin_contract_create").click(function() {
         if ($("#lab_admin_contract_name").val() != "")
         {
@@ -135,6 +148,17 @@ jQuery(function($){
     function reloadPageContract(data) {
         location.reload();
       }
+
+    function loadAllContractsFunder() {
+        let data = {
+            'action':'lab_admin_contract_funder_load'
+        }
+        callAjax(data, null, displayContractsFunder, null, null);
+    }
+
+    function displayContractsFunder(data) {
+        
+    }
 
     function loadAllContracts() {
         let data = {
@@ -229,6 +253,10 @@ jQuery(function($){
                 addUserTocontract(obj.first_name, obj.last_name, obj.user_id, "holder");
             }
         });
+    }
+
+    function clearContractFunderFields() {
+
     }
 
     function clearNewFields() {
