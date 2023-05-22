@@ -480,14 +480,27 @@ function lab_admin_ajax_param_save() {
 }
 
 function lab_admin_param_load_param_type() {
-  global $wpdb;
-  $sql = "SELECT id, value FROM `".$wpdb->prefix."lab_params` WHERE type_param = 1";
-  $results = $wpdb->get_results($sql);
-  return $results;
+  return lab_admin_param_load_by_type(1);
 }
 
 function lab_admin_param_load_type() {
   wp_send_json_success(lab_admin_param_load_param_type());
+}
+
+function lab_admin_param_load_by_type_ajax() {
+  $paramId   = $_POST['id'];
+  if (isset($paramId) && !empty($paramId)) {
+      wp_send_json_success(lab_admin_param_load_by_type($paramId));
+  } else {
+      wp_send_json_error(__("Cant get system param", "lab"));
+  }
+
+}
+function lab_admin_param_load_by_type($type) {
+  global $wpdb;
+  $sql = "SELECT id, value FROM `".$wpdb->prefix."lab_params` WHERE type_param = ".$type;
+  $results = $wpdb->get_results($sql);
+  return $results;
 }
 
 function lab_admin_param_delete() {
@@ -853,10 +866,29 @@ function lab_admin_contract_ajax_load() {
   wp_send_json_success(lab_admin_contract_load());
 }
 
+function lab_admin_contract_funder_delete_ajax() {
+  $id = $_POST['id'];
+  lab_admin_contract_funder_delete($id);
+  wp_send_json_success(lab_admin_contract_funder_list());
+}
+
+function lab_admin_contract_funder_list_sub_funder_ajax() {
+  $parentId = $_POST['id'];
+  wp_send_json_success(lab_admin_contract_funder_sub_funder_list($parentId));
+}
+
 function lab_admin_contract_funder_save_ajax() {
   $id = $_POST['id'];
-  $contractTutelage  = $_POST['contract_tutelage'];
-  wp_send_json_success(lab_admin_contract_funder_save($id, $contractTutelage));
+  $label   = $_POST['label'];
+  $type    = $_POST['type'];
+  $value   = $_POST['value'];
+  $parent  = $_POST['parent'];
+  lab_admin_contract_funder_save($id, $label, $type, $value, $parent);
+  wp_send_json_success(lab_admin_contract_funder_list());
+}
+
+function lab_admin_contract_funder_list_ajax() {
+  wp_send_json_success(lab_admin_contract_funder_list());
 }
 
 function lab_admin_contract_ajax_save() {

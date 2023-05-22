@@ -48,6 +48,13 @@ class AdminParams {
         return $results = $wpdb->get_results($sql);
     }
 
+    public static function lab_admin_get_params_search_by_value($type, $value) {
+
+        global $wpdb;
+        $sql = "SELECT * FROM `".$wpdb->prefix."lab_params` WHERE type_param=".$type." AND value='".$value."'";
+        return $wpdb->get_results($sql)[0];
+    }
+
     public static function lab_admin_get_params_mission_type_description()
     {
         return AdminParams::get_params_fromId(AdminParams::PARAMS_MISSION_TYPE_DESC);

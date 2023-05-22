@@ -556,18 +556,182 @@ function lab_admin_contract_delete($contractId) {
     return true;
 }
 
-function lab_admin_contract_funder_save($id, $tutelage) {
+function lab_admin_contract_funder_save_data() {
+    global $wpdb;
+    lab_admin_column_drop($wpdb->prefix."lab_internship_financial", "team_old");
+    lab_admin_column_drop($wpdb->prefix."lab_internship_financial", "tutelage_old");
+
+    if (!lab_admin_column_exist($wpdb->prefix."lab_internship_financial", "team_old")) {
+        $wpdb->get_results("ALTER TABLE `".$wpdb->prefix."lab_internship_financial` ADD `team_old` BIGINT NOT NULL");
+    }
+    if (!lab_admin_column_exist($wpdb->prefix."lab_internship_financial", "tutelage_old")) {
+        $wpdb->get_results("ALTER TABLE `".$wpdb->prefix."lab_internship_financial` ADD `tutelage_old` BIGINT NOT NULL");
+    }
+
+    $wpdb->get_results("UPDATE ".$wpdb->prefix."lab_internship_financial SET team_old=team");
+    $wpdb->get_results("UPDATE ".$wpdb->prefix."lab_internship_financial SET tutelage_old=tutelage");
+
+    $financials = $wpdb->get_results("SELECT * FROM ".$wpdb->prefix."lab_internship_financial");
+    $budgets = AdminParams::lab_admin_get_params_budgetFunds();
+    $AMU = AdminParams::lab_admin_get_params_search_by_value(AdminParams::PARAMS_BUDGET_FUNDS, "AMU");
+    $funders = $wpdb->get_results("SELECT * FROM `".$wpdb->prefix."lab_contract_funder` WHERE funder_parent=-1");
+
+    $AMUParent = lab_admin_contract_funder_get_id_by_value(AdminParams::PARAMS_BUDGET_FUNDS, $AMU->id);
+    
+    foreach($financials as $f) {
+        if ($f->team != 0) {
+            // if not a contract, but a funder ECM, AMU or  
+            if (idIsIn($f->tutelage, $budgets)) {
+                $newTeamId = lab_admin_contract_funder_get_id_by_parent(-1, $f->tutelage, AdminParams::PARAMS_BUDGET_FUNDS);
+                
+                $wpdb->update($wpdb->prefix."lab_internship_financial",
+                    array("team"=>$newTeamId,
+                          "tutelage" => lab_admin_contract_funder_get_id_by_parent($newTeamId, $f->team, -2)),
+                    array("id" => $f->id));
+                //*/
+                /*
+                wp_send_json_success(array("id"=>$f->id, 
+                                           "newTeamId"=>$newTeamId, 
+                                           "fTutelage"=>$f->team, 
+                                           "type"=>-2, 
+                                           "tutelage"=>lab_admin_contract_funder_get_id_by_parent($newTeamId, $f->team, -2)));
+                                           //*/
+            }
+        }
+        // si pas de tutelle renseignee on va l'affecter par defaut a AMU
+        else {
+            if (idIsIn($f->tutelage, $budgets)) {
+                
+                $wpdb->update($wpdb->prefix."lab_internship_financial",
+                    array("team"=>lab_admin_contract_funder_get_id_by_parent(-1, $f->tutelage, AdminParams::PARAMS_BUDGET_FUNDS),
+                          "tutelage" => 0),
+                    array("id" => $f->id));
+                    //*/
+                //$wpdb->update($wpdb->prefix."lab_internship_financial",array("team"=>$AMUParent, "tutelage"=>lab_admin_contract_funder_get_id_by_parent($AMUParent->id,$f->tutelage)), array("id"=>$f->id));
+                /*
+                wp_send_json_success(array("id"=>$f->id, 
+                                           "parent"=>-1, 
+                                           "oldTutelage"=>$f->tutelage, 
+                                           "team"=>lab_admin_contract_funder_get_id_by_parent(-1, $f->tutelage)->id));
+                //*/
+            }
+        }
+    }
+
+    return TRUE;
+}
+
+function lab_admin_contract_funder_get_id_by_parent($parent, $value, $type) {
+    global $wpdb;
+    $sql = "SELECT * FROM `".$wpdb->prefix."lab_contract_funder` WHERE funder_parent=".$parent." AND param_value=".$value." AND param_type=".$type;
+    $res = $wpdb->get_results($sql);
+    if ($wpdb->num_rows > 0) {
+        return $res[0]->id;
+    }
+    else {
+        return 0;
+    }
+}
+
+function lab_admin_contract_funder_get_id_by_value($type, $value) {
+    global $wpdb;
+    $sql = "SELECT * FROM `".$wpdb->prefix."lab_contract_funder` WHERE param_type=".$type." AND param_value=".$value;
+    $res = $wpdb->get_results($sql);
+    if ($wpdb->num_rows > 0) {
+        return $res[0]->id;
+    }
+    else {
+        return 0;
+    }
+}
+
+function idIsIn($value, $resSql) {
+    foreach($resSql as $r) {
+        if ($value == $r->id) {
+            return TRUE;
+        }
+    }
+    return FALSE;
+}
+
+function lab_admin_column_drop($table, $column) {
+    global $wpdb;
+    return $wpdb->get_results("ALTER TABLE `".$table."` DROP `".$column."`;");
+}
+
+function lab_admin_column_exist($table, $column) {
+    global $wpdb;
+    $wpdb->get_results("SHOW COLUMNS FROM `".$table."` LIKE '".$column."'");
+    $exists = ($wpdb->num_rows > 0 )?TRUE:FALSE;
+    return $exists;
+}
+
+function lab_admin_contract_funder_list() {
+    global $wpdb;
+    $res = $wpdb->get_results("SELECT * FROM ".$wpdb->prefix."lab_contract_funder WHERE funder_parent=-1");
+    foreach($res as $r) {
+        $r->child = $wpdb->get_results("SELECT * FROM ".$wpdb->prefix."lab_contract_funder WHERE funder_parent=".$r->id);
+    }
+    return $res;
+}
+
+function lab_admin_contract_funder_sub_funder_list($parentId) {
+    global $wpdb;
+    //$contracts = $wpdb->get_results("SELECT * FROM ".$wpdb->prefix."lab_contract WHERE contract_tutelage=".$parentId);
+    $contracts = $wpdb->get_results("SELECT c.* FROM `".$wpdb->prefix."lab_contract` AS c JOIN `".$wpdb->prefix."lab_contract_funder` AS cf ON cf.param_value = c.contract_tutelage WHERE cf.id=".$parentId);
+    $existingContract = $wpdb->get_results("SELECT * FROM ".$wpdb->prefix."lab_contract_funder WHERE funder_parent=".$parentId);
+    $groups =  $wpdb->get_results("SELECT * FROM `".$wpdb->prefix."lab_groups` ");
+
+    $res = array();
+    foreach($contracts as $c) {
+        $exist = false;
+        foreach($existingContract as $ec) {
+            if ($ec->param_value == $c->id) {
+                $exist = true;
+            }
+        }
+        if (!$exist) {
+            $obj = new stdClass();
+            $obj->id = $c->id;
+            $obj->label = $c->name;
+            $obj->type = -1;
+            $obj->parent = $parentId;
+            $res[] = $obj;
+        }
+    }
+    foreach($groups as $c) {
+        $exist = false;
+        foreach($existingContract as $ec) {
+            if ($ec->param_value == $c->id) {
+                $exist = true;
+            }
+        }
+        if (!$exist) {
+            $obj = new stdClass();
+            $obj->id = $c->id;
+            $obj->label = $c->group_name;
+            $obj->type = -2;
+            $obj->parent = $parentId;
+            $res[] = $obj;
+        }
+    }
+    return $res;
+}
+
+function lab_admin_contract_funder_delete($id) {
+    global $wpdb;
+    // delete contract
+    if (isset($id)) {
+        $wpdb->delete($wpdb->prefix.'lab_contract_funder', array("id"=>$id));
+    }
+}
+
+function lab_admin_contract_funder_save($id, $name, $type, $value, $parent) {
     global $wpdb;
     // new contract
     if (!isset($id) || empty($id)) {
-        if ($wpdb->insert($wpdb->prefix.'lab_contract', array("name"=>$name, "contract_type"=>$contractType, "contract_tutelage"=>$contractTutelage,"start"=>$start,"end"=>$end))) {
-            $contractId = $wpdb->insert_id;
-            foreach ($holders as $userId) {
-                $wpdb->insert($wpdb->prefix.'lab_contract_user', array("contract_id"=>$contractId, "user_id"=>$userId,"user_type"=> 2));
-            }
-            foreach ($managers as $userId) {
-                $wpdb->insert($wpdb->prefix.'lab_contract_user', array("contract_id"=>$contractId, "user_id"=>$userId,"user_type"=> 1));
-            }
+        if ($wpdb->insert($wpdb->prefix.'lab_contract_funder', array("label"=>$name, "funder_parent"=>$parent, "param_type"=>$type, "param_value"=>$value))) {   
+            return $wpdb->insert_id;  
         }
         else {
             return $wpdb->last_error;
@@ -576,7 +740,7 @@ function lab_admin_contract_funder_save($id, $tutelage) {
     }
     else
     {
-        $wpdb->update($wpdb->prefix.'lab_contract_funder', array("name"=>$name,"start"=>$start,"end"=>$end, "contract_type"=>$contractType, "contract_tutelage"=>$contractTutelage), array("id"=>$id));
+        $wpdb->update($wpdb->prefix.'lab_contract_funder', array("label"=>$name, "funder_parent"=>$parent, "param_type"=>$type, "param_value"=>$value), array("id"=>$id));
     }
 }
 

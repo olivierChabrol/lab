@@ -50,6 +50,7 @@ function lab_internship($param) {
     <label for="lab_internship_host_name">Encadrant</label><input type="text" id="lab_internship_host_name">
     <input type="hidden" id="lab_internship_add_host_id">
     <label for="lab_internship_add_convention_state">Convention</label><select id="lab_internship_add_convention_state"><option value="0">Non signée</option><option value="1">Signée</option><option value="2">En cours</option></select><br>';
+    /*
     $html .= '<table><thead><td>Equipe</td><td>Tutelle</td><td>Nb mois</td><td>Montant</td></thead><tbody>';
     
     for ($i = 1 ; $i < 5 ; $i++) {
@@ -61,7 +62,10 @@ function lab_internship($param) {
       $html .= '<tr>';
     }
     //*/
-    $html .= '</tbody></table><div id="lab_internship_add_intern_cost"></div><div id="lab_internship_add_intern_options">
+    $html .= '</tbody></table>';
+    $html .= '<table class="table" id="lab_internship_funder_table"><thead><td>Financeur</td><td>support</td><td>Nb mois</td><td>Montant</td></thead><tbody id="lab_internship_funder_table_content">';
+    $html .= '</tbody></table>';
+    $html .= '<div id="lab_internship_add_intern_cost"></div><div id="lab_internship_add_intern_options">
       <a href="#" id="lab_internship_add_intern_close" class="btn btn-light">'. esc_html__('Cancel','lab') .'</a>
       <a href="#" rel="modal:close" id="lab_internship_add_confirm" keyid="" class="btn btn-success lab-btn-right">'. esc_html__('Confirm','lab') .'</a>
       </div>';

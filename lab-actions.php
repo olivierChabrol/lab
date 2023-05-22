@@ -85,8 +85,11 @@ if (is_admin()) {
     add_action( 'wp_ajax_lab_admin_contract_users_load', 'lab_admin_contract_ajax_users_load');
     add_action( "wp_ajax_lab_admin_contract_delete", "lab_admin_contract_ajax_delete");
     add_action( "wp_ajax_lab_admin_contract_create_table", "lab_admin_contract_ajax_create_table");
-    add_action( "lab_admin_contract_funder_save", "lab_admin_contract_funder_save_ajax");
-    add_action( "lab_admin_contract_funder_list", "lab_admin_contract_funder_list_ajax");
+    add_action( "wp_ajax_lab_admin_contract_funder_save", "lab_admin_contract_funder_save_ajax");
+    add_action( "wp_ajax_lab_admin_contract_funder_delete", "lab_admin_contract_funder_delete_ajax");
+    add_action( "wp_ajax_lab_admin_contract_funder_list", "lab_admin_contract_funder_list_ajax");
+    add_action( "wp_ajax_lab_admin_contract_funder_list_sub_funder", "lab_admin_contract_funder_list_sub_funder_ajax");
+    add_action( "wp_ajax_lab_admin_contract_funder_save_data", "lab_admin_contract_funder_save_data");
     add_action( "wp_ajax_lab_admin_contract_load", "lab_admin_contract_ajax_load");
     add_action( "wp_ajax_lab_admin_contract_get_managers", "lab_admin_contract_ajax_get_managers");
     add_action( "wp_ajax_lab_budget_info_save_order", "lab_budget_info_ajax_save_order");
@@ -97,6 +100,7 @@ if (is_admin()) {
     add_action( 'wp_ajax_load_param_type', 'lab_admin_param_load_type');
     add_action( 'wp_ajax_param_delete', 'lab_admin_param_delete');
     add_action( 'wp_ajax_param_search_value', 'lab_admin_param_search_value');
+    add_action( 'wp_ajax_param_load_by_type_value', 'lab_admin_param_load_by_type_ajax');
     //Actions pour la gestion des clés - KeyRing
     add_action( 'wp_ajax_keyring_table_keys', 'lab_keyring_createTable_keys' );
     add_action( 'wp_ajax_keyring_table_loans', 'lab_keyring_createTable_loans' );

@@ -35,6 +35,10 @@ jQuery(function($){
     });
   });
 
+  if ($("#lab_internship_funder_table_content").length) {
+    loadContractFunders();
+  }
+
   $("#lab_request_send").click(function() {
     if ($("#lab_request_title").val().trim() == "" || $("#lab_request_text").val().trim() == "") {
       highlight_empty_field($("#lab_request_title"));
@@ -271,17 +275,91 @@ jQuery(function($){
     callAjax(data, null, displayInternshipList, null, null);
   }
 
+  function loadContractFunders() {
+    let data = {
+      'action': 'lab_admin_contract_funder_list',
+    };
+    callAjax(data, null, displayContractFundersForDiv, null, null);
+  }
+
+  function displayContractFundersForDiv(data) {
+
+    for (i = 1 ; i < 5; i++) {
+      let select =  $("<select/>").attr("id", "lab_internship_add_f_team_"+ i);
+      let subSelect = $("<select/>").attr("id", "lab_internship_add_f_tutelage_"+ i);
+      let funders = {};
+      //let first = data[0].param_value;
+      let option = $("<option/>").attr("value", "0").html("--");
+      select.append(option);
+      $.each(data, function(i, obj) {
+        option = $("<option/>").attr("value", obj.id).html(obj.label);
+        select.append(option);
+        funders[obj.id] = [];
+        $.each(obj.child, function(i, obj1) {
+          funders[obj.id].push(obj1);
+        });
+      });
+      //reloadSubFunderSelect(first, subSelect, funders);
+      let tr = $("<tr/>");
+      let td1 = $("<td/>");
+      let td2 = $("<td/>");
+      let td3 = $("<td/>");
+      let td4 = $("<td/>");
+      td1.append(select);
+      td2.append(subSelect);
+      let id = $("<input />").attr("type", "hidden").attr("id", "lab_internship_add_f_id_"+ i);
+      let nbMonth = $("<input />").attr("type", "text").attr("id", "lab_internship_add_f_nb_month_"+ i).attr("size", "2").attr("maxlength", "2");
+      td3.append(nbMonth).append(id);
+      let amount = $("<input />").attr("type", "text").attr("id", "lab_internship_add_f_amount_"+ i).attr("size", "4");
+      td4.append(amount);
+      tr.append(td1);
+      tr.append(td2);
+      tr.append(td3);
+      tr.append(td4);
+      console.log(funders);
+      select.on( "change", function() {
+        //console.log("[displayContractFundersForDiv] change");
+        let val = "";
+        $("#"+select.attr("id")+" option:selected").each( function() {
+          val += $( this ).val();
+        });
+        reloadSubFunderSelect(val, subSelect, funders);
+      });
+
+      $("#lab_internship_funder_table_content").append(tr);
+    }
+  }
+
+  function reloadSubFunderSelect(val, subSelect, funders) {
+    //console.log("[reloadSubFunderSelect] add to : " + subSelect.attr("id") + " val : " + val);
+    //console.log(funders);
+    subSelect.empty();
+    if (val != "" && val != "0") {
+      $.each(funders[val], function(i, obj) {
+        let option = $("<option/>").attr("value", obj.id).html(obj.label);
+        subSelect.append(option);
+        //console.log("[reloadSubFunderSelect] add : " + obj.label);
+      });
+    }
+  }
+
   function displayInternship(data) {
     console.log("[displayInternship]");
     $("#lab_internship_add_intern").modal();
     let fields = internShipModalFields();
+    //loadContractFunders();
     fields.forEach(element => $("#lab_internship_add_"+element).val(data[element]));
     $("#lab_internship_host_name").val(data["host"]["first_name"]+" "+data["host"]["last_name"]);
     $.each(data["financials"], function(i, obj) {
       $.each(obj, function(index, value){
         $("#lab_internship_add_f_" + index + "_"+(i+1)).val(value);
+        console.log("[displayInternship] " + "lab_internship_add_f_" + index + "_"+(i+1) + " -> " + value);
+        if (("lab_internship_add_f_" + index + "_"+(i+1)).startsWith('lab_internship_add_f_team')) {
+          $("#lab_internship_add_f_" + index + "_"+(i+1)).change();
+        }
       });
     });
+    console.log(data);
     
     internLoadCostPerMonth(data["id"]);
   }

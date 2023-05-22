@@ -137,6 +137,29 @@
     <input type="text" id="lab_admin_contract_name" maxlength="50">
     
     <button class="page-title-action" id="lab_admin_contract_funder_create"><?php esc_html_e('Add','lab'); ?></button>
+    <button class="page-title-action" id="lab_admin_contract_funder_save"><?php esc_html_e('Save','lab'); ?></button>
+    <table id="lab_admin_contract_funder_list_table" class="table table-hover"></table>
+    <div id="lab_contract_funcder_create_dialog" class="modal">
+        <input type="hidden" id="lab_contract_funder_parent" value="-1">
+        <h3>Add contract funder : </h3>
+        <?php lab_html_select("lab_contract_funder_param", "lab_contract_funder_param", "", "lab_admin_param_load_param_type", null, array("value"=>"","label"=>"None"), ""); ?>
+        <div id="lab_contract_funder_params"></div>
+    </div>
+
+    <div id="lab_contract_funder_dialog_add" class="modal">
+        <input type="hidden" id="lab_contract_funder_dialog_parent" value="-1">
+        <h3>Add contract funder : </h3>
+        <div id="lab_contract_funder_dialog_add_content"></div>
+        <a href="#" rel="modal:close" id="lab_contract_funder_dialog_add_button" class="btn btn-success">Add</a>
+        <a href="#" rel="modal:close"><?php esc_html_e('Cancel','lab'); ?></a>
+    </div>
+    <div id="lab_contract_funder_delete_dialog" class="modal">
+        <input type="hidden" id="lab_contract_funder_delete_dialog_id" value="-1">
+        <h3>Delete contract funder : </h3>
+        <div id="lab_contract_funder_delete_dialog_name"></div>
+        <a href="#" rel="modal:close" id="lab_contract_funder_delete_dialog_delete_button" class="btn btn-danger">Delete</a>
+        <a href="#" rel="modal:close"><?php esc_html_e('Cancel','lab'); ?></a>
+    </div>
 </div>
 <?php
   }
