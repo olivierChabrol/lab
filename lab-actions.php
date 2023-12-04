@@ -233,6 +233,8 @@ if (is_admin()) {
     //add_action( 'wp_ajax_lab_mission_getNotifs', 'lab_mission_getNotifs');
     //add_action( 'wp_ajax_lab_mission_resetNotifs', 'lab_mission_resetNotifs');
     
+    add_action( 'wp_ajax_nopriv_lab_thematics', 'lab_ajax_get_thematics');
+
     // Actions for guest action on th MISSION
     add_action( 'wp_ajax_nopriv_lab_mission_load', 'lab_mission_ajax_load');
     add_action( 'wp_ajax_nopriv_lab_travels_load', 'lab_travels_ajax_load');

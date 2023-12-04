@@ -11,6 +11,11 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 
+function lab_ajax_get_thematics()
+{
+  wp_send_json_success(lab_get_thematic());
+}
+
 function lab_admin_ajax_user_info()
 {
   $userId = $_POST['userId'];
