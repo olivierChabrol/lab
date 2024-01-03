@@ -65,27 +65,29 @@ function lab_users_by_thematic($args) {
     $thematics = get_distinct_thematic();
     
 
-    $html = "<table>";
+    $html = "<div class='lab_thematic_table'>";
     foreach($thematics as $theme) {
 
-        $html .= "<tr><td colspan=\"3\"><b>";
+        $html .= "<div class='lab_thematic_row'><div class='lab_thematic_row_title'>";
         $param = AdminParams::get_param($theme->thematic_id);
         $html .= esc_html__($param,'lab');
-        $html .= "</b></td></tr>";
+        $html .= "</div></div>";
         $users = get_user_by_thematics($theme->thematic_id);
         foreach($users as $user) {
-            $html .= "<tr>";
-            $html .= "<td>";
-            $html .= $user->firstName." ".$user->lastName;
-            $html .= "</td><td>";
+            $html .= "<div class='lab_thematic_row_user'>";
+            $html .= "<div class='lab_thematic_row_user_firstname'>";
+            $html .= $user->firstName;
+            $html .= "</div><div class='lab_thematic_row_user_lastname'>";
+            $html .= $user->lastName;
+            $html .= "</div><div class='lab_thematic_row_user_function'>";
             $html .= $user->fonction;
-            $html .= "</td><td>";
+            $html .= "</div><div class='lab_thematic_row_user_main'>";
             $html .= $user->main;
-            $html .= "</td></tr>";
+            $html .= "</div>"; // fin lab_thematic_row_user_main
+            $html .= "</div>"; // fin lab_thematic_row_user
         }
-        //*/
     }
-    $html .= "</table>";
+    $html .= "</div>";
     return $html;
 }
 
