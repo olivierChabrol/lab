@@ -6,13 +6,16 @@
  * Version: 0.62
 */
 function lab_profile($id=0) {
+
 	apply_filters( 'document_title_parts', array("oui") );
-	if ($id==0) {
+	if ($id == '' || $id==0) {
+		//print "<h1>LA 1</h1>";
 		global $wp;
 		$url = $wp->request;
 		$user = isset(explode("/",$url)[1]) ? new labUser(lab_profile_getID(explode("/",$url)[1])) : new labUser(get_current_user_id());
 	} else {
 		$user = new labUser($id);
+		print "<h1>LA 2 \$id:'".$id."'</h1>";
 	}
 	$is_current_user = $user->id == get_current_user_id() ? true : false; 
 	$HalID_URL = "https://api.archives-ouvertes.fr/search/?q=*:*&fq=authIdHal_s:(".$user->hal_id.")&fl=docid,citationFull_s,producedDate_tdate,uri_s,title_s,journalTitle_s&sort=producedDate_tdate+desc&wt=xml";

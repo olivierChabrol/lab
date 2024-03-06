@@ -66,6 +66,14 @@ function lab_users_by_thematic($args) {
     
 
     $html = "<div class='lab_thematic_table'>";
+    $html .= "<div class='lab_thematic_table_list'>";
+    foreach($thematics as $theme) {
+	$html .= "<div class='lab_thematic_table_list_row'>";
+	$param = AdminParams::get_param($theme->thematic_id);
+        $html .= esc_html__($param,'lab');
+	$html .= "</div>";
+    }
+    $html .= "</div>";
     foreach($thematics as $theme) {
 
         $html .= "<div class='lab_thematic_row'><div class='lab_thematic_row_title'>";

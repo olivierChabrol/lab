@@ -50,6 +50,24 @@ jQuery(document).ready( function($){
           });
     });
   }
+  $(".lab_clickable_user").click(function() {
+      window.location.href = "/user/" + $(this).attr('user_id');
+    });
+
+  if($("#lab_thematics").length > 0) {
+    //$(".lab_thematics_row_user").click(function() {
+    //  window.location.href = "/user/" + $(this).attr('user_id');
+    //});
+    $(".lab_thematics_row").hide();
+    // display first theme by default
+    $(".lab_thematics_row").first().show();
+    $('.lab_thematics_list_item_link').click(function(event) {
+      event.preventDefault();
+      let tid = $(this).attr("theme_id");
+      $(".lab_thematics_row").hide();
+      $('.lab_thematics_row[theme_id="' + tid + '"]').show();
+    });
+  }
 
 
 

@@ -259,29 +259,37 @@ function lab_directory($param) {
         $forwardUrl = directoryUrl($url[0], '%', $group, $thematic);
         $directoryStr .= '<a href="' .$forwardUrl. '" '.$letterClass.'><b>'.__('All', 'lab').'</b></a>&nbsp;&nbsp;'; 
         $directoryStr .= "</div>"; // letters
-        $directoryStr .= "</div>"; // fin lab_directory_filters_alphabet
-        $directoryStr .= "<div class='lab_directory_filters_search'>";
+	$directoryStr .= "</div>"; // fin lab_directory_filters_alphabet
+
+	$filterSearchContent = "<div class='lab_directory_filters_search'>";
         if (!$displayOnlyLeftUser) {
-            $directoryStr .= "<br><a href=\"/linstitut/annuaire/personnels-partis/\">".__('People who have left', 'lab')."</a>";
+            $filterSearchContent .= "<br><a href=\"/linstitut/annuaire/personnels-partis/\">".__('People who have left', 'lab')."</a>";
         }
         else{
-            $directoryStr .= "<br><a href=\"/linstitut/annuaire/\">".__('People present', 'lab')."</a>";
+            $filterSearchContent .= "<br><a href=\"/linstitut/annuaire/\">".__('People present', 'lab')."</a>";
         }
-        $directoryStr .= 
+        $filterSearchContent .= 
             "<br>
                 <div id='user-srch' class=\"actions\">
                     <input type='text' id='lab_directory_user_name' name='dud_user_srch_val' style='' value='' maxlength='50' placeholder=\"" . __('Search a name', 'lab') . "\"/>
                     <input type='hidden' id='lab_directory_user_id' value='' />
                 ";
         if (!$groupAsSCOption && $groupAsParameter) {
-            $directoryStr .= __('Show only group', 'lab')." : ";
-            $directoryStr .= lab_html_select_str("lab-directory-group-id", "lab-directory-group-id", "", "lab_admin_group_select_group", "acronym, group_name", array("value"=>0,"label"=>"None"), $group, array("id"=>"acronym", "value"=>"value"));
+		//$filterSearchContent .= __('Show only group', 'lab')." : ";
+
+		$filterSearchContent .= "<div class='lab_directory_group_filters_search_label'>Filtrer par groupe :</div>";
+		$filterSearchContent .= "<div class='lab_directory_group_filters_search'>";
+            $filterSearchContent .= lab_html_select_str("lab-directory-group-id", "lab-directory-group-id", "", "lab_admin_group_select_group", "acronym, group_name", array("value"=>0,"label"=>"None"), $group, array("id"=>"acronym", "value"=>"value"));
         }
-        $directoryStr .= "<br>";
-        $directoryStr .= lab_html_select_str("lab-directory-thematic", "lab-directory-thematic", "", "lab_admin_thematic_load_all", null, array("value"=>0,"label"=>"--- Select thematic ---"),$thematic);
-        $directoryStr .= "</div><br>"; // search field
-        $directoryStr .= "</div>"; // fin lab_directory_filters_search
+        $filterSearchContent .= "</div>";
+	$filterSearchContent .= "<div class='lab_directory_thematic_filters_search_label'>Filtrer par thématique :</div>";
+	$filterSearchContent .= "<div class='lab_directory_thematic_filters_search'>";
+	$filterSearchContent .= lab_html_select_str("lab-directory-thematic", "lab-directory-thematic", "", "lab_admin_thematic_load_all", null, array("value"=>0,"label"=>"--- Select thematic ---"),$thematic, null, null, 60);
+	$filterSearchContent .= "</div>"; // end lab_directory_thematic_filters_search
+        $filterSearchContent .= "</div><br>"; // search field
+        $filterSearchContent .= "</div>"; // fin lab_directory_filters_search
     }
+
     $directoryStr .= 
         "<style>
             .email{
@@ -293,23 +301,23 @@ function lab_directory($param) {
             }
         </style>"; // style for table (stripped colors)
     //return lab_directory_old_display($directoryStr, $results, $groupAsSCOption);
-    return lab_directory_new_display($directoryStr, $results, $groupAsSCOption);
+    return lab_directory_new_display($directoryStr, $results, $groupAsSCOption, $filterSearchContent);
 }
 
-function lab_directory_new_display($directoryStr, $results, $groupAsSCOption) {
+function lab_directory_new_display($directoryStr, $results, $groupAsSCOption, $filterSearchContent) {
 
     /* Table directory */
-    $directoryStr .= "<div  id=\"lab-table-directory\" class=\"lab_directory_table\">";
+    $labDirectoryContent = "<div  id=\"lab-table-directory\" class=\"lab_directory_table\">";
     $acronymList = array();
     $groupList = array();
     foreach ($results as $r) {
-        $directoryStr .= "<div class='lab_directory_table_row'>";
-        $directoryStr .= "<div class='lab_directory_table_row_name'>".esc_html(strtoupper($r->last_name) . " " . $r->first_name)."</div>";
-        $directoryStr .= "<div class='lab_directory_table_row_function'>" . $r->function_slug . "</div>";
-        $directoryStr .= "<div class='lab_directory_table_row_phone'>" . correctNumber(esc_html($r->phone)) . "</div>";
-        $directoryStr .= "<div class='lab_directory_table_row_email'>" . esc_html(strrev($r->mail))."</div>";
+        $labDirectoryContent .= "<div class='lab_directory_table_row lab_clickable_user' user_id='".esc_html($r->slug)."'>";
+        $labDirectoryContent .= "<div class='lab_directory_table_row_name'>".esc_html(strtoupper($r->last_name) . " " . $r->first_name)."</div>";
+        $labDirectoryContent .= "<div class='lab_directory_table_row_function'>" . $r->function . "</div>";
+        $labDirectoryContent .= "<div class='lab_directory_table_row_phone'>" . correctNumber(esc_html($r->phone)) . "</div>";
+        $labDirectoryContent .= "<div class='lab_directory_table_row_email'>" . esc_html(strrev($r->mail))."</div>";
         if (!$groupAsSCOption) {
-            $directoryStr .= "<div class='lab_directory_table_row_group'>" . formatGroupsName($r->id) . "</div>";
+            $labDirectoryContent .= "<div class='lab_directory_table_row_group'>" . formatGroupsName($r->id) . "</div>";
         }
         if (!key_exists(formatGroupsName($r->id), $groupList)) {
             $groupList[formatGroupsName($r->id)] = formatGroupsName($r->id);
@@ -323,45 +331,55 @@ function lab_directory_new_display($directoryStr, $results, $groupAsSCOption) {
         }
 
         //fin lab_directory_table_row
-        $directoryStr .= "</div>";
+        $labDirectoryContent .= "</div>";
     }
     // fin lab_directory_table
-    $directoryStr .= "</div>";
-    $directoryStr .= "<div class=\"lab_directory_table_legend\">";
+    $labDirectoryContent .= "</div>";
+
+    /////////////////////// LEGEND //////////////////////////////////
+    $legendContent = "<div class=\"lab_directory_table_legend\">";
     ksort($acronymList);
     $i = 0;
     foreach($acronymList as $k=>$v) {
-        $directoryStr .= "<div class='lab_directory_table_legend_row'><div class='lab_directory_table_legend_row_acronym'>".$k."</div><div  class='lab_directory_table_legend_row_value>";
+        $legendContent .= "<div class='lab_directory_table_legend_row'><div class='lab_directory_table_legend_row_acronym'>".$k."</div><div  class='lab_directory_table_legend_row_value'>";
         $size = count($v);
         foreach($v as $fctKey=>$fctVal)
         {
-            $directoryStr .= $fctKey;
+            $legendContent .= $fctKey;
             if ($i + 1 < $size) {
-                $directoryStr .= "/";
+                $legendContent .= "/";
             }
             $i++;
         }
         //fin lab_directory_table_legend_row_value
-        $directoryStr .= "</div>";
+        $legendContent .= "</div>";
         //fin lab_directory_table_legend_row
-        $directoryStr .= "</div>";
+        $legendContent .= "</div>";
     }
 
-    //fin lab_directory_table_legend
-    $directoryStr .= "</div>";
-    $directoryStr .= "<div class=\"lab_directory_table_group\">";
+    $legendContent .= "</div>"; // fin lab_directory_table_legend
+
+    $directoryStr .= $labDirectoryContent;
+
+    $tableGroupContent = "<div class=\"lab_directory_table_group\">";
     foreach($groupList as $k=>$v) {
-        $directoryStr .= "<div class='lab_directory_table_group_row'>";
-        $directoryStr .= "<div class='lab_directory_table_group_row_name'>";
-        $directoryStr .= $k;
+        $tableGroupContent .= "<div class='lab_directory_table_group_row'>";
+        $tableGroupContent .= "<div class='lab_directory_table_group_row_name'>";
+        $tableGroupContent .= $k;
         //fin lab_directory_table_group_row_name
-        $directoryStr .= "</div>";
+        $tableGroupContent .= "</div>";
         //fin lab_directory_table_group_row
-        $directoryStr .= "</div>";
+        $tableGroupContent .= "</div>";
 
     }
-    //fin lab_directory_table_group
-    $directoryStr .= "</div>";
+    $tableGroupContent .= "</div>"; // lab_directory_table_group
+
+
+    $directoryStr .= "\n<div class=\"side_search\">\n";
+    $directoryStr .= "\t".$filterSearchContent."\n";
+    //$directoryStr .= "\t".$tableGroupContent."\n";
+    //$directoryStr .= "\t".$legendContent."\n";
+    $directoryStr .= "\n</div>\n";
 
     // fin lab_directory
     $directoryStr .= "</div>";
