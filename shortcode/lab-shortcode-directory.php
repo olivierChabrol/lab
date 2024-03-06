@@ -246,22 +246,22 @@ function lab_directory($param) {
     {
         $alphachar = array_merge(range('A', 'Z'));
         $url = explode('?', $_SERVER['REQUEST_URI']); // current url (without parameters)
-        $directoryStr .= "<input type=\"hidden\" id=\"letterSearch\" value=\"".$currentLetter."\">";
-        $directoryStr .= "<input type=\"hidden\" id=\"groupSearch\" value=\"".$group."\">";
+        $directoryStr .= "<input type=\"hidden\" id=\"letterSearch\" value=\"".$currentLetter."\" />";
+        $directoryStr .= "<input type=\"hidden\" id=\"groupSearch\" value=\"".$group."\" />";
         $directoryStr .= "<div class=\"alpha-links\" style=\"font-size:15px;\">";
         foreach ($alphachar as $element) {
             $letterClass = ($element == $currentLetter?"class=\"labSelectedLetter\"":"");
             $forwardUrl = directoryUrl($url[0], $element, $group, $thematic);
             $directoryStr .= '<a href="' .$forwardUrl. '" '.$letterClass.'><b>' . $element . '</b></a>&nbsp;&nbsp;'; 
-        } // letter's url
+        }
         
         $letterClass = ('%' == $currentLetter?"class=\"labSelectedLetter\"":"");
         $forwardUrl = directoryUrl($url[0], '%', $group, $thematic);
         $directoryStr .= '<a href="' .$forwardUrl. '" '.$letterClass.'><b>'.__('All', 'lab').'</b></a>&nbsp;&nbsp;'; 
-        $directoryStr .= "</div>"; // letters
-	$directoryStr .= "</div>"; // fin lab_directory_filters_alphabet
-
-	$filterSearchContent = "<div class='lab_directory_filters_search'>";
+        $directoryStr .= "</div> <!-- alpha-links -->"; // alpha-links
+        $directoryStr .= "</div> <!-- fin lab_directory_filters_alphabet -->"; // fin lab_directory_filters_alphabet
+        
+	    $filterSearchContent = "<div class='lab_directory_filters_search'>";
         if (!$displayOnlyLeftUser) {
             $filterSearchContent .= "<br><a href=\"/linstitut/annuaire/personnels-partis/\">".__('People who have left', 'lab')."</a>";
         }
@@ -271,7 +271,7 @@ function lab_directory($param) {
         $filterSearchContent .= 
             "<br>
                 <div id='user-srch' class=\"actions\">
-                    <input type='text' id='lab_directory_user_name' name='dud_user_srch_val' style='' value='' maxlength='50' placeholder=\"" . __('Search a name', 'lab') . "\"/>
+                    <input type='text' id='lab_directory_user_name' name='dud_user_srch_val' style='' value='' maxlength='50' placeholder=\"" . __('Search a name', 'lab') . "\" />
                     <input type='hidden' id='lab_directory_user_id' value='' />
                 ";
         if (!$groupAsSCOption && $groupAsParameter) {
@@ -289,6 +289,7 @@ function lab_directory($param) {
         $filterSearchContent .= "</div><br>"; // search field
         $filterSearchContent .= "</div>"; // fin lab_directory_filters_search
     }
+    $filterSearchContent .= "</div>"; // fin lab_directory_filters
 
     $directoryStr .= 
         "<style>
@@ -377,12 +378,10 @@ function lab_directory_new_display($directoryStr, $results, $groupAsSCOption, $f
 
     $directoryStr .= "\n<div class=\"side_search\">\n";
     $directoryStr .= "\t".$filterSearchContent."\n";
-    //$directoryStr .= "\t".$tableGroupContent."\n";
-    //$directoryStr .= "\t".$legendContent."\n";
-    $directoryStr .= "\n</div>\n";
+    $directoryStr .= "\n</div>";
 
-    // fin lab_directory
-    $directoryStr .= "</div>";
+    
+    $directoryStr .= "</div>"; // fin lab_directory
     //var_dump($acronymList);
     return $directoryStr;
 }
