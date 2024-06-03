@@ -30,7 +30,6 @@ div[wrapped=true] h2:hover .fa-arrow-up {
 }
 .lab_invite_field {
   display: flex;
-  flex-direction: column;
   margin:1em;
 }
 #invitationForm .lab_invite_field input, #invitationForm .lab_invite_field select {
@@ -44,11 +43,26 @@ div[wrapped=true] h2:hover .fa-arrow-up {
   display: flex;
   justify-content: center;
 }
+.lab_invite_row label {
+  /*margin-left: 100px; */
+  width: 300px;
+}
+
+.lab_invite_row_left {
+  display: flex;
+  justify-content: left;
+  flex-direction: column;
+}
+.lab_invite_row_right {
+  display: flex;
+  justify-content: left;
+}
 #invitationForm select {
   height: 2.5em;
 }
 .lab_invite_row .lab_invite_field {
   width: 50%;
+  flex-direction: column;
 }
 #invitationForm .lab_invite_field p {
   font-size: 0.9em;
@@ -58,6 +72,17 @@ div[wrapped=true] h2:hover .fa-arrow-up {
   color: red;
   font-weight: 600;
 }
+
+/*Missions*/
+
+label {
+  width: 160px;
+}
+
+#lab_mission_edit_travel_div_company{
+  margin-left: 5px;
+}
+
 /*Bulle de discussion*/
 
 .lab_comment_box {
@@ -267,7 +292,7 @@ div[wrapped=true] h2:hover .fa-arrow-up {
 {
     display : block;
     position : fixed;
-    z-index: 100;
+    z-index: 2000;
     opacity : 0.4;
     background-repeat : no-repeat;
     background-position : center;
@@ -276,6 +301,7 @@ div[wrapped=true] h2:hover .fa-arrow-up {
     right : 0;
     top : 0;
 }
+/*
 #loadingAjaxGif.show
 {
     left : 50%;
@@ -287,3 +313,5 @@ div[wrapped=true] h2:hover .fa-arrow-up {
     margin-left : -51px;
     margin-top : -51px;
 }
+//*/
+

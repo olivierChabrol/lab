@@ -17,8 +17,8 @@ function lab_html_select($htmlId, $htmlName, $htmlClass, $fctCallback, $fctArgs 
 }
 
 
-function lab_html_select_str($htmlId, $htmlName, $htmlClass, $fctCallback, $fctArgs = null, $defaultValue = null, $selectedValue = null, $idValues = null, $attrMapping = null) {
-    $output ='<select id="'.$htmlId.'" name="'.$htmlName.'" class="'.$htmlClass.'">';
+function lab_html_select_str($htmlId, $htmlName, $htmlClass, $fctCallback, $fctArgs = null, $defaultValue = null, $selectedValue = null, $idValues = null, $attrMapping = null, $cut = 0) {
+    $output ='<select id="'.$htmlId.'" name="'.$htmlName.'" class="'.$htmlClass.'" df="'.$selectedValue.'">';
     $results = null;
     if ($fctArgs == null) {
         $results = $fctCallback();
@@ -41,7 +41,17 @@ function lab_html_select_str($htmlId, $htmlName, $htmlClass, $fctCallback, $fctA
                     $output .= " ".$k."=\"".$r->{$v}."\"";
                 }
             }
-            $output .= ">".$r->value."</option>";
+	    $output .= ">";
+	    
+	    if($cut == 0) {
+                $output .= esc_html__($r->value, "lab");
+	    }
+	    else {
+                $output .= substr(esc_html__($r->value, "lab"), 0, $cut)."...";
+	    }
+	    //*/
+	    //$output .= esc_html__($r->value, "lab");
+	    $output .= "</option>";
         }
     }
     else {
@@ -51,10 +61,10 @@ function lab_html_select_str($htmlId, $htmlName, $htmlClass, $fctCallback, $fctA
             {
                 foreach($attrMapping as $k=>$v)
                 {
-                    $output .= " ".$k."=\"".$r->{$v}."\"";
+                    $output .= " ".$k."=\"".esc_html__($r->{$v}, "lab")."\"";
                 }
             }
-            $output .= ">".$r->{$idValues["value"]}."</option>";
+            $output .= ">".esc_html__($r->{$idValues["value"]}, "lab")."</option>";
         }
     }
     $output .= "</select>";

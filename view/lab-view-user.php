@@ -17,11 +17,11 @@ function lab_user($args=null)
     $userStr ='
     <div style="display:flex; flex-wrap:wrap;">
         <form>
-        <h3>'. esc_html__("Modifier un utilisateur","lab") .'</h3>
+        <h3>'. esc_html__("Edit user","lab") .'</h3>
             <table class="form-table" role="presentation">
             <tr class="user-rich-editing-wrap">
                 <th scope="row">
-                <label for="lab_user_name">'. esc_html__("Nom de l'utilisateur","lab") .'</label>
+                <label for="lab_user_name">'. esc_html__("Username","lab") .'</label>
                 </th>
                 <td>
                 <input type="text"   id="lab_user_search"    value="" /><br>
@@ -42,7 +42,7 @@ function lab_user($args=null)
             </tr>
             <tr>
                 <td>
-                <label for="lab_user_employer">'. esc_html__('Employer','lab') .'</label>
+                <label for="lab_user_employer">'. esc_html__('Employ','lab') .'</label>
                 </td>
                 <td>
                 '. lab_html_select_str("lab_user_employer", "lab_user_employer", "", lab_admin_get_params_userEmployer, null, array("value"=>"","label"=>"None"), "") .'
@@ -90,7 +90,7 @@ function lab_user($args=null)
             </tr>
             <tr>
                 <td>
-                <label for="lab_user_section_cn">'. esc_html__('Section CN','lab') .'</label>
+                <label for="lab_user_section_cn">'. esc_html__('CN Section','lab') .'</label>
                 </td>
                 <td>
                 '. lab_html_select_str("lab_user_section_cn", "lab_user_section_cn", "", lab_admin_get_params_userSectionCn, null, array("value"=>"","label"=>"None"), "") .'
@@ -98,7 +98,7 @@ function lab_user($args=null)
             </tr>
             <tr>
                 <td>
-                <label for="lab_user_section_cnu">'. esc_html__('Section CNU','lab') .'</label>
+                <label for="lab_user_section_cnu">'. esc_html__('CNU Section','lab') .'</label>
                 </td>
                 <td>
                 '. lab_html_select_str("lab_user_section_cnu", "lab_user_section_cnu", "", lab_admin_get_params_userSectionCnu, null, array("value"=>"","label"=>"None"), "") .'
@@ -106,11 +106,11 @@ function lab_user($args=null)
             </tr>
             <tr>
                 <td>
-                    <label for="users">'. esc_html__("Groupe(s) de l'utilisateur","lab") .'</label>
+                    <label for="users">'. esc_html__("User groups","lab") .'</label>
                 </td>
                 <td>
                     <div style="float: right; margin-left:50px">
-                        <label for="groups">'. esc_html__("Choisissez le ou les groupe(s) au(x)quel(s) vous allez affecter la personne :", "lab") .'
+                        <label for="groups">'. esc_html__("Choose the group(s) which you will assign the person:", "lab") .'
                         </label><br/><br/>
                         <select id="list_groups" name="groups[]" multiple style="height:150px;"></select>
                     </div>
@@ -118,7 +118,7 @@ function lab_user($args=null)
             </tr>
             <tr>
                 <form style="flex-grow:1;">
-                    <h4>'. esc_html__("Historique de l'utilisateur","lab").'</h4>
+                    <h4>'. esc_html__("User historic","lab").'</h4>
                     <div>
                         <ul id="lab_history_list">
                         
@@ -127,7 +127,7 @@ function lab_user($args=null)
                     <table class="form-table" role="presentation">
                     <tr>
                         <th scope="row">
-                        <label for="lab_historic_start">'. esc_html__("Date de début","lab").' : </label>
+                        <label for="lab_historic_start">'. esc_html__("Start date","lab").' : </label>
                         </th>
                         <td>
                         <input type="date" id="lab_historic_start"/>
@@ -135,7 +135,7 @@ function lab_user($args=null)
                     </tr>
                     <tr>
                         <th>
-                        <label for="lab_historic_end">'. esc_html__("Date de fin","lab").' : </label>
+                        <label for="lab_historic_end">'. esc_html__("End date","lab").' : </label>
                         </th>
                         <td>
                         <input type="date" id="lab_historic_end"/>
@@ -143,7 +143,7 @@ function lab_user($args=null)
                     </tr>
                     <tr>
                         <th>
-                        <label for="lab_historic_function">'. esc_html__("Fonction","lab").' : </label>
+                        <label for="lab_historic_function">'. esc_html__("Function","lab").' : </label>
                         </th>
                         <td>
                         '. lab_html_select_str("lab_history_function", "lab_history_function", '', 'lab_admin_get_params_userFunction', AdminParams::PARAMS_USER_FUNCTION_ID, array("value"=>0,"label"=>"Sélectionnez une fonction"),0).'
@@ -151,7 +151,7 @@ function lab_user($args=null)
                     </tr>
                     <tr>
                         <th>
-                        <label for="lab_historic_host">'. esc_html__('Hôte','lab').' : </label>
+                        <label for="lab_historic_host">'. esc_html__('Host','lab').' : </label>
                         </th>
                         <td>
                         <input type="text" id="lab_historic_host"/>
@@ -169,7 +169,7 @@ function lab_user($args=null)
             </tr>
             <tr>
                 <td colspan="2">
-                <a href="#" class="page-title-action" id="lab_user_button_save_left">'. esc_html__('Modifier le statut de l\'utilisateur','lab') .'</a>
+                <a href="#" class="page-title-action" id="lab_user_button_save_left">'. esc_html__('Edit user status','lab') .'</a>
                 </td>
             </tr>
             </table>
@@ -183,11 +183,11 @@ function lab_user($args=null)
     $userStr .= '
     <div id="ldap_menu_flex" style="display:flex; flex-wrap:wrap;">
         <form style="margin-right: 2em" id="lab_ldap_newUser" action="javascript:lab_ldap_addUser_wp()">
-            <h3>'. esc_html__("Ajouter un utilisateur dans l'annuaire","lab") .'</h3>
+            <h3>'. esc_html__("Add user to the directory","lab") .'</h3>
             <table class="form-table" role="presentation">
                 <tr class="user-rich-editing-wrap">
                 <th scope="row">
-                    <label for="lab_ldap_queryAmu">'. esc_html__("E-Mail d'utilisateur AMU :","lab") .'</label>
+                    <label for="lab_ldap_queryAmu">'. esc_html__("User email AMU :","lab") .'</label>
                 </th>
                 <td>
                     <input type="email" id="lab_ldap_queryAmu"/>
@@ -195,7 +195,7 @@ function lab_user($args=null)
                 </tr>
                 <tr class="user-rich-editing-wrap">
                 <th scope="row">
-                    <label for="lab_ldap_newUser_lastName">'. esc_html__("Nom","lab") .'<span class="lab_form_required_star"> *</span></label>
+                    <label for="lab_ldap_newUser_lastName">'. esc_html__("Name","lab") .'<span class="lab_form_required_star"> *</span></label>
                 </th>
                 <td>
                     <input required type="text" id="lab_ldap_newUser_lastName"/>
@@ -203,7 +203,7 @@ function lab_user($args=null)
                 </tr>
                 <tr class="user-rich-editing-wrap">
                 <th scope="row">
-                    <label for="lab_ldap_newUser_firstName">'. esc_html__("Prénom","lab") .'<span class="lab_form_required_star"> *</span></label>
+                    <label for="lab_ldap_newUser_firstName">'. esc_html__("Firstname","lab") .'<span class="lab_form_required_star"> *</span></label>
                 </th>
                 <td>
                     <input required type="text" id="lab_ldap_newUser_firstName"/>
@@ -227,7 +227,7 @@ function lab_user($args=null)
                 </tr>
                 <tr class="user-rich-editing-wrap">
                 <th scope="row">
-                    <label for="lab_ldap_newUser_pass">'. esc_html__("Mot de passe","lab") .'<span class="lab_form_required_star"> *</span></label>
+                    <label for="lab_ldap_newUser_pass">'. esc_html__("Password","lab") .'<span class="lab_form_required_star"> *</span></label>
                 </th>
                 <td>
                     <input required type="text" id="lab_ldap_newUser_pass"/>
@@ -235,7 +235,7 @@ function lab_user($args=null)
                 </tr>
                 <tr class="user-rich-editing-wrap">
                 <th scope="row">
-                    <label for="lab_ldap_newUser_org">'. esc_html__("Organisation","lab") .'</label>
+                    <label for="lab_ldap_newUser_org">'. esc_html__("Organization","lab") .'</label>
                 </th>
                 <td>
                     <input type="text" id="lab_ldap_newUser_org"/>

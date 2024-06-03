@@ -11,13 +11,257 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 
+function lab_ajax_get_thematics()
+{
+  wp_send_json_success(lab_get_thematic());
+}
+
 function lab_admin_ajax_user_info()
 {
   $userId = $_POST['userId'];
-  $fields = $_POST['fields'];
+  $fields = null;
+  if(isset($_POST['fields'])) {
+    $fields = $_POST['fields'];
+  }
   wp_send_json_success(lab_admin_user_info($userId, $fields));
 }
 
+/********************************************************************************************
+ * MISSION
+ ********************************************************************************************/
+
+function lab_mission_ajax_get_user_information() {
+  $userId = $_POST['userId'];
+  wp_send_json_success(lab_mission_get_user_information($userId));
+}
+
+/**
+ * Generate excel file
+ *
+ * @return excel filename generated
+ */
+function lab_mission_ajax_excel() {
+  $missionId = $_POST['id'];
+  if (!isset($missionId) || empty($missionId)) {
+    $missionId = null;
+  }
+  $filters = $_POST['filters'];
+  if (!isset($filters) || empty($filters)) {
+    $filters = null;
+  }
+  $groupIds = $_POST['groupIds'];
+  if (!isset($groupIds) || empty($groupIds) || count($groupIds) == 0) {
+    $groupIds = null;
+  }
+  wp_send_json_success(lab_mission_generate_excel($missionId, $filters, $groupIds));
+}
+
+function lab_request_list_all_ajax()
+{
+  $filters = null;
+  if(isset($_POST['filters'])) {
+    $filters = $_POST['filters'];
+  }
+  
+  wp_send_json_success(lab_request_list_requests($filters));
+}
+
+function lab_mission_ajax_load() {
+  $missionId = null;
+  $filters = null;
+  $groupIds = null;
+  if (isset($_POST['id'])) {
+    $missionId = $_POST['id'];
+    if (!isset($missionId) || empty($missionId)) {
+      $missionId = null;
+    }
+  }
+  if (isset($_POST['filters'])) {
+    $filters = $_POST['filters'];
+    if (!isset($filters) || empty($filters)) {
+      $filters = null;
+    }
+  }
+  if (isset($_POST['groupIds'])) {
+    $groupIds = $_POST['groupIds'];
+    if (!isset($groupIds) || empty($groupIds) || count($groupIds) == 0) {
+      $groupIds = null;
+    }
+  }
+  //wp_send_json_success($groupIds);
+  wp_send_json_success(lab_mission_load($missionId, $filters, $groupIds));
+}
+
+function lab_mission_ajax_delete() {
+  $missionId = $_POST['id'];
+  if (!isset($missionId) || empty($missionId)) {
+    wp_send_json_success();
+  }
+  else {
+    wp_send_json_success(lab_mission_delete($missionId));
+  }
+}
+
+function lab_mission_ajax_tic() {
+  $missionId = $_POST['mission_id'];
+  lab_mission_take_in_charge($missionId);
+  wp_send_json_success();
+}
+
+function lab_mission_delete_notif() {
+  $missionId = $_POST['mission_id'];
+  lab_mission_resetNotifs($missionId);
+  wp_send_json_success();
+}
+
+function lab_mission_validate() {
+  $missionId = $_POST['mission_id'];
+  lab_mission_set_status($missionId, AdminParams::MISSION_STATUS_VALIDATED_GROUP_LEADER);
+  wp_send_json_success();
+}
+
+function lab_mission_refuse() {
+  $missionId = $_POST['mission_id'];
+  lab_mission_set_status($missionId, AdminParams::MISSION_STATUS_REFUSED_GROUP_LEADER);
+  wp_send_json_success();
+}
+
+function lab_mission_cancel() {
+  $missionId = $_POST['mission_id'];
+  lab_mission_set_status($missionId, AdminParams::MISSION_STATUS_CANCEL);
+  wp_send_json_success();
+}
+
+function lab_mission_complete() {
+  $missionId = $_POST['mission_id'];
+  lab_mission_set_status($missionId, AdminParams::MISSION_STATUS_COMPLETE);
+  wp_send_json_success();
+}
+/********************************************************************************************
+ * REQUEST
+ ********************************************************************************************/
+function lab_request_save_ajax() {
+  $request_id      = $_POST['request_id'];
+  $request_type    = $_POST['request_type'];
+  $request_title   = $_POST['request_title'];
+  $request_text    = $_POST['request_text'];
+  $expenses_number = $_POST['expenses_number'];
+
+  $previsional_date  = $_POST['request_previsional_date'];
+  if (!isset($previsional_date) || $previsional_date == "") {
+    $previsional_date = null;
+  }
+  $end_date  = $_POST['request_end_date'];
+  if (!isset($end_date) || $end_date == "") {
+    $end_date = null;
+  }
+  $expenses = null;
+  if(isset($expenses_number)) {
+    $expenses = array ();
+    for ($i = 0 ; $i < $expenses_number ; $i++) {
+      $expense = array ();
+      if (isset($_POST['expense_id_' . $i])) {
+        $expense["id"] = $_POST['expense_id_' . $i];
+      }
+      else {
+        $expense["id"] = null;
+      }
+      if ($_POST['expense_type_' . $i] == -1) {
+        $expense["type"] = -1;
+        $expense["financial_support"] = -1;
+        $expense["object_id"] = -1;
+      }
+      else {
+        $split = explode("_", $_POST['expense_type_' . $i]);
+        $expense["type"] = $split[0];
+        $expense["object_id"] = $split[1];
+        $expense["financial_support"] = $_POST['expense_financial_support_' . $i];
+      }
+      $expense["name"] = $_POST['expense_name_' . $i];
+      $expense["amount"] = $_POST['expense_value_' . $i];
+      $expenses[] = $expense;
+    }
+  }
+  //wp_send_json_success($end_date);
+  $reqId = lab_request_save($request_id, get_current_user_id(), $request_type, $request_title, $request_text, $previsional_date, $end_date, $expenses);
+  wp_send_json_success($reqId);
+}
+
+function lab_request_delete_histo_ajax() {
+  if (lab_is_admin()) {
+    $id    = $_POST['id'];
+    $histo = lab_request_get_historic($id);
+    $request_id = $histo->request_id;
+    lab_request_delete_historic_by_id($id);
+    wp_send_json_success(lab_request_get_by_id($request_id));
+    //*/
+  }
+  else {
+    wp_send_json_error("Not admin");
+  }
+}
+
+function lab_request_change_state_ajax() {
+  $request_id    = $_POST['id'];
+  $state    = $_POST['state'];
+  $user_id  = get_current_user_id();
+  
+  wp_send_json_success(lab_request_change_state($request_id, $user_id, $state));
+}
+function lab_request_load_files_ajax() {
+  $request_id    = $_POST['id'];
+  wp_send_json_success(lab_request_load_files($request_id));
+}
+function lab_request_get_ajax() {
+  $request_id    = $_POST['id'];
+  wp_send_json_success(lab_request_get_by_id($request_id));
+}
+function lab_request_cancel_ajax() {
+  $request_id    = $_POST['id'];
+  if(!isset($request_id) || empty($request_id))
+  {
+    wp_send_json_error("No id send");
+  }
+  $request_modify = lab_request_cancel($request_id);
+  if ($request_modify) {
+    wp_send_json_success($request_modify);
+  }
+  else {
+    wp_send_json_error("Failed to modify request");
+  }
+}
+
+function lab_request_delete_ajax() {
+  $request_id    = $_POST['id'];
+  if(!isset($request_id) || empty($request_id))
+  {
+    wp_send_json_error("No id send");
+  }
+  $request_modify = lab_request_delete($request_id);
+  if ($request_modify) {
+    wp_send_json_success($request_modify);
+  }
+  else {
+    wp_send_json_error("Failed to delete request");
+  }
+
+}
+
+function lab_request_delete_file_ajax() {
+  $fileId = $_POST['id'];
+  $r = lab_request_delete_file($fileId); 
+  if ($r) {
+    wp_send_json_success($r);
+  }
+  else {
+    wp_send_json_error();
+  }
+
+}
+
+function lab_request_load_own_request_ajax() {
+  wp_send_json_success(lab_request_get_own_requests());
+}
 /********************************************************************************************
  * BUDGET
  ********************************************************************************************/
@@ -44,13 +288,19 @@ function lab_budget_info_ajax_save_order() {
 }
 
 function lab_budget_info_ajax_load() {
-  $budgetId = $_POST['id'];
-  if (!isset($budgetId) || empty($budgetId)) {
-    $budgetId = null;
+  $budgetId = null;
+  if(isset($_POST['id'])) {
+    $budgetId = $_POST['id'];
+    if (!isset($budgetId) || empty($budgetId)) {
+      $budgetId = null;
+    }
   }
-  $filters = $_POST['filters'];
-  if (!isset($filters) || empty($filters)) {
-    $filters = null;
+  $filters = null;
+  if(isset($_POST['filters'])) {
+    $filters = $_POST['filters'];
+    if (!isset($filters) || empty($filters)) {
+      $filters = null;
+    }
   }
   wp_send_json_success(lab_budget_info_load($budgetId, $filters));
 }
@@ -130,6 +380,20 @@ function lab_user_delThematic()
   $thematic_id = $_POST['thematic_id'];
   wp_send_json_success( lab_admin_thematic_delete($thematic_id));
   return;
+}
+
+function lab_ajax_save_user_picture()
+{
+  $imgId = "";
+  if (isset($_POST['imgId'])) {
+    $imgId = $_POST['imgId'];
+  }
+  
+  $userId = $_POST['userId'];
+  if (lab_save_user_picture($imgId, $userId))
+    wp_send_json_success();
+  else
+    wp_send_json_error();
 }
 
 function lab_admin_ajax_users_thematic_set_main()
@@ -221,14 +485,27 @@ function lab_admin_ajax_param_save() {
 }
 
 function lab_admin_param_load_param_type() {
-  global $wpdb;
-  $sql = "SELECT id, value FROM `".$wpdb->prefix."lab_params` WHERE type_param = 1";
-  $results = $wpdb->get_results($sql);
-  return $results;
+  return lab_admin_param_load_by_type(1);
 }
 
 function lab_admin_param_load_type() {
   wp_send_json_success(lab_admin_param_load_param_type());
+}
+
+function lab_admin_param_load_by_type_ajax() {
+  $paramId   = $_POST['id'];
+  if (isset($paramId) && !empty($paramId)) {
+      wp_send_json_success(lab_admin_param_load_by_type($paramId));
+  } else {
+      wp_send_json_error(__("Cant get system param", "lab"));
+  }
+
+}
+function lab_admin_param_load_by_type($type) {
+  global $wpdb;
+  $sql = "SELECT id, value FROM `".$wpdb->prefix."lab_params` WHERE type_param = ".$type;
+  $results = $wpdb->get_results($sql);
+  return $results;
 }
 
 function lab_admin_param_delete() {
@@ -282,7 +559,14 @@ function lab_admin_ajax_usermeta_names()
 {
   $search = $_POST['search'];
   $userId  = $search["term"];
-  wp_send_json_success(lab_admin_userMetaDatas_get($userId));
+  if (isset($userId) && $userId !== '') {
+    
+    wp_send_json_success(lab_admin_userMetaDatas_get($userId));
+  }
+  else
+  {
+    wp_send_json_error("No user found");
+  }
 }
 function lab_admin_usermeta_update_phone()
 {
@@ -361,6 +645,24 @@ function lab_admin_search_user_metadata()
     $items[$r->meta_key] = array(id => $r->umeta_id, key => $r->meta_key, value => $r->meta_value);
   }
   wp_send_json_success($items);
+}
+
+function lab_get_user_by_email() {
+  $email = $_POST['email'];
+  global $wpdb;
+  $sql = "SELECT ID,user_email FROM `".$wpdb->prefix."users`  WHERE user_email = '".$email."'";
+
+  $user = $wpdb->get_results($sql);
+  $data = array();
+  if (count($user) == 1) {
+    $data["email"] = $user[0]->user_email;
+    $data["user_id"] = $user[0]->ID;
+    $names = lab_admin_usermeta_names($user[0]->ID);
+    $data["first_name"] = $names->first_name;
+    $data["last_name"] = $names->last_name;
+  }
+  wp_send_json_success($data);
+  return;
 }
 
 function lab_admin_search_user_email()
@@ -443,12 +745,12 @@ function lab_admin_update_user_metadata()
   $user_sex         = $_POST["user_sex"];
   $user_hdr_date    = $_POST["user_hdr_date"];
   $user_thesis_date = $_POST["user_thesis_date"];
-  lab_usermeta_update($userId, $dateLeft, $userFunction, $userLocation, $officeNumber, $officeFloor, $userEmployer, $phone, $userFunding, $firstname, $lastname, $userSectionCn, $userSectionCnu, $email, $url, $userThesisTitle, $userHdrTitle, $userPhdSchool, $user_country, $user_sex, $user_thesis_date, $user_hdr_date);
+  $user_co_supervision = $_POST["lab_user_co_supervision"];
+  lab_usermeta_update($userId, $dateLeft, $userFunction, $userLocation, $officeNumber, $officeFloor, $userEmployer, $phone, $userFunding, $firstname, $lastname, $userSectionCn, $userSectionCnu, $email, $url, $userThesisTitle, $userHdrTitle, $userPhdSchool, $user_country, $user_sex, $user_thesis_date, $user_hdr_date, $user_co_supervision);
   wp_send_json_success($user_thesis_date);
 }
 
-function lab_usermeta_update($userId, $left, $userFunction, $userLocation, $officeNumber, $officeFloor, $userEmployer, $user_phone, $userFunding, $firstname, $lastname, $userSectionCn, $userSectionCnu, $email = null, $url = null, $userThesisTitle = null, $userHdrTitle = null, $userPhdSchool = null, $userCountry = null, $userSex = null, $user_thesis_date = null, $user_hdr_date = null)
-{
+function lab_usermeta_update($userId, $left, $userFunction, $userLocation, $officeNumber, $officeFloor, $userEmployer, $user_phone, $userFunding, $firstname, $lastname, $userSectionCn, $userSectionCnu, $email = null, $url = null, $userThesisTitle = null, $userHdrTitle = null, $userPhdSchool = null, $userCountry = null, $userSex = null, $user_thesis_date = null, $user_hdr_date = null, $user_co_supervision = null){
   global $wpdb;
   $sql = "";
   if ($left != null || !empty($left)) {
@@ -479,6 +781,7 @@ function lab_usermeta_update($userId, $left, $userFunction, $userLocation, $offi
   $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$userSex)         , array("user_id"=>$userId, "meta_key"=>"lab_user_sex"));
   $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$user_hdr_date)   , array("user_id"=>$userId, "meta_key"=>"lab_user_hdr_date"));
   $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$user_thesis_date), array("user_id"=>$userId, "meta_key"=>"lab_user_thesis_date"));
+  $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$user_co_supervision), array("user_id"=>$userId, "meta_key"=>"lab_user_co_supervision"));
 
   if ($email != null)
   {
@@ -547,7 +850,8 @@ function lab_changeLocale($locale) {
 }
 function lab_admin_test()
 { 
-  wp_send_json_success(lab_admin_thematic_load_all());
+  //wp_send_json_success(get_current_user_id());
+  wp_send_json_success(AdminParams::get_param_by_slug("mswgm")->id);
   return;
 }
 
@@ -567,20 +871,53 @@ function lab_admin_contract_ajax_load() {
   wp_send_json_success(lab_admin_contract_load());
 }
 
+function lab_admin_contract_funder_delete_ajax() {
+  $id = $_POST['id'];
+  lab_admin_contract_funder_delete($id);
+  wp_send_json_success(lab_admin_contract_funder_list());
+}
+
+function lab_admin_contract_funder_list_sub_funder_ajax() {
+  $parentId = $_POST['id'];
+  wp_send_json_success(lab_admin_contract_funder_sub_funder_list($parentId));
+}
+
+function lab_admin_contract_funder_save_ajax() {
+  $id = $_POST['id'];
+  $label   = $_POST['label'];
+  $type    = $_POST['type'];
+  $value   = $_POST['value'];
+  $parent  = $_POST['parent'];
+  lab_admin_contract_funder_save($id, $label, $type, $value, $parent);
+  wp_send_json_success(lab_admin_contract_funder_list());
+}
+
+function lab_admin_contract_funder_list_ajax() {
+  wp_send_json_success(lab_admin_contract_funder_list());
+}
+
 function lab_admin_contract_ajax_save() {
   $id = $_POST['id'];
-  $contractName = $_POST['name'];
+  $contractName  = $_POST['name'];
   $contractStart = $_POST['start'];
-  $contractEnd = $_POST['end'];
-  $holders  = $_POST["holders"];
-  $managers = $_POST["managers"];
-  wp_send_json_success(lab_admin_contract_save($id, $contractName, $contractStart, $contractEnd, $holders, $managers));
+  $contractType  = $_POST['contract_type'];
+  $contractTutelage  = $_POST['contract_tutelage'];
+  $contractEnd   = $_POST['end'];
+  $holders       = $_POST["holders"];
+  $managers      = $_POST["managers"];
+  wp_send_json_success(lab_admin_contract_save($id, $contractName, $contractType, $contractTutelage, $contractStart, $contractEnd, $holders, $managers));
 }
 
 function lab_admin_contract_ajax_search() {
   $search = $_POST['search'];
   $contractName  = $search["term"];
   wp_send_json_success(lab_admin_contract_search($contractName));
+}
+
+
+function lab_admin_contract_ajax_get() {
+  $contractId = $_POST['id'];
+  wp_send_json_success(lab_admin_contract_get($contractId));
 }
 
 function lab_admin_contract_ajax_users_load() {
@@ -641,9 +978,77 @@ function lab_admin_group_search() {
   $url = esc_url(home_url('/'));
   foreach ( $results as $r )
   {
-    $items[] = array(label=>$r->group_name, value=>$r->id, id=>$r->id, group_name=>$r->group_name, group_type=>$r->group_type, acronym=>$r->acronym, chief_id=>$r->chief_id, parent_group_id=>$r->parent_group_id, url=>$r->url);
+    $items[] = array("label"=>$r->group_name, "value"=>$r->id, "id"=>$r->id, "group_name"=>$r->group_name, "group_type"=>$r->group_type, "acronym"=>$r->acronym, "chief_id"=>$r->chief_id, "parent_group_id"=>$r->parent_group_id, "url"=>$r->url);
   }
   wp_send_json_success( $items ); 
+}
+
+/********************************************************************************************
+ * INTERSHIP
+ ********************************************************************************************/
+
+function lab_internship_load_ajax() {
+  $year = $_POST['year'];
+  return wp_send_json_success(list_intern($year));
+}
+
+function lab_internship_load_cost_ajax() {
+  $internship_id = $_POST['id'];
+  return wp_send_json_success(array("cost"=>intern_cost_load($internship_id)));
+}
+
+function lab_internship_update_cost_ajax() {
+  $id            = $_POST['id']; 
+  $internship_id = $_POST['internId'];
+  $field         = $_POST['field'];
+  $value         = $_POST['value'];
+  intern_cost_update($id, $field, $value);
+  return wp_send_json_success(array("cost"=>intern_cost_load($internship_id)));
+
+}
+
+function lab_internship_create_cost_ajax() {
+  $internship_id = $_POST['id'];
+  $internship = lab_internship_get($internship_id);
+  return wp_send_json_success($internship["begin"]);
+  //return wp_send_json_success();
+}
+
+function lab_internship_delete_ajax() {
+  if(isset($_POST['id'])) {
+    $id = $_POST['id'];
+    wp_send_json_success(lab_internship_delete($id));
+  }
+  else {
+    wp_send_json_error("No id send");
+  }
+}
+
+function lab_internship_get_ajax() {
+  if(isset($_POST['id'])) {
+    $id = $_POST['id'];
+    wp_send_json_success(lab_internship_get($id));
+  }
+  else {
+    wp_send_json_error("No id send");
+  }
+
+}
+
+function lab_internship_save_ajax() {
+  $fields = array("id", "user_id", "firstname", "lastname", "firstname", "email", "training", "training", "establishment", "begin", "end", "host_id","convention_state", "financials");
+  $data = array();
+  foreach($fields as $field) {
+    if(isset($_POST[$field])) {
+      if ($field != "financials") {
+        $data[$field] = stripslashes($_POST[$field]);
+      }
+      else {
+        $data[$field] = $_POST[$field];
+      }
+    }
+  }
+  wp_send_json_success(save_intern($data));
 }
 
 /**
@@ -665,6 +1070,7 @@ function lab_admin_ajax_group_by_user($userId)
   {
       $group = new \stdClass();
       $group->id = $r->id; 
+      $group->ugid = $r->ugid; 
       $group->name = $r->group_name;
       $groups[] = $group;
   }
@@ -717,37 +1123,19 @@ function lab_group_editGroup() {
   wp_send_json_success($wpdb->get_results($sql));
   //wp_send_json_success($sql);
 }
-function group_delete_substitutes() 
-{
-  $id = $_POST['id'];
-  global $wpdb;
-  wp_send_json_success($wpdb->delete($wpdb->prefix.'lab_group_substitutes', array('id' => $id)));
-}
 
-function group_add_substitutes()
-{
-  $userId = $_POST['userId'];
-  $groupId = $_POST['groupId'];
-  global $wpdb;
-  wp_send_json_success($wpdb->insert($wpdb->prefix.'lab_group_substitutes', array('group_id'=>$groupId,'substitute_id'=>$userId)));
-
-}
-
-function group_load_substitutes()
+/*function group_load_substitutes()
 {
   global $wpdb;
   $id = $_POST['id'];
-  $sql = "SELECT lgs.id AS id, um1.meta_value AS last_name, um2.meta_value AS first_name FROM `".$wpdb->prefix."lab_group_substitutes`  AS lgs JOIN `".$wpdb->prefix."usermeta` AS um1 ON um1.user_id=lgs.substitute_id JOIN `".$wpdb->prefix."usermeta` AS um2 ON um2.user_id=lgs.substitute_id WHERE lgs.`group_id`=33 AND um1.meta_key='last_name' AND um2.meta_key='first_name'";
-  //$sql = "SELECT lgs.id AS id, um1.meta_value AS last_name, um2.meta_value AS first_name FROM `".$wpdb->prefix."lab_group_substitutes` AS lgs JOIN `".$wpdb->prefix."usermeta` AS um1 ON um1.user_id=lgs.substitute_id JOIN `".$wpdb->prefix."usermeta AS um2 ON um2.user_id=lgs.substitute_id WHERE lgs.`group_id`=33 AND um1.meta_key='last_name' AND um2.meta_key='first_name'";
-  
-  $results = $wpdb->get_results($sql);
+  $results = lab_admin_group_load_managers($id, 3);
   $items = array();
   foreach ( $results as $r )
   {
     $items[] = array(id=>$r->id, first_name=>$r->first_name, last_name=>$r->last_name, );
   }
-  wp_send_json_success( $items );
-}
+  wp_send_json_success($items);
+}*/
 
 function lab_admin_group_availableAc() {
   //Vérifie la disponibilité de l'acronyme
@@ -977,6 +1365,24 @@ function lab_ajax_admin_usermeta_fill_user_slug() {
   }
 }
 
+function lab_admin_update_paramsTranslation() {
+  $allParams = getAllParamsValue();
+  $all_params = json_decode(json_encode($allParams), true);
+  $filename = "../wp-content/plugins/lab/lab-params.php";
+  $file = fopen($filename, "w");
+  if(!$file) {
+      wp_send_json_error();
+  }
+  fwrite($file, "<?php\n");
+  for($cpt = 0; $cpt < count($all_params); $cpt++) {
+      fwrite($file, "\tesc_html__('".$all_params[$cpt]["value"]."', 'lab');\n");
+  }
+  fwrite($file, "?>");
+  fclose($file);
+
+  wp_send_json_success("toto");
+}
+
 /********************************************************************************************
  * HAL10
  ********************************************************************************************/
@@ -1024,6 +1430,10 @@ function lab_keyring_search_key_number() {
   wp_send_json_success($items);
 }
 
+function lab_hal_tools_ajax_load()
+{
+  wp_send_json_success(lab_hal_tools_load());
+}
 
 function lab_keyring_save_loans()
 {
@@ -1039,13 +1449,18 @@ function lab_keyring_save_loans()
   }
   $keyNumber = intval($keyNumber);
   $keyFields = ["type","number","brand","site","office","commentary"];
-  $ret = "RETOUR\n";
-  $ret .= "keyNumber : " . $keyNumber;
+  $ret = array();
+
+  $ret["keyNumber"] = $keyNumber;
+  $ret["keys"] = array();
   
   for ($i = 0 ; $i < $keyNumber ; $i++)
   {
     $keyId = $_POST["key_id".$i];
-    $ret .= " i:" .$i. " keyId :".$keyId." ";
+    $ret["keys"][$i] = array();
+    $ret["keys"][$i]["i"] = $i;
+    $ret["keys"][$i]["keyId"] = $keyId;
+
     if ($keyId == -1)
     {
       $param = array();
@@ -1058,8 +1473,8 @@ function lab_keyring_save_loans()
       $keyId = lab_keyring_create_key($param);
       //$ret .= $
       //$ret .= $param;
-      $ret .= " min state : ". $param["state"];
-      $ret .= " Clef ". $keyId ." create";
+      $ret["keys"][$i]["min state"] = $param["state"];
+      $ret["keys"][$i]["Clef"] = $keyId ." create";
     }
     else
     {
@@ -1121,7 +1536,7 @@ function lab_keyring_find_oldLoansReq() {
     $res = lab_keyring_find_oldLoans('user_id',$_POST['user_id']);
   } 
   if (count($res)==0) {
-    wp_send_json_error("<tr><td colspan='9'>".__('Aucun prêt trouvé','lab')."</td></tr>");
+    wp_send_json_error("<tr><td colspan='9'>".__('No loan found','lab')."</td></tr>");
     return;
   } else {
     wp_send_json_success(lab_keyringtableFromLoansList($res));
@@ -1132,7 +1547,7 @@ function lab_keyring_find_oldLoansReq() {
 function lab_keyring_search_current_loans_Req() {
   $res = lab_keyring_search_current_loans($_POST["user"],$_POST["page"],$_POST["limit"]);
   if (count($res)==0) {
-    wp_send_json_error("<tr><td colspan='9'>".__('Aucun prêt trouvé','lab')."</td></tr>");
+    wp_send_json_error("<tr><td colspan='9'>".__('No loan found','lab')."</td></tr>");
     return;
   } else {
     $html = lab_keyringtableFromLoansList($res['items']);
@@ -1159,7 +1574,10 @@ function lab_profile_edit() {
   $bg_color = $_POST['bg_color'];
   $hal_id = $_POST['hal_id'];
   $hal_name = $_POST['hal_name'];
-  $socials = $_POST['socials'];
+  $socials = null;
+  if (isset($_POST['socials'])) {
+    $socials = $_POST['socials'];
+  }
   if (get_current_user_id()==$user_id || current_user_can('edit_users')) {
     lab_profile_set_MetaKey($user_id,'description',$description);
     lab_profile_setURL($user_id,$url);
@@ -1167,8 +1585,10 @@ function lab_profile_edit() {
     lab_profile_set_MetaKey($user_id,'lab_hal_id',$hal_id);
     lab_profile_set_MetaKey($user_id,'lab_hal_name',$hal_name);
     lab_profile_set_MetaKey($user_id,'lab_profile_bg_color',$bg_color);
-    foreach (array_keys($socials) as $key) {
-      lab_profile_set_MetaKey($user_id,"lab_$key",$socials[$key]);
+    if ($socials != null) {
+      foreach (array_keys($socials) as $key) {
+        lab_profile_set_MetaKey($user_id,"lab_$key",$socials[$key]);
+      }
     }
     wp_send_json_success(lab_profile($user_id));
     return;
@@ -1197,6 +1617,120 @@ function lab_invitations_createTables_Req() {
   }
   return;
 }
+
+function lab_descriptions_ajax_load(){
+  $missionId = $_POST['id'];
+  wp_send_json_success(lab_mission_load_descriptions($missionId));
+}
+
+function lab_travels_ajax_load() {
+  $missionId = $_POST['id'];
+  wp_send_json_success(lab_mission_load_travels($missionId));
+}
+
+function lab_travel_ajax_delete() {
+  $travelId = $_POST['id'];
+  $missionId = $_POST['mission_id'];
+  wp_send_json_success(lab_mission_delete_travel($travelId, $missionId));
+}
+
+function lab_description_ajax_delete(){
+  $descriptionId = $_POST['jsId'];
+  $missionId = $_POST['mission_id'];
+  wp_send_json_success(lab_mission_delete_description($descriptionId, $missionId));
+}
+
+function lab_description_ajax_save(){
+  $descriptionId = null;
+  if (isset($_POST['descriptionId'])){
+    $descriptionId = $_POST['descriptionId'];
+  }
+  $missionId = $_POST['missionId'];
+  $descriptionFields = lab_mission_remap_fields_description($_POST);
+  $return = array();
+  if ($descriptionId != null){
+    $return["id"] = lab_mission_update_description($descriptionId, $descriptionFields, $missionId);
+    $return["descriptionId"] = $_POST['descriptionId'];
+  } else {
+    $return["id"] = lab_mission_save_description($descriptionFields, false);
+  }
+  wp_send_json_success($return);
+}
+
+function lab_travel_ajax_save() {
+  $travelId  = $_POST['travelId'];
+  $missionId = $_POST['missionId'];
+  $travelFields = lab_mission_remap_fields($_POST);
+  
+  $retrun = array();
+  $retrun["id"] = lab_mission_update_travel($travelId, $travelFields, $missionId);
+  $retrun["jsId"] = $_POST['jsId'];
+  wp_send_json_success($retrun);
+}
+
+function md_support_save(){
+  
+  if (!function_exists('wp_handle_upload')){
+      require_once(ABSPATH . 'wp-admin/includes/file.php');
+  }
+  $file = $_FILES['file'];
+  $fileNameType = $_POST['file_name_type'];
+  $uploadFrom   = $_POST['upload_from'];
+  if(!isset($_POST['request_id'])) {
+    wp_send_json_error("Save Request first");
+  }
+  $request_id   = $_POST['request_id'];
+
+  $ext = strtolower(pathinfo($file["name"], PATHINFO_EXTENSION));
+  $reqDir = __DIR__.'/requests';
+  if (!file_exists($reqDir)) {
+    mkdir($reqDir, 0777, true);
+  }
+
+  // generate an unique file name
+  $filename = "";
+  while (true) {
+    $filename = uniqid('lr_', true) . '.'.$ext;
+    if (!file_exists(sys_get_temp_dir() . $filename)) break;
+  }
+
+  $newFile_name = $reqDir.'/'.$filename;
+  $move_new_file = @move_uploaded_file( $file['tmp_name'], $newFile_name );
+  
+  if ($move_new_file) {
+    $url = '/wp-content/plugins/lab/requests/'.$filename;
+    $fileId = lab_request_save_file($request_id,$url , $fileNameType);
+    //$request_id
+    //$file1 = array("id"=>$fileId,"url"=>$url, "name"=>$fileNameType);
+    /*
+    $reponse = array();
+    $reponse["files"] = lab_request_get_associated_files($request_id);
+    $reponse["tmp_name"] = $file['tmp_name'];
+    $reponse["to_name"] = $newFile_name;
+    wp_send_json_success($reponse);
+    //*/
+    wp_send_json_success(lab_request_get_associated_files($request_id));
+  }
+  else
+  {
+    wp_send_json_error($newFile_name);
+  }
+}
+
+
+function rename_file($dir, $name, $ext){
+  $dir = "../../../mission/";
+  $tokenFile = generate_token();
+  return $dir.$tokenFile.$ext;
+}
+
+function generate_token(){
+  do {
+    $token = bin2hex(random_bytes(10));
+  } while ( lab_invitations_getByToken($token)!=NULL );
+  return $token;
+} 
+
 function lab_invitations_new() {
   $fields = $_POST['fields'];
   $guest = array (
@@ -1204,54 +1738,177 @@ function lab_invitations_new() {
     'last_name'=> $fields['guest_lastName'],
     'email'=> $fields['guest_email'],
     'phone'=> $fields['guest_phone'],
-    'language'=> $fields['guest_country'],
     'residence_country'=> $fields['guest_residence_country'],
     'residence_city'=> $fields['guest_residence_city'],
   );
-  do {//Génère un token jusqu'à ce qu'il soit unique (on sait jamais)
-    $token = bin2hex(random_bytes(10));
-  } while ( lab_invitations_getByToken($token)!=NULL );
+  if(isset($fields['guest_country'])) {
+    $guest['language'] = $fields['guest_country'];
+  }
+  $travels = $fields["travels"];
+  $descriptions = $fields["descriptions"];
+  $token = generate_token();
   date_default_timezone_set("Europe/Paris");
   $timeStamp=date("Y-m-d H:i:s",time());
   $invite = array (
     'token'=>$token,
     'needs_hostel'=>$fields['needs_hostel']=='true' ? 1 : 0,
+    'no_charge'=>$fields['no_charge']=='true' ? 1 : 0,
     'creation_time' => $timeStamp,
-    'status' => 1
+    'status' => AdminParams::get_param_by_slug(AdminParams::MISSION_STATUS_NEW)->id
   );
-  if (isset($fields['guest_id'])) {
-    lab_invitations_editGuest($fields['guest_id'],$guest);
-    $invite['guest_id']=$fields['guest_id'];
-  } else {
-    $invite['guest_id']=lab_invitations_createGuest($guest);
-  }
-  foreach (['host_group_id','host_id', 'estimated_cost', 'mission_objective','start_date','end_date','travel_mean_to','travel_mean_from','funding_source','research_contract'] as $champ) {
-    $invite[$champ]=$fields[$champ];
-  }
-  $invite["charges"]=json_encode($fields["charges"]);
-  $invite_id = lab_invitations_createInvite($invite);
-  if (!is_numeric ($invite_id))
+  $missionType = AdminParams::get_param($fields['mission_objective']);
+  if($missionType == 'Invitation') 
   {
-    wp_send_json_error($invite_id);
+    if (isset($fields['guest_id'])) {
+      lab_invitations_editGuest($fields['guest_id'],$guest);
+      $invite['guest_id']=$fields['guest_id'];
+    } else {
+      $invite['guest_id']=lab_invitations_createGuest($guest);
+    }
   }
+  else {
+    $fields['guest_id'] = 0;
+  }
+  if(!isset($fields['host_group_id'])) {
+    $hostGroupId = lab_group_get_user_group($fields['host_id']);
+    $fields['host_group_id'] = $hostGroupId;
+  }
+  $managerId = lab_admin_group_get_manager($fields['host_group_id']);
+  //wp_send_json_error("host_group_id manager id : " . $managerId);
+  //wp_send_json_success("toto " . $managerId);
+  $fields['manager_id'] = $managerId;
+
+  foreach (['host_group_id','host_id', 'manager_id', 'estimated_cost', 'title', 'hostel_cost', 'hostel_night', 'funding' , 'mission_objective','funding_source','research_contract', 'no_charge'] as $champ) {
+    if(isset($fields[$champ])) {
+      $invite[$champ]=$fields[$champ];
+    }
+  }
+  if(isset($fields["charges"])) {
+    $invite["charges"]=json_encode($fields["charges"]);
+  }
+  else {
+    $invite["charges"]= null;
+  }
+  $missionId = lab_mission_create($invite);
+  if (!is_numeric ($missionId))
+  {
+    wp_send_json_error($missionId);
+  }
+  $invite["id"] = $missionId;
+  //lab_mission_save($missionId, $travels, $descriptions);
+  wp_send_json_success(lab_mission_save($missionId, $travels, $descriptions, $token));
+  
   if (strlen($fields['comment'])>0) {
-    lab_invitations_addComment(array(
-      'content'=> $fields['comment'],
-      'timestamp'=> $timeStamp,
-      'author'=>$fields['guest_firstName'].' '.$fields['guest_lastName'],
-      'invite_id'=>$invite_id
-    )); 
+    if(isset($fields['guest_firstname']) && isset($fields['guest_lastname'])) {
+      lab_invitations_addComment(array(
+        'content'=> $fields['comment'],
+        'timestamp'=> $timeStamp,
+        'author_id'=> lab_invitations_getGuest_byName($fields['guest_firstname'],$fields['guest_lastname']),
+        'author_type'=> 1,
+        'invite_id'=>$missionId
+      )); 
+    }
+    else {
+      lab_invitations_addComment(array(
+        'content'=> $fields['comment'],
+        'timestamp'=> $timeStamp,
+        'author_id'=> get_current_user_id(),
+        'author_type'=> 2,
+        'invite_id'=>$missionId
+      )); 
+    }
+    
   }
-  $html = '<p>'.esc_html__("Votre demande a bien été prise en compte",'lab').'</p>';
-  $html .= "<hr><h5>e-mail envoyé à l'invité : </h5>";
-  $html .= lab_invitations_mail(1,$guest,$invite);
-  $html .= "<hr><h5>e-mail envoyé à l'invitant : </h5>";
-  $html .= lab_invitations_mail(5,$guest,$invite);
+  $html = '<p>'.esc_html__("Your request has been taken into account",'lab').'</p>';
+  if($fields['mission_objective'] != 251) {
+    $html .= "<hr><h5>".__('e-mail send to guest','lab')." : </h5>";
+    $html .= lab_invitations_mail(1,$guest,$invite);
+    $html .= "<hr><h5>".__('e-mail send to host','lab')." : </h5>";
+    $html .= lab_invitations_mail(5,$guest,$invite);
+  }
+  else{
+    $html .= "<hr><h5>".__('e-mail send to manager','lab')." : </h5>";
+    $html .= lab_invitations_mail(2,$guest,$invite);
+  }
   wp_send_json_success($html);
 }
+
+function lab_mission_ajax_lab_mission_load_comments() {
+  $fields = $_POST['token'];
+
+}
+
 function lab_invitations_edit() {
+  global $wpdb;
   $fields = $_POST['fields'];
-  if (get_current_user_id()==$fields['host_id'] || isset($fields['host_group_id']) && get_current_user_id()==(int)lab_admin_get_chief_byGroup($fields['host_group_id'])) {
+  for($i = 0; $i<20; $i++) {
+    if($fields['descriptions'][$i]['type'] == '279') {
+      $description = $fields['descriptions'][$i];
+      $token = $fields['token'];
+      $value = rename_token($description, $token);
+      //$fields['descriptions'][$i]['value'] = rename_token($description, $token);
+      //$wpdb->update($wpdb->prefix.'lab_mission_description', $value, arary('id' => $missionId));
+    }
+  }
+  if(!isset($fields['host_group_id'])) {
+    if (!isset($fields['host_id']) && isset($fields["token"])) {
+      $mission = lab_mission_by_token($fields["token"]);
+      //wp_send_json_error($mission);
+      //return;
+      $fields['host_id'] = $mission->host_id;
+    }
+    $hostGroupId = lab_group_get_user_group($fields['host_id']);
+    $fields['host_group_id'] = $hostGroupId;
+  }
+  $managerId = lab_admin_group_get_manager($fields['host_group_id']);
+  $fields['manager_id'] = $managerId;
+  
+  $currentUserId = get_current_user_id();
+  $isHost = false;
+  $canModify = false;
+  $isBudgetManager = false;
+  $isGroupLeader = false;
+  $isGuest = false;
+  $isAdmin = false;
+  // if modify by guest
+  if ($currentUserId == 0 && isset($fields["token"]))
+  {
+    $isGuest = true;
+    $canModify = true;
+  }
+  // if your not a guest check your rights
+  else
+  {
+    $isHost = $currentUserId == $fields['host_id'];
+    $userGroupInfo = lab_admin_group_get_user_info($currentUserId, $fields['host_group_id']);
+
+    foreach($userGroupInfo as $gi) {
+      if(!$isBudgetManager) {
+        $isBudgetManager = $gi->manager_type == 1;
+      }
+      if(!$isGroupLeader) {
+        $isGroupLeader = $gi->manager_type == 2;
+      }
+    }
+
+    // an admin can modify a mission
+    $isAdmin = current_user_can('manage_options');
+
+    // all budget Managers can modify a mission
+    $canModify = $isBudgetManager;
+
+    // if i am the group leader 
+    if (!$canModify) {
+      $canModify = $isGroupLeader;
+    }
+
+    // if it's i am the owner of the mission
+    if (!$canModify) {
+      $canModify = $currentUserId == $fields['host_id'];
+    }
+  }
+
+  if ( $canModify || $isAdmin) {
     $guest = array (
       'first_name'=> $fields['guest_firstName'],
       'last_name'=> $fields['guest_lastName'],
@@ -1266,78 +1923,125 @@ function lab_invitations_edit() {
     $timeStamp=date("Y-m-d H:i:s",time());
     $invite = array (
       'needs_hostel'=>$fields['needs_hostel']=='true' ? 1 : 0,
+      //'no_charge'=>$fields['no_charge']=='true' ? 1 : 0,
       'completion_time' => $timeStamp
     );
-    foreach (['host_group_id', 'estimated_cost', 'maximum_cost', 'host_id','mission_objective','start_date','end_date','travel_mean_to','travel_mean_from','funding_source','research_contract','forward_start_station','return_end_station','forward_travel_reference','return_travel_reference'] as $champ) {
-      $invite[$champ]=$fields[$champ];
+    foreach (['host_group_id', 'estimated_cost', 'maximum_cost', 'title', 'host_id', 'funding', 'mission_objective','hostel_night','hostel_cost','funding_source','research_contract'] as $champ) {
+      if(isset($fields[$champ])) {
+        $invite[$champ]=$fields[$champ];
+      }
     }
-    $invite["charges"]=json_encode($fields["charges"]);
-    lab_invitations_editInvitation($fields['token'],$invite);
-    $html = "<p>".esc_html__("Votre invitation a bien été modifiée",'lab')."<br>à $timeStamp</p>";
+    if(isset($fields['no_charge'])) {
+      $invite['no_charge']=$fields['no_charge']=='true' ? 1 : 0;
+    }
+
+    if($isGuest)
+    {
+      foreach (['hostel_night','hostel_cost'] as $champ) {
+        if(isset($fields[$champ])) {
+          $invite[$champ]=$fields[$champ];
+        }
+      }
+    }
+    else {
+      foreach (['host_group_id', 'estimated_cost', 'maximum_cost', 'host_id', 'funding', 'mission_objective','hostel_night','hostel_cost','funding_source','research_contract'] as $champ) {
+        if(isset($fields[$champ])) {
+          $invite[$champ]=$fields[$champ];
+        }
+      }
+      if (isset($fields["charges"])) {
+        $invite["charges"]=json_encode($fields["charges"]);
+      }
+      if($isGroupLeader && ((float)$fields['maximum_cost']) > 0) {
+        $invite["status"] = AdminParams::get_param_by_slug(AdminParams::MISSION_STATUS_VALIDATED_GROUP_LEADER)->id;
+      }
+    }
+
+    $missionId = lab_mission_get_id_by_token($fields['token']);
+    lab_invitations_editInvitation($missionId,$invite);
+    $html = "<p>".esc_html__("Your invitation has been modified",'lab')."<br>à $timeStamp</p>";
+    
     wp_send_json_success($html);
+    //*/
   } else {
     wp_send_json_error('Vous n\'avez par la permission de modifier cette invitation');
   }
 }
+
+
+
 function lab_invitations_complete() {
   $token = $_POST['token'];
-  lab_invitations_editInvitation($token,array('status'=>10));
+  $missionId = lab_mission_get_id_by_token($token);
+  $paramWaitingGroupLeader = AdminParams::MISSION_STATUS_WAITING_GROUP_LEADER;
+  lab_mission_set_status($missionId, $paramWaitingGroupLeader);
   $html = 'Un mail récapitulatif a été envoyé au responsable du groupe pour validation';
   $invite = lab_invitations_getByToken($token);
   $Iarray = json_decode(json_encode($invite), true);
-  $Garray = json_decode(json_encode(lab_invitations_getGuest($invite->guest_id)), true);
+  if ($invite->guest_id != null) {
+    $Garray = json_decode(json_encode(lab_invitations_getGuest($invite->guest_id)), true);
+  }
   $html .= lab_invitations_mail(10,$Garray,$Iarray);
   date_default_timezone_set("Europe/Paris");
   $timeStamp=date("Y-m-d H:i:s",time());
   lab_invitations_addComment(array(
     'content'=> "¤Invitation complétée",
     'timestamp'=> $timeStamp,
-    'author'=>'System',
+    'author_id'=> 0,
+    'author_type'=> 0,
     'invite_id'=>$invite->id
   )); 
   wp_send_json_success($html);
 }
 function lab_invitations_validate() {
   $token = $_POST['token'];
+  $missionId = lab_mission_get_id_by_token($token);
   date_default_timezone_set("Europe/Paris");
   $timeStamp=date("Y-m-d H:i:s",time());
   lab_invitations_addComment(array(
     'content'=> "¤Invitation validée",
     'timestamp'=> $timeStamp,
-    'author'=>'System',
-    'invite_id'=>lab_invitations_getByToken($token)->id
+    'author_id'=> 0,
+    'author_type'=> 0,
+    'invite_id'=>$missionId
   )); 
-  lab_invitations_editInvitation($token,array('status'=>20));
   wp_send_json_success('La demande a été transmise à l\'administration');
 }
-// Invitation prise en charge
-function lab_invitations_assume() {
-  $user = lab_admin_userMetaDatas_get(get_current_user_id());
-  $token = $_POST['token'];
-  date_default_timezone_set("Europe/Paris");
-  $timeStamp=date("Y-m-d H:i:s",time());
-  lab_invitations_addComment(array(
-    'content'=> "¤Invitation prise en charge par ".$user['first_name']." ".$user['last_name'],
-    'timestamp'=> $timeStamp,
-    'author'=>'System',
-    'invite_id'=>lab_invitations_getByToken($token)->id
-  )); 
-  lab_invitations_editInvitation($token,array('status'=>30));
+
+function lab_mission_ajax_set_manager() {
+  $missionId = $_POST['id'];
+  $managerId = $_POST['managerId'];
+  lab_invitations_editInvitation($missionId, ["manager_id"=>$managerId]);
   wp_send_json_success();
 }
 
 function lab_invitation_newComment() {
-  $id = lab_invitations_getByToken($_POST['token'])->id;
+  $mission = lab_invitations_getByToken($_POST['token']);
+  //wp_send_json_success($mission);
+  $id = $mission->id;
+  $authorId = $_POST['author_id'];
+  // case it's a guest
+  if(get_current_user_id() == 0)
+  {
+    $author_type = 1;
+    //$authorId = $_POST['author_id'];
+    $authorId = $mission->guest_id;
+  }
+  else {
+    $author_type = 2;
+    $authorId = get_current_user_id();
+  }
   date_default_timezone_set("Europe/Paris");
   $timeStamp=date("Y-m-d H:i:s",time());
   lab_invitations_addComment(array(
     'content'=> $_POST['content'],
     'timestamp'=> $timeStamp,
-    'author'=>$_POST['author'],
+    'author_id'=>$authorId,
+    'author_type'=> $author_type,
     'invite_id'=>$id
   )); 
-  $html = lab_inviteComments($_POST['token']);
-  wp_send_json_success($html);
+  //$html = lab_inviteComments($id);
+  wp_send_json_success($id);
 }
 
 function lab_prefGroups_addReq() {
@@ -1401,7 +2105,7 @@ function lab_invitations_adminList_update() {
     $list = lab_invitations_getByGroups($_POST['group_ids'],array('order'=>$order, 'sortBy'=>$sortBy,'page'=>$page,'value'=>$value, 'status'=>$statusList, 'year'=>$year));
     wp_send_json_success([$list[0],lab_invitations_interface_fromList($list[1],'admin')]);
   } else {
-    wp_send_json_error([0,"<tr><td colspan=42>".esc_html__("Aucune invitation",'lab')."</td></tr>"]);
+    wp_send_json_error([0,"<tr><td colspan=42>".esc_html__("No invitation",'lab')."</td></tr>"]);
   }
 }
 function lab_invitations_hostList_update() {
@@ -1432,21 +2136,31 @@ function lab_invitations_summary() {
 
 function lab_invitations_comments(){
   $token = $_POST['token'];
-  $string = lab_inviteComments($token);
+  $missionId = lab_invitations_getByToken($_POST['token'])->id;
+  $string = lab_inviteComments($missionId);
   $string .= lab_newComments(lab_admin_userMetaDatas_get(get_current_user_id()), $token);
   wp_send_json_success($string);
 }
 
+function lab_invitations_comments_json() {
+  $token = $_POST['token'];
+  $missionId = lab_invitations_getByToken($_POST['token'])->id;
+  //$string = lab_inviteComments($missionId);
+  //$string .= lab_newComments(lab_admin_userMetaDatas_get(get_current_user_id()), $token);
+  wp_send_json_success(lab_inviteComments_json($missionId));
+}
+
 function lab_invitations_realCost() {
-  wp_send_json_success( lab_invitations_getByToken($_POST['token'])->real_cost!=null ? lab_invitations_getByToken($_POST['token'])->real_cost : "(".esc_html__("indéfini",'lab').")");
+  wp_send_json_success( lab_invitations_getByToken($_POST['token'])->real_cost!=null ? lab_invitations_getByToken($_POST['token'])->real_cost : "(".esc_html__("undefined",'lab').")");
 }
 
 function lab_invitations_add_realCost() {
   $token = $_POST['token'];
+  $missionId = lab_mission_get_id_by_token($token);
   $param = $_POST['value'];
   $forward_carbon_footprint = $_POST['forward_carbon_footprint'];
   $return_carbon_footprint = $_POST['return_carbon_footprint'];
-  lab_invitations_editInvitation($token,array('real_cost'=>$param, 'return_carbon_footprint'=>$return_carbon_footprint, 'forward_carbon_footprint' => $forward_carbon_footprint));
+  lab_invitations_editInvitation($missionId,array('real_cost'=>$param, 'return_carbon_footprint'=>$return_carbon_footprint, 'forward_carbon_footprint' => $forward_carbon_footprint));
   wp_send_json_success();
 }
 function lab_invitations_guestInfo() {
@@ -1576,7 +2290,7 @@ function lab_admin_presence_save_ajax()
   {
     // not admin and a user send
     if ($userId != $currentUserId) {
-      wp_send_json_error("[10-3]"+ esc_html("Can only modify your own presency", "lab"));
+      wp_send_json_error("[10-3]"+ esc_html__("Can only modify your own presency", "lab"));
 
     }
   }
@@ -1586,7 +2300,7 @@ function lab_admin_presence_save_ajax()
 
   if (nonWorkingDay($newDateStart))
   {
-    wp_send_json_error("[10-2]"+ sprintf(esc_html__("%s is a non wordking day", "lab"), $dateOpen));
+    wp_send_json_error("[10-2]"+ sprintf(esc_html__("%s is a no working day", "lab"), $dateOpen));
     return;
   }
 
@@ -2066,6 +2780,7 @@ function lab_admin_ldap_settings() {
   );
   foreach ($associations as $key => $value) {
     if (strlen($_POST[$key][0])>0) {
+      //@todo corriger le retour de la fonction lab_admin_param_save
       if (lab_admin_param_save($value, $_POST[$key][0],'000001',($_POST[$key][1])===false, null)) {
         wp_send_json_error();
       }

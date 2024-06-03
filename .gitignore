@@ -1,4 +1,4 @@
 
-*.mo
 
 sqlReq.sql
+requests/

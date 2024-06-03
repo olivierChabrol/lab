@@ -100,14 +100,21 @@ jQuery(function($){
       'action':"lab_budget_info_load",
     };
     let filterFields = ["year", "state", "fund_origin", "order_number", "site", "budget_manager"];
+    data["filters"] = {};
     for (let i = 0; i < filterFields.length ; i++) {
       let filter = filterFields[i];
-      if ($("#lab_budget_info_filter_" + filter).val() != "") {
-        data["filters"] = {};
-        data["filters"][filter] = $("#lab_budget_info_filter_"+filter).val();
+      //console.log(filter);
+      //console.log($("#lab_budget_info_filter_" + filter).val());
+      let valFilter = $("#lab_budget_info_filter_" + filter).val()
+      if (valFilter != "") {
+        //data["filters"][filter] = {};
+        //data["filters"][filter] = valFilter;
+        data["filters"][filter] = valFilter;
+        //console.log(data);
       }
 
     }
+    console.log(data);
 /*
     if ($("#lab_budget_info_filter_state").val() != "") {
       if (!data["filters"]) {
@@ -142,7 +149,7 @@ jQuery(function($){
 
   function loadBudgetInfo()
   {
-    
+    console.log("loadBudgetInfo()");
     data = {
       'action':"lab_budget_info_load",
       'id':$("#lab_budget_info_id").val(),
@@ -151,6 +158,8 @@ jQuery(function($){
   }
 
   function displayEditBudget(data) {
+    console.log("[displayEditBudget]");
+    console.log(data);
     let fields = getFields();
     let params=Object();
     for (const element of fields) {
@@ -168,13 +177,14 @@ jQuery(function($){
 
   function displayBudget(data)
   {
+    console.log("[displayBudget");
     let budgetSum = {};
     let origins = [];
     let sites   = [];
     let sumPerOrigin = {};
     $("#lab_admin_budget_info_list_table_tbody").empty();
     $("#lab_budget_info_filter_year").empty();
-    $("#lab_budget_info_filter_year").append(new Option(__("Year",'lab'),""));
+    $("#lab_budget_info_filter_year").append(new Option(__("Year",'lab'),"*"));
     $.each(data.years, function(i, obj) {
       //let option = $('<options />').attr("value",obj).html(obj);
       $("#lab_budget_info_filter_year").append(new Option(obj, obj));
@@ -354,7 +364,7 @@ jQuery(function($){
       'id': budget_info_id,
       'field': field,
     };
-    callAjax(data, null, loadAllBudgetInfo, null, null);
+    callAjax(data, null, applyFilter, null, null);
     //console.log("[setToday] " + budget_info_id + " / " + field);
     //callAjax(data, null, null, null, null);
   }
@@ -390,11 +400,6 @@ jQuery(function($){
   function createTdMoney(str) {
     return $('<td />').attr("align", "right").html(formatMoney(str));
 
-  }
-
-  function createTd(str)
-  {
-    return $('<td />').html(str);
   }
 
   function searchInParams(paramId, data) {

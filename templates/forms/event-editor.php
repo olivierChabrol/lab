@@ -32,6 +32,23 @@ if( !empty($_REQUEST['success']) ){
 		<div class="inside event-form-name">
 			<input type="text" name="event_name" id="event-name" value="<?php echo esc_attr($EM_Event->event_name,ENT_QUOTES); ?>" /><?php echo $required; ?>
 			<br />
+			<div class="event-attributes">
+				<label for="em_attributes[Speaker]">Nom du speaker</label>
+				<input type="text" id="lab_event_speaker_name" name="em_attributes[Speaker]" value=""><i><span style="color:red;">*</span></i>
+				<span id="lab_event_speaker_name_error"></span>
+			</div>
+			<div class="event-attributes">
+				<label for="em_attributes[Speaker affiliation]">Affiliation</label>
+				<input type="text" id="lab_event_speaker_affiliation" name="em_attributes[Speaker affiliation]" value=""><i><span style="color:red;">*</span></i>
+				<span id="lab_event_speaker_affiliation_error"></span>
+			</div>
+			<div class="event-attributes">
+				<label for="em_attributes[Speaker web site]">Page internet du speaker : </label>
+				<input type="text" name="em_attributes[Speaker web site]" value="">
+			</div>
+			<div class="event-attributes">
+			<i><span style="color:red;">*</span></i> : Obligatoire/Mandatory
+			</div>
 			<?php lab_locate_template('forms/event/group.php',true); ?>
 		</div>
                 <div class="event-extra-details">
@@ -72,9 +89,7 @@ if( !empty($_REQUEST['success']) ){
 					<?php esc_html_e( 'Details about the event.', 'events-manager')?> <?php esc_html_e( 'HTML allowed.', 'events-manager')?>
 				<?php endif; ?>
 			</div>
-			<div class="event-extra-details">
-				<?php if(get_option('dbem_attributes_enabled')) { lab_locate_template('forms/event/attributes-public.php',true); }  ?>
-			</div>
+			
 		</div>
 		
 		<?php if( $EM_Event->can_manage('upload_event_images','upload_event_images') ): ?>
@@ -87,11 +102,12 @@ if( !empty($_REQUEST['success']) ){
 		
                 <input type="hidden" name="data_privacy_consent" value="1">
 	</div>
+	<button id="lav_event_submit" type="button" class="btn btn-success" ><?php echo esc_attr(sprintf( __('Submit %s','events-manager'), __('Event','events-manager') )); ?></button>
 	<p class="submit">
 	    <?php if( empty($EM_Event->event_id) ): ?>
-	    <input type='submit' class='button-primary' value='<?php echo esc_attr(sprintf( __('Submit %s','events-manager'), __('Event','events-manager') )); ?>' />
+	    
 	    <?php else: ?>
-	    <input type='submit' class='button-primary' value='<?php echo esc_attr(sprintf( __('Update %s','events-manager'), __('Event','events-manager') )); ?>' />
+	    <button id="toto" class='button-primary' value='<?php echo esc_attr(sprintf( __('Update %s','events-manager'), __('Event','events-manager') )); ?>' />
 	    <?php endif; ?>
 	</p>
 	<input type="hidden" name="event_id" value="<?php echo $EM_Event->event_id; ?>" />

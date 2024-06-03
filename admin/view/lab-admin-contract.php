@@ -4,6 +4,10 @@
     if (isset($_GET['tab'])) {
       $active_tab = $_GET['tab'];
     }
+    $contractId = "";
+    if (isset($_GET['id'])) {
+      $contractId = $_GET['id'];
+    }
 ?>
     <div id="loadingAjaxGif"><img src="/wp-content/plugins/lab/loading.gif"/></div>
     <div class="wrap">
@@ -24,16 +28,17 @@
     echo '<button class="lab_keyring_create_table_keys" id="lab_admin_contract_create_table">'.esc_html__('Créer la table Contrat user','lab').'</button>';
     }
     if ($active_tab == 'new') {
-    lab_admin_contract_new();
+    lab_admin_contract_new($contractId);
     } else if ($active_tab == 'list') {
     lab_admin_contract_list();
     } else {
-    lab_admin_contract_new();
+    lab_admin_contract_new($contractId);
     }
   }
 
-  function lab_admin_contract_new() {
+  function lab_admin_contract_new($contractId = "") {
 ?>
+<input type="hidden" id="lab_contract_delete_dialog_contract_id" value="<?php echo $contractId; ?>">
 <table class="widefat fixed lab_keyring_table">
     <tbody>
         <tr>
@@ -52,6 +57,14 @@
             </td>
             <td>
                 <?php lab_html_select("lab_admin_contract_type", "lab_admin_contract_type", "", "lab_admin_get_params_contract_type", null, array("value"=>"0","label"=>"None"), ""); ?>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label for="lab_admin_contract_tutelage"><?php esc_html_e('Contract tutelage','lab') ?></label>
+            </td>
+            <td>
+                <?php lab_html_select("lab_admin_contract_tutelage", "lab_admin_contract_tutelage", "", "lab_admin_get_params_budget_origin_fund", null, array("value"=>"0","label"=>"None"), ""); ?>
             </td>
         </tr>
         <tr>
@@ -91,8 +104,9 @@
             </td>
         </tr>
         <tr>
-          <td scope="col" colpsan="2"><button class="page-title-action" id="lab_admin_contract_create"><?php esc_html_e('Add','lab'); ?></button></td>
+          <td scope="col" colspan="2"><button class="page-title-action" id="lab_admin_contract_create"><?php esc_html_e('Add','lab'); ?></button></td>
         </tr>
+    </table>
 <?php
   }
   function lab_admin_contract_list() {
@@ -101,6 +115,52 @@
     <tbody id="lab_admin_contract_list_table_tbody">
     </tbody>
 </table>
+<div id="lab_contract_delete_dialog" class="modal">
+    <p><?php esc_html_e('Do you really want to delete this contract ?','lab');?></p>
+    <input type="hidden" id="lab_contract_delete_dialog_contract_id" value="">
+    <div id="lab_contract_delete_dialog_options">
+    <a href="#" rel="modal:close"><?php esc_html_e('Cancel','lab')?></a>
+    <a href="#" rel="modal:close" id="lab_contract_delete_confirm" keyid=""><?php esc_html_e('Confirm','lab'); ?></a>
+    </div>
+</div>
+<?php
+  }
+
+  function lab_admin_contract_funder() {
+?>
+<div id="loadingAjaxGif"><img src="/wp-content/plugins/lab/loading.gif"/></div>
+<div class="wrap">
+    <h1 class="wp-heading-inline">Gestion des financeurs</h1><br/>
+    Nouveau financeur
+    <?php lab_html_select("lab_admin_contract_tutelage", "lab_admin_contract_tutelage", "", "lab_admin_get_params_budget_origin_fund", null, array("value"=>"0","label"=>"None"), ""); ?>
+    <label for="lab_admin_contract_name">New Name</label>
+    <input type="text" id="lab_admin_contract_name" maxlength="50">
+    
+    <button class="page-title-action" id="lab_admin_contract_funder_create"><?php esc_html_e('Add','lab'); ?></button>
+    <button class="page-title-action" id="lab_admin_contract_funder_save"><?php esc_html_e('Save','lab'); ?></button>
+    <table id="lab_admin_contract_funder_list_table" class="table table-hover"></table>
+    <div id="lab_contract_funcder_create_dialog" class="modal">
+        <input type="hidden" id="lab_contract_funder_parent" value="-1">
+        <h3>Add contract funder : </h3>
+        <?php lab_html_select("lab_contract_funder_param", "lab_contract_funder_param", "", "lab_admin_param_load_param_type", null, array("value"=>"","label"=>"None"), ""); ?>
+        <div id="lab_contract_funder_params"></div>
+    </div>
+
+    <div id="lab_contract_funder_dialog_add" class="modal">
+        <input type="hidden" id="lab_contract_funder_dialog_parent" value="-1">
+        <h3>Add contract funder : </h3>
+        <div id="lab_contract_funder_dialog_add_content"></div>
+        <a href="#" rel="modal:close" id="lab_contract_funder_dialog_add_button" class="btn btn-success">Add</a>
+        <a href="#" rel="modal:close"><?php esc_html_e('Cancel','lab'); ?></a>
+    </div>
+    <div id="lab_contract_funder_delete_dialog" class="modal">
+        <input type="hidden" id="lab_contract_funder_delete_dialog_id" value="-1">
+        <h3>Delete contract funder : </h3>
+        <div id="lab_contract_funder_delete_dialog_name"></div>
+        <a href="#" rel="modal:close" id="lab_contract_funder_delete_dialog_delete_button" class="btn btn-danger">Delete</a>
+        <a href="#" rel="modal:close"><?php esc_html_e('Cancel','lab'); ?></a>
+    </div>
+</div>
 <?php
   }
   

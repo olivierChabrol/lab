@@ -109,6 +109,37 @@ if ($do == "presentOfTheWeek")
     $writer->save( "php://output" );
 
 } 
+else if ($do == "missionsExtraction")
+{
+    $spreadsheet = new Spreadsheet();
+    $sheet = $spreadsheet->getActiveSheet();
+    $sheet->setCellValue('A1', 'Id Mission');
+    $sheet->setCellValue('B1', 'Etat');
+    $sheet->setCellValue('C1', 'Date de la demande');
+    $sheet->setCellValue('D1',"Utilisateur");
+    $sheet->setCellValue('E1',"Site");
+    $sheet->setCellValue('F1',"Groupes");
+    $sheet->setCellValue('G1',"Gestionaire budjet");
+    $sheet->setCellValue('H1',"Type de Mission");
+    $line = 1;
+
+    $data = lab_mission_load(null, null, null);
+    foreach ($data["results"] as $mission){
+        $line++;
+        $sheet->setCellValue('A'.$line, $mission->id);
+        $sheet->setCellValue('B'.$line, AdminParams::get_param($mission->status));
+        $sheet->setCellValue('C'.$line, $mission->creation_time);
+        $sheet->setCellValue('D'.$line, $mission->host_id);
+        $sheet->setCellValue('E'.$line, $mission->site);
+        $sheet->setCellValue('F'.$line, $mission->host_group_id);
+        $sheet->setCellValue('G'.$line, $mission->manager_id);
+        $sheet->setCellValue('H'.$line, $mission->mission_objective);
+
+    }
+
+    $writer = new Xlsx($spreadsheet);
+    $writer->save( "php://output" );
+}
 else if ($do == "labo1.5")
 {   
     ob_end_clean();

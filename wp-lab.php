@@ -3,7 +3,7 @@
 Plugin Name: LAB
 Plugin URI: https://www.i2m.univ-amu.fr
 Description: Pluggin de l'I2M de gestion du labo
-Authors: Astrid BEYER, Ivan Ivanov, Lucas Argenti, Olivier CHABROL, Hongda MA
+Authors: Astrid BEYER, Ivan Ivanov, Lucas Urgenti, Olivier CHABROL, Hongda MA
 Version: 1.0
 Author URI: http://www.i2m.univ-amu.fr
 Text Domain: lab
@@ -36,12 +36,16 @@ require_once(LAB_DIR_PATH."shortcode/lab-shortcode-directory.php");
 require_once(LAB_DIR_PATH."shortcode/lab-shortcode-profile.php");
 require_once(LAB_DIR_PATH."shortcode/lab-shortcode-hal.php");
 require_once(LAB_DIR_PATH."shortcode/lab-shortcode-event.php");
+require_once(LAB_DIR_PATH."shortcode/lab-shortcode-trombinoscope.php");
 require_once(LAB_DIR_PATH."shortcode/lab-shortcode-invitation.php");
 require_once(LAB_DIR_PATH."shortcode/lab-shortcode-labo1dot5.php");
 require_once(LAB_DIR_PATH."shortcode/lab-shortcode-labo1dot5admin.php");
 require_once(LAB_DIR_PATH."shortcode/lab-shortcode-labo1dot5resp.php");
 require_once(LAB_DIR_PATH."shortcode/lab-shortcode-ldap.php");
+require_once(LAB_DIR_PATH."shortcode/lab-shortcode-request.php");
+require_once(LAB_DIR_PATH."shortcode/lab-shortcode-internship.php");
 require_once(LAB_DIR_PATH."admin/view/lab-admin-tabs.php");
+require_once(LAB_DIR_PATH."admin/view/lab-admin-mission.php");
 require_once(LAB_DIR_PATH."admin/view/lab-admin-tab-groups.php");
 require_once(LAB_DIR_PATH."admin/view/lab-admin-tab-params.php");
 require_once(LAB_DIR_PATH."admin/view/lab-admin-tab-users.php");
@@ -49,7 +53,13 @@ require_once(LAB_DIR_PATH."admin/view/lab-admin-tab-settings.php");
 require_once(LAB_DIR_PATH."admin/view/lab-admin-tab-ldap.php");
 require_once(LAB_DIR_PATH."lab-admin-ldap.php");
 require_once(LAB_DIR_PATH."view/lab-view-user.php");
+<<<<<<< HEAD
 require_once(LAB_DIR_PATH."core/Lab_Event.php");
+=======
+require_once(LAB_DIR_PATH."view/lab-view-request.php");
+require_once(LAB_DIR_PATH."core/lab-admin-core-request.php");
+require_once(LAB_DIR_PATH."core/lab-admin-internship.php");
+>>>>>>> origin/testcontract
 require_once("lab-html-helper.php");
 require_once("lab-utils.php");
 require_once("lab-labo1dot5.php");
@@ -94,12 +104,10 @@ add_action( 'wp_enqueue_scripts', 'replace_core_jquery_version' );
 
 function replace_core_jquery_version() {
   wp_enqueue_style('bootstrap4', 'https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css');
-  wp_deregister_script( 'jquery-core' );
-  //wp_deregister_script( 'jquery' );
-  wp_enqueue_script('jquery-core', plugins_url('js/jquery-3.5.1.min.js',__FILE__), array(), version_id(), false);
-  //wp_enqueue_script('jquery', plugins_url('js/jquery-3.5.1.min.js',__FILE__), array(), version_id(), false);
-  wp_deregister_script( 'jquery-migrate' );
-  wp_register_script( 'jquery-migrate', plugins_url("js/jquery-migrate-3.3.0.min.js",__FILE__), array(), '3.3.0',false );
+  wp_enqueue_script('media-upload');
+  wp_enqueue_script('thickbox');
+  wp_enqueue_style('thickbox');
+  wp_enqueue_media();
  }
 
 /**
@@ -121,8 +129,11 @@ add_shortcode('lab_old-event', 'lab_old_event');
 add_shortcode('lab-old-event', 'lab_old_event');
 add_shortcode('lab-event', 'lab_event');
 add_shortcode('lab-event-of-the-week', 'lab_event_of_the_week');
+add_shortcode('lab-event-of-the-day', 'lab_event_of_the_day');
 add_shortcode('lab-event-of-the-year', 'lab_event_of_the_year');
 add_shortcode('lab-incoming-event', 'lab_incoming_event');
+add_shortcode('lab-trombinoscope', 'lab_trombinoscope');
+add_shortcode('lab-user-by-thematic', 'lab_users_by_thematic');
 add_shortcode('lab-hal', 'lab_hal');
 add_shortcode('lab-invite', 'lab_invitation');
 add_shortcode('lab-mission', 'lab_mission');
@@ -131,23 +142,139 @@ add_shortcode('lab-labo1dot5admin', 'lab_labo1_5admin');
 add_shortcode('lab-labo1dot5resp', 'lab_labo1_5resp');
 add_shortcode('lab-invite-interface','lab_invitations_interface');
 add_shortcode('lab-ldap','lab_ldap');
+add_shortcode('lab-hal-tools', 'lab_hal_tools');
+add_shortcode('lab-request', 'lab_request');
+add_shortcode('lab-internship', 'lab_internship');
 
-
-add_action('admin_enqueue_scripts', 'admin_enqueue');
 register_activation_hook( __FILE__, 'lab_activation_hook' );
 register_uninstall_hook(__FILE__, 'lab_uninstall_hook');
+
+add_action( 'show_user_profile', 'lab_add_user_profile_fields' );
+add_action( 'personal_options_update', 'lab_save_extra_user_profile_fields' );
+
   
 /*
  * Ajoute le widget wphal à l'initialisation des widgets
  */
 add_action('widgets_init', 'wplab_init');
+
+add_filter('get_wp_user_avatar', 'custom_user_avatar', 1, 5);
+remove_action('wpua_before_avatar', 'wpua_do_before_avatar');
+remove_action('wpua_after_avatar', 'wpua_do_after_avatar');
+
+
+function custom_user_avatar($avatar, $id_or_email = NULL, $size = NULL, $align = NULL, $alt = NULL) {
+  if(is_object($id_or_email) && isset($id_or_email->comment_author_email))
+  {
+    $comment_user = get_user_by('email',$id_or_email->comment_author_email);
+    if(is_object($comment_user))
+    {
+      $user_pic_base_url = 'url';
+      $imgId = get_user_meta($comment_user->ID, 'lab_user_picture_display', true);
+      if($imgId)
+      {
+        //$avatar = '<img src="' . $user_pic_base_url . $user_pic . '" width="54" height="54" alt="admin.kh" class="avatar avatar-54 wp-user-avatar wp-user-avatar-54 alignnone photo">';
+        $avatar = wp_get_attachment_image($imgId, array('54', '54'));
+      }
+    }
+  }
+  return $avatar;
+}
+
+function lab_add_user_profile_fields($user) {
+?>
+  <h3><?php _e("Extra profile information", "lab"); ?></h3>
+
+  <table class="form-table">
+    <tr>
+      <td>
+        <table class="form-table">
+        <tr>
+            <th><label for="address1"><?php _e("Address line 1"); ?></label></th>
+            <td>
+                <input type="text" name="address1" id="address1" value="<?php echo esc_attr( get_the_author_meta( 'lab_address1', $user->ID ) ); ?>" class="regular-text" /><br />
+                <span class="description"><?php _e("Please enter your address.", "lab"); ?></span>
+            </td>
+        </tr>
+        <tr>
+            <th><label for="address2"><?php _e("Address line 2"); ?></label></th>
+            <td>
+                <input type="text" name="address2" id="address2" value="<?php echo esc_attr( get_the_author_meta( 'lab_address2', $user->ID ) ); ?>" class="regular-text" /><br />
+                <span class="description"><?php _e("Please enter your address.", "lab"); ?></span>
+            </td>
+        </tr>
+        <tr>
+            <th><label for="address3"><?php _e("Address line 3"); ?></label></th>
+            <td>
+                <input type="text" name="address3" id="address3" value="<?php echo esc_attr( get_the_author_meta( 'lab_address3', $user->ID ) ); ?>" class="regular-text" /><br />
+                <span class="description"><?php _e("Please enter your address.", "lab"); ?></span>
+            </td>
+        </tr>
+        <tr>
+            <th><label for="city"><?php _e("City"); ?></label></th>
+            <td>
+                <input type="text" name="city" id="city" value="<?php echo esc_attr( get_the_author_meta( 'lab_city', $user->ID ) ); ?>" class="regular-text" /><br />
+                <span class="description"><?php _e("Please enter your city.", "lab"); ?></span>
+            </td>
+        </tr>
+        <tr>
+        <th><label for="postalcode"><?php _e("Postal Code"); ?></label></th>
+            <td>
+                <input type="text" name="postalcode" id="postalcode" value="<?php echo esc_attr( get_the_author_meta( 'lab_postalcode', $user->ID ) ); ?>" class="regular-text" /><br />
+                <span class="description"><?php _e("Please enter your postal code.", "lab"); ?></span>
+            </td>
+        </tr>
+        <tr>
+        <th><label for="birthdate"><?php _e("Birth date"); ?></label></th>
+            <td>
+                <input type="date" name="birthdate" id="birthdate" value="<?php echo esc_attr( get_the_author_meta( 'lab_birthdate', $user->ID ) ); ?>" class="regular-text" /><br />
+                <span class="description"><?php _e("Please enter your birthdate.", "lab"); ?></span>
+            </td>
+        </tr>
+        </table>
+      </td>
+      <td>
+        <label for="lab_upload_image"><?php _e("Picture of you"); ?></label>
+        <input type="button" value="Upload Image" class="btn btn-info" id="lab_upload_image" userId="<?php echo get_current_user_id(); ?>"/>
+        <input type="hidden" name="attachment_id" class="wp_attachment_id" id="attachment_id" value="" /> </br>
+        
+        <?php
+          $imgId = get_the_author_meta( 'lab_user_picture_display', $user->ID );
+          if ($imgId != NULL && !empty($imgId)) {
+            echo wp_get_attachment_image($imgId, array('300', '300'), false, array("id"=>"lab_user_picture_display", "class"=>"lab_user_picture_img"));
+          }
+          else {
+        ?>
+            <img src="" class="image lab_user_picture_img" id="lab_user_picture_display" name="lab_user_picture_display" width="300" height="300"/>
+        <?php
+          }
+        ?>
+        
+        <br>
+
+        <input type="button " value="Delete Image" class="btn btn-danger" id="lab_user_picture_btn_delete_image"/>
+      </td>
+    </tr>
+    
+  </table>
+<?php 
+}
+
+function lab_save_extra_user_profile_fields( $user_id ) {
+  if ( !current_user_can( 'edit_user', $user_id ) ) { 
+      return false; 
+  }
+  update_user_meta( $user_id, 'lab_birthdate' , $_POST['birthdate'] );
+  update_user_meta( $user_id, 'lab_address1'  , $_POST['address1'] );
+  update_user_meta( $user_id, 'lab_address2'  , $_POST['address2'] );
+  update_user_meta( $user_id, 'lab_address3'  , $_POST['address3'] );
+  update_user_meta( $user_id, 'lab_city'      , $_POST['city'] );
+  update_user_meta( $user_id, 'lab_postalcode', $_POST['postalcode'] );
+  update_user_meta( $user_id, 'lab_user_picture_display', $_POST['attachment_id'] );
+}
+
+
 function myplugin_load_textdomain() {
-  /*
-  LAB_LDAP::getInstance(AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_HOST)[0]->value,
-                        AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_BASE)[0]->value,
-                        AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_LOGIN)[0]->value,
-                        AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_PASSWORD)[0]->value);
-                        //*/
   load_plugin_textdomain( 'lab', false, '/lab/lang' ); 
 }
 
@@ -174,11 +301,11 @@ class LabRewriteRules {
       $newRule = array('user/(.+)$' => 'index.php?pagename=user');
       $newRules = $newRule + $rules;
       $newRules = $newRule + $newRules;
-      //$newRule1 = array('linstitut/annuaire/(.+)$' => 'index.php?pagename=directory');
-      //$newRules = $newRule + $newRule1 + $rules;
       $newRule = array('invitation/(.+)$' => 'index.php?pagename=invitation');
       $newRules = $newRule + $newRules;
       $newRule = array('invite/(.+)$' => 'index.php?pagename=invite');
+      $newRules = $newRule + $newRules;
+      $newRule = array('mission/(.+)$' => 'index.php?pagename=mission');
       $newRules = $newRule + $newRules;
       return $newRules;
   }
@@ -187,51 +314,23 @@ class LabRewriteRules {
     $wp_rewrite->flush_rules();
   }
 }
-/**
- * Show custom user profile fields
- * 
- * @param  object $profileuser A WP_User object
- * @return void
- */
-function custom_user_profile_fields( $profileuser ) {
-  ?>
-    <!--
-    <table class="form-table">
-      <tr>
-        <th>
-          <label for="user_hal_id">Hal ID</label>
-        </th>
-        <td>
-          <input type="text" name="user_hal_id" id="user_hal_id" value="<?php echo esc_attr( get_user_meta($profileuser->ID, 'lab_hal_id', true) ); ?>" class="regular-text" />
-          <br><span class="description"><?php esc_html_e( 'Your HAL id', 'text-domain' ); ?></span>
-        </td>
-      </tr>
-      <tr>
-        <th>
-          <label for="user_hal_name">Hal Name</label>
-        </th>
-        <td>
-          <input type="text" name="user_hal_name" id="user_hal_name" value="<?php echo esc_attr( get_user_meta($profileuser->ID, 'user_hal_name', true) ); ?>" class="regular-text" />
-          <br><span class="description"><?php esc_html_e( 'Your HAL name', 'text-domain' ); ?></span>
-        </td>
-      </tr>
-    </table>
-    -->
-  <?php
-  }
 
 /**
  * Fonction de création du menu
  */
 function wp_lab_menu()
 {
+  $bookings_num = '<span class="update-plugins count-'.lab_admin_mission_getNotifs(get_current_user_id(), null)[0]->notifs_number.'"><span class="plugin-count">'.lab_admin_mission_getNotifs(get_current_user_id(), null)[0]->notifs_number.'</span></span>';
   add_menu_page('Options'    , 'LAB'       , 'edit_plugins'      , 'wp-lab.php'          , 'wp_lab_option'       , ''                      , 21);
   add_menu_page("KeyRing"    ,"KeyRing"    ,'keyring'            , 'lab_keyring'         ,'lab_keyring'          ,'dashicons-admin-network',22);
-  add_menu_page("Budget Info","Budget Info","budget_info_manager","lab_admin_budget_info","lab_admin_budget_info",'dashicons-money-alt'    ,23);
-  add_submenu_page("lab_admin_budget_info", esc_html('Contract','lab'), esc_html('Contract','lab'),'edit_plugins', 'lab_admin_contract', 'lab_admin_new_contract', 24 );
+  add_menu_page("Request"    ,esc_html__("Requests","lab"),'subscriber' , 'lab_request_view'         ,'lab_request_view','dashicons-format-chat',23);
+  add_menu_page("Budget Info","Budget Info","budget_info_manager","lab_admin_budget_info","lab_admin_budget_info",'dashicons-money-alt'    ,24);
+  add_menu_page("Mission"    ,"Manage Mission".$bookings_num, "subscriber","lab_admin_mission_manager","lab_admin_mission_manager",'dashicons-admin-site-alt'    ,23);
+  add_submenu_page("lab_admin_budget_info", esc_html('Contract','lab'), esc_html('Contract','lab'),'edit_plugins', 'lab_admin_contract', 'lab_admin_new_contract', 25 );
+  add_submenu_page("lab_admin_budget_info", esc_html('Contract funder','lab'), esc_html('Contract funder','lab'),'edit_plugins', 'lab_admin_contract_funder', 'lab_admin_contract_funder', 26 );
   //add_menu_page("LDAP Admin","LDAP Admin",'edit_plugins','lab_ldap','lab_ldap','dashicons-id-alt',23);
-  add_submenu_page( 'wp-lab.php', "LDAP Admin", "LDAP Admin",'edit_plugins', 'lab_ldap', 'lab_ldap_test', 25 );
-  add_submenu_page("wp-lab.php", "User Admin", "User Admin", "lab_user_manager", "lab_user", "lab_user_echo", 26);
+  add_submenu_page( 'wp-lab.php', "LDAP Admin", "LDAP Admin",'edit_plugins', 'lab_ldap', 'lab_ldap_test', 26 );
+  add_submenu_page("wp-lab.php", "User Admin", "User Admin", "lab_user_manager", "lab_user", "lab_user_echo", 27);
   //add_submenu_page("wp-lab.php","Budget",'keyring','lab_admin_budget_info','lab_admin_budget_info','dashicons-money-alt',22);
   if ( ! current_user_can('edit_plugins') ) {
     remove_menu_page('wpfastestcacheoptions');
@@ -248,35 +347,50 @@ function wp_lab_menu()
  **/
 function admin_enqueue()
 {
+  wp_enqueue_script('media-upload');
+  wp_enqueue_script('thickbox');
+  wp_enqueue_style('thickbox');
+  wp_enqueue_media();
+
+  wp_enqueue_style('labCSS',plugins_url('css/lab.css',__FILE__), version_id(), true);
   wp_enqueue_script('fontAwesome',"https://kit.fontawesome.com/341f99cb81.js",array(),"3.2",true);
   wp_enqueue_script('SpectrumJS', plugins_url('js/spectrum.js',__FILE__), array('jquery','wp-i18n'), '1.8.0', true);
   wp_enqueue_style('SpectrumCSS',plugins_url('css/spectrum.css',__FILE__));
-  wp_enqueue_style('bootstrap',plugins_url('css/bootstrap.css',__FILE__));
+  wp_enqueue_style('bootstrap',plugins_url('css/bootstrap.css',__FILE__), version_id(), true);
   //Plugin permettant d'afficher les toasts :
   wp_enqueue_style('jqueryToastCSS',plugins_url('css/jquery.toast.css',__FILE__));
+  wp_enqueue_style('InvitationCSS',plugins_url('css/lab-invitation.css',__FILE__), version_id(), true);
   wp_enqueue_script('jqueryToastJS',plugins_url('js/jquery.toast.js',__FILE__), array('jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog'),"1.3.2",false);
 
   wp_enqueue_script('lab-global', plugins_url('js/lab_global.js',__FILE__), array('jqueryToastJS', 'jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog'), version_id(), false);
   wp_enqueue_script('lab-admin', plugins_url('js/lab_admin.js',__FILE__), array('lab-global','jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog'), version_id(), false);
   wp_enqueue_script('lab-keyring',plugins_url('js/lab_keyring.js',__FILE__), array('lab-global','jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog'), version_id(), true);
   wp_enqueue_script('lab-budget',plugins_url('js/lab_budget.js',__FILE__), array('lab-global','jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog'), version_id(), true);
+  wp_enqueue_script('lab-mission',plugins_url('js/lab_mission.js',__FILE__), array('lab-global','jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog', 'lab-budget'), version_id(), true);
   wp_enqueue_script('lab-contract',plugins_url('js/lab_contract.js',__FILE__), array('lab-global','jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog','lab-budget'), version_id(), true);
   //Feuille de style des interfaces d'administration WordPress :
-  wp_enqueue_style('lab-admin-CSS',plugins_url('css/lab-admin.css',__FILE__));
+  wp_enqueue_style('lab-admin',plugins_url('css/lab-admin.css',__FILE__), version_id(), true);
   wp_enqueue_style('LdapCSS',plugins_url('css/lab-ldap.css',__FILE__));
   //Feuille de style de l'onglet keyring :
   wp_enqueue_style('KeyRingCSS',plugins_url('css/keyring.css',__FILE__));
-  wp_enqueue_style('AdminCSS',plugins_url('css/lab-admin.css',__FILE__));
+  //wp_enqueue_style('AdminCSS',plugins_url('css/lab-admin.css',__FILE__));
   //Plugin permettant d'afficher des fenêtres modales :
   wp_enqueue_style('jqueryModalCSS',plugins_url('css/jquery.modal.min.css',__FILE__));
   wp_enqueue_script('jqueryModalJS',plugins_url('js/jquery.modal.min.js',__FILE__),array('jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog'),"0.9.1",false);
+  wp_enqueue_script('jquery-ui-1.12.1-js', plugins_url('js/jquery-ui.min.js',__FILE__), array('jquery'), version_id(), false);
   wp_enqueue_script('lab-ldap', plugins_url('js/lab_ldap.js',__FILE__), array('jquery', 'wp-i18n'), version_id(), true);
   wp_enqueue_style('CountrySelectCSS',plugins_url('css/countrySelect.min.css',__FILE__));
   wp_enqueue_script('CountrySelectJS',plugins_url('js/countrySelect.min.js',__FILE__),array('jquery'),"3.5",false);
+  wp_enqueue_style('TelInputCSS',plugins_url('css/intlTelInput.min.css',__FILE__));
+  wp_enqueue_script('TelInputUtils',plugins_url('js/utils.js',__FILE__),array(),"3.4",false);
+  wp_enqueue_script('TelInputJS',plugins_url('js/intlTelInput.min.js',__FILE__),array('TelInputUtils'),"3.4",false);
+  wp_enqueue_script('lab-fe', plugins_url('js/lab_fe.js',__FILE__), array('jquery', 'wp-i18n', 'lab-global', 'TelInputJS'), version_id(), true);
+  wp_enqueue_script('lab-mission', plugins_url('js/lab_mission.js',__FILE__), array('jquery', 'wp-i18n', 'lab-global', 'TelInputJS'), version_id(), true);
   localize_script('lab-global');
   wp_set_script_translations( 'lab-global' , 'lab', dirname(__FILE__).'/lang' );
   wp_set_script_translations( 'lab-admin'  , 'lab', dirname(__FILE__).'/lang' );
   wp_set_script_translations( 'lab-keyring', 'lab', dirname(__FILE__).'/lang' );
+  wp_set_script_translations( 'lab-mission', 'lab', dirname(__FILE__).'/lang' );
 }
 
 /**
@@ -288,31 +402,39 @@ function wp_lab_fe_enqueues()
 {
   //wp_deregister_script('jquery');
 	//wp_enqueue_script('jquery', plugins_url('js/jquery-3.5.1.min.js',__FILE__), array(), version_id(), false);
-  wp_enqueue_style('labCSS',plugins_url('css/lab.css',__FILE__));
+  wp_enqueue_style('labCSS',plugins_url('css/lab.css',__FILE__), version_id(), false);
   wp_enqueue_style('jqueryToastCSS',plugins_url('css/jquery.toast.css',__FILE__), version_id(), false);
   wp_enqueue_script('jqueryToastJS',plugins_url('js/jquery.toast.js',__FILE__), array('jquery'),version_id(),false);
   wp_enqueue_script('jquery-ui-1.12.1-js', plugins_url('js/jquery-ui.min.js',__FILE__), array('jquery'), version_id(), false);
-  wp_enqueue_script('lab-fe', plugins_url('js/lab_fe.js',__FILE__), array('jquery', 'wp-i18n'), version_id(), true);
+  //wp_enqueue_script('lab-global', plugins_url('js/lab_global.js',__FILE__), array('jqueryToastJS', 'jquery'), version_id(), false);
   wp_enqueue_style('profileCSS',plugins_url('css/lab-profile.css',__FILE__));
   wp_enqueue_script('SpectrumJS', plugins_url('js/spectrum.js',__FILE__), array('jquery','wp-i18n'), '1.8.0', true);
   wp_enqueue_style('SpectrumCSS',plugins_url('css/spectrum.css',__FILE__));
   
-  localize_script('lab-fe');
-  wp_set_script_translations( 'lab-fe', 'lab', dirname(__FILE__).'/lang' );
   wp_enqueue_script('fontAwesome',"https://kit.fontawesome.com/341f99cb81.js",array(),"3.2",true);
-  wp_enqueue_style('InvitationCSS',plugins_url('css/lab-invitation.css',__FILE__));
+  wp_enqueue_style('InvitationCSS',plugins_url('css/lab-invitation.css',__FILE__), version_id(), true);
   wp_enqueue_style('LdapCSS',plugins_url('css/lab-ldap.css',__FILE__));
   wp_enqueue_style('CountrySelectCSS',plugins_url('css/countrySelect.min.css',__FILE__));
   wp_enqueue_script('CountrySelectJS',plugins_url('js/countrySelect.min.js',__FILE__),array('jquery'),"3.5",false);
   wp_enqueue_style('TelInputCSS',plugins_url('css/intlTelInput.min.css',__FILE__));
   wp_enqueue_script('TelInputUtils',plugins_url('js/utils.js',__FILE__),array(),"3.4",false);
   wp_enqueue_script('TelInputJS',plugins_url('js/intlTelInput.min.js',__FILE__),array('TelInputUtils'),"3.4",false);
-  
-  wp_set_script_translations( 'lab-global' , 'lab', dirname(__FILE__).'/lang' );
 
+  wp_enqueue_script('lab-fe', plugins_url('js/lab_fe.js',__FILE__), array('jquery', 'wp-i18n', 'lab-global', 'TelInputJS'), version_id(), true);
+  wp_enqueue_script('lab-mission', plugins_url('js/lab_mission.js',__FILE__), array('jquery', 'wp-i18n', 'lab-global'), version_id(), true);
   wp_enqueue_script('lab-global', plugins_url('js/lab_global.js',__FILE__), array('jqueryToastJS', 'jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog'), version_id(), false);
   wp_enqueue_script('lab-bootstrap', plugins_url('js/bootstrap.min.js',__FILE__), array('jquery'), version_id(), true);
   wp_enqueue_script('lab-shortcode-present',plugins_url('js/lab_shortcode_present.js',__FILE__), array('jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog', 'lab-global', 'lab-bootstrap'), version_id(), false);
+
+  localize_script('lab-fe');
+  localize_script('lab-global');
+  localize_script('lab-mission');
+  
+  wp_set_script_translations( 'lab-global' , 'lab', dirname(__FILE__).'/lang' );
+  wp_set_script_translations( 'lab-fe', 'lab', dirname(__FILE__).'/lang' );
+  wp_set_script_translations( 'lab-mission', 'lab', dirname(__FILE__).'/lang' );
+  wp_set_script_translations( 'lab-fe', 'lab', dirname(__FILE__).'/lang' );
+
   //wp_enqueue_script('lab-shortcode-labo1dot5',plugins_url('js/lab_shortcode_labo1dot5.js',__FILE__), array('jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog', 'lab-global', 'lab-bootstrap'), version_id(), false);
   //wp_enqueue_script('lab-shortcode-labo1dot5admin',plugins_url('js/lab_shortcode_labo1dot5admin.js',__FILE__), array('jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog', 'lab-global', 'lab-bootstrap'), version_id(), false);
   //wp_enqueue_script('lab-shortcode-labo1dot5resp',plugins_url('js/lab_shortcode_labo1dot5resp.js',__FILE__), array('jquery', 'jquery-ui-core','jquery-ui-widget','jquery-ui-position','jquery-ui-sortable','jquery-ui-datepicker','jquery-ui-autocomplete','jquery-ui-dialog', 'lab-global', 'lab-bootstrap'), version_id(), false);
@@ -353,34 +475,6 @@ function lab_admin_tab_seminaire()
   <br><a href="#" class="page-title-action" id="lab-button-change-category">Modifier la categorie d'un evenement</a>
 <?php
 }
-
-
-function old_event1($param)
-{
-  extract(shortcode_atts(
-    array(
-      'event' => get_option('option_event')
-    ),
-    $param
-  ));
-  $eventCaterory = get_option('option_event');
-  //$sql = "SELECT p.* FROM `wp_terms` AS t JOIN `wp_term_relationships` AS tr ON tr.`term_taxonomy_id`=t.`term_id` JOIN `wp_posts` as p ON p.`ID`=tr.`object_id` WHERE t.name='".$event."' AND `p`.`post_date` < NOW() ORDER BY `p`.`post_date` DESC ";
-  $sql = "SELECT p.* FROM `wp_terms` AS t JOIN `wp_term_relationships` AS tr ON tr.`term_taxonomy_id`=t.`term_id` JOIN `wp_em_events` as p ON p.`post_id`=tr.`object_id` WHERE t.slug='" . $event . "' AND `p`.`event_end_date` < NOW() ORDER BY `p`.`event_end_date` DESC ";
-  global $wpdb;
-  // SELECT * FROM `wp_terms` AS t JOIN `wp_term_relationships` AS tr ON tr.`term_taxonomy_id`=t.`term_id` WHERE t.name='HYPERBO' 
-  $results = $wpdb->get_results($sql);
-  $listEventStr = "<table>";
-  $url = esc_url(home_url('/'));
-  foreach ($results as $r) {
-    $listEventStr .= "<tr>";
-    $listEventStr .= "<td>" . esc_html($r->event_start_date) . "</td><td><a href=\"" . $url . "event/" . $r->event_slug . "\">" . $r->event_name . "</a></td>";
-    $listEventStr .= "</tr>";
-  }
-  $listEventStr .= "</table>";
-  //return "category de l'evenement : ".$event."<br>".$sql."<br>".$listEventStr;
-  return $listEventStr;
-}
-
 
 /***********************************************************************************************************************
  * PLUGIN WIDGET
