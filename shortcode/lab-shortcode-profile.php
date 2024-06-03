@@ -8,9 +8,8 @@
 function lab_profile($id=0) {
 
 	apply_filters( 'document_title_parts', array("oui") );
-	var_dump($id);
 	if ($id == '' || $id==0 || count($id) == 0) {
-		
+
 		//print "<h1>LA 1</h1>";
 		global $wp;
 		$url = $wp->request;
