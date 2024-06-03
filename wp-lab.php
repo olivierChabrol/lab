@@ -53,13 +53,10 @@ require_once(LAB_DIR_PATH."admin/view/lab-admin-tab-settings.php");
 require_once(LAB_DIR_PATH."admin/view/lab-admin-tab-ldap.php");
 require_once(LAB_DIR_PATH."lab-admin-ldap.php");
 require_once(LAB_DIR_PATH."view/lab-view-user.php");
-<<<<<<< HEAD
 require_once(LAB_DIR_PATH."core/Lab_Event.php");
-=======
 require_once(LAB_DIR_PATH."view/lab-view-request.php");
 require_once(LAB_DIR_PATH."core/lab-admin-core-request.php");
 require_once(LAB_DIR_PATH."core/lab-admin-internship.php");
->>>>>>> origin/testcontract
 require_once("lab-html-helper.php");
 require_once("lab-utils.php");
 require_once("lab-labo1dot5.php");
