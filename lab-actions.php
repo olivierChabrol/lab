@@ -10,7 +10,10 @@
  * Ajoute le menu à l'initialisation du menu admin
  */
 
+
 add_action( 'wp_enqueue_scripts'  , 'wp_lab_fe_enqueues' );
+add_action('init','lab_event_add');
+
 
 if (is_admin()) {
     add_action( 'wp_ajax_lab_user_info', 'lab_admin_ajax_user_info');
@@ -264,7 +267,6 @@ if (is_admin()) {
 }
 // no admin
 else{
-
     add_action( 'wp_ajax_nopriv_lab_presence_save_ext', 'lab_admin_presence_save_ext_ajax');
     add_action( 'wp_ajax_nopriv_lab_save_transportation', 'lab_labo1dot5_save');
     add_action( 'wp_ajax_nopriv_lab_save_user_picture', 'lab_ajax_save_user_picture');

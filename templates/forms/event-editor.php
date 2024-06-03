@@ -21,6 +21,7 @@ $required = apply_filters('em_required_html','<i>*</i>');
 echo $EM_Notices;
 //Success notice
 if( !empty($_REQUEST['success']) ){
+    $eventAdded= new EM_Event();
 	if(!get_option('dbem_events_form_reshow')) return false;
 }
 ?>	
@@ -51,7 +52,10 @@ if( !empty($_REQUEST['success']) ){
 			<?php lab_locate_template('forms/event/group.php',true); ?>
 		</div>
                 <div class="event-extra-details">
-                  <?php if(get_option('dbem_categories_enabled')) { lab_locate_template('forms/event/categories-public.php',true); }  ?>
+                    <div class="input">
+                        <?php if(get_option('dbem_categories_enabled')) { lab_locate_template('forms/event/categories-public.php',true); }?>
+                        <?php if(get_option('dbem_tags_enabled')) { lab_locate_template('forms/event/tags-public.php',true); }?>
+                    </div>
                 </div>
 					
 		<h3 class="event-form-when"><?php esc_html_e( 'When', 'events-manager'); ?></h3>
@@ -108,7 +112,7 @@ if( !empty($_REQUEST['success']) ){
 	</p>
 	<input type="hidden" name="event_id" value="<?php echo $EM_Event->event_id; ?>" />
 	<input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce('wpnonce_event_save'); ?>" />
-	<input type="hidden" name="action" value="event_save" />
+	<input type="hidden" name="action" value="lab_event_save" />
 	<?php if( !empty($_REQUEST['redirect_to']) ): ?>
 	<input type="hidden" name="redirect_to" value="<?php echo esc_attr($_REQUEST['redirect_to']); ?>" />
 	<?php endif; ?>
