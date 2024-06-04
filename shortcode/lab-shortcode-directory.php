@@ -316,7 +316,8 @@ function lab_directory_new_display($directoryStr, $results, $groupAsSCOption, $f
         $labDirectoryContent .= "<div class='lab_directory_table_row_name'>".esc_html(strtoupper($r->last_name) . " " . $r->first_name)."</div>";
         $labDirectoryContent .= "<div class='lab_directory_table_row_function'>" . $r->function . "</div>";
         $labDirectoryContent .= "<div class='lab_directory_table_row_phone'>" . correctNumber(esc_html($r->phone)) . "</div>";
-        $labDirectoryContent .= "<div class='lab_directory_table_row_email'>" . esc_html(strrev($r->mail))."</div>";
+        //$labDirectoryContent .= "<div class='lab_directory_table_row_email'>" . esc_html(strrev($r->mail))."</div>";
+        $labDirectoryContent .= "<div class='lab_directory_table_row_email'>" . esc_html($r->mail)."</div>";
         if (!$groupAsSCOption) {
             $labDirectoryContent .= "<div class='lab_directory_table_row_group'>" . formatGroupsName($r->id) . "</div>";
         }
