@@ -242,6 +242,7 @@ function lab_directory($param) {
     $items = array();
     $directoryStr .= "<div class='lab_directory_filters'>";
     $directoryStr .= "<div class='lab_directory_filters_alphabet'>";
+    $filterSearchContent = "";
     if (!$displayAllgroup) 
     {
         $alphachar = array_merge(range('A', 'Z'));
@@ -259,9 +260,8 @@ function lab_directory($param) {
         $forwardUrl = directoryUrl($url[0], '%', $group, $thematic);
         $directoryStr .= '<a href="' .$forwardUrl. '" '.$letterClass.'><b>'.__('All', 'lab').'</b></a>&nbsp;&nbsp;'; 
         $directoryStr .= "</div> <!-- alpha-links -->"; // alpha-links
-        $directoryStr .= "</div> <!-- fin lab_directory_filters_alphabet -->"; // fin lab_directory_filters_alphabet
         
-	    $filterSearchContent = "<div class='lab_directory_filters_search'>";
+	    $filterSearchContent .= "<div class='lab_directory_filters_search'>";
         if (!$displayOnlyLeftUser) {
             $filterSearchContent .= "<br><a href=\"/linstitut/annuaire/personnels-partis/\">".__('People who have left', 'lab')."</a>";
         }
@@ -282,14 +282,16 @@ function lab_directory($param) {
             $filterSearchContent .= lab_html_select_str("lab-directory-group-id", "lab-directory-group-id", "", "lab_admin_group_select_group", "acronym, group_name", array("value"=>0,"label"=>"None"), $group, array("id"=>"acronym", "value"=>"value"));
         }
         $filterSearchContent .= "</div>";
-	$filterSearchContent .= "<div class='lab_directory_thematic_filters_search_label'>Filtrer par thématique :</div>";
-	$filterSearchContent .= "<div class='lab_directory_thematic_filters_search'>";
-	$filterSearchContent .= lab_html_select_str("lab-directory-thematic", "lab-directory-thematic", "", "lab_admin_thematic_load_all", null, array("value"=>0,"label"=>"--- Select thematic ---"),$thematic, null, null, 60);
-	$filterSearchContent .= "</div>"; // end lab_directory_thematic_filters_search
+        $filterSearchContent .= "<div class='lab_directory_thematic_filters_search_label'>Filtrer par thématique :</div>";
+        $filterSearchContent .= "<div class='lab_directory_thematic_filters_search'>";
+        $filterSearchContent .= lab_html_select_str("lab-directory-thematic", "lab-directory-thematic", "", "lab_admin_thematic_load_all", null, array("value"=>0,"label"=>"--- Select thematic ---"),$thematic, null, null, 60);
+        $filterSearchContent .= "</div>"; // end lab_directory_thematic_filters_search
         $filterSearchContent .= "</div><br>"; // search field
         $filterSearchContent .= "</div>"; // fin lab_directory_filters_search
     }
-    $filterSearchContent .= "</div>"; // fin lab_directory_filters
+    $directoryStr .= "</div> <!-- fin lab_directory_filters_alphabet -->"; // fin lab_directory_filters_alphabet
+    $directoryStr .= "</div> <!-- fin lab_directory_filters -->"; // fin lab_directory_filters
+
 
     $directoryStr .= 
         "<style>
@@ -383,7 +385,6 @@ function lab_directory_new_display($directoryStr, $results, $groupAsSCOption, $f
 
     
     $directoryStr .= "</div>"; // fin lab_directory
-    //var_dump($acronymList);
     return $directoryStr;
 }
 
