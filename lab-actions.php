@@ -36,6 +36,7 @@ if (is_admin()) {
 
     add_action( 'plugins_loaded', 'myplugin_load_textdomain' );
     add_action( 'admin_menu'          , 'wp_lab_menu' );
+    add_action('wp_ajax_lab_replace_event_tags', 'lab_admin_replace_event_tags');
     add_action( 'wp_ajax_search_event', 'lab_admin_search_event' );
     add_action( 'wp_ajax_search_user'      , 'lab_admin_search_user' );
     add_action( 'wp_ajax_search_username', 'lab_admin_search_username' );

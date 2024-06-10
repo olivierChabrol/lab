@@ -132,6 +132,10 @@ msgstr "Date de la demande"
 msgid "User"
 msgstr "Utilisateur"
 
+#: admin/view/lab-admin-tabs.php:24
+msgid "Events"
+msgstr "Evénements"
+
 #: admin/view/lab-admin-mission.php:151 core/lab-admin-core-mission.php:318
 msgid "Mission Type"
 msgstr "Type de mission"
@@ -170,6 +174,18 @@ msgstr "Annuler"
 #: shortcode/lab-shortcode-internship.php:36 shortcode/lab-shortcode-invitation.php:461
 msgid "Confirm"
 msgstr "Confirmer"
+
+#: admin/view/lab-admin-tab-events.php:6
+msgid "Replace one event tag with another"
+msgstr "Remplacer une étiquette d'évènement par une autre"
+
+#: admin/view/lab-admin-tab-events.php:8 admin/view/lab-admin-tab-events.php:46
+msgid "Replace"
+msgstr "Remplacer"
+
+#: admin/view/lab-admin-tab-events.php:38
+msgid "by"
+msgstr "par"
 
 #: admin/view/lab-admin-tab-groups.php:10 admin/view/lab-admin-tab-groups.php:71
 msgid "Group name"

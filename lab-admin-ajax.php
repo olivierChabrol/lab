@@ -721,6 +721,19 @@ function lab_admin_update_user_metadata_db()
   wp_send_json_success($items);
 }
 
+function lab_admin_replace_event_tags()
+{
+    global $wpdb;
+    $tagToReplaceId = $_POST["tagIdToReplace"];
+    $tagReplacementId = $_POST["tagIdReplacement"];
+    $query = "UPDATE `".$wpdb->prefix."term_relationships` SET `term_taxonomy_id` = %d WHERE `term_taxonomy_id` = %d";
+    $sql = $wpdb->prepare($query, array($tagReplacementId,$tagToReplaceId));
+    if ($wpdb->query($sql) !== false)
+        wp_send_json_success("Tag n°".$tagToReplaceId." replaced by tag n°".$tagReplacementId);
+    else
+        wp_send_json_error("Error while replacing tag n°".$tagToReplaceId." by tag n°".$tagReplacementId);
+}
+
 function lab_admin_update_user_metadata()
 {
   $userId           = $_POST["userId"];

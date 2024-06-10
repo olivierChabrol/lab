@@ -21,6 +21,7 @@ function wp_lab_option()
     <hr class="wp-header-end">
     <h2 class="nav-tab-wrapper">
       <a id="lab_default_tab_pointer" style="position: relative" class="nav-tab <?php echo $active_tab == 'default' ? 'nav-tab-active' : ''; ?>" href="<?php echo add_query_arg(array('tab' => 'default'), $_SERVER['REQUEST_URI']); ?>"><?php esc_html_e('Seminar','lab'); ?></a>
+      <a id="laib_users_settings_tab_pointer" style="position: relative" class="nav-tab <?php echo $active_tab == 'users' ? 'events' : ''; ?>" href="<?php echo add_query_arg(array('tab' => 'events'), $_SERVER['REQUEST_URI']); ?>"><?php esc_html_e('Events','lab'); ?></a>
       <a id="laib_users_settings_tab_pointer" style="position: relative" class="nav-tab <?php echo $active_tab == 'user_settings' ? 'nav-tab-active' : ''; ?>" href="<?php echo add_query_arg(array('tab' => 'user_settings'), $_SERVER['REQUEST_URI']); ?>"><?php esc_html_e('User','lab'); ?></a>
       <a id="laib_users_settings_tab_pointer" style="position: relative" class="nav-tab <?php echo $active_tab == 'user_genetal_settings' ? 'nav-tab-active' : ''; ?>" href="<?php echo add_query_arg(array('tab' => 'user_general_settings'), $_SERVER['REQUEST_URI']); ?>"><?php esc_html_e('Global user settings','lab'); ?></a>
       <a id="laib_users_settings_tab_pointer" style="position: relative" class="nav-tab <?php echo $active_tab == 'groups' ? 'nav-tab-active' : ''; ?>" href="<?php echo add_query_arg(array('tab' => 'groups'), $_SERVER['REQUEST_URI']); ?>"><?php esc_html_e('Groups','lab'); ?></a>
@@ -33,7 +34,9 @@ function wp_lab_option()
         <td style="width:65%;vertical-align:top;" id="configurationForm">
           <?php
           if ($active_tab == 'user_settings') {
-            lab_admin_tab_user();
+              lab_admin_tab_user();
+          } else if ($active_tab == 'events') {
+            lab_admin_tab_events();
           } else if ($active_tab == 'user_general_settings') {
             lab_admin_tab_general_user();
           } else if ($active_tab == 'groups') {

@@ -46,6 +46,7 @@ require_once(LAB_DIR_PATH."shortcode/lab-shortcode-request.php");
 require_once(LAB_DIR_PATH."shortcode/lab-shortcode-internship.php");
 require_once(LAB_DIR_PATH."admin/view/lab-admin-tabs.php");
 require_once(LAB_DIR_PATH."admin/view/lab-admin-mission.php");
+require_once(LAB_DIR_PATH."admin/view/lab-admin-tab-events.php");
 require_once(LAB_DIR_PATH."admin/view/lab-admin-tab-groups.php");
 require_once(LAB_DIR_PATH."admin/view/lab-admin-tab-params.php");
 require_once(LAB_DIR_PATH."admin/view/lab-admin-tab-users.php");

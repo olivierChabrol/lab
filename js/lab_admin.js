@@ -219,6 +219,15 @@ jQuery(function($){
     deleteMetaKeys(key);
   });
 
+  $("#lab_admin_replace_event_tags").click(function() {
+    data = {
+      'action':"lab_replace_event_tags",
+      'tagIdToReplace':$("#event_tag_to_replace").val(),
+      'tagIdReplacement':$("#event_tag_replacement").val()
+    };
+    callAjax(data, __("Event tags replaced",'lab'), null, __("Failed to replace event tags",'lab'), null);
+  });
+
   $("#lab_admin_correct_slug_name").click(function() {
     
     data = {
