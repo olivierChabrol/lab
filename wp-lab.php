@@ -121,7 +121,7 @@ add_action('admin_enqueue_scripts', 'admin_enqueue');
 
 add_shortcode('lab-users-thematic', 'lab_shortcode_thematic_display');
 add_shortcode('lab-present', 'lab_present_select');
-add_shortcode('lab-php-student', 'lab_display_phd_student');
+add_shortcode('lab-phd-student', 'lab_display_phd_student');
 add_shortcode('lab-present-choice', 'lab_present_choice');
 add_shortcode('lab-directory', 'lab_directory');
 add_shortcode('lab-profile', 'lab_profile' );
