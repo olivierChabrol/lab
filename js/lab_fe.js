@@ -15,6 +15,10 @@ jQuery(function($){
     labToolsLoad();
   }
 
+  if ($("#lab_php_student_table").length) {
+    loadPhpStudent();
+  };
+
   $("#lab_internship_year").on('change', function() {
     loadInternship();
   });
@@ -189,6 +193,91 @@ jQuery(function($){
       });
     });
     toggleTab($("#lab_request_ingo_tab_legal"), getRequestInfoTabs);
+  }
+
+  function loadPhpStudent(page = 1) {
+    let data = {
+      'action': 'lab_get_phd_student',
+      'filters': null,
+      'order': null,
+      'page': page,
+    };
+    callAjax(data, null, displayPhdStudent, null, null);
+  }
+
+  function displayPhdStudent(data) {
+    clearPhdStudent();
+    console.log(data);
+    data["data"].forEach(function(elm) {
+      
+      let user_id = elm["user_id"];
+      let host_id = elm["host_id"];
+      let tr = $("<tr/>");
+      let td = $("<td/>");
+      let user = data["users"][user_id];
+      let host = data["users"][host_id];
+      td.html(user['first_name'] + ' ' + user['last_name'].toUpperCase());
+      tr.append(td);
+      //console.log(elm);
+
+      td = $("<td/>");
+      td.html(user['lab_user_thesis_title']);
+      tr.append(td);
+
+      td = $("<td/>");
+      if(host) {
+        td.html(host['first_name'] + ' ' + host['last_name'].toUpperCase());
+      }
+      else {
+        td.html("");
+      }
+      tr.append(td);
+
+
+      td = $("<td/>");
+      td.html(user['lab_user_phd_school']);
+      tr.append(td);
+      td = $("<td/>");
+      td.html(user['lab_user_country']);
+      tr.append(td);
+      td = $("<td/>");
+      td.html(" ");
+      tr.append(td);
+      td = $("<td/>");
+      td.html(elm['begin']);
+      tr.append(td);
+      td = $("<td/>");
+      td.html(elm['end']);
+      tr.append(td);
+      td = $("<td/>");
+      td.html(" ");
+      tr.append(td);
+      td = $("<td/>");
+      td.html(" ");
+      tr.append(td);
+
+      $("#lab_php_student_table_body").append(tr);
+    });
+    for (i = 0 ; i < data["total"]; i++) {
+      let a = $("<a/>");
+      a.attr("page", i+1);
+      a.attr("href", "#");
+      a.click(function () {
+        loadPhpStudent($(this).attr("page"));
+      });
+      let lt = "" + (i+1);
+      if (data["page"] == i+1) {
+        lt = "<b>" + lt + "</b>";
+      }
+      a.html(lt);
+      $("#lab_php_student_table_pagination").append(a);
+    }
+    
+  }
+
+  function clearPhdStudent() {
+    $("#lab_php_student_table_body").empty();
+    $("#lab_php_student_table_pagination").empty();
   }
 
   function labFindModalPrentDiv(obj) {

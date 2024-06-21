@@ -81,6 +81,34 @@ function lab_admin_loadUserHistory($user_id) {
     }
 }
 
+function lab_admin_get_user_info($user_id, $fields) {
+    global $wpdb;
+    if ($fields == null) {
+        $sql = "SELECT meta_key, meta_value FROM `wp_usermeta` WHERE user_id=".$user_id." AND (`meta_key` LIKE 'lab_%' OR meta_key = 'first_name' OR meta_key = 'last_name' OR meta_key = 'lab_user_slug' );";
+    }
+    else 
+    {
+        $sql = "SELECT meta_key, meta_value FROM `wp_usermeta` WHERE user_id=".$user_id." AND (meta_key = 'first_name' OR meta_key = 'last_name' OR meta_key = 'lab_user_slug'";
+        foreach($fields as $field) {
+            $sql .= " OR `meta_key` = 'lab_".$field."'";
+        }
+        $sql .= ");";
+    }
+
+    $array_user = array();
+    $users = $wpdb->get_results($sql);
+    foreach($users as $user) {
+        if ($user->meta_key == 'lab_user_phd_school' && is_numeric($user->meta_value)) {
+            $value = AdminParams::get_param($user->meta_value);
+        }
+        else {
+            $value = $user->meta_value;
+        }
+        $array_user[$user->meta_key] = $value;
+    }
+    return $array_user;
+}
+
 function lab_admin_trombinoscope() {
     global $wpdb;
     $sql = "SELECT wp1.user_id, wp1.meta_value as imgId, wp2.meta_value as lastName, wp3.meta_value as firstName FROM `".$wpdb->prefix."_usermeta` AS wp1 JOIN `".$wpdb->prefix."_usermeta` AS wp2 ON wp2.user_id=wp1.user_id JOIN `".$wpdb->prefix."_usermeta` AS wp3 ON wp3.user_id=wp1.user_id WHERE wp1.`meta_key` = 'lab_user_picture_display' AND wp2.meta_key='last_name' AND wp3.meta_key='first_name'";

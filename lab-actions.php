@@ -264,6 +264,8 @@ if (is_admin()) {
     //user picture
     add_action( 'wp_ajax_lab_save_user_picture', 'lab_ajax_save_user_picture');
 
+    // phd student
+    add_action( 'wp_ajax_lab_get_phd_student', 'lab_ajax_get_phd_students');
 
 }
 // no admin

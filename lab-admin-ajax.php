@@ -382,6 +382,23 @@ function lab_user_delThematic()
   return;
 }
 
+function lab_ajax_get_phd_students()
+{
+  $filters = null;
+  if (isset($_POST['filters'])) {
+    $filters = $_POST['filters'];
+  }
+  $order = null;
+  if (isset($_POST['order'])) {
+    $order = $_POST['order'];
+  }
+  $page = 1;
+  if (isset($_POST['page'])) {
+    $page = $_POST['page'];
+  }
+  wp_send_json_success( lab_admin_get_phd_student($filters, $order, $page));
+}
+
 function lab_ajax_save_user_picture()
 {
   $imgId = "";
