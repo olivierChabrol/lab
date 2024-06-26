@@ -247,13 +247,17 @@ jQuery(function($){
       td.html(elm['begin']);
       tr.append(td);
       td = $("<td/>");
-      td.html(elm['end']);
+      td.html(user['lab_user_thesis_date']);
       tr.append(td);
       td = $("<td/>");
       td.html(" ");
       tr.append(td);
       td = $("<td/>");
-      td.html(" ");
+      group = "";
+      user["group"].forEach(function(group_elm) {
+        group += group_elm["acronym"];
+      });
+      td.html(group);
       tr.append(td);
 
       $("#lab_php_student_table_body").append(tr);

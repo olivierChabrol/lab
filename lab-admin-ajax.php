@@ -775,12 +775,13 @@ function lab_admin_update_user_metadata()
   $user_sex         = $_POST["user_sex"];
   $user_hdr_date    = $_POST["user_hdr_date"];
   $user_thesis_date = $_POST["user_thesis_date"];
-  $user_co_supervision = $_POST["lab_user_co_supervision"];
-  lab_usermeta_update($userId, $dateLeft, $userFunction, $userLocation, $officeNumber, $officeFloor, $userEmployer, $phone, $userFunding, $firstname, $lastname, $userSectionCn, $userSectionCnu, $email, $url, $userThesisTitle, $userHdrTitle, $userPhdSchool, $user_country, $user_sex, $user_thesis_date, $user_hdr_date, $user_co_supervision);
+  $user_phd_support = $_POST["lab_user_phd_support"];
+  $user_co_supervision = isset($_POST["lab_user_co_supervision"])?$_POST["lab_user_co_supervision"]:null;
+  lab_usermeta_update($userId, $dateLeft, $userFunction, $userLocation, $officeNumber, $officeFloor, $userEmployer, $phone, $userFunding, $firstname, $lastname, $userSectionCn, $userSectionCnu, $email, $url, $userThesisTitle, $userHdrTitle, $userPhdSchool, $user_country, $user_sex, $user_thesis_date, $user_hdr_date, $user_co_supervision, $user_phd_support);
   wp_send_json_success($user_thesis_date);
 }
 
-function lab_usermeta_update($userId, $left, $userFunction, $userLocation, $officeNumber, $officeFloor, $userEmployer, $user_phone, $userFunding, $firstname, $lastname, $userSectionCn, $userSectionCnu, $email = null, $url = null, $userThesisTitle = null, $userHdrTitle = null, $userPhdSchool = null, $userCountry = null, $userSex = null, $user_thesis_date = null, $user_hdr_date = null, $user_co_supervision = null){
+function lab_usermeta_update($userId, $left, $userFunction, $userLocation, $officeNumber, $officeFloor, $userEmployer, $user_phone, $userFunding, $firstname, $lastname, $userSectionCn, $userSectionCnu, $email = null, $url = null, $userThesisTitle = null, $userHdrTitle = null, $userPhdSchool = null, $userCountry = null, $userSex = null, $user_thesis_date = null, $user_hdr_date = null, $user_co_supervision = null, $user_phd_support = null){
   global $wpdb;
   $sql = "";
   if ($left != null || !empty($left)) {
@@ -805,6 +806,7 @@ function lab_usermeta_update($userId, $left, $userFunction, $userLocation, $offi
   $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$userSectionCn)   , array("user_id"=>$userId, "meta_key"=>"lab_user_section_cn"));
   $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$userSectionCnu)  , array("user_id"=>$userId, "meta_key"=>"lab_user_section_cnu"));
   $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$userThesisTitle) , array("user_id"=>$userId, "meta_key"=>"lab_user_thesis_title"));
+  $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$user_phd_support)  , array("user_id"=>$userId, "meta_key"=>"lab_user_phd_support"));
   $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$userHdrTitle)    , array("user_id"=>$userId, "meta_key"=>"lab_user_hdr_title"));
   $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$userPhdSchool)   , array("user_id"=>$userId, "meta_key"=>"lab_user_phd_school"));
   $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$userCountry)     , array("user_id"=>$userId, "meta_key"=>"lab_user_country"));
@@ -812,6 +814,7 @@ function lab_usermeta_update($userId, $left, $userFunction, $userLocation, $offi
   $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$user_hdr_date)   , array("user_id"=>$userId, "meta_key"=>"lab_user_hdr_date"));
   $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$user_thesis_date), array("user_id"=>$userId, "meta_key"=>"lab_user_thesis_date"));
   $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$user_co_supervision), array("user_id"=>$userId, "meta_key"=>"lab_user_co_supervision"));
+  // $wpdb->update($wpdb->prefix."usermeta", array("meta_value"=>$user_phd_support)   , array("user_id"=>$userId, "meta_key"=>"lab_user_phd_support"));
 
   if ($email != null)
   {
@@ -2625,9 +2628,12 @@ function lab_ldap_user_details() {
   wp_send_json_success($result);
 }
 
+/**
+ * If no role, add a default
+ */
 function setDefaultRole($userId) {
   $user = new WP_User($userId);
-  if(count($user->role() == 0)) {
+  if(count($user->get_role_caps()) == 0) {
     $user->add_role('subscriber');
   }
 

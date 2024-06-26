@@ -132,6 +132,14 @@ function lab_admin_tab_user() {
       </tr>
       <tr>
         <td>
+          <label for="lab_user_phd_support"><?php esc_html_e('PHD support','lab') ?></label>
+        </td>
+        <td>
+        <?php lab_html_select("lab_user_phd_support", "lab_user_phd_support", "", "lab_admin_get_params_userPhdSupport", null, array("value"=>"","label"=>"None"), ""); ?>
+        </td>
+      </tr>
+      <tr>
+        <td>
           <label for="lab_user_hdr_title"><?php esc_html_e('HDR title','lab') ?></label>
         </td>
         <td>

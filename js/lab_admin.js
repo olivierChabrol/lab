@@ -239,8 +239,8 @@ jQuery(function($){
   });
 
   $("#lab_user_button_user_save").click(function() {
-    let fields = ["lab_user_slug", "lab_user_co_supervision"];
-    let data = [];
+    let fields = ["lab_user_slug", "lab_user_co_supervision", "lab_user_phd_support"];
+    let data = {};
     for(const elm of fields)
     {
       if (elm == "lab_user_co_supervision")
@@ -249,31 +249,36 @@ jQuery(function($){
       }
       else {
         data[elm] = $("#"+elm).val();
+        console.log(elm + " -> " + $("#"+elm).val());
       }
     }
+    console.log('lab_user_button_user_save").click(');
+    console.log(data);
     saveUser($("#lab_user_left_date").val(), 
-                $("#lab_user_left").is(":checked"), 
-                $("#lab_user_location").val(), 
-                $("#lab_user_function").val(), 
-                $("#lab_user_office_number").val(), 
-                $("#lab_user_office_floor").val(), 
-                $("#lab_user_employer").val(), 
-                $("#lab_user_funding").val(), 
-                $("#lab_user_firstname").val(), 
-                $("#lab_user_lastname").val(), 
-                $("#lab_user_section_cn").val(), 
-                $("#lab_user_section_cnu").val(), 
-                $("#lab_user_phone").val(), 
-                $("#lab_user_email").val(), 
-                $("#lab_user_url").val(), 
-                $("#lab_user_thesis_title").val(), 
-                $("#lab_user_hdr_title").val(), 
-                $("#lab_user_phd_school").val(),
-                $("#lab_user_sex").val(), 
-                $("#lab_user_country").countrySelect("getSelectedCountryData")['iso2'],
-                $("#lab_user_hdr_date").val(), 
-                $("#lab_user_thesis_date").val(), data)
+             $("#lab_user_left").is(":checked"), 
+             $("#lab_user_location").val(), 
+             $("#lab_user_function").val(), 
+             $("#lab_user_office_number").val(), 
+             $("#lab_user_office_floor").val(), 
+             $("#lab_user_employer").val(), 
+             $("#lab_user_funding").val(), 
+             $("#lab_user_firstname").val(), 
+             $("#lab_user_lastname").val(), 
+             $("#lab_user_section_cn").val(), 
+             $("#lab_user_section_cnu").val(), 
+             $("#lab_user_phone").val(), 
+             $("#lab_user_email").val(), 
+             $("#lab_user_url").val(), 
+             $("#lab_user_thesis_title").val(), 
+             $("#lab_user_hdr_title").val(), 
+             $("#lab_user_phd_school").val(),
+             $("#lab_user_sex").val(), 
+             $("#lab_user_country").countrySelect("getSelectedCountryData")['iso2'],
+             $("#lab_user_hdr_date").val(),
+             $("#lab_user_thesis_date").val(),
+             data);
   });
+  //   $("#lab_user_thesis_date").val(),
 
   $("#lab_user_button_delete").click(function() {
     $("#lab_user_keep_data"). prop("checked", true);
@@ -1083,6 +1088,7 @@ function saveUserMetaData(userId, date, isChecked, location, userFunction) {
 }
 
 function saveUser(date, isChecked, location, userFunction, userOfficeNumber, userOfficeFloor, employer, funding, firstname, lastname, sectionCn, sectionCnu, phone, email, url, thesisTitle, hdrTitle, phdSchool, user_sex, userCountry, user_hdr_date, user_thesis_date, datas) {
+  
   var c = isChecked?date:null;
   var data = {
                'action' : 'update_user_metadata',
@@ -1109,6 +1115,27 @@ function saveUser(date, isChecked, location, userFunction, userOfficeNumber, use
                'user_hdr_date' : user_hdr_date,
                'user_thesis_date' : user_thesis_date,
   };
+  console.log("[saveUser] dateLeft : " + c);
+  console.log("[saveUser] location : " + location);
+  console.log("[saveUser] userFunction : " + userFunction);
+  console.log("[saveUser] funding : " + funding);
+  console.log("[saveUser] employer : " + employer);
+  console.log("[saveUser] userOfficeNumber : " + userOfficeNumber);
+  console.log("[saveUser] userOfficeFloor : " + userOfficeFloor);
+  console.log("[saveUser] firstname : " + firstname);
+  console.log("[saveUser] lastname : " + lastname);
+  console.log("[saveUser] sectionCn : " + sectionCn);
+  console.log("[saveUser] sectionCnu : " + sectionCnu);
+  console.log("[saveUser] phone : " + phone);
+  console.log("[saveUser] email : " + email);
+  console.log("[saveUser] url : " + url);
+  console.log("[saveUser] thesisTitle : " + thesisTitle);
+  console.log("[saveUser] hdrTitle : " + hdrTitle);
+  console.log("[saveUser] phdSchool : " + phdSchool);
+  console.log("[saveUser] userCountry : " + userCountry);
+  console.log("[saveUser] user_sex : " + user_sex);
+  console.log("[saveUser] user_hdr_date : " + user_hdr_date);
+  console.log("[saveUser] user_thesis_date : " + user_thesis_date)
   console.log(datas);
   for ( let key in datas)
   {
@@ -1141,6 +1168,7 @@ function resetUserTabFields()
   jQuery("#lab_user_email").val("");
   jQuery("#lab_user_url").val("");
   jQuery("#lab_user_thesis_title").val("");
+  jQuery("#lab_user_phd_support").val("");
   jQuery("#lab_user_hdr_title").val("");
   jQuery("#lab_user_phd_school").val("");
   jQuery("#lab_user_sex").val("");
@@ -1195,6 +1223,7 @@ function loadUserMetaData(response) {
     setField("#lab_user_slug", response.data["user_slug"]);
 
     setField("#lab_user_thesis_title", response.data["user_thesis_title"]);
+    setField("#lab_user_phd_support", response.data["user_phd_support"]);
     setField("#lab_user_hdr_title" , response.data["user_hdr_title"]);
     setField("#lab_user_hdr_date"  , response.data["user_hdr_date"]);
     setField("#lab_user_phd_school", response.data["user_phd_school"]);

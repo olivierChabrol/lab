@@ -106,7 +106,14 @@ function lab_admin_get_user_info($user_id, $fields) {
         }
         $array_user[$user->meta_key] = $value;
     }
+    $array_user["group"] = lab_admin_user_get_groups($user_id);
     return $array_user;
+}
+
+function lab_admin_user_get_groups($user_id) {
+    global $wpdb;
+    $sql = "SELECT lg.id,lg.acronym FROM `wp_lab_users_groups` AS lug JOIN wp_lab_groups AS lg on lg.id=lug.group_id WHERE user_id=".$user_id;
+    return $wpdb->get_results($sql);
 }
 
 function lab_admin_trombinoscope() {
@@ -2106,7 +2113,7 @@ function correct_missing_usermeta_data($userId)
 
 function check_missing_usermeta_data($userId)
 {
-    $labFields = array("hal_id", "hal_name", "profile_bg_color", "user_employer", "user_sex", "user_function", "user_funding", "user_left", "user_location", "user_office_floor", "user_office_number", "user_phone", "user_section_cn", "user_section_cnu", "user_slug", "user_thesis_title", "user_thesis_date", "user_hdr_title", "user_hdr_date", "user_phd_school", "user_country");
+    $labFields = array("hal_id", "hal_name", "profile_bg_color", "user_employer", "user_sex", "user_function", "user_funding", "user_left", "user_location", "user_office_floor", "user_office_number", "user_phone", "user_section_cn", "user_section_cnu", "user_slug", "user_thesis_title", "user_phd_support", "user_thesis_date", "user_hdr_title", "user_hdr_date", "user_phd_school", "user_country");
     $missings = array();
     foreach($labFields as $field)
     {

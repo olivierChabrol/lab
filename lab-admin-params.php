@@ -25,7 +25,7 @@ class AdminParams {
     public const PARAMS_BUDGET_INFO_TYPE = 23;
     public const PARAMS_BUDGET_FUNDS = 24;
     public const PARAMS_CONTRACT_TYPE = 25;
-    public const PARAMS_MEAN_OF_TRANSPORT = 26;
+    public const PARAMS_PHD_SUPPORT = 26;
     public const PARAMS_MISSION_STATUS = 27;
     public const PARAMS_MISSION_TYPE_DESC = 28;
     public const PARAMS_REQUEST_TYPE = 29;
@@ -109,6 +109,10 @@ class AdminParams {
     public static function lab_admin_get_params_userSectionCnu()
     {
         return AdminParams::get_params_fromId(AdminParams::PARAMS_USER_SECTION_CNU);
+    }
+    public static function lab_admin_get_params_userPhdSupport()
+    {
+        return AdminParams::get_params_fromId(AdminParams::PARAMS_PHD_SUPPORT);
     }
     public static function lab_admin_get_params_userPhdSchool()
     {
@@ -235,6 +239,10 @@ function lab_admin_get_params_userSectionCn() {
 
 function lab_admin_get_params_userSectionCnu() {
     return AdminParams::lab_admin_get_params_userSectionCnu();
+}
+
+function lab_admin_get_params_userPhdSupport() {
+    return AdminParams::lab_admin_get_params_userPhdSupport();
 }
 
 function lab_admin_param_is_ldap_enable() {

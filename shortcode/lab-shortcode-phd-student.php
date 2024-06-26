@@ -29,7 +29,8 @@ function lab_admin_get_phd_student($filters, $order, $page) {
     $retour["total"] = ceil($total / $items_per_page);
     $retour["page"] = $page;
     $retour["data"] = array();
-    $user_fields = ["user_section_cn","user_section_cnu","user_function","user_thesis_title", "user_phd_school", "user_country"];
+    $user_fields = ["user_section_cn","user_section_cnu","user_function","user_thesis_title", "user_phd_school", "user_country", "user_thesis_date"];
+    //$host_fields = ["user_section_cn","user_section_cnu","user_function","user_thesis_title", "user_phd_school", "user_country", "user_thesis_date"];
     $array_user = array();
     foreach ($doctos as $docto) {
         $retour["data"][] = $docto;
@@ -39,7 +40,7 @@ function lab_admin_get_phd_student($filters, $order, $page) {
             $array_user[$user_id] = lab_admin_get_user_info($user_id, $user_fields);
         }
         if(!isset($array_user[$host_id])) {
-            $array_user[$host_id] = lab_admin_get_user_info($host_id, $user_fields);
+            $array_user[$host_id] = lab_admin_get_user_info($host_id, null);
         }
     }
     $retour["users"] = $array_user;
