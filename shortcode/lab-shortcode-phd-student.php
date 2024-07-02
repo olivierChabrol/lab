@@ -36,7 +36,7 @@ function lab_admin_get_phd_student($filters, $order, $page) {
         $retour["phd_support"][$phdSupport->id] = $phdSupport;
     }
 
-    $user_fields = ["user_section_cn","user_section_cnu","user_function","user_thesis_title", "user_phd_school", "user_country", "user_thesis_date", "user_phd_support"];
+    $user_fields = ["user_section_cn","user_section_cnu","user_function","user_thesis_title", "user_phd_school", "user_country", "user_thesis_date", "user_phd_support", "become"];
     //$host_fields = ["user_section_cn","user_section_cnu","user_function","user_thesis_title", "user_phd_school", "user_country", "user_thesis_date"];
     $array_user = array();
     foreach ($doctos as $docto) {
