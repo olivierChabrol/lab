@@ -239,7 +239,7 @@ jQuery(function($){
   });
 
   $("#lab_user_button_user_save").click(function() {
-    let fields = ["lab_user_slug", "lab_user_co_supervision", "lab_user_phd_support"];
+    let fields = ["lab_user_slug", "lab_user_co_supervision", "lab_user_phd_support", "lab_user_phd_become"];
     let data = {};
     for(const elm of fields)
     {
@@ -1224,6 +1224,7 @@ function loadUserMetaData(response) {
 
     setField("#lab_user_thesis_title", response.data["user_thesis_title"]);
     setField("#lab_user_phd_support", response.data["user_phd_support"]);
+    setField("#lab_user_phd_become", response.data["become"]);
     setField("#lab_user_hdr_title" , response.data["user_hdr_title"]);
     setField("#lab_user_hdr_date"  , response.data["user_hdr_date"]);
     setField("#lab_user_phd_school", response.data["user_phd_school"]);

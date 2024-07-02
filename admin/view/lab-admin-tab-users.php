@@ -140,6 +140,14 @@ function lab_admin_tab_user() {
       </tr>
       <tr>
         <td>
+          <label for="lab_user_phd_become"><?php esc_html_e('Post PHD become','lab') ?></label>
+        </td>
+        <td>
+        <input type="text" id="lab_user_phd_become"/>
+        </td>
+      </tr>
+      <tr>
+        <td>
           <label for="lab_user_hdr_title"><?php esc_html_e('HDR title','lab') ?></label>
         </td>
         <td>
