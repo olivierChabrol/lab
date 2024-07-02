@@ -232,8 +232,6 @@ jQuery(function($){
         td.html("");
       }
       tr.append(td);
-
-
       td = $("<td/>");
       td.html(user['lab_user_phd_school']);
       tr.append(td);
@@ -242,6 +240,7 @@ jQuery(function($){
       tr.append(td);
       td = $("<td/>");
       td.html(" ");
+      td.html(data["phd_support"][user['lab_user_phd_support']]['slug']);
       tr.append(td);
       td = $("<td/>");
       td.html(elm['begin']);
