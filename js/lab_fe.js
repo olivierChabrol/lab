@@ -249,7 +249,7 @@ jQuery(function($){
       td.html(user['lab_user_thesis_date']);
       tr.append(td);
       td = $("<td/>");
-      td.html(" ");
+      td.html(user['lab_become']);
       tr.append(td);
       td = $("<td/>");
       group = "";
