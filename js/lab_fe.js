@@ -208,6 +208,22 @@ jQuery(function($){
   function displayPhdStudent(data) {
     clearPhdStudent();
     console.log(data);
+    
+    for (i = 0 ; i < data["total"]; i++) {
+      let a = $("<a/>");
+      a.attr("page", i+1);
+      a.attr("href", "#");
+      a.click(function () {
+        loadPhpStudent($(this).attr("page"));
+      });
+      let lt = "" + (i+1);
+      if (data["page"] == i+1) {
+        lt = "<b>" + lt + "</b>";
+      }
+      a.html(lt);
+      $("#lab_php_student_table_pagination").append(a);
+    }
+    
     data["data"].forEach(function(elm) {
       
       let user_id = elm["user_id"];
@@ -261,20 +277,6 @@ jQuery(function($){
 
       $("#lab_php_student_table_body").append(tr);
     });
-    for (i = 0 ; i < data["total"]; i++) {
-      let a = $("<a/>");
-      a.attr("page", i+1);
-      a.attr("href", "#");
-      a.click(function () {
-        loadPhpStudent($(this).attr("page"));
-      });
-      let lt = "" + (i+1);
-      if (data["page"] == i+1) {
-        lt = "<b>" + lt + "</b>";
-      }
-      a.html(lt);
-      $("#lab_php_student_table_pagination").append(a);
-    }
     
   }
 
