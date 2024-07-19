@@ -57,8 +57,10 @@ function lab_admin_get_phd_student($filters, $order, $page) {
 }
 
 function lab_display_phd_student($params) {
-
-    $html = "<div class=\"table-responsive\"><table  id=\"lab_php_student_table\" class=\"table table-striped  table-hover\"><thead id=\"lab_php_student_table_header\" class=\"thead-dark\"><tr><th>".esc_html__("Name", "lab")."</th>";
+    $html = "";
+    
+    //$html .= '<div class="loading-state"><span class="lab-loader"></span></div>';
+    $html .= "<div class=\"table-responsive\"><table  id=\"lab_php_student_table\" class=\"table table-striped  table-hover\"><thead id=\"lab_php_student_table_header\" class=\"thead-dark\"><tr><th>".esc_html__("Name", "lab")."</th>";
 
     $html .= "<th>".esc_html__("Intitulé", "lab")."</th>";
     $html .= "<th>".esc_html__("Direction", "lab")."</th>";

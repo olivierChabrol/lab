@@ -144,9 +144,9 @@ jQuery(function($){
       });
       },
     select: function( event, ui ) {
+      
       var label = ui.item.label;
       var value = ui.item.value;
-      event.preventDefault();
       $("#lab_user_search").val(label);
 
       $("#lab_user_id").html(value);
@@ -158,6 +158,7 @@ jQuery(function($){
       loaduserGroup();
       loadMissingMetaData(value);
       return false;
+      //*/
     }
   });
 

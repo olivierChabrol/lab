@@ -176,9 +176,22 @@ function hideLoadingGif()
   jQuery("#loadingAjaxGif").removeClass('show');
 }
 
+function displayLoader()
+{
+  //jQuery('body').append('<div class="lab-loader" ></div>');
+  jQuery('body').append('<div id="myModal" class="modal"><div class="modal-content"><div class="loading-state"><span class="lab-loader"></span></div></div></div>');
+  jQuery('#myModal').show();
+  console.log("[displayLoader]");
+
+}
+function removeLoader(){
+  jQuery('#myModal').hide();
+}
+
 function callAjax(data, successMessage, callBackSuccess = null, errorMessage, callBackError = null) {
   let candisplayLoadingGif = false;
   console.log("[callAjax]");
+/*
   if (jQuery("#loadingAjaxGif").length) {
     candisplayLoadingGif = true;
   }
@@ -186,13 +199,18 @@ function callAjax(data, successMessage, callBackSuccess = null, errorMessage, ca
   {
     displayLoadingGif();
   }
+    //*/
+  displayLoader();
   //console.log("[callAjax] url : " + LAB.ajaxurl);
   jQuery.post(LAB.ajaxurl, data, function(response) {
     if (response.success) {
+      removeLoader();
+      /*
       if (candisplayLoadingGif) 
       {
         hideLoadingGif();
       }
+      //*/
       if (successMessage != null) {
         toast_success(successMessage);
       }
@@ -203,10 +221,13 @@ function callAjax(data, successMessage, callBackSuccess = null, errorMessage, ca
       }
     }
     else {
+      removeLoader();
+      /*
       if (candisplayLoadingGif) 
       {
         hideLoadingGif();
       }
+      //*/
 
       if (errorMessage != null) {
         toast_error(errorMessage);
