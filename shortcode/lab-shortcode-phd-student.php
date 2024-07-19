@@ -72,7 +72,6 @@ function lab_display_phd_student($params) {
     $html .= "<th>".esc_html__("Devenir", "lab")."</th>";
     $html .= "<th>".esc_html__("Groupe", "lab")."</th>";
     $html .= "</thead><tbody id=\"lab_php_student_table_body\">";
-    $html .= "<span id=\"lab_php_student_table_pagination\"></span>";
 
     global $wpdb;
     $sql = "SELECT luh.user_id, luh.begin, luh.end, um1.meta_value as first_name, um2.meta_value as last_name, um3.meta_value AS user_slug, um4.meta_value as host_first_name, um5.meta_value as host_last_name, um6.meta_value AS phd_title, um7.meta_value AS cn, um8.meta_value AS cnu, um9.meta_value AS phd_school, um10.meta_value AS country
@@ -128,5 +127,6 @@ function lab_display_phd_student($params) {
         $html .= '</tr>';
     }
     $html .= "</tbody></table></div>";
+    $html .= "<span id=\"lab_php_student_table_pagination\"></span>";
     return $html;
 }
