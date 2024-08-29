@@ -37,7 +37,7 @@ function lab_user($args=null)
                 <label for="lab_user_function">'. esc_html__('User function','lab') .'</label>
                 </td>
                 <td>
-                '. lab_html_select_str("lab_user_function", "lab_user_function", "", lab_admin_get_params_userFunction, null, array("value"=>"","label"=>"None"), "") .'
+                '. lab_html_select_str("lab_user_function", "lab_user_function", "", 'lab_admin_get_params_userFunction', null, array("value"=>"","label"=>"None"), "") .'
                 </td>
             </tr>
             <tr>
@@ -45,7 +45,7 @@ function lab_user($args=null)
                 <label for="lab_user_employer">'. esc_html__('Employ','lab') .'</label>
                 </td>
                 <td>
-                '. lab_html_select_str("lab_user_employer", "lab_user_employer", "", lab_admin_get_params_userEmployer, null, array("value"=>"","label"=>"None"), "") .'
+                '. lab_html_select_str("lab_user_employer", "lab_user_employer", "", 'lab_admin_get_params_userEmployer', null, array("value"=>"","label"=>"None"), "") .'
                 </td>
             </tr>
             <tr>
@@ -53,7 +53,7 @@ function lab_user($args=null)
                 <label for="lab_user_funding">'. esc_html__('Funding','lab') .'</label>
                 </td>
                 <td>
-                '. lab_html_select_str("lab_user_funding", "lab_user_funding", "", lab_admin_get_params_userFunding, null, array("value"=>"","label"=>"None"), "") .'
+                '. lab_html_select_str("lab_user_funding", "lab_user_funding", "", 'lab_admin_get_params_userFunding', null, array("value"=>"","label"=>"None"), "") .'
                 </td>
             </tr>
             <tr>
@@ -61,7 +61,7 @@ function lab_user($args=null)
                 <label for="lab_user_location">'. esc_html__('User Location','lab') .'</label>
                 </td>
                 <td>
-                '. lab_html_select_str("lab_user_location", "lab_user_location", "", lab_admin_get_params_userLocation, null, array("value"=>"","label"=>"None"), "") .'
+                '. lab_html_select_str("lab_user_location", "lab_user_location", "", 'lab_admin_get_params_userLocation', null, array("value"=>"","label"=>"None"), "") .'
                 </td>
             </tr>
             <tr>
@@ -93,7 +93,7 @@ function lab_user($args=null)
                 <label for="lab_user_section_cn">'. esc_html__('CN Section','lab') .'</label>
                 </td>
                 <td>
-                '. lab_html_select_str("lab_user_section_cn", "lab_user_section_cn", "", lab_admin_get_params_userSectionCn, null, array("value"=>"","label"=>"None"), "") .'
+                '. lab_html_select_str("lab_user_section_cn", "lab_user_section_cn", "", 'lab_admin_get_params_userSectionCn', null, array("value"=>"","label"=>"None"), "") .'
                 </td>
             </tr>
             <tr>
@@ -101,7 +101,7 @@ function lab_user($args=null)
                 <label for="lab_user_section_cnu">'. esc_html__('CNU Section','lab') .'</label>
                 </td>
                 <td>
-                '. lab_html_select_str("lab_user_section_cnu", "lab_user_section_cnu", "", lab_admin_get_params_userSectionCnu, null, array("value"=>"","label"=>"None"), "") .'
+                '. lab_html_select_str("lab_user_section_cnu", "lab_user_section_cnu", "", 'lab_admin_get_params_userSectionCnu', null, array("value"=>"","label"=>"None"), "") .'
                 </td>
             </tr>
             <tr>
