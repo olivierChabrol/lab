@@ -273,8 +273,9 @@ class LAB_LDAP
     {
         $result = ldap_search($this->ldap_link, 'ou=accounts,' . $this->base, "uid=" . $uid);
         //ldap_sort($this->ldap_link,$result,'cn');
-        ldapSort($result, 'cn');
-        return $result;
+        $entries = ldap_get_entries($ldap, $result);
+        ldapSort($entries, 'cn');
+        return $entries;
     }
     public function searchBy($filter, $attr)
     {
