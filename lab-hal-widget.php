@@ -83,7 +83,7 @@ class lab_hal_widget extends WP_widget{
         <p>Actual group : <?php echo $instance['groupe']?></p>
         <p>
             <label for="<?php echo $this->get_field_id("groupe");?>"><?php echo __("Groupe",'lab') .' :'?></label>
-            <?php lab_html_select($this->get_field_id("groupe"), $this->get_field_name('groupe'), "", lab_admin_group_select_group, "acronym", array("value"=>0,"label"=>"None")); ?>
+            <?php lab_html_select($this->get_field_id("groupe"), $this->get_field_name('groupe'), "", "lab_admin_group_select_group", "acronym", array("value"=>0,"label"=>"None")); ?>
         </p>
     <?php
     }
