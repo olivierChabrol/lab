@@ -755,7 +755,7 @@ function lab_invitations_interface_fromList($list,$view) {
     }
     return $listStr;
 }
-function lab_invitations_mail($type=1, $guest, $invite) {
+function lab_invitations_mail($type, $guest, $invite) {
     $content = "";
     $dest = "";
     switch ($type) {
