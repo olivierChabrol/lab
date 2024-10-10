@@ -46,12 +46,12 @@ function lab_profile($id = 0)
 					</div>';
 	$editSocial = '<p><input style="display:none;" type="text" class="lab_profile_edit" id="lab_profile_edit_social" placeholder="' . esc_html__("Cliquez sur l'icône d'un réseau social pour le modifier", "lab") . '"/></p>';
 	$halFields = '<p id="lab_profile_halID">
-					<span class="lab_current">' . (strlen($user->hal_id) ? '<i>' . esc_html__('Votre ID HAL', 'lab') . ' : </i>' . $user->hal_id : '<i>' . esc_html__('Vous n\'avez pas défini votre ID HAL', 'lab') . '</i>&nbsp;<a href="https://doc.archives-ouvertes.fr/identifiant-auteur-idhal-cv/" target="hal"><i class="fa fa-info"></i></a>') . '</span>
+					<span class="lab_current">' . (strlen($user->hal_id ?? '') ? '<i>' . esc_html__('Votre ID HAL', 'lab') . ' : </i>' . $user->hal_id : '<i>' . esc_html__('Vous n\'avez pas défini votre ID HAL', 'lab') . '</i>&nbsp;<a href="https://doc.archives-ouvertes.fr/identifiant-auteur-idhal-cv/" target="hal"><i class="fa fa-info"></i></a>') . '</span>
 					<input style="display:none;" type="text" class="lab_profile_edit" id="lab_profile_edit_halID" placeholder="ID HAL" value="' . $user->hal_id . '"/><a id="lab_profile_testHal_id" target="_blank" style="display:none" class="lab_profile_edit" href="' . $HalID_URL . '">' . esc_html__('Tester sur HAL', 'lab') . '</a>
 				  </p>';
 	if (!strlen($user->hal_id)) {
 		$halFields .= '<p id="lab_profile_halName">
-						<span class="lab_current">' . (strlen($user->hal_name) ? '<i>' . esc_html__('Votre nom HAL', 'lab') . ' : </i>' . $user->hal_name : '<i>' . esc_html__('Vous n\'avez pas défini votre nom HAL', 'lab') . '</i>') . '</span>
+						<span class="lab_current">' . (strlen($user->hal_name ?? '') ? '<i>' . esc_html__('Votre nom HAL', 'lab') . ' : </i>' . $user->hal_name : '<i>' . esc_html__('Vous n\'avez pas défini votre nom HAL', 'lab') . '</i>') . '</span>
 						<input style="display:none;" type="text" class="lab_profile_edit" id="lab_profile_edit_halName" placeholder="' . esc_html__('Nom HAL', 'lab') . '" value="' . $user->hal_name . '"/><a id="lab_profile_testHal_name" target="_blank" style="display:none" class="lab_profile_edit" href="' . $HalName_URL . '">' . esc_html__('Tester sur HAL', 'lab') . '</a>
 					</p>';
 	}
@@ -79,7 +79,9 @@ function lab_profile($id = 0)
 		$metaDatas .= '<p id="lab_profile_historic"><span class="lab_current">' . esc_html('Mobility', 'lab') . " : </span></p><ul>";
 		foreach ($user->historics as $historic) {
 			$historic = lab_admin_history_fields($historic);
-			$metaDatas .= '<li>' . esc_html('Begin', 'lab') . " : " . strftime('%d %B %G', $historic->begin->getTimestamp()) . ' - ' .
+			$metaDatas .= '<li>' . esc_html('Begin', 'lab') . " : ";
+			$metaDatas .= date('Y/m/d', $historic->begin->getTimestamp()); //strftime('%d %B %G', $historic->begin->getTimestamp());
+			$metaDatas .= ' - ' . esc_html('End', 'lab') . ' - ' .
 				($historic->end == null ? esc_html__('present', 'lab') : esc_html('End', 'lab') . ' : ' . strftime('%d %B %G', $historic->end->getTimestamp())) . ' • ' . AdminParams::get_param($historic->function);
 			if ($historic->host) {
 				$metaDatas .= " " . esc_html('Host', 'lab') . " : " . $historic->host;
@@ -216,9 +218,9 @@ class labUser
 		$this->sectionCn   = lab_profile_get_param_metaKey($id, 'lab_user_section_cn', AdminParams::PARAMS_USER_SECTION_CN);
 		$this->sectionCnu  = lab_profile_get_param_metaKey($id, 'lab_user_section_cnu', AdminParams::PARAMS_USER_SECTION_CNU);
 		$this->historics   = lab_admin_get_user_historics($id);
-		$this->thesisTitle = stripslashes(lab_profile_get_metaKey($id, 'lab_user_thesis_title'));
+		$this->thesisTitle = stripslashes(lab_profile_get_metaKey($id, 'lab_user_thesis_title') ?? '');
 		//$this -> thesisTitle = lab_profile_get_metaKey($id,'lab_user_thesis_title');
-		$this->hdrTitle    = stripslashes(lab_profile_get_metaKey($id, 'lab_user_hdr_title'));
+		$this->hdrTitle    = stripslashes(lab_profile_get_metaKey($id, 'lab_user_hdr_title') ?? '');
 		$this->phdSchool   = lab_profile_get_param_metaKey($id, 'lab_user_phd_school', AdminParams::PARAMS_USER_ECOLE_DOCTORALE);
 
 		$this->office      = lab_profile_get_metaKey($id, 'lab_user_office_number');
