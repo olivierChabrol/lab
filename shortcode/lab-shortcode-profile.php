@@ -29,6 +29,7 @@ function lab_profile($id = 0)
 	}
 	//var_dump($user);
 	$is_current_user = $user->id == get_current_user_id() ? true : false;
+	$left  = get_user_meta($user->id, 'lab_user_left', true);
 	$HalID_URL = "https://api.archives-ouvertes.fr/search/?q=*:*&fq=authIdHal_s:(" . $user->hal_id . ")&fl=docid,citationFull_s,producedDate_tdate,uri_s,title_s,journalTitle_s&sort=producedDate_tdate+desc&wt=xml";
 	$HalName_URL = "https://api.archives-ouvertes.fr/search/I2M/?q=authLastNameFirstName_s:%22" . $user->hal_name . "%22&fl=docid,citationFull_s,producedDate_tdate,uri_s,title_s,journalTitle_s&sort=producedDate_tdate+desc&wt=xml";
 	$editIcons = '<div id="lab_profile_icons">
@@ -99,26 +100,6 @@ function lab_profile($id = 0)
 			$metaDatas .= '</li>';
 		}
 		$metaDatas .= '</ul>';
-		/*
-		$lastHisto = $user->historics;
-		//var_dump($lastHisto);
-		$metaDatas .='<p id="lab_profile_historic"><span class="lab_current">'.esc_html('Mobility','lab')." ".esc_html('Begin','lab').' : '.strftime('%d %B %G',$lastHisto->begin->getTimestamp()).' - '.
-		($lastHisto->end == null?esc_html__('present','lab'):esc_html('End','lab').' : '.strftime('%d %B %G',$lastHisto->end->getTimestamp())).' • '.AdminParams::get_param($lastHisto->function);
-		if ($lastHisto->host) {
-			$metaDatas .= " ".esc_html('Host','lab')." : " .$lastHisto->host;
-		}
-		if ($lastHisto->mobility) {
-			$metaDatas .= "<br>".esc_html('Mobility','lab')." : " .$lastHisto->mobility;
-			if ($lastHisto->mobility_status) {
-				$metaDatas .= " " .$lastHisto->mobility_status;
-			}
-		}
-		else
-		{
-			$metaDatas .= "<br>".esc_html('Mobility','lab')." : " .$lastHisto->mobility_status;
-		}
-		$metaDatas .='</span></p>';
-		//*/
 	}
 
 
@@ -143,8 +124,11 @@ function lab_profile($id = 0)
 	$profileStr .=  $SocialIcons .
 		'</div>
 			<div id="lab_profile_info">
-				<div id="lab_profile_name"><span id="lab_profile_name_span">' . $user->first_name . ' • ' . $user->last_name . '</span>'
-		. ($is_current_user || current_user_can('edit_users') ? $editIcons : ' ') .
+				<div id="lab_profile_name"><span id="lab_profile_name_span">' . $user->first_name . ' • ' . $user->last_name . '</span>';
+	if ($left != null && $left) {
+		$profileStr .= "<span id='lab_profile_left'>à quitté(e) l'I2M le " . $left . "</span>";
+	}
+	$profileStr .= ($is_current_user || current_user_can('edit_users') ? $editIcons : ' ') .
 		'</div>
 				<div id="lab_profile_function">' . $user->function . ' • ' . esc_html__('Affiliation', 'lab') . ' : ' . $user->affiliation . '</div>
 				<div id="lab_profile_function">' . esc_html__('Site', 'lab') . ' : ' . $user->location . ' • ' . esc_html__('Office', 'lab') . ' : ' . $user->office . ' • ' . esc_html__('Office Floor', 'lab') . ' : ' . $user->officeFloor . ' • </div>

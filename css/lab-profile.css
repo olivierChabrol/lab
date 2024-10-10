@@ -4,6 +4,10 @@
     padding: 1.5em;
     font-family: Roboto, sans-serif;
 }
+#lab_profile_left {
+    color: #1e73be;
+    font-weight: bold;
+  }
 
 .lab_profile_edit {
     display: none;
