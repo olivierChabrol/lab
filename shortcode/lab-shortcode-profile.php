@@ -126,7 +126,7 @@ function lab_profile($id = 0)
 			<div id="lab_profile_info">
 				<div id="lab_profile_name"><span id="lab_profile_name_span">' . $user->first_name . ' • ' . $user->last_name . '</span>';
 	if ($left != null && $left) {
-		$profileStr .= "<span id='lab_profile_left'>à quitté(e) l'I2M le " . $left . "</span>";
+		$profileStr .= "<span id='lab_profile_left'>a quitté l'I2M le " . $left . "</span>";
 	}
 	$profileStr .= ($is_current_user || current_user_can('edit_users') ? $editIcons : ' ') .
 		'</div>
