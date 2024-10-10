@@ -27,6 +27,7 @@ function lab_profile($id = 0)
 		$user = new labUser($id);
 		//print "<h1>LA 2 \$id:'" . $id . "'</h1>";
 	}
+	var_dump($user);
 	$is_current_user = $user->id == get_current_user_id() ? true : false;
 	$HalID_URL = "https://api.archives-ouvertes.fr/search/?q=*:*&fq=authIdHal_s:(" . $user->hal_id . ")&fl=docid,citationFull_s,producedDate_tdate,uri_s,title_s,journalTitle_s&sort=producedDate_tdate+desc&wt=xml";
 	$HalName_URL = "https://api.archives-ouvertes.fr/search/I2M/?q=authLastNameFirstName_s:%22" . $user->hal_name . "%22&fl=docid,citationFull_s,producedDate_tdate,uri_s,title_s,journalTitle_s&sort=producedDate_tdate+desc&wt=xml";
@@ -49,7 +50,7 @@ function lab_profile($id = 0)
 					<span class="lab_current">' . (strlen($user->hal_id ?? '') ? '<i>' . esc_html__('Votre ID HAL', 'lab') . ' : </i>' . $user->hal_id : '<i>' . esc_html__('Vous n\'avez pas défini votre ID HAL', 'lab') . '</i>&nbsp;<a href="https://doc.archives-ouvertes.fr/identifiant-auteur-idhal-cv/" target="hal"><i class="fa fa-info"></i></a>') . '</span>
 					<input style="display:none;" type="text" class="lab_profile_edit" id="lab_profile_edit_halID" placeholder="ID HAL" value="' . $user->hal_id . '"/><a id="lab_profile_testHal_id" target="_blank" style="display:none" class="lab_profile_edit" href="' . $HalID_URL . '">' . esc_html__('Tester sur HAL', 'lab') . '</a>
 				  </p>';
-	if (!strlen($user->hal_id)) {
+	if (!strlen($user->hal_id ?? '')) {
 		$halFields .= '<p id="lab_profile_halName">
 						<span class="lab_current">' . (strlen($user->hal_name ?? '') ? '<i>' . esc_html__('Votre nom HAL', 'lab') . ' : </i>' . $user->hal_name : '<i>' . esc_html__('Vous n\'avez pas défini votre nom HAL', 'lab') . '</i>') . '</span>
 						<input style="display:none;" type="text" class="lab_profile_edit" id="lab_profile_edit_halName" placeholder="' . esc_html__('Nom HAL', 'lab') . '" value="' . $user->hal_name . '"/><a id="lab_profile_testHal_name" target="_blank" style="display:none" class="lab_profile_edit" href="' . $HalName_URL . '">' . esc_html__('Tester sur HAL', 'lab') . '</a>
@@ -81,8 +82,9 @@ function lab_profile($id = 0)
 			$historic = lab_admin_history_fields($historic);
 			$metaDatas .= '<li>' . esc_html('Begin', 'lab') . " : ";
 			$metaDatas .= date('Y/m/d', $historic->begin->getTimestamp()); //strftime('%d %B %G', $historic->begin->getTimestamp());
-			$metaDatas .= ' - ' . esc_html('End', 'lab') . ' - ' .
-				($historic->end == null ? esc_html__('present', 'lab') : esc_html('End', 'lab') . ' : ' . strftime('%d %B %G', $historic->end->getTimestamp())) . ' • ' . AdminParams::get_param($historic->function);
+			$metaDatas .= ' - ' . esc_html('End', 'lab') . ' - ';
+			$metaDatas .= ($historic->end == null ? esc_html__('present', 'lab') : date('Y/m/d', $historic->end->getTimestamp()));
+			$metaDatas .= ' • ' . AdminParams::get_param($historic->function);
 			if ($historic->host) {
 				$metaDatas .= " " . esc_html('Host', 'lab') . " : " . $historic->host;
 			}
