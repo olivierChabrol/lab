@@ -783,7 +783,7 @@ function lab_admin_update_user_metadata()
   wp_send_json_success($user_thesis_date);
 }
 
-function lab_usermeta_update($userId, $left, $userFunction, $userLocation, $officeNumber, $officeFloor, $userEmployer, $user_phone, $userFunding, $firstname, $lastname, $userSectionCn, $userSectionCnu, $email = null, $url = null, $userThesisTitle = null, $userHdrTitle = null, $userPhdSchool = null, $userCountry = null, $userSex = null, $user_thesis_date = null, $user_hdr_date = null, $user_co_supervision = null, $user_phd_support = null, $datas){
+function lab_usermeta_update($userId, $left, $userFunction, $userLocation, $officeNumber, $officeFloor, $userEmployer, $user_phone, $userFunding, $firstname, $lastname, $userSectionCn, $userSectionCnu, $email = null, $url = null, $userThesisTitle = null, $userHdrTitle = null, $userPhdSchool = null, $userCountry = null, $userSex = null, $user_thesis_date = null, $user_hdr_date = null, $user_co_supervision = null, $user_phd_support = null, $datas = array()){
   global $wpdb;
   $sql = "";
   if ($left != null || !empty($left)) {

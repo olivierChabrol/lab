@@ -579,7 +579,7 @@ function lab_labo_interface_fromList($list,$view) {
     }
     return $listStr;
 }
-function lab_labo_mail($type=1, $guest, $invite) {
+function lab_labo_mail($type, $guest, $invite) {
     switch ($type) {
         case 1: //Envoi de mail récapitulatif à l'invité lorsqu'il crée sa demande d'invitation
             global $currLocale;
