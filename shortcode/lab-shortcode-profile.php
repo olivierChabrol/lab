@@ -16,16 +16,16 @@ function lab_profile($id = 0)
 		$url = $wp->request;
 		if (isset(explode("/", $url)[1])) {
 			$slug_name = explode("/", $url)[1];
-			print("<h1>LA 1 \$slug_name:'" . $slug_name . "'</h1>");
+			//print("<h1>LA 1 \$slug_name:'" . $slug_name . "'</h1>");
 			$user_id = lab_profile_getID($slug_name);
 		} else {
 			$user_id = get_current_user_id();
 		}
-		print("<h1>LA 1.1 \$user_id:'" . $user_id . "'</h1>");
+		//print("<h1>LA 1.1 \$user_id:'" . $user_id . "'</h1>");
 		$user = new labUser($user_id);
 	} else {
 		$user = new labUser($id);
-		print "<h1>LA 2 \$id:'" . $id . "'</h1>";
+		//print "<h1>LA 2 \$id:'" . $id . "'</h1>";
 	}
 	$is_current_user = $user->id == get_current_user_id() ? true : false;
 	$HalID_URL = "https://api.archives-ouvertes.fr/search/?q=*:*&fq=authIdHal_s:(" . $user->hal_id . ")&fl=docid,citationFull_s,producedDate_tdate,uri_s,title_s,journalTitle_s&sort=producedDate_tdate+desc&wt=xml";
