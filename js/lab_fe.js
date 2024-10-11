@@ -261,11 +261,12 @@ jQuery(function($){
           td.html(data["phd_support"][user['lab_user_phd_support']]['slug']);
         }
         else {
+          console.log("Pas de phd support : " + user['lab_user_phd_support'] + " / " + user_id);
           td.html("");
         }
       }
       else {  td.html(" "); }
-      
+
       tr.append(td);
       td = $("<td/>");
       td.html(elm['begin']);
