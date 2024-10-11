@@ -256,7 +256,16 @@ jQuery(function($){
       tr.append(td);
       td = $("<td/>");
       td.html(" ");
-      td.html(data["phd_support"][user['lab_user_phd_support']]['slug']);
+      if (user['lab_user_phd_support'] != null) {
+        if (data["phd_support"][user['lab_user_phd_support']] != null)  {
+          td.html(data["phd_support"][user['lab_user_phd_support']]['slug']);
+        }
+        else {
+          td.html("");
+        }
+      }
+      else {  td.html(" "); }
+      
       tr.append(td);
       td = $("<td/>");
       td.html(elm['begin']);
