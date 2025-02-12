@@ -19,7 +19,7 @@ if (is_object($EM_Event) && !$EM_Event->can_manage('edit_events', 'edit_others_e
 } elseif (!is_object($EM_Event)) {
 	$EM_Event = new EM_Event();
 }
-$required = apply_filters('em_required_html', '<i>*</i>');
+$required = apply_filters('em_required_html', '<i><span style="color:red;"><b>*</b></span></i>');
 
 echo $EM_Notices;
 //Success notice
@@ -33,20 +33,20 @@ if (!empty($_REQUEST['success'])) {
 		<?php do_action('em_front_event_form_header', $EM_Event); ?>
 		<!-- <h3 class="event-form-name"><?php esc_html_e('Event Name', 'events-manager'); ?></h3> -->
 		<div class="event-attributes">
-			<i><span style="color:red;">*</span></i> : Obligatoire/Mandatory
+			<i><span style="color:red;"><b>*</b></span></i> : Obligatoire/Mandatory
 		</div>
 		<div class="inside event-form-name">
 			<label for="event_name">Nom de l'evenement</label>
-			<input type="text" name="event_name" id="event-name" placeholder="Indiquer le nom de l'evenement" value="<?php echo esc_attr($EM_Event->event_name, ENT_QUOTES); ?>"><i><span style="color:red;">*</span></i><?php echo $required; ?>
+			<input type="text" name="event_name" id="event-name" placeholder="Indiquer le nom de l'evenement" value="<?php echo esc_attr($EM_Event->event_name, ENT_QUOTES); ?>"><?php echo $required; ?>
 			<br />
 			<div class="event-attributes">
 				<label for="em_attributes[Speaker]">Nom du speaker</label>
-				<input type="text" id="lab_event_speaker_name" name="em_attributes[Speaker]" value=""><i><span style="color:red;">*</span></i>
+				<input type="text" id="lab_event_speaker_name" name="em_attributes[Speaker]" value=""><i><span style="color:red;"><b>*</b></span></i>
 				<span id="lab_event_speaker_name_error"></span>
 			</div>
 			<div class="event-attributes">
 				<label for="em_attributes[Speaker affiliation]">Affiliation</label>
-				<input type="text" id="lab_event_speaker_affiliation" name="em_attributes[Speaker affiliation]" value=""><i><span style="color:red;">*</span></i>
+				<input type="text" id="lab_event_speaker_affiliation" name="em_attributes[Speaker affiliation]" value=""><i><span style="color:red;"><b>*</b></span></i>
 				<span id="lab_event_speaker_affiliation_error"></span>
 			</div>
 			<div class="event-attributes">

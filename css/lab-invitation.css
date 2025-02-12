@@ -77,6 +77,7 @@ div[wrapped=true] h2:hover .fa-arrow-up {
 
 label {
   width: 160px;
+  font-weight: bold;
 }
 
 #lab_mission_edit_travel_div_company{
