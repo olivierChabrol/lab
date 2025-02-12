@@ -31,10 +31,13 @@ if (!empty($_REQUEST['success'])) {
 <form enctype='multipart/form-data' id="event-form" class="em-event-admin-editor <?php if ($EM_Event->is_recurring()) echo 'em-event-admin-recurring' ?>" method="post" action="<?php echo esc_url(add_query_arg(array('success' => null))); ?>">
 	<div class="wrap">
 		<?php do_action('em_front_event_form_header', $EM_Event); ?>
-		<h3 class="event-form-name"><?php esc_html_e('Event Name', 'events-manager'); ?></h3>
+		<!-- <h3 class="event-form-name"><?php esc_html_e('Event Name', 'events-manager'); ?></h3> -->
+		<div class="event-attributes">
+			<i><span style="color:red;">*</span></i> : Obligatoire/Mandatory
+		</div>
 		<div class="inside event-form-name">
 			<label for="event_name">Nom de l'evenement</label>
-			<input type="text" name="event_name" id="event-name" placeholder="Indiquer le nom de l'evenement" value="<?php echo esc_attr($EM_Event->event_name, ENT_QUOTES); ?>" /><?php echo $required; ?>
+			<input type="text" name="event_name" id="event-name" placeholder="Indiquer le nom de l'evenement" value="<?php echo esc_attr($EM_Event->event_name, ENT_QUOTES); ?>"><i><span style="color:red;">*</span></i><?php echo $required; ?>
 			<br />
 			<div class="event-attributes">
 				<label for="em_attributes[Speaker]">Nom du speaker</label>
@@ -49,9 +52,6 @@ if (!empty($_REQUEST['success'])) {
 			<div class="event-attributes">
 				<label for="em_attributes[Speaker web site]">Page internet du speaker : </label>
 				<input type="text" name="em_attributes[Speaker web site]" value="">
-			</div>
-			<div class="event-attributes">
-				<i><span style="color:red;">*</span></i> : Obligatoire/Mandatory
 			</div>
 			<?php lab_locate_template('forms/event/group.php', true); ?>
 		</div>
