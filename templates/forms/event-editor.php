@@ -33,7 +33,7 @@ if (!empty($_REQUEST['success'])) {
 		<?php do_action('em_front_event_form_header', $EM_Event); ?>
 		<!-- <h3 class="event-form-name"><?php esc_html_e('Event Name', 'events-manager'); ?></h3> -->
 		<div class="event-attributes">
-			<i><span style="color:red;"><b>*</b></span></i> : Obligatoire/Mandatory
+			<i><span style="color:red;"><b>*</b></span></i> : Champs obligatoire/Mandatory fields
 		</div>
 		<div class="inside event-form-name">
 			<label for="event_name">Nom de l'evenement</label>

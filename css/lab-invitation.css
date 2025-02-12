@@ -74,7 +74,9 @@ div[wrapped=true] h2:hover .fa-arrow-up {
 }
 
 /*Missions*/
-
+#event-name {
+  width: 30%;
+}
 label {
   width: 160px;
   font-weight: bold;
