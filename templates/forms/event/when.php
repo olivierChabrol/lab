@@ -14,9 +14,9 @@ $required = apply_filters('em_required_html','<i>*</i>');
 	</p>
 	<p class="em-time-range">
 		<span class="em-event-text"><?php _e('Event starts at','events-manager'); ?></span>
-		<input id="start-time" class="em-time-input em-time-start" type="text" size="8" maxlength="8" name="event_start_time" value="<?php echo $EM_Event->start()->format($hours_format); ?>" />
+		<input id="start-time" class="em-time-input em-time-start" type="text" size="8" maxlength="8" name="event_start_time" value="<?php if(isset($_GET['starttime']) && preg_match('/\d{2}:\d{2}/',$_GET['starttime'])){ echo $_GET['starttime'];} else { echo $EM_Event->start()->format($hours_format); } ?>" />
 		<?php _e('to','events-manager'); ?>
-		<input id="end-time" class="em-time-input em-time-end" type="text" size="8" maxlength="8" name="event_end_time" value="<?php echo $EM_Event->end()->format($hours_format); ?>" />
+		<input id="end-time" class="em-time-input em-time-end" type="text" size="8" maxlength="8" name="event_end_time" value="<?php if(isset($_GET['endtime']) && preg_match('/\d{2}:\d{2}/',$_GET['endtime'])){ echo $_GET['endtime'];} else { echo $EM_Event->end()->format($hours_format); } ?>" />
 		<?php _e('All day','events-manager'); ?> <input type="checkbox" class="em-time-all-day" name="event_all_day" id="em-time-all-day" value="1" <?php if(!empty($EM_Event->event_all_day)) echo 'checked="checked"'; ?> />
 	</p>
 	<span id='event-date-explanation'>

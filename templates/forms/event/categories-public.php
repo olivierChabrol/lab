@@ -13,7 +13,11 @@ $categories = EM_Categories::get(array('orderby'=>'name','hide_empty'=>0));
         <h3 class="event-form-name"><?php esc_html_e( 'Category', 'events-manager'); ?></h3>
 	<select name="event_categories[]" multiple size="10">
 	<?php
-	$selected = $EM_Event->get_categories()->get_ids();
+	if(isset($_GET['e_cat'])){
+		$selected = intval($_GET['e_cat']);
+	}else{
+        $selected = $EM_Event->get_categories()->get_ids();
+    }
 	$walker = new EM_Walker_CategoryMultiselect();
 	$args_em = array( 'hide_empty' => 0, 'name' => 'event_categories[]', 'hierarchical' => true, 'id' => EM_TAXONOMY_CATEGORY, 'taxonomy' => EM_TAXONOMY_CATEGORY, 'selected' => $selected, 'walker'=> $walker);
 	echo walk_category_dropdown_tree($categories, 0, $args_em);

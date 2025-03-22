@@ -26,6 +26,9 @@ $tags = EM_Tags::get(array('orderby'=>'name','hide_empty'=>0));
                     $selected = $args['tag'];
                 }
             }
+	    if(isset($_GET['e_tag'])){
+            $selected = array(strval($_GET['e_tag']));
+	    }
             $walker = new EM_Walker_CategoryMultiselect();
             $args_em = apply_filters('em_advanced_search_tags_walker_args', array(
                 'hide_empty' => 0,

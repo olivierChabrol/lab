@@ -39,7 +39,7 @@ $required = apply_filters('em_required_html','<i>*</i>');
 					$locations = EM_Locations::get($ddm_args);
 					$selected_location = !empty($EM_Event->location_id) || !empty($EM_Event->event_id) ? $EM_Event->location_id:get_option('dbem_default_location');
 					foreach($locations as $EM_Location) {
-						$selected = ($selected_location == $EM_Location->location_id) ? "selected='selected' " : '';
+						$selected = (($selected_location == $EM_Location->location_id) || (isset($_GET['e_loc']) && ($EM_Location->location_id == $_GET['e_loc']))) ? "selected='selected' " : '';
 						if( $selected ) $found_location = true;
 				   		?>          
 				    	<option value="<?php echo esc_attr($EM_Location->location_id) ?>" title="<?php echo esc_attr("{$EM_Location->location_latitude},{$EM_Location->location_longitude}"); ?>" <?php echo $selected ?>><?php echo esc_html($EM_Location->location_name); ?></option>
