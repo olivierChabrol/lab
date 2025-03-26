@@ -45,6 +45,7 @@ require_once(LAB_DIR_PATH."shortcode/lab-shortcode-labo1dot5resp.php");
 require_once(LAB_DIR_PATH."shortcode/lab-shortcode-ldap.php");
 require_once(LAB_DIR_PATH."shortcode/lab-shortcode-request.php");
 require_once(LAB_DIR_PATH."shortcode/lab-shortcode-internship.php");
+require_once(LAB_DIR_PATH."shortcode/lab-shortcode-conditionnal-display.php");
 require_once(LAB_DIR_PATH."admin/view/lab-admin-tabs.php");
 require_once(LAB_DIR_PATH."admin/view/lab-admin-mission.php");
 require_once(LAB_DIR_PATH."admin/view/lab-admin-tab-events.php");
@@ -145,6 +146,7 @@ add_shortcode('lab-ldap','lab_ldap');
 add_shortcode('lab-hal-tools', 'lab_hal_tools');
 add_shortcode('lab-request', 'lab_request');
 add_shortcode('lab-internship', 'lab_internship');
+add_shortcode('lab-display-if', 'lab_display_if');
 
 register_activation_hook( __FILE__, 'lab_activation_hook' );
 register_uninstall_hook(__FILE__, 'lab_uninstall_hook');
