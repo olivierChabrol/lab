@@ -12,69 +12,115 @@
      group="AA" or whatever group's acronym
 ***/ 
 
-function lab_cirm($atts) {
-    $atts = shortcode_atts(array(
-        'id'    => get_option('lab-hal'),
-        'um'    => get_option('lab-hal'),
-        'group' => get_option('lab-hal'),
-        'year'  => get_option('lab-hal'),
-    ), $atts, "lab-cirm");
-
+function lab_cirm_load_new_events() {
+    echo '<h3>Load new events</h3><br>';
     $events = array();
-    
-    $userId = $atts['id'];
-    $um     = $atts['um'];
-    $group  = $atts['group'];
-    $year   = $atts['year'];
     $dateToday = date('Y-m-d');
     $token = getToken();
-    //echo("Date : $dateToday<br>");
-    $events = getEvents($events, $token, $dateToday);
-    
+    $events = load_cirm_events($events, $token, $dateToday);
+
     $nb_events = count($events);
     $nb_jours = 0;
-    while($nb_events < 10 && $nb_jours < 2) {
+    while($nb_events < 10 && $nb_jours < 15) {
         //echo 'Nb Event: ' . count($events) . "<br>";
         $dateToday = date('Y-m-d', strtotime($dateToday . ' + 1 days'));
         //echo("<h3>Date : $dateToday</h3><br>");
-        $events = getEvents($events, $token, $dateToday);
+        $events = load_cirm_events($events, $token, $dateToday);
         $nb_events = count($events);
         $nb_jours += 1;
     }
+
     //echo 'Nb Event: ' . count($events) . "<br>";
-    echo('<div class="em pixelbones em-list-widget em-events-widget"><ul>');
     foreach($events as $event) {
-        $date_split = explode('-', $event['date']);
-        echo('<li>');
-        echo('<div class="bloc-bleu" style="padding-left: 4pt;">');
-        echo('<div class="em-item-info">');
-        echo('<span class="jour">'.$date_split[2].'</span>');
-        echo('/'.$date_split[1].'/'.$date_split[0].' <span style="padding-left: 3em">14h00 - 17h00</span>');
-        echo('<div style="margin-top: -12pt; font-weight: bold">'.$event['frenchTitle'].'</div>');
-        echo('<div>CIRM</div>');
-        echo('</div>');
-        echo('<div class="em-item-name">');
-        echo('<strong>');
-        foreach($event['talks'] as $talk) {
-            echo($talk);
-            echo(', ');
-        }
-        echo('</strong>');
-        echo('</div>');
-        echo('</li>');
+        save_event($event);
     }
-    echo('</ul></div>');
-    //*/
 }
 
-function getEvents($events, $token, $date) {
+function save_event($event) {
+    echo '<h2>Save event : ' . $event['frenchTitle'] . '</h2><br>';
+    $date_split = explode('-', $event['date']);
+    echo " date_split[0] : " . $date_split[0] . "<br>";
+    echo " date_split[1] : " . $date_split[1] . "<br>";
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'lab_cirm_events';
+    
+    $sql = "SELECT * FROM $table_name WHERE cirm_id = " . $event['id'];
+    $results = $wpdb->get_results($sql);
+    if (count($results) == 0) {
+        $speakers = "";
+        foreach($event['talks'] as $speaker) {
+            $speakers .= $speaker;
+            $speakers .= ', ';
+        }
+        $speakers = rtrim($speakers, ', ');
+        $sql = "INSERT INTO $table_name (cirm_id, title, speakers, begin_date, end_date) VALUES (%s, %s, %s, %s, %s)";
+        $wpdb->insert($table_name, array(
+            'cirm_id' => $event['id'],
+            'title' => $event['frenchTitle'],
+            'speakers' => $speakers,
+            'begin_date' => $event['date'],
+            'end_date' => $event['date'],
+        ));
+    } else {
+        echo "Event " . $event['frenchTitle'] . " already exists<br>";
+    }
+ 
+}
+function load_local_cirm_events($date) {
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'lab_cirm_events';
+    
+    $sql = "SELECT * FROM $table_name WHERE begin_date >= " . $date;
 
+    $results = $wpdb->get_results($sql);
+    if (count($results) == 0) {
+        echo "Aucun événement trouvé<br>";
+    } else {
+        echo('<div class="em pixelbones em-list-widget em-events-widget"><ul>');
+        foreach($results as $event) {
+            $date_split = explode('-', $event->begin_date);
+            echo('<li>');
+            echo('<div class="bloc-bleu" style="padding-left: 4pt;">');
+            echo('<div class="em-item-info">');
+            echo('<span class="jour">'.$date_split[2].'</span>');
+            echo('/'.$date_split[1].'/'.$date_split[0].' <span style="padding-left: 3em">&nbsp;</span>');
+            echo('<div style="margin-top: -12pt; font-weight: bold">'.$event->title.'</div>');
+            echo('</div></div>');
+            echo('<div class="em-item-name">');
+            echo('<strong>');
+            echo($event->speakers);
+            echo('</strong>');
+            echo('</div>');
+            echo('</li>');
+        }
+        echo('</ul></div>');
+    }
+
+}
+
+function lab_cirm($atts) {
+    $atts = shortcode_atts(array(
+        'load'    => get_option('lab-cirm'),
+    ), $atts, "lab-cirm");
+    var_dump($atts);
+    echo "Load : " . $atts['load'] . "<br>";
+    
+    if ($atts['load'] == 'yes') {
+        lab_cirm_load_new_events();
+    }
+    else {
+        $events = array();
+        
+        $dateToday = date('Y-m-d');
+        load_local_cirm_events($dateToday);
+    }
+}
+
+function load_cirm_events($events, $token, $date) {
+    // echo "[load_cirm_events] Date : $date, nb events jusqu'ici : " . count($events) . "<br>";
     $apiHost = "https://app.cirm-math.fr/api";
     $apiUrl = "$apiHost/meetings?page=1&meetingDate=$date&isValidStatus=true";
-    //echo "Token : $token";
-    //$token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE3NDI1NDk1NjMsImV4cCI6MTc0MjU1MzE2Miwicm9sZXMiOlsiUk9MRV9VU0VSIiwiZXZlcnlib2R5Il0sInVzZXJuYW1lIjoib2xpdmllci5jaGFicm9sIiwiZW1haWwiOiJvbGl2aWVyLmNoYWJyb2xAdW5pdi1hbXUuZnIifQ.yBaUYyCT4Nz19dbANQ1xcSG_r_5E9Yu9FkQ0P7FJ0w5uiLbjFUHIEploj-mgxp-IdMjVJmJw3qW_PULYwDXy_34cy5Jo6WoFGbi_Jl9kIXxqccL9PeOHvDeyQuOqvCcn2brVRzKG11KSh4KmwJM07dkBukMN65awx23FIb-J5LZ_LcsR0rntXte8Eo2FAgLBd7zM1vQhZbCBWYYgVCavpeKJkwmuHOKEgggOurMjMYrvKm_c2HFiJIgYCcQCDUQWBuwRnOqIj5M7sATXTsOlpv59WgCWIWMu9nnBO_3W5mXKg2WMQw1yQ_R0zHm8Rn96qApCAXfrQY2CfjEYFZoACA";
-    //$token   = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE3NDI1NTA2MDksImV4cCI6MTc0MjU1NDIwOSwicm9sZXMiOlsiUk9MRV9VU0VSIiwiZXZlcnlib2R5Il0sInVzZXJuYW1lIjoib2xpdmllci5jaGFicm9sIiwiZW1haWwiOiJvbGl2aWVyLmNoYWJyb2xAdW5pdi1hbXUuZnIifQ.wAclogxmVwvqep3RkEfyZe46PeKAyIObQhnMWQLhavQjgryz5WaPSWuBT3_4JGhg9hUPy8pvr0hLjj_jdZVabzFX5_-l6IieM4UBo7f0DxLzk26zJ0cTp_XNDR6RZjclpYslD5Suf8EUOrsDQqArGW6OJfiZqxBSozBmtuwQxHFXxZDRp36ePMHCa-Q7xZNE0fozt2owVdbZrHjNXVb8GmA9RoJfUYclL_qpwkl4DAUEDogXIQ9OaUXlfJ9Km2qEc-ETVjXmethnDkgcX3qcS_aMqno13gWLgZnV7OmiWQPt7a0B0pqEv2Q8VAzUz36WjdJXy3UBJzu47Hcr_d9hEg";
-
+  
     $headers = array(
         'Accept: application/ld+json',
         'Authorization: Bearer '.$token,
@@ -112,7 +158,7 @@ function getEvents($events, $token, $date) {
                     foreach ($member['organisers'] as $organiser) {
                         //echo "Organisateur : " . $organiser['person'] . "<br>";
                         $member['talks'][] = getPerson($token, $organiser['person']);
-                        var_dump($member['talks']);
+                        //var_dump($member['talks']);
                     }
                     if (!isset($events[$member['id']])) {
                         $events[$member['id']] = $member;
@@ -205,7 +251,7 @@ function getToken() {
     if (curl_errno($ch)) {
         echo '[getToken] Erreur : ' . curl_error($ch);
     } else {
-        echo '[getToken] Réponse : ' . $response;
+        //echo '[getToken] Réponse : ' . $response;
         //echo 'Réponse : ' . $response;
         $response = json_decode($response, true);
     }
