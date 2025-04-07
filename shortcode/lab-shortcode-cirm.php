@@ -18,7 +18,7 @@ function lab_cirm_load_new_events($debug) {
     }
     $events = array();
     $dateToday = date('Y-m-d');
-    $token = getToken();
+    $token = get_cirm_token();
     if ($debug) {
         echo "<h2>token".$token."</h2>";
     }
@@ -239,7 +239,10 @@ function getPerson($token, $id) {
  * @throws Exception If there is an error in the cURL request.
  */
 
-function getToken() {
+function get_cirm_token($debug = false) {
+    if ($debug) {
+        echo "<h3>get_cirm_token</h3>";
+    }
     $url = 'https://app.cirm-math.fr/api/auth';
 
     // Données à envoyer dans la requête POST
@@ -264,10 +267,12 @@ function getToken() {
     $response = curl_exec($ch);
 
     if (curl_errno($ch)) {
-        echo '[getToken] Erreur : ' . curl_error($ch);
+        echo '[get_cirm_token] Erreur : ' . curl_error($ch);
     } else {
-        //echo '[getToken] Réponse : ' . $response;
-        //echo 'Réponse : ' . $response;
+        if ($debug) {
+            echo "<h2>get_cirm_token</h2>";
+            echo '[get_cirm_token] Réponse : ' . $response;
+        }
         $response = json_decode($response, true);
     }
 
