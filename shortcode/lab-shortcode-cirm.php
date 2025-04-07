@@ -20,7 +20,11 @@ function lab_cirm_load_new_events($debug) {
     $dateToday = date('Y-m-d');
     $token = get_cirm_token($debug);
     if ($debug) {
-        echo "<h2>token".$token."</h2>";
+        echo "<h2>token :</h2><br>".$token."<br>";
+    }
+    if ($token == null) {
+        echo "<h2>Erreur d'authentification</h2>";
+        return;
     }
     $events = load_cirm_events($events, $token, $dateToday);
 
@@ -274,6 +278,14 @@ function get_cirm_token($debug = false) {
             echo '[get_cirm_token] Réponse : ' . $response;
         }
         $response = json_decode($response, true);
+            if($response["status"] == "500") {
+                if ($debug) {
+                    echo "[get_cirm_token] Erreur : " . $response["message"];
+                }
+            }
+            else {
+                return null;
+            }
     }
 
     // Fermer la connexion cURL
