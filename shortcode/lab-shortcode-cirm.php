@@ -18,7 +18,7 @@ function lab_cirm_load_new_events($debug) {
     }
     $events = array();
     $dateToday = date('Y-m-d');
-    $token = get_cirm_token();
+    $token = get_cirm_token($debug);
     if ($debug) {
         echo "<h2>token".$token."</h2>";
     }
