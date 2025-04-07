@@ -12,11 +12,16 @@
      group="AA" or whatever group's acronym
 ***/ 
 
-function lab_cirm_load_new_events() {
-    echo '<h3>Load new events</h3><br>';
+function lab_cirm_load_new_events($debug) {
+    if ($debug) {
+        echo "<h3>lab_cirm_load_new_events</h3>";
+    }
     $events = array();
     $dateToday = date('Y-m-d');
     $token = getToken();
+    if ($debug) {
+        echo "<h2>token".$token."</h2>";
+    }
     $events = load_cirm_events($events, $token, $dateToday);
 
     $nb_events = count($events);
@@ -101,12 +106,22 @@ function load_local_cirm_events($date) {
 function lab_cirm($atts) {
     $atts = shortcode_atts(array(
         'load'    => get_option('lab-cirm'),
+        'debug'    => get_option('lab-cirm'),
     ), $atts, "lab-cirm");
-    var_dump($atts);
-    echo "Load : " . $atts['load'] . "<br>";
+    //var_dump($atts);
+    $debug = false;
+    if (isset($atts['debug'])) {
+        if ($atts['debug'] == 'yes') {
+            $debug = true;
+        }
+    }
+    if($debug) {
+        echo "<h3>lab_cirm</h3>";
+        echo "Load : " . $atts['load'] . "<br>";
+    }
     
     if ($atts['load'] == 'yes') {
-        lab_cirm_load_new_events();
+        lab_cirm_load_new_events($debug);
     }
     else {
         $events = array();
