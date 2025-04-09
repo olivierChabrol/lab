@@ -6,12 +6,13 @@
  * Version: 1.0
 */
 
-/*** 
- * Shortcode use : [lab-cirm]
-     as-left="yes" OR as-left="no"
-     group="AA" or whatever group's acronym
-***/ 
 
+/**
+ * Load new events from CIRM and save them in the database
+ * 
+ * @param boolean $debug if true, display debug information
+ * @return void
+ */
 function lab_cirm_load_new_events($debug) {
     if ($debug) {
         echo "<h3>lab_cirm_load_new_events</h3>";
@@ -45,6 +46,17 @@ function lab_cirm_load_new_events($debug) {
     }
 }
 
+/**
+ * Save a CIRM event in the database
+ * 
+ * @param array $event Event to save. It should have the following keys:
+ * - id: CIRM event id
+ * - frenchTitle: Title of the event
+ * - talks: Array of speakers
+ * - date: Date of the event
+ * 
+ * @return void
+ */
 function save_event($event) {
     echo '<h2>Save event : ' . $event['frenchTitle'] . '</h2><br>';
     $date_split = explode('-', $event['date']);
@@ -75,11 +87,21 @@ function save_event($event) {
     }
  
 }
-function load_local_cirm_events($date) {
+/**
+ * Load events from the database that happen after the given date.
+ * 
+ * @param string $date Date in the format "YYYY-MM-DD".
+ * @return void
+ */
+function load_local_cirm_events($date, $debug = false) {
     global $wpdb;
     $table_name = $wpdb->prefix . 'lab_cirm_events';
-    
-    $sql = "SELECT * FROM $table_name WHERE begin_date >= " . $date;
+    $sql = "SELECT * FROM $table_name WHERE begin_date >= '" . $date."' ORDER BY begin_date ASC";
+    if($debug) {
+        echo "<h3>load_local_cirm_events</h3>";
+        echo "Date : $date<br>";
+        echo "sql : $sql<br>";
+    }
 
     $results = $wpdb->get_results($sql);
     if (count($results) == 0) {
@@ -107,6 +129,12 @@ function load_local_cirm_events($date) {
 
 }
 
+
+/*** 
+ * Shortcode use : [lab-cirm]
+     load="yes" OR load="no"
+     debug="yes" OR debug="no"
+***/ 
 function lab_cirm($atts) {
     $atts = shortcode_atts(array(
         'load'    => get_option('lab-cirm'),
@@ -278,14 +306,24 @@ function get_cirm_token($debug = false) {
             echo '[get_cirm_token] Réponse : ' . $response;
         }
         $response = json_decode($response, true);
-            if($response["status"] == "500") {
+        if(isset($response["status"]))
+        {
+            if ($response["status"] == "500") {
                 if ($debug) {
                     echo "[get_cirm_token] Erreur : " . $response["message"];
                 }
             }
             else {
-                return null;
+                if ($debug) {
+                    echo "[get_cirm_token] Erreur : " . $response["status"];
+                }
             }
+            return null;
+        }
+        else {
+            curl_close($ch);
+            return $response['token'];
+        }
     }
 
     // Fermer la connexion cURL
