@@ -111,7 +111,7 @@ function load_local_cirm_events($date, $debug = false) {
         foreach($results as $event) {
             $date_split = explode('-', $event->begin_date);
             echo('<li>');
-            echo('<div class="bloc-bleu" style="padding-left: 4pt;">');
+            echo('<div class="bloc-cirm" style="padding-left: 4pt;">');
             echo('<div class="em-item-info">');
             echo('<span class="jour">'.$date_split[2].'</span>');
             echo('/'.$date_split[1].'/'.$date_split[0].' <span style="padding-left: 3em">&nbsp;</span>');
