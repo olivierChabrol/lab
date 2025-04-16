@@ -28,11 +28,15 @@ function lab_reset_password($atts) {
         $data = array(
             'login' => $login,
         );
-        echo '<pre>';
-        var_dump($data);
-        echo '</pre>';
-        lab_reset_password_get_email($login);
+        //echo '<pre>';
+        //var_dump($data);
+        //echo '</pre>';
+        $email = lab_reset_password_get_email($login);
         
+        $tokenData = uniqid() . time() . 'votre_secret'; // Combinaison unique
+        $token = hash('sha256', $tokenData); // Crée le token
+        
+        lab_reset_password_send_mail($email,$url, $token);
     }
 
     $token = '';
@@ -63,6 +67,45 @@ function lab_reset_password($atts) {
         
 }
 
+/**
+ * Sends a password reset email to the specified email address.
+ *
+ * This function constructs an email with a password reset link and sends it to the user.
+ * The email includes a tokenized URL for resetting the password.
+ *
+ * @param string $email The recipient's email address.
+ * @param string $url The base URL for password reset.
+ * @param string $token A token to include in the reset URL for authentication.
+ *
+ * @return void
+ */
+
+function lab_reset_password_send_mail($email,$url, $token) {
+
+    // Paramètres de l'email
+    $destinataire = $email; // Adresse email du destinataire
+    $sujet = "[Informatique] Réinitialisation de mot de passe / Reset password"; // Sujet de l'email
+    $message = "Ceci est un email généré automatiquement.<br/>
+    <p>Bonjour,</p>
+    <p>Vous avez demandé la réinitialisation de votre mot de passe.</p>
+    <p>Pour réinitialiser votre mot de passe, cliquez sur le lien suivant :</p>
+    <p><a href='$url?token=$token'>Réinitialiser le mot de passe</a></p>";
+    $headers = array('Content-Type: text/html; charset=UTF-8');
+    
+    // Envoi de l'email
+    if (wp_mail($destinataire, $sujet, $message, $headers)) {
+        //echo "Email envoyé avec succès.";
+    }
+    echo "Un email a été envoyé à votre adresse avec un lien de réinitialisation de mot de passe.";
+}
+
+/**
+ * Renvoie l'email correspondant à un uid si l'utilisateur existe, null sinon.
+ *
+ * @param string $uid L'uid de l'utilisateur.
+ *
+ * @return string|null L'email de l'utilisateur, null si l'utilisateur n'existe pas.
+ */
 function lab_reset_password_get_email($uid) {
     $ldap_obj = LAB_LDAP::getInstance(
         AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_HOST)[0]->value,
@@ -72,12 +115,14 @@ function lab_reset_password_get_email($uid) {
         true
       );
     $user_datas = $ldap_obj->get_map_info_from_uid($uid);
-    var_dump($user_datas);
+
     if($user_datas != null) {
         $email = $user_datas['mail'];
-        echo "Email correspondant : " . $email;
+        //echo "Email correspondant : " . $email;
+        return $email;
     } else {
-        echo "Aucun utilisateur trouvé avec cet email.";
+        //echo "Aucun utilisateur trouvé avec cet email.";
+        return null;
     }
 }
 ?>
