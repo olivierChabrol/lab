@@ -71,7 +71,7 @@ function lab_reset_password($atts) {
     }
     else {
         echo '<h2>Reinitialisation du mot de passe</h2>';
-        echo '<form method="post" action="https://app.cirm-math.fr/api/auth/reset-password">';
+        echo '<form method="post" action="'.$url.'">';
         echo '<input type="hidden" name="token" value="' . $token . '"><br/>';
         echo '<input type="password" name="password" placeholder="Nouveau mot de passe" required><br/>';
         echo '<input type="password" name="password_confirmation" placeholder="Confirmer le mot de passe" required><br/>';
