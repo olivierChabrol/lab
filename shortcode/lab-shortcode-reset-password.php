@@ -200,6 +200,8 @@ function lab_reset_password_get_email($uid) {
 }
 
 function lab_reset_password_reset_ldap_password($newPassword, $uid) {
+    echo "lab_reset_password_reset_ldap_password : $newPassword <br/>";
+    
     $ldap_obj = LAB_LDAP::getInstance(
         AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_HOST)[0]->value,
         AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_BASE)[0]->value,
@@ -212,11 +214,13 @@ function lab_reset_password_reset_ldap_password($newPassword, $uid) {
           or die("Error in query");
       $entry     = ldap_get_entries($this->ldap_link, $result);
       if ($entries["count"] > 0) {
+        echo "Utilisateur trouvé.";
         $dn = $entries[0]["dn"]; // DN de l'utilisateur trouvé
 
         // Hacher le mot de passe (optionnel, selon le format attendu par le serveur)
         $hashedPassword = "{SHA}" . base64_encode(pack("H*", sha1($newPassword)));
 
+        echo "hashedPassword : ".$hashedPassword . "<br/>";
         // Remplacer le mot de passe
         $modifications = array(
             "userPassword" => $hashedPassword
