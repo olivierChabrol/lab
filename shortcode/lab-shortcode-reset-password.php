@@ -19,24 +19,40 @@ function lab_reset_password($atts) {
         }
     }
     if ( 'POST' !== $_SERVER['REQUEST_METHOD']) {
-         echo "<h3>Pas de données envoyées</h3><br/>";
+         //echo "<h3>Pas de données envoyées</h3><br/>";
     }
     else {
         echo "<h3>Données envoyées</h3><br/>";
-        $login = $_POST['login'];
-        $url = $url;
-        $data = array(
-            'login' => $login,
-        );
-        //echo '<pre>';
-        //var_dump($data);
-        //echo '</pre>';
-        $email = lab_reset_password_get_email($login);
-        
-        $tokenData = uniqid() . time() . 'votre_secret'; // Combinaison unique
-        $token = hash('sha256', $tokenData); // Crée le token
-        
-        lab_reset_password_send_mail($email,$url, $token, $login);
+        if (isset($_POST['login'])) {
+            $login = $_POST['login'];
+            $url = $url;
+            $data = array(
+                'login' => $login,
+            );
+            $email = lab_reset_password_get_email($login);
+            
+            $tokenData = uniqid() . time() . 'votre_secret'; // Combinaison unique
+            $token = hash('sha256', $tokenData); // Crée le token
+            
+            lab_reset_password_send_mail($email,$url, $token, $login);
+        }
+        if (isset($_POST['password'])) {
+            $password = $_POST['password'];
+            $password_confirmation = $_POST['password_confirmation'];
+            $token = $_POST['token'];
+            if ($password == $password_confirmation) {
+                $uid = lab_reset_password_get_uid_from_token($token);
+                if ($uid == null) {
+                    echo "Token invalide ou expiré.";
+                    return;
+                }
+                lab_reset_password_reset_ldap_password($token, $password);
+            }
+            else {
+                echo "Les mots de passe ne correspondent pas.";
+            }
+
+        }
     }
 
     $token = '';
@@ -57,7 +73,7 @@ function lab_reset_password($atts) {
         echo '<h2>Reinitialisation du mot de passe</h2>';
         echo '<form method="post" action="https://app.cirm-math.fr/api/auth/reset-password">';
         echo '<input type="hidden" name="token" value="' . $token . '"><br/>';
-        echo '<input type="password" name="password" placeholder="Nouveau mot de passe" required>';
+        echo '<input type="password" name="password" placeholder="Nouveau mot de passe" required><br/>';
         echo '<input type="password" name="password_confirmation" placeholder="Confirmer le mot de passe" required>';
         echo '</form>';
         echo '<p>Un email vous a été envoyé avec un lien de réinitialisation de mot de passe.</p>';
@@ -114,6 +130,23 @@ function lab_reset_password_add_token_to_db($token, $uid) {
     );   
 }
 
+function lab_reset_password_get_uid_from_token($token) {
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'lab_reset_password';
+    
+    // Récupération de l'uid correspondant au token
+    $result = $wpdb->get_row($wpdb->prepare(
+        "SELECT uid FROM $table_name WHERE token = %s", 
+        $token
+    ));
+    
+    if ($result) {
+        return $result->uid;
+    } else {
+        return null;
+    }
+}
+
 /**
  * Renvoie l'email correspondant à un uid si l'utilisateur existe, null sinon.
  *
@@ -139,5 +172,39 @@ function lab_reset_password_get_email($uid) {
         //echo "Aucun utilisateur trouvé avec cet email.";
         return null;
     }
+}
+
+function lab_reset_password_reset_ldap_password($newPassword, $uid) {
+    $ldap_obj = LAB_LDAP::getInstance(
+        AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_HOST)[0]->value,
+        AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_BASE)[0]->value,
+        AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_LOGIN)[0]->value,
+        AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_PASSWORD)[0]->value,
+        true
+      );
+      $filter    = "(uid=" . $uid . ")";
+      $result    = ldap_search($this->ldap_link, $this->base, $filter)
+          or die("Error in query");
+      $entry     = ldap_get_entries($this->ldap_link, $result);
+      if ($entries["count"] > 0) {
+        $dn = $entries[0]["dn"]; // DN de l'utilisateur trouvé
+
+        // Hacher le mot de passe (optionnel, selon le format attendu par le serveur)
+        $hashedPassword = "{SHA}" . base64_encode(pack("H*", sha1($newPassword)));
+
+        // Remplacer le mot de passe
+        $modifications = array(
+            "userPassword" => $hashedPassword
+        );
+
+        if (ldap_mod_replace($ldapconn, $dn, $modifications)) {
+            echo "Mot de passe modifié avec succès.";
+        } else {
+            echo "Échec de la modification du mot de passe.";
+        }
+    } else {
+        echo "Utilisateur non trouvé.";
+    }
+
 }
 ?>
