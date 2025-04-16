@@ -10,6 +10,8 @@ function lab_reset_password($atts) {
         'debug'    => get_option('lab-cirm'),
     ), $atts, "lab-cirm");
     //var_dump($atts);
+    global $wp;
+    $url = home_url( $wp->request );
     $debug = false;
     if (isset($atts['debug'])) {
         if ($atts['debug'] == 'yes') {
@@ -22,7 +24,7 @@ function lab_reset_password($atts) {
     else {
         echo "<h3>Données envoyées</h3><br/>";
         $login = $_POST['login'];
-        $url = 'https://app.cirm-math.fr/api/auth/reset-password';
+        $url = $url;
         $data = array(
             'login' => $login,
         );
@@ -40,7 +42,7 @@ function lab_reset_password($atts) {
     echo '<div class="lab-reset-password">';
     if ($token == '') {
         echo '<h2>Demande de réinitialisation de mot de passe</h2>';
-        echo '<form method="post" action="/changement-de-mot-de-passe">';
+        echo '<form method="post" action="'.$url.'">';
         echo '<input type="text" name="login" placeholder="login" required>';
         echo '<button type="submit">Envoyer</button>';
         echo '</form>';
