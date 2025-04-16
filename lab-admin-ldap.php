@@ -328,6 +328,23 @@ class LAB_LDAP
         return array($name, $surname, $email, $uidNumber, $homeDirectory);
     }
 
+    public function get_map_info_from_uid($uid)
+    {
+        $array = $this->get_info_from_uid($uid);
+        if ($array == null) {
+            return null;
+        }
+        $info = array(
+            "uid" => $uid,
+            "lastname" => $array[0],
+            "firstname" => $array[1],
+            "mail" => $array[2],
+            "uidnumber" => $array[3],
+            "homedirectory" => $array[4]
+        );
+        return $info;
+    }
+
     public function addEntry($path, $fields)
     {
         $this->bindAdmin();

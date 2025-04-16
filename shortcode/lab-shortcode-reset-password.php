@@ -71,10 +71,10 @@ function lab_reset_password_get_email($uid) {
         AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_PASSWORD)[0]->value,
         true
       );
-    $user_datas = $ldap_obj->get_info_from_uid($uid);
+    $user_datas = $ldap_obj->get_map_info_from_uid($uid);
     var_dump($user_datas);
     if($user_datas != null) {
-        $email = $user_datas['mail'][0];
+        $email = $user_datas['mail'];
         echo "Email correspondant : " . $email;
     } else {
         echo "Aucun utilisateur trouvé avec cet email.";
