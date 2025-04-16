@@ -111,13 +111,8 @@ function lab_reset_password_add_token_to_db($token, $uid) {
         $table_name,
         array(
             'token' => $token,
-            'login' => $uid,
+            'uid' => $uid,
             'date' => current_time('mysql'),
-        ),
-        array(
-            '%s',  // Format pour la date (string)
-            '%s',  // Format pour le token (string)
-            '%s'   // Format pour l'uid (string)
         )
     );   
 }
