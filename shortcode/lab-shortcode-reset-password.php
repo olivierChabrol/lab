@@ -102,10 +102,7 @@ function lab_reset_password_send_mail($email,$url, $token, $uid) {
 function lab_reset_password_add_token_to_db($token, $uid) {
     global $wpdb;
     $table_name = $wpdb->prefix . 'lab_reset_password';
-    $token = $_POST['token'];
-    $login = $_POST['login'];
-    $expiration_time = time() + 3600; // 1 heure d'expiration
-
+    
     // Insertion du token dans la base de données
     $wpdb->insert(
         $table_name,
