@@ -37,11 +37,14 @@ function lab_reset_password($atts) {
             lab_reset_password_send_mail($email,$url, $token, $login);
         }
         if (isset($_POST['password'])) {
+            echo "<h4>Nouveau mdp</h4><br/>";
             $password = $_POST['password'];
             $password_confirmation = $_POST['password_confirmation'];
             $token = $_POST['token'];
             if ($password == $password_confirmation) {
+                echo "Meme mdp<br/>";
                 $uid = lab_reset_password_get_uid_from_token($token);
+                echo "UID : $uid <br/>";
                 if ($uid == null) {
                     echo "Token invalide ou expiré.";
                     return;
