@@ -36,7 +36,7 @@ function lab_reset_password($atts) {
         $tokenData = uniqid() . time() . 'votre_secret'; // Combinaison unique
         $token = hash('sha256', $tokenData); // Crée le token
         
-        lab_reset_password_send_mail($email,$url, $token);
+        lab_reset_password_send_mail($email,$url, $token, $login);
     }
 
     $token = '';
@@ -80,7 +80,7 @@ function lab_reset_password($atts) {
  * @return void
  */
 
-function lab_reset_password_send_mail($email,$url, $token) {
+function lab_reset_password_send_mail($email,$url, $token, $uid) {
 
     // Paramètres de l'email
     $destinataire = $email; // Adresse email du destinataire
@@ -94,9 +94,32 @@ function lab_reset_password_send_mail($email,$url, $token) {
     
     // Envoi de l'email
     if (wp_mail($destinataire, $sujet, $message, $headers)) {
-        //echo "Email envoyé avec succès.";
+        lab_reset_password_add_token_to_db($token, $uid);
     }
     echo "Un email a été envoyé à votre adresse avec un lien de réinitialisation de mot de passe.";
+}
+
+function lab_reset_password_add_token_to_db($token, $uid) {
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'lab_reset_password';
+    $token = $_POST['token'];
+    $login = $_POST['login'];
+    $expiration_time = time() + 3600; // 1 heure d'expiration
+
+    // Insertion du token dans la base de données
+    $wpdb->insert(
+        $table_name,
+        array(
+            'token' => $token,
+            'login' => $uid,
+            'date' => current_time('mysql'),
+        ),
+        array(
+            '%s',  // Format pour la date (string)
+            '%s',  // Format pour le token (string)
+            '%s'   // Format pour l'uid (string)
+        )
+    );   
 }
 
 /**
