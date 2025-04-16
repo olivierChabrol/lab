@@ -201,7 +201,7 @@ function lab_reset_password_get_email($uid) {
 
 function lab_reset_password_reset_ldap_password($newPassword, $uid) {
     echo "lab_reset_password_reset_ldap_password : $newPassword <br/>";
-    
+
     $ldap_obj = LAB_LDAP::getInstance(
         AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_HOST)[0]->value,
         AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_BASE)[0]->value,
@@ -210,9 +210,9 @@ function lab_reset_password_reset_ldap_password($newPassword, $uid) {
         true
       );
       $filter    = "(uid=" . $uid . ")";
-      $result    = ldap_search($this->ldap_link, $this->base, $filter)
+      $result    = $ldap_obj->search('ou=accounts,', $filter)
           or die("Error in query");
-      $entry     = ldap_get_entries($this->ldap_link, $result);
+      $entries     = $ldap_obj->list_entries($result);
       if ($entries["count"] > 0) {
         echo "Utilisateur trouvé.";
         $dn = $entries[0]["dn"]; // DN de l'utilisateur trouvé

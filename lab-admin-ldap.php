@@ -291,6 +291,11 @@ class LAB_LDAP
         return ldap_get_entries($this->ldap_link, $result)[$i][$field][0];
     }
 
+    public function list_entries($result)
+    {
+        return ldap_get_entries($this->ldap_link, $result);
+    }
+
 
     public function get_info_from_mail($mail)
     {
