@@ -74,7 +74,8 @@ function lab_reset_password($atts) {
         echo '<form method="post" action="https://app.cirm-math.fr/api/auth/reset-password">';
         echo '<input type="hidden" name="token" value="' . $token . '"><br/>';
         echo '<input type="password" name="password" placeholder="Nouveau mot de passe" required><br/>';
-        echo '<input type="password" name="password_confirmation" placeholder="Confirmer le mot de passe" required>';
+        echo '<input type="password" name="password_confirmation" placeholder="Confirmer le mot de passe" required><br/>';
+        echo '<button type="submit">Envoyer</button>';
         echo '</form>';
         echo '<p>Un email vous a été envoyé avec un lien de réinitialisation de mot de passe.</p>';
         echo '<p>Si vous ne recevez pas d\'email, vérifiez votre dossier spam ou contactez votre administrateur.</p>';
@@ -115,6 +116,20 @@ function lab_reset_password_send_mail($email,$url, $token, $uid) {
     echo "Un email a été envoyé à votre adresse avec un lien de réinitialisation de mot de passe.";
 }
 
+/**
+ * Inserts a reset password token into the database.
+ *
+ * This function stores a token, the associated user ID, and the current timestamp into the 
+ * 'lab_reset_password' table in the database.
+ *
+ * @param string $token The reset password token.
+ * @param string $uid The user ID associated with the token.
+ *
+ * @global wpdb $wpdb WordPress database abstraction object.
+ * 
+ * @return void
+ */
+
 function lab_reset_password_add_token_to_db($token, $uid) {
     global $wpdb;
     $table_name = $wpdb->prefix . 'lab_reset_password';
@@ -130,6 +145,13 @@ function lab_reset_password_add_token_to_db($token, $uid) {
     );   
 }
 
+/**
+ * Given a token, returns the uid associated with it from the database.
+ * 
+ * @param string $token The token to look up.
+ * 
+ * @return string|null The uid associated with the token, or null if the token is invalid.
+ */
 function lab_reset_password_get_uid_from_token($token) {
     global $wpdb;
     $table_name = $wpdb->prefix . 'lab_reset_password';
