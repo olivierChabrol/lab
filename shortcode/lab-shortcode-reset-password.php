@@ -49,7 +49,7 @@ function lab_reset_password($atts) {
                     echo "Token invalide ou expiré.";
                     return;
                 }
-                lab_reset_password_reset_ldap_password($token, $password);
+                lab_reset_password_reset_ldap_password($password, $uid);
             }
             else {
                 echo "Les mots de passe ne correspondent pas.";
