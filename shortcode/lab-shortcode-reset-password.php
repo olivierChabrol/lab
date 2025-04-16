@@ -64,38 +64,6 @@ function lab_reset_password($atts) {
 }
 
 function lab_reset_password_get_email($uid) {
-    /*
-    $ldapServer = "ldap://ldap.i2m.univ-amu.fr"; // Adresse de votre serveur LDAP
-    $ldapAdminDn = "admin";            // DN de l'administrateur
-    $ldapAdminPassword = "d5u.4SR:"; // Mot de passe de l'administrateur
-
-    // Connexion au serveur LDAP
-    $ldapconn = ldap_connect($ldapServer) or die("Impossible de se connecter au serveur LDAP.");
-
-    if ($ldapconn) {
-        // Authentification
-        $ldapbind = ldap_bind($ldapconn, $ldapAdminDn, $ldapAdminPassword);
-        
-        if ($ldapbind) {
-            // Recherche LDAP avec un filtre basé sur l'email
-            $baseDn = "dc=i2m,dc=univ-amu,dc=fr"; // Remplacez par le DN de base de votre annuaire
-            $searchFilter = "(uid=$uid)";
-            
-            $searchResult = ldap_search($ldapconn, $baseDn, $searchFilter);
-            $entries = ldap_get_entries($ldapconn, $searchResult);
-            
-            if ($entries["count"] > 0) {
-                $email = $entries[0]["email"][0]; // Récupérer le premier 'uid' trouvé
-                echo "Email correspondant : " . $email;
-            } else {
-                echo "Aucun utilisateur trouvé avec cet email.";
-            }
-        } else {
-            echo "Échec de l'authentification.";
-        }
-        ldap_close($ldapconn);
-    }
-    //*/
     $ldap_obj = LAB_LDAP::getInstance(
         AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_HOST)[0]->value,
         AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_BASE)[0]->value,
@@ -104,6 +72,7 @@ function lab_reset_password_get_email($uid) {
         true
       );
     $user_datas = $ldap_obj->get_info_from_uid($uid);
+    var_dump($user_datas);
     if($user_datas != null) {
         $email = $user_datas['mail'][0];
         echo "Email correspondant : " . $email;
