@@ -302,9 +302,15 @@ class LAB_LDAP
         return ldap_search($this->ldap_link,  $this->base, $filter, $attrRead);
     }
 
-    public function ldap_mod_replace($info)
+    /**
+     * Modify an existing LDAP entry
+     *
+     * @param array $info Associative array of values to replace in the LDAP entry
+     * @return int Result of the operation
+     */
+    public function ldap_mod_replace($dn, $info)
     {
-        return ldap_mod_replace($this->ldap_link, $this->base, $info);
+        return ldap_mod_replace($this->ldap_link, $dn, $info);
     }
 
     public function get_info_from_mail($mail)

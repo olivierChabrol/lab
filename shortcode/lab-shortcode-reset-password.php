@@ -216,6 +216,7 @@ function lab_reset_password_reset_ldap_password($newPassword, $uid) {
     if ($entries["count"] > 0) {
         echo "Utilisateur trouvé.<br/>";
         $dn = $entries[0]["dn"]; // DN de l'utilisateur trouvé
+        echo "DN : $dn <br/>";
 
         // Hacher le mot de passe (optionnel, selon le format attendu par le serveur)
         $hashedPassword = "{SHA}" . base64_encode(pack("H*", sha1($newPassword)));
@@ -223,10 +224,10 @@ function lab_reset_password_reset_ldap_password($newPassword, $uid) {
         echo "hashedPassword : ".$hashedPassword . "<br/>";
         // Remplacer le mot de passe
         $modifications = array(
-            "userPassword" => $hashedPassword
+            "userpassword" => $hashedPassword
         );
 
-        if ($ldap_obj->ldap_mod_replace($modifications)) {
+        if ($ldap_obj->ldap_mod_replace($dn, $modifications)) {
             echo "Mot de passe modifié avec succès.<br/>";
         } else {
             echo "Échec de la modification du mot de passe.<br/>";
