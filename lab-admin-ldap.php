@@ -310,7 +310,11 @@ class LAB_LDAP
      */
     public function ldap_mod_replace($dn, $info)
     {
-        return ldap_mod_replace($this->ldap_link, $dn, $info);
+        $r = ldap_mod_replace($this->ldap_link, $dn, $info);
+        if ($r === false) {
+            echo "ERREUR LDAP : ".ldap_errno($this->ldap_link)."<br/>";
+        }
+        return $r;
     }
 
     public function get_info_from_mail($mail)
