@@ -317,6 +317,15 @@ class LAB_LDAP
         return $r;
     }
 
+    public function modify($user_dn, $entry) {
+        $this->bindAdmin();
+        $result = ldap_modify($this->ldap_link, $user_dn, $entry);
+        if ($result === false) {
+            echo "ERREUR LDAP : ".ldap_errno($this->ldap_link)."<br/>";
+        }
+        return $result;
+    }
+
     public function get_info_from_mail($mail)
     {
         $filter    = "(mail=" . $mail . ")";

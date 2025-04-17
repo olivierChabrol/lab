@@ -227,7 +227,7 @@ function lab_reset_password_reset_ldap_password($newPassword, $uid) {
             "userpassword" => $hashedPassword
         );
 
-        if ($ldap_obj->ldap_mod_replace($dn, $modifications)) {
+        if ($ldap_obj->modify($dn, $modifications)) {
             echo "Mot de passe modifié avec succès.<br/>";
         } else {
             echo "Échec de la modification du mot de passe.<br/>";
