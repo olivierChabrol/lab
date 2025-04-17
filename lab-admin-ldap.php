@@ -296,6 +296,11 @@ class LAB_LDAP
         return ldap_get_entries($this->ldap_link, $result);
     }
 
+    public function ldap_search($filter)
+    {
+        $attrRead  = array("givenname", "sn", "mail", "uid", "password");
+        return ldap_search($this->ldap_link,  $this->base, $filter, $attrRead);
+    }
 
     public function get_info_from_mail($mail)
     {

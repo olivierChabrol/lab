@@ -211,7 +211,7 @@ function lab_reset_password_reset_ldap_password($newPassword, $uid) {
       );
     $filter    = "uid=" . $uid;
     echo "filter : $filter <br/>";
-    $result    = $ldap_obj->search('ou=accounts,', $filter) or die("Error in query");
+    $result    = $ldap_obj->ldap_search($filter) or die("Error in query");
     $entries     = $ldap_obj->list_entries($result);
     if ($entries["count"] > 0) {
         echo "Utilisateur trouvé.";
