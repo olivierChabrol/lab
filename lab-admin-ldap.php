@@ -302,6 +302,11 @@ class LAB_LDAP
         return ldap_search($this->ldap_link,  $this->base, $filter, $attrRead);
     }
 
+    public function ldap_mod_replace($info)
+    {
+        return ldap_mod_replace($this->ldap_link, $this->base, $info);
+    }
+
     public function get_info_from_mail($mail)
     {
         $filter    = "(mail=" . $mail . ")";

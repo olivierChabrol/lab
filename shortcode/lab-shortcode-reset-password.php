@@ -214,7 +214,7 @@ function lab_reset_password_reset_ldap_password($newPassword, $uid) {
     $result    = $ldap_obj->ldap_search($filter) or die("Error in query");
     $entries     = $ldap_obj->list_entries($result);
     if ($entries["count"] > 0) {
-        echo "Utilisateur trouvé.";
+        echo "Utilisateur trouvé.<br/>";
         $dn = $entries[0]["dn"]; // DN de l'utilisateur trouvé
 
         // Hacher le mot de passe (optionnel, selon le format attendu par le serveur)
@@ -226,13 +226,13 @@ function lab_reset_password_reset_ldap_password($newPassword, $uid) {
             "userPassword" => $hashedPassword
         );
 
-        if (ldap_mod_replace($ldapconn, $dn, $modifications)) {
-            echo "Mot de passe modifié avec succès.";
+        if ($ldap_obj->ldap_mod_replace($modifications)) {
+            echo "Mot de passe modifié avec succès.<br/>";
         } else {
-            echo "Échec de la modification du mot de passe.";
+            echo "Échec de la modification du mot de passe.<br/>";
         }
     } else {
-        echo "Utilisateur non trouvé.";
+        echo "Utilisateur non trouvé.<br/>";
     }
 
 }
