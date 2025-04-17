@@ -19,7 +19,32 @@ function lab_reset_password($atts) {
         }
     }
     if ( 'POST' !== $_SERVER['REQUEST_METHOD']) {
-         //echo "<h3>Pas de données envoyées</h3><br/>";
+        $token = '';
+        if (isset($_GET['token'])) {
+            $token = $_GET['token'];
+        }
+        echo '<div class="lab-reset-password">';
+        if ($token == '') {
+            echo '<h2>Demande de réinitialisation de mot de passe</h2>';
+            echo '<form method="post" action="'.$url.'">';
+            echo '<input type="text" name="login" placeholder="login" required>';
+            echo '<button type="submit">Envoyer</button>';
+            echo '</form>';
+            echo '<p>Un email vous a été envoyé avec un lien de réinitialisation de mot de passe.</p>';
+            echo '<p>Si vous ne recevez pas d\'email, vérifiez votre dossier spam ou contactez votre administrateur.</p>';
+        }
+        else {
+            echo '<h2>Reinitialisation du mot de passe</h2>';
+            echo '<form method="post" action="'.$url.'">';
+            echo '<input type="hidden" name="token" value="' . $token . '"><br/>';
+            echo '<input type="password" name="password" placeholder="Nouveau mot de passe" required><br/>';
+            echo '<input type="password" name="password_confirmation" placeholder="Confirmer le mot de passe" required><br/>';
+            echo '<button type="submit">Envoyer</button>';
+            echo '</form>';
+            echo '<p>Un email vous a été envoyé avec un lien de réinitialisation de mot de passe.</p>';
+            echo '<p>Si vous ne recevez pas d\'email, vérifiez votre dossier spam ou contactez votre administrateur.</p>';
+
+        }
     }
     else {
         echo "<h3>Données envoyées</h3><br/>";
@@ -42,9 +67,9 @@ function lab_reset_password($atts) {
             $password_confirmation = $_POST['password_confirmation'];
             $token = $_POST['token'];
             if ($password == $password_confirmation) {
-                echo "Meme mdp<br/>";
+                //echo "Meme mdp<br/>";
                 $uid = lab_reset_password_get_uid_from_token($token);
-                echo "UID : $uid <br/>";
+                //echo "UID : $uid <br/>";
                 if ($uid == null) {
                     echo "Token invalide ou expiré.";
                     return;
@@ -58,32 +83,6 @@ function lab_reset_password($atts) {
         }
     }
 
-    $token = '';
-    if (isset($_GET['token'])) {
-        $token = $_GET['token'];
-    }
-    echo '<div class="lab-reset-password">';
-    if ($token == '') {
-        echo '<h2>Demande de réinitialisation de mot de passe</h2>';
-        echo '<form method="post" action="'.$url.'">';
-        echo '<input type="text" name="login" placeholder="login" required>';
-        echo '<button type="submit">Envoyer</button>';
-        echo '</form>';
-        echo '<p>Un email vous a été envoyé avec un lien de réinitialisation de mot de passe.</p>';
-        echo '<p>Si vous ne recevez pas d\'email, vérifiez votre dossier spam ou contactez votre administrateur.</p>';
-    }
-    else {
-        echo '<h2>Reinitialisation du mot de passe</h2>';
-        echo '<form method="post" action="'.$url.'">';
-        echo '<input type="hidden" name="token" value="' . $token . '"><br/>';
-        echo '<input type="password" name="password" placeholder="Nouveau mot de passe" required><br/>';
-        echo '<input type="password" name="password_confirmation" placeholder="Confirmer le mot de passe" required><br/>';
-        echo '<button type="submit">Envoyer</button>';
-        echo '</form>';
-        echo '<p>Un email vous a été envoyé avec un lien de réinitialisation de mot de passe.</p>';
-        echo '<p>Si vous ne recevez pas d\'email, vérifiez votre dossier spam ou contactez votre administrateur.</p>';
-
-    }
         
 }
 
@@ -200,7 +199,7 @@ function lab_reset_password_get_email($uid) {
 }
 
 function lab_reset_password_reset_ldap_password($newPassword, $uid) {
-    echo "[INFO] lab_reset_password_reset_ldap_password : $newPassword <br/>";
+    //echo "[INFO] lab_reset_password_reset_ldap_password : $newPassword <br/>";
 
     $ldap_obj = LAB_LDAP::getInstance(
         AdminParams::get_params_fromId(AdminParams::PARAMS_LDAP_HOST)[0]->value,
@@ -210,31 +209,30 @@ function lab_reset_password_reset_ldap_password($newPassword, $uid) {
         true
       );
     $filter    = "uid=" . $uid;
-    echo "filter : $filter <br/>";
-    $result    = $ldap_obj->ldap_search($filter) or die("Error in query");
-    $entries     = $ldap_obj->list_entries($result);
-    if ($entries["count"] > 0) {
-        echo "Utilisateur trouvé.<br/>";
-        $dn = $entries[0]["dn"]; // DN de l'utilisateur trouvé
-        echo "DN : $dn <br/>";
-
-        // Hacher le mot de passe (optionnel, selon le format attendu par le serveur)
-        $hashedPassword = "{SHA}" . base64_encode(pack("H*", sha1($newPassword)));
-
-        echo "hashedPassword : ".$hashedPassword . "<br/>";
-        // Remplacer le mot de passe
-        $modifications = array(
-            "userpassword" => $hashedPassword
-        );
-
-        if ($ldap_obj->modify($dn, $modifications)) {
-            echo "Mot de passe modifié avec succès.<br/>";
-        } else {
-            echo "Échec de la modification du mot de passe.<br/>";
-        }
-    } else {
-        echo "Utilisateur non trouvé.<br/>";
+    //echo "filter : $filter <br/>";
+    $result    = $ldap_obj->ldap_search($filter);
+    if ($result === false) {
+        echo "Erreur de recherche LDAP : " . $ldap_obj->get_error() . "<br/>";
     }
+    else {
+        $entries     = $ldap_obj->list_entries($result);
+        if ($entries["count"] > 0) {
+            $dn = $entries[0]["dn"]; // DN de l'utilisateur trouvé
 
+            // Hacher le mot de passe (optionnel, selon le format attendu par le serveur)
+            $hashedPassword = "{SHA}" . base64_encode(pack("H*", sha1($newPassword)));
+
+            // Remplacer le mot de passe
+            $modifications = array("userpassword" => $hashedPassword);
+
+            if ($ldap_obj->modify($dn, $modifications)) {
+                echo "Mot de passe modifié avec succès.<br/>";
+            } else {
+                echo "Échec de la modification du mot de passe.<br/>";
+            }
+        } else {
+            echo "Utilisateur non trouvé.<br/>";
+        }
+    }
 }
 ?>
