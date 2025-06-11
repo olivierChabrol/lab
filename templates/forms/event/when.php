@@ -1,28 +1,61 @@
 <?php
 global $EM_Event, $post;
-$hours_format = em_get_hour_format();
 $required = apply_filters('em_required_html','<i>*</i>');
+$days_names = em_get_days_names();
+$hours_format = em_get_hour_format();
+$classes = array();
+$id = rand();
 ?>
-<div class="event-form-when" id="em-form-when">
-	<p class="em-date-range">
-		<?php _e ( 'From ', 'events-manager'); ?>					
-		<input class="em-date-start em-date-input-loc" type="text" />
-		<input class="em-date-input" type="hidden" name="event_start_date" value="<?php echo $EM_Event->start()->getDate();; ?>" />
-		<?php _e('to','events-manager'); ?>
-		<input class="em-date-end em-date-input-loc" type="text" />
-		<input class="em-date-input" type="hidden" name="event_end_date" value="<?php echo $EM_Event->end()->getDate();; ?>" />
-	</p>
-	<p class="em-time-range">
-		<span class="em-event-text"><?php _e('Event starts at','events-manager'); ?></span>
-		<input id="start-time" class="em-time-input em-time-start" type="text" size="8" maxlength="8" name="event_start_time" value="<?php if(isset($_GET['starttime']) && preg_match('/\d{2}:\d{2}/',$_GET['starttime'])){ echo $_GET['starttime'];} else { echo $EM_Event->start()->format($hours_format); } ?>" />
-		<?php _e('to','events-manager'); ?>
-		<input id="end-time" class="em-time-input em-time-end" type="text" size="8" maxlength="8" name="event_end_time" value="<?php if(isset($_GET['endtime']) && preg_match('/\d{2}:\d{2}/',$_GET['endtime'])){ echo $_GET['endtime'];} else { echo $EM_Event->end()->format($hours_format); } ?>" />
-		<?php _e('All day','events-manager'); ?> <input type="checkbox" class="em-time-all-day" name="event_all_day" id="em-time-all-day" value="1" <?php if(!empty($EM_Event->event_all_day)) echo 'checked="checked"'; ?> />
-	</p>
-	<span id='event-date-explanation'>
-	<?php esc_html_e( 'This event spans every day between the beginning and end date, with start/end times applying to each day.', 'events-manager'); ?>
-	</span>
-</div>  
-<?php if( false && get_option('dbem_recurrence_enabled') && $EM_Event->is_recurrence() ) : //in future, we could enable this and then offer a detach option alongside, which resets the recurrence id and removes the attachment to the recurrence set ?>
-<input type="hidden" name="recurrence_id" value="<?php echo $EM_Event->recurrence_id; ?>" />
-<?php endif;
+<div class="em event-form-when input" id="em-form-when">
+	<?php if ( get_option('dbem_recurrence_enabled') || ( $EM_Event->is_repeating() ) ): ?>
+		<?php if ( $EM_Event->is_recurring( true ) ): ?>
+			<input type="hidden" id="em-recurrence-checkbox-<?php echo $id; ?>" class="em-recurrence-checkbox event_type" name="event_type" value="<?php echo $EM_Event->is_repeating() ? 'repeating':'recurring'; ?>">
+			<p>
+				<?php
+				if ( $EM_Event->is_repeating() ) {
+					echo esc_html( sprintf( __('This is a %s event.', 'events-manager'), __('repeating', 'events-manager') ) );
+				} else {
+					echo esc_html( sprintf( __('This is a %s event.', 'events-manager'), __('recurring', 'events-manager') ) );
+				}
+				?>
+			</p>
+		<?php elseif ( !$EM_Event->event_id ): ?>
+			<p class="em-event-type">
+				<label data-nostyle>
+					<?php if (  !is_admin() && get_option('dbem_recurrence_enabled') && get_option('dbem_repeating_enabled') ):  ?>
+						<?php ob_start(); ?>
+						<select id="em-recurrence-checkbox-<?php echo $id; ?>" class="em-recurrence-checkbox event_type inline" name="event_type" data-nostyle>
+							<option value="single"><?php esc_html_e('Single', 'events-manager'); ?></option>
+							<option value="recurring"><?php esc_html_e('Recurring', 'events-manager'); ?></option>
+							<option value="repeating"><?php esc_html_e('Repeating', 'events-manager'); ?></option>
+						</select>
+						<?php echo sprintf( esc_html__('This is a %s event.', 'events-manager'), ob_get_clean() ); ?>
+					<?php else: ?>
+						<?php echo esc_html( sprintf( __('This is a %s event.', 'events-manager'), __('recurring', 'events-manager') ) ); ?>
+						<input type="checkbox" id="em-recurrence-checkbox-<?php echo $id; ?>" class="em-recurrence-checkbox event_type" name="event_type" value="recurring" <?php if($EM_Event->is_recurring( true )) echo 'checked' ?> >
+					<?php endif; ?>
+				</label>
+			</p>
+		<?php elseif ( $EM_Event->is_recurring( true ) ): ?>
+			<input type="hidden" id="em-recurrence-checkbox-<?php echo $id; ?>" class="em-recurrence-checkbox event_type" name="event_type" value="<?php echo esc_html( $EM_Event->event_type ); ?>">
+		<?php endif; ?>
+	<?php endif; ?>
+
+	<div class="em-event-datetimes single-event-data">
+		<?php if( get_option('dbem_dates_range_double_inputs', false) ): ?>
+			<?php include( em_locate_template('forms/event/when/dates-separate.php') ); ?>
+		<?php else: ?>
+			<?php include( em_locate_template('forms/event/when/dates.php') ); ?>
+		<?php endif; ?>
+		<?php include( em_locate_template('forms/event/when/times.php') ); ?>
+		<?php include( em_locate_template('forms/event/when/timezone.php') ); ?>
+		<p class="multi-day-event-info"><?php esc_html_e( 'This event spans every day between the beginning and end date, with start/end times applying to each day.', 'events-manager'); ?></p>
+		<?php if( get_option('dbem_event_status_enabled') ) : ?>
+			<?php include( em_locate_template('forms/event/when/active-status.php') ); ?>
+		<?php endif; ?>
+	</div>
+
+	<?php if ( get_option('dbem_recurrence_enabled') || ( $EM_Event->is_repeating() ) ): ?>
+		<?php include em_locate_template('forms/event/when/recurring/recurring-summary.php'); ?>
+	<?php endif; ?>
+</div>
