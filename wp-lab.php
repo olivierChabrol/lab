@@ -158,6 +158,25 @@ register_uninstall_hook(__FILE__, 'lab_uninstall_hook');
 add_action( 'show_user_profile', 'lab_add_user_profile_fields' );
 add_action( 'personal_options_update', 'lab_save_extra_user_profile_fields' );
 
+if (!function_exists('lab_json')) {
+    function lab_json() {
+        //check if this is a calendar request for all events
+        if (preg_match('/events.json(\?.+)?$/', $_SERVER['REQUEST_URI']) || $_SERVER['REQUEST_URI'] == '/?json=1') {
+            header('Content-Type: application/json; charset=utf-8');
+            header('Content-Disposition: inline; filename="events.json"');
+            //send headers
+            if (function_exists('em_locate_template')) {
+                em_locate_template('templates/event-json.php', true);
+            } else {
+                toto1234();
+            }
+            
+            //echo "toto";
+            die();
+        }
+    }
+    add_action('init', 'lab_json');
+}
   
 /*
  * Ajoute le widget wphal à l'initialisation des widgets
@@ -167,6 +186,8 @@ add_action('widgets_init', 'wplab_init');
 add_filter('get_wp_user_avatar', 'custom_user_avatar', 1, 5);
 remove_action('wpua_before_avatar', 'wpua_do_before_avatar');
 remove_action('wpua_after_avatar', 'wpua_do_after_avatar');
+
+
 
 
 function custom_user_avatar($avatar, $id_or_email = NULL, $size = NULL, $align = NULL, $alt = NULL) {
