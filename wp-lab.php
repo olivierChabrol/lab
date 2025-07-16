@@ -166,12 +166,8 @@ if (!function_exists('lab_json')) {
             header('Content-Disposition: inline; filename="events.json"');
             //send headers
             if (function_exists('em_locate_template')) {
-                em_locate_template('templates/event-json.php', true);
-            } else {
-                toto1234();
+                include 'templates/event-json.php';
             }
-            
-            //echo "toto";
             die();
         }
     }

@@ -1,7 +1,9 @@
 <?php
-require_once dirname(__FILE__, 4) . '/wp-load.php'; // Charge WordPress
-require_once dirname(__File__, 2) . '/events-manager/em-events.php'; // Charge Events Manager
+require_once dirname(__FILE__, 5) . '/wp-load.php'; // Charge WordPress
+require_once dirname(__FILE__, 3) . '/events-manager/em-events.php'; // Charge Events Manager
 header('Content-Type: application/json; charset=utf-8');
+$args = !empty($args) ? $args:array(); /* @var $args array */
+
 
 //define and clean up formats for display
 $summary_format = str_replace ( ">", "&gt;", str_replace ( "<", "&lt;", get_option ( 'dbem_ical_description_format' ) ) );header('Content-Type: application/json; charset=utf-8');
