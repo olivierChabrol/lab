@@ -427,6 +427,39 @@ function lab_ldap_new_WPUser($lastname, $firstname, $email, $password, $uid)
     //lab_admin_add_new_user_metadata($user_id);
 }
 
+
+function getMaxUidNumber($ldap_obj) {
+
+    // Recherche de tous les uidNumber
+    $filter = "(uidNumber=*)";
+    $attributes = ["uidNumber"];
+    $result = ldap_search($this->ldap_link, 'ou=accounts,' . $this->base, $filter, $attributes);
+
+    if (!$result) {
+        throw new Exception("Échec de la recherche LDAP avec le filtre $filter");
+    }
+
+    $entries = ldap_get_entries($this->ldap_link, $result);
+
+    $maxUid = -1;
+    for ($i = 0; $i < $entries["count"]; $i++) {
+        if (isset($entries[$i]["uidnumber"][0])) {
+            $uid = intval($entries[$i]["uidnumber"][0]);
+            if ($uid > $maxUid) {
+                $maxUid = $uid;
+            }
+        }
+    }
+
+
+    if ($maxUid === -1) {
+        throw new Exception("Aucun uidNumber trouvé dans l'annuaire.");
+    }
+
+    return $maxUid + 1;
+}
+
+
 function lab_ldap_addUser($ldap_obj, $first_name, $last_name, $email, $password, $uid, $organization = "I2M")
 {
     //$ldap_obj = LAB_LDAP::getInstance();
@@ -445,7 +478,8 @@ function lab_ldap_addUser($ldap_obj, $first_name, $last_name, $email, $password,
 
     $info["sn"] = $last_name;
     $info["mail"] = $email;
-    $info["uidnumber"] = 3000 + $ldap_obj->countResults($ldap_obj->searchAccounts());
+    $info["uidnumber"] = getMaxUidNumber($ldap_obj);
+    //3000 + $ldap_obj->countResults($ldap_obj->searchAccounts());
     if (substr($password, 0, 7) == '{CRYPT}') {
         $info["userpassword"] = $password;
     } else {
