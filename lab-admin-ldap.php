@@ -428,6 +428,16 @@ function lab_ldap_new_WPUser($lastname, $firstname, $email, $password, $uid)
 }
 
 
+/**
+ * Recherche le plus grand uidNumber présent dans l'annuaire.
+ * 
+ * @param LAB_LDAP $ldap_obj Instance de la classe LAB_LDAP
+ * 
+ * @return int Le plus grand uidNumber + 1
+ * 
+ * @throws Exception Si la recherche LDAP échoue
+ * @throws Exception Si aucun uidNumber n'est trouvé dans l'annuaire
+ */
 function getMaxUidNumber($ldap_obj) {
 
     // Recherche de tous les uidNumber
@@ -478,7 +488,7 @@ function lab_ldap_addUser($ldap_obj, $first_name, $last_name, $email, $password,
 
     $info["sn"] = $last_name;
     $info["mail"] = $email;
-    $info["uidnumber"] = $this->getMaxUidNumber($ldap_obj);
+    $info["uidnumber"] = getMaxUidNumber($ldap_obj);
     //3000 + $ldap_obj->countResults($ldap_obj->searchAccounts());
     if (substr($password, 0, 7) == '{CRYPT}') {
         $info["userpassword"] = $password;
