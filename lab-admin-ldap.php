@@ -443,13 +443,13 @@ function getMaxUidNumber($ldap_obj) {
     // Recherche de tous les uidNumber
     $filter = "(uidNumber=*)";
     $attributes = ["uidNumber"];
-    $result = ldap_search($ldap_obj->ldap_link, 'ou=accounts,' . $ldap_obj->base, $filter, $attributes);
+    $result = ldap_search($ldap_obj->getLink(), 'ou=accounts,' . $ldap_obj->getBase(), $filter, $attributes);
 
     if (!$result) {
         throw new Exception("Échec de la recherche LDAP avec le filtre $filter");
     }
 
-    $entries = ldap_get_entries($ldap_obj->ldap_link, $result);
+    $entries = ldap_get_entries($ldap_obj->getLink(), $result);
 
     $maxUid = -1;
     for ($i = 0; $i < $entries["count"]; $i++) {
