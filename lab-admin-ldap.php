@@ -478,7 +478,7 @@ function lab_ldap_addUser($ldap_obj, $first_name, $last_name, $email, $password,
 
     $info["sn"] = $last_name;
     $info["mail"] = $email;
-    $info["uidnumber"] = $ldap_obj->getMaxUidNumber($ldap_obj);
+    $info["uidnumber"] = $this->getMaxUidNumber($ldap_obj);
     //3000 + $ldap_obj->countResults($ldap_obj->searchAccounts());
     if (substr($password, 0, 7) == '{CRYPT}') {
         $info["userpassword"] = $password;
