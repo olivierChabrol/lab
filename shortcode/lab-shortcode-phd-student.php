@@ -17,14 +17,37 @@ function lab_admin_get_phd_student($filters, $order, $page) {
     }
     $retour["groups"] = $array_group;
 
+    $where = "WHERE p.slug = 'DOCT'";
+    $joins = "";
+
+    if (!empty($filters['group'])) {
+        $group_id = intval($filters['group']);
+        $where .= " AND lug.group_id = $group_id";
+        $joins = " JOIN wp_lab_users_groups AS lug ON lug.user_id = luh.user_id ";
+    }
+
+
+    if (!empty($filters['search'])) {
+        $search_term = esc_sql($filters['search']);
+        $joins .= "
+            JOIN wp_usermeta AS um_fn ON um_fn.user_id = luh.user_id AND um_fn.meta_key = 'first_name'
+            JOIN wp_usermeta AS um_ln ON um_ln.user_id = luh.user_id AND um_ln.meta_key = 'last_name'
+        ";
+        $where .= " AND (um_fn.meta_value LIKE '%$search_term%' OR um_ln.meta_value LIKE '%$search_term%')";
+    }
+
+
     // Obtention du nombre total de pages
-    $query = "SELECT luh.* FROM `wp_lab_params` AS p JOIN wp_lab_users_historic as luh ON luh.function = p.id WHERE p.slug = 'DOCT' ORDER BY luh.begin DESC LIMIT $offset, $items_per_page;";
-    $total_query = "SELECT count(*) FROM `wp_lab_params` AS p JOIN wp_lab_users_historic as luh ON luh.function = p.id WHERE p.slug = 'DOCT';";
+    $query = "SELECT luh.* FROM `wp_lab_params` AS p JOIN wp_lab_users_historic as luh ON luh.function = p.id $joins $where ORDER BY luh.begin DESC LIMIT $offset, $items_per_page;";
+    $total_query = "SELECT count(*) FROM `wp_lab_params` AS p JOIN wp_lab_users_historic as luh ON luh.function = p.id $joins $where;";
+
+
     $total = $wpdb->get_var( $total_query );
 
     $doctos = $wpdb->get_results($query);
     $num_rows = $wpdb->num_rows;
 
+    $retour["sql"] = $query;
     $retour["count"] = $num_rows;
     $retour["total"] = ceil($total / $items_per_page);
     $retour["page"] = $page;
@@ -58,6 +81,12 @@ function lab_admin_get_phd_student($filters, $order, $page) {
 
 function lab_display_phd_student($params) {
     $html = "";
+    $html .= '<div id="lab_php_student_filters" class="mb-3">';
+    $html .= '<input type="text" id="lab_search_input" class="form-control" placeholder="Rechercher un doctorant...">';
+    $html .= lab_html_select_str('lab_group_filter','lab_group_filter','lab_allRoles','lab_admin_group_load_all',null,array("value"=>0,"label"=>"--- Select Group ---"),0);
+    $html .= '</div>';
+
+    
     
     //$html .= '<div class="loading-state"><span class="lab-loader"></span></div>';
     $html .= "<div class=\"table-responsive\"><table  id=\"lab_php_student_table\" class=\"table table-striped  table-hover\"><thead id=\"lab_php_student_table_header\" class=\"thead-dark\"><tr><th>".esc_html__("Name", "lab")."</th>";

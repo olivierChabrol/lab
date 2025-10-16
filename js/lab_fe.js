@@ -16,8 +16,23 @@ jQuery(function($){
   }
 
   if ($("#lab_php_student_table").length) {
-    loadPhpStudent();
-  };
+    // Chargement initial
+    loadPhpStudent(1);
+
+    // Rafraîchissement lors du changement de filtre ou de recherche
+    $('#lab_group_filter').on('change input', function() {
+      loadPhpStudent(1);
+    });
+
+    $('#lab_search_input').on('input', function () {
+      const search = $(this).val();
+      if (search.length > 2 || search.length == 0) {
+        loadPhpStudent(1);
+      }
+    });
+
+  }
+
 
   $("#lab_internship_year").on('change', function() {
     loadInternship();
@@ -195,10 +210,18 @@ jQuery(function($){
     toggleTab($("#lab_request_ingo_tab_legal"), getRequestInfoTabs);
   }
 
+
+
+
   function loadPhpStudent(page = 1) {
+    let filters = {
+      group: $('#lab_group_filter').val(),
+      search: $('#lab_search_input').val()
+    };
+
     let data = {
       'action': 'lab_get_phd_student',
-      'filters': null,
+      'filters': filters,
       'order': null,
       'page': page,
     };
