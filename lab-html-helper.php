@@ -17,6 +17,20 @@ function lab_html_select($htmlId, $htmlName, $htmlClass, $fctCallback, $fctArgs 
 }
 
 
+/**
+ * Generate an HTML <select> field
+ * @param String $htmlId : id of the select
+ * @param String $htmlName : name of the select
+ * @param String $htmlClass : css class of the select
+ * @param callable $fctCallback : function to call to perform the select must return an array([id:0,value:"your value"])
+ * @param String $fctArgs : function to call arguments
+ * @param array $defaultValue : add an default <option> in the select, must be this form : ex. : array("value"=>0,"label"=>"None")
+ * @param String $selectedValue : value of the selected option
+ * @param array $idValues : array mapping id and value of the option to the field name in the object returned by $fctCallback
+ * @param array $attrMapping : mapping to add attribute [attributeName=>objectFieldName]
+ * @param int $cut : number of character to cut the value of the option
+ * @return String : HTML representation of the select
+ */
 function lab_html_select_str($htmlId, $htmlName, $htmlClass, $fctCallback, $fctArgs = null, $defaultValue = null, $selectedValue = null, $idValues = null, $attrMapping = null, $cut = 0) {
     $output ='<select id="'.$htmlId.'" name="'.$htmlName.'" class="'.$htmlClass.'" df="'.$selectedValue.'">';
     $results = null;
