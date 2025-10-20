@@ -144,7 +144,7 @@ jQuery(function($){
       });
       },
     select: function( event, ui ) {
-      
+      $(".spinner").hide();
       var label = ui.item.label;
       var value = ui.item.value;
       $("#lab_user_search").val(label);
