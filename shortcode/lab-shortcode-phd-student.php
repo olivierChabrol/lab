@@ -26,6 +26,11 @@ function lab_admin_get_phd_student($filters, $order, $page) {
         $joins = " JOIN wp_lab_users_groups AS lug ON lug.user_id = luh.user_id ";
     }
 
+    if (!empty($filters['defended']) && $filters['defended'] == 'true') {
+        $joins .= " JOIN wp_usermeta AS um_td ON um_td.user_id = luh.user_id AND um_td.meta_key = 'lab_user_thesis_date'";
+        $where .= " AND um_td.meta_value IS NOT NULL AND um_td.meta_value != ''";
+    }
+
 
     if (!empty($filters['search'])) {
         $search_term = esc_sql($filters['search']);
@@ -81,10 +86,27 @@ function lab_admin_get_phd_student($filters, $order, $page) {
 
 function lab_display_phd_student($params) {
     $html = "";
-    $html .= '<div id="lab_php_student_filters" class="mb-3">';
-    $html .= '<input type="text" id="lab_search_input" class="form-control" placeholder="Rechercher un doctorant...">';
-    $html .= lab_html_select_str('lab_group_filter','lab_group_filter','lab_allRoles','lab_admin_group_load_all',null,array("value"=>0,"label"=>"--- Select Group ---"),0);
-    $html .= '</div>';
+$html .= '<div id="lab_php_student_filters" class="mb-3">';
+
+$html .= '<input type="text" id="lab_search_input" class="form-control mb-2" placeholder="Rechercher un doctorant...">';
+
+$html .= lab_html_select_str(
+    'lab_group_filter',
+    'lab_group_filter',
+    'lab_allRoles',
+    'lab_admin_group_load_all',
+    null,
+    array("value" => 0, "label" => "--- Select Group ---"),
+    0
+);
+
+$html .= '<div class="form-check form-switch mt-2">';
+$html .= '<input class="form-check-input" type="checkbox" id="lab_filter_defended">';
+$html .= '<label class="form-check-label" for="lab_filter_defended" style="white-space: nowrap;">Afficher uniquement les doctorants ayant soutenu</label>';
+$html .= '</div>';
+
+$html .= '</div>';
+    
 
     
     

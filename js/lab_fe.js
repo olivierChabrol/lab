@@ -31,6 +31,13 @@ jQuery(function($){
       }
     });
 
+    $('#lab_filter_defended').on('change', function () {
+      loadPhpStudent(1);
+    });
+
+
+
+
   }
 
 
@@ -214,9 +221,12 @@ jQuery(function($){
 
 
   function loadPhpStudent(page = 1) {
+
+    const defendedOnly = $('#lab_filter_defended').is(':checked');
     let filters = {
       group: $('#lab_group_filter').val(),
-      search: $('#lab_search_input').val()
+      search: $('#lab_search_input').val(),
+      defended: defendedOnly ? true : false,
     };
 
     let data = {
@@ -280,11 +290,12 @@ jQuery(function($){
       td = $("<td/>");
       td.html(" ");
       if (user['lab_user_phd_support'] != null) {
+          console.log("Avec de phd support : " + user['lab_user_phd_support'] + " / user_id :" + user_id);
         if (data["phd_support"][user['lab_user_phd_support']] != null)  {
           td.html(data["phd_support"][user['lab_user_phd_support']]['slug']);
         }
         else {
-          console.log("Pas de phd support : " + user['lab_user_phd_support'] + " / " + user_id);
+          console.log("Pas de phd support : " + user['lab_user_phd_support'] + " / user_id :" + user_id);
           td.html("");
         }
       }
