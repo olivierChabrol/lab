@@ -141,10 +141,11 @@ jQuery(function($){
       try { searchRequest.abort(); } catch(e){}
       searchRequest = $.post(LAB.ajaxurl, { action: 'search_username',search: term, }, function(res) {
         suggest(res.data);
+        $("#lab_user_search").removeClass("ui-autocomplete-loading");
       });
       },
     select: function( event, ui ) {
-      $(".spinner").hide();
+      $("#lab_user_search").removeClass("ui-autocomplete-loading");
       var label = ui.item.label;
       var value = ui.item.value;
       $("#lab_user_search").val(label);
