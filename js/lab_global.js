@@ -176,41 +176,75 @@ function hideLoadingGif()
   jQuery("#loadingAjaxGif").removeClass('show');
 }
 
-function displayLoader()
-{
-  //jQuery('body').append('<div class="lab-loader" ></div>');
-  jQuery('body').append('<div id="myModal" class="modal"><div class="modal-content"><div class="loading-state"><span class="lab-loader"></span></div></div></div>');
-  jQuery('#myModal').show();
-  console.log("[displayLoader]");
 
+function displayLoader() {
+  loaderTimeout = setTimeout(() => {
+    if (jQuery('#myModal').length === 0) {
+      jQuery('body').append(`
+        <div id="myModal" class="lab-loader-modal">
+          <div class="loading-state">
+            <div class="lab-loader"></div>
+            <div class="loading-text">Chargement...</div>
+          </div>
+        </div>
+      `);
+    }
+    jQuery('#myModal').fadeIn(200);
+    jQuery('.loading-text').hide().fadeIn(600);
+
+  }, 300); // délai de 300 ms
 }
+
+
 function removeLoader(){
   jQuery('#myModal').hide();
 }
 
+
+function callAjax(data, successMessage = null, callBackSuccess = null, errorMessage = null, callBackError = null) {
+  console.log("[callAjax] Envoi des données :", data);
+
+  // Affiche le loader
+  displayLoader();
+
+  jQuery.ajax({
+    url: LAB.ajaxurl,
+    type: 'POST',
+    data: data,
+    dataType: 'json',
+    timeout: 10000, // 10 secondes
+    success: function(response) {
+      removeLoader();
+
+      if (response && response.success) {
+        console.log("[callAjax] Succès :", response.data);
+        if (successMessage) toast_success(successMessage);
+        if (typeof callBackSuccess === 'function') callBackSuccess(response.data);
+      } else {
+        console.warn("[callAjax] Erreur logique :", response);
+        if (errorMessage) toast_error(errorMessage);
+        else if (response?.data) toast_error(response.data);
+        if (typeof callBackError === 'function') callBackError(response.data);
+      }
+    },
+    error: function(jqXHR, textStatus, errorThrown) {
+      removeLoader();
+      console.error("[callAjax] Erreur AJAX :", textStatus, errorThrown);
+      toast_error("Erreur de communication avec le serveur : " + textStatus);
+      if (typeof callBackError === 'function') callBackError(errorThrown);
+    }
+  });
+}
+``/* Old version
+/*
 function callAjax(data, successMessage, callBackSuccess = null, errorMessage, callBackError = null) {
   let candisplayLoadingGif = false;
   console.log("[callAjax]");
-/*
-  if (jQuery("#loadingAjaxGif").length) {
-    candisplayLoadingGif = true;
-  }
-  if (candisplayLoadingGif) 
-  {
-    displayLoadingGif();
-  }
-    //*/
   displayLoader();
   //console.log("[callAjax] url : " + LAB.ajaxurl);
   jQuery.post(LAB.ajaxurl, data, function(response) {
     if (response.success) {
       removeLoader();
-      /*
-      if (candisplayLoadingGif) 
-      {
-        hideLoadingGif();
-      }
-      //*/
       if (successMessage != null) {
         toast_success(successMessage);
       }
@@ -222,12 +256,6 @@ function callAjax(data, successMessage, callBackSuccess = null, errorMessage, ca
     }
     else {
       removeLoader();
-      /*
-      if (candisplayLoadingGif) 
-      {
-        hideLoadingGif();
-      }
-      //*/
 
       if (errorMessage != null) {
         toast_error(errorMessage);
@@ -243,6 +271,7 @@ function callAjax(data, successMessage, callBackSuccess = null, errorMessage, ca
     }
     });
 }
+//*/
 
 // Notifications "toast" affichant une erreur ou un succès lors de la requête de création de groupe.
 function toast_error(message) {

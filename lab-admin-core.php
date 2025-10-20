@@ -2080,6 +2080,8 @@ function lab_admin_add_new_user_metadata($userId)
     lab_userMetaData_save_key($userId, "user_thesis_date", null);
     lab_userMetaData_save_key($userId, "user_hdr_date", null);
     lab_userMetaData_save_key($userId, "user_country", null);
+    lab_userMetaData_save_key($userId, "user_phd_support", null); // lab_user_phd_support
+    lab_userMetaData_save_key($userId, "lab_become", null); // lab_become
     lab_admin_usermeta_fill_hal_name($userId);
     lab_admin_usermeta_fill_user_slug($userId);
     lab_admin_createSocial($userId);
