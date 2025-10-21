@@ -37,7 +37,7 @@ jQuery(function($){
 
     const exportBtn = document.getElementById("export-excel-btn");
     exportBtn.addEventListener("click", function() {
-
+        displayLoader();
         let data = { 'action': 'export_phd_excel' }; 
         //callAjax(data, null, downloadPhdExcel, null, null);
         fetch("/wp-admin/admin-ajax.php?action=export_phd_excel")
@@ -53,9 +53,11 @@ jQuery(function($){
                 document.body.appendChild(a);
                 a.click();
                 a.remove();
+                removeLoader();
             })
             .catch(error => {
                 alert("Une erreur est survenue : " + error.message);
+                removeLoader();
             });
     });
   }

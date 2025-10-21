@@ -174,12 +174,19 @@ $html .= lab_html_select_str(
     0
 );
 
-$html .= '<div class="form-check form-switch mt-2">';
+
+// Ligne contenant la checkbox à gauche et le bouton à droite
+$html .= '<div class="d-flex align-items-center justify-content-between mt-2">';
+$html .= '<div class="form-check form-switch">';
 $html .= '<input class="form-check-input" type="checkbox" id="lab_filter_defended">';
 $html .= '<label class="form-check-label" for="lab_filter_defended" style="white-space: nowrap;">Afficher uniquement les doctorants ayant soutenu</label>';
 $html .= '</div>';
-$html .= '<button id="export-excel-btn" style="margin-top:20px;">📄 Exporter en Excel</button>';
-$html .= '</div>';
+
+$html .= '<button id="export-excel-btn" class="btn btn-outline-primary ms-auto">📄 Exporter en Excel</button>';
+$html .= '</div>'; // fin de la ligne flex
+
+$html .= '</div>'; // fin du bloc principal
+
     
 
     
