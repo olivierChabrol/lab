@@ -268,9 +268,13 @@ if (is_admin()) {
 
     // phd student
     add_action('wp_ajax_lab_get_phd_student', 'lab_ajax_get_phd_students');
+    
+    add_action('wp_ajax_export_phd_excel', 'lab_ajax_export_phd_excel');
+
 }
 // no admin
 else {
+    add_action('wp_ajax_nopriv_export_phd_excel', 'lab_ajax_export_phd_excel');
     add_action('wp_ajax_nopriv_lab_presence_save_ext', 'lab_admin_presence_save_ext_ajax');
     add_action('wp_ajax_nopriv_lab_save_transportation', 'lab_labo1dot5_save');
     add_action('wp_ajax_nopriv_lab_save_user_picture', 'lab_ajax_save_user_picture');

@@ -1,4 +1,6 @@
 <?php
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 function lab_admin_get_phd_student($filters, $order, $page) {
 
@@ -44,6 +46,9 @@ function lab_admin_get_phd_student($filters, $order, $page) {
 
     // Obtention du nombre total de pages
     $query = "SELECT luh.* FROM `wp_lab_params` AS p JOIN wp_lab_users_historic as luh ON luh.function = p.id $joins $where ORDER BY luh.begin DESC LIMIT $offset, $items_per_page;";
+    if ($page <= 0) {
+        $query = "SELECT luh.* FROM `wp_lab_params` AS p JOIN wp_lab_users_historic as luh ON luh.function = p.id $joins $where ORDER BY luh.begin DESC;";
+    }
     $total_query = "SELECT count(*) FROM `wp_lab_params` AS p JOIN wp_lab_users_historic as luh ON luh.function = p.id $joins $where;";
 
 
@@ -84,6 +89,75 @@ function lab_admin_get_phd_student($filters, $order, $page) {
     return $retour;
 }
 
+
+function lab_ajax_export_phd_excel() {
+    //require_once ABSPATH . 'vendor/autoload.php'; // Chemin vers PhpSpreadsheet
+    $data = lab_admin_get_phd_student(array(), array(), -1); // Pour initialiser les données si nécessaire
+    $students = $data['data'];
+
+    $spreadsheet = new Spreadsheet();
+    $sheet = $spreadsheet->getActiveSheet();
+
+    // Titre du fichier
+    $sheet->setTitle('Liste des doctorants');   
+    
+    $sheet->setCellValue('A1', 'Nom');
+    $sheet->setCellValue('B1', 'Intitulé de la thèse');
+    $sheet->setCellValue('C1', 'Direction');
+    $sheet->setCellValue('D1', 'Ecole doctorale');
+    $sheet->setCellValue('E1', 'Soutien');
+    $sheet->setCellValue('F1', 'Début');
+    $sheet->setCellValue('G1', 'Soutenance');
+    $sheet->setCellValue('H1', 'Devenir');
+    $sheet->setCellValue('I1', 'Groupe');
+
+    $row = 2;
+    foreach ($students as $student) {
+        $phd = $data['users'][$student->user_id];
+        $sheet->setCellValue('A' . $row, $phd['first_name'] . ' ' . strtoupper($phd['last_name']));
+        $sheet->setCellValue('B' . $row, $phd['lab_user_thesis_title']);
+        $host = $data['users'][$student->host_id];
+        if (isset($host['first_name']) == false) {
+            $host['first_name'] = '';
+        }
+        if (isset($host['last_name']) == false) {
+            $host['last_name'] = '';
+        }
+        $sheet->setCellValue('C' . $row, $host['first_name'] . ' ' . strtoupper($host['last_name']));
+        $sheet->setCellValue('D' . $row, $phd['lab_user_phd_school']);
+        $phd_support_id = isset($phd['lab_user_phd_support']) ? intval($phd['lab_user_phd_support']) : 0;
+        $phd_support = isset($data['phd_support'][$phd_support_id]) ? $data['phd_support'][$phd_support_id]->slug : '';
+        $sheet->setCellValue('E' . $row, $phd_support);
+        $sheet->setCellValue('F' . $row, $student->begin);
+        $thesis_date = isset($phd['lab_user_thesis_date']) ? $phd['lab_user_thesis_date'] : '';
+        $sheet->setCellValue('G' . $row, $thesis_date);
+        $become = isset($phd['lab_user_become']) ? $phd['lab_user_become'] : '';
+        $sheet->setCellValue('H' . $row, $become);
+        $groups = "";
+        // Récupération des groupes
+        if(isset($phd["group"]) && is_array($phd["group"])) {
+            foreach($phd["group"] as $group_id => $group) {
+                $groups .= $group->acronym . " ";
+            }
+        }
+        $sheet->setCellValue('I' . $row, trim($groups));
+        
+        //$sheet->setCellValue('A' . $row, $phd->first_name . ' ' . strtoupper($phd->last_name));
+        //$sheet->setCellValue('B' . $row, $phd->lab_user_thesis_title);
+        $row++;
+    }
+
+    // Envoi du fichier
+    header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    header('Content-Disposition: attachment; filename="phd_students.xlsx"');
+    header('Cache-Control: max-age=0');
+
+    $writer = new Xlsx($spreadsheet);
+    $writer->save('php://output');
+    exit;
+}
+
+
 function lab_display_phd_student($params) {
     $html = "";
 $html .= '<div id="lab_php_student_filters" class="mb-3">';
@@ -104,7 +178,7 @@ $html .= '<div class="form-check form-switch mt-2">';
 $html .= '<input class="form-check-input" type="checkbox" id="lab_filter_defended">';
 $html .= '<label class="form-check-label" for="lab_filter_defended" style="white-space: nowrap;">Afficher uniquement les doctorants ayant soutenu</label>';
 $html .= '</div>';
-
+$html .= '<button id="export-excel-btn" style="margin-top:20px;">📄 Exporter en Excel</button>';
 $html .= '</div>';
     
 

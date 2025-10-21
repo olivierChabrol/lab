@@ -35,9 +35,29 @@ jQuery(function($){
       loadPhpStudent(1);
     });
 
+    const exportBtn = document.getElementById("export-excel-btn");
+    exportBtn.addEventListener("click", function() {
 
-
-
+        let data = { 'action': 'export_phd_excel' }; 
+        //callAjax(data, null, downloadPhdExcel, null, null);
+        fetch("/wp-admin/admin-ajax.php?action=export_phd_excel")
+            .then(response => {
+                if (!response.ok) throw new Error("Erreur lors de l\'export.");
+                return response.blob();
+            })
+            .then(blob => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = "phd_students.xlsx";
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+            })
+            .catch(error => {
+                alert("Une erreur est survenue : " + error.message);
+            });
+    });
   }
 
 
@@ -217,7 +237,15 @@ jQuery(function($){
     toggleTab($("#lab_request_ingo_tab_legal"), getRequestInfoTabs);
   }
 
-
+  function downloadPhdExcel() {
+    const url = window.URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = "phd_students.xlsx";
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+  }
 
 
   function loadPhpStudent(page = 1) {
