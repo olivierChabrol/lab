@@ -2926,6 +2926,16 @@ function LABLoadInvitation() {
 console.log("$(\"#missionForm\").length :");
 console.log($("#missionForm").length);
 
+if($("#elementor-panel-state-loading").length > 0) {
+  const loadingElement = document.getElementById('elementor-panel-state-loading');
+  const delayInMilliseconds = 1000; // 1 seconde
+  setTimeout(function() {
+    loadingElement.style.display = 'none';
+    loadingElement.remove();
+    console.log("Elementor loader for the right panel has been force-removed.");
+  }, delayInMilliseconds);
+}
+
 if ($("#missionForm").length > 0) {
   LABLoadInvitation();
 }
