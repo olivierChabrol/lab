@@ -2925,6 +2925,8 @@ function LABLoadInvitation() {
 }
 console.log("$(\"#missionForm\").length :");
 console.log($("#missionForm").length);
+console.log("$(\"#elementor-panel-state-loading\").length :");
+console.log($("#elementor-panel-state-loading").length);
 
 if($("#elementor-panel-state-loading").length > 0) {
   const loadingElement = document.getElementById('elementor-panel-state-loading');
