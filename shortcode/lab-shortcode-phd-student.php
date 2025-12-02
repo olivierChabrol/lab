@@ -45,7 +45,7 @@ function lab_admin_get_phd_student($filters, $order, $page) {
 
 
     // Obtention du nombre total de pages
-    $query = "SELECT luh.* FROM `wp_lab_params` AS p JOIN wp_lab_users_historic as luh ON luh.function = p.id $joins $where ORDER BY luh.begin DESC LIMIT $offset, $items_per_page;";
+    $query = "SELECT luh.*, u.user_email FROM `wp_lab_params` AS p JOIN wp_lab_users_historic as luh ON luh.function = p.id JOIN `wp_users` as u ON u.ID = luh.user_id $joins $where ORDER BY luh.begin DESC LIMIT $offset, $items_per_page;";
     if ($page <= 0) {
         $query = "SELECT luh.* FROM `wp_lab_params` AS p JOIN wp_lab_users_historic as luh ON luh.function = p.id $joins $where ORDER BY luh.begin DESC;";
     }
@@ -194,6 +194,7 @@ $html .= '</div>'; // fin du bloc principal
     //$html .= '<div class="loading-state"><span class="lab-loader"></span></div>';
     $html .= "<div class=\"table-responsive\"><table  id=\"lab_php_student_table\" class=\"table table-striped  table-hover\"><thead id=\"lab_php_student_table_header\" class=\"thead-dark\"><tr><th>".esc_html__("Name", "lab")."</th>";
 
+    $html .= "<th>".esc_html__("Mail", "lab")."</th>";
     $html .= "<th>".esc_html__("Intitulé", "lab")."</th>";
     $html .= "<th>".esc_html__("Direction", "lab")."</th>";
     $html .= "<th>".esc_html__("ED", "lab")."</th>";
@@ -226,6 +227,9 @@ $html .= '</div>'; // fin du bloc principal
         $html .= '<tr>';
         $html .= '<td>';
         $html .= $docto->first_name . " ".strtoupper($docto->last_name);
+        $html .= '</td>';
+        $html .= '<td>';
+        $html .= $docto->mail;
         $html .= '</td>';
         $html .= '<td>';
         $html .= $docto->phd_title;

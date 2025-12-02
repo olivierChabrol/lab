@@ -297,7 +297,9 @@ jQuery(function($){
       let host = data["users"][host_id];
       td.html(user['first_name'] + ' ' + user['last_name'].toUpperCase());
       tr.append(td);
-      //console.log(elm);
+      td = $("<td/>");
+      td.html(elm["user_email"]);
+      tr.append(td);
 
       td = $("<td/>");
       td.html(user['lab_user_thesis_title']);
