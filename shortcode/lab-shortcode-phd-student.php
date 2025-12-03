@@ -47,7 +47,7 @@ function lab_admin_get_phd_student($filters, $order, $page) {
     // Obtention du nombre total de pages
     $query = "SELECT luh.*, u.user_email FROM `wp_lab_params` AS p JOIN wp_lab_users_historic as luh ON luh.function = p.id JOIN `wp_users` as u ON u.ID = luh.user_id $joins $where ORDER BY luh.begin DESC LIMIT $offset, $items_per_page;";
     if ($page <= 0) {
-        $query = "SELECT luh.* FROM `wp_lab_params` AS p JOIN wp_lab_users_historic as luh ON luh.function = p.id $joins $where ORDER BY luh.begin DESC;";
+        $query = "SELECT luh.*, u.user_email FROM `wp_lab_params` AS p JOIN wp_lab_users_historic as luh ON luh.function = p.id JOIN `wp_users` as u ON u.ID = luh.user_id $joins $where ORDER BY luh.begin DESC;";
     }
     $total_query = "SELECT count(*) FROM `wp_lab_params` AS p JOIN wp_lab_users_historic as luh ON luh.function = p.id $joins $where;";
 
