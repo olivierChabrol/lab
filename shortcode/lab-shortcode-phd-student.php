@@ -102,20 +102,22 @@ function lab_ajax_export_phd_excel() {
     $sheet->setTitle('Liste des doctorants');   
     
     $sheet->setCellValue('A1', 'Nom');
-    $sheet->setCellValue('B1', 'Intitulé de la thèse');
-    $sheet->setCellValue('C1', 'Direction');
-    $sheet->setCellValue('D1', 'Ecole doctorale');
-    $sheet->setCellValue('E1', 'Soutien');
-    $sheet->setCellValue('F1', 'Début');
-    $sheet->setCellValue('G1', 'Soutenance');
-    $sheet->setCellValue('H1', 'Devenir');
-    $sheet->setCellValue('I1', 'Groupe');
+    $sheet->setCellValue('B1', 'Mail');
+    $sheet->setCellValue('C1', 'Intitulé de la thèse');
+    $sheet->setCellValue('D1', 'Direction');
+    $sheet->setCellValue('E1', 'Ecole doctorale');
+    $sheet->setCellValue('F1', 'Soutien');
+    $sheet->setCellValue('G1', 'Début');
+    $sheet->setCellValue('H1', 'Soutenance');
+    $sheet->setCellValue('I1', 'Devenir');
+    $sheet->setCellValue('J1', 'Groupe');
 
     $row = 2;
     foreach ($students as $student) {
         $phd = $data['users'][$student->user_id];
         $sheet->setCellValue('A' . $row, $phd['first_name'] . ' ' . strtoupper($phd['last_name']));
-        $sheet->setCellValue('B' . $row, $phd['lab_user_thesis_title']);
+        $sheet->setCellValue('B' . $row, $student->user_email);
+        $sheet->setCellValue('C' . $row, $phd['lab_user_thesis_title']);
         $host = $data['users'][$student->host_id];
         if (isset($host['first_name']) == false) {
             $host['first_name'] = '';
@@ -123,16 +125,16 @@ function lab_ajax_export_phd_excel() {
         if (isset($host['last_name']) == false) {
             $host['last_name'] = '';
         }
-        $sheet->setCellValue('C' . $row, $host['first_name'] . ' ' . strtoupper($host['last_name']));
-        $sheet->setCellValue('D' . $row, $phd['lab_user_phd_school']);
+        $sheet->setCellValue('D' . $row, $host['first_name'] . ' ' . strtoupper($host['last_name']));
+        $sheet->setCellValue('E' . $row, $phd['lab_user_phd_school']);
         $phd_support_id = isset($phd['lab_user_phd_support']) ? intval($phd['lab_user_phd_support']) : 0;
         $phd_support = isset($data['phd_support'][$phd_support_id]) ? $data['phd_support'][$phd_support_id]->slug : '';
-        $sheet->setCellValue('E' . $row, $phd_support);
-        $sheet->setCellValue('F' . $row, $student->begin);
+        $sheet->setCellValue('F' . $row, $phd_support);
+        $sheet->setCellValue('G' . $row, $student->begin);
         $thesis_date = isset($phd['lab_user_thesis_date']) ? $phd['lab_user_thesis_date'] : '';
-        $sheet->setCellValue('G' . $row, $thesis_date);
+        $sheet->setCellValue('H' . $row, $thesis_date);
         $become = isset($phd['lab_user_become']) ? $phd['lab_user_become'] : '';
-        $sheet->setCellValue('H' . $row, $become);
+        $sheet->setCellValue('I' . $row, $become);
         $groups = "";
         // Récupération des groupes
         if(isset($phd["group"]) && is_array($phd["group"])) {
@@ -140,7 +142,7 @@ function lab_ajax_export_phd_excel() {
                 $groups .= $group->acronym . " ";
             }
         }
-        $sheet->setCellValue('I' . $row, trim($groups));
+        $sheet->setCellValue('J' . $row, trim($groups));
         
         //$sheet->setCellValue('A' . $row, $phd->first_name . ' ' . strtoupper($phd->last_name));
         //$sheet->setCellValue('B' . $row, $phd->lab_user_thesis_title);
