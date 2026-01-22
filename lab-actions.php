@@ -62,6 +62,7 @@ if (is_admin()) {
     add_action('wp_ajax_lab_user_addRole', 'lab_user_addRole');
     add_action('wp_ajax_lab_user_delRole', 'lab_user_delRole');
     //Actions pour la gestion des groupes
+    add_action('wp_ajax_user_passwd_token', 'lab_admin_ajax_user_passwd_token');
     add_action('wp_ajax_group_search_ac', 'lab_admin_group_availableAc');
     add_action('wp_ajax_group_create', 'lab_admin_group_createReq');
     add_action('wp_ajax_group_table', 'lab_admin_createGroupTable');

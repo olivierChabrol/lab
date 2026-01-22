@@ -39,6 +39,35 @@ jQuery(function($){
   $("#lab_hal_delete_table").click(function () { 
     deleteHalTable();
   });
+
+  $("#lab_user_passwd_reset_link").click(function(event) {
+    event.preventDefault();
+    var userLogin = $("#lab_user_login").text();
+    get_password_token(userLogin);
+  });
+
+  $("#lab_btn-copier").click(function(event) {
+    event.preventDefault();
+    var urlACopier = $("#lab_user_passwd_reset_link_url").text();
+    navigator.clipboard.writeText(urlACopier)
+            .then(() => {
+                // SUCCÈS : On donne un feedback visuel
+                const texteOriginal = btnCopier.innerText;
+                btnCopier.innerText = "Copié ! ✅";
+                
+                // On remet le texte normal après 2 secondes
+                setTimeout(() => {
+                    btnCopier.innerText = texteOriginal;
+                }, 2000);
+            })
+            .catch(err => {
+                // ERREUR : Si quelque chose ne va pas (ex: permissions)
+                console.error('Erreur lors de la copie :', err);
+                alert("Impossible de copier le lien.");
+            });
+  });
+
+
   $("#lab_hal_user").autocomplete({
     minChars: 2,
     source: function(term, suggest){
@@ -873,6 +902,24 @@ jQuery(function($){
   toast_success("User delete")
  }
 
+ function get_password_token(user_login) {
+  data = {
+    'action': 'user_passwd_token',
+    'user_login': user_login,
+  };
+  jQuery.post(LAB.ajaxurl, data, function(response) {
+    if (response.success) {
+      jQuery("#lab_user_password_token").val(response.data);
+      toast_success("Password reset token generated");
+      let token = response.data;
+      let url = window.location.origin + "/change-password/?token=" + token;
+      jQuery("#lab_user_passwd_reset_link_url").html(url);
+    } else {
+      toast_error("Failed to generate password reset token :<br/>"+response.data);
+    }
+  });
+}
+
 function reset_and_load_groups_users(cond1, cond2) {
     jQuery.post(LAB.ajaxurl,
         {
@@ -1151,6 +1198,7 @@ function resetUserTabFields()
 {
   jQuery("#lab_user_search").val("");
   jQuery("#lab_user_id").html("");
+  jQuery("#lab_user_login").html("");
   jQuery("#lab_user_search_id").val("");
   jQuery("#lab_user_left").prop("checked", false);
   jQuery("#lab_user_left_date").val("");
@@ -1198,6 +1246,7 @@ function reloadCurrentUser()
   callbUser(jQuery("#lab_user_search_id").val(), loadUserMetaData);
 }
 
+
 function callbUser(userId, callback) { // function with callback to operate with userId
   var data = {
                'action' : 'usermeta_names',
@@ -1218,11 +1267,15 @@ function loadUserMetaData(response) {
   if(response.data) {
     resetUserMetaFields();
 
+    console.log("[lab_admin.js] [loadUserMetaData ] login : "+ response.data["user_login"]);
+    jQuery("#lab_user_login").html(response.data["user_login"]);
+    //loadUserMetaData(response.data["first_name"])
     setField("#lab_user_firstname", response.data["first_name"]);
     setField("#lab_user_lastname", response.data["last_name"]);
     setField("#lab_user_email", response.data["user_email"]);
     setField("#lab_user_url", response.data["user_url"]);
     setField("#lab_user_slug", response.data["user_slug"]);
+    //setField("#lab_user_login", response.data["user_login"]);
 
     setField("#lab_user_thesis_title", response.data["user_thesis_title"]);
     setField("#lab_user_phd_support", response.data["user_phd_support"]);

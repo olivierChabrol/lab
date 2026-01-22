@@ -47,7 +47,6 @@ function lab_reset_password($atts) {
         }
     }
     else {
-        echo "<h3>Données envoyées</h3><br/>";
         if (isset($_POST['login'])) {
             $login = $_POST['login'];
             $url = $url;
@@ -56,8 +55,7 @@ function lab_reset_password($atts) {
             );
             $email = lab_reset_password_get_email($login);
             
-            $tokenData = uniqid() . time() . 'votre_secret'; // Combinaison unique
-            $token = hash('sha256', $tokenData); // Crée le token
+            $token = lab_reset_password_generate_token();
             
             lab_reset_password_send_mail($email,$url, $token, $login);
         }
@@ -84,6 +82,32 @@ function lab_reset_password($atts) {
     }
 
         
+}
+
+function lab_reset_password_generate_token() {
+    $tokenData = uniqid() . time() . 'votre_secret'; // Combinaison unique
+    $token = hash('sha256', $tokenData); // Crée le token
+    
+    return $token;
+}
+
+/**
+ * Generates a password reset token for a given user.
+ *
+ * This function generates a unique token and associates it with the given user ID in the database.
+ * The token is then returned for use in sending a password reset email.
+ *
+ * @param string $user_login The login of the user to generate a token for.
+ *
+ * @return string A unique token for password reset.
+ */
+function lab_reset_password_db_token($user_login) {
+    // Générer un token unique
+    $token = lab_reset_password_generate_token();
+    
+    lab_reset_password_add_token_to_db($token, $user_login);
+
+    return $token;
 }
 
 /**

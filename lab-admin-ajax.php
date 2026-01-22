@@ -584,6 +584,16 @@ function lab_admin_search_username2()
   wp_send_json_success(lab_admin_firstname_lastname2($name));
 }
 
+function lab_admin_ajax_user_passwd_token()
+{
+  $login  = $_POST["user_login"];
+  if (isset($login) && !empty($login)) {
+    wp_send_json_success(lab_reset_password_db_token($login));
+  } else {
+    wp_send_json_error("No user found");
+  }
+}
+
 function lab_admin_ajax_usermeta_names()
 {
   $search = $_POST['search'];

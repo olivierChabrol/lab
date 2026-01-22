@@ -36,7 +36,7 @@ function lab_admin_user_info($userId, $fields) {
 
 function lab_admin_userMetaDatas_get($userId) {
     global $wpdb;
-    $results = $wpdb->get_results( "SELECT um.*, u.user_email, u.user_url FROM `".$wpdb->prefix."usermeta` AS um JOIN `".$wpdb->prefix."users` AS u ON u.id=um.user_id WHERE (um.meta_key = 'first_name' or um.meta_key='last_name' or um.meta_key LIKE 'lab_%') and um.user_id=".$userId  );
+    $results = $wpdb->get_results( "SELECT um.*, u.user_email, u.user_url, u.user_login FROM `".$wpdb->prefix."usermeta` AS um JOIN `".$wpdb->prefix."users` AS u ON u.id=um.user_id WHERE (um.meta_key = 'first_name' or um.meta_key='last_name' or um.meta_key LIKE 'lab_%') and um.user_id=".$userId  );
     $items = array();
     $items["id"] = $userId;
 
@@ -44,6 +44,7 @@ function lab_admin_userMetaDatas_get($userId) {
     {
         $items['user_email'] = $r->user_email;
         $items['user_url']   = $r->user_url;
+        $items['user_login']   = $r->user_login;
         if ($r->meta_key == 'first_name')
             $items['first_name'] = stripslashes($r->meta_value);
         if ($r->meta_key == 'last_name')
