@@ -52,12 +52,10 @@ jQuery(function($){
     navigator.clipboard.writeText(urlACopier)
             .then(() => {
                 // SUCCÈS : On donne un feedback visuel
-                const texteOriginal = btnCopier.innerText;
-                btnCopier.innerText = "Copié ! ✅";
-                
-                // On remet le texte normal après 2 secondes
+                const texteOriginal = $("#lab_btn-copier").text();
+                $("#lab_btn-copier").text("Copié ! ✅");
                 setTimeout(() => {
-                    btnCopier.innerText = texteOriginal;
+                    $("#lab_btn-copier").text(texteOriginal);
                 }, 2000);
             })
             .catch(err => {
