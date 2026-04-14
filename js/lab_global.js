@@ -175,7 +175,7 @@ function hideLoadingGif()
   //jQuery("#loadingAjaxGif").hide();
   jQuery("#loadingAjaxGif").removeClass('show');
 }
-
+let loaderTimeout = null;
 
 function displayLoader() {
   loaderTimeout = setTimeout(() => {
@@ -197,7 +197,17 @@ function displayLoader() {
 
 
 function removeLoader(){
-  jQuery('#myModal').hide();
+  console.debug("[removeLoader] Suppression du loader");
+  const $modal = jQuery('#myModal');
+  
+  // CORRECTION : On vérifie si l'élément EXISTE (length > 0)
+  if ($modal.length > 0) { 
+    // .stop(true, true) arrête les animations en cours (comme le fadeIn)
+    $modal.stop(true, true).hide(); 
+  } else {
+    console.warn("[removeLoader] Le loader n'existe pas (la requête a probablement été plus rapide que les 300ms).");
+  }
+  clearTimeout(loaderTimeout);
 }
 
 
