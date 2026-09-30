@@ -607,6 +607,7 @@ function is_ip_in_range( $ip, $range ) {
  *
  * @return bool true si l'IP est autorisée, false sinon.
  */
+
 function is_ip_allowed() {
   // 1. Liste des adresses IP et plages (CIDR) autorisées
     $allowed_ips_and_ranges = array(
@@ -636,58 +637,95 @@ function is_ip_allowed() {
             }
         }
     }
+    return $is_allowed;
+}
+
+
+function lab_test_ping_orig() {
+  
+    if ( ! is_ip_allowed() ) {
+        // Optionnel : récupérer l'IP pour le message d'erreur si vous en avez besoin
+        $client_ip = isset( $_SERVER['REMOTE_ADDR'] ) ? $_SERVER['REMOTE_ADDR'] : 'inconnue';
+        
+        wp_send_json_error( array( 
+            'message' => 'Access refused. Your IP address (' . $client_ip . ') is not authorized.' 
+        ) ); // Le script s'arrête ici si l'IP n'est pas bonne
+    }
+
+    wp_send_json_success(array('message' => 'Access granted. Your IP address (' . $client_ip . ') is  authorized.' ));
 }
 
 /**
  * Récupère l'ID d'un utilisateur au format JSON via son email.
- *
- * @param string $email L'adresse email de l'utilisateur.
- * @return string Une chaîne JSON contenant l'ID de l'utilisateur ou un message d'erreur.
  */
-function lab_get_user_id_by_email_json()
-{
+function lab_email_to_user_id() {
+    // 1. Vérification de l'IP (en supposant que vous avez défini is_ip_allowed() ailleurs)
     if ( ! is_ip_allowed() ) {
-        // L'IP n'est pas dans la liste, on bloque l'accès
-        $response = array(
-            'success' => false,
-            'message' => 'Access refused. Your IP address (' . $client_ip . ') is not authorized.'
-        );
-        return json_encode( $response );
+        // Optionnel : récupérer l'IP pour le message d'erreur si vous en avez besoin
+        $client_ip = isset( $_SERVER['REMOTE_ADDR'] ) ? $_SERVER['REMOTE_ADDR'] : 'inconnue';
+        
+        wp_send_json_error( array( 
+            'message' => 'Access refused. Your IP address (' . $client_ip . ') is not authorized.' 
+        ) ); // Le script s'arrête ici si l'IP n'est pas bonne
     }
 
-  // Nettoyer l'email par sécurité
-    $email = sanitize_email( $email );
-    
-    // Récupérer les données de l'utilisateur
+
+    // 2. Récupérer l'email depuis la requête AJAX (?email=...)
+    $email = isset( $_REQUEST['email'] ) ? sanitize_email( $_REQUEST['email'] ) : '';
+
+    if ( empty( $email ) ) {
+        wp_send_json_error( array( 'message' => 'Email manquant.' ) ); // Le script s'arrête ici si pas d'email
+    }
+
+    // 3. Récupérer les données de l'utilisateur
     $user = get_user_by( 'email', $email );
 
     if ( $user ) {
-        // L'utilisateur existe, on renvoie son ID (wp_users.ID)
-        $response = array(
-            'success' => true,
-            'user_id' => $user->ID
-        );
+        // L'utilisateur existe, on renvoie son ID
+        // Note : wp_send_json_success encapsule déjà les données dans "data", 
+        // et ajoute automatiquement "success" => true
+        wp_send_json_success( array( 'user_id' => $user->ID ) ); 
     } else {
         // L'utilisateur n'existe pas
-        $response = array(
-            'success' => false,
-            'message' => 'Aucun utilisateur trouvé avec cet email.'
-        );
+        wp_send_json_error( array( 'message' => 'Aucun utilisateur trouvé avec cet email.' ) );
     }
-
-    // Retourne le résultat au format JSON
-    return json_encode( $response );
 }
 
-function lab_get_user_groups_by_id_json($id) {
+function lab_get_user_groups_by_id_json() {
     if ( ! is_ip_allowed() ) {
-        // L'IP n'est pas dans la liste, on bloque l'accès
-        $response = array(
-            'success' => false,
-            'message' => 'Access refused. Your IP address (' . $client_ip . ') is not authorized.'
-        );
-        return json_encode( $response );
+        // Optionnel : récupérer l'IP pour le message d'erreur si vous en avez besoin
+        $client_ip = isset( $_SERVER['REMOTE_ADDR'] ) ? $_SERVER['REMOTE_ADDR'] : 'inconnue';
+        wp_send_json_error( array( 
+            'message' => 'Access refused. Your IP address (' . $client_ip . ') is not authorized.' 
+        ) );
     }
+
+    $id = isset( $_REQUEST['id'] ) ? (int)$_REQUEST['id'] : 0;
+
+    if ( empty( $id ) ) {
+        wp_send_json_error( array( 'message' => 'User ID is missing.' ) );
+    }
+    
+    global $wpdb;
+    $sql =$wpdb->prepare(
+        "SELECT lg.id, lg.group_name 
+         FROM `wp_lab_users_groups` as lug 
+         JOIN `wp_lab_groups` as lg ON lg.id = lug.group_id
+         WHERE lug.user_id = %d",
+        $id
+    );
+            
+    $results =$wpdb->get_results( $sql );$items = array();
+    if ( $results ) {
+        foreach ( $results as $r ) {$items[] = array(
+                'group_id'   => $r->id,
+                'group_name' => $r->group_name
+            );
+        }
+    }
+
+    wp_send_json_success( $items );
+
 }
 
 function lab_admin_search_username()
