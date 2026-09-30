@@ -570,6 +570,126 @@ function lab_admin_param_search_value()
   }
 }
 
+/**
+ * Vérifie si une IP correspond à une IP exacte ou à une plage CIDR.
+ *
+ * @param string $ip L'adresse IP à vérifier.
+ * @param string $range L'IP exacte ou la plage CIDR (ex: 192.168.1.0/24).
+ * @return bool
+ */
+function is_ip_in_range( $ip, $range ) {
+    // Si ce n'est pas une plage CIDR (pas de /), on fait une comparaison exacte
+    if ( strpos( $range, '/' ) === false ) {
+        return $ip === $range;
+    }
+
+    // Séparation de l'IP de base et des bits du masque
+    list( $subnet, $bits ) = explode( '/', $range );
+    
+    $ip_long     = ip2long( $ip );
+    $subnet_long = ip2long( $subnet );
+    
+    // Si l'IP est invalide, ip2long renvoie false
+    if ( $ip_long === false || $subnet_long === false ) {
+        return false;
+    }
+
+    // Création du masque binaire
+    $mask = -1 << ( 32 - (int) $bits );
+    $subnet_long &= $mask; 
+    
+    // Vérification
+    return ( $ip_long & $mask ) === $subnet_long;
+}
+
+/**
+ * Récupère l'IP de la machine et verifie si elle est autorisée.
+ *
+ * @return bool true si l'IP est autorisée, false sinon.
+ */
+function is_ip_allowed() {
+  // 1. Liste des adresses IP et plages (CIDR) autorisées
+    $allowed_ips_and_ranges = array(
+        '127.0.0.1',           // IP exacte locale
+        '139.124.147.7',       // hbv4
+        '139.124.6.0/24',      // L
+        '147.94.124.0/24'      // St C
+    );
+
+    // 2. Récupération de l'IP du client (compatible proxys)
+    if ( ! empty( $_SERVER['HTTP_CF_CONNECTING_IP'] ) ) {
+        $client_ip = $_SERVER['HTTP_CF_CONNECTING_IP'];
+    } elseif ( ! empty( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ) {
+        $ip_list = explode( ',', $_SERVER['HTTP_X_FORWARDED_FOR'] );
+        $client_ip = trim( $ip_list[0] );
+    } else {
+        $client_ip = isset( $_SERVER['REMOTE_ADDR'] ) ? $_SERVER['REMOTE_ADDR'] : '';
+    }
+
+    // 3. Vérification de l'IP contre la liste et les plages
+    $is_allowed = false;
+    if ( $client_ip ) {
+        foreach ( $allowed_ips_and_ranges as $allowed ) {
+            if ( is_ip_in_range( $client_ip, $allowed ) ) {
+                $is_allowed = true;
+                break; // Dès qu'une correspondance est trouvée, on arrête la boucle
+            }
+        }
+    }
+}
+
+/**
+ * Récupère l'ID d'un utilisateur au format JSON via son email.
+ *
+ * @param string $email L'adresse email de l'utilisateur.
+ * @return string Une chaîne JSON contenant l'ID de l'utilisateur ou un message d'erreur.
+ */
+function lab_get_user_id_by_email_json()
+{
+    if ( ! is_ip_allowed() ) {
+        // L'IP n'est pas dans la liste, on bloque l'accès
+        $response = array(
+            'success' => false,
+            'message' => 'Access refused. Your IP address (' . $client_ip . ') is not authorized.'
+        );
+        return json_encode( $response );
+    }
+
+  // Nettoyer l'email par sécurité
+    $email = sanitize_email( $email );
+    
+    // Récupérer les données de l'utilisateur
+    $user = get_user_by( 'email', $email );
+
+    if ( $user ) {
+        // L'utilisateur existe, on renvoie son ID (wp_users.ID)
+        $response = array(
+            'success' => true,
+            'user_id' => $user->ID
+        );
+    } else {
+        // L'utilisateur n'existe pas
+        $response = array(
+            'success' => false,
+            'message' => 'Aucun utilisateur trouvé avec cet email.'
+        );
+    }
+
+    // Retourne le résultat au format JSON
+    return json_encode( $response );
+}
+
+function lab_get_user_groups_by_id_json($id) {
+    if ( ! is_ip_allowed() ) {
+        // L'IP n'est pas dans la liste, on bloque l'accès
+        $response = array(
+            'success' => false,
+            'message' => 'Access refused. Your IP address (' . $client_ip . ') is not authorized.'
+        );
+        return json_encode( $response );
+    }
+}
+
 function lab_admin_search_username()
 {
   $search = $_POST['search'];

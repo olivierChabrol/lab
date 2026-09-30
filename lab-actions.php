@@ -279,4 +279,6 @@ else {
     add_action('wp_ajax_nopriv_lab_presence_save_ext', 'lab_admin_presence_save_ext_ajax');
     add_action('wp_ajax_nopriv_lab_save_transportation', 'lab_labo1dot5_save');
     add_action('wp_ajax_nopriv_lab_save_user_picture', 'lab_ajax_save_user_picture');
+    add_action('wp_ajax_nopriv_lab_get_user_id_by_email', 'lab_get_user_id_by_email_json');
+    add_action('wp_ajax_nopriv_lab_get_user_groups_by_id', 'lab_get_user_groups_by_id_json');
 }
